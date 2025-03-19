@@ -82,7 +82,7 @@ const Page = () => {
     try {
       const data:any = await getEventsByWidgetId(widgetId, page);
     if (data) {
-      const transformedEvents = data.data.map((event: any) => ({
+      const transformedEvents = data?.data?.map((event: any) => ({
         mainEvent: {
           eventId: event.id,
           name: event.name,
@@ -169,7 +169,7 @@ const Page = () => {
     // const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
     const data:any = await getWidgetById(widgetId);
     if (data) {
-      const events = data.otherdata?.event;
+      const events = data.otherData?.event;
       setfetchedAddedEvents(events);
     }
     if (error) {
@@ -196,13 +196,13 @@ const Page = () => {
         setSelectedTemplate(asciiToString(data.templatePublicId));
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
-        setfetchedAddedEvents(data.otherdata?.event);
+        setfetchedAddedEvents(data.otherData?.event);
       }
       setLoading(false);
     }
     fetchWidgetData();
     fetchEvents(0);
-    // fetchAddedEvents();
+    fetchAddedEvents();
   }, [])
 
   useEffect(()=>{

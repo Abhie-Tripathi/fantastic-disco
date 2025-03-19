@@ -9,14 +9,17 @@ import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
-import { ChartTrendingUp, Location } from "geist-icons";
+import { ChartTrendingUp, Globe, Location, Buildings } from "geist-icons";
 import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
+import { CloudAlert } from 'lucide-react';
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
-  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
+  const [eventsCount,setEventCount]=useState<{ type: string; totalCount: number; newCount: number; logo?:any }[]>([]);
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -92,11 +95,38 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   };
   useEffect(() => {
     
-    const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
-    const eventState = item?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-    const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    const eventLocation =
+      Object.values(item?.filterValues?.locationIds || {}).map((location: any) => {
+        return location?.displayName;
+      });
+    setLocations(eventLocation);
+    const CountValues = {
+      geo : ['social','business','unattended'],
+      // gtm : ['active','new', 'past']
+    }
+    if(isEventeli){
+    const transformedData =  CountValues.geo.map((key)=>{
+      return {
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount :  item?.groupedEventsCount[key].total || 0,
+        newCount : item?.groupedEventsCount[key].new || 0
+      }
+    })
+    setEventCount(transformedData);
+  }else{
+    const transformedData = Object.entries(item?.groupedEventsCount || {}).map(([key, value]) => {
+      const numericValue = Number(value) || 0;
+    
+      return {
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount: numericValue,
+        newCount: (key === "new" ? numericValue : 0),
+        logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
+      };
+    });
+    setEventCount(transformedData);
+  }
+    
   }, [item]);
   const formatType=(type:string)=>{
     if(type==="CUSTOM") return "Custom"
@@ -105,19 +135,27 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   const handleDoubleClick=(item:any)=>{
     
       setSingleTrackerData(item)
-      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=activeEvent`)
+      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
       setIsNewCall(true); 
       setTrackerId(item.id);
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
+      setSingleTrackerData(item)
+     
+      setMultipleFilters({ 
+        skip: skip,
+        q: searchValue,
+         id: item.id,
+      })
   }
+  console.log(eventsCount);
+  
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
-     
         <div className="flex justify-between gap-2">
           <div className="flex gap-2 flex-col justify-between w-[40%]">
             <div className="flex gap-4 flex-col">
@@ -135,7 +173,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
           {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
           <div  className={`${
             locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)]`}>{locations && locations[0]}</div>
+            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations && locations[0]}</div>
           {locations?.length > 1 &&  (
             <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}
@@ -149,14 +187,27 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <div className="flex gap-2">
             <div className="flex w-full h-[100px]">
             <div className="flex gap-2 w-[100%] text-sm font-medium">
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
+            {eventsCount?.map((item,index)=>(
+              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-                <Image src={Vectore6} alt="newVector" width={12} height={12}/>
-                New
+              {isEventeli && (
+          item.type === "Business" ? (
+            <Buildings height="12px" width="12px" color="var(--primary-color)" />
+          ) : item.type === "Social" ? (
+             <Globe height="12px" width="12px" color="var(--primary-color)" />
+          ) : (
+            // <Globe height="12px" width="12px" color="var(--primary-color)" />
+            <CloudAlert height={12} width={12} color="var(--primary-color)" />
+          )
+          )}
+                {!isEventeli &&
+                <Image src={item.logo} alt={item.type} width={12} height={12}/>
+                }
+                {item.type}
                 
               </div>
               <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new)}
+                {formatCount(item?.totalCount)}
                 {/* <div className="badge_success">
                 <ChartTrendingUp width="12px" height="12px" style={{color:"var(--success-text-color)"}}/>
                 <span className="text-[10px]">
@@ -166,27 +217,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
               </div>
               <div className={styles.events}>Events</div>
             </div>
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
-              <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-                <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
-              
-                Active
-              </div>
-              <div className={styles.numberOfEvents}>
-              {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
-              </div>
-              <div className={styles.events}>Events</div>
-            </div>
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
-              <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-               <Image src={Vectore8} alt="expired" width={12} height={12}/>
-                Past
-              </div>
-              <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}
-              </div>
-              <div className={styles.events}>Events</div>
-            </div>
+            ))}
           </div>
 
           {/* <div className={styles.lineChart}>

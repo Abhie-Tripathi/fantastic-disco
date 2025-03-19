@@ -31,7 +31,8 @@ export default function MultiSelectSearchBar() {
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const { getEvents, isLoading, error } = useEventsService();
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const { getEvents, isLoading} = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -58,9 +59,18 @@ export default function MultiSelectSearchBar() {
     debounce(async (value: string) => {
       if (value) {
         try {
+          // Cancel any ongoing request
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+          }
+          
+          // Create new AbortController for this request
+          abortControllerRef.current = new AbortController();
+          
           const response = await getEvents({
             query: value,
-          });
+          }, abortControllerRef.current.signal);
+          
           const filteredResults =
             (response?.events as Event[])?.filter(
               (event) =>
@@ -68,7 +78,10 @@ export default function MultiSelectSearchBar() {
             ) || [];
           setSearchResults(filteredResults);
         } catch (err) {
-          console.error("Error fetching search results:", err);
+          // Only log error if it's not an abort error
+          if (err instanceof Error && err.name !== 'AbortError') {
+            console.error("Error fetching search results:", err);
+          }
           setSearchResults([]);
         }
       } else {
@@ -145,6 +158,10 @@ export default function MultiSelectSearchBar() {
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
+      // Cancel any pending request when component unmounts
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
   }, []);
 
@@ -188,7 +205,7 @@ export default function MultiSelectSearchBar() {
             className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
             align="start"
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
@@ -196,9 +213,9 @@ export default function MultiSelectSearchBar() {
               <CommandEmpty>
                 {isLoading ? "Searching..." : "No results found."}
               </CommandEmpty>
-              {error && (
+              {/* {error && (
                 <div className="p-2 text-red-500">Error: {error.message}</div>
-              )}
+              )} */}
               <CommandGroup>
                 <CommandList>
                   {searchResults.map((event, index) => (

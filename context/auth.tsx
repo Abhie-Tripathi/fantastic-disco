@@ -32,16 +32,12 @@ import {
 import { sessionKeys } from "@/data/onboarding";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
+import { signOut as signOutSSO } from "next-auth/react";
 
 type authContextType = {
   user: UserResponse | null;
   error:
-    | {
-        response: string;
-        status: number;
-        message: string;
-        name: string;
-      }
+    | { issues: any[]; statusCode: number; message: string }
     | null
     | undefined;
   isVerifiedToken: boolean;
@@ -51,15 +47,7 @@ type authContextType = {
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
   setError: (
     error:
-      | (
-          | {
-              response: string;
-              status: number;
-              message: string;
-              name: string;
-            }
-          | undefined
-        )
+      | ({ issues: any[]; statusCode: number; message: string } | undefined)
       | null
   ) => void;
   signOut: () => void;
@@ -98,15 +86,7 @@ const authContextDefaultValues: authContextType = {
   signin: () => Promise.resolve(null),
   setError: (
     error:
-      | (
-          | {
-              response: string;
-              status: number;
-              message: string;
-              name: string;
-            }
-          | undefined
-        )
+      | ({ issues: any[]; statusCode: number; message: string } | undefined)
       | null
   ) => {},
   setUser: () => {},
@@ -125,7 +105,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
-  const [user, setUser] = useState<UserResponse | null>();
+  const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
   const { getLocationName } = useLocationService();
   const { request, error, isLoading, setError } = useApi<any>();
@@ -182,7 +162,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const newcheckAuth = useCallback(async () => {
     const userData = await fetchUserData();
     if (!userData) {
-      setUser(undefined);
+      setUser(null);
       return;
     }
     const userLocation = await fetchUserLocation(userData?.primaryLocation);
@@ -270,7 +250,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push("/verify-otp");
+        router.push(`/verify-otp?email=${userDto.email}`);
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {
@@ -300,7 +280,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push("/verify-otp");
+        router.push(`/verify-otp?email=${userDto.email}`);
         // await generateOTP(userDto.email);
       } catch (err) {
         console.error("Sign in error:", err);
@@ -311,6 +291,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signOut = useCallback(async () => {
     setUser(null);
+    // signOutSSO({ callbackUrl: "/signin" });
     deleteLocalStorage();
     localStorage.removeItem("walkthroughCompleted");
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -400,7 +381,14 @@ export const AuthContextProvider = ({ children }: any) => {
       "filter"
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
-    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    const duplicateSessionKeys = sessionKeys.filter(
+      (key) => key !== "industry" && key !== "subIndustry"
+    );
+    if (isEventeli) {
+      duplicateSessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    } else {
+      sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    }
     router.push(restrictedUrl || "/");
   };
 

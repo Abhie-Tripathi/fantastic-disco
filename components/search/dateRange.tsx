@@ -66,6 +66,10 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
   return "";
 };
 
+const formatDateForFilter = (date: Date) => {
+  return format(date, 'yyyy-MM-dd');
+};
+
 // interface DateRangeProps {
 //   source: string;
 //   enabledDateRange?:any;
@@ -177,12 +181,12 @@ export default function DateRangeSelector({
     if (from) {
       const fromDate = new Date(from);
       fromDate.setHours(5, 30, 0, 0);
-      filters.active_gte = fromDate.toISOString();
+      filters.active_gte = formatDateForFilter(fromDate);
     }
     if (to) {
       const toDate = new Date(to);
       toDate.setHours(5, 30, 0, 0);
-      filters.active_lte = toDate.toISOString();
+      filters.active_lte = formatDateForFilter(toDate);
     }
     setMultipleLocalFilters(filters);
     setCalendarDate(currentDate);
@@ -196,8 +200,8 @@ export default function DateRangeSelector({
       const date = new Date(selectedDate);
       date.setHours(5, 30, 0, 0);
       setMultipleLocalFilters({
-        active_gte: date.toISOString(),
-        active_lte: date.toISOString(),
+        active_gte: formatDateForFilter(date),
+        active_lte: formatDateForFilter(date),
       });
       return;
     }
@@ -211,13 +215,13 @@ export default function DateRangeSelector({
       date.setHours(5, 30, 0, 0);
       if (selectedDate < dateRange.from) {
         setMultipleLocalFilters({
-          active_gte: date.toISOString(),
-          active_lte: dateRange.from.toISOString(),
+          active_gte: formatDateForFilter(date),
+          active_lte: formatDateForFilter(dateRange.from),
         });
       } else {
         setMultipleLocalFilters({
-          active_gte: dateRange.from.toISOString(),
-          active_lte: date.toISOString(),
+          active_gte: formatDateForFilter(dateRange.from),
+          active_lte: formatDateForFilter(date),
         });
       }
       return;
@@ -227,8 +231,8 @@ export default function DateRangeSelector({
       const date = new Date(selectedDate);
       date.setHours(5, 30, 0, 0);
       setMultipleLocalFilters({
-        active_gte: date.toISOString(),
-        active_lte: date.toISOString(),
+        active_gte: formatDateForFilter(date),
+        active_lte: formatDateForFilter(date),
       });
       return;
     }
@@ -238,13 +242,13 @@ export default function DateRangeSelector({
       date.setHours(5, 30, 0, 0);
       if (selectedDate < dateRange.from) {
         setMultipleLocalFilters({
-          active_gte: date.toISOString(),
-          active_lte: dateRange.from.toISOString(),
+          active_gte: formatDateForFilter(date),
+          active_lte: formatDateForFilter(dateRange.from),
         });
       } else {
         setMultipleLocalFilters({
-          active_gte: dateRange.from.toISOString(),
-          active_lte: date.toISOString(),
+          active_gte: formatDateForFilter(dateRange.from),
+          active_lte: formatDateForFilter(date),
         });
       }
     }
@@ -262,7 +266,7 @@ export default function DateRangeSelector({
     }
   };
   useEffect(() => {
-    if (type === "T_LOCATION_DATE" && !isOpen) {
+    if (type === "T_GEOTIME" && !isOpen) {
       onOpenChange(true);
     }
   }, [type, isOpen]);
@@ -278,7 +282,7 @@ export default function DateRangeSelector({
   }, [searchParams.get("active_gte")]);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      {type !== "T_LOCATION_DATE" && (
+      {type !== "T_GEOTIME" && (
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -305,7 +309,7 @@ export default function DateRangeSelector({
           </Button>
         </PopoverTrigger>
       )}
-      {type === "T_LOCATION_DATE" ? (
+      {type === "T_GEOTIME" ? (
         <DateRangePopup
           type={type}
           presets={presets}

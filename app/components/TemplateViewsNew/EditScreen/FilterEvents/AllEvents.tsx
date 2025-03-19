@@ -71,7 +71,6 @@ const AllEvents = ({
   const router = useRouter();
   const [selectedOptions, setSelectedOptions] = useState<any>({});
   useEffect(() => {
-    // console.log("fetchedAddedEvents",fetchedAddedEvents,fetchedAllEvents)
     const handleOtherDataFetch = async () => {
       try {
         const newPromotedEvents: string[] = [];
@@ -297,6 +296,7 @@ const AllEvents = ({
 
   useEffect(() => {
     const handleScroll = () => {
+      console.log("adasdasdasd_______________________________________________________________________@121212",)
       const scrollableDiv = scrollableDivRef.current;
       if (scrollableDiv) {
         const { scrollTop, clientHeight, scrollHeight } = scrollableDiv;
@@ -335,6 +335,7 @@ const AllEvents = ({
 
           // If no more events are fetched, stop further fetching
           if (newLength === prevLength) {
+            console.log("sdfsdfsdf____________________________________________________@@2222222222222222222222222222222")
             setHasMore(false);
           }
         };
@@ -879,20 +880,19 @@ const AllEvents = ({
     const customizedFormData = new FormData();
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventIds);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
     //   method: "POST",
     //   body: customizedFormData,
     // });
-
     const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
         fetchEvents(0, "update").then(() => {
-          // window.location.reload();
+          window.location.reload();
         });
       }
       // fetchEvents(0, "update");
@@ -912,7 +912,7 @@ const AllEvents = ({
     };
     // const updatedIds = eventIds.join(',')
     customizedFormData.append("widgetId", widgetId);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
     //   method: "POST",
@@ -952,7 +952,6 @@ const AllEvents = ({
     setSelectedOption(option);
   };
 
-  console.log("fetchedAllEvents", fetchedAllEvents);
   return (
     <div className={styles.body} ref={scrollableDivRef}>
       <div className={styles.headerContainer}>
@@ -1140,7 +1139,7 @@ const AllEvents = ({
 
                   </div>
                   <div className={styles.tags}>
-                    {event.mainEvent.eventType === "MAIN" ? (
+                    {event.mainEvent.eventType === "PARENT" ? (
                       <span className={styles.mainEventTag}>Main Event</span>
                     ) : (
                       <span className={styles.subEventTag}>Side Event</span>

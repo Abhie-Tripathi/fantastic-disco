@@ -5,7 +5,7 @@ import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
-// import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventEntrySelector from "@/components/search/eventEntry";
 import EventFormatSelector from "@/components/search/eventFormat";
@@ -40,7 +40,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
@@ -49,6 +48,7 @@ import EventCount from "@/components/search/eventCount";
 import { isEventeli } from "@/config";
 import Alerts from "@/components/search/alerts";
 const Map = lazy(() => import("@/components/map"));
+import { useToast } from "@/hooks/use-toast";
 
 const Search = () => {
   const { getFilterValue, setFilter } = useFilterState();
@@ -59,6 +59,7 @@ const Search = () => {
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -115,17 +116,13 @@ const Search = () => {
     setFilter("view", value);
   };
 
-  // console.log(adaptedQueryString);
-
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
 
     if (!getFilterValue("locationIds")) {
-      toast.error("Please select location", {
-        position: "bottom-right",
-        autoClose: 2000,
-        // closeButton: false,
-        hideProgressBar: true,
+      toast({
+        title: "Please select location",
+        variant: "destructive",
       });
     } else {
       setTrackerModalOpen(true);
@@ -169,7 +166,7 @@ const Search = () => {
   const isLoading = false;
 
   return (
-    <div className="p-6">
+    <div className="px-6 pt-6">
       {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
@@ -268,9 +265,7 @@ const Search = () => {
         className="mt-0"
       >
         <div
-          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${
-            isScrolled ? "py-2" : "py-6"
-          }`}
+          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3`}
         >
           <EventCount />
           <div className="flex justify-center">
@@ -316,7 +311,9 @@ const Search = () => {
                 Export
               </span>
             </Button>
-            {(view === "table" || view === "list" || view == "") && <SortDropdown />}
+            {(selectedView === "list" ||
+              selectedView === "table" ||
+              selectedView == "") && <SortDropdown />}
           </div>
         </div>
 
@@ -338,10 +335,10 @@ const Search = () => {
         </TabsContent>
       </Tabs>
 
-      {/* <CreateTrackerDialog
+      <CreateTrackerDialog
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
-      /> */}
+      />
     </div>
   );
 };

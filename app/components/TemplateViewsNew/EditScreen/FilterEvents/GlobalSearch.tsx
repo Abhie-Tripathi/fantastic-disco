@@ -14,15 +14,16 @@ interface Props {
   widgetId: string;
   handlePrefillGlobalEvent?: (event: GolbalEventType) => void;
   handleChange?: (field: keyof FormState, value: any) => void;
+  formTheme? : string;
 }
 
-const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Props) => {
+const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange, formTheme }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [dataDropdown, setDatadropdown] = useState<boolean>(false);
   const [searchData, setSearchData] = useState<any[]>([]);
   const dropdownRef = useOutsideClick(() => setDatadropdown(false));
 
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -73,7 +74,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
   const handleSearchInput = async (text: string) => {
     if (text) {
       const { data, error } = await myFetch(
-        `${baseUrl}/event/suggestion?name=${text}`
+        `${baseUrl}/promot-event?views=suggestion&name=${text}`
       );
       if (error) {
         console.log(error);
@@ -100,25 +101,17 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
   };
 
   return (
-    <div
-      className={styles.searchContainer}
-      style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }}
-      ref={dropdownRef}
-    >
+    <div className={`${styles.searchContainer} ${formTheme ? formTheme === "dark" ? "bg-[#212121]" : "bg-[#f7f7f9]" : "bg-[var(--heading-background-color)]"} `} ref={dropdownRef}>
       <input
         type="text"
         placeholder="Search for events"
         onChange={(e) => setSearchValue(e.target.value)}
         value={searchValue}
-        style={{
-          color: theme === "light" ? "black" : "white",
-          backgroundColor: theme === "light" ? "white" : "#131313",
-        }}
+        className={`text-[var(--primary-text-color)] ${formTheme ? formTheme === "dark" ? "bg-[#131313]" : "bg-[#ffffff]" : "bg-[var(--primary-foreground)]"} ]`}
       />
       {dataDropdown && (
         <div
-          className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown
-            }`}
+          className={`${styles.dropdownContainer} shadow-md bg-[var(--primary-foreground)]`}
         >
           {searchData.length > 0 ? (
             searchData.map((event) => (
@@ -134,20 +127,6 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
 
                 {event.data.isMicroServiceData && (
                   <div className={styles.buttons}>
-                    {/* <div
-                      className={styles.button}
-                      data-name="Add Event"
-                      
-                    >
-                      <Addevent />
-                    </div> */}
-                    {/* <div
-                      className={styles.button}
-                      data-name="Add Event to widget"
-                      onClick={() => handleClickEvent(event, "widget")}
-                    >
-                      <AddeventToWidget />
-                    </div> */}
                     <Image src={logo} alt="logo" width={15} height={15} />
                   </div>
                 )}

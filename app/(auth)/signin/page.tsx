@@ -1,36 +1,27 @@
 "use client";
-import React, { useState, FormEvent, useEffect } from "react";
-import styles from "./page.module.css";
-import Image from "next/image";
-import Carousel from "@/app/components/carousel";
-import { useAuthContext } from "@/context";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { SignInFormSchema, SignInWithOTPSchema } from "@/types";
-import { ZodError } from "zod";
-import Visibility from "../../../public/visibility.svg";
-import VisibilityOff from "../../../public/visibilityOff.svg";
-// import logo from "/public/Logo_Light mode.png";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
-// import Verification from "../verification/page";
-import { showToast } from "@/utils/showToast";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { useAuthContext } from "@/context";
+import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
+import GoogleIcon from "/public/google.svg";
+import LinkedinIcon from "/public/linkedin.svg";
+import { signIn, useSession } from "next-auth/react";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
   const { signin, error, isLoading, setError } = useAuthContext();
+  // const { data, status } = useSession();
+  // console.log(data, status);
 
   const {
     control,
@@ -43,7 +34,6 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInData) => {
     try {
-      sessionStorage.setItem("userEmail", data.email);
       sessionStorage.setItem("flow", "signIn");
       await signin(data);
     } catch (error) {
@@ -62,10 +52,29 @@ export default function SignInForm() {
   }, [errors.email?.message]);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
-      <p className="font-semibold text-lg leading-6 text-center">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
+      {/* <div className="flex flex-col gap-4 w-96 mx-auto">
+        <Button
+          onClick={() => signIn("google", { callbackUrl: "/internal" })}
+          variant={"outline"}
+          className="flex items-center justify-between"
+        >
+          <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+          <span className="flex-1">Continue with Google</span>
+        </Button>
+        <Button
+          onClick={() => signIn("linkedin")}
+          variant={"outline"}
+          className="flex items-center"
+        >
+          <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+          <span className="flex-1">Continue with LinkedIn</span>
+        </Button>
+      </div>
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"

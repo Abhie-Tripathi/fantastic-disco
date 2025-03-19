@@ -75,6 +75,7 @@ const Profile = () => {
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const { getMyProfileData, updateMyProfileData, error } = useProfileServices();
+  console.log("dfsdfsdfsdf",profileData,user)
   const fetchData = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
     const data: any = await getMyProfileData();
@@ -85,13 +86,18 @@ const Profile = () => {
     }
 
     if (data) {
-      setProfileData(data.user);
-      setName(data.user.firstname + " " + data.user.lastname);
-      setMobileNo(data.user.phoneNumber || "");
-      setDept(data.user.department || "");
-      setRole(data.user.designation || "");
-      setProfilePicture(data.user.profilePicture || null);
-      setProfilePic(data.user.profilePicture || null);
+      setProfileData(data);
+      if(data.lastname !==null){
+        setName(data.firstname + " " + data.lastname);
+      }else{
+        setName(data.firstname);
+      }
+     
+      setMobileNo(data.phoneNumber || "");
+      setDept(data.department || "");
+      setRole(data.designation || "");
+      setProfilePicture(data.profilePicture || null);
+      setProfilePic(data.profilePicture || null);
     }
   };
 
@@ -165,27 +171,28 @@ const Profile = () => {
       formData.append("firstname", splitName[0]);
       if (splitName[1]) {
         formData.append("lastname", splitName.slice(1).join(" "));
+      }else{
+        formData.append("lastname", "");
       }
       formData.append("phoneNumber", mobileNo);
       // formData.append("designation", role);
-      formData.append("department", dept);
-      if (picFile !== null) {
-        formData.append("file", picFile);
-      }
+      // formData.append("department", dept);
+      // if (picFile !== null) {
+      //   formData.append("file", picFile);
+      // }
 
       // Save data
       setIsSaving(true);
       const data: any = await updateMyProfileData({ formData });
       if (data) {
-        // Update state and storage
-        setProfileData(data.user);
         showToast("success", "Data saved successfully");
+        setProfileData(data.user);
         fetchData();
 
         const newUser = {
           ...user,
-          firstname: data.user.firstname || user!.firstname,
-          lastname: data.user.lastname || user!.lastname,
+          firstname: data.user.firstname || "",
+          lastname: data.user.lastname || "",
           profilePicture:data.user.profilePicture
 
         };
@@ -242,8 +249,8 @@ const Profile = () => {
     formData.append("lastname", splitName[1]);
     formData.append("phoneNumber", mobileNo);
     // formData.append("designation", role);
-    formData.append("department", dept);
-    formData.append("removePicture", "true");
+    // formData.append("department", dept);
+    // formData.append("removePicture", "true");
     const data: any = await updateMyProfileData({ formData });
     if (data) {
       const newUser = {
@@ -319,6 +326,7 @@ const Profile = () => {
                         onClick={() => {
                           handleUploadClick();
                         }}
+                        disabled
                       >
                         <Upload className="mr-2 h-4 w-4" />
                         Upload Image
@@ -327,6 +335,7 @@ const Profile = () => {
                         variant="outline"
                         size="sm"
                         onClick={handleRemove}
+                        disabled
                       >
                         Remove
                       </Button>
@@ -346,7 +355,8 @@ const Profile = () => {
                       handleProfileInputChange(
                         setName,
                         e.target.value,
-                        profileData?.firstname
+                        // profileData?.firstname,
+                        profileData?.firstname&&profileData.lastname
                       )
                     }
                   />
@@ -384,7 +394,7 @@ const Profile = () => {
                 </div>
 
                 {/* <div className="grid gap-4 sm:grid-cols-2"> */}
-                <div className=" w-100 sm:grid-cols-2">
+                {/* <div className=" w-100 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="department">Department</Label>
                     <Select
@@ -403,7 +413,7 @@ const Profile = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  {/* <div className="space-y-2">
+                  <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
                     <Select
                       onValueChange={(value) => {
@@ -420,8 +430,8 @@ const Profile = () => {
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                  </div> */}
-                </div>
+                  </div>
+                </div> */}
 
                 {/* <Button>Save Changes</Button> */}
                 <Button
@@ -429,7 +439,7 @@ const Profile = () => {
                   className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-ring ${
                     !isProfileInfoChange || isSaving
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-primary text-primary-foreground hover:bg-primary"
                   }`}
                   disabled={!isProfileInfoChange || isSaving}
                 >

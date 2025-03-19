@@ -11,8 +11,8 @@ interface Props {
 export default function PeopleFilter({ filterName }: Props) {
   const placeholder =
     filterName === "userSocialLink"
-      ? "Name"
-      : "LinkedIn Profile";
+      ? "LinkedIn Profile"
+      : "Name";
   const { localFilters, setLocalFilter, getLocalFilterValue } =
     useFilterContext();
 

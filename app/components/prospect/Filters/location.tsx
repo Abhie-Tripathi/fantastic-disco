@@ -44,7 +44,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   } = useFilterContext();
 
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
+    const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
     const ids = localFilters?.[filterName]?.length
       ? localFilters?.[filterName]?.split(",")
       : [];
@@ -98,11 +98,14 @@ export default function LocationSelector({ filterName }: LocationProps) {
         radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
       replaceLocalFilter(
         "locationIds",
-        "geoCoordinates",
+        "viewBound",
         JSON.stringify({
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
+          boundType: "point",
+          coordinates: {
+            latitude: geoLocation.lat,
+            longitude: geoLocation.lng,
+            radius: radiusInKm,
+          },
         })
       );
       saveLastSearchedLocation(geoLocation);
@@ -112,13 +115,13 @@ export default function LocationSelector({ filterName }: LocationProps) {
       selectedLocation.length > 0
     ) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         filterName,
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
       saveLastSearchedLocation(selectedLocation);
     } else {
-      deleteMultipleLocalFilters([filterName, "geoCoordinates"]);
+      deleteMultipleLocalFilters([filterName, "viewBound"]);
       clearLastSearchedLocation();
     }
     setIsOpen(false);
@@ -130,7 +133,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
         defaultOpen
         multiple
         type="LocationId"
-        placeholder="E.g. Bangalore, Karnataka"
+        placeholder="E.g. Bengaluru, Karnataka"
         onSelect={setSelectedLocation}
         value={
           selectedLocation && Array.isArray(selectedLocation)

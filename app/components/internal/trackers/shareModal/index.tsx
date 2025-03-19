@@ -3,8 +3,9 @@ import styles from './shareModal.style.module.css';
 import Account from '/public/account.svg';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { showToast } from "@/utils/showToast";
+// import { showToast } from "@/utils/showToast";
 import { baseUrl } from '@/constants';
+import { useToast } from "@/hooks/use-toast";
 import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
@@ -13,7 +14,7 @@ interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal?: () => void;
  
-  id: string;
+  id?: string;
   setId?: any;
   shareFunction?: () => void;
   share?: boolean;
@@ -32,6 +33,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
+     const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
@@ -75,31 +77,34 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, [filter, data]);
         useEffect(() => {
             if (typeof window !== 'undefined') {
-                const url = window.location.href;
+                const url = window.location.origin;
                 const baseUrl = url.substring(0, url.lastIndexOf('/'));
-                setCurrentUrl(`${baseUrl}/trackedEvents?type=${type}`);
+                setCurrentUrl(`${url}`);
             }
         }, []);
         const handleFilterChange = (e: any) => {
             setFilter(e.target.value);
-            setId('');
+            setId?.('');
         };
         const shareInvite = async () => {
-            const formData = {
-                accessEntity: "tracker",
-                accessEntityId: path[path.length - 2],
-                entityType: "employee",
-                entityId: id,
-                accessLevel: "EDIT",
-                expiry:"",
-                redirectUrl: `${currentUrl}`
-            };
-            console.log(formData);
-            if(id){
+            // const formData = {
+            //     accessEntity: "tracker",
+            //     accessEntityId: path[path.length - 2],
+            //     entityType: "employee",
+            //     entityId: id,
+            //     accessLevel: "EDIT",
+            //     expiry:"",
+            //     redirectUrl: `${currentUrl}`
+            // };
+            const formData={
+                accessReceiverEmail: filter,
+                accessType: "admin",
+                redirectDomain: currentUrl
+            }
               
             
             try {
-                const result= await shareTrackerInvite(formData);
+                const result= await shareTrackerInvite(formData, path[path.length - 2]);
 
                 GAEvent(
                                         "trackers",
@@ -107,11 +112,15 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                         "Share",
                                         "Invite"
                                       );
-                                      showToast("success","Tracker shared successfully!")
-                                      fetchAccess();
+                                      toast({
+                                        title: "Success",
+                                        description: "Tracker shared successfully!",
+                                        variant: "default",
+                                      });
+                                      fetchAccess?.();
                                       if(shareFunction)
                                       shareFunction();
-                                      setId('');
+                                      setId?.('');
                                       setIsClicked(false);
                                       setFilter('');
                                     if(setAccessData)
@@ -119,80 +128,34 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                 console.log(isLoading);
                                 
             } catch (error:any) {
-                console.error('Error fetching data:', error);
-                            showToast("error",error.response);
-                            fetchAccess();
+                            toast({
+                                title: "Error",
+                                description: error.message,
+                                variant: "destructive",
+                              });
+                            fetchAccess?.();
                               setFilter('');
                               setIsClicked(false);
                               if(shareFunction)
                               shareFunction();
             }
-            }
-        }
-        const shareNewInvite=async()=>{
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          const formData = 
-            {
-              firstname:filter.substring(0,filter.lastIndexOf('@')),
-            lastname:"",
-                email: filter
-          };
-        if(emailRegex.test(filter)){
-            
-        // try{
-        //     const result= await createNewAccess(formData);
-        // }catch(error){
-
-        // }
-        const result= await createNewAccess(formData);
-        if(result){
-            setId(result.user.id);
-        }
-        
-        // try {
-        //     const { data, error } = await myFetch(url, {
-        //         method: 'POST',
-        //         body: JSON.stringify(formData),
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     });
-        //     if (error) {
-        //         console.error('Error fetching data:', error);
-        //         showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
-        //         setFilter("");
-        //     } else {
-        //         console.log(data.user.id);
-        //         setId(data.user.id);
-        //         // setData(data);
-        //     }
-        // } catch (err) {
-        //     console.error('Fetch failed:', err);
-        // }
-        } else {
-            showToast("error", "Enter Valid Name or Email");
-            setFilter('');
-            setIsClicked(false);
-            
-        }
-
-        // setId("");
+            // }
         }
         const saveShareInvite = (id: string, name: string, email:string) => {
-            setId(id);
+            setId?.(id);
             setFilter(name);
             setFilteredData([]);
             setDrop(false);
         }
         const shareInvites=()=>{
             setIsClicked(true);
-            if(id.length===0){
-                shareNewInvite();
-            }
+            // if(id.length===0){
+            //     shareNewInvite();
+            // }
         }
         useEffect(() => {
             
-            if (id && isClicked) {
+            if (isClicked) {
                 shareInvite();
                 if(closeShareModal)
                 closeShareModal();
@@ -200,8 +163,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, [id, isClicked]);
         useEffect(() => {
             if (error) {
-              console.error('API Error:', error); // This logs the error from `useApi`'s state.
-              showToast('error', error.message || 'An error occurred'); // Display error in toast
+              console.error('API Error:', error);
             }
           }, [error]);  
         

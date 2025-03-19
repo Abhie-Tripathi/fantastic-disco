@@ -94,22 +94,22 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
               <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
             <div className={styles.dateContainer}>
               {
-                fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt='' /></> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
+                fetchedAddedEvents![0]?.eventType === "CHILD" ? <><Image src={POP} alt='' /></> : fetchedAddedEvents![0]?.eventType === "PARENT" && fetchedAddedEvents![0].event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "PARENT" && fetchedAddedEvents![0].event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "PARENT" && fetchedAddedEvents![0].event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
               }
             </div>
             <div className={styles.line}></div>
             <div className={styles.name_locationContainer}>
-              <div className={styles.locationContainer}>
+              <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={fetchedAddedEvents![0] && `${fetchedAddedEvents![0]?.cityName}, ${fetchedAddedEvents![0]?.countryName}`}>
                 <LocationIcon color={fontSettings?.subheading.fontColor || "black"} iconSize={fontSettings?.subheading.fontSize || 14}/>
                 <div className={`${styles.location} ${styles.truncate}`} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
               </div>
-              <div className={styles.eventName} data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
+              <div className={styles.eventName} data-name={fetchedAddedEvents![0] && fetchedAddedEvents![0].name } style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
             </div>
           </div>
           <div className={styles.dateRange_typeContainer}>
             <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : demoDate}</div>
-            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].event_type : "Tradeshow"}</div>
-            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].eventFormat : "In-Person"}</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].event_type : "Tradeshow"}</div>
+            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].eventFormat : "In-Person"}</div>
           </div>
           <div className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         </div>

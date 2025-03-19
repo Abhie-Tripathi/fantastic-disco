@@ -18,6 +18,8 @@ import { GAEvent } from "@/utils/GAEvent";
 import ShareWidget from "../ShareWidget";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useTrackerContext } from "@/context/tracker";
+import { Button } from "@/components/ui/button";
+import { Share2 } from "lucide-react";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
   const {data: item}=useTrackerContext();
@@ -198,12 +200,12 @@ const formatCount = (count: number ) => {
       <Loading/>
       </div>
     } */}
-      {item?.tracker ? (
+      {item ? (
         <div className="flex flex-col w-full gap-2">
         <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>
 
           <div className={styles.cardOne}>
-            <div className="font-semibold">{item?.tracker?.name}</div>
+            <div className="font-semibold">{item?.name}</div>
             {/* <div className={styles.heading}>one</div> */}
             {/* <Image src={GoTo} alt="goTo" /> */}
           </div>
@@ -229,7 +231,7 @@ const formatCount = (count: number ) => {
                 New
               </div> */}
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new)}
+                    {formatCount(item?.groupedEventsCount?.new)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore6} alt="newVector" width={10} height={10}/>
@@ -242,7 +244,7 @@ const formatCount = (count: number ) => {
                 Active
               </div> */}
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active)}
+                    {formatCount(item?.groupedEventsCount?.active)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
@@ -252,7 +254,7 @@ const formatCount = (count: number ) => {
               <div className="flex gap-5">
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired)}
+                    {formatCount(item?.groupedEventsCount?.past)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
@@ -260,7 +262,7 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.tracker?.savedEventTotalCount)}
+                    {formatCount(item?.savedEventsCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
@@ -275,7 +277,11 @@ const formatCount = (count: number ) => {
           
         </div>
         {/* <ShareWidget/> */}
-        <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
+        <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Share2 width={16} height={16}/>
+          Share 
+          </Button>
+        {/* <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div> */}
         {share && 
         <div className={styles.shareModal} onClick={closeModal}>
           <ShareModal id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>

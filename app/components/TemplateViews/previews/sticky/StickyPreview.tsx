@@ -108,7 +108,7 @@ const StickyPreview = ({
   const eventType = fetchedAddedOtherData[0]?.eventType;
   return (
     <>
-      {eventType === "MAIN" ? (
+      {eventType === "PARENT" ? (
         <div className={styles.preview}>
           <div
             className={type === "top" ? styles.stickyTop : styles.stickyFooter}
@@ -129,7 +129,7 @@ const StickyPreview = ({
             />
           </div>
         </div>
-      ) : eventType === "SUB" ? (
+      ) : eventType === "CHILD" ? (
         // <div className={styles.preview}>
           <div
             className={type === "top" ? styles.stickyTop : styles.stickyFooter}

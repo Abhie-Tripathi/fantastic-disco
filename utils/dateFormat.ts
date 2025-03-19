@@ -187,11 +187,11 @@ export const renderFormattedDates = (startDate: string, endDate: string) => {
   const isSameYear = start.getFullYear() === end.getFullYear();
 
   if (isSameMonth && isSameYear) {
-    return `${format(start, "dd")} - ${format(end, "dd MMM yyyy")}`;
+    return `${format(start, "dd")} - ${format(end, "dd MMM, yyyy")}`;
   } else if (!isSameMonth && isSameYear) {
-    return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
+    return `${format(start, "dd MMM")} - ${format(end, "dd MMM, yyyy")}`;
   } else {
-    return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`;
+    return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM, yyyy")}`;
   }
 };
 

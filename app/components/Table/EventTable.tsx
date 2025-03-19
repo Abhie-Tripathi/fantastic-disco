@@ -1,39 +1,145 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
 import { EventTableRow } from "./EventTableRow";
 import { useEvents } from "@/hooks/useEvents";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
 import ZeroState from "@/components/zerostate";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
-
-const EventTable = () => {
-  const { searchParams, getFilterValue, setMultipleFilters } = useFilterState();
-
+import { useTrackerContext } from "@/context/tracker";
+import { useFilterContext } from "@/context/filterContext";
+interface EventTableProps {
+  trackerId?: string;
+  source?: string;
+  eventType?: string;
+  view?: string;
+}
+const EventTable = ({
+  source,
+  trackerId,
+  eventType,
+  view,
+}: EventTableProps) => {
+  // const { theme } = useTheme();
+  const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
+    useFilterState();
+  const { localFilters } = useFilterContext();
+  const { data } = useTrackerContext();
+  const [interest, setInterest] = useState();
+  const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
-
-  const { events, totalEvents, isLoading, error } = useEvents.list(query);
+  delete query.show;
+  console.log(trackerId);
+  let events, totalEvents, isLoading, error;
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
+  if (source === "tracker") {
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+      query,
+      trackerId,
+      view
+    ));
+  } else {
+    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+  }
+  // console.log(isLoading);
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings",
+  };
+  let showsData: string[] = [];
+  Object.entries(mapping).forEach(([key, value]) => {
+    if (data?.filterValues?.show?.includes(key)) {
+      showsData.push(value);
+    }
+  });
+  // console.log(show.join(","));
+  // if(showsData.length>0){
+  //   setLocalFilter("show",showsData?.join(","))
+  // setFilter("show",showsData?.join(","));
+  // }
+  // console.log(data.filterValues.show);
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-  const showValues: Show[] = getFilterValue("show")
+  let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-
+  if (source === "tracker") {
+    showValues = showsData
+      .filter(Boolean)
+      .map((show) => Show[show as keyof typeof Show]);
+  }
   const handlePageChange = (page: number) => {
     setMultipleFilters({
       offset: ((page - 1) * itemsPerPage).toString(),
       limit: itemsPerPage.toString(),
     });
   };
+  useEffect(() => {
+    if (events?.length > 0) {
+      setUpdatedEvents(events);
+    }
+  }, [events]);
+
+  useEffect(() => {
+    if (!events) return;
+
+    setUpdatedEvents((prevEvents) => {
+      let newEvents = prevEvents ? [...prevEvents] : [...events];
+
+      if (query.eventType === "bookmarked") {
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
+      } else {
+        newEvents = newEvents.map((event: Event) => {
+          if (event.basic.id === eventId) {
+            return {
+              ...event,
+              interests: interest
+                ? (
+                    Object.keys(interest) as Array<keyof typeof event.interests>
+                  ).reduce(
+                    (acc, key) => {
+                      if (event.interests?.[key]) {
+                        delete acc[key];
+                      } else {
+                        acc[key] = interest[key];
+                      }
+                      return acc;
+                    },
+                    { ...event.interests }
+                  )
+                : {},
+            };
+          }
+          return event;
+        });
+      }
+
+      return newEvents;
+    });
+  }, [eventId, interest]);
+
+  console.log(events); // Now it will print correctly
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -42,29 +148,73 @@ const EventTable = () => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
-    return <ZeroState text={(error as ApiError).message} />;
+    if (source === "tracker") {
+      return (
+        <NullState
+          image={TrackerNullState}
+          title={(error as ApiError).message}
+        />
+      );
+    } else return <ZeroState text={(error as ApiError).message} />;
   }
 
   if (events.length === 0) {
-    return <ZeroState text="No events found" />;
+    if (source === "tracker") {
+      if (query.eventType === "bookmarked") {
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
+          />
+        );
+      } else
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="We couldn't find any events matching your tracker criteria at the moment."
+            text="Try adjusting your filters or checking back later, as new events are added frequently."
+            buttonText="Manage Configurations"
+            buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
+          />
+        );
+    } else return <ZeroState text="No events found" />;
   }
+  console.log(events);
 
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-        <div className="overflow-auto max-h-[calc(100vh-264px)]">
+        <div
+          className={`overflow-auto ${
+            view === "global"
+              ? "h-[calc(100vh-165px)]"
+              : "max-h-[calc(100vh-198px)]"
+          }`}
+        >
           <Table>
-            <EventTableHeader show={showValues} />
+            <EventTableHeader
+              show={showValues}
+              type={query.type}
+              view={query.eventType}
+              localFilters={localFilters}
+            />
             <TableBody>
-              {events.map((event: Event) => (
+              {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow
+                  global={view}
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
+                  type={query.type}
                   key={event.basic.id}
                   event={event}
                   show={showValues}
+                  localFilters={localFilters}
+                  trackerId={trackerId}
                 />
               ))}
             </TableBody>
@@ -72,18 +222,16 @@ const EventTable = () => {
         </div>
       </div>
 
-      {totalPages > 1 && (
-        <div className="sticky bottom-0 bg-background py-4">
-          <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            itemsPerPage={itemsPerPage}
-            count={totalEvents}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
-        </div>
-      )}
+      <div className="sticky bottom-0 bg-background py-3">
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          count={totalEvents}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      </div>
     </div>
   );
 };

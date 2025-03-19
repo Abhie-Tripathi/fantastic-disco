@@ -29,6 +29,7 @@ const Page = () => {
   const {getAllGuest, getGuestCount,error} = useIntendServices()
   const [goingGuests, setGoingGuests] = useState<number>(0)
   const [notgoingGuests, setNotgoingGuests] = useState<number>(0)
+  const [rejectedGuests, setRejectedGuests] = useState<number>(0)
   const [pendingGuests, setPendingGuests] = useState<number>(0)
   const [followingGuests, setFollowingGuests] = useState<number>(0)
   const [waitlistGuests, setWaitlistGuests] = useState<number>(0)
@@ -46,7 +47,6 @@ const Page = () => {
   useEffect(() => {
     setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
     // console.log("data", fetchedEvent)
-    console.log("register value ", fetchedEvent?.registration)
     fetchCounts()
   }, [fetchedEvent])
 
@@ -146,6 +146,9 @@ const Page = () => {
             case "REJECTED":
               setNotgoingGuests(stat.count);
               break;
+            case "CANCELLED":
+              setRejectedGuests(stat.count);
+              break;
             case "PENDING":
               setPendingGuests(stat.count);
               break;
@@ -192,7 +195,7 @@ const Page = () => {
       </div>
       <div className={styles.guestBar}>
         <div className={styles.heading}>At a Glance</div>
-        <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} invitedGuests={invitedGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity={fetchedEvent?.capacity} />
+        <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} rejectedGuests={rejectedGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} invitedGuests={invitedGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity={fetchedEvent?.capacity} />
       </div>
       <GuestList fetchGuests={fetchGuests} filterStatus={filterStatus} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
 

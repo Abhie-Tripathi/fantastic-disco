@@ -3,7 +3,6 @@ export type EventSearchParams = {
   status?: string;
   eventTypes?: string;
   locationIds?: string;
-  geoCoordinates?: string;
   event_rank_gte?: string;
   event_rank_lte?: string;
   local_rank_gte?: string;

@@ -1,12 +1,4 @@
 "use client";
-import { Event, OverallRankingsDetail, TTabs } from "@/types/events";
-import { EventRank } from "./eventRank";
-import { InformationFill } from "geist-icons";
-import Text from "../new-ui/Text";
-import { CircularProgressBar } from "../eventDetail/circularProgressBar";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
-import { Heading } from "../eventDetail/heading";
 import {
   Tooltip,
   TooltipContent,
@@ -14,47 +6,38 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
+import { Event, OverallRankingsDetail, TTabs } from "@/types/events";
+import { Dispatch, SetStateAction, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
+import { CircularProgressBar } from "../eventDetail/circularProgressBar";
+import { Heading } from "../eventDetail/heading";
 import Restriction from "../eventDetail/restriction";
+import Text from "../new-ui/Text";
+import { EventRank } from "./eventRank";
 interface Props {
   eventDetails: Event;
   eventRankingDetails: OverallRankingsDetail;
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
-// export interface RankingDetail {
-//   above5CountryEvent: countryRank[] | [];
-//   below5CountryEvent: countryRank[] | [];
-//   above5CategoryEvent: categoryRank[] | [];
-//   below5CategoryEvent: categoryRank[] | [];
-//   above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-//   below5CountryCategoryEvent: countryCategoryRank[] | [];
-// }
 export const InsightsAndScores = ({
   eventDetails,
   eventRankingDetails,
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const {
-    scores,
-    economicImpact,
-    rankings,
-    economicImpactBreakdown,
-    trustScore,
-  } = (eventDetails && eventDetails.insights) || {};
+  const { scores, economicImpact, economicImpactBreakdown, trustScore } =
+    (eventDetails && eventDetails.insights) || {};
   const estimatedEconomicImpact = parseFloat(
     economicImpact?.replace(/[$,]/g, "") ?? "0"
   );
+  const filteredScores =
+    scores &&
+    Object.fromEntries(
+      Object.entries(scores).filter(([key, _]) => key !== "impactScore")
+    );
   const roundedEstimatedEconomicImpact =
     estimatedEconomicImpact && Math.ceil(estimatedEconomicImpact);
-  // const rankings: RankingDetail = {
-  //   above5CategoryEvent: above5CategoryEvent,
-  //   below5CategoryEvent: below5CategoryEvent,
-  //   above5CountryEvent: above5CountryEvent,
-  //   below5CountryEvent: below5CountryEvent,
-  //   above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
-  //   below5CountryCategoryEvent: below5CountryCategoryEvent,
-  // };
   const { morphedData } = useFilterContext();
   const { eventAnalytics, eventRanking } = morphedData || {};
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
@@ -64,7 +47,7 @@ export const InsightsAndScores = ({
       morphedData.economicImpact &&
       morphedData.economicImpact.isEnabled) ||
     true;
-  const [ref, inView, entry, rootMargin] = useInView({
+  const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: false,
   });
@@ -82,24 +65,24 @@ export const InsightsAndScores = ({
       />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
-          {((scores &&
-            Object.values(scores).every((value) => value !== null)) ||
+          {((filteredScores &&
+            Object.values(filteredScores).some((value) => value !== null)) ||
             (trustScore !== null && trustScore != null && trustScore > 0)) && (
             <div
-              className={`w-1/2 grid ${
+              className={`grid ${
                 economicImpact &&
                 economicImpact.trim() !== "" &&
                 economicImpactBreakdown &&
                 Object.keys(economicImpactBreakdown).length > 0
-                  ? "w-1/2 grid-cols-2 grid-rows-2"
-                  : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
+                  ? "w-1/2 grid-cols-2 grid-rows-subgrid xl:grid-rows-2"
+                  : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
               }  gap-6 max-xl:w-full`}
             >
               <>
-                {scores &&
+                {/* {scores &&
                   scores.impactScore !== 0 &&
                   scores.impactScore !== null && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -121,11 +104,11 @@ export const InsightsAndScores = ({
                         <Restriction />
                       )}
                     </div>
-                  )}
+                  )} */}
                 {trustScore !== null &&
                   trustScore !== undefined &&
                   trustScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -154,7 +137,7 @@ export const InsightsAndScores = ({
                 {scores &&
                   scores.inboundScore !== null &&
                   scores.inboundScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -180,7 +163,7 @@ export const InsightsAndScores = ({
                 {scores &&
                   scores.internationalScore !== null &&
                   scores.internationalScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -215,14 +198,16 @@ export const InsightsAndScores = ({
             Object.keys(economicImpactBreakdown).length > 0 && (
               <div
                 className={`${
-                  (scores &&
-                    Object.values(scores).every((value) => value === null)) ||
+                  (filteredScores &&
+                    Object.values(filteredScores).some(
+                      (value) => value !== null
+                    )) ||
                   (trustScore !== null &&
                     trustScore !== undefined &&
                     trustScore > 0)
                     ? "w-1/2"
                     : "w-fill"
-                } border border-[#EBEBEB] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
+                } border border-[#EBEBEB] dark:border-[var(--border-color)] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
@@ -254,7 +239,7 @@ export const InsightsAndScores = ({
                 </div>
                 {economicImpactEnabled && (
                   <div className="mt-8">
-                    <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
+                    <div className="pb-2 border-b border-[#EBEBEB] flex justify-between dark:border-[var(--border-color)]">
                       <Text
                         variant="noMargin"
                         size="small"
@@ -295,11 +280,10 @@ export const InsightsAndScores = ({
               </div>
             )}
         </div>
-        {/* <EventRank
-          rankings={rankings}
+        <EventRank
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
-        /> */}
+        />
       </div>
     </div>
   );

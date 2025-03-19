@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Suspense, lazy } from "react";
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
+import Text from "@/components/new-ui/Text";
+import PredictedAttendance from '@/public/predictedAttendanceBg.svg'
+import PredictedSpend from "@/public/icons_money.svg";
 import BookmarkBackground from '@/public/BookmarkBackground.svg'
 import NotesBackground from "@/public/NotesBackground.svg"
 import AccessBackground from '@/public/AccessBackground.svg'
@@ -115,17 +118,15 @@ function Bookmark({ fillColor }: { fillColor: string }) {
 import { GAEvent } from "@/utils/GAEvent";
 import { useTheme } from "@/context";
 import { Step } from "react-joyride";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
-import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
-import ShareModal from "@/app/components/internal/trackers/shareModal";
+import { useRouter, useSearchParams } from "next/navigation";
 import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
+import { MoveUpRight } from "lucide-react";
 
 interface Search {
   searchParams: {
@@ -136,7 +137,9 @@ const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
   const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
   const router=useRouter();
+  const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
+  const [activeType, setActiveType]=useState("");
   const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
@@ -179,7 +182,6 @@ const Trackers = ({ searchParams }: Search) => {
   const [singleTrackerData,setSingleTrackerData]=useState<Tracker | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUrl, setCurrentUrl] = useState('');
-  const {getSavedEvents}=useTrackerServices();
   const {getNotesFromTracker}=useNotesServices();
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
@@ -218,7 +220,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setHideTemplate(!hideTemplate);
   // };
   const [hideTemplate, setHideTemplate] = useState<boolean>(!getFilterValue("showTemplates") || true);
-  const [dataPresent, setDataPresent] = useState(true);
+  const [dataPresent, setDataPresent] = useState(false);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
@@ -226,11 +228,10 @@ const Trackers = ({ searchParams }: Search) => {
   const [isData, setIsData] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(
-        `${baseUrl}/tracker/exist`
-      );
+      const data= await getTrackers(`offset=0&limit=0&type=trackers`);
+      
       if (data) setIsLoading(false)
-      if (data.trackerExists) {
+      if (data?.count) {
         // setHideTemplate(false);
         setIsData(true)
       }
@@ -301,12 +302,16 @@ const Trackers = ({ searchParams }: Search) => {
       setSavedEvents(undefined);
     }
     else{
-    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
-    const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
-    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
-    const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-    const flattenedLocations = [...eventCountry, ...eventCity, ...eventZone, ...eventState];
-    setLocations(flattenedLocations);
+    // const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
+    // const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
+    // const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
+    // const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
+    if(singleTrackerData?.filterValues?.locationIds){
+      const ids = Object?.keys(singleTrackerData?.filterValues?.locationIds);
+      setLocations(ids);
+      // setLocalFilter("locationIds", ids.join(","))
+      // console.log(ids);
+    }
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -326,6 +331,7 @@ const Trackers = ({ searchParams }: Search) => {
   }
   const fetchSavedEvent=async(id:string)=>{
     const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
+    console.log(result);
     
     if(result && result?.count>0){
       setSavedEvents(result);
@@ -360,6 +366,21 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
+  useEffect(()=>{
+    if(isEventeli){
+      if((singleTrackerData?.groupedEventsCount?.business?.total??0)>0) setActiveType("business");
+      else setActiveType("social");
+    }else{
+      if((singleTrackerData?.groupedEventsCount?.active??0)>0){
+        console.log(singleTrackerData?.groupedEventsCount?.active);
+        
+        setActiveType("active");
+      }else {
+        setActiveType("past");
+      }
+    }
+  },[singleTrackerData])
+  console.log(singleTrackerData);
   
   return (
     // <div className={styles.body}>
@@ -386,11 +407,12 @@ const Trackers = ({ searchParams }: Search) => {
       <div className="flex flex-row">
   <div className="w-1/2 h-[calc(100vh-67px)]">
     <div className="flex flex-col gap-4 px-5 py-0">
-      <div className="text-sm text-[var(--secondary-text-color)] pt-5">
-        Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
+      <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
+        {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}
+        Bookmarked events and tracker lists you have created.
       </div>
       <div>
-      <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button>
+      {/* <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button> */}
       </div>
       {/* <button
         className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
@@ -398,8 +420,14 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
-      {/* <hr/> */}
-      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+      <Link href={`/internal/trackers/savedevents?view=table`}>
+      <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
+        Bookmarked Events 
+        <MoveUpRight width={16} height={16}/>
+      </div>
+      </Link>
+      <hr/>
+      {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
@@ -407,10 +435,10 @@ const Trackers = ({ searchParams }: Search) => {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-          </div>
+          </div> */}
     </div>
     <div >
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""} hideTemplates={hideTemplates} setSearchValue={setSearchValue}/>
       </div>
   </div>
   <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
@@ -421,7 +449,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           {dataPresent ? (
             <Link
-            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=activeEvent`}
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli? "social" :"active"}`}
             onClick={() => setContextData(singleTrackerData?.id)}
             >
             <Button className="text-white">View Detail</Button>
@@ -465,9 +493,11 @@ const Trackers = ({ searchParams }: Search) => {
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
     ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
+      // <NullState image={TrackerNullState}  title="Some issue with map view."/>
       <Map
         isGlobal={true}
         source="tracker"
+      eventType={activeType}
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
@@ -480,10 +510,44 @@ const Trackers = ({ searchParams }: Search) => {
     {/* )} */}
 
   </div>
+  {/* <div className="flex flex-row gap-3">
+  
+ 
+        <div className="flex w-1/2 items-stretch flex-col gap-2 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
+          <div className="flex h-[100%] justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="text-[var(--primary-color)] font-medium">
+              Predicted Attendance
+            </div>
+            <div className="font-semibold text-[var(--secondary-text-color)]">
+              123
+            </div>
+          </div>
+          <div className="flex items-center max-w-20">
+          <Image src={PredictedAttendance} alt="predictedAttendance" />
+          </div>
+        </div>
+        </div>
+        <div className="flex w-1/2 items-stretch flex-col gap-2 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
+          <div className="flex h-[100%] justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="text-[var(--primary-color)] font-medium">
+              Predicted Spend
+            </div>
+            <div className="font-semibold text-[var(--secondary-text-color)]">
+              123
+            </div>
+          </div>
+          <div className="flex items-center max-w-20">
+          <Image src={PredictedSpend} alt="predictedSpend" />
+          </div>
+        </div>
+        </div>
+  </div> */}
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=bookmarked`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 
@@ -494,7 +558,7 @@ const Trackers = ({ searchParams }: Search) => {
   />
   </div>
         </div>
-        <div className="flex flex-row gap-3 mb-8">
+        <div className="flex flex-row gap-3 mb-6">
           <div className="flex w-1/2 items-stretch">
             <NotificationWidget/>
           </div>
@@ -502,8 +566,40 @@ const Trackers = ({ searchParams }: Search) => {
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={singleTrackerData?`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`:""}/>
           </div>
         </div>
+        {/* <div className="flex flex-col gap-2 border border-[#EBEBEB] bg-[var(--primary-foreground)] p-4 mb-8">
+        <Text>Want to know more about your location insights?</Text>
+        <span className="flex items-center gap-2">
+          <InformationFill width="14px" height="14px" />
+          <Text color="secondary" variant="noMargin">
+            Check out the event trends or search for events happening in your
+            location to know more
+          </Text>
+        </span>
+        <span className="flex gap-2">
+        <Link 
+         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}
+          onClick={() => setContextData(singleTrackerData?.id)}
+        >
+        <Button variant="secondary">
+          View Detail
+        </Button>
+        </Link>
+        <Link 
+         href={`/internal/trends`}
+          >
+          <Button
+            variant="secondary"
+            // href={genLocationQuery(location, "/trends")}
+          >
+            Explore Trends
+          </Button>
+          </Link>
+          
+        </span>
+      </div> */}
         </div>
        
+
         {/* <div className="flex gap-4">
         <div className="flex w-1/2 items-stretch">
         <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
@@ -575,7 +671,7 @@ const Trackers = ({ searchParams }: Search) => {
               <div className={styles.innerContainerOne}>
                 <Image src={Add} alt="add" />
                 <Link
-                  href="/internal/trackers/create?type=CUSTOM"
+                  href="/internal/trackers/create?type=T_CUSTOM"
                   className={styles.createUrl}
                 >
                   <Button

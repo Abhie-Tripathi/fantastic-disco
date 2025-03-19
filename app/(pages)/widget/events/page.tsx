@@ -255,7 +255,7 @@
 // export default Page
 
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import TimelineItem from "@/app/components/employee/listView/TimelineItem";
 import { AllEventsType, EventsType } from "@/types/alleventtype";
@@ -363,11 +363,14 @@ const Page = () => {
   }, []);
 
   // useEffect(() => {
-  //   if (searchParams.get('fromDashboard') === 'true') {
-  //     setChoiceFormModal(true);
+  //   setPage(0);
+  //   if (activeTab === "upcoming") {
+  //     fetchUpcomingEvents(0);
+  //   } else {
+  //     fetchPastEvents(0);
   //   }
-  // }, [searchParams])
-
+  // }, [activeTab]);
+  
   // useEffect(() => {
   //   setPage(0);
   //   if (activeTab === "upcoming") {
@@ -407,68 +410,178 @@ const Page = () => {
     }
   }, [upcominFetchedEvents, pastFetchedEvents]);
 
-  useEffect(() => {
-    if (activeTab === "upcoming") {
-      console.log("this scroll function called");
-      console.log("fetched_events_____________", upcominFetchedEvents);
-      const handleScroll = () => {
-        const isAtBottom =
-          window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 50; // Adjusted offset
-        if (isAtBottom && upcominFetchedEvents.length > 0) {
-          setPage((prevPage) => prevPage + 1); // Increment page to load more events
+  // useEffect(() => {
+  //   if (activeTab === "upcoming") {
+  //     console.log("this scroll function called");
+  //     const handleScroll = () => {
+  //       const isAtBottom =
+  //         window.innerHeight + window.scrollY >=
+  //         document.body.offsetHeight - 50; // Adjusted offset
+  //       if (isAtBottom && upcominFetchedEvents.length > 0) {
+  //         setPage((prevPage) => prevPage + 1); // Increment page to load more events
+  //       }
+  //     };
+
+  //     const debounceScroll = () => {
+  //       clearTimeout(window.scrollTimeout); // Clear any existing timeout
+  //       window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+  //     };
+
+  //     window.addEventListener("scroll", debounceScroll);
+  //     return () => window.removeEventListener("scroll", debounceScroll);
+  //   }
+
+  //   if (activeTab === "past") {
+  //     console.log("this scroll function called");
+  //     const handleScroll = () => {
+  //       const isAtBottom =
+  //         window.innerHeight + window.scrollY >=
+  //         document.body.offsetHeight - 50; // Adjusted offset
+  //       if (isAtBottom && upcominFetchedEvents.length > 0) {
+  //         setPage((prevPage) => prevPage + 1); // Increment page to load more events
+  //       }
+  //     };
+
+  //     const debounceScroll = () => {
+  //       clearTimeout(window.scrollTimeout); // Clear any existing timeout
+  //       window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+  //     };
+
+  //     window.addEventListener("scroll", debounceScroll);
+  //     return () => window.removeEventListener("scroll", debounceScroll);
+  //   }
+  // }, [upcominFetchedEvents, pastFetchedEvents]);
+
+  // const [isFixed, setIsFixed] = useState(false);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const calendarElement = document.getElementById("calendar");
+  //     const scrollOffset = 150;
+  //     if (window.scrollY >= scrollOffset) {
+  //       setIsFixed(true);
+  //     } else {
+  //       setIsFixed(false);
+  //     }
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
+
+const sentinelRef = useRef<HTMLDivElement | null>(null);
+const observerRef = useRef<IntersectionObserver | null>(null);
+const isFetchingRef = useRef(false);
+
+
+// useEffect(() => {
+//   if (!sentinelRef.current) return;
+
+//   // Prevent observer from being created multiple times
+//   if (observerRef.current) observerRef.current.disconnect();
+
+//   observerRef.current = new IntersectionObserver(
+//     (entries) => {
+//       const entry = entries[0];
+
+//       if (entry.isIntersecting && !isFetchingRef.current) {
+//         isFetchingRef.current = true; // Block new requests until done
+
+//         setPage((prevPage) => {
+//           // Stop fetching if all data is loaded
+//           if (prevPage * page >= filteredUpcomingEvents.length) return prevPage;
+
+//           return prevPage + 1; 
+//         });
+
+//         setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
+//       }
+//     },
+//     { threshold: 1.0 }
+//   );
+
+//   observerRef.current.observe(sentinelRef.current);
+
+//   return () => observerRef.current?.disconnect();
+// }, [filteredUpcomingEvents]);
+
+
+useEffect(() => {
+  if (!sentinelRef.current) return;
+
+  // Prevent observer from being created multiple times
+  if (observerRef.current) observerRef.current.disconnect();
+
+  observerRef.current = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+
+      if (entry.isIntersecting && !isFetchingRef.current) {
+        isFetchingRef.current = true; // Block new requests until done
+        if(activeTab === "upcoming"){
+          setPage((prevPage) => {
+            // Stop fetching if all data is loaded
+            if (prevPage * page >= filteredUpcomingEvents.length) return prevPage;
+  
+            return prevPage + 1; 
+          });
         }
-      };
-
-      const debounceScroll = () => {
-        clearTimeout(window.scrollTimeout); // Clear any existing timeout
-        window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
-      };
-
-      window.addEventListener("scroll", debounceScroll);
-      return () => window.removeEventListener("scroll", debounceScroll);
-    }
-
-    if (activeTab === "past") {
-      console.log("this scroll function called");
-      console.log("fetched_events_____________", upcominFetchedEvents);
-      const handleScroll = () => {
-        const isAtBottom =
-          window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 50; // Adjusted offset
-        if (isAtBottom && upcominFetchedEvents.length > 0) {
-          setPage((prevPage) => prevPage + 1); // Increment page to load more events
+        if(activeTab === "past"){
+          setPage((prevPage) => {
+            if (prevPage * page >= filteredPastEvents.length) return prevPage;
+  
+            return prevPage + 1; 
+          });
         }
-      };
 
-      const debounceScroll = () => {
-        clearTimeout(window.scrollTimeout); // Clear any existing timeout
-        window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
-      };
-
-      window.addEventListener("scroll", debounceScroll);
-      return () => window.removeEventListener("scroll", debounceScroll);
-    }
-  }, [upcominFetchedEvents, pastFetchedEvents]);
-
-  const [isFixed, setIsFixed] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const calendarElement = document.getElementById("calendar");
-      const scrollOffset = 150;
-      if (window.scrollY >= scrollOffset) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
+        setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
       }
-    };
+    },
+    { threshold: 1.0 }
+  );
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  observerRef.current.observe(sentinelRef.current);
+
+  return () => observerRef.current?.disconnect();
+}, [filteredUpcomingEvents,filteredPastEvents]);
+
+
+// useEffect(() => {
+//   if (!sentinelRef.current) return;
+
+//   // Prevent observer from being created multiple times
+//   if (observerRef.current) observerRef.current.disconnect();
+
+//   observerRef.current = new IntersectionObserver(
+//     (entries) => {
+//       const entry = entries[0];
+
+//       if (entry.isIntersecting && !isFetchingRef.current) {
+//         isFetchingRef.current = true; // Block new requests until done
+
+//         setPage((prevPage) => {
+//           const maxUpcomingPages = Math.ceil(filteredUpcomingEvents.length / page);
+//           const maxPastPages = Math.ceil(filteredPastEvents.length / page);
+
+//           // Stop fetching if all data is loaded
+//           if (prevPage >= maxUpcomingPages && prevPage >= maxPastPages) return prevPage;
+
+//           return prevPage + 1;
+//         });
+
+//         setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
+//       }
+//     },
+//     { threshold: 1.0 }
+//   );
+
+//   observerRef.current.observe(sentinelRef.current);
+
+//   return () => observerRef.current?.disconnect();
+// }, [filteredUpcomingEvents, filteredPastEvents]);
+
 
   const handleDeleteModal = (
     eventId: string,
@@ -488,7 +601,7 @@ const Page = () => {
     try {
       const data: any = await getUpcomingEvents(page);
       if (data) {
-        const transformedEvents = data.data.map((event: any) => ({
+        const transformedEvents = data?.data?.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
@@ -584,7 +697,7 @@ const Page = () => {
     try {
       const data: any = await getPastEvents(page);
       if (data) {
-        const transformedEvents = data.data.map((event: any) => ({
+        const transformedEvents = data?.data?.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
@@ -686,7 +799,7 @@ const Page = () => {
     // setPrefilledGlobalEvent(undefined)
     setPrefilledEvent(event);
     setIsEventFormModal(true);
-    if (event.eventType === "MAIN") {
+    if (event.eventType === "PARENT") {
       setEventFlow("main");
     } else setEventFlow("side");
   };
@@ -756,7 +869,7 @@ const Page = () => {
                       eventDate={showDate ? event.mainEvent.startDate : null}
                     />
                   )}
-                  {event.mainEvent.eventType === "MAIN" ? (
+                  {event.mainEvent.eventType === "PARENT" ? (
                     <DashboardEventCard
                       setSelectedEventType={setSelectedEventType}
                       handlePrefillSubEvent={handlePrefillSubEvent}
@@ -788,7 +901,7 @@ const Page = () => {
                       eventDate={showDate ? event.mainEvent.startDate : null}
                     />
                   )}
-                  {event.mainEvent.eventType === "MAIN" ? (
+                  {event.mainEvent.eventType === "PARENT" ? (
                     <DashboardEventCard
                       setSelectedEventType={setSelectedEventType}
                       handlePrefillSubEvent={handlePrefillSubEvent}
@@ -818,7 +931,7 @@ const Page = () => {
               <span>or feel free to create your own event from scratch</span>
             </div>
           )}
-
+          <div ref={sentinelRef} style={{ height: "20px", background: "transparent" }} />
         {/* </div> */}
         {/* <div id="calendar" className={`${styles.calendarContainer} ${isFixed ? styles.fixed : ""}`}>
           <div className={styles.calendar_div}>

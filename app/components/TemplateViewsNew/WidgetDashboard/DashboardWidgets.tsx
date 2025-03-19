@@ -279,7 +279,7 @@ const DashboardWidgets = forwardRef<any, Props>((props, ref) => {
         templateId: asciiToString(widget.templatePublicId),
         widgetType: widget.type,
         widgetId: widget.id,
-        eventSize: widget.otherdata.event.length,
+        eventSize: widget.otherData.event?.length,
         widgetStatus: "Draft",
       }));
       setDraftWidgets(filteredWidgets);
@@ -328,7 +328,7 @@ const DashboardWidgets = forwardRef<any, Props>((props, ref) => {
           templateId: asciiToString(widget.templatePublicId),
           widgetType: widget.type,
           widgetId: widget.id,
-          eventSize: widget.otherdata.event.length,
+          eventSize: widget.otherData.event?.length,
           widgetStatus: "Active",
         }))
       : [];
@@ -339,7 +339,7 @@ const DashboardWidgets = forwardRef<any, Props>((props, ref) => {
             templateId: asciiToString(widget.templatePublicId),
             widgetType: widget.type,
             widgetId: widget.id,
-            eventSize: widget.otherdata.event.length,
+            eventSize: widget.otherData.event?.length,
             widgetStatus: "Inactive",
           }))
         : [];

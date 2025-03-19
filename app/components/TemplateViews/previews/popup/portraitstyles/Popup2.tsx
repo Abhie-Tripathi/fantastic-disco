@@ -149,13 +149,16 @@ const Popup2: React.FC<Props> = ({
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} iconSize={fontSettings?.subheading.fontSize || 14} />
           <div
-            className={styles.location}
+            className={`${styles.location}`}
             style={{
               fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
               color: fontSettings.subheading.fontColor,
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedAddedEvents![0]&&`${fetchedAddedEvents![0]?.cityName || ""}${fetchedAddedEvents![0]?.cityName && fetchedAddedEvents![0]?.countryName ? ", " : ""}${fetchedAddedEvents![0]?.countryName || ""}`
+            }
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? (
@@ -199,18 +202,18 @@ const Popup2: React.FC<Props> = ({
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>
-          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
+          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
           <div
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-            {fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].participationType : "Tradeshow"}
+            {fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].participationType : "Tradeshow"}
           </div>
           <div
             className={`${styles.pill} ${styles.type2}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-            {fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].eventFormat : "Attending"}
+            {fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].eventFormat : "Attending"}
           </div>
         </div>
         {/* <div className={styles.circles}>

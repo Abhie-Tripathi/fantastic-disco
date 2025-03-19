@@ -10,6 +10,7 @@ export const eventsKeys = {
 export const useEvents = {
   list: (query: EventQuery) => {
     const eventsService = useEventsService();
+
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(query),
       queryFn: () => eventsService.getEvents(query),
@@ -24,12 +25,3 @@ export const useEvents = {
     };
   },
 };
-
-
-
-
-
-
-
-
-

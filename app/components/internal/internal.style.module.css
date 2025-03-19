@@ -85,9 +85,9 @@
 .outerDiv button{
     width: 100%;
 }
-.filters{
+/* .filters{
     height: 50px;
-}
+} */
 .statusDropdown{
     border: 1px solid var(--input-border-color);
     justify-content: space-between;
@@ -99,8 +99,9 @@
 }
 .filters{
     display: flex;
+    align-items: flex-end;
     margin: 0 85px;
-    align-items: center;
+    /* align-items: center; */
     /* grid-template-columns: repeat(4, minmax(0px, 20vw)); */
     grid-gap: 15px 15px;
     gap: 15px 15px;
@@ -211,15 +212,12 @@
     border-radius: 100%;
     vertical-align: middle;
   }
-@media screen and (max-width:1200px) {
-    .container{
-        padding-left: 60px;
-        padding-right: 40px;
-    }
-}
 
 @media screen and (max-width:768px) {
     .countsContainer{
+        margin: 0;
+    }
+    .filters {
         margin: 0;
     }
     .exhibitorCount{

@@ -82,7 +82,7 @@ const EventCard2 = ({
             </div>
             
             <div className={styles.location_dateContainer}>
-                <div className={styles.locationContainer}>
+                <div className={`${styles.locationContainer} ${styles.location}`} data-name={fetchedEvent &&`${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`}>
                     <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
                     <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                 </div>
@@ -95,7 +95,7 @@ const EventCard2 = ({
             <div className={styles.dividerLine}></div>
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? "Main Event" : fetchedEvent?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "PARENT" ? "Main Event" : fetchedEvent?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
                     <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
                     <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? fetchedEvent?.eventFormat : "In-Person"}</div>
                 </div>

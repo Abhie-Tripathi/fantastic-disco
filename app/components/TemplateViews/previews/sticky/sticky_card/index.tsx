@@ -123,7 +123,7 @@ const StickyCard = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
-          data-name={fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
+          data-name={fetchedEvent![0]&&fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
         >
           {/* {fetchedEvent && fetchedEvent.length > 0
             ? fetchedEvent[0]?.name.substring(0, 40)
@@ -141,13 +141,16 @@ const StickyCard = ({
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings.subheading.fontSize} />
           <div
-            className={styles.location}
+            className={`${styles.location} ${styles.eventName}`}
             style={{
               fontSize: fontSettings.subheading.fontSize,
               color: fontSettings.subheading.fontColor,
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedEvent&&`${fetchedEvent[0]?.cityName || ""}${fetchedEvent[0]?.cityName && fetchedEvent[0]?.countryName ? ", " : ""}${fetchedEvent[0]?.countryName || ""}`
+            }
           >
             {fetchedEvent && fetchedEvent.length > 0
               ? fetchedEvent[0]?.eventFormat === "Virtual"
@@ -178,17 +181,17 @@ const StickyCard = ({
           </div>
         </div>
         <div className={styles.icon_tags_container}>
-          {fetchedEvent && fetchedEvent![0]?.eventType === "SUB" ? (
+          {fetchedEvent && fetchedEvent![0]?.eventType === "CHILD" ? (
             <>
               <Image src={POP} alt="" />
             </>
-          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+          ) : fetchedEvent![0]?.eventType === "PARENT" &&
             fetchedEvent![0].event_type === "Tradeshow" ? (
             <Image src={TradeshowIcon} alt="" />
-          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+          ) : fetchedEvent![0]?.eventType === "PARENT" &&
             fetchedEvent![0].event_type === "Conference" ? (
             <Image src={ConferenceIcon} alt="" />
-          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+          ) : fetchedEvent![0]?.eventType === "PARENT" &&
             fetchedEvent![0].event_type === "Workshop" ? (
             <Image src={WorkShopIcon} alt="" />
           ) : (
@@ -198,9 +201,9 @@ const StickyCard = ({
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: fontSettings?.body.fontSize }}
           >
-            {fetchedEvent![0]?.eventType === "MAIN"
+            {fetchedEvent![0]?.eventType === "PARENT"
               ? fetchedEvent![0].event_type
-              : fetchedEvent![0]?.eventType === "SUB"
+              : fetchedEvent![0]?.eventType === "CHILD"
               ? fetchedEvent![0].event_type
               : "Tradeshow"}
           </div>
@@ -208,9 +211,9 @@ const StickyCard = ({
             className={`${styles.pill} ${styles.type2}`}
             style={{ fontSize: fontSettings?.body.fontSize }}
           >
-            {fetchedEvent![0]?.eventType === "MAIN"
+            {fetchedEvent![0]?.eventType === "PARENT"
               ? fetchedEvent![0].eventFormat
-              : fetchedEvent![0]?.eventType === "SUB"
+              : fetchedEvent![0]?.eventType === "CHILD"
               ? fetchedEvent![0].eventFormat
               : "In-Person"}
           </div>

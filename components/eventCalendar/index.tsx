@@ -119,33 +119,23 @@ export default function EventCalendar({
     queryKey:
       source !== "tracker"
         ? ["events", view, currentDate, searchParams.toString()]
-        : [currentDate, active, view],
+        : ["events", currentDate, active, view],
     queryFn: async () => {
+      setShowEventList(false);
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
       updatedParams.set("active_gte", moment(start).toISOString());
       updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerDate = `${moment(start).toISOString()},${moment(
-        end
-      ).toISOString()}`;
+      const trackerStartDate = `${moment(start).toISOString()}`;
+      const trackerEndDate = `${moment(end).toISOString()}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
           : await getCalendarViewEvents(
               trackerId || "",
-              `type=${
-                active === "activeEvent"
-                  ? "active"
-                  : active === "expiredEvent"
-                  ? "expired"
-                  : active === "newEvent"
-                  ? ""
-                  : active === "savedEvent"
-                  ? "saved"
-                  : "active"
-              }&groupBy=${trackerDate}`,
+              `type=${active}&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
             );
@@ -158,7 +148,7 @@ export default function EventCalendar({
 
   useEffect(() => {
     setCurrentDate(initialDate());
-  }, [searchParams, trackerDate]);
+  }, [searchParams]);
 
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
     queryKey: ["unattended-events", searchParams.toString()],
@@ -312,10 +302,12 @@ export default function EventCalendar({
     [getLocalFilterValue, trackerDate]
   );
   const handleNavigate = (date: Date) => {
+    setShowEventList(false);
     setCurrentDate(date);
   };
 
   const handleViewChange = (newView: string) => {
+    setShowEventList(false);
     setView(newView);
   };
 
@@ -328,6 +320,16 @@ export default function EventCalendar({
       });
     }
   };
+
+  if (
+    isEventeli &&
+    !searchParams.get("viewBound") &&
+    !searchParams.get("locationIds") &&
+    source !== "tracker" &&
+    !searchParams.get("eventIds")
+  ) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
 
   const renderCalendarContent = () => {
     if (isEventsLoading) {
@@ -409,7 +411,7 @@ export default function EventCalendar({
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}
-              title="No events saved yet! Start saving events to easily track and revisit them here."
+              title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
             />
           </div>
         ) : (

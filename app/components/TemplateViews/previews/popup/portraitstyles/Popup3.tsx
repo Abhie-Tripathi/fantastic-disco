@@ -139,8 +139,8 @@ const Popup3: React.FC<Props> = ({
           className={`w-full ${styles.banner} ${smallCard ? 'h-[170px]' : 'h-[220px]'} rounded-b-[50px] shadow-md`}
         />
 
-        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
-        <div className={styles.type}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].participationType : "Workshop"}</div>
+        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
+        <div className={styles.type}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].participationType : "Workshop"}</div>
       </div>
 
 
@@ -153,7 +153,7 @@ const Popup3: React.FC<Props> = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
-          data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName}
+          data-name={fetchedAddedEvents![0]&&fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName}
         >
           {fetchedAddedEvents && fetchedAddedEvents.length > 0
             ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
@@ -172,6 +172,9 @@ const Popup3: React.FC<Props> = ({
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedAddedEvents![0]&&`${fetchedAddedEvents![0]?.cityName || ""}${fetchedAddedEvents![0]?.cityName && fetchedAddedEvents![0]?.countryName ? ", " : ""}${fetchedAddedEvents![0]?.countryName || ""}`
+            }
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : (

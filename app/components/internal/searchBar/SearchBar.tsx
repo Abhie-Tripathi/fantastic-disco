@@ -15,7 +15,8 @@ interface EventSuggestionItem {
   };
   city?: string;
   country?: string;
-  host?: string;
+  host?:string;
+  tableEntry?: string;
 }
 
   interface SearchBarProps {
@@ -35,7 +36,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
+        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -51,9 +52,12 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
           })
           if (!controller.signal.aborted) {
             if (data) {
-              if(type==="T_COMPETITOR"){
+              if(type==="T_BRAND_BUILDING"){
+                setEventSuggestion(data.designations);
+              }
+              else if(type==="T_COMPETITOR"){
                 
-                setEventSuggestion(data.company);
+                setEventSuggestion(data.companies);
               }else
               setEventSuggestion(data.events); 
             } else {
@@ -84,13 +88,26 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             if(eventSuggestion?.length>0){  
                 setIsOpen(true);
                 let updatedData;
-                if (type === "T_COMPETITOR") {
+                console.log(type);
+                
+                if(type==="T_BRAND_BUILDING"){
+                  console.log(eventSuggestion);
+                  
+                  updatedData = eventSuggestion.map((item:EventSuggestionItem)=>({
+                    key:item?.id,
+                    name: item?.name || '',
+                    city: item?.location?.cityName || '',
+                    country: item?.location?.countryName || '',
+                    tableEntry: item?.name || ''
+                  }))
+                }
+                else if (type === "T_COMPETITOR") {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
                     city: item?.location?.cityName || '',
                     country: item?.location?.countryName || '',
-                    host: item?.host? item.host:item.name
+                    tableEntry: item?.host? item.host:item.name
                   }));
                 } else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
@@ -100,17 +117,16 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-            
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-       
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
       }
+      console.log(restructureData);
       
   return (
         <>
@@ -118,7 +134,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   <div ref={dropdownRef} className={styles.eventName_container2}>
     {restructureData && restructureData.length > 0  ? (
       restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.host??"")}>
+        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.tableEntry??"")}>
           <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 

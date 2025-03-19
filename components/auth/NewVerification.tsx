@@ -1,10 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthContext } from "@/context";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,17 +13,20 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useSearchParams } from "next/navigation";
-import { Input } from "../ui/input";
+import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context";
 import { industryData, settingResearchData } from "@/data/onboarding";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { GAEvent } from "@/utils/GAEvent";
 import { VerifyOTP } from "@/types/auth/user";
 import { SettingsInterestData } from "@/types/onboarding";
-import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Input } from "../ui/input";
 
 const otpSchema = z.object({
   otpCode: z
@@ -41,30 +39,24 @@ type OTPData = z.infer<typeof otpSchema>;
 export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
-  const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp, error, generateOTP, signin, setError } = useAuthContext();
+  const { verifyOtp, error, signin, setError, isLoading } = useAuthContext();
   const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const { getFilterValue } = useFilterState();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
-  const email = (sessionStorage && sessionStorage.getItem("userEmail")) || "";
+  const email = (searchParams && searchParams.get("email")) || "";
   const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
-  const subIndustry =
-    (sessionStorage && sessionStorage.getItem("subIndustry")) || "";
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
-
   const categories = sessionCategories && JSON.parse(sessionCategories);
+
+  const formatDateForFilter = (date: Date) => {
+    return format(date, "yyyy-MM-dd");
+  };
 
   const urlParams = useMemo(() => {
     const params = new URLSearchParams();
     const currentDate = new Date();
-    const startDate = new Date(
-      startOfMonth(currentDate).setHours(5, 30, 0, 0)
-    ).toISOString();
-    const endDate = new Date(
-      endOfMonth(currentDate).setHours(5, 30, 0, 0)
-    ).toISOString();
+    const startDate = formatDateForFilter(startOfMonth(currentDate));
+    const endDate = formatDateForFilter(endOfMonth(currentDate));
 
     params.set("view", "map");
     params.set("status", "active,cancelled,postponed");
@@ -81,9 +73,7 @@ export default function NewVerificationForm() {
   const redirectTo = useMemo(() => {
     if (flow && flow === "signUp") {
       if (isEventeli) {
-        return `/location${industry ? `?industry=${industry}` : ""}${
-          subIndustry ? `&subIndustry=${subIndustry}` : ""
-        }`;
+        return "/location";
       } else {
         const isCategoryMapped = industryData.find(
           (industryItem) => industryItem.slug === industry
@@ -128,7 +118,6 @@ export default function NewVerificationForm() {
         );
       } else {
         await verifyOtp(verifyOtpDTO, "signIn", redirectTo);
-        // await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
       }
     } catch (error) {
       console.error("OTP verification error:", error);
@@ -138,7 +127,6 @@ export default function NewVerificationForm() {
   const resendOTP = async (email: string) => {
     setTime(30);
     await signin({ email });
-    // generateOTP(email, industry, categories, flow, "resend");
   };
 
   const handleBack = () => {

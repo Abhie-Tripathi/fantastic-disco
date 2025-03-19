@@ -118,6 +118,10 @@ export interface InterestConfigurationResponse {
   interest: InterestConfiguration[];
 }
 
+export interface OutreachConfigurationResponse {
+  outreach: OutreachConfiguration[];
+}
+
 export type InterestConfiguration = z.infer<typeof InterestSchema>;
 export type OutreachConfiguration = z.infer<typeof OutreachSchema>;
 export type FilterConfiguration = z.infer<typeof FilterConfigurationSchema>;

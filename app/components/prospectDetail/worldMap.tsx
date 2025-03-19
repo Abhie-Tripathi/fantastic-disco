@@ -15,7 +15,7 @@ import { CircleSlash } from "lucide-react";
 import Loading from "@/components/ui/Loading";
 
 
-const WorldMap = ({ companyId }: { companyId: string }) => {
+const WorldMap = ({ companyId, source }: { companyId: string, source: string }) => {
   const [fullView, setFullView] = useState(true);
   // const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
@@ -25,8 +25,8 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const [totalAttentCount, setTotalAttentCount] = useState<number>(0);
 
   const [viewport, setViewport] = useState<any>({
-    latitude: countryPerPage?.[0]?.geoCordinates?.latitude ?? 22.1991660760527,
-    longitude: countryPerPage?.[0]?.geoCordinates?.longitude ?? 78.476681027237,
+    latitude: countryPerPage?.[0]?.latitude ?? 22.1991660760527,
+    longitude: countryPerPage?.[0]?.longitude ?? 78.476681027237,
     width: fullView ? "calc(100vw - 85px)" : "",
     height: fullView ? "90vh" : "350px",
     zoom: 2.5,
@@ -42,9 +42,9 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const getOpacityValue = (countryId: string) => {
     if (countryId) {
       let totalCount =
-        countryEventCounts["eventCount"] &&
-        countryEventCounts["eventCount"] !== 0
-          ? countryEventCounts["eventCount"]
+        totalAttentCount &&
+          totalAttentCount !== 0
+          ? totalAttentCount
           : 1;
       let val = Math.round((countryEventCounts[countryId] / totalCount) * 100);
       if (val == 0) return 0.1;
@@ -59,22 +59,22 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const fetchEventsData = async () => {
     setIsLoading(true);
     try {
-      const countryData = await getEventCountByCountry(companyId);
+      const countryData = await getEventCountByCountry(companyId, source);
       if (countryData && countryData.length > 0) {
-        const sortedData = countryData.sort((a: any, b: any) => b.eventCount - a.eventCount);
+        const sortedData = countryData.sort((a: any, b: any) => b.count - a.count);
         setViewport((prevViewport: any) => ({
           ...prevViewport,
-          latitude: sortedData?.[0]?.geoCordinates?.latitude,
-          longitude: sortedData?.[0]?.geoCordinates?.longitude,
+          latitude: sortedData?.[0]?.latitude,
+          longitude: sortedData?.[0]?.longitude,
         }));
         const countryEventCountsObj: any = {};
         let totalAttentCount = 0;
         sortedData.forEach((country: any) => {
-          if (country.countryCode === "WW") {
+          if (country.code === "WW") {
             country.name = "Virtually";
           }
-          countryEventCountsObj[country.countryCode] = country.eventCount;
-          totalAttentCount += country.eventCount;
+          countryEventCountsObj[country.code] = country.count;
+          totalAttentCount += country.count;
         });
         setCountryPerPage(sortedData);
         setTotalAttentCount(totalAttentCount);
@@ -101,7 +101,7 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
       filter: ["==", "iso_3166_1", country],
       paint: {
         "fill-color": index == 0 ? "#6750a4" : "#E7D4E8",
-        "fill-opacity": index == 0 ? 0.9 : getOpacityValue(country),
+        "fill-opacity": 0.8,
         "fill-outline-color": "#FCCDE5",
       },
     };
@@ -148,18 +148,18 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
                 <Marker
                   key={event.countryId}
                   latitude={
-                    event.geoCordinates.latitude
-                      ? parseFloat(event.geoCordinates.latitude)
+                    event.latitude
+                      ? parseFloat(event.latitude)
                       : 0
                   }
                   longitude={
-                    event.geoCordinates.longitude
-                      ? parseFloat(event.geoCordinates.longitude)
+                    event.longitude
+                      ? parseFloat(event.longitude)
                       : 0
                   }
                 >
                   <span className="bg-white text-[#666666] px-1 py-0.5 rounded border border-[#EEEEF0] font-bold">
-                    {event.eventCount}
+                    {event.count}
                   </span>
                   {/* <Badge variant="default" className="opacity-90 px-1">{event.eventCount}</Badge> */}
                 </Marker>
@@ -180,18 +180,20 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
           <span className="text-base font-bold">{countryPerPage[0]?.name}</span>
         </div>
 
-        <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-          <span className="text-[#6E6F89] text-xs">Other Countries</span>
-          <span
-            className="text-base font-bold line-clamp-1"
-            title={countryPerPage.map((item) => item.name).join(", ")}
-          >
-            {countryPerPage
-              .slice(1, 5)
-              .map((item) => item.name)
-              .join(", ")}
-          </span>
-        </div>
+        {countryPerPage.length > 1 &&
+          <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
+            <span className="text-[#6E6F89] text-xs">Other Countries</span>
+            <span
+              className="text-base font-bold line-clamp-1"
+              title={countryPerPage.map((item) => item.name).join(", ")}
+            >
+              {countryPerPage
+                .slice(1, 5)
+                .map((item) => item.name)
+                .join(", ")}
+            </span>
+          </div>
+        }
       </div>
     </div> ) : (
       <span className="text-[#666666] text-sm flex items-center gap-2 my-4">

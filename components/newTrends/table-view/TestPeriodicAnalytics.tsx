@@ -56,11 +56,13 @@ import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import HolidayIcon from "/public/eventType/holiday.svg";
 import { useSearchParams, useRouter } from "next/navigation";
+import { isEventeli } from "@/config";
 
 interface TestPeriodicAnalyticsProps {
   data: TableData[] | [];
   tableColumns: NewColumn[] | [];
   isSmartInsightsEnabled: boolean;
+  holidayByDates: TableGroupedHoliday[];
   smartInsightState: { [key: string]: boolean };
   setIsSmartInsightsEnabled: Dispatch<SetStateAction<boolean>>;
   setSmartInsightState: Dispatch<
@@ -90,6 +92,7 @@ const TestPeriodicAnalytics = ({
   smartInsightState,
   setIsSmartInsightsEnabled,
   setSmartInsightState,
+  holidayByDates,
 }: TestPeriodicAnalyticsProps) => {
   const params = useSearchParams();
   const router = useRouter();
@@ -579,12 +582,82 @@ const TestPeriodicAnalytics = ({
                         {tableColumns.map((trends) => {
                           const key = (trends.slug as keyof TableData) || "";
                           if (key === "date") {
+                            const isHoliday =
+                              holidayByDates &&
+                              holidayByDates.length > 0 &&
+                              holidayByDates.some(
+                                (holiday) => holiday.date === data[key]
+                              );
+                            const holidayMatch = holidayByDates?.find(
+                              (holiday) => holiday.date === data[key]
+                            );
+                            const count = holidayMatch?.count || 0;
+                            const holidays = holidayMatch?.holidays || [];
+
                             return (
                               <TableCell
                                 key={key}
                                 width={100}
                                 className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-white`}
                               >
+                                {isEventeli ? (
+                                  isHoliday ? (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <div className="flex">
+                                            <Image
+                                              width={20}
+                                              height={20}
+                                              className="cursor-pointer"
+                                              src={HolidayIcon}
+                                              alt="Holiday Icon"
+                                            />
+                                            {count && count > 1 && (
+                                              <sup className="w-2 h-2">
+                                                {count}
+                                              </sup>
+                                            )}
+                                          </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                          asChild
+                                          className="w-fit tooltip-content-styles"
+                                          side="right"
+                                        >
+                                          <ul
+                                            className={`flex flex-col gap-2 ${
+                                              holidays && holidays.length > 1
+                                                ? "list-disc pl-6"
+                                                : "list-none pl-4"
+                                            } pt-2 pr-4`}
+                                          >
+                                            {holidays &&
+                                              holidays.length > 0 &&
+                                              holidays.map((holidayName) => (
+                                                <li
+                                                  className="font-medium"
+                                                  key={`holiday-${holidayName}`}
+                                                >
+                                                  {holidayName}
+                                                </li>
+                                              ))}
+                                          </ul>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  ) : (
+                                    <div className="flex items-center opacity-0">
+                                      <Image
+                                        width={20}
+                                        height={20}
+                                        src={HolidayIcon}
+                                        alt="Holiday Icon"
+                                      />
+                                      <sup className="w-2 h-2">{count}</sup>
+                                    </div>
+                                  )
+                                ) : null}
                                 <div className="w-40 flex justify-center">
                                   <p>
                                     {key !== undefined &&

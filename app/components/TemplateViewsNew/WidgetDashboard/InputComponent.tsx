@@ -223,6 +223,7 @@ const InputComponent = forwardRef<HTMLFormElement, Props>(
     const {getActiveWidget, getDeActiveWidget, getDraftWidget} = useWidgetServices()
     const [domain, setDomain] = useState<string>("");
     const [disableBtn, setDisableBtn] = useState<boolean>(false)
+    const {addBrandkit,getBrandkit,error} = useBrandKitServices()
     // This is a variable so that when ever a widget is deleted we can call the function in input container to make the button disbaled
     useEffect(() => {
         fetchWidget()

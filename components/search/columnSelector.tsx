@@ -78,46 +78,34 @@ export default function ColumnsSelector({
             setIsOpen(false);
           }}
         >
-          {columnsData && columnsData.length > 0 ? (
-            <div className="space-y-3 p-2">
-              {columnsDropdown.map(({ label, value }) => {
-                if (columnsData.includes(value)) {
-                  return (
-                    <div
-                      key={value}
-                      className="flex items-center space-x-2 cursor-pointer"
-                    >
-                      <RadioGroupItem
-                        checked={selectedEventType === value}
-                        disabled={value === "impactScore"}
-                        value={value}
-                        id={value}
-                      />
-                      <label
-                        htmlFor={value}
-                        className={cn("text-sm font-medium leading-none", {
-                          "cursor-not-allowed opacity-50":
-                            value === "impactScore",
-                        })}
-                      >
-                        {label}
-                      </label>
-                      {value === "impactScore" && (
-                        <p className="font-bold text-[#0062d1] text-[10px] bg-[#ebf5ff] p-1 rounded">
-                          Coming Soon
-                        </p>
-                      )}
-                    </div>
-                  );
-                }
-              })}
-            </div>
-          ) : (
-            <p className="text-[#666666] text-sm flex justify-between items-center gap-2">
-              <CircleSlash width={15} height={15} className="self-start mt-1"/>
-              <span className="w-36">Select an Event Type and click Apply</span>
-            </p>
-          )}
+          <div className="space-y-3 p-2">
+            {columnsDropdown.map(({ label, value, enable }) => (
+              <div
+                key={value}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <RadioGroupItem
+                  checked={selectedEventType === value}
+                  disabled={!enable}
+                  value={value}
+                  id={value}
+                />
+                <label
+                  htmlFor={value}
+                  className={cn("text-sm font-medium leading-none", {
+                    "cursor-not-allowed opacity-50": !enable,
+                  })}
+                >
+                  {label}
+                </label>
+                {!enable && (
+                  <p className="font-bold text-[#0062d1] text-[10px] bg-[#ebf5ff] p-1 rounded">
+                    Coming Soon
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </RadioGroup>
       </PopoverContent>
     </Popover>

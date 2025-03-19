@@ -11,13 +11,11 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
-import { toast } from "react-toastify";
+import { useToast } from "@/hooks/use-toast";
 import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { useToast } from "@/components/ui/use-toast";
-import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -63,7 +61,7 @@ interface EventFilterData {
     isAudienceEnabled?: boolean;
   };
 }
-interface Filters {
+export interface Filters {
   // interest?: string;
   show?: string;
   // liked?: string;
@@ -72,7 +70,7 @@ interface Filters {
   // status?: string;
   top?: string;
   locationIds?: string;
-  geoCoordinates?: string;
+  viewBound?:string;
   view?: string;
   calendar_type?: string;
   active_lte?: string;
@@ -113,6 +111,7 @@ interface Filters {
   eventType?:string;
 
   // Coordinate Filters
+  eventId?: string;
   type?: string;
   upvotedBy?: string;
   status?: string;
@@ -174,6 +173,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
@@ -203,47 +203,43 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         const data = await getFilterConfiguration();
         setEnabledFilters(data || {});
       } catch (e) {
-
-
         console.error("Error fetching filters:", e);
         setEnabledFilters({});
       }
     };
-
     getEnabledFilters();
   }, []);
 
   useEffect(() => {
     if (enabledFilters) {
-      // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
-
+  
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
-      // console.log(key);
+      console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
-        eventTypes: "eventType",
-        status: "eventStatus",
-        categories: "eventCategory",
-        eventFormats: "eventFormat",
-        entryType: "eventEntry",
-        ratings: "eventRating",
+        eventTypes: "eventTypes",
+        status: "status",
+        categories: "categories",
+        eventFormats: "eventFormats",
+        entryType: "entryType",
+        ratings: "ratings",
         maturity: "maturity",
-        frequencies: "eventFrequency",
-        estimatedVisitors: "eventSize",
-        estimatedExhibitors: "estimatedExhibitScore",
+        frequencies: "frequencies",
+        estimatedVisitors: "estimatedVisitors",
+        estimatedExhibitors: "estimatedExhibitors",
         estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
-      // console.log(enabledFilters);
+      console.log(enabledFilters);
       const selected = mapping[key as keyof Filter];
       setLocalFilters((prev) => {
         // console.log(prev);
 
         if (
-          enabledFilters?.[selected] &&
+          enabledFilters?.filter?.[selected] &&
           ((selected === "maturity" && value?.length === 0) ||
             (selected !== "maturity" &&
               typeof prev?.[key as keyof Filter] === "string" &&
@@ -251,10 +247,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
-          toast.error("At least one filter must be selected", {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: true,
+          console.log(value);
+          
+          toast({
+            title: "Error",
+            description: "At least one filter must be selected",
+            variant: "destructive",
           });
           return prev;
         }
@@ -265,6 +263,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
+        
         return newFilters;
       });
     },
@@ -371,6 +370,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+  
   const contextValue = useMemo(
     () => ({
       localFilters,
@@ -380,7 +380,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       clearLocalFilters,
       applyFilters,
       getLocalFilterValue: (key: keyof Filters) => localFilters[key] || "",
-      searchParams,
+      searchParams: new URLSearchParams(searchParams.toString()),
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
@@ -413,3 +413,9 @@ export const useFilterContext = () => {
   }
   return context;
 };
+
+
+
+
+
+

@@ -142,7 +142,7 @@ export default function EventAnalyticsSelector({source,enabledAnalyticsData, sel
       ? [...currentShow, "scores"]
       : currentShow.filter((item) => item !== "scores");
 
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
 
     // Update the 'show' parameter
     if (newShow.length > 0) {

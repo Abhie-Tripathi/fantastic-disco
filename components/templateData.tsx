@@ -10,7 +10,37 @@ import Brand from "/public/brand.svg";
 import Location from "/public/locationTracker.svg"
 import Venue from '/public/venueTracker.svg';
 import LocationDate from '/public/locationTracker.svg'
-const data = 
+import { isEventeli } from "@/config";
+const data = isEventeli ?
+  [
+    {
+      type: "template",
+      domain: "",
+      img: Location,
+      url: "T_LOCATION",
+      trackerName: "Location Tracker",
+      content:
+        "Keep a close eye on event activity within a specific city, state, or country to identify trends in new or canceled events.",
+    },
+    {
+      type: "template",
+      domain: "",
+      img: Venue,
+      url:"T_VENUE",
+      trackerName: "Venue Tracker",
+      content:
+        "Define a specific venue's latitude and longitude, and track events within a set radius to capture nearby activity.",
+    },
+    {
+      type: "template",
+      domain: "",
+      img: LocationDate,
+      url: "T_GEOTIME",
+      trackerName: "Location and Date Tracker",
+      content:
+        "Track events happening at a specific location over a defined date range to analyze both geographical and temporal trends.",
+    }
+  ]:
   [
     {
       type: "template",

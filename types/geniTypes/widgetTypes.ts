@@ -27,7 +27,7 @@ interface ButtonSettings {
     domain: string;
     eventId: any[]; 
     id: string;
-    otherdata: OtherData;
+    otherData: OtherData;
     status: string;
     templatePublicId: number;
     type: string;

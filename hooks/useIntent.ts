@@ -14,7 +14,6 @@ export const useIntent = {
       mutationFn: (data: CreateUserEventInterest) =>
         intentService.createUserEventInterest(data),
     });
-
     return {
       createUserEventInterest: mutation.mutate,
       isLoading: mutation.isPending,
@@ -58,5 +57,5 @@ export const useIntent = {
       isSuccess: mutation.isSuccess,
       reset: mutation.reset,
     };
-  },
+  }
 };

@@ -20,6 +20,29 @@ const RankingSchema = z
   .nullable()
   .optional();
 
+const DetailRankingSchema = z.object({
+  global: z.number(),
+  country: z.object({
+    id: z.string(),
+    rank: z.number(),
+  }),
+  categories: z.array(
+    z.object({
+      id: z.string(),
+      rank: z.number(),
+    })
+  ),
+  category_country: z.array(
+    z.object({
+      categoryId: z.string(),
+      countryId: z.string(),
+      rank: z.number(),
+    })
+  ),
+});
+
+const RankingsSchema = z.union([RankingSchema, DetailRankingSchema]);
+
 const AudienceSpreadSchema = z.record(
   z.string(),
   z.object({
@@ -65,8 +88,10 @@ const BasicEventSchema = z.object({
   logoUrl: z.string().nullable(),
   bannerUrl: z.string().nullable(),
   timings: z.string().nullable(),
+  matchedKeywords: z.array(z.string()).nullable(),
+  matchedKeywordsPercentage: z.number().nullable(),
   lastVerifiedOn: z.string().nullable(),
-  eventPageUrl: z.string().nullable(),
+  "10timesEventPageUrl": z.string().nullable(),
   rating: z.number(),
   name: z.string(),
   website: z.string(),
@@ -139,7 +164,6 @@ const AdvanceEventSchema = z.object({
   editions: z.number(),
   isBranded: z.boolean(),
   isSeries: z.boolean(),
-  estimatedExhibitors: z.string(),
   rehostDate: z.string(),
   maturity: z.string().nullable(),
   frequency: z.string().nullable(),
@@ -153,13 +177,13 @@ const InsightsEventSchema = z.object({
   economicImpact: z.string(),
   economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),
-  repeatSentiment: z.number(),
+  estimatedExhibitors: z.string().nullable(),
   trustScore: z.number().nullable(),
   reputationScore: z.number(),
   rehostScore: z.number(),
   estimatedAttendanceMean: z.number().nullable(),
   estimatedAttendance: z.string().nullable(),
-  rankings: RankingSchema,
+  rankings: RankingsSchema,
   scores: z
     .object({
       impactScore: z.number().nullable(),
@@ -168,6 +192,10 @@ const InsightsEventSchema = z.object({
       internationalScoreTag: z.string().nullable(),
     })
     .optional(),
+  trustChangeTag: z.string(),
+  reputationChangeTag: z.string(),
+  trustChangePercentage: z.number(),
+  reputationChangePercentage: z.number(),
 });
 
 const AudienceSchema = z.object({
@@ -189,12 +217,27 @@ const InterestSchema = z.record(
   })
 );
 
+const AlertSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  type: z.string(),
+  level: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  originLatitude: z.string(),
+  originLongitude: z.string(),
+  lastModified: z.string(),
+});
+const TrackerMatchInfoSchema = z.object({});
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),
   insights: InsightsEventSchema.optional(),
   audience: AudienceSchema.optional(),
   interests: InterestSchema.optional(),
+  alerts: z.array(AlertSchema).optional(),
+  trackerMatchInfo: TrackerMatchInfoSchema.optional(),
 });
 
 export interface EventResponse {
@@ -210,4 +253,5 @@ export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
+export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;

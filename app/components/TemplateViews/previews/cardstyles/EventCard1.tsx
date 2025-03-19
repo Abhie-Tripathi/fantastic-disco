@@ -83,23 +83,27 @@ const EventCard1 = ({
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
                 <div className={styles.dateContainer}>
                     {
-                        fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt='' /></> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
+                        fetchedEvent?.eventType === "CHILD" ? <><Image src={POP} alt='' /></> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
                     }
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
-                    <div className={styles.locationContainer}>
+                   <div className={styles.location_tooltip_contianer}>
+                   <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={ fetchedEvent && `${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`}>
                         {/* <Image src={locationIcon} alt='location' /> */}
                         <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>
                         {fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+                   </div>
+                   <div className={styles.name_tooltip_container}>
+                   <div className={`${styles.eventName} ${styles.name_container}`}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
                         {/* {fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName} */}
                         {fetchedEvent
               ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
               : demoEventName}
                         </div>
+                   </div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>

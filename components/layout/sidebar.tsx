@@ -21,12 +21,15 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness, Moon, Sun } from 'lucide-react'
+import { BriefcaseBusiness, Moon, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { endOfMonth } from "date-fns";
+import { startOfMonth } from "date-fns";
+import { addMonths } from "date-fns";
 function Coordinate() {
   return (
     <svg
@@ -74,7 +77,11 @@ const Sidebar = () => {
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search",
-      href: "/internal/search/events",
+      href: `/internal/search/events?active_lte=${startOfMonth(
+        addMonths(new Date(), 3)
+      ).toISOString().split('T')[0]}&active_gte=${endOfMonth(
+        new Date()
+      ).toISOString().split('T')[0]}`,
       icon: MagnifyingGlass,
     },
     {
@@ -88,7 +95,9 @@ const Sidebar = () => {
       href: "/internal/coordinate",
       icon: Coordinate,
     },
-    { name: "Outreach", href: "/internal/outreach", icon: Outreach },
+    ...(!isEventeli
+      ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }]
+      : []),
     // { name: "API Tools", href: "/clients", icon: Wrench },
     // {
     //   name: "Documentation",
@@ -98,7 +107,9 @@ const Sidebar = () => {
   ];
   const geniLinks = [
     {
-      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon />
+      name: "Dashboard",
+      href: "/widget/dashboard",
+      icon: <WidgetdashboardIcon />,
     },
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
@@ -132,7 +143,6 @@ const Sidebar = () => {
   // const brandkitRef = useRef(null);
   // const widgetRef = useRef(null);
   // const eventsRef = useRef(null);
-
 
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
@@ -203,8 +213,6 @@ const Sidebar = () => {
   //   setIsSidebarOpen(false);
   // };
 
-
-
   return (
     <aside
       className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
@@ -238,8 +246,9 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          { (pathname.startsWith("/internal/prospect") || pathname.startsWith("/internal/company"))
-              ? prospectLinks.map((link) => {
+          {pathname.startsWith("/internal/prospect") ||
+          pathname.startsWith("/internal/company")
+            ? prospectLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
                   pathname === link.href ||
@@ -261,7 +270,11 @@ const Sidebar = () => {
                         }`}
                         asChild
                       >
-                        <a className={link.name === "Tracker" ? "pointer-events-none" : ""}>
+                        <a
+                          className={
+                            link.name === "Tracker" ? "pointer-events-none" : ""
+                          }
+                        >
                           <Icon
                             color={theme == "dark" ? "#fff" : ""}
                             className="flex-shrink-0"
@@ -269,9 +282,11 @@ const Sidebar = () => {
                           {isHovered && (
                             <>
                               <span className="ml-2">{link.name}</span>
-                              {link.name === "Tracker" &&
-                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">Coming soon</div>
-                              }
+                              {link.name === "Tracker" && (
+                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">
+                                  Coming soon
+                                </div>
+                              )}
                             </>
                           )}
                         </a>
@@ -286,7 +301,9 @@ const Sidebar = () => {
                 const isActive =
                   pathname === link.href ||
                   (link.name === "Tracker" &&
-                    pathname.startsWith("/internal/trackers"));
+                    pathname.startsWith("/internal/trackers")) ||
+                  (link.name === "Search" &&
+                    pathname.startsWith("/internal/search/events"));
                 return (
                   <li key={link.name}>
                     <Link href={link.href} passHref legacyBehavior>
@@ -303,7 +320,13 @@ const Sidebar = () => {
                         }`}
                         asChild
                       >
-                        <a>
+                        <a
+                          onClick={(e) => {
+                            if (pathname === link.href.split("?")[0]) {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
                           <Icon
                             color={theme == "dark" ? "#fff" : ""}
                             className="flex-shrink-0"
@@ -349,9 +372,9 @@ const Sidebar = () => {
         </ul>
         <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
           {!isEventeli && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => toggleTheme()}
               className="hover:bg-muted"
             >

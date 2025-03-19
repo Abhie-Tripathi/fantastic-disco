@@ -1,57 +1,42 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styles from "./locationForm.module.css";
-import HeroLogoText from "/public/heroLogoText.svg";
-import SearchIcon from "/public/search.svg";
-import Image from "next/image";
+import AutocompleteInput from "@/components/search/AutocompleteInput";
+import { LocationItem as LOCATION_ITEM } from "@/components/search/location";
 import { Button } from "@/components/ui/button";
 import {
-  ComboBox,
-  Input,
-  Key,
-  ListBox,
-  ListBoxItem,
-  Popover,
   Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
   SelectValue,
-  Selection,
-  Switch,
-} from "react-aria-components";
-import DropdownIcon from "/public/Dropdown_Arrow.svg";
-import RemoveIcon from "/public/remove.svg";
-import AddIcon from "/public/plus_radius.svg";
-import { useRouter, useSearchParams } from "next/navigation";
-import SwitchButton from "@/components/ui/SwitchButton";
-import { myFetch } from "@/utils/myFetch";
-import { SaveLocationDTO } from "@/types/locations";
-import { EventCount } from "@/types/events";
-import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+} from "@/components/ui/select";
 import { ToastAction } from "@/components/ui/toast";
+import { isEventeli } from "@/config";
+import { industryData } from "@/data/onboardingDropdownsData";
+import { useToast } from "@/hooks/use-toast";
+import { useEventsService } from "@/services/eventsService";
+import { useLocationService } from "@/services/locationService";
+import { sessionService } from "@/services/sessionService";
+import { useTrackerServices } from "@/services/trackerServices";
+import { EventCount } from "@/types/events";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { SaveLocationDTO } from "@/types/locations";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";
-import AutocompleteInput from "@/components/search/AutocompleteInput";
-import { useLocationService } from "@/services/locationService";
-import { useEventsService } from "@/services/eventsService";
-import {
-  industryData,
-  eventStatus,
-  eventType,
-} from "@/data/onboardingDropdownsData";
-import { sessionService } from "@/services/sessionService";
-import {
-  GeoLocation as GEO_LOCATION,
-  LocationItem as LOCATION_ITEM,
-} from "@/components/search/location";
-import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { Plus } from "lucide-react";
+import Image from "next/image";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import styles from "./locationForm.module.css";
+import AddIcon from "/public/plus_radius.svg";
+import RemoveIcon from "/public/remove.svg";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
   latitude: number;
   longitude: number;
 }
-type GeoLocationRadiusUnit = "miles" | "kilometers";
 
 export interface LocationItem {
   id: string;
@@ -66,47 +51,60 @@ export interface GeoLocation {
 }
 
 export type EventCountPartial = Pick<EventCount, "count">;
-type EventCountResponse = { data: EventCountPartial };
 
 export type Location = GeoLocation | LocationItem[];
 
-const defaultLocation: LocationItem = {
-  id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
-  description: "New York, United States",
+const getDefaultDates = (): { startDate: string; endDate: string } => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getUTCFullYear();
+  const currentMonth = currentDate.getUTCMonth();
+
+  const startDate = new Date(
+    Date.UTC(currentYear, currentMonth, 1, 0, 0, 0, 0)
+  );
+  const endDate = new Date(
+    Date.UTC(currentYear, currentMonth + 3, 1, 0, 0, 0, 0)
+  );
+  return {
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+  };
 };
 
-const defaultGeoLocation: GeoLocation = {
-  lat: 40.7127281,
-  lng: -74.0060152,
-  radius: 20,
-  description:
-    "New York City Hall, 260, Broadway, Lower Manhattan, Manhattan, New York County, New York, 10000, United States",
+const getViewBoundString = (
+  lat: number,
+  long: number,
+  radius: number
+): string => {
+  const viewBound = {
+    boundType: "point",
+    coordinates: {
+      latitude: lat,
+      longitude: long,
+      radius: radius,
+    },
+  };
+  return JSON.stringify(viewBound);
 };
 
-const defaultSavedLocationDTO = [
-  {
-    locationType: "LOCATION_ID",
-    locationName: "New York, United States",
-    locationId: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
-  },
-];
-
-// const defaultSavedGeoLocation =
+const radiusOption = {
+  kilometers: "Kilometers",
+  miles: "Miles",
+};
 
 const LocationForm = () => {
+  const router = useRouter();
   const searchParamsOnboarding = useSearchParams();
   const [loading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
-  // const { saveLocation } = useLocationService();
-  const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
+  const { createTracker } = useTrackerServices();
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [location, setLocation] = useState<PinPointLocation | undefined>();
   const [radius, setRadius] = React.useState<number>(2);
-  const [radiusUnit, setRadiusUnit] = React.useState<Key>("miles");
-  const router = useRouter();
+  const [radiusUnit, setRadiusUnit] = useState<string>("miles");
   const { saveLastSearchedLocation } = sessionService();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
@@ -117,6 +115,31 @@ const LocationForm = () => {
     useLocationService();
 
   const [searchParams, setSearchParams] = useState<string>();
+
+  const defaultLocation: LocationItem = {
+    id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
+    description: "New York, United States",
+  };
+
+  const defaultGeoLocation: GeoLocation = useMemo(() => {
+    return {
+      lat: 40.7127281,
+      lng: -74.0060152,
+      radius: radius,
+      description:
+        "New York City Hall, 260, Broadway, Lower Manhattan, Manhattan, New York County, New York, 10000, United States",
+    };
+  }, [radius]);
+
+  const defaultSavedLocationDTO = {
+    name: defaultLocation.description,
+    type: "T_CUSTOM",
+    filterValues: {
+      active_gte: getDefaultDates().startDate,
+      active_lte: getDefaultDates().endDate,
+      locationIds: defaultLocation.id,
+    },
+  };
 
   const { data: cityStateAndCountryData, isLoading: isCityLoading } = useQuery({
     queryKey: ["city", currentCity],
@@ -146,23 +169,21 @@ const LocationForm = () => {
     staleTime: 0,
   });
 
-  console.log(eventCount)
-
-  // const saveLocationMutation = useMutation({
-  //   mutationFn: (values: SaveLocationDTO[]) => saveLocation(values),
-  //   onSuccess: () => {
-  //     router.push(`/search/events?${searchParams}`);
-  //     queryClient.invalidateQueries({ queryKey: ["locations"] });
-  //   },
-  //   onError: (error: any) => {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Uh oh! Something went wrong.",
-  //       description: "There was a problem saving your location",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     });
-  //   },
-  // });
+  const saveLocationMutation = useMutation({
+    mutationFn: (values: any) => createTracker(values),
+    onSuccess: () => {
+      router.push(`internal/search/events?${searchParams}`);
+      queryClient.invalidateQueries({ queryKey: ["locations"] });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem saving your location",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    },
+  });
 
   // useEffect(() => {
   //   if (eventCount) {
@@ -211,21 +232,20 @@ const LocationForm = () => {
         radius: radius || 20,
         description: centrePointAndRadiusData || "New York, United States",
       };
-      console.log(updatedSelectedLocation);
       setSelectedLocation(updatedSelectedLocation);
     }
-  }, [centrePointAndRadiusData, isCenterLoading]);
+  }, [centrePointAndRadiusData, isCenterLoading, radius]);
 
   const getIpLocation = async () => {
     const response = await fetch("http://ip-api.com/json/?fields=61439");
     const data = await response.json();
     setCurrenCity(data.city);
   };
-  console.log(selectedLocation);
 
   useEffect(() => {
-    const industrySlug = searchParamsOnboarding.get("industry");
-    const subIndustrySlug = searchParamsOnboarding.get("subIndustry");
+    const industrySlug = sessionStorage && sessionStorage.getItem("industry");
+    const subIndustrySlug =
+      sessionStorage && sessionStorage.getItem("subIndustry");
     const selectedIndustry = industryData.find(
       (industry) => industry.slug === industrySlug
     );
@@ -281,9 +301,12 @@ const LocationForm = () => {
       const latitude = !Array.isArray(locationToUse) && locationToUse.lat;
       const longitude = !Array.isArray(locationToUse) && locationToUse.lng;
       const viewBound = {
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        boundType: "point",
+        coordinates: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
       const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
@@ -296,7 +319,7 @@ const LocationForm = () => {
               locationToUse.map((location) => location.id).join(",")
             }`
           : locationType === "center"
-          ? `&geoCoordinates=${viewBoundString}`
+          ? `&viewBound=${viewBoundString}`
           : ""
       }&view=map`;
       setSearchParams(params);
@@ -316,7 +339,7 @@ const LocationForm = () => {
     if (locationType === "city") {
       setSelectedLocation([defaultLocation]);
       saveLastSearchedLocation([defaultLocation] as LOCATION_ITEM[]);
-      // defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
+      defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
       setDefaultParamsValue([defaultLocation]);
     } else {
       setLocation({ latitude: 40.7127281, longitude: -74.0060152 });
@@ -329,42 +352,41 @@ const LocationForm = () => {
   const saveOnboardingLocation = (
     defaultLocation?: GeoLocation | LocationItem[]
   ) => {
-    console.log(selectedLocation);
     const locationToUse = defaultLocation || selectedLocation;
     if (locationToUse) {
-      let savedLocationDTOData: SaveLocationDTO[] | [] = [];
+      let savedLocationDTOData: SaveLocationDTO[] | [] | any = [];
       Array.isArray(locationToUse) && locationType === "city"
-        ? (savedLocationDTOData = locationToUse.map((location) => ({
-            locationType: "LOCATION_ID",
-            locationName: location.description || "",
-            locationId: location.id || "",
-          })))
-        : !Array.isArray(locationToUse) && locationType === "center"
-        ? (savedLocationDTOData = [
-            {
-              locationType: "GEO_JSON",
-              locationName: locationToUse.description || "",
-              geoJson: {
-                geometry: {
-                  type: "Point",
-                  coordinates: [
-                    Number(locationToUse.lat),
-                    Number(locationToUse.lng),
-                  ],
-                },
-                properties: {
-                  radius: Number(
-                    radiusUnit === "miles"
-                      ? locationToUse.radius * 1.60934
-                      : locationToUse.radius
-                  ),
-                  radiusUnit: radiusUnit === "kilometres" ? "km" : "mi",
-                },
-              },
+        ? (savedLocationDTOData = {
+            name: "Custom Tracker",
+            type: "T_CUSTOM",
+            filterValues: {
+              active_gte: getDefaultDates().startDate,
+              active_lte: getDefaultDates().endDate,
+              locationIds: locationToUse
+                .map((location) => location.id)
+                .join(","),
             },
-          ])
+          })
+        : !Array.isArray(locationToUse) && locationType === "center"
+        ? (savedLocationDTOData = {
+            name: locationToUse.description || "",
+            type: "T_CUSTOM",
+            filterValues: {
+              active_gte: getDefaultDates().startDate,
+              active_lte: getDefaultDates().endDate,
+              viewBound: getViewBoundString(
+                locationToUse.lat,
+                locationToUse.lng,
+                Number(
+                  radiusUnit === "miles"
+                    ? locationToUse.radius * 1.60934
+                    : locationToUse.radius
+                )
+              ),
+            },
+          })
         : null;
-      // savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
+      savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
     }
   };
 
@@ -381,9 +403,12 @@ const LocationForm = () => {
       const longitude =
         !Array.isArray(selectedLocation) && selectedLocation.lng;
       const viewBound = {
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        boundType: "point",
+        coordinates: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
       const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
@@ -396,7 +421,7 @@ const LocationForm = () => {
               selectedLocation.map((location) => location.id).join(",")
             }`
           : locationType === "center"
-          ? `&geoCoordinates=${viewBoundString}`
+          ? `&viewBound=${viewBoundString}`
           : ""
       }&view=map`;
       setSearchParams(params);
@@ -413,9 +438,13 @@ const LocationForm = () => {
     }
   };
 
+  if (!isEventeli) {
+    notFound();
+  }
+
   return (
     <div className={styles.container}>
-      {/* <h3>Choose a location to get started !</h3>
+      <h3>Choose a location to get started !</h3>
       <section className="w-96">
         <div className={styles.tab_container}>
           <button className={locationType == "city" ? styles.active : ""}>
@@ -473,28 +502,21 @@ const LocationForm = () => {
                   <Image src={AddIcon} alt="add icon" />
                 </button>
               </div>
-              <Select
-                className=""
-                selectedKey={radiusUnit}
-                onSelectionChange={setRadiusUnit}
-              >
-                <Button className="flex items-center justify-between px-2 min-w-[130px] h-10 border border-[#e0e1e4] text-[#79747e] rounded-md">
-                  <SelectValue />
-                  <Image src={DropdownIcon} alt="dropdown" />
-                </Button>
-                <Popover className={styles.popover}>
-                  <ListBox>
-                    <ListBoxItem id="miles" className={styles.listbox_item}>
-                      Miles
-                    </ListBoxItem>
-                    <ListBoxItem
-                      id="kilometers"
-                      className={styles.listbox_item}
-                    >
-                      Kilometers
-                    </ListBoxItem>
-                  </ListBox>
-                </Popover>
+              <Select value={radiusUnit} onValueChange={setRadiusUnit}>
+                <SelectTrigger className="w-[180px] h-10">
+                  <SelectValue
+                    placeholder={
+                      radiusUnit &&
+                      radiusOption[radiusUnit as keyof typeof radiusOption]
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="kilometers">Kilometres</SelectItem>
+                    <SelectItem value="miles">Miles</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
               </Select>
             </div>
           </div>
@@ -507,13 +529,6 @@ const LocationForm = () => {
           >
             <Plus className="w-4 h-4" /> Add Multiple Location
           </p>
-        )}
-
-        {useCurrentLocation && (
-          <div className={styles.currentLocation}>
-            <h4>{currentCity}</h4>
-            <p>{`${currentCity}, ${currentCity} (2 mi Radius)`}</p>
-          </div>
         )}
       </section>
 
@@ -530,7 +545,7 @@ const LocationForm = () => {
 
       <p className={styles.skip_button} onClick={handleSkip}>
         Skip for now
-      </p> */}
+      </p>
     </div>
   );
 };

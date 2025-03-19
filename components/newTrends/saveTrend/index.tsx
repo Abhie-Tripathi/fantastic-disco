@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useFilterContext } from "@/context/filterContext";
 import { sessionService } from "@/services/sessionService";
 import { useTrendsService } from "@/services/trendsService";
@@ -23,17 +23,28 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Error from "next/error";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 const SaveTrendModal = ({
+  isDisabled,
   searchParams,
   handleEditTrend,
   handleSaveTrend,
+  handleSaveTrendDisabled,
   isLoading,
 }: {
+  isDisabled: boolean;
   searchParams: ReadonlyURLSearchParams;
   handleEditTrend: (trackerName: string, id: string) => void;
   handleSaveTrend: (trackerName: string) => void;
+  handleSaveTrendDisabled: () => void;
   isLoading: boolean;
 }) => {
   const [trackerName, setTrackerName] = useState("");
@@ -42,6 +53,7 @@ const SaveTrendModal = ({
   const enableEdit = searchParams.get("editTrend");
   const activeCardId = searchParams.get("activeCard");
   const activeCardName = searchParams.get("activeCardName");
+  const { toast } = useToast();
   const maxLength = 20;
 
   useEffect(() => {
@@ -76,6 +88,9 @@ const SaveTrendModal = ({
   };
 
   const handleOpenChange = () => {
+    if (isDisabled) {
+      return;
+    }
     if (!enableEdit) {
       setTrackerName("");
     }
@@ -83,7 +98,13 @@ const SaveTrendModal = ({
     setError("");
   };
   return (
-    <Dialog open={open} onOpenChange={() => handleOpenChange()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        handleOpenChange();
+        handleSaveTrendDisabled();
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           disabled={isLoading}
@@ -101,7 +122,6 @@ const SaveTrendModal = ({
           <Input
             id="name"
             type="text"
-            // maxLength={maxLength}
             placeholder="Save trends as..."
             value={trackerName}
             onChange={handleNameChange}
@@ -206,7 +226,7 @@ const SaveTrend = ({
     const eventTypes = params.get("eventTypes");
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
-    const geoCoordinate = params.get("geoCoordinates");
+    const geoCoordinate = params.get("viewBound");
     const viewBound = geoCoordinate
       ? JSON.stringify({
           boundType: "point",
@@ -238,10 +258,10 @@ const SaveTrend = ({
 
   const handleEditTrend = (trackerName: string, id: string) => {
     const streetName = getLastSearchedLocation();
-    const viewBound = localFilters.geoCoordinates
+    const viewBound = localFilters.viewBound
       ? JSON.stringify({
           boundType: "point",
-          coordinates: localFilters.geoCoordinates,
+          coordinates: localFilters.viewBound,
           ...(streetName && {
             properties: { name: (streetName as GeoLocation).description },
           }),
@@ -259,7 +279,7 @@ const SaveTrend = ({
       columns: localFilters.columns || "",
       ...(localFilters.locationIds
         ? { locationIds: localFilters.locationIds }
-        : localFilters.geoCoordinates
+        : localFilters.viewBound
         ? { viewBound: viewBound }
         : {}),
     };
@@ -271,11 +291,33 @@ const SaveTrend = ({
     };
     editSavedTrendMutation.mutate({ id: id, data: data });
   };
+
+  const isDisabled = useMemo(() => {
+    const eventTypes = searchParams.get("eventTypes");
+    const startDate = searchParams.get("active_gte");
+    const endDate = searchParams.get("active_lte");
+    if (!eventTypes && !(startDate || endDate)) {
+      return true;
+    }
+    return false;
+  }, [searchParams]);
+
+  const handleSaveTrendDisabled = useCallback(() => {
+    if (isDisabled) {
+      toast({
+        variant: "destructive",
+        title: "Cannot Save Trend",
+        description: "Please select at least one event type and date range.",
+      });
+    }
+  }, [isDisabled]);
   return (
     <SaveTrendModal
+      isDisabled={isDisabled}
       searchParams={searchParams}
       handleEditTrend={handleEditTrend}
       handleSaveTrend={handleSaveTrend}
+      handleSaveTrendDisabled={handleSaveTrendDisabled}
       isLoading={saveTrendMutation.isPending || isLoading}
     />
   );

@@ -25,6 +25,7 @@ import { SheetClose } from "@/components/ui/sheet";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
+import { isEventeli } from "@/config";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
@@ -49,11 +50,15 @@ const MobileSidebar = () => {
       href: "/internal/coordinate",
       icon: Coordinate,
     },
-    { name: "Outreach", href: "/internal/outreach", icon: Outreach },
+    ...(!isEventeli
+      ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }]
+      : []),
   ];
   const geniLinks = [
     {
-      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon />
+      name: "Dashboard",
+      href: "/widget/dashboard",
+      icon: <WidgetdashboardIcon />,
     },
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
@@ -86,90 +91,112 @@ const MobileSidebar = () => {
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
-          { (pathname.startsWith("/internal/prospect") || pathname.startsWith("/internal/company"))
-              ? prospectLinks.map((link) => {
-                  const Icon = link.icon;
-                  const isActive =
-                    pathname === link.href ||
-                    (link.name === "Tracker" && pathname.startsWith("/internal/trackers"));
-                  return (
-                    <li key={link.name}>
-                      <SheetClose asChild>
-                        <Link href={link.href} className={link.name === "Tracker" ? "pointer-events-none" : ""}>
-                          <Button
-                            variant={isActive ? "secondary" : "ghost"}
-                            className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
-                              }`}
-                          >
-                            <Icon
-                              className="flex-shrink-0 mr-2"
-                              color={theme === "dark" ? "#fff" : ""}
-                            />
-                            <span>{link.name}</span>
-                            {link.name === "Tracker" &&
-                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">Coming soon</div>
-                              }
-                          </Button>
-                        </Link>
-                      </SheetClose>
-                    </li>
-                  );
+          {pathname.startsWith("/internal/prospect") ||
+          pathname.startsWith("/internal/company")
+            ? prospectLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive =
+                  pathname === link.href ||
+                  (link.name === "Tracker" &&
+                    pathname.startsWith("/internal/trackers"));
+                return (
+                  <li key={link.name}>
+                    <SheetClose asChild>
+                      <Link
+                        href={link.href}
+                        className={
+                          link.name === "Tracker" ? "pointer-events-none" : ""
+                        }
+                      >
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={`w-full justify-start px-3 h-10 ${
+                            isActive
+                              ? "bg-primary text-white hover:bg-primary"
+                              : ""
+                          }`}
+                        >
+                          <Icon
+                            className="flex-shrink-0 mr-2"
+                            color={theme === "dark" ? "#fff" : ""}
+                          />
+                          <span>{link.name}</span>
+                          {link.name === "Tracker" && (
+                            <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">
+                              Coming soon
+                            </div>
+                          )}
+                        </Button>
+                      </Link>
+                    </SheetClose>
+                  </li>
+                );
               })
-            : pathname.startsWith("/internal") ? (
-            gtmLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive =
-                pathname === link.href ||
-                (link.name === "Tracker" && pathname.startsWith("/internal/trackers"));
-              return (
-                <li key={link.name}>
-                  <SheetClose asChild>
-                    <Link href={link.href}>
-                      <Button
-                        variant={isActive ? "secondary" : "ghost"}
-                        className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
-                          }`}
+            : pathname.startsWith("/internal")
+            ? gtmLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive =
+                  pathname === link.href ||
+                  (link.name === "Tracker" &&
+                    pathname.startsWith("/internal/trackers"));
+                return (
+                  <li key={link.name}>
+                    <SheetClose asChild>
+                      <Link
+                        href={link.href}
+                        onClick={(e) => {
+                          if (pathname === link.href.split("?")[0]) {
+                            e.preventDefault();
+                          }
+                        }}
                       >
-                        <Icon
-                          className="flex-shrink-0 mr-2"
-                          color={theme === "dark" ? "#fff" : ""}
-                        />
-                        <span>{link.name}</span>
-                      </Button>
-                    </Link>
-                  </SheetClose>
-                </li>
-              );
-            })
-          ) : (
-            geniLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <li key={link.name}>
-                  <SheetClose asChild>
-                    <Link href={link.href}>
-                      <Button
-                        variant={isActive ? "secondary" : "ghost"}
-                        className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={`w-full justify-start px-3 h-10 ${
+                            isActive
+                              ? "bg-primary text-white hover:bg-primary"
+                              : ""
                           }`}
-                      >
-                        {/* <Icon
+                        >
+                          <Icon
+                            className="flex-shrink-0 mr-2"
+                            color={theme === "dark" ? "#fff" : ""}
+                          />
+                          <span>{link.name}</span>
+                        </Button>
+                      </Link>
+                    </SheetClose>
+                  </li>
+                );
+              })
+            : geniLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <li key={link.name}>
+                    <SheetClose asChild>
+                      <Link href={link.href}>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={`w-full justify-start px-3 h-10 ${
+                            isActive
+                              ? "bg-primary text-white hover:bg-primary"
+                              : ""
+                          }`}
+                        >
+                          {/* <Icon
                           className="flex-shrink-0 mr-2"
                           color={theme === "dark" ? "#fff" : ""}
                         /> */}
-                        <div className="flex items-center gap-2">
-                          {link.icon}
-                          <span>{link.name}</span>
-                        </div>
-
-                      </Button>
-                    </Link>
-                  </SheetClose>
-                </li>
-              );
-            })
-          )}
-
+                          <div className="flex items-center gap-2">
+                            {link.icon}
+                            <span>{link.name}</span>
+                          </div>
+                        </Button>
+                      </Link>
+                    </SheetClose>
+                  </li>
+                );
+              })}
         </ul>
         <Separator className="my-2 px-2" />
         <ul className="p-2 space-y-1">
@@ -213,7 +240,12 @@ const MobileSidebar = () => {
           </li>
         </ul>
       </nav>
-      <Button className="ml-3 mb-3" variant="ghost" size="icon" onClick={() => toggleTheme()}>
+      <Button
+        className="ml-3 mb-3"
+        variant="ghost"
+        size="icon"
+        onClick={() => toggleTheme()}
+      >
         {theme === "dark" ? (
           <Sun className="h-5 w-5 transition-all" />
         ) : (
@@ -221,7 +253,9 @@ const MobileSidebar = () => {
         )}
         <span className="sr-only">Toggle theme</span>
       </Button>
-      <span className="text-xs text-muted-foreground px-4 mb-3">Version 1.0.0</span>
+      <span className="text-xs text-muted-foreground px-4 mb-3">
+        Version 1.0.0
+      </span>
     </div>
   );
 };

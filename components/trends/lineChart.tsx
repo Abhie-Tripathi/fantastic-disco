@@ -1,47 +1,46 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceLine,
-  ResponsiveContainer,
-  ReferenceArea,
-  CartesianGrid,
-  Rectangle,
-  Legend,
-  LegendProps,
-} from "recharts";
-import { addDays, isAfter } from "date-fns";
-import { format, parse, differenceInDays } from "date-fns";
-import Text from "../new-ui/Text";
-import { TooltipProps } from "recharts";
-import Link from "next/link";
-import { ArrowUpRight, Loader2 } from "lucide-react";
-import { columnsDropdown } from "@/data/trends";
-import { CategoricalChartState } from "recharts/types/chart/types";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import Disable from "/public/disable.svg";
-import Image from "next/image";
-import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
-import { TableGroupedHoliday } from "@/types";
-import HolidayIcon from "/public/eventType/holiday.svg";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { isEventeli } from "@/config";
+import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
+import { useEventsService } from "@/services/eventsService";
+import { TableGroupedHoliday } from "@/types";
+import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
+import { useQuery } from "@tanstack/react-query";
+import { addDays, differenceInDays, format, isAfter } from "date-fns";
+import { ArrowUpRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  LegendProps,
+  ReferenceArea,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { CategoricalChartState } from "recharts/types/chart/types";
+import Text from "../new-ui/Text";
+import Disable from "/public/disable.svg";
 
 interface IProps {
   predictedData: any;
   selectedEventType: string;
   threshold: number;
   showLegend: boolean;
+  holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
   showThresholdLines?: boolean;
 }
@@ -53,12 +52,11 @@ const LineChartComponent = ({
   selectedEventType,
   threshold,
   showLegend,
+  holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
   const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams);
-  const locationIds = searchParams.get("locationIds");
   const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
   const eventService = useEventsService();
@@ -130,6 +128,13 @@ const LineChartComponent = ({
       format(new Date(payload.date), "yyyy-MM-dd")
     );
 
+    const hasMatchingHoliday =
+      (isEventeli &&
+        holidayByDates &&
+        holidayByDates.length > 0 &&
+        holidayByDates?.some((holiday) => holiday.date === payload.date)) ||
+      false;
+
     if (shouldRenderDot && payload.total < thresholdArea[1]) {
       return (
         <g>
@@ -141,6 +146,22 @@ const LineChartComponent = ({
             stroke="#E1313A"
             strokeWidth={2}
           />
+          {hasMatchingHoliday && isEventeli && (
+            <svg
+              x={cx - 10} // Center horizontally
+              y={cy - 35} // Raise it to appear above the circle
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+            >
+              <path
+                d="M9 16.5C8.3 16.5 7.70833 16.2583 7.225 15.775C6.74167 15.2917 6.5 14.7 6.5 14C6.5 13.3 6.74167 12.7083 7.225 12.225C7.70833 11.7417 8.3 11.5 9 11.5C9.7 11.5 10.2917 11.7417 10.775 12.225C11.2583 12.7083 11.5 13.3 11.5 14C11.5 14.7 11.2583 15.2917 10.775 15.775C10.2917 16.2583 9.7 16.5 9 16.5ZM5 22C4.45 22 3.97933 21.8043 3.588 21.413C3.19667 21.0217 3.00067 20.5507 3 20V6C3 5.45 3.196 4.97934 3.588 4.588C3.98 4.19667 4.45067 4.00067 5 4H6V3C6 2.71667 6.096 2.47934 6.288 2.288C6.48 2.09667 6.71733 2.00067 7 2C7.28267 1.99934 7.52033 2.09534 7.713 2.288C7.90567 2.48067 8.00133 2.718 8 3V4H16V3C16 2.71667 16.096 2.47934 16.288 2.288C16.48 2.09667 16.7173 2.00067 17 2C17.2827 1.99934 17.5203 2.09534 17.713 2.288C17.9057 2.48067 18.0013 2.718 18 3V4H19C19.55 4 20.021 4.196 20.413 4.588C20.805 4.98 21.0007 5.45067 21 6V20C21 20.55 20.8043 21.021 20.413 21.413C20.0217 21.805 19.5507 22.0007 19 22H5ZM5 20H19V10H5V20ZM5 8H19V6H5V8Z"
+                fill="#7D7D7D"
+              />
+            </svg>
+          )}
           <circle
             cx={cx}
             cy={cy}
@@ -163,6 +184,22 @@ const LineChartComponent = ({
             stroke="#16A54F"
             strokeWidth={2}
           />
+          {hasMatchingHoliday && isEventeli && (
+            <svg
+              x={cx - 10}
+              y={cy - 35}
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+            >
+              <path
+                d="M9 16.5C8.3 16.5 7.70833 16.2583 7.225 15.775C6.74167 15.2917 6.5 14.7 6.5 14C6.5 13.3 6.74167 12.7083 7.225 12.225C7.70833 11.7417 8.3 11.5 9 11.5C9.7 11.5 10.2917 11.7417 10.775 12.225C11.2583 12.7083 11.5 13.3 11.5 14C11.5 14.7 11.2583 15.2917 10.775 15.775C10.2917 16.2583 9.7 16.5 9 16.5ZM5 22C4.45 22 3.97933 21.8043 3.588 21.413C3.19667 21.0217 3.00067 20.5507 3 20V6C3 5.45 3.196 4.97934 3.588 4.588C3.98 4.19667 4.45067 4.00067 5 4H6V3C6 2.71667 6.096 2.47934 6.288 2.288C6.48 2.09667 6.71733 2.00067 7 2C7.28267 1.99934 7.52033 2.09534 7.713 2.288C7.90567 2.48067 8.00133 2.718 8 3V4H16V3C16 2.71667 16.096 2.47934 16.288 2.288C16.48 2.09667 16.7173 2.00067 17 2C17.2827 1.99934 17.5203 2.09534 17.713 2.288C17.9057 2.48067 18.0013 2.718 18 3V4H19C19.55 4 20.021 4.196 20.413 4.588C20.805 4.98 21.0007 5.45067 21 6V20C21 20.55 20.8043 21.021 20.413 21.413C20.0217 21.805 19.5507 22.0007 19 22H5ZM5 20H19V10H5V20ZM5 8H19V6H5V8Z"
+                fill="#7D7D7D"
+              />
+            </svg>
+          )}
           <circle
             cx={cx}
             cy={cy}
@@ -171,6 +208,54 @@ const LineChartComponent = ({
             stroke="#16A54F"
             strokeWidth={2}
           />
+        </g>
+      );
+    }
+    if (hasMatchingHoliday) {
+      return (
+        // <g>
+        //   <circle
+        //     cx={cx}
+        //     cy={cy}
+        //     r={8}
+        //     fill="#e8e8e8"
+        //     stroke="#7D7D7D"
+        //     strokeWidth={2}
+        //   />
+        //   <circle
+        //     cx={cx}
+        //     cy={cy}
+        //     r={4}
+        //     fill="#7D7D7D"
+        //     stroke="#7D7D7D"
+        //     strokeWidth={2}
+        //   />
+        // </g>
+        <g>
+          <svg
+            x={cx - 10}
+            y={cy - 10}
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 49 49"
+            fill="none"
+          >
+            <rect x="1" y="1" width="47" height="47" rx="23.5" fill="#7D7D7D" />
+            <rect
+              x="1"
+              y="1"
+              width="47"
+              height="47"
+              rx="23.5"
+              stroke="#E6E6E6"
+              strokeWidth="2"
+            />
+            <path
+              d="M20.5 30.125C19.625 30.125 18.8854 29.8229 18.2812 29.2187C17.6771 28.6146 17.375 27.875 17.375 27C17.375 26.125 17.6771 25.3854 18.2812 24.7813C18.8854 24.1771 19.625 23.875 20.5 23.875C21.375 23.875 22.1146 24.1771 22.7187 24.7813C23.3229 25.3854 23.625 26.125 23.625 27C23.625 27.875 23.3229 28.6146 22.7187 29.2187C22.1146 29.8229 21.375 30.125 20.5 30.125ZM15.5 37C14.8125 37 14.2242 36.7554 13.735 36.2662C13.2458 35.7771 13.0008 35.1884 13 34.5V17C13 16.3125 13.245 15.7242 13.735 15.235C14.225 14.7458 14.8133 14.5008 15.5 14.5H16.75V13.25C16.75 12.8958 16.87 12.5992 17.11 12.36C17.35 12.1208 17.6467 12.0008 18 12C18.3533 11.9992 18.6504 12.1192 18.8912 12.36C19.1321 12.6008 19.2517 12.8975 19.25 13.25V14.5H29.25V13.25C29.25 12.8958 29.37 12.5992 29.61 12.36C29.85 12.1208 30.1466 12.0008 30.5 12C30.8534 11.9992 31.1504 12.1192 31.3912 12.36C31.6321 12.6008 31.7516 12.8975 31.75 13.25V14.5H33C33.6875 14.5 34.2762 14.745 34.7662 15.235C35.2562 15.725 35.5009 16.3133 35.5 17V34.5C35.5 35.1875 35.2554 35.7762 34.7662 36.2662C34.2771 36.7562 33.6884 37.0009 33 37H15.5ZM15.5 34.5H33V22H15.5V34.5ZM15.5 19.5H33V17H15.5V19.5Z"
+              fill="white"
+            />
+          </svg>
         </g>
       );
     }
@@ -199,11 +284,11 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = params.get("geoCoordinates");
-    const locationIds = params.get("locationIds");
+    const geoCoordinates = searchParams.get("viewBound");
+    const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
-      sortBy: "estimatedVisitorMean",
+      sortBy: "-visitors",
     });
 
     if (date) {
@@ -223,7 +308,6 @@ const LineChartComponent = ({
   };
 
   const handleChartClick = (e: CategoricalChartState) => {
-    console.log(e);
     if (e.activeLabel) {
       const utcDate = new Date(e.activeLabel).toISOString();
       const link = setRedirectionLinkOnDate(utcDate);
@@ -239,6 +323,12 @@ const LineChartComponent = ({
       setTooltipVisible(false);
     }
   };
+
+  const generateViewAllEventsParams = useMemo(() => {
+    const params = new URLSearchParams(link);
+    params && params.delete("sortBy");
+    return params;
+  }, [link]);
 
   const {
     data: eventData,
@@ -353,12 +443,57 @@ const LineChartComponent = ({
     if (!isTooltipVisible) {
       return null;
     }
+    const showEventTypesValueByMetric = [];
     const { date, total, social, business } = payload && payload[0].payload;
+    const matchingHoliday =
+      holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+    const hasSocial = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
+    const hasBusiness = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
+
+    if (hasSocial) {
+      showEventTypesValueByMetric.push({
+        text: "Social",
+        bg: "--social-color",
+        value: social,
+      });
+    }
+    if (hasBusiness) {
+      showEventTypesValueByMetric.push({
+        text: "Business",
+        bg: "--business-color",
+        value: business,
+      });
+    }
+
     return (
       <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
         <div className="px-4 py-2 flex text-lg font-medium border-b">
           {format(date, "d MMM yyyy")}
         </div>
+        {isEventeli &&
+          matchingHoliday &&
+          matchingHoliday.holidays.length > 0 && (
+            <div className="px-4 py-2 border-b">
+              <p className="font-semibold text-[var(--primary-color)]">
+                Holidays :
+              </p>
+              <ul
+                className={`${
+                  matchingHoliday.holidays.length > 1
+                    ? "list-decimal"
+                    : "list-none"
+                } list-inside text-sm text-gray-600`}
+              >
+                {matchingHoliday.holidays.map((holidayName, index) => (
+                  <li key={index}>{holidayName}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         <div className="px-4 py-2 border-b">
           <p className="font-semibold text-[var(--primary-color)]">{total}</p>
           <Text size="normal" color="secondary" fontWeight="regular">
@@ -368,17 +503,23 @@ const LineChartComponent = ({
           </Text>
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
-          <div className="flex justify-between">
-            <div className="flex gap-2 items-center">
-              <div className="bg-[var(--business-color)] w-1 rounded-lg h-5"></div>
-              <p className="font-semibold text-[var(--business-color)]">
-                Business Events
+          {showEventTypesValueByMetric.map((eventTypesValues) => (
+            <div key={eventTypesValues.text} className="flex justify-between">
+              <div className="flex gap-2">
+                <div
+                  className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                ></div>
+                <p
+                  className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                >
+                  {eventTypesValues.text} Events
+                </p>
+              </div>
+              <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
+                {eventTypesValues.value}
               </p>
             </div>
-            <p className="font-semibold text-[var(--business-color)]">
-              {business}
-            </p>
-          </div>
+          ))}
         </div>
         <div className="px-4 py-2">
           <p className="text-sm font-medium">TOP EVENTS</p>
@@ -388,20 +529,22 @@ const LineChartComponent = ({
             ) : eventData && (eventData as any).events.length > 0 ? (
               (eventData as any).events
                 .slice(0, 4)
-                .map((event: any, index: number) => (
-                  <li key={event.id} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <span className="text-[12px] font-semibold">
-                        {/* {event.} */}
-                        {index + 1}.
-                      </span>
-                      {/* <span className="text-[12px] text-[#79747E]">EIS</span> */}
-                    </div>
-                    <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                      {event.name}
-                    </p>
-                  </li>
-                ))
+                .map((event: any, index: number) => {
+                  const { basic } = event || {};
+                  const { name, id } = basic || {};
+                  return (
+                    <li key={id} className="flex gap-4">
+                      <div className="flex flex-col items-center">
+                        <span className="text-[12px] font-semibold">
+                          {index + 1}.
+                        </span>
+                      </div>
+                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                        {name}
+                      </p>
+                    </li>
+                  );
+                })
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
@@ -411,7 +554,7 @@ const LineChartComponent = ({
           </ul>
         </div>
         <Link
-          href={`/internal/search/events?${link}`}
+          href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
           className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
         >
           VIEW ALL

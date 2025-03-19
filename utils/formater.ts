@@ -1,12 +1,7 @@
-// export function numberWithCommas(x: string | number) {
-//   console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-// }
-
 import { Event } from "@/types/events";
 
 export function numberWithCommas(range: string) {
-  if (range === "0" || !range) {
+  if (range === "0" || range === null) {
     return "--";
   }
   const parts = range.split("-").map((part) => part.trim());
@@ -51,7 +46,7 @@ export const formatEstimatedSpend = (spend: string | null) => {
     return `$${thousands}k`;
   }
   return spend;
-}
+};
 
 export const getEventLatLong = (event: Event) => {
   const lat = parseFloat(

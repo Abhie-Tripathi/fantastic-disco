@@ -20,11 +20,12 @@ interface Props {
   // setSpeakerModal: (value: boolean) => void
   exhibitorDetailsData: any[];
   handlePrefillExhibitorDetails: (value: any, key: number) => void;
+  formTheme : string;
 }
 const ExhibitorDetails = ({
 exhibitorDetailsData,
   handlePrefillExhibitorDetails,
-  handleChange,
+  handleChange,formTheme
 }: Props) => {
   useEffect(() => {
     console.log("exhibitor_are", exhibitorDetailsData);
@@ -33,8 +34,8 @@ exhibitorDetailsData,
     <div className={styles.body}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <ExhibitorIcon />
-          <span>Add Exhibitor details</span>
+          <ExhibitorIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
+          <span className={formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#ffffff]"}>Add Exhibitor details</span>
         </div>
         <Image
           onClick={() => handleChange("exhibitorModal", true)}
@@ -58,7 +59,11 @@ exhibitorDetailsData,
 
 export default ExhibitorDetails;
 
-function ExhibitorIcon() {
+interface IconProps{
+  color : string;
+}
+
+function ExhibitorIcon({color} : IconProps) {
   return (
     <svg
       width="20"
@@ -69,20 +74,20 @@ function ExhibitorIcon() {
     >
       <path
         d="M6.66667 12.0827H13.3333V18.3327H6.66667V12.0827ZM5 1.66602H15V4.16602H5V1.66602Z"
-        stroke="#7D7D7D"
+        stroke={color}
         stroke-width="1.66667"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M6.66602 4.16602V12.0827M13.3327 4.16602V12.0827"
-        stroke="#7D7D7D"
+        stroke={color}
         stroke-width="1.66667"
         stroke-linecap="round"
       />
       <path
         d="M1.66602 18.332H18.3327"
-        stroke="#7D7D7D"
+        stroke={color}
         stroke-width="1.66667"
         stroke-linecap="round"
         stroke-linejoin="round"

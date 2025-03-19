@@ -4,6 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePathname } from "next/navigation";
 interface DateRangePopupProps {
   type?: string;
   presets: { value: string; label: string }[];
@@ -37,6 +38,15 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   selectedComparison,
   type,
 }) => {
+  const url = usePathname();
+  
+  // Filter out 'past' and 'upcoming' presets when the URL is '/internal/trends'
+  const filterPresets =
+    url === "/internal/trends"
+      ? presets.filter(
+          (preset) => preset.value !== "past" && preset.value !== "upcoming"
+        )
+      : presets;
   return (
     <div className="flex flex-col border rounded-md">
       {type === "T_LOCATION_DATE" && (
@@ -47,7 +57,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
       <div className="flex space-x-4 rounded-md p-4">
         <ScrollArea className="h-[300px] w-[150px]">
           <div className="space-y-2 flex flex-col justify-between pr-4">
-            {presets.map((preset) => (
+            {filterPresets.map((preset) => (
               <Button
                 key={preset.value}
                 onClick={() => handlePresetChange(preset.value)}

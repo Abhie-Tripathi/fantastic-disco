@@ -10,7 +10,7 @@ import Follower from "./Follower";
 import StatusBar from "./StatusBar";
 import OwnerList from "./ownerList";
 import { usePathname } from "next/navigation";
-import backIcon from "/public/back.svg"
+import backIcon from "/public/back.svg";
 import Image from "next/image";
 import EventRequest from "./EventRequest";
 import { showToast } from "@/utils/showToast";
@@ -35,7 +35,12 @@ interface Props {
   openPocDetails: boolean;
   closeBtn: boolean;
   openEventRequest: boolean;
-  handleModal: (id: string, enquiryId: string, enquiryStatus: string, task: any) => void;
+  handleModal: (
+    id: string,
+    enquiryId: string,
+    enquiryStatus: string,
+    task: any
+  ) => void;
   handleDropdownSelect?: (target: string, source: string) => void;
   eventId: string;
   enquiryId: string;
@@ -60,9 +65,11 @@ const EventDetail = ({
   coordinateActions,
   modalContent,
   handleRefresh,
-  handleDropdownSelect
+  handleDropdownSelect,
 }: Props) => {
-  const [pipelineIndex, setPipelineIndex] = useState<number>(configData?.findIndex((item: any) => item.status === currentEnquiryStatus));
+  const [pipelineIndex, setPipelineIndex] = useState<number>(
+    configData?.findIndex((item: any) => item.status === currentEnquiryStatus)
+  );
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
@@ -72,7 +79,7 @@ const EventDetail = ({
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const [participentData, setParticipentData] = useState<any>({});
 
-  const [expandedTab, setExpandedTab] = useState<string>('notes');
+  const [expandedTab, setExpandedTab] = useState<string>("notes");
 
   const coordinateService = useCoordinateService();
 
@@ -82,7 +89,15 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
+  const [status, setStatus] = useState<number>(
+    currentEnquiryStatus === "IN_NEGO"
+      ? 2
+      : currentEnquiryStatus === "CONFIRMED"
+      ? 10
+      : currentEnquiryStatus === "CANCELED"
+      ? 12
+      : 1
+  );
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -90,10 +105,13 @@ const EventDetail = ({
     "12": "CANCELED",
   };
   const handleStatusChange = async (changeStatusTo: string) => {
-    setPipelineIndex(configData.findIndex((item: any) => item.status === changeStatusTo));
-    
-    if (handleDropdownSelect && currentEnquiryStatus) handleDropdownSelect(changeStatusTo, currentEnquiryStatus);
-    showToast("success","Enquiry status updated!")
+    setPipelineIndex(
+      configData.findIndex((item: any) => item.status === changeStatusTo)
+    );
+
+    if (handleDropdownSelect && currentEnquiryStatus)
+      handleDropdownSelect(changeStatusTo, currentEnquiryStatus);
+    showToast("success", "Enquiry status updated!");
   };
 
   useEffect(() => {
@@ -106,7 +124,7 @@ const EventDetail = ({
         const data: any = await coordinateService.getEventDetailById(eventId);
         if (data) {
           // const eventsData = data.event;
-          
+
           setSingleEventData(data);
         }
       } catch (error) {
@@ -125,34 +143,51 @@ const EventDetail = ({
 
   const [pocData, setPocData] = useState<pocDetail[]>([]);
 
-  const unlockPoc = async(pocId: number, view?: string) => {
+  const unlockPoc = async (pocId: number, view?: string) => {
     try {
-      setPocData(prevPocData => 
-        prevPocData.map(poc => 
-          poc.id === pocId
-            ? { ...poc, state: 1 }
-            : poc
+      setPocData((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
-      const data = await coordinateService.unlockPocDetail(pocId, eventId);
+      const data = await coordinateService.unlockPocDetail({
+        pocId,
+        unmask: "email,phone",
+        target: "EVENT",
+        source: "eventPage",
+        targetId: eventId,
+      });
       if (data) {
-        setPocData(prevPocData => 
-          prevPocData.map(poc => 
+        setPocData((prevPocData) =>
+          prevPocData.map((poc) =>
             poc.id === pocId
-              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              ? {
+                  ...poc,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  state: 2,
+                }
               : poc
           )
         );
-        GAEvent("Enquiry Detail", "POC", `${pageSource} | Enquiry Detail`, `POC ${view} | Show details`);
+        GAEvent(
+          "Enquiry Detail",
+          "POC",
+          `${pageSource} | Enquiry Detail`,
+          `POC ${view} | Show details`
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchInterestData = async () => {
-      const data: any = await coordinateService.getInterestedUsers(eventId, enquiryId);
+      const data: any = await coordinateService.getInterestedUsers(
+        eventId,
+        enquiryId
+      );
       if (data) {
         setParticipentData(data.interestedUsers);
         // setParticipentData({
@@ -174,15 +209,20 @@ const EventDetail = ({
   }, [eventId]);
 
   return (
-    <div
-      className={styles.container}
-    >
+    <div className={styles.container}>
       <div className={styles.closeIcon} onClick={handleCloseModal}>
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
 
-      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange} configData={configData} pipelineIndex={pipelineIndex} />}
+      {pathName && pathName === "outreach" && (
+        <StatusBar
+          status={status}
+          handleStatusChange={handleStatusChange}
+          configData={configData}
+          pipelineIndex={pipelineIndex}
+        />
+      )}
 
       <div className={styles.modalContainer}>
         <div className={styles.innerContainer}>
@@ -202,7 +242,7 @@ const EventDetail = ({
             </div>
             {singleEventData && (
               <>
-                <SingleEvent {...singleEventData?.basic} />
+                <SingleEvent event={singleEventData} />
                 <EventDescription
                   description={singleEventData?.basic?.description}
                   open={openEventDetails}
@@ -213,25 +253,46 @@ const EventDetail = ({
               </>
             )}
             <EventNotes setExpandedTab={setExpandedTab} />
-            <EventRequest open={openEventRequest} participentData={participentData} coordinateActions={coordinateActions} />
+            <EventRequest
+              open={openEventRequest}
+              participentData={participentData}
+              coordinateActions={coordinateActions}
+            />
             <Organiser
               open={openOrganiserDetails}
               organizerData={singleEventData?.basic?.organizer}
             />
-            <EventPoc open={openPocDetails} eventId={eventId} setExpandedTab={setExpandedTab} pocData={pocData} unlockPoc={unlockPoc} />
-            <Follower eventId={eventId} enquiryId={enquiryId} myActivity={modalContent?.myActivity.filter((users: any) => users.activityType === "FOLLOW")} />
+            <EventPoc
+              open={openPocDetails}
+              eventId={eventId}
+              setExpandedTab={setExpandedTab}
+              pocData={pocData}
+              unlockPoc={unlockPoc}
+            />
+            <Follower
+              eventId={eventId}
+              enquiryId={enquiryId}
+              myActivity={modalContent?.myActivity.filter(
+                (users: any) => users.activityType === "FOLLOW"
+              )}
+            />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-            {singleEventData && 
-              expandedTab === 'notes' ? (
-                <Notes
-                  eventId={singleEventData?.basic?.id}
-                  enquiryId={enquiryId}
-                  stage={stage}
-                />
-              ) : expandedTab === 'poc' ?
-              <PocExpanded eventId={eventId} pocData={pocData} unlockPoc={unlockPoc} /> : <Loading />
-            }
+            {singleEventData && expandedTab === "notes" ? (
+              <Notes
+                eventId={singleEventData?.basic?.id}
+                enquiryId={enquiryId}
+                stage={stage}
+              />
+            ) : expandedTab === "poc" ? (
+              <PocExpanded
+                eventId={eventId}
+                pocData={pocData}
+                unlockPoc={unlockPoc}
+              />
+            ) : (
+              <Loading />
+            )}
           </div>
         </div>
       </div>

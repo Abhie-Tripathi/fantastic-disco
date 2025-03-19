@@ -1,68 +1,50 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { ArrowLeft, Globe, Share, Location, StarFill } from "geist-icons";
-import { Phone } from "geist-icons";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Heading from "@/components/new-ui/Heading";
+import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
+import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
+import { Overview } from "@/components/gtmDetail/overview";
 import Text from "@/components/new-ui/Text";
-import "react-circular-progressbar/dist/styles.css";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import Link from "next/link";
-import Disable from "/public/disable.svg";
-import { Ranking, Event, TTabs } from "@/types/events";
+import Loading from "@/components/ui/Loading";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Bookmark,
-  CalendarDays,
-  CircleSlash,
-  Forward,
-  MailIcon,
-  MapPin,
-  PhoneIcon,
-  Radio,
-  Share2,
-} from "lucide-react";
-
-import { useEventsService } from "@/services/eventsService";
-import { EventPOCDetails } from "@/types/events";
-import Loading from "@/components/ui/Loading";
 import { Badge } from "@/components/ui/badge";
-import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
-import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
-import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
-import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
-import { renderFormattedDates } from "@/utils/dateFormat";
-// import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
+import { Button as ButtonUI } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "react-aria-components";
-import { Button as ButtonUI } from "@/components/ui/button";
 import { useCoordinateService } from "@/services/coordinateService";
+import { useEventsService } from "@/services/eventsService";
+import { Event, EventPOCDetails, TTabs } from "@/types/events";
+import { renderFormattedDates } from "@/utils/dateFormat";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ArrowLeft, Globe, Location } from "geist-icons";
+import {
+  CalendarDays,
+  MailIcon,
+  MapPin,
+  PhoneIcon,
+  Radio,
+  Share2,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "react-aria-components";
+import "react-circular-progressbar/dist/styles.css";
 
-// export interface RankingDetail {
-//   above5CountryEvent: countryRank[] | [];
-//   below5CountryEvent: countryRank[] | [];
-//   above5CategoryEvent: categoryRank[] | [];
-//   below5CategoryEvent: categoryRank[] | [];
-//   above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-//   below5CountryCategoryEvent: countryCategoryRank[] | [];
-// }
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
-  const scrollableSectionRef = useRef<HTMLElement | null>(null);
-  const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
   const {
     getEventDetailById,
@@ -71,7 +53,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
-    getEventSponsorDetails,
+    // getEventSponsorDetails,
     getEventCoOrganizerDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
@@ -85,7 +67,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionDataResult,
         eventExhibitorDataResult,
         eventSpeakerDataResult,
-        eventSponsorDataResult,
+        // eventSponsorDataResult,
         eventCoOrganizerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
@@ -94,7 +76,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventEditionDetails(params.eventId, 10, 0),
         getEventExhibitorDetails(params.eventId, 3, 0),
         getEventSpeakerDetails(params.eventId, 3, 0),
-        getEventSponsorDetails(params.eventId, 3, 0),
+        // getEventSponsorDetails(params.eventId, 3, 0),
         getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
@@ -125,10 +107,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           ? eventSpeakerDataResult.value
           : null;
 
-      const eventSponsorData =
-        eventSponsorDataResult.status === "fulfilled"
-          ? eventSponsorDataResult.value
-          : null;
+      // const eventSponsorData =
+      //   eventSponsorDataResult.status === "fulfilled"
+      //     ? eventSponsorDataResult.value
+      //     : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
@@ -137,11 +119,21 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionData: eventEditionData,
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
-        eventSponsorData: eventSponsorData,
+        // eventSponsorData: eventSponsorData,
       };
     },
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (window.history.length > 1) {
+        setShowBackToSearch(true);
+      } else {
+        setShowBackToSearch(false);
+      }
+    }
+  }, []);
 
   if (isLoading) {
     return <Loading className="absolute right-1/2 top-1/2" />;
@@ -153,13 +145,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const {
     eventData,
-    eventPOCData,
     eventRankingDetails,
     eventCoOrganizerDetails,
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
-    eventSponsorData,
+    // eventSponsorData,
   } = event;
   const { basic, advance, insights, audience }: Event = eventData || {};
 
@@ -167,6 +158,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     id,
     name,
     bannerUrl,
+    logoUrl: eventLogoUrl,
     startDateTime,
     endDateTime,
     organizer,
@@ -175,31 +167,26 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventLocation,
     status,
     rating,
-    // above5CategoryEvent,
-    // below5CategoryEvent,
-    // above5CountryEvent,
-    // below5CountryEvent,
-    // above5CountryCategoryRankEvent,
-    // below5CountryCategoryEvent,
   } = basic || {};
 
-  const {
-    scores,
-    rankings,
-    repeatSentiment: trustScore,
-    exhibitorsCount,
-    speakersCount,
-    sponsorsCount,
-  } = insights || {};
+  const { scores, trustScore, exhibitorsCount, speakersCount, sponsorsCount } =
+    insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
-    logoUrl,
+    logoUrl: organizerLogoUrl,
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
 
+  const filteredScores =
+    scores &&
+    Object.fromEntries(
+      Object.entries(scores).filter(([key, _]) => key !== "impactScore")
+    );
+
   const isInsightVisible =
-    (scores && Object.values(scores).every((value) => value !== null)) ||
+    (filteredScores &&
+      Object.values(filteredScores).every((value) => value !== null)) ||
     (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
     (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
 
@@ -234,11 +221,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     ? format(new Date(endDateTime), "dd MMM yyyy")
     : "";
 
-  const formattedDate =
-    eventStartDate === eventEndDate
-      ? eventStartDate
-      : `${eventStartDate} - ${eventEndDate}`;
-
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
 
@@ -262,6 +244,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
     return "";
   })();
+
+  const eventImageSrc =
+    eventLogoUrl ||
+    `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${
+      website || ""
+    }&size=64`;
 
   const handleShare = () => {
     if (navigator.share) {
@@ -293,7 +281,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
-      const data = await coordinateService.unlockPocDetail(pocId, id);
+      const data = await coordinateService.unlockPocDetail({
+        pocId,
+        unmask: "email,phone",
+        target: "EVENT",
+        source: "eventPage",
+        targetId: id,
+      });
       if (data) {
         setEventPOCDetails((prevPocData) =>
           prevPocData.map((poc) =>
@@ -316,51 +310,19 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
-          <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span
-            className="text-[var(--primary-color)] font-medium"
-            onClick={() => router.back()}
-          >
-            Back to Search
-          </span>
-        </Button>
-        {bannerUrl && (
-          <Image
-            src={bannerUrl ?? "/eventDetailFallback.png"}
-            alt="eventDetails"
-            width={420}
-            height={280}
-            className="max-h-[300px] w-fill rounded-lg"
-          />
+        {showBackToSearch && (
+          <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+            <ArrowLeft width="14px" height="14px" color="#6750A4" />
+            <span
+              className="text-[var(--primary-color)] font-medium"
+              onClick={() => router.back()}
+            >
+              Back to Search
+            </span>
+          </Button>
         )}
-
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center gap-1">
-            {rating !== null && rating > 0 && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="flex items-center gap-1 cursor-pointer">
-                      <StarFill width="16px" height="16px" color="#FFB224" />
-                      <span>{rating}</span>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align="end"
-                    alignOffset={-50}
-                    className="tooltip-content-styles"
-                  >
-                    <p className="text-[var(--secondary-text-color)] font-medium">
-                      User Ratings
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-
-          <div className="ml-auto flex gap-4 items-center">
+        <div className="flex items-center py-4">
+          <div className="flex gap-4 items-center">
             {website && (
               <Link href={website} target="_blank" rel="noopener noreferrer">
                 <Globe width="16px" height="16px" color="#666666" />
@@ -371,47 +333,90 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </button>
           </div>
         </div>
-
-        <div className="flex flex-row gap-3 flex-wrap">
-          {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
-            <ul className="flex flex-row flex-wrap gap-3">
-              {basic.eventTypes.map((type: any) => (
-                <TooltipProvider key={type.id}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <li className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer">
-                        {type.name}
-                      </li>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      align="center"
-                      className="tooltip-content-styles"
-                    >
-                      <p className="text-[var(--secondary-text-color)] font-medium">
-                        Event Type
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-            </ul>
+        <div className="flex mt-0 lg:mt-4 gap-4 items-start flex-col lg:flex-row">
+          {!website && !eventLogoUrl ? (
+            <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+              </span>
+            </div>
+          ) : (
+            <img
+              src={eventImageSrc}
+              alt="eventDetails"
+              className="h-24 w-full lg:w-24 rounded-lg aspect-auto border object-contain"
+            />
           )}
-          {/* {isBranded && (
-            <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
-              Branded Event
-            </span>
-          )}
-          {isSeries && (
-            <span className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]">
-              Series Event
-            </span>
-          )} */}
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-row gap-3 flex-wrap">
+                {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
+                  <ul className="flex flex-row flex-wrap gap-3">
+                    {basic.eventTypes.map((type: any) => (
+                      <TooltipProvider key={type.id}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant={"outline"}
+                              className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer"
+                            >
+                              {type.name}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            align="center"
+                            className="tooltip-content-styles"
+                          >
+                            <p className="text-[var(--secondary-text-color)] font-medium">
+                              Event Type
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </ul>
+                )}
+                {/* {isBranded && (
+                  <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
+                    Branded Event
+                  </span>
+                )}
+                {isSeries && (
+                  <span className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]">
+                    Series Event
+                  </span>
+                )} */}
+              </div>
+              <div className="flex items-center gap-1">
+                {rating !== null && rating > 0 && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge
+                          variant="outline"
+                          className="text-gray-600 capitalize py-1 rounded-sm"
+                        >
+                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <span className="mt-[2px]">{rating}</span>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        align="center"
+                        alignOffset={-50}
+                        className="tooltip-content-styles"
+                      >
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          User Ratings
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
+            </div>
+            {name && <p className="text-lg font-medium">{name}</p>}
+          </div>
         </div>
-        {name && (
-          <Heading as="h6" variant="titleNoMargin" className="py-2">
-            {name}
-          </Heading>
-        )}
 
         <div className="flex gap-2 items-center my-4">
           {startDateTime && (
@@ -476,13 +481,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p className="text-sm text-[var(--primary-text-color)] cursor-pointer font-semibold">
+                      <p className="text-sm text-[var(--primary-text-color)] w-fit cursor-pointer font-semibold">
                         TBA
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent className="tooltip-content-styles">
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-60}
+                      className="tooltip-content-styles"
+                    >
                       <p className="text-[var(--secondary-text-color)]">
-                        To be announced
+                        Venue to be announced
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -517,8 +526,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <div className="flex gap-4 p-2 mb-1">
                   <img
                     src={
-                      logoUrl
-                        ? logoUrl
+                      organizerLogoUrl
+                        ? organizerLogoUrl
                         : `https://img.10times.com/userimages/${name
                             .charAt(0)
                             .toLowerCase()}.jpg`
@@ -541,31 +550,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   </div>
                 </div>
               ) : (
-                <p className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No organizer found
+                <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                  Organization information will appear here
                 </p>
               )}
-              {eventCoOrganizerDetails.length > 0 ? (
-                <div className="flex items-center gap-2 border-t-[1px] p-2">
-                  <Text fontWeight="medium" color="secondary">
-                    Co-organizer
-                  </Text>
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
-                    {eventCoOrganizerDetails.length > 0 &&
-                    eventCoOrganizerDetails.length < 9
-                      ? `0${eventCoOrganizerDetails.length}`
-                      : eventCoOrganizerDetails.length}
-                  </span>
-                </div>
-              ) : (
-                organizer && (
-                  <p className="text-[#666666] text-sm flex items-center gap-2 border-t-[1px] p-2">
-                    <Image src={Disable} alt="Disable" width={15} height={15} />
-                    No Co-organizers found
-                  </p>
-                )
-              )}
+              {eventCoOrganizerDetails &&
+                eventCoOrganizerDetails.length > 0 && (
+                  <div className="flex items-center gap-2 border-t-[1px] p-2">
+                    <Text fontWeight="medium" color="secondary">
+                      Co-organizer
+                    </Text>
+                    <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                      {eventCoOrganizerDetails.length > 0 &&
+                      eventCoOrganizerDetails.length < 9
+                        ? `0${eventCoOrganizerDetails.length}`
+                        : eventCoOrganizerDetails.length}
+                    </span>
+                  </div>
+                )}
               {eventCoOrganizerDetails.length > 0 &&
                 eventCoOrganizerDetails.map((coOrganizer: any) => (
                   <div
@@ -708,8 +710,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 })
               ) : (
                 <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                  <CircleSlash width={15} height={15} />
-                  No POC found
+                  POC information will appear here
                 </p>
               )}
             </AccordionContent>
@@ -767,8 +768,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </ul>
 
         <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
-          <EventInfoAndMap
-            eventDetails={basic}
+          <Overview
+            eventDetails={eventData}
             scrollSection={tabs[0].path}
             setActiveTab={setActiveTab}
           />
@@ -791,15 +792,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               eventDetails={eventData}
               eventExhibitorData={eventExhibitorData}
               eventSpeakerData={eventSpeakerData}
-              eventSponsorData={eventSponsorData}
+              // eventSponsorData={eventSponsorData}
               scrollSection={tabs[2].path}
               setActiveTab={setActiveTab}
             />
           )}
         </section>
-        {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>
-      {/* <div className="flex flex-row h-screen gap-10 relative"></div> */}
     </div>
   );
 };

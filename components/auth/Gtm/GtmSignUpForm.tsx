@@ -1,23 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useAuthContext } from "@/context/auth";
-import Link from "next/link";
-import { SignUpFormSchema } from "@/types/signup";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { industryData, sessionKeys } from "@/data/onboarding";
-import { useFilterState } from "@/hooks/useFilterState";
-import { newCategories } from "@/data/categories";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertTriangle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import IndustryCards from "./IndustryCards";
-import CategoryCards from "./CategoryCards";
+import { baseUrl } from "@/constants";
+import { useAuthContext } from "@/context/auth";
+import { newCategories } from "@/data/categories";
+import { industryData, sessionKeys } from "@/data/onboarding";
+import { useFilterState } from "@/hooks/useFilterState";
+import { SignUpFormSchema } from "@/types/signup";
 import { GAEvent } from "@/utils/GAEvent";
+import { myFetch } from "@/utils/myFetch";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
+import CategoryCards from "./CategoryCards";
+import IndustryCards from "./IndustryCards";
+import GoogleIcon from "/public/google.svg";
+import LinkedinIcon from "/public/linkedin.svg";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -27,7 +30,6 @@ const GtmSignUpForm = () => {
   const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -62,9 +64,6 @@ const GtmSignUpForm = () => {
     }
     if (signUpDTOData && signUpDTOData.industry) {
       sessionStorage.setItem("industry", signUpDTOData.industry);
-    }
-    if (signUpDTOData && signUpDTOData.email) {
-      sessionStorage.setItem("userEmail", signUpDTOData.email);
     }
     sessionStorage.setItem("flow", "signUp");
 
@@ -177,13 +176,32 @@ const GtmSignUpForm = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
+        Create your account
+      </p>
+      {/* <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
+        <Button variant={"outline"} className="flex items-center justify-between">
+          <Image
+            src={GoogleIcon}
+            alt="Google Icon"
+            className="w-5 h-5"
+          />
+          <span className="flex-1">Continue with Google</span>
+        </Button>
+        <Button variant={"outline"} className="flex items-center">
+          <Image
+            src={LinkedinIcon}
+            alt="Google Icon"
+            className="w-5 h-5"
+          />
+          <span className="flex-1">Continue with LinkedIn</span>
+        </Button>
+      </div>
+      <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-6 w-full mt-4"
       >
-        <p className="font-semibold text-lg leading-6 text-center">
-          Create your account
-        </p>
         <Controller
           name="email"
           control={control}
@@ -255,10 +273,10 @@ const GtmSignUpForm = () => {
         <Button
           type="submit"
           className="w-80 self-center"
-          disabled={isLoading}
+          disabled={isSubmitting}
           onClick={() => clearErrors()}
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing up...

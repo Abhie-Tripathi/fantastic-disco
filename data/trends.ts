@@ -1,4 +1,4 @@
-import { SubColumn } from "./trendsTableColHead";
+import { ColumnDropdown, SubColumn } from "./trendsTableColHead";
 
 export const Trends: any[] = [
   {
@@ -15,36 +15,46 @@ export const Trends: any[] = [
   },
 ];
 
-export const columnsDropdown = [
+export const columnsDropdown: ColumnDropdown[] = [
   {
     label: "Number of events",
     value: "eventCount",
     tooltipDescription: "Count of events per each day",
+    enable: true,
   },
   {
     label: "Predicted Attendance",
     value: "predictedAttendance",
     tooltipDescription: "No of people estimated to attend a event",
+    enable: true,
   },
   {
     label: "Inbound Estimate",
     value: "inboundEstimate",
     tooltipDescription:
       "The number of attendees traveling to the event from other cities within the host country",
+    enable: true,
   },
   {
     label: "International Estimate",
     value: "internationalEstimate",
     tooltipDescription:
       " The number of attendees traveling to the event from outside the host country",
+    enable: true,
   },
   {
     label: "Economic Impact",
     value: "economicImpact",
     tooltipDescription:
       "The estimated amount of money the event contributes to the local economy",
+    enable: false,
   },
-  { label: "Impact Score", value: "impactScore", tooltipDescription: "" },
+  {
+    label: "Impact Score",
+    value: "impactScore",
+    tooltipDescription: "",
+    enable: false,
+  },
 ];
 
 export const subCategories: SubColumn[] = [
@@ -124,3 +134,9 @@ export const trendsNotificationFormDropdown = [
     value: "24hrs",
   },
 ];
+
+export const EVENT_TYPE_GROUPS = {
+  Social: ["festival", "concert", "sport", "performing-arts", "community"],
+  Business: ["tradeshows", "conferences", "workshops"],
+  Holiday: ["holiday"],
+};

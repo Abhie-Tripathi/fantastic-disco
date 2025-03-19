@@ -81,9 +81,9 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <Image width={smallCard ? 250 : 350} height={smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={`${styles.banner} shadow-md`} />
       <div className={styles.details}>
-        <div className={styles.eventName} data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
+        <div className={styles.eventName} data-name={fetchedAddedEvents![0]&& fetchedAddedEvents![0].name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
         <div className={styles.location_dateContainer}>
-          <div className={styles.locationContainer}>
+          <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={fetchedAddedEvents![0] && `${fetchedAddedEvents![0]?.cityName}, ${fetchedAddedEvents![0]?.countryName}`}>
             <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
             <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
           </div>
@@ -94,9 +94,9 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
         </div>
         <div className={styles.type_peopleContainer}>
           <div className={styles.typeContainer}>
-            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
-            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].event_type : "Tradeshow"}</div>
-            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].eventFormat : "In-Person"}</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].event_type : "Tradeshow"}</div>
+            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "PARENT" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "CHILD" ? fetchedAddedEvents![0].eventFormat : "In-Person"}</div>
           </div>
           {/* <div className={styles.circles}>
             <div className={styles.circle} data-name="John Doe">

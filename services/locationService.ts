@@ -77,7 +77,7 @@ export const useLocationService = () => {
   //   );
   // };
 
-  // const saveLocation = (data: SaveLocationDTO) => {
+  // const saveLocation = (data: SaveLocationDTO[]) => {
   //   return api.request(`${endpoints.savedLocations}`, {
   //     method: "POST",
   //     data,

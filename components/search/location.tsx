@@ -27,7 +27,7 @@ export interface GeoLocation {
   locationType: "GeoJSON";
   lat: number;
   lng: number;
-  radius: number;
+  radius: number | null;
   description: string;
 }
 
@@ -51,30 +51,30 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [localSelectedLocation, setLocalSelectedLocation] =
-    useState<Location | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
-  const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
-    useFilterContext();
-
+  const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
+  
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
-    const ids = localFilters?.locationIds?.length
+    const geoCoordinate = localFilters?.viewBound
+      ? JSON.parse(localFilters.viewBound)
+      : null;
+    const locationIds = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
-      : [];
-    const locationIds = ids;
+      : null;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
-        geoCoordinate.latitude,
-        geoCoordinate.longitude
+        geoCoordinate.coordinates.latitude,
+        geoCoordinate.coordinates.longitude
       );
+      
+      
       setSelectedLocation?.({
         locationType: "GeoJSON",
-        lat: geoCoordinate.latitude,
-        lng: geoCoordinate.longitude,
-        radius: geoCoordinate.radius,
-        description: locationName,
+        lat: geoCoordinate.coordinates.latitude,
+        lng: geoCoordinate.coordinates.longitude,
+        radius: geoCoordinate.coordinates.radius,
+        description: geoCoordinate?.properties?.name || locationName,
       });
     } else if (locationIds) {
       const locations = await Promise.all(
@@ -101,7 +101,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     if (pathName === "/internal" && !localFilters.locationIds) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
       );
@@ -112,8 +112,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     return () => {
       if (pathName === "/internal" || pathName === "/internal/search") {
-        console.log("deleting locationIds and geoCoordinates");
-        replaceLocalFilter("geoCoordinates", "locationIds", "");
+        replaceLocalFilter("viewBound", "locationIds", "");
       }
     };
   }, [pathName]);
@@ -122,14 +121,24 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
       const radiusInKm =
-        radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
+        radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
+
+      if (radiusUnit === "mi") {
+        setRadiusUnit("km");
+      }
       replaceLocalFilter(
         "locationIds",
-        "geoCoordinates",
+        "viewBound",
         JSON.stringify({
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
+          boundType: "point",
+          coordinates: {
+            latitude: geoLocation.lat,
+            longitude: geoLocation.lng,
+            radius: radiusInKm,
+          },
+          properties: {
+            name: geoLocation.description,
+          },
         })
       );
       saveLastSearchedLocation(geoLocation);
@@ -139,13 +148,13 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       selectedLocation.length > 0
     ) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
       saveLastSearchedLocation(selectedLocation);
     } else {
-      deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
+      deleteMultipleLocalFilters(["locationIds", "viewBound"]);
       clearLastSearchedLocation();
     }
     setIsOpen(false);
@@ -228,7 +237,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
               <AutocompleteInput
                 multiple
                 type="LocationId"
-                placeholder="E.g. Bangalore, Karnataka"
+                placeholder="E.g. Bengaluru, Karnataka"
                 onSelect={setSelectedLocation}
                 value={
                   selectedLocation && Array.isArray(selectedLocation)
@@ -264,7 +273,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
                     id="radius"
                     type="number"
                     className="mt-1"
-                    value={(selectedLocation as GeoLocation)?.radius}
+                    value={(selectedLocation as GeoLocation)?.radius || ""}
                     onChange={(e) =>
                       setSelectedLocation?.((prev) =>
                         prev
@@ -345,7 +354,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             defaultOpen
             multiple
             type="LocationId"
-            placeholder="E.g. Bangalore, Karnataka"
+            placeholder="E.g. Bengaluru, Karnataka"
             onSelect={setSelectedLocation}
             value={
               selectedLocation && Array.isArray(selectedLocation)

@@ -1,21 +1,4 @@
 "use client";
-import { InformationFill } from "geist-icons";
-import {
-  ChevronLeftCircle,
-  CircleChevronLeft,
-  CircleChevronRight,
-  CircleSlash,
-} from "lucide-react";
-import DetailDialog from "../eventDetail/modal";
-import PastEditions from "../eventDetail/pastEditions";
-import { capitalize } from "lodash";
-import { Event, EventEditionDetailResponse } from "@/types/events";
-import { Heading } from "../eventDetail/heading";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
-import { format } from "date-fns";
 import {
   Carousel,
   CarouselApi,
@@ -24,9 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card } from "../ui/card";
-import { useEffect, useState } from "react";
-import { renderFormattedDates } from "@/utils/dateFormat";
 import {
   Tooltip,
   TooltipContent,
@@ -34,6 +14,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
+import { Event, EventEditionDetailResponse } from "@/types/events";
+import { format } from "date-fns";
+import { capitalize } from "lodash";
+import { CircleSlash } from "lucide-react";
+import { useEffect, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Heading } from "../eventDetail/heading";
+import DetailDialog from "../eventDetail/modal";
+import PastEditions from "../eventDetail/pastEditions";
 import Restriction from "../eventDetail/restriction";
 
 interface Props {
@@ -53,15 +43,6 @@ const CarouselComponent = ({
   eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }) => {
-  // const {
-  //   maturity,
-  //   frequency,
-  //   isEventBrand: isBranded,
-  //   isEventSeries: isSeries,
-  //   rehostDate,
-  //   futureExpectedEndDate,
-  //   futureExpectedStartDate,
-  // } = eventDetails || {};
   const { maturity, frequency, isBranded, isSeries, rehostDate } =
     eventDetails || {};
   const { maturityLevels, frequencies, forcastedStatus, globalAndTourings } =
@@ -73,13 +54,13 @@ const CarouselComponent = ({
   const hasMaturityOption =
     maturityLevels &&
     maturityLevels.options.find(
-      (option: { label: string }) => option.label === maturity
+      (option: { id: string }) => option.id === maturity
     );
 
   const hasFrequencyOption =
     frequencies &&
     frequencies.options.find(
-      (option: { label: string }) => option.label === frequency
+      (option: { id: string }) => option.id === frequency
     );
 
   const hasSeriesEvent =
@@ -159,7 +140,7 @@ const CarouselComponent = ({
                 </TooltipProvider>
                 {isMaturityEnabled ? (
                   maturity ? (
-                    <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-full xl:w-24 text-center">
+                    <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-24 text-center">
                       {maturity.charAt(0).toUpperCase() +
                         maturity.slice(1, maturity.length)}
                     </span>
@@ -208,16 +189,11 @@ const CarouselComponent = ({
                   </Tooltip>
                 </TooltipProvider>
                 {editions && (
-                  // <span className="text-[#6750A4] bg-[#E6E6F9] flex items-center h-7 font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-not-allowed">
-                  //   {`${editions} Edition${
-                  //     editions && editions > 1 ? "s" : ""
-                  //   }`}
-                  // </span>
                   <DetailDialog
                     titleColor="text-[var(--primary-text-color)]"
                     title={"No. of Editions"}
                     triggerText={`${count} Edition${count || 0 > 1 ? "s" : ""}`}
-                    className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-full xl:w-fit text-center cursor-pointer"
+                    className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-pointer"
                   >
                     <PastEditions eventId={eventId} />
                   </DetailDialog>
@@ -257,7 +233,7 @@ const CarouselComponent = ({
                 <div className="flex gap-4 flex-wrap">
                   {isFrequencyEnabled ? (
                     frequency ? (
-                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
+                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-28 text-center">
                         {capitalize(frequency)}
                       </span>
                     ) : (
@@ -345,7 +321,7 @@ const CarouselComponent = ({
                   <>
                     {isBranded && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
+                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-32 ${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
                       >
@@ -354,7 +330,7 @@ const CarouselComponent = ({
                     )}
                     {isSeries && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
+                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-32${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
                       >
@@ -388,14 +364,6 @@ export const AdvancedDetails = ({
   const { morphedData } = useFilterContext();
   const { maturity, editions, frequency, isBranded, isSeries, rehostDate } =
     eventDetails || {};
-  // const {
-  //   maturity,
-  //   frequency,
-  //   futureExpectedStartDate,
-  //   isEventBrand: isBranded,
-  //   isEventSeries: isSeries,
-  // } = eventDetails || {};
-  // const { editions } = eventEditionData;
   return (
     (maturity ||
       editions ||

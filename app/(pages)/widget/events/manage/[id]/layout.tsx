@@ -74,7 +74,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }
             const eventData = data?.data;
             // if (!eventData) return null;
-            console.log("fetchedd", data)
             const eventObject: EventsType = {
                 eventId: eventId, // Use eventId from the URL param
                 name: data?.name || "",
@@ -193,7 +192,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         //         body: customizeData,
         //     }
         // );
-        const data = await deleteEvent(customizeData)
+        const data = await deleteEvent(eventId)
         if (data) {
             router.push("/widget/events")
         }
@@ -244,10 +243,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
                 {addEventModal && <div className={styles.addEventModal}>
-                    <AddEvent fetchedSubEvents={fetchedSubEvents} fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "MAIN" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
+                    <AddEvent fetchedSubEvents={fetchedSubEvents} fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "PARENT" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
                 </div>}
                 {deleteModal && <div className={styles.deleteModal}>
-                    <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
+                    <div className={styles.deleteHeading}>Are you sure you want to delete this event?...</div>
                     <span>{fetchedEvent?.name}</span>
                     <div className={styles.btns}>
                         <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>

@@ -4,14 +4,14 @@ import {
   FilterConfiguration,
   InterestConfiguration,
   InterestConfigurationResponse,
-  OutreachConfiguration,
+  OutreachConfigurationResponse,
 } from "@/types/configuration";
 
 export const useConfigurationService = () => {
   const api = useApi();
 
   const getFilterConfiguration = async () => {
-    return api.request<FilterConfiguration>(
+    return api.request<{ filter: FilterConfiguration }>(
       endpoints.configuration.filterConfiguration
     );
   };
@@ -23,7 +23,7 @@ export const useConfigurationService = () => {
   };
 
   const getOutreachConfiguration = async () => {
-    return api.request<OutreachConfiguration>(
+    return api.request<OutreachConfigurationResponse>(
       endpoints.configuration.outreachConfiguration
     );
   };

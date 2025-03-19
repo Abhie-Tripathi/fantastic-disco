@@ -20,24 +20,22 @@ import { Search, X } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEvents } from "@/hooks/useEvents";
+import { useRouter } from "next/navigation";
 
 export default function MultiSelectSearchBar() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { getLocalFilterValue } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const { getEvents, isLoading, error } = useEventsService();
+  const { getEvents, isLoading } = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
       const eventPromises = eventIds.map((id) =>
-        getEvents({eventIds: id}).then((response) => response?.events[0])
+        getEvents({ eventIds: id }).then((response) => response?.events[0])
       );
       try {
         const events = await Promise.all(eventPromises);
@@ -59,10 +57,11 @@ export default function MultiSelectSearchBar() {
     debounce(async (value: string) => {
       if (value) {
         try {
-          const response = await getEvents({query: value});
+          const response = await getEvents({ query: value });
           const filteredResults =
             (response?.events as Event[])?.filter(
-              (event) => !selectedItems.some((item) => item.basic.id === event.basic.id)
+              (event) =>
+                !selectedItems.some((item) => item.basic.id === event.basic.id)
             ) || [];
           setSearchResults(filteredResults);
         } catch (err) {
@@ -98,7 +97,9 @@ export default function MultiSelectSearchBar() {
     (item: Event) => {
       setSelectedItems((prev) => {
         const newSelectedItems = [...prev, item];
-        const eventIds = newSelectedItems.map((event) => event.basic.id).join(",");
+        const eventIds = newSelectedItems
+          .map((event) => event.basic.id)
+          .join(",");
 
         const newParams = new URLSearchParams();
         if (eventIds) {
@@ -121,7 +122,9 @@ export default function MultiSelectSearchBar() {
         const newSelectedItems = prev.filter(
           (item) => item.basic.id !== itemToRemove.basic.id
         );
-        const eventIds = newSelectedItems.map((event) => event.basic.id).join(",");
+        const eventIds = newSelectedItems
+          .map((event) => event.basic.id)
+          .join(",");
 
         // Create a new URLSearchParams object
         const newParams = new URLSearchParams();
@@ -184,7 +187,7 @@ export default function MultiSelectSearchBar() {
             className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
             align="start"
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
@@ -192,9 +195,9 @@ export default function MultiSelectSearchBar() {
               <CommandEmpty>
                 {isLoading ? "Searching..." : "No results found."}
               </CommandEmpty>
-              {error && (
+              {/* {error && (
                 <div className="p-2 text-red-500">Error: {error.message}</div>
-              )}
+              )} */}
               <CommandGroup>
                 <CommandList>
                   {searchResults.map((event, index) => (

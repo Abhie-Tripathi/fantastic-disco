@@ -11,7 +11,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ArrowUpDown, ChevronDown, Info } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  ChevronDown,
+  Info,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { useFilterState } from "@/hooks/useFilterState";
 
@@ -21,22 +27,22 @@ interface SortOption {
 }
 
 const sortOptions: SortOption[] = [
+  { value: "score", label: "Popularity" },
   { value: "title", label: "Title" },
   { value: "start", label: "Start Date" },
   { value: "end", label: "End Date" },
-  { value: "added", label: "Date Added" },
+  { value: "added", label: "Newly Added" },
   { value: "updated", label: "Last Updated" },
-  { value: "visitors", label: "Visitors" },
-  { value: "exhibitors", label: "Exhibitors" },
-  { value: "duration", label: "Duration" },
+  { value: "visitors", label: "Estimated Visitors" },
+  { value: "exhibitors", label: "Estimated Exhibitors" },
+  // { value: "duration", label: "Duration" },
+  // { value: "impactScore", label: "Impact Score" },
   { value: "inboundScore", label: "Inbound Score" },
-  { value: "impactScore", label: "Impact Score" },
   { value: "internationalScore", label: "International Score" },
-  { value: "inboundEstimate", label: "Inbound Estimate" },
-  { value: "internationalEstimate", label: "International Estimate" },
+  // { value: "inboundEstimate", label: "Inbound Estimate" },
+  // { value: "internationalEstimate", label: "International Estimate" },
   { value: "distance", label: "Distance" },
   { value: "status", label: "Status" },
-  { value: "score", label: "Score" },
 ];
 
 interface SortDropdownProps {
@@ -45,11 +51,15 @@ interface SortDropdownProps {
   onSort?: (value: string) => void;
 }
 
-const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => {
+const SortDropdown = ({
+  compact = false,
+  value,
+  onSort,
+}: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-  
-  const sortParam = value || getFilterValue("sortBy") || "score";
+
+  const sortParam = value || getFilterValue("sortBy") || "-score";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
@@ -71,7 +81,7 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
   };
 
   useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "score";
+    const newSortParam = value || getFilterValue("sortBy") || "-score";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
   }, [getFilterValue, value]);
@@ -82,15 +92,26 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
         {compact ? (
           <Button 
             variant="ghost" 
-            size="sm" 
-            className="h-7 w-7 p-0"
+            size="xs" 
+            className="h-8 px-3 flex items-center gap-2"
           >
-            <ArrowUpDown className="h-4 w-4 text-primary" />
+            {sortOrder === "asc" ? (
+              <ArrowUp className="h-4 w-4" />
+            ) : (
+              <ArrowDown className="h-4 w-4" />
+            )}
+            <span className="text-sm">
+              {sortOptions.find(option => option.value === sortField)?.label || 'Sort'}
+            </span>
           </Button>
         ) : (
           <Button variant="outline" className="flex items-center gap-2">
             <span className="flex items-center gap-1">
-              <ArrowUpDown className="h-4 w-4" />
+              {sortOrder === "asc" ? (
+                <ArrowUp className="h-4 w-4" />
+              ) : (
+                <ArrowDown className="h-4 w-4" />
+              )}
               {getCurrentSortLabel()}
               <ChevronDown className="h-4 w-4" />
             </span>
@@ -99,7 +120,9 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-4" align="end">
         <div className="flex flex-col gap-3">
-            <span className="text-sm font-medium text-secondary-foreground">Sort by</span>
+          <span className="text-sm font-medium text-secondary-foreground">
+            Sort by
+          </span>
 
           <Select value={sortField} onValueChange={setSortField}>
             <SelectTrigger>

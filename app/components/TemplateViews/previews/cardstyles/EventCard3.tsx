@@ -73,7 +73,7 @@ const EventCard3 = ({
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
                 <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={`${styles.banner} shadow-md`} />
-                <div className={styles.event_type}>{fetchedEvent?.eventType === "MAIN" ? "Main Event" : fetchedEvent?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
+                <div className={styles.event_type}>{fetchedEvent?.eventType === "PARENT" ? "Main Event" : fetchedEvent?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
                 <div className={styles.type}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
             </div>
             <div className={styles.evet_name_cont}>
@@ -87,7 +87,7 @@ const EventCard3 = ({
             </div>
            
             <div className={styles.location_dateContainer}>
-                <div className={styles.locationContainer}>
+                <div className={`${styles.locationContainer} ${styles.location}`} data-name={fetchedEvent &&`${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`} >
                     <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
                     <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                 </div>

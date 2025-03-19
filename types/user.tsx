@@ -26,7 +26,13 @@ export interface UserResponse {
   category: string | null;
   designation: string | null;
   department: string | null;
+  companyId?: string;
   userLocation?: UserLocation;
 }
 
 export type UserLocation = Location | NominatimSearchResult;
+
+export interface MembershipData {
+  membership: number | null;
+  endDate: string | null;
+}
