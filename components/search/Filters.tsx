@@ -421,7 +421,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) 
           <ChevronLeft className="w-4 h-4  group-hover:text-primary transition-colors" />
         )}
       </button>
-      <div className={`overflow-y-auto h-[calc(100vh-60px)] flex flex-col ${source !== "tracker" ? "pt-4 pl-6" : ""}`}>
+      <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "pt-4 pl-6 h-[calc(100vh-60px)]" : "h-[calc(100vh-181px)]"}`}>
         {source!=="tracker" &&
         <div className="pb-3 sticky top-0 bg-background z-10">
           <Tabs defaultValue={type} value={type}>

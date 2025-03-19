@@ -1157,8 +1157,8 @@ return (
   <div>{isLoading?<Loading/>:
   <>
   <div
-    className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
-    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex:'5' }}
+    className="flex fixed z-[11] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
+    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex:'11' }}
   >
     <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
     <div className="flex items-center gap-2">
