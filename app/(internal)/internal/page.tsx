@@ -26,6 +26,7 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { MembershipData } from "@/types/user";
 import { isEventeli } from "@/config";
 import { TrackerData } from "@/types/dashboard";
+import { useSession } from "next-auth/react";
 
 interface OutreachLastChat {
   eventName: string;
@@ -44,7 +45,6 @@ interface ProfileData {
   department: string;
 }
 const Dashboard = () => {
-
   let role = "sa";
   let outreach = role === "sa";
   let prospect = true;
@@ -78,6 +78,8 @@ const Dashboard = () => {
     department: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const { data, status } = useSession();
+  console.log(data, status);
 
   const { theme } = useTheme();
   const { getParticipentCount, getLatestComment, getEnquiryStatusCount } =
@@ -120,21 +122,27 @@ const Dashboard = () => {
     const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true`);
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
-      const locations = Object.values(tracker.filterValues?.locationIds || {}).map((item: any) => item.displayName);
+      const locations = Object.values(
+        tracker.filterValues?.locationIds || {}
+      ).map((item: any) => item.displayName);
       let transformedData = [];
 
       if (isEventeli) {
-        transformedData = Object.keys(tracker?.groupedEventsCount).map((key) => ({
-          type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: tracker?.groupedEventsCount[key].total || 0,
-          newCount: tracker?.groupedEventsCount[key].new || 0,
-        }));
+        transformedData = Object.keys(tracker?.groupedEventsCount).map(
+          (key) => ({
+            type: key.charAt(0).toUpperCase() + key.slice(1),
+            totalCount: tracker?.groupedEventsCount[key].total || 0,
+            newCount: tracker?.groupedEventsCount[key].new || 0,
+          })
+        );
       } else {
-        transformedData = Object.entries(tracker?.groupedEventsCount || {}).map(([key, value]) => ({
-          type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: Number(value) || 0,
-          newCount: 0,
-        }));
+        transformedData = Object.entries(tracker?.groupedEventsCount || {}).map(
+          ([key, value]) => ({
+            type: key.charAt(0).toUpperCase() + key.slice(1),
+            totalCount: Number(value) || 0,
+            newCount: 0,
+          })
+        );
       }
 
       const value: TrackerData = {
@@ -147,10 +155,10 @@ const Dashboard = () => {
         type: tracker.type,
         eventsCount: transformedData,
       };
-      fetchedTrackers.push(value)
-    })
-    setTrackerData(fetchedTrackers)
-  }
+      fetchedTrackers.push(value);
+    });
+    setTrackerData(fetchedTrackers);
+  };
   // useEffect(()=>{
   //   console.log("tracker data," , trackerData)
   // },[trackerData])

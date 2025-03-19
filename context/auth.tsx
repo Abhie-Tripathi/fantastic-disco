@@ -32,6 +32,7 @@ import {
 import { sessionKeys } from "@/data/onboarding";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
+import { signOut as signOutSSO } from "next-auth/react";
 
 type authContextType = {
   user: UserResponse | null;
@@ -290,6 +291,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signOut = useCallback(async () => {
     setUser(null);
+    signOutSSO({ callbackUrl: "/sigin" });
     deleteLocalStorage();
     localStorage.removeItem("walkthroughCompleted");
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));

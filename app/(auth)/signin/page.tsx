@@ -14,12 +14,14 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
   const { signin, error, isLoading, setError } = useAuthContext();
+  const { data, status } = useSession();
+  console.log(data, status);
 
   const {
     control,
@@ -54,9 +56,9 @@ export default function SignInForm() {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      {/* <div className="flex flex-col gap-4 w-96 mx-auto">
+      <div className="flex flex-col gap-4 w-96 mx-auto">
         <Button
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/internal" })}
           variant={"outline"}
           className="flex items-center justify-between"
         >
@@ -72,7 +74,7 @@ export default function SignInForm() {
           <span className="flex-1">Continue with LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
