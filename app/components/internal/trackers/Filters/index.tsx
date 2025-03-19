@@ -486,9 +486,10 @@ const Pages = () => {
       .filter(value => regex.test(value))
       .join(',');
   
-    const orgNames = customData
+      const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
+      .map(value => value.replace(/[^\w\s]/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -515,7 +516,11 @@ const Pages = () => {
           fetchAISuggestion(promptText);
       }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
+      const speakerCompany = customData
+      .map((item: {}) => Object.values(item)[1] as string | undefined)
+      .filter((value): value is string => value !== undefined) 
+      .map(value => value.replace(/[^\w\s]/g, ''))
+      .join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
       // console.log(speakerName, speakerCompany);
@@ -542,7 +547,11 @@ const Pages = () => {
         fetchAISuggestion(promptText);
       }
       const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
+      const userCompany = customData
+      .map((item: {}) => Object.values(item)[1]) 
+      .filter((value): value is string => value !== undefined && value !== null)
+      .map(value => value.replace(/[^\w\s]/g, '')) 
+      .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
       if(userName.length>0 && userCompany.length>0){

@@ -220,7 +220,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setHideTemplate(!hideTemplate);
   // };
   const [hideTemplate, setHideTemplate] = useState<boolean>(!getFilterValue("showTemplates") || true);
-  const [dataPresent, setDataPresent] = useState(true);
+  const [dataPresent, setDataPresent] = useState(false);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
