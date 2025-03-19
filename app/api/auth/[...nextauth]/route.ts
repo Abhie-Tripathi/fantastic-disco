@@ -57,12 +57,15 @@ const authOptions: NextAuthOptions = {
           token.email = profile.email || "";
           token.picture = profile.image || "";
         }
-        console.log("Token", token);
+      }
+      if (account && account.provider === "linkedin") {
+        if (account && profile) {
+          console.log("Linkedin", account, profile);
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("Token in session function", token);
       if (token) {
         session.user = {
           name: token.name,
@@ -70,7 +73,6 @@ const authOptions: NextAuthOptions = {
           image: token.picture,
         };
       }
-      console.log("Session", session);
       return session;
     },
   },

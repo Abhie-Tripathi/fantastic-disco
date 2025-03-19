@@ -291,13 +291,13 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signOut = useCallback(async () => {
     setUser(null);
-    // signOutSSO({ callbackUrl: "/signin" });
     deleteLocalStorage();
     localStorage.removeItem("walkthroughCompleted");
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     await request(endpoints.auth.logout, {
       method: "POST",
     });
+    signOutSSO({ callbackUrl: "/signin" });
     router.push("/signin");
   }, [request, router]);
 
