@@ -297,7 +297,7 @@ export const AuthContextProvider = ({ children }: any) => {
     await request(endpoints.auth.logout, {
       method: "POST",
     });
-    signOutSSO({ callbackUrl: "/signin" });
+    // signOutSSO({ callbackUrl: "/signin" });
     router.push("/signin");
   }, [request, router]);
 
