@@ -10,6 +10,7 @@ import { RecentSearch } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { useConfigurationService } from "@/services/configurationService";
 import { isEventeli } from "@/config";
+import { getLastSearchWithoutAlert } from "@/utils/recentSearch";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
@@ -132,6 +133,9 @@ export function useDefaultFilters() {
       ? String(recentSearch.filterValues.top)
       : undefined,
     show: recentSearch.filterValues.show?.join(",") ?? undefined,
+    viewBound: recentSearch.filterValues.viewBound
+      ? JSON.stringify(recentSearch.filterValues.viewBound)
+      : undefined,
   });
 
   const generateShowParam = (filters: any): string => {
@@ -371,9 +375,16 @@ export function useDefaultFilters() {
         recentSearchResponse.recentSearches[0].filterValues
       ) {
         const params = new URLSearchParams(searchParams.toString());
-        const recentFilterParams = mapRecentSearchToParams(
-          recentSearchResponse.recentSearches[0]
-        );
+        let recentSearch: any = {};
+        if (isEventeli) {
+          recentSearch = getLastSearchWithoutAlert(
+            recentSearchResponse.recentSearches
+          );
+          console.log(recentSearch);
+        } else {
+          recentSearch = recentSearchResponse.recentSearches[0];
+        }
+        const recentFilterParams = mapRecentSearchToParams(recentSearch);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });

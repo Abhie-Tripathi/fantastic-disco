@@ -42,6 +42,7 @@ import { useTrackerContext } from "@/context/tracker";
 import { isEventeli } from "@/config";
 import { Button } from "../ui/button";
 import * as Flags from "country-flag-icons/react/3x2";
+import { groupedEventTypes } from "@/constants";
 
 interface CircularProgressProps {
   value: number | null;
@@ -134,7 +135,9 @@ export default function EventAccordion({
     .trim()
     .split(",")
     .filter(Boolean);
-  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread")
+    .split(",")
+    .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
@@ -544,23 +547,29 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.basic.categories?.map((tag, index) => (
-                    <TooltipProvider key={index}>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
-                          >
-                            {tag.name}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Category</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ))}
+                  {!(
+                    isEventeli &&
+                    groupedEventTypes.social.includes(
+                      event.basic.primaryEventType
+                    )
+                  ) &&
+                    event.basic.categories?.map((tag, index) => (
+                      <TooltipProvider key={index}>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              {tag.name}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Category</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
                   {showValues.includes(Show.rating) &&
                   event.basic.rating &&
                   event.basic.rating > 0 ? (
@@ -801,7 +810,7 @@ const EventListItem = ({
                   )}
 
                   {showValues.includes(Show.rating) &&
-                    event.insights?.reputationScore  && (
+                    event.insights?.reputationScore && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
