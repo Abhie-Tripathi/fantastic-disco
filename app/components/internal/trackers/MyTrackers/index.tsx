@@ -88,7 +88,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     
     if(result){
       console.log(result);
-      
+      setDataPresent(true);
         setAllTracker(result?.trackers);   
             
       setSingleTrackerData(result.trackers[0]);
