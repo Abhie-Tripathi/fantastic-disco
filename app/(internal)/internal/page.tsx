@@ -78,8 +78,6 @@ const Dashboard = () => {
     department: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const { data, status } = useSession();
-  console.log(data, status);
 
   const { theme } = useTheme();
   const { getParticipentCount, getLatestComment, getEnquiryStatusCount } =
