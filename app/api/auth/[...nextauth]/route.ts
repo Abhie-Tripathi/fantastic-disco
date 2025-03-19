@@ -55,7 +55,7 @@ const authOptions: NextAuthOptions = {
           token.id = profile.sub || token.sub || "";
           token.name = profile.name || "";
           token.email = profile.email || "";
-          token.picture = profile.picture || "";
+          token.picture = profile.image || "";
         }
         console.log("Token", token);
       }
