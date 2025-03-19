@@ -67,7 +67,279 @@ interface FilterItem {
   filterName?: string;
 }
 
-const filters: {
+const gtmFilters: {
+  [key: string]: FilterSection[];
+} = {
+  events: [
+    {
+      id: "basic-filters",
+      label: "Basic Filters",
+      filters: [
+        {
+          id: "eventTypes",
+          component: "EventTypeSelector",
+          enabled: true,
+        },
+        {
+          id: "categories",
+          component: "CategorySelector",
+          enabled: true,
+        },
+        {
+          id: "eventFormats",
+          component: "EventFormatSelector",
+          enabled: true,
+        },
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          enabled: true,
+        },
+        {
+          id: "dateRange",
+          component: "DateRangeSelector",
+          enabled: true,
+        },
+        {
+          id: "status",
+          component: "StatusSelector",
+          enabled: true,
+        },
+        {
+          id: "entryType",
+          component: "EventEntrySelector",
+          enabled: true,
+        },
+        {
+          id: "ratings",
+          component: "UserRatingSelector",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "advanced-details",
+      label: "Advanced Details",
+      filters: [
+        {
+          id: "eventIds",
+          component: "EditionSelector",
+          enabled: true,
+        },
+        {
+          id: "brand",
+          component: "GlobalAndTouringSelector",
+          enabled: true,
+        },
+        {
+          id: "status",
+          component: "ForecastedStatusSelector",
+          enabled: true,
+        },
+        {
+          id: "frequencies",
+          component: "FrequencySelector",
+          enabled: true,
+        },
+        {
+          id: "productTopics",
+          component: "ProductTopics",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "insights-scores",
+      label: "Insights & Scores",
+      filters: [
+        {
+          id: "estimatedVisitors",
+          component: "EstimatedVisitorsSelector",
+          enabled: true,
+        },
+        {
+          id: "estimatedExhibitors",
+          component: "EstimatedExhibitorsSelector",
+          enabled: !isEventeli,
+        },
+        // {
+        //   id: "eventAnalytics",
+        //   component: "EventAnalyticsSelector",
+        //   enabled: true,
+        // },
+        {
+          id: "economicImpact",
+          component: "EstimatedEconomicImpactSelector",
+          enabled: true,
+        },
+        {
+          id: "eventRanking",
+          component: "EventRankingSelector",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "audience-intel",
+      label: "Audience Intel",
+      filters: [
+        // {
+        //   id: "ratings",
+        //   component: "AudienceQualitySelector",
+        //   enabled: true,
+        // },
+        // {
+        //   id: "ratings",
+        //   component: "ExhibitorQualitySelector",
+        //   enabled: true,
+        // },
+        {
+          id: "audienceSpread",
+          component: "AudienceZoneSatusSelector",
+          enabled: !isEventeli,
+        },
+        {
+          id: "designations",
+          component: "AudienceDesAndDep",
+          enabled: true,
+        },
+        {
+          id: "audienceSpreadRegions",
+          component: "AudienceSpread",
+          enabled: true,
+        },
+      ],
+    },
+  ],
+  companies: [
+    {
+      id: "all-filters",
+      label: "All Filters",
+      filters: [
+        {
+          id: "category",
+          component: "CategorySelector",
+          filterName: "companyCategoryIds",
+          enabled: true,
+        },
+        {
+          id: "location",
+          component: "LocationSelector",
+          filterName: "companyLocationIds",
+          enabled: true,
+        },
+        {
+          id: "product-topics",
+          component: "ProductTopics",
+          filterName: "companyProductIds",
+          enabled: true,
+        },
+        {
+          id: "companyType",
+          component: "CompanyType",
+          enabled: true,
+        },
+        {
+          id: "followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
+
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          filterName: "eventLocationIds",
+          enabled: true,
+        },
+        {
+          id: "followers",
+          component: "EventFollowers",
+          enabled: true,
+        },
+        {
+          id: "userNames",
+          component: "PeopleFilter",
+          filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "AudienceDesAndDep",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+      ],
+    },
+  ],
+  people: [
+    {
+      id: "all-filters",
+      label: "Filters",
+      filters: [
+        {
+          id: "userNames",
+          component: "PeopleFilter",
+          filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "AudienceDesAndDep",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "category",
+          component: "CategorySelector",
+          enabled: true,
+        },
+        {
+          id: "location",
+          component: "LocationSelector",
+          filterName: "companyLocationIds",
+          enabled: true,
+        },
+        {
+          id: "product-topics",
+          component: "ProductTopics",
+          enabled: true,
+        },
+        {
+          id: "followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          filterName: "eventLocationIds",
+          enabled: true,
+        },
+        {
+          id: "followers",
+          component: "EventFollowers",
+          enabled: true,
+        },
+      ],
+    },
+  ],
+} as const;
+
+const geoFilters: {
   [key: string]: FilterSection[];
 } = {
   events: [
@@ -183,16 +455,16 @@ const filters: {
       id: "audience-intel",
       label: "Audience Intel",
       filters: [
-        {
-          id: "ratings",
-          component: "AudienceQualitySelector",
-          enabled: true,
-        },
-        {
-          id: "ratings",
-          component: "ExhibitorQualitySelector",
-          enabled: true,
-        },
+        // {
+        //   id: "ratings",
+        //   component: "AudienceQualitySelector",
+        //   enabled: true,
+        // },
+        // {
+        //   id: "ratings",
+        //   component: "ExhibitorQualitySelector",
+        //   enabled: true,
+        // },
         {
           id: "audienceSpread",
           component: "AudienceZoneSatusSelector",
@@ -245,7 +517,7 @@ const filters: {
           filterName: "communitySize",
           enabled: true,
         },
-        
+
         {
           id: "locationIds",
           component: "LocationSelector",
@@ -338,6 +610,8 @@ const filters: {
     },
   ],
 } as const;
+
+const filters = isEventeli ? geoFilters : gtmFilters;
 
 const getFilterComponent = (componentName: string) => {
   const components: { [key: string]: React.ComponentType<any> } = {
@@ -520,9 +794,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                               />
                             </div>
                             {!filter.enabled && (
-                              <LockClosedSmall 
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" 
-                              />
+                              <LockClosedSmall className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
                             )}
                           </div>
                         );

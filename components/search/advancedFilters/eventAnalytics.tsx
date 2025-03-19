@@ -45,13 +45,13 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
 
   const categories = useMemo(
     () => [
-      {
-        name: "Impact Score",
-        range: [
-          Number(localFilters.impact_score_gte || 0),
-          Number(localFilters.impact_score_lte || 100),
-        ] as [number, number],
-      },
+      // {
+      //   name: "Impact Score",
+      //   range: [
+      //     Number(localFilters.impact_score_gte || 0),
+      //     Number(localFilters.impact_score_lte || 100),
+      //   ] as [number, number],
+      // },
       {
         name: "Inbound Score",
         range: [
