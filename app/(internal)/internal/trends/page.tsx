@@ -350,6 +350,7 @@ const EventTrends = () => {
                     setSmartInsightState={setSmartInsightState}
                     data={tableData && tableData.length > 0 ? tableData : []}
                     tableColumns={tableColumns || []}
+                    holidayByDates={holidaysByDate}
                   />
                 </div>
               </div>
