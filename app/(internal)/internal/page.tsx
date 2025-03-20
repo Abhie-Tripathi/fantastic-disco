@@ -26,7 +26,6 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { MembershipData } from "@/types/user";
 import { isEventeli } from "@/config";
 import { TrackerData } from "@/types/dashboard";
-import { useSession } from "next-auth/react";
 
 interface OutreachLastChat {
   eventName: string;

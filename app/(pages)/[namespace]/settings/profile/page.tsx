@@ -75,7 +75,6 @@ const Profile = () => {
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const { getMyProfileData, updateMyProfileData, error } = useProfileServices();
-  console.log("dfsdfsdfsdf",profileData,user)
   const fetchData = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
     const data: any = await getMyProfileData();
@@ -92,12 +91,11 @@ const Profile = () => {
       }else{
         setName(data.firstname);
       }
-     
       setMobileNo(data.phoneNumber || "");
       setDept(data.department || "");
       setRole(data.designation || "");
-      setProfilePicture(data.profilePicture || null);
-      setProfilePic(data.profilePicture || null);
+      setProfilePicture(data.imageUrl || null);
+      setProfilePic(data.imageUrl || null);
     }
   };
 
@@ -174,12 +172,14 @@ const Profile = () => {
       }else{
         formData.append("lastname", "");
       }
-      formData.append("phoneNumber", mobileNo);
+      if(mobileNo.length !== 0){
+        formData.append("phoneNumber", mobileNo);
+      }
       // formData.append("designation", role);
       // formData.append("department", dept);
-      // if (picFile !== null) {
-      //   formData.append("file", picFile);
-      // }
+      if (picFile !== null) {
+        formData.append("file", picFile);
+      }
 
       // Save data
       setIsSaving(true);
@@ -187,13 +187,14 @@ const Profile = () => {
       if (data) {
         showToast("success", "Data saved successfully");
         setProfileData(data.user);
-        fetchData();
+        // setProfilePicture(data.user.imageUrl)
+        // fetchData();
 
         const newUser = {
           ...user,
           firstname: data.user.firstname || "",
           lastname: data.user.lastname || "",
-          profilePicture:data.user.profilePicture
+          imageUrl:data.user.imageUrl || null
 
         };
         window.localStorage.setItem("user", JSON.stringify(newUser));
@@ -250,12 +251,12 @@ const Profile = () => {
     formData.append("phoneNumber", mobileNo);
     // formData.append("designation", role);
     // formData.append("department", dept);
-    // formData.append("removePicture", "true");
+    formData.append("removePicture", "true");
     const data: any = await updateMyProfileData({ formData });
     if (data) {
       const newUser = {
         ...user,
-        profilePicture:null
+        imageUrl:null
 
       };
       window.localStorage.setItem("user", JSON.stringify(newUser));
@@ -326,7 +327,7 @@ const Profile = () => {
                         onClick={() => {
                           handleUploadClick();
                         }}
-                        disabled
+                        // disabled
                       >
                         <Upload className="mr-2 h-4 w-4" />
                         Upload Image
@@ -335,7 +336,7 @@ const Profile = () => {
                         variant="outline"
                         size="sm"
                         onClick={handleRemove}
-                        disabled
+                        // disabled
                       >
                         Remove
                       </Button>
