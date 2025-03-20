@@ -269,23 +269,23 @@ const SavedTrendCard = ({
           <p className="font-bold">{name}</p>
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
             <MapPin width={14} height={14} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
+            <span className="rounded-full border-primary bg-white text-primary font-medium w-40 truncate">
               {displayName}
             </span>
             {locationCount > 0 && <span>+{locationCount}</span>}
           </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
             <Calendar width={13} height={13} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium">
+            <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
               {renderFormattedDates(startDate, endDate)}
             </span>
           </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm ">
             <BriefcaseBusiness width={13} height={13} color="#000000" />
             {savedTrendEventTypes.length > 0 && (
-              <span className="rounded-full border-primary bg-white text-primary font-medium">
+              <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
                 {savedTrendEventTypes[0]}
               </span>
             )}
