@@ -75,7 +75,6 @@ const Profile = () => {
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const { getMyProfileData, updateMyProfileData, error } = useProfileServices();
-  console.log("dfsdfsdfsdf",profileData,user)
   const fetchData = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
     const data: any = await getMyProfileData();

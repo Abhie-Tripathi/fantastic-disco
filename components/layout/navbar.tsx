@@ -113,19 +113,19 @@ export default function Navbar() {
   // }, [user]);
 
 
-  const [storedUser, setStoredUser] = useState(() => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  });
+  const [storedUser, setStoredUser] = useState<any>(null);
 
   useEffect(() => {
+    // Ensure this code runs only on the client side
+    const user = localStorage.getItem("user");
+    setStoredUser(user ? JSON.parse(user) : null);
+
     const handleStorageChange = () => {
-      const user = localStorage.getItem("user");
-      setStoredUser(user ? JSON.parse(user) : null);
+      const updatedUser = localStorage.getItem("user");
+      setStoredUser(updatedUser ? JSON.parse(updatedUser) : null);
     };
 
     window.addEventListener("storage", handleStorageChange);
-
     const interval = setInterval(handleStorageChange, 1000);
 
     return () => {
