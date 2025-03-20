@@ -39,7 +39,7 @@ export const useEventsService = () => {
       };
     }
 
-    if (isEventeli && (!params.locationIds && !params.viewBound) && !params.eventIds) {
+    if (isEventeli && (!params.locationIds && !params.viewBound) && !params.eventIds && !params.query) {
       throw new Error("Location is required");
     }
     const response = await api.request<EventResponse>(endpoints.event.events, {

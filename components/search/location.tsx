@@ -53,7 +53,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
-
+  
   const fetchUrlLocation = async () => {
     const geoCoordinate = localFilters?.viewBound
       ? JSON.parse(localFilters.viewBound)
@@ -67,6 +67,8 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         geoCoordinate.coordinates.latitude,
         geoCoordinate.coordinates.longitude
       );
+      
+      
       setSelectedLocation?.({
         locationType: "GeoJSON",
         lat: geoCoordinate.coordinates.latitude,
@@ -75,13 +77,16 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         description: geoCoordinate?.properties?.name || locationName,
       });
     } else if (locationIds) {
-      const location = await getLocationDetails(locationIds.join(","));
-      const locations = locationIds.map((id) => ({
-        locationType: "LocationID",
-        id,
-        description: location?.formattedLocations.find((loc) => loc.id === id)
-          ?.displayName,
-      }));
+      const locations = await Promise.all(
+        locationIds.map(async (id) => {
+          const location = await getLocationDetails(id);
+          return {
+            locationType: "LocationID",
+            id,
+            description: location?.formattedLocations[0]?.displayName,
+          };
+        })
+      );
       setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);

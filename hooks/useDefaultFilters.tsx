@@ -3,7 +3,7 @@ import { useAuthContext } from "@/context/auth";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname, useRouter } from "next/navigation";
 import { endOfMonth, startOfMonth, addMonths } from "date-fns";
-import { columnsDropdown } from "@/data/trends";
+import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
 import { sessionService } from "@/services/sessionService";
 import { useEventsService } from "@/services/eventsService";
 import { RecentSearch } from "@/types/events/recentSearches";
@@ -22,9 +22,25 @@ export function useDefaultFilters() {
   const router = useRouter();
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
-  const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+  const allowedEventTypes = isEventeli
+    ? Object.values(EVENT_TYPE_GROUPS).reduce(
+        (acc, curr) => acc.concat(curr),
+        []
+      )
+    : Object.values(EVENT_TYPE_GROUPS.Business);
   const defaultTrendsParams = {
     locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
+    viewBound: {
+      boundType: "point",
+      coordinates: {
+        latitude: 40.7127281,
+        longitude: -74.0060152,
+        radius: 20,
+      },
+      properties: {
+        name: "New York City Hall, 260, Broadway, Lower Manhattan, Manhattan, New York County, New York, 10000, United States",
+      },
+    },
     active_gte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
     ).toISOString(), // Starting date of current month going on.
@@ -153,6 +169,15 @@ export function useDefaultFilters() {
     return showItems.join(",");
   };
 
+  const cleanEventTypes = (eventTypesString: string | null): string[] => {
+    return eventTypesString
+      ? eventTypesString
+          .split(",")
+          // .map((type) => type.trim())
+          .filter((type) => type !== "" && type !== "alert")
+      : [];
+  };
+
   /**
    * This function generates and returns URL search parameters for event trends.
    * The parameters are set using the following priority:
@@ -168,8 +193,16 @@ export function useDefaultFilters() {
     const trendsParams = new URLSearchParams(params);
     const eventTypesParams = trendsParams.get("eventTypes");
     const locationIdsParams = trendsParams.get("locationIds");
+    const viewBoundParams = trendsParams.get("viewBound");
     const startDateParams = trendsParams.get("active_gte");
     const endDateParams = trendsParams.get("active_lte");
+    const recentSearchEventTypesArray =
+      recentFilterParams &&
+      recentFilterParams.eventTypes &&
+      cleanEventTypes(recentFilterParams.eventTypes);
+
+    const eventTypesParamsArray =
+      eventTypesParams && cleanEventTypes(eventTypesParams);
     let startDate = "",
       endDate = "";
 
@@ -206,12 +239,13 @@ export function useDefaultFilters() {
 
     // Determine event types based on priority: URL params > recent filters > default.
     const eventTypes =
-      (eventTypesParams && eventTypesParams.split(",")) ||
-      (recentFilterParams &&
-        recentFilterParams.eventTypes &&
-        recentFilterParams.eventTypes.split(",")) ||
+      (eventTypesParamsArray &&
+        eventTypesParamsArray.length > 0 &&
+        eventTypesParamsArray) ||
+      (recentSearchEventTypesArray &&
+        recentSearchEventTypesArray.length > 0 &&
+        recentSearchEventTypesArray) ||
       defaultTrendsParams.eventTypes;
-
     // Determine location IDs based on priority.
     const locationIds =
       locationIdsParams ||
@@ -220,6 +254,14 @@ export function useDefaultFilters() {
         recentFilterParams.locationIds !== "" &&
         recentFilterParams.locationIds) ||
       defaultTrendsParams.locationIds;
+
+    const viewBound =
+      viewBoundParams ||
+      (recentFilterParams &&
+        recentFilterParams.viewBound &&
+        recentFilterParams.viewBound !== "" &&
+        recentFilterParams.viewBound) ||
+      defaultTrendsParams.viewBound;
 
     // Filter event types based on allowed types.
     const filteredEventTypes =
@@ -286,7 +328,15 @@ export function useDefaultFilters() {
     if (formattedEndDate) {
       trendsParams.set("active_lte", formattedEndDate);
     }
-    if (locationIds) {
+    if (viewBoundParams || locationIdsParams) {
+      if (viewBoundParams) {
+        trendsParams.set("viewBound", viewBound);
+      }
+      if (locationIdsParams) {
+        trendsParams.set("locationIds", locationIds);
+      }
+    }
+    if (!viewBoundParams && !locationIdsParams) {
       trendsParams.set("locationIds", locationIds);
     }
     return trendsParams;
@@ -360,7 +410,6 @@ export function useDefaultFilters() {
           recentSearch = getLastSearchWithoutAlert(
             recentSearchResponse.recentSearches
           );
-          console.log(recentSearch);
         } else {
           recentSearch = recentSearchResponse.recentSearches[0];
         }
