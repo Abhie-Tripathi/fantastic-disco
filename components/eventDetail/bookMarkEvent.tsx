@@ -68,7 +68,7 @@ export function BookMarkEvent({
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: eventsKeys.all });
+            queryClient.invalidateQueries({ queryKey: ["eventDetailData"] });
             setSavedEventCount(savedEventCount + 1);
             setIsOpen(false);
             toast({
@@ -78,17 +78,12 @@ export function BookMarkEvent({
             });
           },
           onError: (error) => {
-            // toast({
-            //   title: "Error",
-            //   description: "Failed to record your interest. Please try again.",
-            //   variant: "destructive",
-            // });
-            setIsOpen(false);
             toast({
-              title: "Success",
-              description: "Your interest has been recorded",
-              variant: "default",
+              title: "Error",
+              description: "Failed to record your interest. Please try again.",
+              variant: "destructive",
             });
+            setIsOpen(false);
           },
         }
       );

@@ -6,7 +6,6 @@ import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { Overview } from "@/components/gtmDetail/overview";
-import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
 import Loading from "@/components/ui/Loading";
 import {
@@ -30,26 +29,23 @@ import { Event, EventPOCDetails, TTabs } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { ArrowLeft, Globe, Location, StarFill } from "geist-icons";
+import { ArrowLeft, Globe, Location } from "geist-icons";
 import {
   CalendarDays,
   ChevronRight,
-  CircleSlash,
   MailIcon,
   MapPin,
   MessageSquareMore,
   PhoneIcon,
   Radio,
   Share2,
-  Star,
+  Star
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
-import Disable from "/public/disable.svg";
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
@@ -69,11 +65,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventCoOrganizerDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
-  const { data: event, isLoading } = useQuery<any>({
+  const { data: eventData, isLoading } = useQuery<any>({
+    queryKey: ["eventDetailData"],
+    queryFn: () => getEventDetailById(params.eventId),
+    refetchOnWindowFocus: false,
+  });
+  const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
       const [
-        eventDataResult,
+        // eventDataResult,
         eventPOCDataResult,
         eventRankingDetailsResult,
         eventEditionDataResult,
@@ -82,7 +83,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         // eventSponsorDataResult,
         eventCoOrganizerDataResult,
       ] = await Promise.allSettled([
-        getEventDetailById(params.eventId),
+        // getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
         getEventsRankingDetailsById(params.eventId),
         getEventEditionDetails(params.eventId, 10, 0),
@@ -91,8 +92,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         // getEventSponsorDetails(params.eventId, 3, 0),
         getEventCoOrganizerDetails(params.eventId),
       ]);
-      const eventData =
-        eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
+      // const eventData =
+      //   eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
       const eventPOCData =
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
@@ -124,7 +125,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       //     ? eventSponsorDataResult.value
       //     : null;
       return {
-        eventData: eventData,
+        // eventData: eventData,
         eventPOCData: eventPOCData,
         eventCoOrganizerDetails: eventCoOrganizerData,
         eventRankingDetails: eventRankingDetails,
@@ -156,7 +157,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   }
 
   const {
-    eventData,
+    // eventData,
     eventRankingDetails,
     eventCoOrganizerDetails,
     eventEditionData,
