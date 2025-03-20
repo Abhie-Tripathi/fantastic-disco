@@ -113,19 +113,19 @@ export default function Navbar() {
   // }, [user]);
 
 
-  const [storedUser, setStoredUser] = useState(() => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  });
+  const [storedUser, setStoredUser] = useState<any>(null);
 
   useEffect(() => {
+    // Ensure this code runs only on the client side
+    const user = localStorage.getItem("user");
+    setStoredUser(user ? JSON.parse(user) : null);
+
     const handleStorageChange = () => {
-      const user = localStorage.getItem("user");
-      setStoredUser(user ? JSON.parse(user) : null);
+      const updatedUser = localStorage.getItem("user");
+      setStoredUser(updatedUser ? JSON.parse(updatedUser) : null);
     };
 
     window.addEventListener("storage", handleStorageChange);
-
     const interval = setInterval(handleStorageChange, 1000);
 
     return () => {
@@ -299,7 +299,18 @@ export default function Navbar() {
                   className="flex items-center bg-transparent p-1 "
                 >
                   <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {generateProfileName()}
+                    {/* {generateProfileName()} */}
+                    {storedUser?.imageUrl === null ? (
+                        <>{generateProfileName()}</>
+                      ) : (
+                        <Image
+                          src={storedUser?.imageUrl}
+                          alt="profile pic"
+                          width={76}
+                          height={76}
+                          className="rounded-full"
+                        />
+                      )}
                   </div>
                 </Button>
               </DropdownMenuTrigger>
