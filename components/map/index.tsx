@@ -146,15 +146,15 @@ export default function MapComponent({
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
 
   const location = useMemo(() => {
-    const geoCoordinates = getLocalFilterValue("viewBound");
+    const geoCoordinates = getFilterValue("viewBound");
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
           ? trackerLoc
           : "defaultLoc"
-        : getLocalFilterValue("locationIds").length === 0
+        : getFilterValue("locationIds").length === 0
         ? "defaultLoc"
-        : getLocalFilterValue("locationIds");
+        : getFilterValue("locationIds");
     if (locationIds === "defaultLoc")
       setViewport({
         ...viewport,
@@ -174,9 +174,8 @@ export default function MapComponent({
       source === "tracker"
         ? ["eventCounts", trackerId, currentZoomGroup, eventType]
         : source === "tracker_global"
-        ? ["eventCounts", searchParams]
-        : ["eventCounts", currentZoomGroup, searchParams, location],
-
+        ? ["eventCounts", searchParams.toString()]
+        : ["eventCounts", currentZoomGroup, searchParams.toString(), location],
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", eventType);
@@ -186,6 +185,7 @@ export default function MapComponent({
           ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
+        console.log(Object.fromEntries(searchParams.entries()));
         return response || [];
       }
     },
@@ -432,7 +432,7 @@ export default function MapComponent({
           }))
         : [],
     };
-  }, [eventCountsQuery.data, currentZoomGroup]);
+  }, [eventCountsQuery.data, currentZoomGroup, location]);
 
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
@@ -614,7 +614,8 @@ export default function MapComponent({
   };
 
   if (
-    isEventeli && source!=="tracker" &&
+    isEventeli &&
+    source !== "tracker" &&
     !searchParams.get("viewBound") &&
     !searchParams.get("locationIds") &&
     !searchParams.get("eventIds")
