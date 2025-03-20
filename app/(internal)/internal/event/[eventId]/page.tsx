@@ -1,8 +1,12 @@
 "use client";
+import { Notes } from "@/app/components/eventDetail/Notes";
+import PocExpanded from "@/app/components/internal/eventdetail/PocExpanded";
+import { BookMarkEvent } from "@/components/eventDetail/bookMarkEvent";
 import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { Overview } from "@/components/gtmDetail/overview";
+import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
 import Loading from "@/components/ui/Loading";
 import {
@@ -21,28 +25,36 @@ import {
 } from "@/components/ui/tooltip";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
+import { pocDetail } from "@/types/coordinateEventType";
 import { Event, EventPOCDetails, TTabs } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { ArrowLeft, Globe, Location } from "geist-icons";
+import { ArrowLeft, Globe, Location, StarFill } from "geist-icons";
 import {
   CalendarDays,
+  ChevronRight,
+  CircleSlash,
   MailIcon,
   MapPin,
+  MessageSquareMore,
   PhoneIcon,
   Radio,
   Share2,
   Star,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
+import Disable from "/public/disable.svg";
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
+  const eventDetailParams = useSearchParams();
+  const eventDetailView = eventDetailParams.get("view");
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
@@ -152,7 +164,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventSpeakerData,
     // eventSponsorData,
   } = event;
-  const { basic, advance, insights, audience }: Event = eventData || {};
+  const { basic, advance, insights, audience, interests }: Event =
+    eventData || {};
 
   const {
     id,
@@ -422,7 +435,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           {startDateTime && (
             <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
               <span className="text-[#666666] text-md font-bold">
-                {/* {format(new Date(startDateTime), "dd")} */}
                 <CalendarDays width={20} height={20} />
               </span>
             </div>
@@ -436,11 +448,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               eventEndDate &&
               renderFormattedDates(eventStartDate, eventEndDate)}
           </Text>
-          {/* {eventStartTime && eventEndTime && (
-            <Text variant="noMargin" color="secondary">
-              {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
-            </Text>
-          )} */}
           {isCancelled && (
             <Badge
               variant="outline"
@@ -505,9 +512,23 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </span>
           </div>
         )}
+        <BookMarkEvent eventId={basic.id} interests={interests} />
+        <div className="flex gap-6 my-4 justify-center">
+          <ButtonUI
+            type="button"
+            onClick={() => router.push(`/internal/event/${params.eventId}`)}
+            className="flex items-center cursor-pointer justify-between 
+          w-full gap-2 p-2 h-10 bg-[#FAFAFA] hover:bg-[#FAFAFA] text-black dark:text-white 
+          font-normal bg dark:bg-transparent border border-[var(--neutral-light-color)]
+          dark:border-[var(--border-color)] rounded-sm"
+          >
+            <span className="text-sm">Overview</span>
+            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
+          </ButtonUI>
+        </div>
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
+          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
           collapsible
         >
           <AccordionItem value="item-1">
@@ -595,7 +616,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </Accordion>
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm"
+          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
           collapsible
         >
           <AccordionItem value="item-2">
@@ -635,169 +656,210 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               } pb-1 overflow-x-hidden`}
             >
               {eventPOCDetails && eventPOCDetails.length > 0 ? (
-                eventPOCDetails.map((poc: EventPOCDetails | null) => {
-                  if (!poc) {
-                    return <></>;
-                  }
-                  const {
-                    designation,
-                    email,
-                    id,
-                    phoneNumber,
-                    profilePicture,
-                    name,
-                    state,
-                  } = poc;
-                  return (
-                    <div key={id} className="flex flex-row gap-3 p-2">
-                      <img
-                        src={
-                          profilePicture
-                            ? profilePicture
-                            : `https://img.10times.com/userimages/${
-                                name || "".charAt(0).toLowerCase()
-                              }.jpg`
-                        }
-                        alt="POC Logo"
-                        className="rounded-lg shadow-md h-10 w-10"
-                      />
-                      <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                        {name && (
-                          <Text fontWeight="medium" variant="noMargin">
-                            {name}
-                          </Text>
-                        )}
-                        {designation !== null && (
-                          <p className="text-[#666666] text-[12px]">
-                            <span>{designation}</span>
-                          </p>
-                        )}
-                        {email && (
-                          <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                            <MailIcon
-                              width="12px"
-                              height="12px"
-                              className="self-start mt-1"
-                            />
-                            <span className="break-all">{email}</span>
-                          </p>
-                        )}
-                        {phoneNumber && (
-                          <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                            <PhoneIcon width="12px" height="12px" />
-                            <span>{phoneNumber}</span>
-                          </p>
-                        )}
-                        {(email || phoneNumber) && (
-                          <div>
-                            <ButtonUI
-                              disabled={
-                                state && (state === 1 || state === 2)
-                                  ? true
-                                  : false
-                              }
-                              onClick={() => unlockPoc(id)}
-                              variant={"outline"}
-                              size={"sm"}
-                            >
-                              Show details
-                            </ButtonUI>
-                          </div>
-                        )}
+                eventPOCDetails
+                  .slice(0, 5)
+                  .map((poc: EventPOCDetails | null) => {
+                    if (!poc) {
+                      return <></>;
+                    }
+                    const {
+                      designation,
+                      email,
+                      id,
+                      phoneNumber,
+                      profilePicture,
+                      name,
+                      state,
+                    } = poc;
+                    return (
+                      <div key={id} className="flex flex-row gap-3 p-2">
+                        <img
+                          src={
+                            profilePicture
+                              ? profilePicture
+                              : `https://img.10times.com/userimages/${
+                                  name || "".charAt(0).toLowerCase()
+                                }.jpg`
+                          }
+                          alt="POC Logo"
+                          className="rounded-lg shadow-md h-10 w-10"
+                        />
+                        <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                          {name && (
+                            <Text fontWeight="medium" variant="noMargin">
+                              {name}
+                            </Text>
+                          )}
+                          {designation !== null && (
+                            <p className="text-[#666666] text-[12px]">
+                              <span>{designation}</span>
+                            </p>
+                          )}
+                          {email && (
+                            <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                              <MailIcon
+                                width="12px"
+                                height="12px"
+                                className="self-start mt-1"
+                              />
+                              <span className="break-all">{email}</span>
+                            </p>
+                          )}
+                          {phoneNumber && (
+                            <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                              <PhoneIcon width="12px" height="12px" />
+                              <span>{phoneNumber}</span>
+                            </p>
+                          )}
+                          {(email || phoneNumber) && (
+                            <div>
+                              <ButtonUI
+                                disabled={
+                                  state && (state === 1 || state === 2)
+                                    ? true
+                                    : false
+                                }
+                                onClick={() => unlockPoc(id)}
+                                variant={"outline"}
+                                size={"sm"}
+                              >
+                                Show details
+                              </ButtonUI>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
               ) : (
                 <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
                   POC information will appear here
                 </p>
               )}
+              {eventPOCDetails && eventPOCDetails.length > 5 && (
+                <p
+                  onClick={() =>
+                    router.push(`/internal/event/${params.eventId}?view=pocs`)
+                  }
+                  className="p-2 pb-0 w-fit cursor-pointer text-primary font-medium hover:underline hover:underline-offset-2"
+                >
+                  View All ({eventPOCDetails.length})
+                </p>
+              )}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <div className="flex gap-6 mt-4 justify-center">
-          {/* <button className="border border-[#6750A4] rounded-md text-[#6750A4] flex  justify-center py-2 px-4 gap-2 items-center w-full">
-            <Bookmark width={15} height={15} className="w-5 h-5" />
-            Save this event
-          </button> */}
-          {/* <SaveThisEvent eventDetails={eventDetails} /> */}
-          {/* <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full cursor-not-allowed">
-            Add this to tracker
-          </button> */}
-        </div>
-
-        {/* <Button className="mt-4 w-full">Track this event</Button> */}
-      </aside>
-      <div className="ml-auto w-[70%] max-xl:w-[62%]">
-        <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
-          <div className="flex gap-12">
-            {tabs
-              .filter((tab) => tab.isVisible)
-              .map((tab) => (
-                <li
-                  key={tab.tabName}
-                  onClick={() => {
-                    handleScrollTo(tab.path);
-                  }}
-                  className={`relative pb-2 font-semibold cursor-pointer ${
-                    activeTab === tab.path
-                      ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                      : "text-[var(--tertiary-text-color)]"
-                  }`}
-                >
-                  {tab.tabName}
-                </li>
-              ))}
+        <ButtonUI
+          type="button"
+          onClick={() =>
+            router.push(`/internal/event/${params.eventId}?view=notes`)
+          }
+          className="flex items-center cursor-pointer justify-between 
+          w-full gap-2 p-2 h-10 bg-[#FAFAFA] hover:bg-[#FAFAFA] text-black dark:text-white 
+          font-normal bg dark:bg-transparent border border-[var(--neutral-light-color)]
+          dark:border-[var(--border-color)] rounded-sm"
+        >
+          <div className="flex items-center gap-2">
+            <MessageSquareMore width="15" height="15" />
+            <span className="text-sm">Notes & Discussion</span>
           </div>
-          {/* <div className="flex gap-4 pb-2 pr-2">
-            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
-              <Image src={"/dollar.svg"} alt="Dollar" width={10} height={10} />
-              Cost Estimate
-            </button>
-            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
-              <Image
-                src={"/eventRelevance.svg"}
-                alt="Speaker"
-                width={15}
-                height={15}
-              />
-              Event Relevance
-            </button>
-          </div> */}
-        </ul>
-
-        <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
-          <Overview
-            eventDetails={eventData}
-            scrollSection={tabs[0].path}
-            setActiveTab={setActiveTab}
-          />
-          <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
-          <AdvancedDetails
-            eventDetails={advance}
-            eventEditionData={eventEditionData}
+          <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
+        </ButtonUI>
+      </aside>
+      <div
+        className={`ml-auto w-[70%] max-xl:w-[62%] ${
+          eventDetailView === "notes"
+            ? "h-[calc(100vh-100px)] pt-6"
+            : eventDetailView === "pocs"
+            ? "h-[calc(100vh-50px)] pt-6"
+            : ""
+        }`}
+      >
+        {eventDetailView === "notes" ? (
+          <Notes eventId={params.eventId} stage={"COORDINATE"} />
+        ) : eventDetailView === "pocs" ? (
+          <PocExpanded
             eventId={params.eventId}
+            pocData={eventPOCDetails as pocDetail[]}
+            unlockPoc={unlockPoc}
           />
-          {isInsightVisible && (
-            <InsightsAndScores
-              eventDetails={eventData}
-              eventRankingDetails={eventRankingDetails}
-              scrollSection={tabs[1].path}
-              setActiveTab={setActiveTab}
-            />
-          )}
-          {isAudienceVisible && (
-            <AudienceIntel
-              eventDetails={eventData}
-              eventExhibitorData={eventExhibitorData}
-              eventSpeakerData={eventSpeakerData}
-              // eventSponsorData={eventSponsorData}
-              scrollSection={tabs[2].path}
-              setActiveTab={setActiveTab}
-            />
-          )}
-        </section>
+        ) : (
+          <>
+            <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
+              <div className="flex gap-12">
+                {tabs
+                  .filter((tab) => tab.isVisible)
+                  .map((tab) => (
+                    <li
+                      key={tab.tabName}
+                      onClick={() => {
+                        handleScrollTo(tab.path);
+                      }}
+                      className={`relative pb-2 font-semibold cursor-pointer ${
+                        activeTab === tab.path
+                          ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                          : "text-[var(--tertiary-text-color)]"
+                      }`}
+                    >
+                      {tab.tabName}
+                    </li>
+                  ))}
+              </div>
+              {/* <div className="flex gap-4 pb-2 pr-2">
+              <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
+                <Image
+                  src={"/dollar.svg"}
+                  alt="Dollar"
+                  width={10}
+                  height={10}
+                />
+                Cost Estimate
+              </button>
+              <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
+                <Image
+                  src={"/eventRelevance.svg"}
+                  alt="Speaker"
+                  width={15}
+                  height={15}
+                />
+                Event Relevance
+              </button>
+            </div> */}
+            </ul>
+
+            <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
+              <Overview
+                eventDetails={eventData}
+                scrollSection={tabs[0].path}
+                setActiveTab={setActiveTab}
+              />
+              <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
+              <AdvancedDetails
+                eventDetails={advance}
+                eventEditionData={eventEditionData}
+                eventId={params.eventId}
+              />
+              {isInsightVisible && (
+                <InsightsAndScores
+                  eventDetails={eventData}
+                  eventRankingDetails={eventRankingDetails}
+                  scrollSection={tabs[1].path}
+                  setActiveTab={setActiveTab}
+                />
+              )}
+              {isAudienceVisible && (
+                <AudienceIntel
+                  eventDetails={eventData}
+                  eventExhibitorData={eventExhibitorData}
+                  eventSpeakerData={eventSpeakerData}
+                  // eventSponsorData={eventSponsorData}
+                  scrollSection={tabs[2].path}
+                  setActiveTab={setActiveTab}
+                />
+              )}
+            </section>
+          </>
+        )}
       </div>
     </div>
   );
