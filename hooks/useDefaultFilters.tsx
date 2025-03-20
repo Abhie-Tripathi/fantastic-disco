@@ -23,10 +23,7 @@ export function useDefaultFilters() {
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
   const allowedEventTypes = isEventeli
-    ? Object.values(EVENT_TYPE_GROUPS).reduce(
-        (acc, curr) => acc.concat(curr),
-        []
-      )
+    ? [...EVENT_TYPE_GROUPS.Social, ...EVENT_TYPE_GROUPS.Business]
     : Object.values(EVENT_TYPE_GROUPS.Business);
   const defaultTrendsParams = {
     locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
