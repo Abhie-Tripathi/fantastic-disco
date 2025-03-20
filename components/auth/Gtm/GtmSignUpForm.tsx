@@ -12,15 +12,12 @@ import { GAEvent } from "@/utils/GAEvent";
 import { myFetch } from "@/utils/myFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
-import GoogleIcon from "/public/google.svg";
-import LinkedinIcon from "/public/linkedin.svg";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -179,25 +176,6 @@ const GtmSignUpForm = () => {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Create your account
       </p>
-      {/* <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
-        <Button variant={"outline"} className="flex items-center justify-between">
-          <Image
-            src={GoogleIcon}
-            alt="Google Icon"
-            className="w-5 h-5"
-          />
-          <span className="flex-1">Continue with Google</span>
-        </Button>
-        <Button variant={"outline"} className="flex items-center">
-          <Image
-            src={LinkedinIcon}
-            alt="Google Icon"
-            className="w-5 h-5"
-          />
-          <span className="flex-1">Continue with LinkedIn</span>
-        </Button>
-      </div>
-      <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full mt-4"
