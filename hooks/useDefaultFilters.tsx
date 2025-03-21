@@ -162,6 +162,10 @@ export function useDefaultFilters() {
       ).toISOString();
     }
 
+    console.log(recentSearchParams);
+    
+    
+
     return recentSearchParams;
   };
 
@@ -427,6 +431,7 @@ export function useDefaultFilters() {
           recentSearch = recentSearchResponse.recentSearches[0];
         }
         const recentFilterParams = mapRecentSearchToParams(recentSearch);
+        console.log(recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
