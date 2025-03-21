@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import {
   Popover,
   PopoverContent,
@@ -32,19 +32,19 @@ export default function CategorySelector({
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
-  const categories = morphedData.categories.options;
-  const selectedCategories = (getLocalFilterValue(filterName || "categories")
+  const categories = morphedData?.categories?.options || [];
+  const selectedCategories = (getLocalFilterValue(filterName as keyof Filters || "categories")
     ?.split(",")
     ?.filter(Boolean)) || [];
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const isAnyDisabled = useMemo(() => {
-    return categories.some((cat: any) => !cat.isEnabled);
+    return categories?.some((cat: any) => !cat.isEnabled) || false;
   }, [categories]);
 
   const filteredCategories = useMemo(() => {
-    if (!searchQuery) return categories;
+    if (!searchQuery || !categories) return categories || [];
     return categories.filter((cat: any) =>
       cat.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -52,10 +52,14 @@ export default function CategorySelector({
 
   const handleCategoryToggle = useCallback(
     (categorySlug: string) => {
+      if (!categorySlug) return;
+      
       const newCategories = selectedCategories.includes(categorySlug)
         ? selectedCategories.filter((slug) => slug !== categorySlug)
         : [...selectedCategories, categorySlug];
-      setLocalFilter(filterName || "categories", newCategories.join(","));
+      
+      const filterValue = newCategories.length > 0 ? newCategories.join(",") : "";
+      setLocalFilter(filterName as keyof Filters || "categories", filterValue);
     },
     [selectedCategories, setLocalFilter, filterName]
   );
@@ -63,7 +67,7 @@ export default function CategorySelector({
   const handleSelectAll = useCallback(
     (isSelected: boolean) => {
       setLocalFilter(
-        filterName || "categories",
+        filterName as keyof Filters || "categories",
         isSelected
           ? categories
               .filter((cat: any) => cat.isEnabled)
@@ -84,6 +88,8 @@ export default function CategorySelector({
   );
 
   const renderCategories = useCallback(() => {
+    if (!categories) return null;
+    
     const columnCount = 3;
     const allCategories = [
       { id: "all", name: "Select All", slug: "all", isEnabled: true },
@@ -181,7 +187,7 @@ export default function CategorySelector({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
+          className="p-0 w-full"
           align="start"
         >
           <div className="p-4">{renderCategories()}</div>
@@ -205,45 +211,10 @@ export default function CategorySelector({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
+        className="w-full p-0"
         align="start"
       >
-        <Command>
-          <CommandInput
-            placeholder="Search categories..."
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-            className="h-9"
-          />
-          <CommandEmpty>No categories found.</CommandEmpty>
-          <CommandGroup className="max-h-[300px] overflow-auto">
-            <CommandItem
-              onSelect={() => handleSelectAll(!isAllSelected)}
-              className="flex items-center gap-2 px-2 py-1.5"
-            >
-              <Checkbox checked={isAllSelected} className="rounded-none" />
-              <span>Select All</span>
-            </CommandItem>
-            {filteredCategories.map((category: any) => (
-              <CommandItem
-                key={category.slug}
-                onSelect={() => handleCategoryToggle(category.slug)}
-                className={cn(
-                  "flex items-center gap-2 px-2 py-1.5",
-                  !category.isEnabled && "opacity-50"
-                )}
-                disabled={!category.isEnabled || disabled}
-              >
-                <Checkbox
-                  checked={selectedCategories.includes(category.slug)}
-                  className="rounded-none"
-                  disabled={!category.isEnabled || disabled}
-                />
-                <span>{category.name}</span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
+        <div className="p-4">{renderCategories()}</div>
       </PopoverContent>
     </Popover>
   );

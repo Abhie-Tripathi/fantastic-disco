@@ -58,10 +58,10 @@ const EventCard = memo(
       ? event.basic.format === "online"
         ? "Online"
         : [
-            event.basic.eventLocation?.name || "TBA",
-            event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.stateName,
-            event.basic.eventLocation?.countryName,
+            event.basic.eventLocation?.venue?.name || "TBA",
+            event.basic.eventLocation?.city?.name,
+            event.basic.eventLocation?.state?.name,
+            event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")

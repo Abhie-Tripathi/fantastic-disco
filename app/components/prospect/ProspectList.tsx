@@ -281,7 +281,14 @@ export const ProspectList = () => {
         className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
       >
         <div className="flex items-center gap-2">
-          <EventCount view="companies" />
+        <Badge className="bg-primary text-white">
+              {new Intl.NumberFormat("en", {
+                notation: "compact",
+                maximumFractionDigits: 1,
+              }).format(count || 0)}
+            </Badge>
+
+            <p className="text-primary font-semibold">Companies Found</p>
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">

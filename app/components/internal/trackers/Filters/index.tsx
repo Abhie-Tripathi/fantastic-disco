@@ -1660,20 +1660,20 @@ return (
                   {!isEventeli && (
                   <EstimatedExhibitorsSelector/>
                   )}
-                  <EventAnalyticsSelector/>
-                  <EstimatedEconomicImpactSelector/>
+                 {isEventeli && <EventAnalyticsSelector/>}
+                  {isEventeli && <EstimatedEconomicImpactSelector/>}
                   <EventRankingSelector/>
                   </div>
                 </TabsContent>
-                <TabsContent value="audienceIntel">
+                {!isEventeli && <TabsContent value="audienceIntel">
                   <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
-                    <AudienceQualitySelector />
-                    <ExhibitorQualitySelector />
+                    {/* <AudienceQualitySelector />
+                    <ExhibitorQualitySelector /> */}
                     <AudienceZoneSelector/>
                     <AudienceProfileSelector/>
                     <AudienceSpreadSelector/>
                     </div>
-                </TabsContent>
+                </TabsContent>}
           </Tabs>
     </div>
   </Suspense>

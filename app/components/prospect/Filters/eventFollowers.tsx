@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
+import { Filters } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
 const filterData = [
@@ -42,7 +43,7 @@ export default function EventFollowers({ variant = "accordion", filterName = "ev
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue(filterName).split(",").filter(Boolean),
+    () => getLocalFilterValue(filterName as keyof Filters).split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -50,7 +51,7 @@ export default function EventFollowers({ variant = "accordion", filterName = "ev
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-    setLocalFilter(filterName, newRanges.join(","));
+    setLocalFilter(filterName as keyof Filters, newRanges.join(","));
   };
 
   const labels: Record<string, string> = {

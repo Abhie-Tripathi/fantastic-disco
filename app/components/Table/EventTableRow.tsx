@@ -294,19 +294,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.eventLocation?.name ||
+          {event.basic.eventLocation?.venue?.name ||
             (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
       {/* City Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.cityName)}
+        {displayValue(event.basic.eventLocation?.city?.name)}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.countryName)}
+        {displayValue(event.basic.eventLocation?.country?.name)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
@@ -549,7 +549,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )} */}
 
       {/* Inbound Score Column */}
-      {show.includes(Show.scores) &&
+      {isEventeli && show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.inboundScore !== 0 &&
@@ -560,7 +560,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* International Score Column */}
-      {show.includes(Show.scores) &&
+      {isEventeli && show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.internationalScore !== 0 &&
@@ -571,7 +571,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Economic Impact Column */}
-      {show.includes(Show.economicImpact) &&
+      {isEventeli && show.includes(Show.economicImpact) &&
         event.insights?.economicImpact !== undefined && (
           <TableCell className="text-right">
             {formatEstimatedSpend(event.insights.economicImpact)}

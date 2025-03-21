@@ -38,7 +38,6 @@ import Link from "next/link";
 import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
-import { NotificationBell } from "@/components/notifications/notification-bell";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -48,7 +47,6 @@ const gtmroutes: Record<string, string> = {
   outreach: "Outreach",
   trends: "Event Trends",
   settings: "Settings",
-  prospect: "Prospect",
 };
 const geniroutes: Record<string, string> = {
   list: "Widgets",
@@ -80,8 +78,6 @@ export default function Navbar() {
       router.push("/internal");
     } else if (route === "promote") {
       router.push("/widget/dashboard");
-    } else if (route === "prospect") {
-      router.push("/internal/prospect");
     }
   };
 
@@ -210,7 +206,7 @@ export default function Navbar() {
                     <Search className="h-6 w-6" />
                     <span className="text-xs">Plan</span>
                   </Button>
-                  <div className={(pathname.split("/")[2] !== "company" && pathname.split("/")[2] !== "prospect" && pathname.split("/")[2] !== "user" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
+                  <div className={(pathname.split("/")[2] !== "company" && pathname.split("/")[2] !== "user" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
                   </div>
                 </div>
                 <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
@@ -236,7 +232,7 @@ export default function Navbar() {
                   </PopoverTrigger>
                   <PopoverContent className="w-52 p-0" align="end">
                     <div className="grid grid-cols-2 gap-2">
-                      {(pathname.split("/")[1] === "internal" || pathname.split("/")[2] === "prospect") && <Button
+                      {pathname.split("/")[1] === "internal" && <Button
                         onClick={() => handleRoute("promote")}
                         variant="ghost"
                         className="flex flex-col items-center justify-center gap-2 h-auto p-4"
@@ -244,7 +240,7 @@ export default function Navbar() {
                         <Megaphone className="h-6 w-6" />
                         <span className="text-xs">Promote</span>
                       </Button>}
-                      {(pathname.split("/")[1] === "widget" || pathname.split("/")[2] === "prospect") && <Button
+                      {pathname.split("/")[1] === "widget" && <Button
                         onClick={() => handleRoute("research")}
                         variant="ghost"
                         className="flex flex-col items-center justify-center gap-2 h-auto p-4"
@@ -258,7 +254,65 @@ export default function Navbar() {
               </div>
             </>
           )}
-          {/* <NotificationBell /> */}
+          {/* {!isEventeli && (
+            <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 transition-all" />
+              ) : (
+                <Moon className="h-5 w-5  transition-all" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          )} */}
+
+          <div className="hidden lg:block">
+            <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="flex items-center bg-transparent p-1 "
+                >
+                  <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
+                    {/* {generateProfileName()} */}
+                    {storedUser?.imageUrl === null ? (
+                        <>{generateProfileName()}</>
+                      ) : (
+                        <Image
+                          src={storedUser?.imageUrl}
+                          alt="profile pic"
+                          width={76}
+                          height={76}
+                          className="rounded-full"
+                        />
+                      )}
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() => handleClick()}
+                  className="flex items-center cursor-pointer"
+                >
+                  <UserSearch className="h-4 w-4" />
+                  <span className="ml-2">Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleSettingsClick()}
+                  className="flex items-center cursor-pointer"
+                >
+                  <Settings className="h-4 w-4" />
+                  <span className="ml-2">Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut()}
+                  className="flex items-center cursor-pointer"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="ml-2">Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>

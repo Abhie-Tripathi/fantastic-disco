@@ -361,46 +361,6 @@ const Sidebar = () => {
               })}
         </ul>
         <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
-          <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={`w-full ${
-                  isHovered
-                    ? "justify-start px-3"
-                    : "justify-center px-0"
-                } h-10`}
-              >
-                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                  {generateProfileName()}
-                </div>
-                {isHovered && <span className="ml-2">Profile</span>}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem
-                onClick={() => handleClick()}
-                className="flex items-center cursor-pointer"
-              >
-                <UserSearch className="h-4 w-4" />
-                <span className="ml-2">Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSettingsClick()}
-                className="flex items-center cursor-pointer"
-              >
-                <Settings className="h-4 w-4" />
-                <span className="ml-2">Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => signOut()}
-                className="flex items-center cursor-pointer"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="ml-2">Logout</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           {!isEventeli && (
             <Button
               variant="ghost"

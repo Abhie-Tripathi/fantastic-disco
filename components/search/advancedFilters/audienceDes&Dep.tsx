@@ -26,7 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
 
 interface AudienceDesAndDepSelectorProps {
@@ -61,7 +61,7 @@ export default function AudienceDesAndDepSelector({
 
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue(filterName || "designations")
+      getLocalFilterValue(filterName as keyof Filters || "designations")
         ?.split(",")
         .filter(Boolean) || [];
     return designations.filter((d: Designations) =>
@@ -78,7 +78,7 @@ export default function AudienceDesAndDepSelector({
       ? currentDesignations.filter((id) => id !== label.slug)
       : [...currentDesignations, label.slug];
 
-    setLocalFilter(filterName || "designations", newDesignations.join(","));
+    setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
@@ -87,7 +87,7 @@ export default function AudienceDesAndDepSelector({
       .filter((id) => id !== labelId);
     if (currentDesignations)
       setLocalFilter(
-        filterName || "designations",
+        filterName as keyof Filters || "designations",
         currentDesignations.join(",")
       );
   };

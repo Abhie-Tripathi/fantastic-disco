@@ -23,7 +23,7 @@ const maturityLevels = [
 ];
 
 interface EditionProps {
-  source: string;
+  source?: string;
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
 }

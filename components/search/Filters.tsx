@@ -240,12 +240,11 @@ const gtmFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "company-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
         },
-
         {
           id: "locationIds",
           component: "LocationSelector",
@@ -253,7 +252,7 @@ const gtmFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -318,7 +317,7 @@ const gtmFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "people-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
@@ -330,7 +329,7 @@ const gtmFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -512,12 +511,11 @@ const geoFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "company-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
         },
-
         {
           id: "locationIds",
           component: "LocationSelector",
@@ -525,7 +523,7 @@ const geoFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -590,7 +588,7 @@ const geoFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "people-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
@@ -602,7 +600,7 @@ const geoFilters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -729,7 +727,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           </Tabs>
         </div>
 
-        {type === "events" && (
+        {type === "events" && filterCount >= 2 && (
           <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
             <div className="flex items-center gap-2">
               <Image
@@ -741,7 +739,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </div>
             <div className="mt-1 flex items-center justify-between">
               <div className="text-xs text-[#6E6F89]">
-                Let's save this search and help you track efficiently.
+                Let&apos;s save this search and help you track efficiently.
               </div>
               <div className="flex items-center">
                 <Switch
