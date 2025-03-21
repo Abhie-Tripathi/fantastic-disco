@@ -729,27 +729,29 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           </Tabs>
         </div>
 
-        <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
-          <div className="flex items-center gap-2">
-            <Image
-              src={whrbotlogo}
-              alt="WHR bot"
-              className="w-8 h-8 rounded-full"
-            />
-            <div className="text-sm font-medium">WHR bot</div>
-          </div>
-          <div className="mt-1 flex items-center justify-between">
-            <div className="text-xs text-[#6E6F89]">
-              Let's save this search and help you track efficiently.
-            </div>
-            <div className="flex items-center">
-              <Switch
-                checked={trackerModalOpen}
-                onCheckedChange={createTrackerHandler}
+        {type === "events" && (
+          <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
+            <div className="flex items-center gap-2">
+              <Image
+                src={whrbotlogo}
+                alt="WHR bot"
+                className="w-8 h-8 rounded-full"
               />
+              <div className="text-sm font-medium">WHR bot</div>
+            </div>
+            <div className="mt-1 flex items-center justify-between">
+              <div className="text-xs text-[#6E6F89]">
+                Let's save this search and help you track efficiently.
+              </div>
+              <div className="flex items-center">
+                <Switch
+                  checked={trackerModalOpen}
+                  onCheckedChange={createTrackerHandler}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">

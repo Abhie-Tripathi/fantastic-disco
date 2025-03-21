@@ -251,9 +251,6 @@ export const PeopleList = () => {
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getPeopleList(searchParams.toString()),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
   });
   const [companyUsers, setCompanyUsers] = useState<userListData[]>([]);
 
@@ -353,7 +350,7 @@ export const PeopleList = () => {
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
-          <Button
+          {/* <Button
             variant="outline"
             className="flex items-center gap-2"
             disabled
@@ -362,7 +359,7 @@ export const PeopleList = () => {
               <ArrowUpRight className="h-4 w-4" />
               Export
             </span>
-          </Button>
+          </Button> */}
           {/* <SortDropdown /> */}
         </div>
       </div>

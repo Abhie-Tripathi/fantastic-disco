@@ -228,9 +228,6 @@ export const ProspectList = () => {
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => getCompanyList(searchParams.toString()),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
   });
 
   const companies = companyData?.companyData || [];
@@ -288,7 +285,7 @@ export const ProspectList = () => {
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
-          <Button
+          {/* <Button
             variant="outline"
             className="flex items-center gap-2"
             disabled
@@ -297,7 +294,7 @@ export const ProspectList = () => {
               <ArrowUpRight className="h-4 w-4" />
               Export
             </span>
-          </Button>
+          </Button> */}
           {/* <SortDropdown /> */}
         </div>
       </div>
