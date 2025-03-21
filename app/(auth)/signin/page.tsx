@@ -55,7 +55,7 @@ export default function SignInForm() {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      {/* <div className="flex flex-col gap-4 w-96 mx-auto">
+      <div className="flex flex-col gap-4 w-96 mx-auto">
         <Button
           onClick={() => signIn("google", { callbackUrl: "/internal" })}
           variant={"outline"}
@@ -65,7 +65,7 @@ export default function SignInForm() {
           <span className="flex-1">Continue with Google</span>
         </Button>
         <Button
-          onClick={() => signIn("linkedin")}
+          onClick={() => signIn("linkedin", { callbackUrl: "/internal" })}
           variant={"outline"}
           className="flex items-center"
         >
@@ -73,7 +73,7 @@ export default function SignInForm() {
           <span className="flex-1">Continue with LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"

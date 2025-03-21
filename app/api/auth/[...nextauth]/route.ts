@@ -45,7 +45,9 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account && account.provider === "google") {
+        console.log("SignIn callback", { account, profile });
       } else if (account && account.provider === "linkedin") {
+        console.log("SignIn callback", { account, profile });
       }
       return true;
     },

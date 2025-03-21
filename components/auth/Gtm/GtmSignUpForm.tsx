@@ -21,6 +21,7 @@ import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
+import { getSession, signIn, useSession } from "next-auth/react";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -39,6 +40,8 @@ const GtmSignUpForm = () => {
   } = useForm<FormData>({
     resolver: zodResolver(SignUpFormSchema),
   });
+  const { data: session, status } = useSession();
+  console.log(session, status);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -179,25 +182,29 @@ const GtmSignUpForm = () => {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Create your account
       </p>
-      {/* <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
-        <Button variant={"outline"} className="flex items-center justify-between">
-          <Image
-            src={GoogleIcon}
-            alt="Google Icon"
-            className="w-5 h-5"
-          />
-          <span className="flex-1">Continue with Google</span>
-        </Button>
-        <Button variant={"outline"} className="flex items-center">
-          <Image
-            src={LinkedinIcon}
-            alt="Google Icon"
-            className="w-5 h-5"
-          />
-          <span className="flex-1">Continue with LinkedIn</span>
-        </Button>
-      </div>
-      <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p> */}
+      {status === "unauthenticated" && (
+        <>
+          <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
+            <Button
+              onClick={() => signIn("google", { callbackUrl: "/signup" })}
+              variant={"outline"}
+              className="flex items-center justify-between"
+            >
+              <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+              <span className="flex-1">Continue with Google</span>
+            </Button>
+            <Button
+              onClick={() => signIn("linkedin", { callbackUrl: "/signup" })}
+              variant={"outline"}
+              className="flex items-center"
+            >
+              <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+              <span className="flex-1">Continue with LinkedIn</span>
+            </Button>
+          </div>
+          <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+        </>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full mt-4"
@@ -215,7 +222,7 @@ const GtmSignUpForm = () => {
                 type="email"
                 {...field}
                 placeholder="Email"
-                value={field.value || ""}
+                value={field.value || session?.user?.email}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);
