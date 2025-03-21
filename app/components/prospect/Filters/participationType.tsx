@@ -31,7 +31,7 @@ interface ParticipationTypeProps {
   variant?: "accordion" | "popover";
 }
 
-export default function ParticipationType({ variant = "accordion" }: ParticipationTypeProps) {
+export default function ParticipationType({ variant = "popover" }: ParticipationTypeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 

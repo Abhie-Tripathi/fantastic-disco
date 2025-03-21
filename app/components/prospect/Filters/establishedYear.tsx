@@ -33,7 +33,7 @@ interface EstablishedYearProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EstablishedYear({ variant = "accordion" }: EstablishedYearProps) {
+export default function EstablishedYear({ variant = "popover" }: EstablishedYearProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
 

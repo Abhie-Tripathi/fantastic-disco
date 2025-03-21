@@ -25,7 +25,7 @@ interface EstimatedExhibitorsSelectorProps {
 }
 
 export default function EstimatedExhibitorsSelector({ 
-  variant = "accordion" 
+  variant = "popover" 
 }: EstimatedExhibitorsSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();

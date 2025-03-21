@@ -25,7 +25,7 @@ interface PeopleFilterProps {
 
 export default function PeopleFilter({ 
   filterName,
-  variant = "accordion" 
+  variant = "popover" 
 }: PeopleFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { localFilters, setLocalFilter, getLocalFilterValue } = useFilterContext();

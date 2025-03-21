@@ -32,7 +32,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
           </button>
         </div>
       )}
-      <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[38%] max-w-[368px]'}`}>
+      <div className={`transition-all duration-300 sticky top-0 h-[calc(100vh-84px)] overflow-hidden ${isCollapsed ? 'w-0' : 'w-[38%] max-w-[368px]'}`}>
         <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`}>
           <Filters type={type} isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} />
         </div>

@@ -22,7 +22,7 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EventEntrySelector({ variant = "accordion" }: FlexibleComponentProps) {
+export default function EventEntrySelector({ variant = "popover" }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const eventEntries = morphedData?.eventEntries?.options;

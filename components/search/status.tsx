@@ -18,7 +18,7 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function StatusSelector({ variant = "accordion" }: FlexibleComponentProps) {
+export default function StatusSelector({ variant = "popover" }: FlexibleComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();

@@ -32,7 +32,7 @@ interface CompanyTypeProps {
   variant?: "accordion" | "popover";
 }
 
-export default function CompanyType({ variant = "accordion" }: CompanyTypeProps) {
+export default function CompanyType({ variant = "popover" }: CompanyTypeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 

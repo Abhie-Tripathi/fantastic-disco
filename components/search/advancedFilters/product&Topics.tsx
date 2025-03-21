@@ -36,7 +36,7 @@ export default function KeywordFilter({
   suggestions,
   hideSuggestion,
   setHideSuggestion,
-  variant = "accordion"
+  variant = "popover"
 }: KeywordFilterProps) {
   const {
     getLocalFilterValue,

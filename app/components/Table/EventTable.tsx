@@ -188,7 +188,7 @@ const EventTable = ({
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex-1 overflow-hidden rounded-md border bg-background">
-        <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-198px)]"} overflow-auto`}>
+        <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-210px)]"} overflow-auto`}>
           <Table>
             <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
             <TableBody className="overflow-auto">

@@ -1,6 +1,5 @@
 "use client";
 
-import { Buildings, LockClosedSmall, Users } from "geist-icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -9,9 +8,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { FilterX, ChevronLeft, ChevronRight } from "lucide-react";
-import { Filter } from "geist-icons";
-import { useCallback, useState } from "react";
+import {
+  FilterX,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Calendar1,
+  Building,
+  UserSearch,
+  Lock,
+} from "lucide-react";
+import { useCallback, useState, useMemo } from "react";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
@@ -162,16 +169,6 @@ const gtmFilters: {
           component: "EstimatedExhibitorsSelector",
           enabled: !isEventeli,
         },
-        // {
-        //   id: "eventAnalytics",
-        //   component: "EventAnalyticsSelector",
-        //   enabled: true,
-        // },
-        {
-          id: "economicImpact",
-          component: "EstimatedEconomicImpactSelector",
-          enabled: true,
-        },
         {
           id: "eventRanking",
           component: "EventRankingSelector",
@@ -183,16 +180,6 @@ const gtmFilters: {
       id: "audience-intel",
       label: "Audience Intel",
       filters: [
-        // {
-        //   id: "ratings",
-        //   component: "AudienceQualitySelector",
-        //   enabled: true,
-        // },
-        // {
-        //   id: "ratings",
-        //   component: "ExhibitorQualitySelector",
-        //   enabled: true,
-        // },
         {
           id: "audienceSpread",
           component: "AudienceZoneSatusSelector",
@@ -454,16 +441,6 @@ const geoFilters: {
       id: "audience-intel",
       label: "Audience Intel",
       filters: [
-        // {
-        //   id: "ratings",
-        //   component: "AudienceQualitySelector",
-        //   enabled: true,
-        // },
-        // {
-        //   id: "ratings",
-        //   component: "ExhibitorQualitySelector",
-        //   enabled: true,
-        // },
         {
           id: "audienceSpread",
           component: "AudienceZoneSatusSelector",
@@ -660,7 +637,14 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
     useFilterContext();
 
   const { getFilterValue } = useFilterState();
-  const filterCount = Object.keys(localFilters).length;
+
+  const filterCount = useMemo(() => {
+    const excludedFilters = ["active_gte", "active_lte"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
   const searchHandler = useCallback(() => {
@@ -701,7 +685,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                   value="events"
                   className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
                 >
-                  <Buildings width="16px" height="16px" />
+                  <Calendar1 className="w-4 h-4" />
                   Events
                 </TabsTrigger>
               </Link>
@@ -710,7 +694,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                   value="companies"
                   className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
                 >
-                  <Buildings width="16px" height="16px" />
                   Companies
                 </TabsTrigger>
               </Link>
@@ -719,7 +702,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                   value="people"
                   className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
                 >
-                  <Users width="16px" height="16px" />
+                  <UserSearch className="w-4 h-4" />
                   People
                 </TabsTrigger>
               </Link>
@@ -727,32 +710,31 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           </Tabs>
         </div>
 
-        {type === "events" && filterCount >= 2 && (
-          <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
-            <div className="flex items-center gap-2">
-              <Image
-                src={whrbotlogo}
-                alt="WHR bot"
-                className="w-8 h-8 rounded-full"
-              />
-              <div className="text-sm font-medium">WHR bot</div>
-            </div>
-            <div className="mt-1 flex items-center justify-between">
-              <div className="text-xs text-[#6E6F89]">
-                Let&apos;s save this search and help you track efficiently.
-              </div>
-              <div className="flex items-center">
-                <Switch
-                  checked={trackerModalOpen}
-                  onCheckedChange={createTrackerHandler}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
+            {type === "events" && filterCount > 0 && (
+              <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={whrbotlogo}
+                    alt="WHR bot"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div className="text-sm font-medium">WHR bot</div>
+                </div>
+                <div className="mt-1 flex items-center justify-between">
+                  <div className="text-xs text-[#6E6F89]">
+                    Let&apos;s save this search and help you track efficiently.
+                  </div>
+                  <div className="flex items-center">
+                    <Switch
+                      checked={trackerModalOpen}
+                      onCheckedChange={createTrackerHandler}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
             <Accordion
               type="multiple"
               className="space-y-4"
@@ -766,12 +748,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 >
                   <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-gray-50">
                     <div className="text-sm flex gap-2 items-center uppercase font-medium text-gray-700">
-                      <Filter
-                        color="currentColor"
-                        width="14px"
-                        height="14px"
-                        className="text-primary"
-                      />
+                      <Filter className="w-4 h-4" />
                       {section.label}
                     </div>
                   </AccordionTrigger>
@@ -789,12 +766,13 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                           >
                             <div className="w-full">
                               <Component
+                                variant="accordion"
                                 disabled={!filter.enabled}
                                 filterName={filter.filterName}
                               />
                             </div>
                             {!filter.enabled && (
-                              <LockClosedSmall className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                              <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
                             )}
                           </div>
                         );
@@ -817,7 +795,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                     Object.keys(localFilters) as any[]
                   );
                 }}
-                disabled={Object.keys(localFilters).length === 0}
+                disabled={filterCount === 0}
                 className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
               >
                 <FilterX className="w-3.5 h-3.5 mr-1" />

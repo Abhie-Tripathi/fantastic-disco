@@ -26,7 +26,7 @@ interface EventTypeSelectorProps {
 }
 
 export default function EventTypeSelector({
-  variant = "accordion",
+  variant = "popover",
 }: EventTypeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =

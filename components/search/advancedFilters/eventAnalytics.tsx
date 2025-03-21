@@ -30,7 +30,7 @@ interface EventAnalyticsSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EventAnalyticsSelector({ variant = "accordion" }: EventAnalyticsSelectorProps) {
+export default function EventAnalyticsSelector({ variant = "popover" }: EventAnalyticsSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();

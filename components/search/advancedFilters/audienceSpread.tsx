@@ -24,7 +24,7 @@ interface AudienceSpreadSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function AudienceSpreadSelector({ variant = "accordion" }: AudienceSpreadSelectorProps) {
+export default function AudienceSpreadSelector({ variant = "popover" }: AudienceSpreadSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);

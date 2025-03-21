@@ -24,6 +24,7 @@ import {
   UserSearch,
   Search,
   Menu,
+  Bell,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -65,7 +66,7 @@ const geniroutes: Record<string, string> = {
 export default function Navbar() {
   const pathname = usePathname();
   const { user, signOut } = useAuthContext();
-    const { theme } = useTheme();
+  const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const { theme, toggleTheme } = useTheme();
 
@@ -108,7 +109,6 @@ export default function Navbar() {
   //   return "";
   // }, [user]);
 
-
   const [storedUser, setStoredUser] = useState<any>(null);
 
   useEffect(() => {
@@ -138,7 +138,6 @@ export default function Navbar() {
     }
     return "";
   };
- 
 
   const handleSettingsClick = () => {
     if (route === "internal") {
@@ -177,8 +176,8 @@ export default function Navbar() {
             {pathname.split("/")[1] === "internal"
               ? getRoute(pathname.split("/")[2])
               : pathname.split("/").slice(-2)[0] === "edit"
-                ? "Edit Widget"
-                : geniroutes[pathname.split("/").slice(-1)[0]]}
+              ? "Edit Widget"
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="hidden max-[570px]:block">
@@ -206,10 +205,17 @@ export default function Navbar() {
                     <Search className="h-6 w-6" />
                     <span className="text-xs">Plan</span>
                   </Button>
-                  <div className={(pathname.split("/")[2] !== "company" && pathname.split("/")[2] !== "user" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
-                  </div>
+                  <div
+                    className={
+                      pathname.split("/")[2] !== "company" &&
+                      pathname.split("/")[2] !== "user" &&
+                      pathname.split("/")[1] === "internal"
+                        ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]"
+                        : ""
+                    }
+                  ></div>
                 </div>
-                <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
+                <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => handleRoute("promote")}
@@ -219,8 +225,15 @@ export default function Navbar() {
                     <Megaphone className="h-6 w-6" />
                     <span className="text-xs">Promote</span>
                   </Button>
-                  <div className={pathname.split("/")[1] === "widget" ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
+                  <div
+                    className={
+                      pathname.split("/")[1] === "widget"
+                        ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]"
+                        : ""
+                    }
+                  ></div>
                 </div>
+                <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
               </div>
               <div className="hidden max-[570px]:block">
                 <Popover>
@@ -232,22 +245,26 @@ export default function Navbar() {
                   </PopoverTrigger>
                   <PopoverContent className="w-52 p-0" align="end">
                     <div className="grid grid-cols-2 gap-2">
-                      {pathname.split("/")[1] === "internal" && <Button
-                        onClick={() => handleRoute("promote")}
-                        variant="ghost"
-                        className="flex flex-col items-center justify-center gap-2 h-auto p-4"
-                      >
-                        <Megaphone className="h-6 w-6" />
-                        <span className="text-xs">Promote</span>
-                      </Button>}
-                      {pathname.split("/")[1] === "widget" && <Button
-                        onClick={() => handleRoute("research")}
-                        variant="ghost"
-                        className="flex flex-col items-center justify-center gap-2 h-auto p-4"
-                      >
-                        <Search className="h-6 w-6" />
-                        <span className="text-xs">Plan</span>
-                      </Button>}
+                      {pathname.split("/")[1] === "internal" && (
+                        <Button
+                          onClick={() => handleRoute("promote")}
+                          variant="ghost"
+                          className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                        >
+                          <Megaphone className="h-6 w-6" />
+                          <span className="text-xs">Promote</span>
+                        </Button>
+                      )}
+                      {pathname.split("/")[1] === "widget" && (
+                        <Button
+                          onClick={() => handleRoute("research")}
+                          variant="ghost"
+                          className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                        >
+                          <Search className="h-6 w-6" />
+                          <span className="text-xs">Plan</span>
+                        </Button>
+                      )}
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -266,50 +283,74 @@ export default function Navbar() {
           )} */}
 
           <div className="hidden lg:block">
-            <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  className="flex items-center bg-transparent p-1 "
-                >
-                  <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {/* {generateProfileName()} */}
-                    {storedUser?.imageUrl === null ? (
-                        <>{generateProfileName()}</>
-                      ) : (
-                        <Image
-                          src={storedUser?.imageUrl}
-                          alt="profile pic"
-                          width={76}
-                          height={76}
-                          className="rounded-full"
-                        />
-                      )}
-                  </div>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-5 w-5" />
+                  {/* <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
+                    2
+                  </span> */}
+                  <span className="sr-only">Notifications</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => handleClick()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <UserSearch className="h-4 w-4" />
-                  <span className="ml-2">Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleSettingsClick()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <Settings className="h-4 w-4" />
-                  <span className="ml-2">Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => signOut()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="ml-2">Logout</span>
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-80">
+                <div className="flex items-center justify-between px-2 py-1.5 border-b">
+                  <span className="text-sm font-medium">Notifications</span>
+                  {/* <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                  >
+                    Mark all as read
+                  </Button> */}
+                </div>
+                <div className="max-h-[300px] overflow-y-auto">
+                  <div className="px-2 py-2 hover:bg-muted/50 cursor-pointer">
+                    <div className="flex items-start gap-2">
+                      <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-8 h-8 font-medium text-sm">
+                        A
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            Abhinav Tripathi
+                          </span>
+                          {/* <span className="text-xs text-muted-foreground">
+                            2h ago
+                          </span> */}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                          Department is missing from your profile
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-2 py-2 hover:bg-muted/50 cursor-pointer">
+                    <div className="flex items-start gap-2">
+                      <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-8 h-8 font-medium text-sm">
+                        A
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            Abhinav Tripathi
+                          </span>
+                          {/* <span className="text-xs text-muted-foreground">
+                            2h ago
+                          </span> */}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                          Department is missing from your profile
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* <div className="px-2 py-1.5 border-t">
+                  <Button variant="ghost" size="sm" className="w-full h-7 text-xs">
+                    View all notifications
+                  </Button>
+                </div> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

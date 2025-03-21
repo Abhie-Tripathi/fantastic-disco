@@ -23,7 +23,7 @@ interface FlexibleComponentProps {
 }
 
 export default function EventFormatSelector({
-  variant = "accordion",
+  variant = "popover",
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();

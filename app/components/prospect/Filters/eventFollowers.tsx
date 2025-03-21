@@ -38,7 +38,7 @@ interface EventFollowersProps {
   filterName?: string;
 }
 
-export default function EventFollowers({ variant = "accordion", filterName = "eventFollowers" }: EventFollowersProps) {
+export default function EventFollowers({ variant = "popover", filterName = "eventFollowers" }: EventFollowersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 

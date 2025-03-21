@@ -21,7 +21,7 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness, Moon, Sun, UserSearch, Settings, LogOut } from 'lucide-react'
+import { BriefcaseBusiness, Moon, Sun, UserSearch, Settings, LogOut, ChevronDown } from 'lucide-react'
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,13 @@ import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { endOfMonth } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 function Coordinate() {
   return (
     <svg
@@ -128,11 +135,7 @@ const Sidebar = () => {
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search",
-      href: `/internal/search/events?active_lte=${startOfMonth(
-        addMonths(new Date(), 3)
-      ).toISOString().split('T')[0]}&active_gte=${endOfMonth(
-        new Date()
-      ).toISOString().split('T')[0]}`,
+      href: `/internal/search/events`,
       icon: MagnifyingGlass,
     },
     {
@@ -361,17 +364,75 @@ const Sidebar = () => {
               })}
         </ul>
         <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="profile" className="border-none">
+              <AccordionTrigger className={`hover:no-underline  ${!isHovered ? "[&>svg]:hidden" : ""} hover:bg-muted/50 rounded-md transition-colors py-0`}>
+                <div className="flex items-center gap-2">
+                  <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm">
+                    {generateProfileName()}
+                  </div>
+                  {isHovered && (
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-medium">
+                        {storedUser?.firstname} {storedUser?.lastname}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {storedUser?.email}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </AccordionTrigger>
+              {isHovered && (
+                <AccordionContent className="px-3">
+                  <div className="flex flex-col gap-1.5 py-1 mt-2">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
+                      onClick={() => handleClick()}
+                    >
+                      <UserSearch className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Profile</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
+                      onClick={() => handleSettingsClick()}
+                    >
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Settings</span>
+                    </Button>
+                    <div className="h-px bg-border my-1" />
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-destructive/10 hover:text-destructive rounded-md transition-colors"
+                      onClick={() => signOut()}
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span className="text-sm">Logout</span>
+                    </Button>
+                  </div>
+                </AccordionContent>
+              )}
+            </AccordionItem>
+          </Accordion>
           {!isEventeli && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => toggleTheme()}
-              className="hover:bg-muted"
+              className={`w-full hover:bg-muted ${isHovered ? "justify-start px-3" : "justify-center px-0"}`}
             >
               {theme === "dark" ? (
-                <Sun className="h-5 w-5 transition-all" />
+                <>
+                  <Sun className="h-5 w-5 transition-all" />
+                  {isHovered && <span className="ml-3.5 text-sm">Light Mode</span>}
+                </>
               ) : (
-                <Moon className="h-5 w-5 transition-all" />
+                <>
+                  <Moon className="h-5 w-5 transition-all" />
+                  {isHovered && <span className="ml-3.5 text-sm">Dark Mode</span>}
+                </>
               )}
               <span className="sr-only">Toggle theme</span>
             </Button>

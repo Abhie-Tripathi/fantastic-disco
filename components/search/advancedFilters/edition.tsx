@@ -36,7 +36,7 @@ export default function EditionSelector({
   source,
   selectedStatus: parentSelectedFormats = "",
   setSelectedStatus: parentSetSelectedFormats,
-  variant = "accordion"
+  variant = "popover"
 }: EditionSelectorProps) {
   const { setFilter, getFilterValue, searchParams } = useFilterState();
   const [selectedFormatsLocal, setSelectedFormatsLocal] =

@@ -26,7 +26,7 @@ interface FlexibleComponentProps {
 }
 
 export default function CategorySelector({
-  variant = "accordion",
+  variant = "popover",
   filterName,
   disabled,
 }: FlexibleComponentProps) {

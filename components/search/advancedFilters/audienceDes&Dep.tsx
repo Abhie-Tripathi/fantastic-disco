@@ -49,7 +49,7 @@ const useDesignationsAutocomplete = (input: string) => {
 };
 
 export default function AudienceDesAndDepSelector({
-  variant = "accordion",
+  variant = "popover",
   filterName,
 }: AudienceDesAndDepSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,11 +67,13 @@ export default function AudienceDesAndDepSelector({
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.slug)
     );
-  }, [localFilters.designations, designations]);
+  }, [localFilters[filterName as keyof Filters || "designations"], designations]);
+
+  console.log("selectedLabels", selectedLabels);
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
-      localFilters.designations?.split(",").filter(Boolean) || [];
+      localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.slug);
 
     const newDesignations = isSelected
@@ -82,7 +84,7 @@ export default function AudienceDesAndDepSelector({
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.designations
+    const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
