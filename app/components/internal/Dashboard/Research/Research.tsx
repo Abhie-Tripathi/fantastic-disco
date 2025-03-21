@@ -88,13 +88,13 @@ const Research = ({ theme }: Props) => {
                     </div>
                     <div className="mt-2.5 grid lg:grid-cols-3 grid-cols-3 gap-3 max-[780px]:hidden">
                         <EventTypeSelector variant="popover"/>
-                        <LocationSelector variant="popover"/>
+                        <LocationSelector/>
                         <DateRangeSelector/>
                     </div>
                     <div className="mt-2.5 flex-col gap-2 hidden max-[780px]:flex">
                         <div className='flex gap-2 max-[577px]:flex-col'>
                             <EventTypeSelector variant="popover"/>
-                            <LocationSelector variant="popover"/>
+                            <LocationSelector/>
                         </div>
                         <div className='w-[50%] max-[577px]:w-full'><DateRangeSelector source="search" /></div>
                     </div>
