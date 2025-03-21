@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -39,6 +38,7 @@ import Link from "next/link";
 import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -225,19 +225,6 @@ export default function Navbar() {
                   </Button>
                   <div className={pathname.split("/")[1] === "widget" ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
                 </div>
-                <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
-                <div className="flex flex-col items-center">
-                  <Button
-                    onClick={() => handleRoute("prospect")}
-                    variant="ghost"
-                    className="flex items-center justify-center gap-2 h-auto"
-                  >
-                    <UserSearch className="h-6 w-6" />
-                    <span className="text-xs">Prospect</span>
-                    <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d]">Beta</div>
-                  </Button>
-                  <div className={(pathname === "/internal/prospect" || pathname.startsWith("/internal/company") || pathname.startsWith("/internal/user") ) ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
-                </div>
               </div>
               <div className="hidden max-[570px]:block">
                 <Popover>
@@ -265,69 +252,13 @@ export default function Navbar() {
                         <Search className="h-6 w-6" />
                         <span className="text-xs">Plan</span>
                       </Button>}
-                      {!(pathname.split("/")[2] === "prospect") &&
-                        <Button
-                          onClick={() => handleRoute("prospect")}
-                          variant="ghost"
-                          className="flex flex-col items-center justify-center gap-2 h-auto p-4"
-                        >
-                          <UserSearch className="h-6 w-6" />
-                          <span className="text-xs">Prospect</span>
-                        </Button>}
                     </div>
                   </PopoverContent>
                 </Popover>
               </div>
             </>
           )}
-          {/* {!isEventeli && (
-            <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5 transition-all" />
-              ) : (
-                <Moon className="h-5 w-5  transition-all" />
-              )}
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          )} */}
-
-          <div className="hidden lg:block">
-            <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  className="flex items-center bg-transparent p-1 "
-                >
-                  <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {generateProfileName()}
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => handleClick()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <UserSearch className="h-4 w-4" />
-                  <span className="ml-2">Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleSettingsClick()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <Settings className="h-4 w-4" />
-                  <span className="ml-2">Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => signOut()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="ml-2">Logout</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <NotificationBell />
         </div>
       </div>
     </header>
