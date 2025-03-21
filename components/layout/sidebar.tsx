@@ -29,7 +29,9 @@ import { useTheme } from "@/context";
 import { useAuthContext } from "@/context/auth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-
+import { endOfMonth } from "date-fns";
+import { startOfMonth } from "date-fns";
+import { addMonths } from "date-fns";
 function Coordinate() {
   return (
     <svg
@@ -126,7 +128,11 @@ const Sidebar = () => {
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search",
-      href: "/internal/search/events",
+      href: `/internal/search/events?active_lte=${startOfMonth(
+        addMonths(new Date(), 3)
+      ).toISOString().split('T')[0]}&active_gte=${endOfMonth(
+        new Date()
+      ).toISOString().split('T')[0]}`,
       icon: MagnifyingGlass,
     },
     {
@@ -140,7 +146,9 @@ const Sidebar = () => {
       href: "/internal/coordinate",
       icon: Coordinate,
     },
-    ...(!isEventeli ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }] : []),
+    ...(!isEventeli
+      ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }]
+      : []),
     // { name: "API Tools", href: "/clients", icon: Wrench },
     // {
     //   name: "Documentation",
@@ -150,7 +158,9 @@ const Sidebar = () => {
   ];
   const geniLinks = [
     {
-      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon />
+      name: "Dashboard",
+      href: "/widget/dashboard",
+      icon: <WidgetdashboardIcon />,
     },
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
@@ -172,7 +182,6 @@ const Sidebar = () => {
   // const brandkitRef = useRef(null);
   // const widgetRef = useRef(null);
   // const eventsRef = useRef(null);
-
 
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
@@ -243,8 +252,6 @@ const Sidebar = () => {
   //   setIsSidebarOpen(false);
   // };
 
-
-
   return (
     <aside
       className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
@@ -284,7 +291,9 @@ const Sidebar = () => {
                 const isActive =
                   pathname === link.href ||
                   (link.name === "Tracker" &&
-                    pathname.startsWith("/internal/trackers"));
+                    pathname.startsWith("/internal/trackers")) ||
+                  (link.name === "Search" &&
+                    pathname.startsWith("/internal/search/events"));
                 return (
                   <li key={link.name}>
                     <Link href={link.href} passHref legacyBehavior>
@@ -301,7 +310,13 @@ const Sidebar = () => {
                         }`}
                         asChild
                       >
-                        <a>
+                        <a
+                          onClick={(e) => {
+                            if (pathname === link.href.split("?")[0]) {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
                           <Icon
                             color={theme == "dark" ? "#fff" : ""}
                             className="flex-shrink-0"
@@ -387,9 +402,9 @@ const Sidebar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           {!isEventeli && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => toggleTheme()}
               className="hover:bg-muted"
             >

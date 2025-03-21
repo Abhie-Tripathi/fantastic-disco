@@ -70,7 +70,6 @@ export interface Filters {
   // status?: string;
   top?: string;
   locationIds?: string;
-  geoCoordinates?: string;
   viewBound?:string;
   view?: string;
   calendar_type?: string;
@@ -217,7 +216,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (enabledFilters) {
-     console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
@@ -375,8 +373,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-
-  console.log(localFilters);
   
   const contextValue = useMemo(
     () => ({

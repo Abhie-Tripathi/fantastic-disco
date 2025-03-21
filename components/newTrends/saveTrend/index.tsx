@@ -1,4 +1,3 @@
-import { GeoLocation } from "@/components/search/location";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,8 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/hooks/use-toast";
 import { useFilterContext } from "@/context/filterContext";
+import { useToast } from "@/hooks/use-toast";
 import { sessionService } from "@/services/sessionService";
 import { useTrendsService } from "@/services/trendsService";
 import {
@@ -19,6 +18,7 @@ import {
   CreateFilterValue,
   CreateSaveTrendData,
   EditSaveTrendData,
+  ViewBound,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Error from "next/error";
@@ -226,15 +226,9 @@ const SaveTrend = ({
     const eventTypes = params.get("eventTypes");
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
-    const geoCoordinate = params.get("geoCoordinates");
-    const viewBound = geoCoordinate
-      ? JSON.stringify({
-          boundType: "point",
-          ...(geoCoordinate && { coordinates: geoCoordinate }),
-          ...(streetName && {
-            properties: { name: (streetName as GeoLocation).description },
-          }),
-        })
+    const geoCoordinate = params.get("viewBound");
+    const viewBound: ViewBound = geoCoordinate
+      ? JSON.parse(geoCoordinate)
       : undefined;
     const BaseFilterValue: BaseFilterValue = {
       groupBy: "date",
@@ -258,14 +252,8 @@ const SaveTrend = ({
 
   const handleEditTrend = (trackerName: string, id: string) => {
     const streetName = getLastSearchedLocation();
-    const viewBound = localFilters.geoCoordinates
-      ? JSON.stringify({
-          boundType: "point",
-          coordinates: localFilters.geoCoordinates,
-          ...(streetName && {
-            properties: { name: (streetName as GeoLocation).description },
-          }),
-        })
+    const viewBound: ViewBound | undefined = localFilters.viewBound
+      ? (localFilters.viewBound as unknown as ViewBound)
       : undefined;
     const BaseFilterValue: BaseFilterValue = {
       groupBy: "date",
@@ -279,7 +267,7 @@ const SaveTrend = ({
       columns: localFilters.columns || "",
       ...(localFilters.locationIds
         ? { locationIds: localFilters.locationIds }
-        : localFilters.geoCoordinates
+        : localFilters.viewBound
         ? { viewBound: viewBound }
         : {}),
     };

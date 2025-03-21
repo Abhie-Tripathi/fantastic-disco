@@ -35,7 +35,7 @@ export interface GeoLocation {
   locationType: "GeoJSON";
   lat: number;
   lng: number;
-  radius: number;
+  radius: number | null;
   description: string;
 }
 
@@ -91,32 +91,38 @@ export default function LocationSelector({
   );
 
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
-    const ids = localFilters?.locationIds?.length
+    const geoCoordinate = localFilters?.viewBound
+      ? JSON.parse(localFilters.viewBound)
+      : null;
+    const locationIds = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
       : null;
-    const locationIds = ids;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
-        geoCoordinate.latitude,
-        geoCoordinate.longitude
+        geoCoordinate.coordinates.latitude,
+        geoCoordinate.coordinates.longitude
       );
+      
+      
       setSelectedLocation?.({
         locationType: "GeoJSON",
-        lat: geoCoordinate.latitude,
-        lng: geoCoordinate.longitude,
-        radius: geoCoordinate.radius,
-        description: locationName,
+        lat: geoCoordinate.coordinates.latitude,
+        lng: geoCoordinate.coordinates.longitude,
+        radius: geoCoordinate.coordinates.radius,
+        description: geoCoordinate?.properties?.name || locationName,
       });
     } else if (locationIds) {
-      const location = await getLocationDetails(locationIds.join(","));
-      const locations = locationIds.map((id) => ({
-        locationType: "LocationID",
-        id,
-        description: location?.formattedLocations.find((loc) => loc.id === id)
-          ?.displayName,
-      }));
+      const locations = await Promise.all(
+        locationIds.map(async (id) => {
+          const location = await getLocationDetails(id);
+          return {
+            locationType: "LocationID",
+            id,
+            description: location?.formattedLocations[0]?.displayName,
+          };
+        })
+      );
       setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
@@ -131,7 +137,7 @@ export default function LocationSelector({
   useEffect(() => {
     if (pathName === "/internal" && !localFilters.locationIds) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
       );
@@ -142,7 +148,7 @@ export default function LocationSelector({
   useEffect(() => {
     return () => {
       if (pathName === "/internal" || pathName === "/internal/search") {
-        replaceLocalFilter("geoCoordinates", "locationIds", "");
+        replaceLocalFilter("viewBound", "locationIds", "");
       }
     };
   }, [pathName]);
@@ -156,14 +162,24 @@ export default function LocationSelector({
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
       const radiusInKm =
-        radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
+        radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
+
+      if (radiusUnit === "mi") {
+        setRadiusUnit("km");
+      }
       replaceLocalFilter(
         "locationIds",
-        "geoCoordinates",
+        "viewBound",
         JSON.stringify({
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
+          boundType: "point",
+          coordinates: {
+            latitude: geoLocation.lat,
+            longitude: geoLocation.lng,
+            radius: radiusInKm,
+          },
+          properties: {
+            name: geoLocation.description,
+          },
         })
       );
       saveLastSearchedLocation(geoLocation);
@@ -173,13 +189,13 @@ export default function LocationSelector({
       selectedLocation.length > 0
     ) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
       saveLastSearchedLocation(selectedLocation);
     } else {
-      deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
+      deleteMultipleLocalFilters(["locationIds", "viewBound"]);
       clearLastSearchedLocation();
     }
   };

@@ -19,6 +19,7 @@ import {
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
+import { isEventeli } from "@/config";
 
 export const useEventsService = () => {
   const api = useApi();
@@ -26,10 +27,25 @@ export const useEventsService = () => {
   const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
     EventParticpantAdapter();
 
-  const getEvents = async (params?: EventQuery) => {
+  const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
+    const tempQuery = params;
+    delete tempQuery.view;
+    if (Object.keys(tempQuery).length === 0) {
+      return {
+        events: [],
+        count: 0,
+        isLoading: false,
+        error: null,
+      };
+    }
+
+    if (isEventeli && (!params.locationIds && !params.viewBound) && !params.eventIds && !params.query) {
+      throw new Error("Location is required");
+    }
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
+      signal,
     });
     return response;
   };
@@ -40,7 +56,21 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventsCount = async (params?: EventQuery) => {
+  const getEventsCount = async (params: EventQuery) => {
+    const tempQuery = params;
+    delete tempQuery.view;
+    if (Object.keys(tempQuery).length === 0) {
+      return {
+        count: 0,
+      };
+    }
+
+    // if (isEventeli && !params.locationIds) {
+    //   return {
+    //     count: 0,
+    //   };
+    // }
+
     return await api.request<EventCount[]>(`${endpoints.event.count}`, {
       method: "GET",
       params,

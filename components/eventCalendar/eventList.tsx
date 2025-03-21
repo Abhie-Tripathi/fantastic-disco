@@ -43,7 +43,7 @@ export default function EventList({
 }) {
   const { getFilterValue } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "start");
+  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "-score");
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();

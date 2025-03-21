@@ -3,6 +3,7 @@ import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from '@/utils/showToast';
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
@@ -306,7 +307,7 @@ const templates = [
   {
     name: "T_BRAND_BUILDING",
     templateName: "Brand Building",
-    type: "enabled",
+    type: "disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles",
     inputAreas: [
       {
@@ -407,7 +408,7 @@ const templates = [
 const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
-  
+  const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
@@ -485,9 +486,10 @@ const Pages = () => {
       .filter(value => regex.test(value))
       .join(',');
   
-    const orgNames = customData
+      const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
+      .map(value => value.replace(/[^\w\s]/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -514,7 +516,11 @@ const Pages = () => {
           fetchAISuggestion(promptText);
       }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
+      const speakerCompany = customData
+      .map((item: {}) => Object.values(item)[1] as string | undefined)
+      .filter((value): value is string => value !== undefined) 
+      .map(value => value.replace(/[^\w\s]/g, ''))
+      .join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
       // console.log(speakerName, speakerCompany);
@@ -541,7 +547,11 @@ const Pages = () => {
         fetchAISuggestion(promptText);
       }
       const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
+      const userCompany = customData
+      .map((item: {}) => Object.values(item)[1]) 
+      .filter((value): value is string => value !== undefined && value !== null)
+      .map(value => value.replace(/[^\w\s]/g, '')) 
+      .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
       if(userName.length>0 && userCompany.length>0){
@@ -686,7 +696,8 @@ const Pages = () => {
     const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
       (acc, [key, mappedKey]) => {
         const value = getLocalFilterValue(key as any);
-    
+       
+        
         if (Array.isArray(value) && value.length > 0) {
           acc[mappedKey] = value;
         } else if (typeof value === "string" && value === "true") {
@@ -722,7 +733,7 @@ const Pages = () => {
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
-    // console.log(filterValues, showsData);
+    console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
@@ -741,16 +752,41 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+      else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
+        if(trackerName.length !== 0)
+        toast({
+          title: "Error",
+          description: "Location must be selected.",
+          variant: "destructive",
+        });
         return;
        }
-       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+       else if (
+        type === "T_GEOTIME" &&
+        (
+          trackerName.length === 0 || 
+          (
+            getLocalFilterValue("locationIds").length === 0 && 
+            !getLocalFilterValue("viewBound")
+          )||
+          (getLocalFilterValue("active_gte").length === 0 &&
+          getLocalFilterValue("active_lte").length === 0)
+        ) 
+      ) {
         setIsCreating(false);
         setIsMandatory(true);
+        if(trackerName.length !== 0)
+        toast({
+          title: "Error",
+          description: "Location and Date must be selected.",
+          variant: "destructive",
+        });
         return;
-       }
+      }
+      
+      
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
@@ -773,11 +809,16 @@ const Pages = () => {
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
         if (data) {
           if(data?.error){
-            toast.error((data.error as ApiError).message, {
-              position: "bottom-right",
-              autoClose: 2000,
-              hideProgressBar: true,
-            });
+            // toast.error((data.error as ApiError).message, {
+            //   position: "bottom-right",
+            //   autoClose: 2000,
+            //   hideProgressBar: true,
+            // });
+            toast({
+          title: "Error",
+          description: error?.message,
+          variant: "destructive",
+        });
             setIsCreating(false);
             return;
           }else{
@@ -801,16 +842,37 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+      else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
+         toast({
+          title: "Error",
+          description: "Location must be selected.",
+          variant: "destructive",
+        });
         return;
        }
-       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+       else if (
+        type === "T_GEOTIME" &&
+        (
+          trackerName.length === 0 || 
+          (
+            getLocalFilterValue("locationIds").length === 0 && 
+            !getLocalFilterValue("viewBound")
+          )||
+          (getLocalFilterValue("active_gte").length === 0 &&
+          getLocalFilterValue("active_lte").length === 0)
+        ) 
+      ) {
         setIsCreating(false);
         setIsMandatory(true);
+        toast({
+          title: "Error",
+          description: "Location and Date must be selected.",
+          variant: "destructive",
+        });
         return;
-       }
+      }
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
@@ -840,12 +902,17 @@ const Pages = () => {
         }
       }catch(error){
         // console.log(error);
-        toast.error((error as ApiError).message, {
-          position: "bottom-right",
-          autoClose: 2000,
-          // closeButton: false,
-          hideProgressBar: true,
+        toast({
+          title: "Error",
+          description: (error as ApiError).message,
+          variant: "destructive",
         });
+        // toast.error((error as ApiError).message, {
+        //   position: "bottom-right",
+        //   autoClose: 2000,
+        //   // closeButton: false,
+        //   hideProgressBar: true,
+        // });
         setIsCreating(false);
         return;
       }
@@ -908,6 +975,11 @@ const Pages = () => {
         const value = editData.filterValues[key];
       console.log(typeof value, value);
       if (Array.isArray(value)) {
+        if(key==="includeKeywords" || key==="excludeKeywords"){
+          const updatedValue = value.map((item) => item.replaceAll("_", " "));
+          console.log(updatedValue);
+          setLocalFilter(key as any, updatedValue.join(","));
+          }else 
         setLocalFilter(key as any, value.map(v => String(v).toLowerCase()).join(','));
       } 
       else if (value !== null && typeof value === "object") {
@@ -1224,7 +1296,7 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    <TeliTemplates type={type}/>
+    <TeliTemplates type={type} isMandatory={isMandatory}/>
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
@@ -1517,9 +1589,12 @@ return (
           <EventTypeSelector/>
           <CategorySelector/>
           <EventFormatSelector/>
-          <LocationSelector isMandatory={isMandatory}/>
+          {(type!=="T_LOCATION" && type!=="T_VENUE" && type!=="T_GEOTIME") && <LocationSelector isMandatory={isMandatory}/>}
+          
           {/* <LocationSelector/> */}
+          {type!=="T_GEOTIME" &&
           <DateRangeSelector/>
+          }
           <EventStatusSelector/>
           <EventEntrySelector/>
           <UserRatingSelector/>

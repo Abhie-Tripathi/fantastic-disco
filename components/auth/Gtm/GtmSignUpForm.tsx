@@ -173,13 +173,13 @@ const GtmSignUpForm = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
+        Create your account
+      </p>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-6 w-full mt-4"
       >
-        <p className="font-semibold text-lg leading-6 text-center">
-          Create your account
-        </p>
         <Controller
           name="email"
           control={control}

@@ -119,9 +119,9 @@ export default function EventCalendar({
     queryKey:
       source !== "tracker"
         ? ["events", view, currentDate, searchParams.toString()]
-        : [currentDate, active, view],
+        : ["events", currentDate, active, view],
     queryFn: async () => {
-      setShowEventList(false)
+      setShowEventList(false);
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
       updatedParams.set("active_gte", moment(start).toISOString());
@@ -129,15 +129,13 @@ export default function EventCalendar({
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
       const trackerStartDate = `${moment(start).toISOString()}`;
-      const trackerEndDate =`${moment(end).toISOString()}`;
+      const trackerEndDate = `${moment(end).toISOString()}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
           : await getCalendarViewEvents(
               trackerId || "",
-              `type=${
-                active
-              }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
+              `type=${active}&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
             );
@@ -322,6 +320,16 @@ export default function EventCalendar({
       });
     }
   };
+
+  if (
+    isEventeli &&
+    !searchParams.get("viewBound") &&
+    !searchParams.get("locationIds") &&
+    source !== "tracker" &&
+    !searchParams.get("eventIds")
+  ) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
 
   const renderCalendarContent = () => {
     if (isEventsLoading) {

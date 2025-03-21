@@ -46,8 +46,8 @@ export default function SignInForm() {
   }, [errors.email?.message]);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
-      <p className="font-semibold text-lg leading-6 text-center">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
       <form

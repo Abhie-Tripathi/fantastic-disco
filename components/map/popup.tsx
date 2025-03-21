@@ -127,7 +127,7 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
                         </span>
                         <span>{event.basic.primaryEventType}</span>
                       </Badge>
-                      {event.basic.rating && (
+                      {event.basic.rating > 0 && (
                         <Badge
                           variant="outline"
                           className="text-gray-600 capitalize rounded-sm"
