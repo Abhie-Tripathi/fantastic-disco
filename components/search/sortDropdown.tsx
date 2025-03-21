@@ -93,7 +93,7 @@ const SortDropdown = ({
           <Button 
             variant="ghost" 
             size="xs" 
-            className="h-8 px-3 flex items-center gap-2"
+            className="h-[100%] px-3 flex items-center gap-2"
           >
             {sortOrder === "asc" ? (
               <ArrowUp className="h-4 w-4" />

@@ -8,10 +8,18 @@ import Template from "/public/template.svg";
 // import kewwordPresetJson from "@/public/data/presetJson/keyword.json";
 // import competitorPresetJson from "@/public/data/presetJson/competitor.json";
 // import speakerPresetJson from "@/public/data/presetJson/speaker.json";
+import {
+  MagnifyingGlass,
+ 
+} from "geist-icons";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
 import Loading from "@/app/components/UI/Loading";
 import { useCoordinateService } from "@/services/coordinateService";
 import { PresetJsonData } from "@/types/coordinateEventType";
+import SearchBar from "../../searchBar/SearchBar";
+import LocationSelector from "./presetFilters/locationSelector";
+import CategorySelector from "./presetFilters/categorySelector";
+import SortDropdown from "./presetFilters/sortDropdown";
 
 interface Props {
   template: any;
@@ -81,6 +89,26 @@ const Presets = ({ template, handlePresetClick }: Props) => {
           {count}
         </span>
       </div>
+      <div className="flex justify-center items-center gap-2 mt-6 mx-auto w-[95%]">
+    <div className="w-[50%]">
+    <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2">
+      <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+      <input
+        className="outline-none w-full bg-transparent"
+        placeholder="Enter Pre-sets name"
+      />
+    </div>
+    </div>
+    <div className="w-[20%]">
+    <LocationSelector />
+    </div>
+    <div className="w-[20%]">
+    <CategorySelector />
+    </div>
+    <div className="h-[100%]">
+    <SortDropdown />
+    </div>
+  </div>
       <div
         className="max-h-[calc(100vh-260px)] overflow-y-auto mt-6"
         ref={shortlistRef}
