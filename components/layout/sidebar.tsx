@@ -293,7 +293,7 @@ const Sidebar = () => {
                   (link.name === "Tracker" &&
                     pathname.startsWith("/internal/trackers")) ||
                   (link.name === "Search" &&
-                    pathname.startsWith("/internal/search/events"));
+                    pathname.startsWith("/internal/search"));
                 return (
                   <li key={link.name}>
                     <Link href={link.href} passHref legacyBehavior>

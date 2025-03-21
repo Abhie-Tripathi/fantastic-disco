@@ -193,7 +193,7 @@ export default function LocationSelector({ type, isMandatory, filterName }: Loca
           aria-haspopup="true"
         >
           <div className="flex items-center truncate">
-            <span className="mr-2">{labels[filterName as keyof typeof labels]}</span>
+            <span className="mr-2">{labels[filterName as keyof typeof labels] || "Location"}</span>
             {selectedLocation && (
               <span className="truncate ml-1 text-xs text-primary font-medium">
                 {Array.isArray(selectedLocation) ? (
