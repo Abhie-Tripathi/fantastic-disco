@@ -44,7 +44,7 @@ export function useDefaultFilters() {
     active_lte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
     ).toISOString(), // Ending date of current month going on.
-    eventTypes: allowedEventTypes, // All three tradeshows, conferences, workshops
+    eventTypes: allowedEventTypes, // Event Types according to the platform.
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
@@ -352,6 +352,13 @@ export function useDefaultFilters() {
     if (!viewBoundParams && !locationIdsParams) {
       trendsParams.set("locationIds", locationIds);
     }
+    trendsParams.delete("viewBound");
+    trendsParams.delete("show");
+    trendsParams.set("eventTypes", defaultTrendsParams.eventTypes.join(","));
+    trendsParams.set("active_gte", defaultTrendsParams.active_gte);
+    trendsParams.set("active_lte", defaultTrendsParams.active_lte);
+    trendsParams.set("locationIds", defaultTrendsParams.locationIds);
+
     return trendsParams;
   };
 
@@ -388,7 +395,6 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
         const trendsParams = generateTrendsParams(params);
-        console.log(trendsParams);
 
         if (
           pathName.split("/").includes("search") ||
@@ -432,7 +438,6 @@ export function useDefaultFilters() {
           if (value) params.set(key, String(value));
         });
         const trendsParams = generateTrendsParams(params, recentFilterParams);
-        console.log(trendsParams.toString());
 
         if (
           pathName.split("/").includes("search") ||

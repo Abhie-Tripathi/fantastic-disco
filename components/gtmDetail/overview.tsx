@@ -96,12 +96,14 @@ export const Overview = ({
   const filteredTags = tags;
 
   const height = !isEventeli
-    ? "h-[486px]"
+    ? format === "online"
+      ? "h-[486px]"
+      : "h-[831px]"
     : isEventeli
     ? format === "online"
       ? ""
       : ""
-    : "";   
+    : "";
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       <AlertList alerts={alerts} />
