@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import styles from "@/app/components/internal/trackers/Filters/templatetable.style.module.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Share } from "geist-icons";
@@ -16,6 +17,11 @@ import Modal from "./modal";
 import ColMapping from "./colMapping";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useToast } from "@/hooks/use-toast";
+import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import LoadingSkeleton from "./LoadingSkeleton";
+import UrlFetch from "./UrlFetch";
+import BulkImport from "./BulkImport";
+import SampleTable from "./SampleTable";
 
 const EventListItem = ({ event }: { event: Event }) => {
   const address = event.basic.eventLocation ? (
@@ -418,6 +424,11 @@ const DuplicateEventCard = ({ eventData }: { eventData: any }) => {
 };
 
 export default function AddEventModal() {
+
+  // new variables
+  const [selectedView, setSelectedView] = useState<string>('home'); // home, loading, addEventForm, bulkImport, urlFetch
+
+  // new variables
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [eventFormOpen, setEventFormOpen] = useState<boolean>(false);
@@ -476,8 +487,11 @@ export default function AddEventModal() {
   const closeModal = () => setIsModalOpen(false);
 
   const [csvData, setCsvData] = useState<any[]>([]);
+  const [csvFileName, setCsvFileName] = useState<string>("");
   const [error, setError] = useState<string>("");
   const fileInputRef = React.createRef<HTMLInputElement>();
+
+  const [websiteUrl, setWebsiteUrl] = useState<string>("");
 
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
@@ -522,16 +536,17 @@ export default function AddEventModal() {
 
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0];    
     if (!file) {
       return;
     }
+    setCsvFileName(file.name);
     resetForm();
 
     // Parse the CSV file using PapaParse
     Papa.parse(file, {
       complete: (result) => {
-        console.log("result.data", result.data);
+        // console.log("result.data", result.data);
 
         const mappedData = result.data.map((item: any) => ({
           name: item['Name'], // Map to your column names
@@ -546,12 +561,13 @@ export default function AddEventModal() {
         const tempHeader2 = mappedHeaders;
         tempHeader2.map((header, index)=>{
           // tempHeader[item] = colHeader[index]
-          header.fieldName = colHeader[index];
+          header.fieldName = colHeader[index] ?? '';
           // header.isMatch = true;
-          header.isMatch = header.suggestions.some(item => colHeader[index].toLowerCase().includes(item.toLowerCase()) || colHeader[index].toLowerCase() === item.toLowerCase());
+          header.isMatch = header.suggestions.some(item => header.fieldName.toLowerCase().includes(item.toLowerCase()) || header.fieldName.toLowerCase() === item.toLowerCase());
 
         })
         setMappedHeaders(tempHeader2);
+        setSelectedView("bulkImport");
         
 
         setError("");
@@ -602,66 +618,112 @@ export default function AddEventModal() {
   return (
     <div>
       <Button onClick={openModal}>+ Add Event</Button>
-      {/* <Button onClick={() => setIsOpen(true)}>+ Add Event</Button> */}
-      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[70%] min-h-[50%] flex flex-col gap-6">
-          <DialogHeader>
-            <DialogTitle className="tracking-normal">Add Event</DialogTitle>
-          </DialogHeader>
-
-          <div className="grid gap-4 h-full">
-            <div className="flex gap-4">
-              <Input
-                id="name"
-                className=""
-                placeholder="Enter Website"
-                // value={trackerName}
-                // onChange={handleNameChange}
-                // aria-invalid={error ? "true" : "false"}
-                aria-describedby="name-error"
-              />
-              <Button onClick={hadleFetch} disabled={isFetching}>
-                {isFetching ? "Fetching..." : "Fetch Data"}
-              </Button>
-              <Button variant="outline">
-                <Share height="14px" width="14px" className="mr-1" />
-                Bulk Import
-              </Button>
-            </div>
-
-            <Button
-              variant="link"
-              onClick={() => {
-                setEventFormOpen(true);
-                setShowEventList(false);
-              }}
-              className=""
-            >
-              or add details manually
-            </Button>
-
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                eventFormOpen ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {eventFormOpen && <EventForm />}
-            </div>
-
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                showEventList ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {showEventList && <EventList />}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog> */}
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
+        
         <div className="flex flex-col gap-4 h-full">
-          <div className="flex gap-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-base font-medium leading-6">Add Event</h2>
+            <div>
+
+              {(selectedView === 'urlFetch' || selectedView === 'addEventForm' || selectedView === 'bulkImport') &&
+                <span className="cursor-pointer text-primary text-base mr-4" onClick={()=>setSelectedView("home")}>Back</span>
+              }
+
+              {(selectedView === 'home' || selectedView === 'urlFetch' || selectedView === 'bulkImport') &&
+                <Button className="text-primary hover:text-primary" variant="outline" onClick={()=>setSelectedView("addEventForm")}>
+                  Add Manually
+                </Button>
+              }
+
+              {selectedView === 'addEventForm' &&
+                <Button>Save Event</Button>
+              }
+            </div>
+          </div>
+
+          {selectedView === 'home' &&
+            <>
+              <div className="bg-[var(--background-secondary-color)] px-3 py-4 border border-[var(--border-color)] rounded-sm">
+                <div className="text-[var(--link-color)] text-xs mb-3">Enter the Event Website Link Or paste a link containing multiple events to fetch them all</div>
+                <div className="flex gap-4">
+                  <Input
+                    id="name"
+                    className="rounded-sm bg-background focus-visible:border-none"
+                    placeholder="Enter web URL"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    // aria-invalid={error ? "true" : "false"}
+                    aria-describedby="name-error"
+                  />
+                  <Button onClick={()=>setSelectedView("urlFetch")} disabled={isFetching}>
+                    {isFetching ? "Fetching..." : "Fetch"}
+                  </Button>
+                </div>
+                <div className="text-center">
+                  <div className="relative text-[#A1A2A2]">
+                    <div className="border-b my-9"></div>
+                    <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
+                  </div>
+                  <div className="text-start text-[var(--link-color)] text-xs mb-3">Upload a .PDF, .CSV, or .XLSX file following the sample format to fetch your events effortlessly!</div>
+                  <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)] text-[#A1A2A2]">
+                    <span className="text-xs" >Click to browse or drag and drop your files</span>
+                    <span className="text-[10px] font-semibold" >OR</span>
+                    <Button size="sm" onClick={handleButtonClick} >Upload File</Button>
+                    {/* <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".csv"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    /> */}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Button className="text-primary hover:text-primary w-fit self-end" variant="outline" size="sm" >Download Sample Format</Button>
+              </div>
+
+              <SampleTable mappedHeaders={mappedHeaders} isSampleTable={true} />
+            </>
+          }
+
+          <div
+            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
+              selectedView === 'addEventForm' ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {selectedView === 'addEventForm' && <EventForm handleSave={handleSave} />}
+          </div>
+
+          {/* <div
+            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
+              selectedView === 'loading' ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {selectedView === 'loading' && <LoadingSkeleton />}
+          </div> */}
+
+          <div
+            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
+              selectedView === 'urlFetch' ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {selectedView === 'urlFetch' && <UrlFetch url={websiteUrl} />}
+          </div>
+
+          <div
+            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
+              selectedView === 'bulkImport' ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {selectedView === 'bulkImport' && <BulkImport mappedHeaders={mappedHeaders} csvFileName={csvFileName} handleFileUpload={handleButtonClick} />}
+          </div>
+
+          
+
+          {/* <div className="flex gap-4">
             <Input
               id="name"
               className=""
@@ -685,9 +747,9 @@ export default function AddEventModal() {
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
-          </div>
+          </div> */}
 
-          <Button
+          {/* <Button
             variant="link"
             onClick={() => {
               // setEventFormOpen(!eventFormOpen);
@@ -699,115 +761,19 @@ export default function AddEventModal() {
             className=""
           >
             or add details manually
-          </Button>
+          </Button> */}
 
-          <div className="flex flex-col gap-3 overflow-y-auto">
-
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                showColMapping ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {/* {eventFormOpen && <ColMapping />} */}
-              {showColMapping && <ColMapping csvData={csvData.slice(0, 3)} setShowEventList={setShowEventList} mappedHeaders={mappedHeaders} setMappedHeaders={setMappedHeaders} />}
-            </div>
-
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                eventFormOpen ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {eventFormOpen && <EventForm handleSave={handleSave} />}
-            </div>
-
-            {/* Fetch events based on website */}
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                showEventSuggestion ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {showEventSuggestion && (
-                <>
-                  <div className="font-medium text-base mb-3">Events</div>
-                  <div className="flex flex-col gap-3 pr-1">
-                    {eventSuggestion.length > 0 &&
-                      eventSuggestion.map((item: any, index: number) => (
-                        <AddedEvent2 eventData={item} key={index} />
-                      ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Duplicate Event Container */}
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                showDuplicateEventList ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {showDuplicateEventList && (
-                <>
-                  <div
-                    ref={scrollableDivRef}
-                    className="font-medium text-base mb-3 text-destructive"
-                  >
-                    Following duplicate events found
-                  </div>
-                  <div className="flex flex-col gap-3 pr-1 h-[calc(100vh-210px)] overflow-y-auto">
-                    {/* {eventData.events.slice(0, 2).map((item: any) => {
-                      return (
-                          <EventListItem2 event={item} />
-                          
-                      );
-                    })} */}
-                    {duplicateEvents.length > 0 &&
-                      duplicateEvents.map((item: any, index: number) => (
-                        <DuplicateEventCard eventData={item} key={index} />
-                      ))
-                    }
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div
-              className={`transition-opacity duration-500 ease-in-out ${
-                showEventList ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {showEventList && (
-                <>
-                  <div className="font-medium text-base mb-3">Events Data</div>
-                  <div className="flex flex-col gap-3 pr-1 h-[calc(100vh-210px)] overflow-y-auto">
-                    {/* <div className="font-medium text-base">Events Data</div> */}
-                    <DuplicateEvent />
-                    {/* <DuplicateEvent /> */}
-                    {/* <AddedEvent />
-                <AddedEvent /> */}
-                    {csvData.length > 0 &&
-                      csvData.map((item, index) => (
-                        <AddedEvent event={item} key={index} />
-                      ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          
         </div>
 
-        {/* <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={closeModal}>
-            Cancel
-          </Button>
-          <Button
-            className="bg-[#6E56CF] hover:bg-[#644fc0]"
-            onClick={saveEventHandler}
-            //   disabled={isLoading || !!error}
-          >
-            Save
-          </Button>
-        </div> */}
       </Modal>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
     </div>
   );
 }

@@ -1,5 +1,4 @@
-// Modal.tsx
-
+"use client";
 import React, { ReactNode } from "react";
 
 interface ModalProps {
@@ -26,7 +25,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         }`}
       >
         <div className="p-6 h-full">
-          <h2 className="text-lg font-semibold leading-none tracking-tight mb-4">Add Event</h2>
           {/* Render the children content passed from the parent */}
           {/* <div>{children}</div> */}
           {children}
