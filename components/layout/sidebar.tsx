@@ -77,11 +77,7 @@ const Sidebar = () => {
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search",
-      href: `/internal/search/events?active_lte=${startOfMonth(
-        addMonths(new Date(), 3)
-      ).toISOString().split('T')[0]}&active_gte=${endOfMonth(
-        new Date()
-      ).toISOString().split('T')[0]}`,
+      href: `/internal/search/events`,
       icon: MagnifyingGlass,
     },
     {

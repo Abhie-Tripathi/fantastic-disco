@@ -90,64 +90,80 @@ export function useDefaultFilters() {
     show: generateShowParam(filters),
   });
 
-  const mapRecentSearchToParams = (recentSearch: RecentSearch) => ({
-    eventFormats:
-      recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
-    status: recentSearch.filterValues.status?.join(",") ?? undefined,
-    categories: recentSearch.filterValues.categories?.join(",") ?? undefined,
-    eventTypes: recentSearch.filterValues.eventTypes?.join(",") ?? undefined,
-    active_gte: recentSearch.filterValues.active_gte
-      ? recentSearch.filterValues.active_gte
-      : startOfMonth(new Date()).toISOString(),
-    active_lte: recentSearch.filterValues.active_lte
-      ? recentSearch.filterValues.active_lte
-      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
-    locationIds: recentSearch.filterValues.locationIds?.join(",") ?? undefined,
-    entryType: recentSearch.filterValues.entryType?.join(",") ?? undefined,
-    ratings: recentSearch.filterValues.ratings?.join(",") ?? undefined,
-    maturity: recentSearch.filterValues.maturity?.join(",") ?? undefined,
-    onlyBranded: recentSearch.filterValues.onlyBranded ? "true" : undefined,
-    onlySeries: recentSearch.filterValues.onlySeries ? "true" : undefined,
-    frequencies: recentSearch.filterValues.frequencies?.join(",") ?? undefined,
-    includeKeywords:
-      recentSearch.filterValues.includeKeywords?.join(",") ?? undefined,
-    excludeKeywords:
-      recentSearch.filterValues.excludeKeywords?.join(",") ?? undefined,
-    estimatedVisitorRangeTag:
-      recentSearch.filterValues.estimatedVisitorRangeTag?.join(",") ??
-      undefined,
-    estimatedExhibitors:
-      recentSearch.filterValues.estimatedExhibitors?.join(",") ?? undefined,
-    impact_score_gte: recentSearch.filterValues.impact_score_gte
-      ? String(recentSearch.filterValues.impact_score_gte)
-      : undefined,
-    impact_score_lte: recentSearch.filterValues.impact_score_lte
-      ? String(recentSearch.filterValues.impact_score_lte)
-      : undefined,
-    inbound_score_gte: recentSearch.filterValues.inbound_score_gte
-      ? String(recentSearch.filterValues.inbound_score_gte)
-      : undefined,
-    inbound_score_lte: recentSearch.filterValues.inbound_score_lte
-      ? String(recentSearch.filterValues.inbound_score_lte)
-      : undefined,
-    international_score_gte: recentSearch.filterValues.international_score_gte
-      ? String(recentSearch.filterValues.international_score_gte)
-      : undefined,
-    international_score_lte: recentSearch.filterValues.international_score_lte
-      ? String(recentSearch.filterValues.international_score_lte)
-      : undefined,
-    audienceSpread:
-      recentSearch.filterValues.audienceSpread?.join(",") ?? undefined,
-    designations:
-      recentSearch.filterValues.designations?.join(",") ?? undefined,
-    top: recentSearch.filterValues.top
-      ? String(recentSearch.filterValues.top)
-      : undefined,
-    show: recentSearch.filterValues.show?.join(",") ?? undefined,
-    viewBound: recentSearch.filterValues.viewBound
-      ? JSON.stringify(recentSearch.filterValues.viewBound)
-      : undefined,
-  });
+  const mapRecentSearchToParams = (recentSearch: RecentSearch) => {
+    const recentSearchParams = {
+      eventFormats:
+        recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
+      status: recentSearch.filterValues.status?.join(",") ?? undefined,
+      categories: recentSearch.filterValues.categories?.join(",") ?? undefined,
+      eventTypes: recentSearch.filterValues.eventTypes?.join(",") ?? undefined,
+      active_gte: recentSearch.filterValues.active_gte
+        ? recentSearch.filterValues.active_gte
+        : undefined,
+      active_lte: recentSearch.filterValues.active_lte
+        ? recentSearch.filterValues.active_lte
+        : undefined,
+      locationIds:
+        recentSearch.filterValues.locationIds?.join(",") ?? undefined,
+      entryType: recentSearch.filterValues.entryType?.join(",") ?? undefined,
+      ratings: recentSearch.filterValues.ratings?.join(",") ?? undefined,
+      maturity: recentSearch.filterValues.maturity?.join(",") ?? undefined,
+      onlyBranded: recentSearch.filterValues.onlyBranded ? "true" : undefined,
+      onlySeries: recentSearch.filterValues.onlySeries ? "true" : undefined,
+      frequencies:
+        recentSearch.filterValues.frequencies?.join(",") ?? undefined,
+      includeKeywords:
+        recentSearch.filterValues.includeKeywords?.join(",") ?? undefined,
+      excludeKeywords:
+        recentSearch.filterValues.excludeKeywords?.join(",") ?? undefined,
+      estimatedVisitorRangeTag:
+        recentSearch.filterValues.estimatedVisitorRangeTag?.join(",") ??
+        undefined,
+      estimatedExhibitors:
+        recentSearch.filterValues.estimatedExhibitors?.join(",") ?? undefined,
+      impact_score_gte: recentSearch.filterValues.impact_score_gte
+        ? String(recentSearch.filterValues.impact_score_gte)
+        : undefined,
+      impact_score_lte: recentSearch.filterValues.impact_score_lte
+        ? String(recentSearch.filterValues.impact_score_lte)
+        : undefined,
+      inbound_score_gte: recentSearch.filterValues.inbound_score_gte
+        ? String(recentSearch.filterValues.inbound_score_gte)
+        : undefined,
+      inbound_score_lte: recentSearch.filterValues.inbound_score_lte
+        ? String(recentSearch.filterValues.inbound_score_lte)
+        : undefined,
+      international_score_gte: recentSearch.filterValues.international_score_gte
+        ? String(recentSearch.filterValues.international_score_gte)
+        : undefined,
+      international_score_lte: recentSearch.filterValues.international_score_lte
+        ? String(recentSearch.filterValues.international_score_lte)
+        : undefined,
+      audienceSpread:
+        recentSearch.filterValues.audienceSpread?.join(",") ?? undefined,
+      designations:
+        recentSearch.filterValues.designations?.join(",") ?? undefined,
+      top: recentSearch.filterValues.top
+        ? String(recentSearch.filterValues.top)
+        : undefined,
+      show: recentSearch.filterValues.show?.join(",") ?? undefined,
+      viewBound: recentSearch.filterValues.viewBound
+        ? JSON.stringify(recentSearch.filterValues.viewBound)
+        : undefined,
+    };
+
+    if (
+      !recentSearch.filterValues.active_gte &&
+      !recentSearch.filterValues.active_lte
+    ) {
+      recentSearchParams.active_gte = startOfMonth(new Date()).toISOString();
+      recentSearchParams.active_lte = endOfMonth(
+        addMonths(new Date(), 3)
+      ).toISOString();
+    }
+
+    return recentSearchParams;
+  };
 
   const generateShowParam = (filters: any): string => {
     const showItems = [];
