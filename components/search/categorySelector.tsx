@@ -17,6 +17,7 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
+import { convertISOToOriginalFormat } from "@/utils/date";
 
 interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
@@ -32,9 +33,9 @@ export default function CategorySelector({
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const categories = morphedData.categories.options;
-  const selectedCategories = getLocalFilterValue(filterName || "categories")
-    .split(",")
-    .filter(Boolean);
+  const selectedCategories = (getLocalFilterValue(filterName || "categories")
+    ?.split(",")
+    ?.filter(Boolean)) || [];
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 

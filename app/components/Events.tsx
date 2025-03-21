@@ -165,7 +165,7 @@ const Events = () => {
               </TabsList>
             </div>
             <div className="flex justify-end gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 className="flex items-center gap-2"
                 disabled
@@ -174,7 +174,7 @@ const Events = () => {
                   <ArrowUpRight className="h-4 w-4" />
                   Export
                 </span>
-              </Button>
+              </Button> */}
               {(selectedView === "list" ||
                 selectedView === "table" ||
                 selectedView == "") && <SortDropdown />}

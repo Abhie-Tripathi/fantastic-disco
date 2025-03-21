@@ -52,10 +52,7 @@ export default function RootLayout({
                   </main>
                 </div>
               </div>
-<<<<<<< HEAD
-=======
               {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
->>>>>>> 75d946b0faed3d35938ea9a1461da9817b7dd8fc
             </ThemeProvider>
           </FilterProvider>
         </AuthContextProvider>
