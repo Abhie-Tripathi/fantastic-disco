@@ -14,6 +14,7 @@ import { Heading } from "../eventDetail/heading";
 import Restriction from "../eventDetail/restriction";
 import Text from "../new-ui/Text";
 import { EventRank } from "./eventRank";
+import { isEventeli } from "@/config";
 interface Props {
   eventDetails: Event;
   eventRankingDetails: OverallRankingsDetail;
@@ -65,21 +66,24 @@ export const InsightsAndScores = ({
       />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
-          {((filteredScores &&
-            Object.values(filteredScores).some((value) => value !== null)) ||
-            (trustScore !== null && trustScore != null && trustScore > 0)) && (
-            <div
-              className={`grid ${
-                economicImpact &&
-                economicImpact.trim() !== "" &&
-                economicImpactBreakdown &&
-                Object.keys(economicImpactBreakdown).length > 0
-                  ? "w-1/2 grid-cols-2 grid-rows-subgrid xl:grid-rows-2"
-                  : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
-              }  gap-6 max-xl:w-full`}
-            >
-              <>
-                {/* {scores &&
+          {!isEventeli &&
+            ((filteredScores &&
+              Object.values(filteredScores).some((value) => value !== null)) ||
+              (trustScore !== null &&
+                trustScore != null &&
+                trustScore > 0)) && (
+              <div
+                className={`grid ${
+                  economicImpact &&
+                  economicImpact.trim() !== "" &&
+                  economicImpactBreakdown &&
+                  Object.keys(economicImpactBreakdown).length > 0
+                    ? "w-1/2 grid-cols-2 grid-rows-subgrid xl:grid-rows-2"
+                    : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
+                }  gap-6 max-xl:w-full`}
+              >
+                <>
+                  {/* {scores &&
                   scores.impactScore !== 0 &&
                   scores.impactScore !== null && (
                     <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
@@ -105,92 +109,92 @@ export const InsightsAndScores = ({
                       )}
                     </div>
                   )} */}
-                {trustScore !== null &&
-                  trustScore !== undefined &&
-                  trustScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                              Trust Score
-                            </h1>
-                          </TooltipTrigger>
-                          <TooltipContent className="w-56 tooltip-content-styles">
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              Reflects an event&apos;s reliability and user
-                              confidence based on interest, feedback, and past
-                              attendance.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {isTrustScoreEnabled ? (
-                        <CircularProgressBar
-                          value={Math.round(trustScore ?? 0)}
-                        />
-                      ) : (
-                        <Restriction />
-                      )}
-                    </div>
-                  )}
-                {scores &&
-                  scores.inboundScore !== null &&
-                  scores.inboundScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                              Inbound Score
-                            </h1>
-                          </TooltipTrigger>
-                          <TooltipContent className="w-56 tooltip-content-styles">
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              The number of attendees traveling to the event
-                              from other cities within the host country.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {isAnalyticsEnabled ? (
-                        <CircularProgressBar value={scores.inboundScore} />
-                      ) : (
-                        <Restriction />
-                      )}
-                    </div>
-                  )}
-                {scores &&
-                  scores.internationalScore !== null &&
-                  scores.internationalScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                              International Score
-                            </h1>
-                          </TooltipTrigger>
-                          <TooltipContent className="w-56 tooltip-content-styles">
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              The number of attendees traveling to the event
-                              from outside the host country.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {isAnalyticsEnabled ? (
-                        <CircularProgressBar
-                          value={scores.internationalScore}
-                        />
-                      ) : (
-                        <Restriction />
-                      )}
-                    </div>
-                  )}
-              </>
-            </div>
-          )}
+                  {trustScore !== null &&
+                    trustScore !== undefined &&
+                    trustScore > 0 && (
+                      <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                Trust Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                Reflects an event&apos;s reliability and user
+                                confidence based on interest, feedback, and past
+                                attendance.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isTrustScoreEnabled ? (
+                          <CircularProgressBar
+                            value={Math.round(trustScore ?? 0)}
+                          />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                  {scores &&
+                    scores.inboundScore !== null &&
+                    scores.inboundScore > 0 && (
+                      <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                Inbound Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from other cities within the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar value={scores.inboundScore} />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                  {scores &&
+                    scores.internationalScore !== null &&
+                    scores.internationalScore > 0 && (
+                      <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                International Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from outside the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar
+                            value={scores.internationalScore}
+                          />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                </>
+              </div>
+            )}
 
           {economicImpact &&
             economicImpact.trim() !== "" &&
@@ -198,14 +202,16 @@ export const InsightsAndScores = ({
             Object.keys(economicImpactBreakdown).length > 0 && (
               <div
                 className={`${
-                  (filteredScores &&
-                    Object.values(filteredScores).some(
-                      (value) => value !== null
-                    )) ||
-                  (trustScore !== null &&
-                    trustScore !== undefined &&
-                    trustScore > 0)
-                    ? "w-1/2"
+                  !isEventeli
+                    ? (filteredScores &&
+                        Object.values(filteredScores).some(
+                          (value) => value !== null
+                        )) ||
+                      (trustScore !== null &&
+                        trustScore !== undefined &&
+                        trustScore > 0)
+                      ? "w-1/2"
+                      : "w-fill"
                     : "w-fill"
                 } border border-[#EBEBEB] dark:border-[var(--border-color)] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
               >

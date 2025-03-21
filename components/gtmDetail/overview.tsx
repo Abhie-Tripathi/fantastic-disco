@@ -94,16 +94,14 @@ export const Overview = ({
   } = eventDetails.basic || {};
 
   const filteredTags = tags;
+
   const height = !isEventeli
-    ? format === "online"
-      ? "h-[486px]"
-      : "h-[831px]"
+    ? "h-[486px]"
     : isEventeli
     ? format === "online"
       ? ""
       : ""
-    : "";
-
+    : "";   
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       <AlertList alerts={alerts} />

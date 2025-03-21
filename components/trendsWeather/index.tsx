@@ -15,10 +15,9 @@ import { Event } from "@/types/events";
 import { EventDate } from "@/types/events/eventDetail";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import EventsListView from "../eventDetail/eventsListView";
 import EventsMapView from "../eventDetail/eventsMapView";
-import { EventDetailMapSkeleton } from "../eventDetail/skeletons";
 interface Props {
   eventDetails: Event;
   venueLocation: Event["basic"]["eventLocation"] | null;
@@ -156,24 +155,25 @@ export const DetailMapComponent = ({
     weatherData.temperature.max &&
     Math.ceil(weatherData.temperature.max);
   return !isEventeli && typeOfEvent !== "online" ? (
-    <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
-      <div className="flex flex-col gap-4">
-        <div className="flex-1 bg-[#EBEBEB] h-[450px]">
-          {typeOfEvent !== "online" && (
-            <EventsMapView
-              event={eventDetails.basic || {}}
-              startDate={eventDateRange.startDate}
-              endDate={eventDateRange.endDate}
-              zoom={10}
-              style={{
-                width: "100%",
-                height: "308px",
-              }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+    // <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
+    //   <div className="flex flex-col gap-4">
+    //     <div className="flex-1 bg-[#EBEBEB] h-[450px]">
+    //       {typeOfEvent !== "online" && (
+    //         <EventsMapView
+    //           event={eventDetails.basic || {}}
+    //           startDate={eventDateRange.startDate}
+    //           endDate={eventDateRange.endDate}
+    //           zoom={10}
+    //           style={{
+    //             width: "100%",
+    //             height: "308px",
+    //           }}
+    //         />
+    //       )}
+    //     </div>
+    //   </div>
+    // </div>
+    <></>
   ) : (
     isEventeli && (
       <div className="flex flex-col gap-4 max-xl:justify-around h-auto">

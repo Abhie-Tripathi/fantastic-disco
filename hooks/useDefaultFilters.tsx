@@ -372,6 +372,7 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
         const trendsParams = generateTrendsParams(params);
+        console.log(trendsParams);
 
         if (
           pathName.split("/").includes("search") ||
@@ -415,6 +416,7 @@ export function useDefaultFilters() {
           if (value) params.set(key, String(value));
         });
         const trendsParams = generateTrendsParams(params, recentFilterParams);
+        console.log(trendsParams.toString());
 
         if (
           pathName.split("/").includes("search") ||
