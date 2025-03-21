@@ -4,7 +4,7 @@
 // import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
 import Image from "next/image";
 // import placeHolder from "@/public/placeholder.png";
-import Placeholder from '@/public/placeholder.png'
+import Placeholder from "@/public/placeholder.png";
 import EventType from "./eventType";
 // import ParticipationMode from "./participationMode";
 import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
@@ -14,18 +14,36 @@ import { Button } from "../../ui/button";
 import ParticipationMode from "./participationMode";
 import Details from "@/app/components/TemplateViewsNew/AddEventForm/Details/Details";
 import { useRef, useState } from "react";
+import SimilarEventCard from "./SimilarEventCard";
+import EventCard from "./EventCard";
+import fetchIcon from "@/public/internal/fetch_icon.svg";
 
 interface Props {
   handleSave: any;
 }
 
-const EventForm = ({handleSave}: Props) => {
+const eventData = {
+  name: "Arab Health",
+  logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
+  organizer: "Informa Middle East & Africa",
+  startDate: "2019-01-28",
+  endDate: "2019-01-31",
+  venue: "Dubai International Convention & Exhibition Centre",
+  state: "Dubai",
+  city: "Dubai",
+  country: "UAE",
+  eventType: "Tradeshow",
+};
+
+const EventForm = ({ handleSave }: Props) => {
   //   const participationOptions = [
   //     { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
   //     { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
   //     { label: "Exhibitor", value: "Exhibitor", icon: ExhibitorIcon },
   //     { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
   //   ];
+
+  const [similarEventsFound, setSimilarEventsFound] = useState<boolean>(false);
 
   const formState = {
     startDate: "2025-04-12",
@@ -57,11 +75,11 @@ const EventForm = ({handleSave}: Props) => {
     cityName: "",
     speaker: [],
     prefilledProfile: undefined,
-    registerMessage: 'Welcome! To join the event, please register below.',
-    registerBtnText: 'Register',
-    registerBtnColor: '#1a1a1a',
-    countryName: '',
-    timeZone: 'GMT+05:30 Chennai',
+    registerMessage: "Welcome! To join the event, please register below.",
+    registerBtnText: "Register",
+    registerBtnColor: "#1a1a1a",
+    countryName: "",
+    timeZone: "GMT+05:30 Chennai",
     timeZoneKey: 1,
     startDate: "2025-04-12",
     endDate: "2025-04-13",
@@ -70,21 +88,21 @@ const EventForm = ({handleSave}: Props) => {
     // eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
     eventFormat: "In-person",
     boothNumber: "",
-    participationMessage:  "",
+    participationMessage: "",
     banner: { placeHolder: Placeholder, file: null },
     venue: "",
     latitude: 37.7749,
     longitude: -122.4194,
     hashtags: [],
-    query: '',
+    query: "",
     isEventNameEmpty: false,
     isEventFormatEmpty: false,
     isEventDescriptionEmpty: false,
     isEventParticipationEmpty: false,
     isParticipationMessageEmpty: false,
-    isEventTypeEmpty:false,
+    isEventTypeEmpty: false,
     isTextValueMessageEmpty: false,
-    errorMessage: 'Event name is required.',
+    errorMessage: "Event name is required.",
     capacity: -1,
     registration: true,
     approval: false,
@@ -93,13 +111,14 @@ const EventForm = ({handleSave}: Props) => {
     virtualLink: "",
     exhibitorModal: false,
     exhibitor: [],
-    prefilledExhibitorDetails:undefined,
-    event_type: ""
+    prefilledExhibitorDetails: undefined,
+    event_type: "",
   };
 
-  const [isApproved, setIsApproved] =useState<boolean>(true);
+  const [isApproved, setIsApproved] = useState<boolean>(true);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
+  const [mainEventState, setMainEventState] =
+    useState<FormState>(initialFormState);
 
   // const handleChange = () => {};
 
@@ -107,9 +126,7 @@ const EventForm = ({handleSave}: Props) => {
     setMainEventState((prev) => ({ ...prev, [field]: value }));
   };
 
-  const setLoadingState = () => {
-
-  }
+  const setLoadingState = () => {};
 
   const handleCollapseForm = () => {};
 
@@ -165,26 +182,52 @@ const EventForm = ({handleSave}: Props) => {
   //     </div>
   //   );
 
-
   return (
-    <div className="p-3 border rounded-md">
-    <Details
-      formTheme="light"
-      handleCollapseForm={handleCollapseForm}
-      formState={mainEventState}
-      handleChange={handleChange}
-      eventFont={"Arial"}
-      setLoadingState={setLoadingState}
-      fileInputRef={fileInputRef}
-      // prefilledEvent={initialFormState}
-      isApproved={isApproved}
-      setIsApproved={setIsApproved}
-    />
-      <div className="flex justify-end col-span-4 py-2">
+    <div className="p-3 flex flex-col gap-4">
+      {similarEventsFound && (
+        <>
+          <div className="text-sm p-4 border rounded-sm border-[#FFDD8F] bg-[--warning-background-color]">
+            We've Found
+            <span className="text-[#A35200] font-semibold">
+              {" "}
+              2 Similar Events{" "}
+            </span>
+            ! See if either matches the event you're trying to add.
+          </div>
+
+          <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
+            <div className="my-2">
+              <div className="flex gap-1 mb-1">
+                <Image src={fetchIcon} height={18} width={18} alt="loading" />
+                <span className="font-medium text-base">
+                  Does this event match the one you're looking for?
+                </span>
+              </div>
+            </div>
+
+            <EventCard {...eventData} />
+            <EventCard {...eventData} />
+          </div>
+        </>
+      )}
+
+      <Details
+        formTheme="light"
+        handleCollapseForm={handleCollapseForm}
+        formState={mainEventState}
+        handleChange={handleChange}
+        eventFont={"Arial"}
+        setLoadingState={setLoadingState}
+        fileInputRef={fileInputRef}
+        // prefilledEvent={initialFormState}
+        isApproved={isApproved}
+        setIsApproved={setIsApproved}
+      />
+      {/* <div className="flex justify-end col-span-4 py-2">
         <Button onClick={handleSave}>Save and Add Event</Button>
-      </div>
+      </div> */}
     </div>
-  )
+  );
 
   return (
     <div className="grid grid-cols-4 gap-4 border rounded-lg p-4 px-6">
@@ -248,7 +291,9 @@ const EventForm = ({handleSave}: Props) => {
         </div>
       </div>
       <div className="flex justify-end col-span-4">
-        <Button size="sm" onClick={handleSave}>Save and Add Event</Button>
+        <Button size="sm" onClick={handleSave}>
+          Save and Add Event
+        </Button>
       </div>
     </div>
   );
