@@ -39,7 +39,7 @@ import {
   PhoneIcon,
   Radio,
   Share2,
-  Star
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -322,7 +322,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   };
 
   return (
-    <div className="p-6 pt-0">
+    <div className="p-6">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         {showBackToSearch && (
           <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
@@ -410,7 +410,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                           variant="outline"
                           className="text-gray-600 capitalize py-1 rounded-sm"
                         >
-                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <Star
+                            className="w-3 h-3 mr-1 mt-[2px]"
+                            fill="#6F48AD"
+                          />
                           <span className="mt-[2px]">{rating}</span>
                         </Badge>
                       </TooltipTrigger>
@@ -629,7 +632,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                       Event POC
                       {eventPOCDetails.length > 0 && (
                         <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
-                          {eventPOCDetails.filter((poc) => poc !== null)
+                          {/* {eventPOCDetails.filter((poc) => poc !== null)
                             .length > 0 &&
                           eventPOCDetails.filter((poc) => poc !== null).length <
                             9
@@ -638,7 +641,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                                   .length
                               }`
                             : eventPOCDetails.filter((poc) => poc !== null)
-                                .length}
+                                .length} */}
+                          {Object.keys(eventPOCDetails)
+                            .length.toString()
+                            .padStart(2, "0")}
                         </span>
                       )}
                     </p>
@@ -768,7 +774,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </ButtonUI>
       </aside>
       <div
-        className={`ml-auto w-[70%] max-xl:w-[62%] ${
+        className={`ml-auto w-[72%] max-xl:w-[62%] ${
           eventDetailView === "notes"
             ? "h-[calc(100vh-100px)] pt-6"
             : eventDetailView === "pocs"
@@ -786,7 +792,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
         ) : (
           <>
-            <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
+            <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full">
               <div className="flex gap-12">
                 {tabs
                   .filter((tab) => tab.isVisible)

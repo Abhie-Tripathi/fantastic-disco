@@ -489,7 +489,7 @@ const Pages = () => {
       const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
-      .map(value => value.replace(/[^\w\s]/g, ''))
+      .map(value => value.replace(/,/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -519,7 +519,7 @@ const Pages = () => {
       const speakerCompany = customData
       .map((item: {}) => Object.values(item)[1] as string | undefined)
       .filter((value): value is string => value !== undefined) 
-      .map(value => value.replace(/[^\w\s]/g, ''))
+      .map(value => value.replace(/,/g, '')) 
       .join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
@@ -550,7 +550,7 @@ const Pages = () => {
       const userCompany = customData
       .map((item: {}) => Object.values(item)[1]) 
       .filter((value): value is string => value !== undefined && value !== null)
-      .map(value => value.replace(/[^\w\s]/g, '')) 
+      .map(value => value.replace(/,/g, '')) 
       .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
