@@ -110,6 +110,7 @@ export default function Navbar() {
   // }, [user]);
 
   const [storedUser, setStoredUser] = useState<any>(null);
+  const [emptyFields, setEmptyFields] = useState<string[]>([]);
 
   useEffect(() => {
     // Ensure this code runs only on the client side
@@ -129,6 +130,20 @@ export default function Navbar() {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    if (storedUser) {
+      // Only check for department and imageURL (profile picture)
+      const fields = [];
+      if (!storedUser.department || storedUser.department === "") {
+        fields.push("department");
+      }
+      if (!storedUser.imageURL || storedUser.imageURL === "") {
+        fields.push("profilePicture");
+      }
+      setEmptyFields(fields);
+    }
+  }, [storedUser]);
 
   const generateProfileName = () => {
     if (storedUser) {
@@ -287,70 +302,40 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <Bell className="h-5 w-5" />
-                  {/* <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
-                    2
-                  </span> */}
                   <span className="sr-only">Notifications</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-80">
                 <div className="flex items-center justify-between px-2 py-1.5 border-b">
                   <span className="text-sm font-medium">Notifications</span>
-                  {/* <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-xs"
-                  >
-                    Mark all as read
-                  </Button> */}
                 </div>
                 <div className="max-h-[300px] overflow-y-auto">
-                  <div className="px-2 py-2 hover:bg-muted/50 cursor-pointer">
-                    <div className="flex items-start gap-2">
-                      <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-8 h-8 font-medium text-sm">
-                        A
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            Abhinav Tripathi
-                          </span>
-                          {/* <span className="text-xs text-muted-foreground">
-                            2h ago
-                          </span> */}
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                          Department is missing from your profile
-                        </p>
-                      </div>
+                  {emptyFields.length === 0 ? (
+                    <div className="p-4 text-center text-sm text-muted-foreground">
+                      No new notifications
                     </div>
-                  </div>
-                  <div className="px-2 py-2 hover:bg-muted/50 cursor-pointer">
-                    <div className="flex items-start gap-2">
-                      <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-8 h-8 font-medium text-sm">
-                        A
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            Abhinav Tripathi
-                          </span>
-                          {/* <span className="text-xs text-muted-foreground">
-                            2h ago
-                          </span> */}
+                  ) : (
+                    emptyFields.map((field, index) => (
+                      <div key={index} className="px-2 py-2 hover:bg-muted/50 cursor-pointer" onClick={handleClick}>
+                        <div className="flex items-start gap-2">
+                          <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-8 h-8 font-medium text-sm">
+                            {generateProfileName()}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">
+                                {storedUser?.firstname} {storedUser?.lastname}
+                              </span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-0.5">
+                              {field === "profilePicture" ? "Profile picture" : "Department"} is missing from your profile
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                          Department is missing from your profile
-                        </p>
                       </div>
-                    </div>
-                  </div>
+                    ))
+                  )}
                 </div>
-                {/* <div className="px-2 py-1.5 border-t">
-                  <Button variant="ghost" size="sm" className="w-full h-7 text-xs">
-                    View all notifications
-                  </Button>
-                </div> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -44,7 +44,7 @@ export interface LocationProps {
   isMandatory?: boolean;
   filterName?: string;
 }
-export default function LocationSelector({ type, isMandatory, filterName }: LocationProps) {
+export default function LocationSelector({ type, isMandatory, filterName = "locationIds" }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =

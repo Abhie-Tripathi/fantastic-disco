@@ -986,7 +986,8 @@ const EventListItem = ({
                     </div>
 
                     <div className="space-y-4">
-                      {isEventeli && showValues.includes(Show.scores) &&
+                      {isEventeli &&
+                        showValues.includes(Show.scores) &&
                         event.insights?.scores && (
                           <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
                             <CircularProgress
@@ -1025,10 +1026,10 @@ const EventListItem = ({
                               Estimated Exhibitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedExhibitors == "0" ||
+                              {event.insights?.estimatedExhibitors == "" ||
                               event.insights?.estimatedExhibitors == null
                                 ? "--"
-                                : event.insights?.estimatedExhibitors}
+                                : formatExhibitorCount(event.insights?.estimatedExhibitors)}
                             </p>
                           </div>
                         )}
@@ -1045,7 +1046,8 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {isEventeli && showValues.includes(Show.economicImpact) &&
+                      {isEventeli &&
+                        showValues.includes(Show.economicImpact) &&
                         event.insights?.economicImpact !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
@@ -1120,6 +1122,19 @@ const UnplannedCard = ({ event }: { event: Event }) => {
       );
     })
     .map((eventType) => eventType.name);
+
+  function formatExhibitorCount(value: string | number | null): string {
+    if (value === null || value === undefined) return "-";
+
+    const stringValue = String(value);
+    const values = stringValue.split("-");
+
+    if (values.length === 2 && values[0] === values[1]) {
+      return Number(values[0]).toLocaleString();
+    }
+
+    return stringValue.toLocaleString();
+  }
 
   return (
     <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
