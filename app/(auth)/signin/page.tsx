@@ -51,26 +51,26 @@ export default function SignInForm() {
   }, [errors.email?.message]);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[45dvh]">
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      <div className="flex flex-col gap-4 w-96 mx-auto">
+      <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
         <Button
           onClick={() => signIn("google", { callbackUrl: "/internal" })}
           variant={"outline"}
-          className="flex items-center justify-between"
+          className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >
           <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
-          <span className="flex-1">Continue with Google</span>
+          <span className="mt-1">Google</span>
         </Button>
         <Button
           onClick={() => signIn("linkedin", { callbackUrl: "/internal" })}
           variant={"outline"}
-          className="flex items-center"
+          className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >
           <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
-          <span className="flex-1">Continue with LinkedIn</span>
+          <span className="mt-1">LinkedIn</span>
         </Button>
       </div>
       <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>

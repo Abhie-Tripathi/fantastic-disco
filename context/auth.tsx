@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -32,7 +33,8 @@ import {
 import { sessionKeys } from "@/data/onboarding";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
-import { signOut as signOutSSO } from "next-auth/react";
+import { signOut as signOutSSO, useSession } from "next-auth/react";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 
 type authContextType = {
   user: UserResponse | null;
@@ -118,6 +120,32 @@ export const AuthContextProvider = ({ children }: any) => {
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
+  const { data: session, status } = useSession();
+  const sessionCategories =
+    (sessionStorage && sessionStorage.getItem("categories")) || "";
+  const categories = sessionCategories && JSON.parse(sessionCategories);
+
+  const formatDateForFilter = (date: Date) => {
+    return format(date, "yyyy-MM-dd");
+  };
+
+  const urlParams = useMemo(() => {
+    const params = new URLSearchParams();
+    const currentDate = new Date();
+    const startDate = formatDateForFilter(startOfMonth(currentDate));
+    const endDate = formatDateForFilter(endOfMonth(currentDate));
+
+    params.set("view", "map");
+    params.set("status", "active,cancelled,postponed");
+    params.set("active_gte", startDate);
+    params.set("active_lte", endDate);
+    params.set("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef");
+
+    if (categories && categories.length > 0) {
+      params.set("categories", categories);
+    }
+    return params;
+  }, [categories]);
 
   const fetchUserData = async () => {
     try {
@@ -250,7 +278,11 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push(`/verify-otp?email=${userDto.email}`);
+        router.push(
+          status === "authenticated"
+            ? `/internal/search/events?${urlParams}`
+            : `/verify-otp?email=${userDto.email}`
+        );
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {

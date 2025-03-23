@@ -6,12 +6,14 @@ import { baseUrl } from "@/constants";
 import { useAuthContext } from "@/context/auth";
 import { newCategories } from "@/data/categories";
 import { industryData, sessionKeys } from "@/data/onboarding";
+import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { SignUpFormSchema } from "@/types/signup";
 import { GAEvent } from "@/utils/GAEvent";
 import { myFetch } from "@/utils/myFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -21,7 +23,6 @@ import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
-import { getSession, signIn, useSession } from "next-auth/react";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -30,6 +31,7 @@ const GtmSignUpForm = () => {
   const { getFilterValue, deleteFilter } = useFilterState();
   const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
+  const { toast } = useToast();
   const [categories, setCategories] = useState<string[]>([]);
   const {
     control,
@@ -110,6 +112,18 @@ const GtmSignUpForm = () => {
     }
   }, [errors.email?.message]);
 
+  useEffect(() => {
+    if (status === "authenticated" || status === "unauthenticated") {
+      if (session && session.user && session.user?.email) {
+        setValue("email", session.user?.email);
+      }
+      toast({
+        variant: "default",
+        title: "Please Select Industry",
+      });
+    }
+  }, [status]);
+
   const generateOtp = async () => {
     const dataToSend = {
       email: email,
@@ -184,22 +198,22 @@ const GtmSignUpForm = () => {
       </p>
       {status === "unauthenticated" && (
         <>
-          <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
+          <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
             <Button
               onClick={() => signIn("google", { callbackUrl: "/signup" })}
               variant={"outline"}
-              className="flex items-center justify-between"
+              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
               <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="flex-1">Continue with Google</span>
+              <span className="mt-1">Google</span>
             </Button>
             <Button
               onClick={() => signIn("linkedin", { callbackUrl: "/signup" })}
               variant={"outline"}
-              className="flex items-center"
+              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
               <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="flex-1">Continue with LinkedIn</span>
+              <span className="mt-1">LinkedIn</span>
             </Button>
           </div>
           <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
@@ -217,12 +231,13 @@ const GtmSignUpForm = () => {
               <Input
                 className="rounded-sm bg-white ring-1
                 ring-primary outline outline-[#D2D2F3] outline-offset-2
-                focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
+                focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] 
+                focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
                 placeholder="Email"
-                value={field.value || session?.user?.email}
+                value={field.value}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);
@@ -297,6 +312,7 @@ const GtmSignUpForm = () => {
       <div className="text-center py-2 text-sm">
         Already have an account?
         <Link
+          onClick={() => signOut({ callbackUrl: "/signin" })}
           href="/signin"
           className="text-[#6750a4] cursor-pointer font-medium"
         >
