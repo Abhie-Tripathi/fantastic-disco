@@ -459,27 +459,27 @@ export default function AddEventModal() {
     setShowColMapping(false);
   };
 
-  const hadleFetch = () => {
-    resetForm();
-    setIsFetching(true);
-    // setEventFormOpen(false);
+  // const hadleFetch = () => {
+  //   resetForm();
+  //   setIsFetching(true);
+  //   // setEventFormOpen(false);
 
-    setTimeout(async() => {
-      const eventList = await coordinateService.fetchEvents();
-      // console.log('eventList', eventList);
-      setIsFetching(false);
-        if (eventList.data.events.length > 0) {
-          setShowEventSuggestion(true);
-          setEventSuggestion(eventList.data.events);
-        } else {
-          setEventFormOpen(true);
-          toast({
-            title: "No event found, add details manually.",
-            variant: "destructive",
-          });
-        }
-      }, 500);
-  };
+  //   setTimeout(async() => {
+  //     const eventList = await coordinateService.fetchEvents();
+  //     // console.log('eventList', eventList);
+  //     setIsFetching(false);
+  //       if (eventList.data.events.length > 0) {
+  //         setShowEventSuggestion(true);
+  //         setEventSuggestion(eventList.data.events);
+  //       } else {
+  //         setEventFormOpen(true);
+  //         toast({
+  //           title: "No event found, add details manually.",
+  //           variant: "destructive",
+  //         });
+  //       }
+  //     }, 500);
+  // };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -536,6 +536,8 @@ export default function AddEventModal() {
 
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('handleFileChange11');
+    
     const file = event.target.files?.[0];    
     if (!file) {
       return;
@@ -656,7 +658,7 @@ export default function AddEventModal() {
                     // aria-invalid={error ? "true" : "false"}
                     aria-describedby="name-error"
                   />
-                  <Button onClick={()=>setSelectedView("urlFetch")} disabled={isFetching}>
+                  <Button onClick={()=>setSelectedView("urlFetch")} disabled={isFetching || websiteUrl.trim() === ""} >
                     {isFetching ? "Fetching..." : "Fetch"}
                   </Button>
                 </div>
@@ -694,7 +696,7 @@ export default function AddEventModal() {
               selectedView === 'addEventForm' ? "opacity-100" : "opacity-0"
             }`}
           >
-            {selectedView === 'addEventForm' && <EventForm handleSave={handleSave} />}
+            {selectedView === 'addEventForm' && <EventForm />}
           </div>
 
           {/* <div

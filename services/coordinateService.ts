@@ -332,14 +332,35 @@ export const useCoordinateService = () => {
     });
   };
 
-  const fetchEvents = () => {
+  const fetchEvents = (websiteUrl: string) => {
     // const data = await externalAxios.get(
     //   `https://stg-serve.10times.com/index.php/v1/event/search?website=10times.com`,
     //   {
     //     method: "GET",
     //   }
     // );
-    return websiteSuggestion;
+    // return websiteSuggestion;    
+    const data = {
+      events: [],
+      totalCount: 0,
+    }
+    return data;
+  }
+
+  const fetchSimilarEvents = (eventData: any) => {
+    const payload = {
+      query: eventData.name,
+      // active_gte: eventData.startDate,
+      // active_lte: eventData.endDate,
+      limit: 10,
+    }
+    return api.request(
+      `${endpoints.event.events}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
   }
 
   const checkDuplicate = () => {
@@ -376,6 +397,7 @@ export const useCoordinateService = () => {
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
     fetchEvents,
+    fetchSimilarEvents,
     checkDuplicate,
     isLoading: api.isLoading,
     // error: api.error as ApiError,

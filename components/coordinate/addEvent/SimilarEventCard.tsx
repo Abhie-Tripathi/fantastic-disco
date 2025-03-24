@@ -8,18 +8,22 @@ import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useState } from "react";
 
 interface Props {
-  name: string;
-  logo: string;
-  organizer: string;
-  startDate: string;
-  endDate: string;
-  venue: string;
-  state: string;
-  city: string;
-  country: string;
+  duplicateEvents?: any;
+  eventData: {
+    name: string;
+    logo: string;
+    organizer: string;
+    startDate: string;
+    endDate: string;
+    venue: string;
+    state: string;
+    city: string;
+    country: string;
+    eventType: string;
+  };
 }
 
-const SimilarEventCard = (eventData: Props) => {
+const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
   const [showSimilar, setShowSimilar] = useState<boolean>(false);
   const event = {
     name: eventData.name,
@@ -27,12 +31,19 @@ const SimilarEventCard = (eventData: Props) => {
     organizer: eventData.organizer,
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
-    address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
+    // address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
+    address: [
+      eventData.city,
+      eventData.state !== eventData.city ? eventData.state : null,
+      eventData.country !== eventData.city ? eventData.country : null,
+    ]
+      .filter(Boolean)
+      .join(", "),
   };
   return (
     <>
       <div className="rounded-sm border border-[#F87275] text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 w-4/5 bg-[var(--warning-background-color)] px-4 p-3 flex gap-3">
-        {event.logoUrl && (
+        {event?.logoUrl && (
           <div className="w-14 h-14">
             <img
               src={event.logoUrl}
@@ -73,7 +84,7 @@ const SimilarEventCard = (eventData: Props) => {
               variant="outline"
               onClick={() => setShowSimilar((prev) => !prev)}
             >
-              2 Similar Events
+              {duplicateEvents.length} Similar Events
             </Button>
           </div>
         </div>
@@ -90,8 +101,25 @@ const SimilarEventCard = (eventData: Props) => {
             </div>
           </div>
 
-          <EventCard {...eventData} />
-          <EventCard {...eventData} />
+          {duplicateEvents.map((item: any) => {
+            const eventItem = {
+              id: item.basic.id,
+              name: item.basic.name,
+              logo: item.basic.logo,
+              organizer: item.basic?.organizer?.name,
+              startDate: item.basic.startDateTime,
+              endDate: item.basic.endDateTime,
+              venue: "Dubai International Convention & Exhibition Centre",
+              state: item.basic.eventLocation?.state?.name,
+              city: item.basic.eventLocation?.city?.name,
+              country: item.basic.eventLocation?.country?.name,
+              eventType: item.basic?.primaryEventType,
+            };
+            return <EventCard {...eventItem} />;
+          })}
+
+          {/* <EventCard {...eventData} />
+          <EventCard {...eventData} /> */}
         </div>
       )}
     </>

@@ -9,6 +9,7 @@ import SimilarEventCard from "./SimilarEventCard";
 import NullImage from "@/public/addEventNullState.svg";
 import NullState from "./NullState";
 import { useEffect, useState } from "react";
+import { useCoordinateService } from "@/services/coordinateService";
 
 const eventData = {
   name: "Arab Health",
@@ -30,12 +31,20 @@ interface Props {
 const UrlFetch = ({ url }: Props) => {
   const [websiteUrl, setWebsiteUrl] = useState<string>(url ?? "");
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const coordinateService = useCoordinateService();
+  const [fetchedEvents, setFetchedEvents] = useState<any>([]);
 
-  const hadleFetch = () => {
+  const hadleFetch = async () => {
+    if (!websiteUrl) return;
     setIsFetching(true);
+
+    const data = await coordinateService.fetchEvents(websiteUrl);
 
     setTimeout(() => {
       setIsFetching(false);
+      if (data.totalCount > 0) {
+        setFetchedEvents(data.events);
+      }
     }, 1000);
   };
 
@@ -59,14 +68,14 @@ const UrlFetch = ({ url }: Props) => {
           // aria-invalid={error ? "true" : "false"}
           aria-describedby="name-error"
         />
-        <Button onClick={hadleFetch} disabled={isFetching}>
+        <Button onClick={hadleFetch} disabled={isFetching || websiteUrl.trim() === ""}>
           {isFetching ? "Fetching..." : "Fetch"}
         </Button>
       </div>
 
       {isFetching ? (
         <LoadingSkeleton />
-      ) : (
+      ) : fetchedEvents.length > 0 ? (
         <>
           <div className="my-2">
             <div className="flex gap-1 mb-1">
@@ -81,14 +90,14 @@ const UrlFetch = ({ url }: Props) => {
             </div>
           </div>
 
-          <EventCard {...eventData} />
-          <EventCard {...eventData} />
+          {fetchedEvents.map((item: any) => (
+            <EventCard {...item} />
+          ))}
           {/* <SimilarEventCard {...eventData} /> */}
-          <EventCard {...eventData} />
         </>
+      ) : (
+        <NullState />
       )}
-
-      {/* <NullState /> */}
     </div>
   );
 };
