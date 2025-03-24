@@ -228,6 +228,7 @@ export const ProspectList = ({
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
           paginationItems={["5", "10"]}
+          hideLastPage={true}
         />
       </div>
     </div>

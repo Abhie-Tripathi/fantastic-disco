@@ -27,6 +27,7 @@ interface PaginationComponentProps {
   onItemsPerPageChange?: (value: string) => void;
   showEntriesCount?: boolean;
   paginationItems?: string[];
+  hideLastPage?: boolean;
 }
 
 export function PaginationComponent({
@@ -38,6 +39,7 @@ export function PaginationComponent({
   onItemsPerPageChange,
   showEntriesCount = true,
   paginationItems = ["10", "20"],
+  hideLastPage = false,
 }: PaginationComponentProps) {
   const renderPaginationItems = () => {
     const items = [];
@@ -101,17 +103,19 @@ export function PaginationComponent({
         );
       }
 
-      items.push(
-        <PaginationItem key={totalPages}>
-          <PaginationLink
-            href="#"
-            onClick={() => onPageChange(totalPages)}
-            isActive={totalPages === currentPage}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
+      if (!hideLastPage) {
+        items.push(
+          <PaginationItem key={totalPages}>
+            <PaginationLink
+              href="#"
+              onClick={() => onPageChange(totalPages)}
+              isActive={totalPages === currentPage}
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
     }
 
     return items;
