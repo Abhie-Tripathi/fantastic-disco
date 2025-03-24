@@ -14,6 +14,7 @@ import { Heading } from "../eventDetail/heading";
 import Restriction from "../eventDetail/restriction";
 import Text from "../new-ui/Text";
 import { EventRank } from "./eventRank";
+import { isEventeli } from "@/config";
 interface Props {
   eventDetails: Event;
   eventRankingDetails: OverallRankingsDetail;
