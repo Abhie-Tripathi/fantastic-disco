@@ -2,35 +2,87 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formattedDateRange } from "@/utils/date";
 import { Calendar, Check, Cross } from "geist-icons";
+import { useToast } from "@/hooks/use-toast";
+import InterestSelector from "./InterestSelector";
+import { useState } from "react";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { InterestConfiguration } from "@/types/configuration";
 
 interface Props {
+  id: string;
   name: string;
-  logo: string;
-  organizer: string;
+  logo?: string | null;
+  organizer?: string;
   startDate: string;
   endDate: string;
-  venue: string;
-  state: string;
-  city: string;
-  country: string;
+  venue?: string | null;
+  state?: string | null;
+  city?: string | null;
+  country?: string | null;
+  eventType: string;
 }
 
 const EventCard = (eventData: Props) => {
-  // console.log('event', event);
 
-  // const [listExpanded, setListExpanded] = useState<boolean>(false);
+  const { toast } = useToast();
+
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error,
+  } = useConfiguration.interest();
+  console.log('interestConfiguration', interestConfiguration);
+  
+
+  const [selectedAction, setSelectedAction] = useState<InterestConfiguration>({
+    status: '',
+    label: '',
+  });
 
   const event = {
+    id: eventData.id,
     name: eventData.name,
     logoUrl: eventData.logo,
     organizer: eventData.organizer,
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
-    address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
+    address: [
+      eventData.venue || "TBA",
+      eventData.city,
+      eventData.state !== eventData.city ? eventData.state : null,
+      eventData.country !== eventData.city ? eventData.country : null,
+    ]
+      .filter(Boolean)
+      .join(", "),
+    eventType: eventData.eventType,
   };
+
+  const handleReject = (eventId: string) => {
+    console.log("handleReject", eventId);
+  };
+
+  const handleSelect = (eventId: string, action: string) => {
+    console.log("handleSelect", eventId, action, selectedAction);
+
+    if (selectedAction.id === "") {
+      toast({
+        // title: "Success",
+        description: "Please select action",
+        variant: "destructive",
+      });
+      return;
+    } else {
+    // mark enquiry status
+      toast({
+        title: "Success",
+        description: "Event added successfully!",
+        variant: "default",
+      });
+    }
+  };
+
   return (
     <div className="rounded-sm border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 w-4/5 px-4 p-3  relative flex gap-3 group">
-      {/* <div className="col-span-3 w-full px-4 p-3  relative flex gap-3 group"> */}
       {event.logoUrl && (
         <div className="w-14 h-14">
           <img
@@ -63,21 +115,27 @@ const EventCard = (eventData: Props) => {
             variant="outline"
             className="text-[#0062D1] bg-[#E0EAF5]  capitalize rounded-sm"
           >
-            CONFERENCE
+            {event.eventType}
           </Badge>
 
-          <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Cross className="cursor-pointer" color="#DA2F35" height="16px" />
-            <Check className="cursor-pointer" color="#398E4A" height="16px" />
+          <InterestSelector selectedHeader={selectedAction} changeSelectedHeader={setSelectedAction} options={interestConfiguration?.interest} />
+
+          <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Cross
+              className="cursor-pointer"
+              onClick={() => handleReject(event.id)}
+              color="#DA2F35"
+              height="16px"
+            />
+            <Check
+              className="cursor-pointer"
+              onClick={() => handleSelect(event.id, "interestedAction")}
+              color="#398E4A"
+              height="16px"
+            />
           </div>
         </div>
       </div>
-      {/* </div> */}
-      {/* <div className="text-primary col-span-1 flex items-end justify-center text-sm">
-        <Button size="sm" className="w-fit">
-          Add
-        </Button>
-      </div> */}
     </div>
   );
 };

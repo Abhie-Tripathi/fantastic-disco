@@ -10,7 +10,7 @@ import NullImage from "@/public/addEventNullState.svg";
 import NullState from "./NullState";
 import { RefreshCw } from "lucide-react";
 import SampleTable from "./SampleTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   mappedHeaders: any;
@@ -40,9 +40,11 @@ const BulkImport = ({
     eventType: "Tradeshow",
   };
 
-  const allMatchTrue = mappedHeaders.every(
-    (item: any) => item.isMatch === true
-  );
+  const [allMatchTrue, setAllMatchTrue] = useState<boolean>(false)
+
+  // const allMatchTrue = mappedHeaders.every(
+  //   (item: any) => item.isMatch === true
+  // );
 
   const hadleFetch = () => {
     setLoadingState("loading");
@@ -51,6 +53,16 @@ const BulkImport = ({
       setLoadingState("fetched");
     }, 1000);
   };
+
+  useEffect(() => {
+    // console.log('file changed');
+    
+    const temp = mappedHeaders.every(
+      (item: any) => item.isMatch === true
+    );
+    console.log('file changed', temp);
+    setAllMatchTrue(temp);
+  }, mappedHeaders);
 
   return (
     <div className="flex flex-col gap-4">
@@ -64,7 +76,7 @@ const BulkImport = ({
         <Button
           size="sm"
           onClick={hadleFetch}
-          disabled={!allMatchTrue && loadingState === "loading"}
+          disabled={!allMatchTrue || loadingState === "loading"}
         >
           {loadingState === "loading" ? "Fetching..." : "Fetch"}
         </Button>
@@ -126,7 +138,7 @@ const BulkImport = ({
 
           <EventCard {...eventData} />
           <EventCard {...eventData} />
-          <SimilarEventCard {...eventData} />
+          <SimilarEventCard eventData={eventData}  />
           <EventCard {...eventData} />
         </>
       ) : (

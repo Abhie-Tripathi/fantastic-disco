@@ -17,6 +17,7 @@ import { useRef, useState } from "react";
 import SimilarEventCard from "./SimilarEventCard";
 import EventCard from "./EventCard";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface Props {
   handleSave: any;
@@ -24,18 +25,18 @@ interface Props {
 
 const eventData = {
   name: "Arab Health",
-  logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
-  organizer: "Informa Middle East & Africa",
+  // logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
+  // organizer: "Informa Middle East & Africa",
   startDate: "2019-01-28",
   endDate: "2019-01-31",
-  venue: "Dubai International Convention & Exhibition Centre",
-  state: "Dubai",
+  // venue: "Dubai International Convention & Exhibition Centre",
+  // state: "Dubai",
   city: "Dubai",
   country: "UAE",
   eventType: "Tradeshow",
 };
 
-const EventForm = ({ handleSave }: Props) => {
+const EventForm = () => {
   //   const participationOptions = [
   //     { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
   //     { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
@@ -43,7 +44,12 @@ const EventForm = ({ handleSave }: Props) => {
   //     { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
   //   ];
 
+  const [eventData, setEventData] = useState<any>();
+
+  const [similarEvents, setSimilarEvents] = useState<any>([]);
   const [similarEventsFound, setSimilarEventsFound] = useState<boolean>(false);
+
+  const coordinateService = useCoordinateService();
 
   const formState = {
     startDate: "2025-04-12",
@@ -130,6 +136,36 @@ const EventForm = ({ handleSave }: Props) => {
 
   const handleCollapseForm = () => {};
 
+  const handleSaveClick = async() => {
+    
+
+    const e_data = {
+      name: mainEventState.eventName,
+      logo: mainEventState.banner.file !== null && mainEventState.banner.placeHolder,
+      // organizer: string;
+      startDate: mainEventState.startDate,
+      endDate: mainEventState.endDate,
+      venue: mainEventState.venue,
+      // state: string;
+      city: mainEventState.cityName,
+      country: mainEventState.countryName,
+      eventType: mainEventState.event_type,
+    }
+
+    console.log('handleSaveClick', mainEventState, e_data);
+    setEventData(e_data);
+    
+    const apiData: any = await coordinateService.fetchSimilarEvents(e_data);
+
+    console.log('apiData', apiData);
+
+    if (apiData.count > 0 ) {
+      setSimilarEventsFound(true);
+      setSimilarEvents(apiData.events);
+    }
+    
+  }
+
   //   return (
   //     <div className="grid gap-4 border rounded-lg p-4 px-6">
   //       <div className="flex justify-between">
@@ -190,12 +226,12 @@ const EventForm = ({ handleSave }: Props) => {
             We've Found
             <span className="text-[#A35200] font-semibold">
               {" "}
-              2 Similar Events{" "}
+              {similarEvents.length} Similar Events{" "}
             </span>
             ! See if either matches the event you're trying to add.
           </div>
 
-          <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
+          {/* <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
             <div className="my-2">
               <div className="flex gap-1 mb-1">
                 <Image src={fetchIcon} height={18} width={18} alt="loading" />
@@ -207,7 +243,8 @@ const EventForm = ({ handleSave }: Props) => {
 
             <EventCard {...eventData} />
             <EventCard {...eventData} />
-          </div>
+          </div> */}
+          <SimilarEventCard eventData={eventData} duplicateEvents={similarEvents} />
         </>
       )}
 
@@ -223,9 +260,9 @@ const EventForm = ({ handleSave }: Props) => {
         isApproved={isApproved}
         setIsApproved={setIsApproved}
       />
-      {/* <div className="flex justify-end col-span-4 py-2">
-        <Button onClick={handleSave}>Save and Add Event</Button>
-      </div> */}
+      <div className="flex justify-end col-span-4 py-2">
+        <Button onClick={handleSaveClick}>Save and Add Event</Button>
+      </div>
     </div>
   );
 
