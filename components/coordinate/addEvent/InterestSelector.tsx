@@ -40,9 +40,9 @@ export default function InterestSelector({
 //     selectedHeader.fieldName,
 //   ]);
 
-  const handleStatusToggle = (status: any) => {
+  const handleStatusToggle = (item: InterestConfiguration) => {
     // setSelectedStatuses([statusId]);
-    changeSelectedHeader(status);
+    changeSelectedHeader(item);
     setIsOpen(false);
   };
 
@@ -82,11 +82,11 @@ export default function InterestSelector({
         align="start"
       >
         <div className="py-2">
-          {options.map((item) => (
+          {options && options.map((item) => (
             <div
               key={item.status}
               className="flex items-center space-x-2 p-2 hover:bg-accent"
-              onClick={() => handleStatusToggle(status)}
+              onClick={() => handleStatusToggle(item)}
             >
               <label
                 htmlFor={item.status}
