@@ -298,7 +298,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         )}
 
         {companyDetails?.description &&
-          companyDetails?.description?.length > 0 && (
+          companyDetails?.description?.length > 10 && (
             <Text variant="noMargin" color="secondary">
               {isExpandDescription
                 ? companyDetails?.description
