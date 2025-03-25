@@ -90,7 +90,7 @@ export const DesignationSpread = ({
                       {maxCountObject?.designation}
                     </Text>
                     <span className="text-[var(--primary-color)] font-medium">
-                      {maxCountObject && Math.ceil(maxCountObject.percentage)}%
+                      {maxCountObject && maxCountObject.percentage.toFixed(2)}%
                     </span>
                   </p>
                 </div>
@@ -104,21 +104,26 @@ export const DesignationSpread = ({
                 Other designations
               </Text>
               <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
-                {designationSpread.map((designation, index) => (
-                  <li key={`designation-${designation.designation}-${index}`}>
-                    <p className="flex justify-between">
-                      <Text fontWeight="medium" color="secondary">
-                        {designation.designation}
-                      </Text>
-                      <span className="text-[var(--primary-color)] font-medium">
-                        {designation &&
-                          designation.percentage &&
-                          Math.ceil(designation.percentage)}
-                        %
-                      </span>
-                    </p>
-                  </li>
-                ))}
+                {designationSpread
+                  .filter(
+                    (designation) =>
+                      designation.designation !== maxCountObject?.designation
+                  )
+                  .map((designation, index) => (
+                    <li key={`designation-${designation.designation}-${index}`}>
+                      <p className="flex justify-between">
+                        <Text fontWeight="medium" color="secondary">
+                          {designation.designation}
+                        </Text>
+                        <span className="text-[var(--primary-color)] font-medium">
+                          {designation &&
+                            designation.percentage &&
+                            designation.percentage.toFixed(2)}
+                          %
+                        </span>
+                      </p>
+                    </li>
+                  ))}
               </ul>
             </>
           ) : (

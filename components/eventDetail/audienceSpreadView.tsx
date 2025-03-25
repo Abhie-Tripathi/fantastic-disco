@@ -136,7 +136,7 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
 
           if (!iso) return null;
           return `
-            <div style="display: flex; align-items: center; gap: 8px; width: 150px;">
+            <div style="display: flex; align-items: center; gap: 8px; width: 160px;">
               <img src="https://flagcdn.com/w20/${iso.toLowerCase()}.png" alt="${name} flag"
               <strong>${name}</strong>
             </div>
