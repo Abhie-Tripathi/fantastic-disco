@@ -58,7 +58,7 @@ export const AudienceIntel = ({
         tooltipDescription="Provides insights into exhibitors, speakers, and sponsors."
       />
       <div className="flex flex-col gap-6">
-        <EventAudienceEstimates
+        {/* <EventAudienceEstimates
           audienceEstimateData={{
             estimatedAttendance: estimatedAttendance,
             estimatedExhibitors: estimatedExhibitors,
@@ -67,7 +67,7 @@ export const AudienceIntel = ({
             estimatedVisitors: estimatedVisitors,
             estimatedExhibitor: estimatedExhibitor,
           }}
-        />
+        /> */}
         <div className="flex gap-6 max-xl:flex-col max-h-full xl:max-h-96">
           <AudienceSpread
             restrictedData={audienceSpreadRestriction}
