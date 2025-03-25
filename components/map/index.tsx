@@ -97,7 +97,7 @@ export default function MapComponent({
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-
+  
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -489,7 +489,8 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (location?.type === "locationIds" && location.locationIds.length > 0) {
+      if (location?.type === "locationIds" && location.locationIds.length > 0 && location.locationIds!=="defaultLoc") {
+        
         try {
           const details = await getLocationDetails(location.locationIds);
           if (
@@ -742,7 +743,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {isEventeli && (
+                  {isEventeli && source!=="tracker" && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}
