@@ -227,7 +227,7 @@ const Page = ({ params }: { params: any }) => {
     console.log(data);
     const CountValues = {
       geo : ['social','business','unattended'],
-      // gtm : ['active','new', 'past']
+      gtm : ['active','past', 'new']
     }
     // createQueryString();
     if (isEventeli) {
@@ -249,11 +249,13 @@ const Page = ({ params }: { params: any }) => {
     } else {
       const groupedEventsCount = data?.groupedEventsCount as Record<string, number> || {};
     
-      const transformedData = Object.entries(groupedEventsCount).map(([key, value]) => ({
-        type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: value || 0,
-        newCount: (key === "new" ? value : 0) || 0, 
-      }));
+      const transformedData =  CountValues.gtm.map((key)=>{
+        return {
+          type: key.charAt(0).toUpperCase() + key.slice(1),
+          totalCount :  data?.groupedEventsCount[key] || 0,
+          newCount : data?.groupedEventsCount[key]?.new || 0
+        }
+      })
     
       transformedData.push({
         type: "Bookmarked",
