@@ -102,7 +102,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     setLocations(eventLocation);
     const CountValues = {
       geo : ['social','business','unattended'],
-      // gtm : ['active','new', 'past']
+      gtm : ['active','past', 'new']
     }
     if(isEventeli){
     const transformedData =  CountValues.geo.map((key)=>{
@@ -114,16 +114,24 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     })
     setEventCount(transformedData);
   }else{
-    const transformedData = Object.entries(item?.groupedEventsCount || {}).map(([key, value]) => {
-      const numericValue = Number(value) || 0;
-    
+    const transformedData =  CountValues.gtm.map((key)=>{
       return {
         type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: numericValue,
-        newCount: (key === "new" ? numericValue : 0),
+        totalCount :  item?.groupedEventsCount[key] || 0,
+        newCount : item?.groupedEventsCount[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
-      };
-    });
+      }
+    })
+    // const transformedData = Object.entries(item?.groupedEventsCount || {}).map(([key, value]) => {
+    //   const numericValue = Number(value) || 0;
+    
+    //   return {
+    //     type: key.charAt(0).toUpperCase() + key.slice(1),
+    //     totalCount: numericValue,
+    //     newCount: (key === "new" ? numericValue : 0),
+    //     logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
+    //   };
+    // });
     setEventCount(transformedData);
   }
     
