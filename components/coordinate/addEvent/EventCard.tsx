@@ -7,6 +7,7 @@ import InterestSelector from "./InterestSelector";
 import { useState } from "react";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { InterestConfiguration } from "@/types/configuration";
+import { useIntent } from "@/hooks/useIntent";
 
 interface Props {
   id: string;
@@ -23,20 +24,19 @@ interface Props {
 }
 
 const EventCard = (eventData: Props) => {
-
   const { toast } = useToast();
+  const [eventRejected, setEventRejected] = useState<boolean>(false);
 
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
     error,
   } = useConfiguration.interest();
-  console.log('interestConfiguration', interestConfiguration);
-  
+  console.log("interestConfiguration", interestConfiguration);
 
   const [selectedAction, setSelectedAction] = useState<InterestConfiguration>({
-    status: '',
-    label: '',
+    status: "",
+    label: "",
   });
 
   const event = {
@@ -57,14 +57,18 @@ const EventCard = (eventData: Props) => {
     eventType: eventData.eventType,
   };
 
+  const { createUserEventInterest, isLoading: isSubmitting } =
+    useIntent.createUserEventInterest();
+
   const handleReject = (eventId: string) => {
     console.log("handleReject", eventId);
+    setEventRejected(true);
   };
 
   const handleSelect = (eventId: string, action: string) => {
     console.log("handleSelect", eventId, action, selectedAction);
 
-    if (selectedAction.id === "") {
+    if (selectedAction.status === "") {
       toast({
         // title: "Success",
         description: "Please select action",
@@ -72,14 +76,35 @@ const EventCard = (eventData: Props) => {
       });
       return;
     } else {
-    // mark enquiry status
-      toast({
-        title: "Success",
-        description: "Event added successfully!",
-        variant: "default",
-      });
+      // mark enquiry status
+      createUserEventInterest(
+        {
+          eventId,
+          interest: selectedAction.status,
+          sourceModule: "RESEARCH",
+        },
+        {
+          onSuccess: (response: any) => {
+            toast({
+              title: "Success",
+              description: "Event added successfully!",
+              variant: "default",
+            });
+          },
+          onError: (error) => {
+            console.log(error);
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          },
+        }
+      );
     }
   };
+
+  if (eventRejected) return;
 
   return (
     <div className="rounded-sm border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 w-4/5 px-4 p-3  relative flex gap-3 group">
@@ -118,7 +143,11 @@ const EventCard = (eventData: Props) => {
             {event.eventType}
           </Badge>
 
-          <InterestSelector selectedHeader={selectedAction} changeSelectedHeader={setSelectedAction} options={interestConfiguration?.interest} />
+          <InterestSelector
+            selectedHeader={selectedAction}
+            changeSelectedHeader={setSelectedAction}
+            options={interestConfiguration?.interest}
+          />
 
           <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <Cross

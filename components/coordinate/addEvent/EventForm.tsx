@@ -47,6 +47,8 @@ const EventForm = () => {
   const [eventData, setEventData] = useState<any>();
 
   const [similarEvents, setSimilarEvents] = useState<any>([]);
+
+  const [veiw, setView] = useState<string>("");
   const [similarEventsFound, setSimilarEventsFound] = useState<boolean>(false);
 
   const coordinateService = useCoordinateService();

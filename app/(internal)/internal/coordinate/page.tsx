@@ -4,7 +4,6 @@ import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import Loading from "@/components/ui/Loading";
-import AddEventModal from "@/components/coordinate/addEvent/AddEventModal";
 
 const Page = () => {
   const {
@@ -17,9 +16,6 @@ const Page = () => {
     isLoading: isOutreachConfigLoading,
   } = useConfiguration.outreach();
 
-  return (
-    <AddEventModal />
-  );
 
   return (
     <div className={`${styles.container}`}>
