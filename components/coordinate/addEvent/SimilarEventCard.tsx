@@ -11,20 +11,25 @@ interface Props {
   duplicateEvents?: any;
   eventData: {
     name: string;
-    logo: string;
-    organizer: string;
+    logo?: string;
+    organizer?: string;
     startDate: string;
     endDate: string;
-    venue: string;
-    state: string;
-    city: string;
-    country: string;
+    venue?: string;
+    state?: string;
+    city?: string;
+    country?: string;
     eventType: string;
   };
+  showSimlarCard?: boolean;
 }
 
-const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
-  const [showSimilar, setShowSimilar] = useState<boolean>(false);
+const SimilarEventCard = ({
+  eventData,
+  duplicateEvents,
+  showSimlarCard = false,
+}: Props) => {
+  const [showSimilar, setShowSimilar] = useState<boolean>(showSimlarCard);
   const event = {
     name: eventData.name,
     logoUrl: eventData.logo,
@@ -39,10 +44,11 @@ const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
     ]
       .filter(Boolean)
       .join(", "),
+    eventType: eventData.eventType,
   };
   return (
     <>
-      <div className="rounded-sm border border-[#F87275] text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 w-4/5 bg-[var(--warning-background-color)] px-4 p-3 flex gap-3">
+      <div className="rounded-sm border border-[#F87275] text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 bg-[var(--warning-background-color)] px-4 p-3 flex gap-3">
         {event?.logoUrl && (
           <div className="w-14 h-14">
             <img
@@ -71,12 +77,14 @@ const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
             </div>
           </div>
           <div className="flex justify-between">
-            <Badge
-              variant="outline"
-              className="text-[#0062D1] bg-[#E0EAF5]  capitalize rounded-sm"
-            >
-              CONFERENCE
-            </Badge>
+            {event.eventType && (
+              <Badge
+                variant="outline"
+                className="text-[#0062D1] bg-[#E0EAF5]  capitalize rounded-sm"
+              >
+                {event.eventType}
+              </Badge>
+            )}
 
             <Button
               size="xs"
@@ -84,14 +92,14 @@ const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
               variant="outline"
               onClick={() => setShowSimilar((prev) => !prev)}
             >
-              {duplicateEvents.length} Similar Events
+              {duplicateEvents?.length} Similar Events
             </Button>
           </div>
         </div>
       </div>
 
       {showSimilar && (
-        <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm w-4/5">
+        <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
           <div className="my-2">
             <div className="flex gap-1 mb-1">
               <Image src={fetchIcon} height={18} width={18} alt="loading" />
@@ -101,7 +109,7 @@ const SimilarEventCard = ({ eventData, duplicateEvents }: Props) => {
             </div>
           </div>
 
-          {duplicateEvents.map((item: any) => {
+          {duplicateEvents?.map((item: any) => {
             const eventItem = {
               id: item.basic.id,
               name: item.basic.name,

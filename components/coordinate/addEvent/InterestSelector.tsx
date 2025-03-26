@@ -9,39 +9,20 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { InterestConfiguration } from "@/types/configuration";
 
-const eventStatuses = [
-  { id: "Event Name", label: "Event Name" },
-  { id: "Location", label: "Location" },
-  { id: "Type", label: "Type" },
-  { id: "Duration", label: "Duration" },
-  { id: "Participation", label: "Participation" },
-];
-
 interface Props {
   options: InterestConfiguration[] | undefined;
   selectedHeader: InterestConfiguration;
   changeSelectedHeader: any;
 }
 
-// const options = [
-//   { id: "Event Name", label: "Speak" },
-//   { id: "Location", label: "Exhibit" },
-//   { id: "Type", label: "Sponsor" },
-//   { id: "Duration", label: "Atend" },
-// ];
-
 export default function InterestSelector({
-    options,
+  options,
   selectedHeader,
   changeSelectedHeader,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-//   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([
-//     selectedHeader.fieldName,
-//   ]);
 
   const handleStatusToggle = (item: InterestConfiguration) => {
-    // setSelectedStatuses([statusId]);
     changeSelectedHeader(item);
     setIsOpen(false);
   };
@@ -68,7 +49,11 @@ export default function InterestSelector({
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">{selectedHeader?.label !== "" ? selectedHeader.label : "Select Action"}</span>
+            <span className="mr-2">
+              {selectedHeader?.label !== ""
+                ? selectedHeader.label
+                : "Select Action"}
+            </span>
           </div>
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -82,20 +67,21 @@ export default function InterestSelector({
         align="start"
       >
         <div className="py-2">
-          {options && options.map((item) => (
-            <div
-              key={item.status}
-              className="flex items-center space-x-2 p-2 hover:bg-accent"
-              onClick={() => handleStatusToggle(item)}
-            >
-              <label
-                htmlFor={item.status}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          {options &&
+            options.map((item) => (
+              <div
+                key={item.status}
+                className="flex items-center space-x-2 p-2 hover:bg-accent"
+                onClick={() => handleStatusToggle(item)}
               >
-                {item.label}
-              </label>
-            </div>
-          ))}
+                <label
+                  htmlFor={item.status}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {item.label}
+                </label>
+              </div>
+            ))}
         </div>
       </PopoverContent>
     </Popover>

@@ -11,23 +11,31 @@ import NullState from "./NullState";
 import { RefreshCw } from "lucide-react";
 import SampleTable from "./SampleTable";
 import { useEffect, useState } from "react";
+import { useCoordinateService } from "@/services/coordinateService";
+import { async } from "@firebase/util";
 
 interface Props {
   mappedHeaders: any;
   csvFileName: string;
   handleFileUpload: () => void;
+  csvData: any[];
 }
 
 const BulkImport = ({
   mappedHeaders,
   csvFileName,
   handleFileUpload,
+  csvData,
 }: Props) => {
   const [loadingState, setLoadingState] = useState<
     "default" | "loading" | "fetched"
   >("default");
 
+  const [csvData2, setCsvData2] = useState(csvData);
+  const coordinateService = useCoordinateService();
+
   const eventData = {
+    id: "1",
     name: "Arab Health",
     logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
     organizer: "Informa Middle East & Africa",
@@ -40,32 +48,60 @@ const BulkImport = ({
     eventType: "Tradeshow",
   };
 
-  const [allMatchTrue, setAllMatchTrue] = useState<boolean>(false)
+  // const [allMatchTrue, setAllMatchTrue] = useState<boolean>(false)
 
-  // const allMatchTrue = mappedHeaders.every(
-  //   (item: any) => item.isMatch === true
-  // );
+  console.log('csvData2', csvData2);
+  
 
-  const hadleFetch = () => {
+  const allMatchTrue = mappedHeaders.every(
+    (item: any) => item.isMatch === true
+  );
+
+  const hadleFetch = async() => {
     setLoadingState("loading");
+
+    // csvData[0]
+    const updatedCsvData = csvData2;
+
+    csvData.map(async (item, index) => {
+      const apiData: any = await coordinateService.fetchSimilarEvents(item);
+      updatedCsvData[index].fetched = true;
+      updatedCsvData[index].duplicateEvents = apiData.events.length > 0 ? apiData.events : [];
+    })
+
+    console.log('updatedCsvData', updatedCsvData);
+    
+    setCsvData2(updatedCsvData);
+
+    // const apiData: any = await coordinateService.fetchSimilarEvents(csvData2[0]);
+
+    // console.log('apiData', apiData);
+    
+    // if (apiData.count > 0) {
+    //   setCsvData2(prevData => 
+    //     prevData.map((item, index) => 
+    //       index === 0 ? { ...item, fetched: true, duplicateEvents: apiData.events.length > 0 ? apiData.events : [] } : item
+    //     )
+    //   );
+    // }
 
     setTimeout(() => {
       setLoadingState("fetched");
     }, 1000);
   };
 
-  useEffect(() => {
-    // console.log('file changed');
+  // useEffect(() => {
+  //   // console.log('file changed');
     
-    const temp = mappedHeaders.every(
-      (item: any) => item.isMatch === true
-    );
-    console.log('file changed', temp);
-    setAllMatchTrue(temp);
-  }, mappedHeaders);
+  //   const temp = mappedHeaders.every(
+  //     (item: any) => item.isMatch === true
+  //   );
+  //   console.log('file changed', temp);
+  //   setAllMatchTrue(temp);
+  // }, mappedHeaders);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="px-3 flex flex-col gap-4">
       <div className="flex items-center gap-4 bg-[var(--background-secondary-color)] px-4 py-5 border border-[var(--border-color)] rounded-sm text-sm">
         <span className="text-[var(--link-color)]">Uploaded file: </span>
         <span className="text-[#8F8F8F] italic font-bold"> {csvFileName}</span>
@@ -96,8 +132,8 @@ const BulkImport = ({
             </div>
           </div>
 
-          <div className="text-[#A8A8A8] text-sm">Sample Format</div>
-          <SampleTable mappedHeaders={mappedHeaders} isSampleTable={true} />
+          {/* <div className="text-[#A8A8A8] text-sm">Sample Format</div>
+          <SampleTable mappedHeaders={mappedHeaders} isSampleTable={true} /> */}
 
           <div className="text-[#A8A8A8] text-sm">Uploaded Data</div>
           <SampleTable mappedHeaders={mappedHeaders} />
@@ -136,10 +172,35 @@ const BulkImport = ({
             </div>
           </div>
 
-          <EventCard {...eventData} />
+          {/* <EventCard {...eventData} />
           <EventCard {...eventData} />
           <SimilarEventCard eventData={eventData}  />
-          <EventCard {...eventData} />
+          <EventCard {...eventData} /> */}
+
+          {csvData2.map(item=>{
+            if (item?.fetched && item.duplicateEvents.length > 0) {
+              const e_data = {
+                name: item.name,
+                // logo: null,
+                startDate: item.startDateTime,
+                endDate: item.endDateTime,
+                venue: item.address,
+                eventType: item.participation,
+              }
+              return <SimilarEventCard eventData={e_data} duplicateEvents={item.duplicateEvents} />
+            } else if (item?.fetched && item.duplicateEvents.length === 0) {
+              const e_data = {
+                id: '',
+                name: item.name,
+                // logo: null,
+                startDate: item.startDateTime,
+                endDate: item.endDateTime,
+                venue: item.address,
+                eventType: item.participation,
+              }
+              return <EventCard {...e_data} />
+            }
+          })}
         </>
       ) : (
         <></>
