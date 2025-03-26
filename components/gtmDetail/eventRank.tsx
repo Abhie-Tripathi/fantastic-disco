@@ -402,7 +402,7 @@ export const EventRank = ({
   );
 
   const swiperRankComponents = (
-    <div className="hidden max-[1400px]:flex max-[1400px]: justify-center w-full">
+    <div className="hidden max-[1400px]:flex max-[1400px]:justify-center w-full">
       <Swiper
         className="w-full h-full"
         modules={[Navigation, Pagination]}

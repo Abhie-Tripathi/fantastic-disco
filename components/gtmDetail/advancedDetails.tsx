@@ -60,7 +60,7 @@ const CarouselComponent = ({
   const hasFrequencyOption =
     frequencies &&
     frequencies.options.find(
-      (option: { id: string }) => option.id === frequency
+      (option: { id: string }) => option.id === frequency?.toLocaleLowerCase()
     );
 
   const hasSeriesEvent =

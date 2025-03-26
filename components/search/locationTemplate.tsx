@@ -197,6 +197,7 @@ console.log(selectedLocation);
             <TabsContent value="city" className="p-4">
               <AutocompleteInput
                 type="LocationId"
+                multiple
                 placeholder="E.g. Bengaluru, Karnataka"
                 onSelect={setSelectedLocation}
                 value={

@@ -84,7 +84,7 @@ export default function EventList({
 
   const EventCard = ({ event }: { event: Event }) => {
     const address = event.basic.eventLocation
-      ? event.basic.eventLocation.city?.name === "Online"
+      ? event.basic.format === "online"
         ? "Online"
         : [
             event.basic.eventLocation?.venue?.name || "TBA",

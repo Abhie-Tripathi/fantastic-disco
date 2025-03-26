@@ -1,9 +1,24 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
+import { Filters } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
 const filterData = [
@@ -18,15 +33,17 @@ const filterData = [
     { id: "200000", label: "200k+", min: 200000, max: Infinity, isEnabled: true },
 ];
 
-export default function EventFollowers() {
-  const { setLocalFilter, getLocalFilterValue, morphedData } =
-    useFilterContext();
+interface EventFollowersProps {
+  variant?: "accordion" | "popover";
+  filterName?: string;
+}
 
-  const estimatedVisitorsOptions = filterData;
-  // const enabled = morphedData?.estimatedVisitors?.isEnabled;
+export default function EventFollowers({ variant = "popover", filterName = "eventFollowers" }: EventFollowersProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("eventFollowers").split(",").filter(Boolean),
+    () => getLocalFilterValue(filterName as keyof Filters).split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -34,14 +51,31 @@ export default function EventFollowers() {
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-
-    setLocalFilter("eventFollowers", newRanges.join(","));
+    setLocalFilter(filterName as keyof Filters, newRanges.join(","));
   };
 
-  return (
+  const labels: Record<string, string> = {
+    eventFollowers: "Event Followers",
+    communitySize: "Followers",
+  };
+
+  const triggerContent = (
+    <div className="flex items-center justify-between w-full">
+      <span className="flex items-center gap-2">
+        {labels[filterName as keyof typeof labels] || "Event Followers"}
+        {selectedRanges.length > 0 && (
+          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+            {selectedRanges.length}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+
+  const content = (
     <div className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
       <div className="p-4 space-y-4">
-        {estimatedVisitorsOptions?.map((range: EventType) => (
+        {filterData.map((range: EventType) => (
           <div key={range.id} className="flex items-center space-x-2">
             <Checkbox
               id={range.id}
@@ -54,5 +88,45 @@ export default function EventFollowers() {
         ))}
       </div>
     </div>
+  );
+
+  if (variant === "popover") {
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between px-3 py-5 text-base font-normal"
+          >
+            {triggerContent}
+            <ChevronDown
+              className={`ml-2 h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+          {content}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="eventFollowers" className="border rounded-md">
+        <AccordionTrigger 
+          className={cn(buttonVariants({ variant: "outline" }), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        >
+          {triggerContent}
+        </AccordionTrigger>
+        <AccordionContent>
+          {content}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

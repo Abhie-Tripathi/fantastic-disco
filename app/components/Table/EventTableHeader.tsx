@@ -114,19 +114,19 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             <div className="font-medium text-foreground ">Impact</div>
           </TableHead>
         )} */}
-            {show.includes(Show.scores) && (
+            {isEventeli &&show.includes(Show.scores) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Inbound</div>
               </TableHead>
             )}
-            {show.includes(Show.scores) && (
+            {isEventeli && show.includes(Show.scores) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
                   International
                 </div>
               </TableHead>
             )}
-            {show.includes(Show.economicImpact) && (
+            {isEventeli && show.includes(Show.economicImpact) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
                   Est. Impact ($)
