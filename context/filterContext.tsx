@@ -197,8 +197,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         !params.active_gte &&
         !params.active_lte
       ) {
-        params.active_gte = startOfMonth(new Date()).toISOString();
-        params.active_lte = endOfMonth(addMonths(new Date(), 3)).toISOString();
+        params.active_gte = startOfMonth(new Date()).toISOString().split('T')[0];
+        params.active_lte = endOfMonth(addMonths(new Date(), 3)).toISOString().split('T')[0];
       }
 
       setLocalFilters(filterEmptyValues(params));
@@ -282,10 +282,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     const params = new URLSearchParams();
 
     // Preserve the date range when clearing filters
-    params.set("active_gte", startOfMonth(new Date()).toISOString());
+    params.set("active_gte", startOfMonth(new Date()).toISOString().split('T')[0]);
     params.set(
       "active_lte",
-      endOfMonth(addMonths(new Date(), 3)).toISOString()
+      endOfMonth(addMonths(new Date(), 3)).toISOString().split('T')[0]
     );
 
     // Preserve view if it exists

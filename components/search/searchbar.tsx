@@ -227,7 +227,14 @@ export default function MultiSelectSearchBar({
               className="w-full justify-between px-3 py-5 text-base font-normal"
             >
               <div className="flex items-center justify-between w-full">
-                Search Events 
+                <div className="flex items-center">
+                  <span className="mr-2">Search Events</span>
+                  {selectedItems.length > 0 && (
+                    <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+                      {selectedItems.length}
+                    </span>
+                  )}
+                </div>
                 <ChevronDown
                   className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
                     open ? "rotate-180" : ""
@@ -241,9 +248,9 @@ export default function MultiSelectSearchBar({
             align={align}
             sideOffset={sideOffset}
           >
-            <div className="flex items-center flex-wrap gap-2 w-full p-2">
-              {selectedItems.length > 0 &&
-                selectedItems.map((item) => (
+            {selectedItems.length > 0 && (
+              <div className="flex items-center flex-wrap gap-2 w-full p-2">
+                {selectedItems.map((item) => (
                   <div
                     key={item.basic.id}
                     className="flex items-center bg-gray-200 rounded-full px-3 py-1"
@@ -261,7 +268,8 @@ export default function MultiSelectSearchBar({
                     </button>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
             <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
