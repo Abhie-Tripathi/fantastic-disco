@@ -427,11 +427,14 @@ export default function AddEventModal() {
 
   // new variables
   const [selectedView, setSelectedView] = useState<string>('home'); // home, loading, addEventForm, bulkImport, urlFetch
+  const [eventFormState, setEventFormState] = useState<"default" | "similarEvents" | "editEvents" | "fetching">(
+    "default"
+  );
 
   // new variables
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [eventFormOpen, setEventFormOpen] = useState<boolean>(false);
+  // const [eventFormOpen, setEventFormOpen] = useState<boolean>(false);
   const [showEventList, setShowEventList] = useState<boolean>(false);
 
   const [eventSuggestion, setEventSuggestion] = useState<any>([]);
@@ -451,7 +454,7 @@ export default function AddEventModal() {
   const handleChange = () => {};
 
   const resetForm = () => {
-    setEventFormOpen(false);
+    // setEventFormOpen(false);
     setShowEventList(false);
     setIsFetching(false);
     setShowEventSuggestion(false);
@@ -550,11 +553,11 @@ export default function AddEventModal() {
       complete: (result) => {
         // console.log("result.data", result.data);
 
-        const mappedData = result.data.map((item: any) => ({
-          name: item['Name'], // Map to your column names
-          age: item['Age'],
-          email: item['Email'],
-        }));
+        // const mappedData = result.data.map((item: any) => ({
+        //   name: item['Name'], // Map to your column names
+        //   age: item['Age'],
+        //   email: item['Email'],
+        // }));
 
         setCsvData(result.data);
 
@@ -567,7 +570,10 @@ export default function AddEventModal() {
           // header.isMatch = true;
           header.isMatch = header.suggestions.some(item => header.fieldName.toLowerCase().includes(item.toLowerCase()) || header.fieldName.toLowerCase() === item.toLowerCase());
 
-        })
+        });
+
+        // console.log('tempHeader2', tempHeader2);
+        
         setMappedHeaders(tempHeader2);
         setSelectedView("bulkImport");
         
@@ -586,6 +592,9 @@ export default function AddEventModal() {
   };
 
   const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Reset the input to clear the previous file
+    }
     fileInputRef.current?.click();
   };
 
@@ -633,13 +642,23 @@ export default function AddEventModal() {
               }
 
               {(selectedView === 'home' || selectedView === 'urlFetch' || selectedView === 'bulkImport') &&
-                <Button className="text-primary hover:text-primary" variant="outline" onClick={()=>setSelectedView("addEventForm")}>
+                <Button className="text-primary hover:text-primary" variant="outline" onClick={()=>{
+                  setSelectedView("addEventForm");
+                  setEventFormState("default");  
+                }}>
                   Add Manually
                 </Button>
               }
 
-              {selectedView === 'addEventForm' &&
-                <Button>Save Event</Button>
+              {
+                selectedView === "addEventForm" &&
+                (eventFormState === "default" ? (
+                  <Button onClick={() => setEventFormState("fetching")}>Save Event</Button>
+                ) : eventFormState === "similarEvents" ? (
+                  <Button onClick={() => setEventFormState("default")}>Edit Event</Button>
+                ) : (
+                  <></>
+                ))
               }
             </div>
           </div>
@@ -696,7 +715,7 @@ export default function AddEventModal() {
               selectedView === 'addEventForm' ? "opacity-100" : "opacity-0"
             }`}
           >
-            {selectedView === 'addEventForm' && <EventForm />}
+            {selectedView === 'addEventForm' && <EventForm eventFormState={eventFormState} setEventFormState={setEventFormState} />}
           </div>
 
           {/* <div
@@ -720,7 +739,8 @@ export default function AddEventModal() {
               selectedView === 'bulkImport' ? "opacity-100" : "opacity-0"
             }`}
           >
-            {selectedView === 'bulkImport' && <BulkImport mappedHeaders={mappedHeaders} csvFileName={csvFileName} handleFileUpload={handleButtonClick} />}
+            {selectedView === 'bulkImport' && <BulkImport mappedHeaders={mappedHeaders} csvFileName={csvFileName} handleFileUpload={handleButtonClick}
+            csvData={csvData} />}
           </div>
 
           

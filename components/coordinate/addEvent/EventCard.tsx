@@ -104,10 +104,10 @@ const EventCard = (eventData: Props) => {
     }
   };
 
-  if (eventRejected) return;
+  if (eventRejected) return <></>;
 
   return (
-    <div className="rounded-sm border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 w-4/5 px-4 p-3  relative flex gap-3 group">
+    <div className="rounded-sm border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 px-4 p-3  relative flex gap-3 group">
       {event.logoUrl && (
         <div className="w-14 h-14">
           <img
