@@ -342,9 +342,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
-            <button onClick={handleShare}>
+            {/* <button onClick={handleShare}>
               <Share2 width="17px" height="17px" color="#666666" />
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="flex mt-0 lg:mt-4 gap-4 items-start flex-col lg:flex-row">
@@ -562,7 +562,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   />
                   <div className="flex flex-col">
                     <Text fontWeight="medium" size="normal">
-                      {name}
+                      {organizerName}
                     </Text>
                     {organizerAddress && (
                       <div className="flex gap-2 items-center">

@@ -28,6 +28,7 @@ interface PaginationComponentProps {
   onItemsPerPageChange?: (value: string) => void;
   showEntriesCount?: boolean;
   paginationItems?: string[];
+  hideLastPage?: boolean;
 }
 
 export function PaginationComponent({
@@ -39,6 +40,7 @@ export function PaginationComponent({
   onItemsPerPageChange,
   showEntriesCount = true,
   paginationItems = ["10", "20"],
+  hideLastPage = false,
 }: PaginationComponentProps) {
   const pathname = usePathname();
   const hideLastPage = pathname === '/internal/search/companies' || pathname === '/internal/search/people';

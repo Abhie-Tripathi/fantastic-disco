@@ -299,6 +299,7 @@ export const PeopleList: React.FC = () => {
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
           paginationItems={["5", "10"]}
+          hideLastPage={true}
         />
       </div>
     </div>
