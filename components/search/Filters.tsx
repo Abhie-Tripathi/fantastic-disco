@@ -51,6 +51,7 @@ import CompanyType from "@/app/components/prospect/Filters/companyType";
 import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductTopics from "@/components/search/advancedFilters/product&Topics";
+import MultiSelectSearchBar from "@/components/search/searchbar";
 import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
 import { Switch } from "@/components/ui/switch";
 import whrbotlogo from "@/public/whrbotlogo.svg";
@@ -82,6 +83,11 @@ const gtmFilters: {
       id: "basic-filters",
       label: "Basic Filters",
       filters: [
+        {
+          id: "eventIds",
+          component: "MultiSelectSearchBar",
+          enabled: true,
+        },
         {
           id: "eventTypes",
           component: "EventTypeSelector",
@@ -333,6 +339,11 @@ const geoFilters: {
       id: "basic-filters",
       label: "Basic Filters",
       filters: [
+        {
+          id: "eventIds",
+          component: "MultiSelectSearchBar",
+          enabled: true,
+        },
         {
           id: "eventTypes",
           component: "EventTypeSelector",
@@ -598,6 +609,7 @@ const getFilterComponent = (componentName: string) => {
     DateRangeSelector,
     StatusSelector,
     EventEntrySelector,
+    MultiSelectSearchBar,
     UserRatingSelector,
     EditionSelector,
     GlobalAndTouringSelector,

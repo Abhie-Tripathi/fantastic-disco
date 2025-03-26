@@ -196,7 +196,7 @@ export const PeopleList: React.FC = () => {
 
   const itemsPerPage = parseInt(getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString());
   const currentPage = Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
-  const totalPages = Math.ceil(count / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage) - 1;
 
   const handlePageChange = useCallback((page: number) => {
     setMultipleFilters({

@@ -179,7 +179,10 @@ export default function EventTypeSelector({
   );
 
   const content = (
-    <div className="p-4 grid grid-cols-3 gap-4">
+    <div className={cn(
+      "p-4",
+      variant === "accordion" ? "grid grid-cols-1 gap-4" : "grid grid-cols-3 gap-4"
+    )}>
       {isEventeli && renderCategoryGroup("social")}
       {renderCategoryGroup("business")}
       {isEventeli && renderCategoryGroup("unAttended")}

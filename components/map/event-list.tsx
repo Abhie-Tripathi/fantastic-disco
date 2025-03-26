@@ -384,9 +384,8 @@ function EventList({
           radius: mapRadius,
         },
       };
-      console.log(viewBound);
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      params.set("viewBound", JSON.stringify(viewBound));
+      if (params.get("locationIds")) params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 

@@ -44,7 +44,7 @@ export interface LocationProps {
   isMandatory?: boolean;
   filterName?: string;
 }
-export default function LocationSelector({ type, isMandatory, filterName = "locationIds" }: LocationProps) {
+export default function LocationSelector({ type, isMandatory, filterName="locationIds"}: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
@@ -133,9 +133,10 @@ export default function LocationSelector({ type, isMandatory, filterName = "loca
       if (radiusUnit === "mi") {
         setRadiusUnit("km");
       }
+      console.log(selectedLocation)
       replaceLocalFilter(
         "locationIds",
-        filterName,
+        "viewBound",
         JSON.stringify({
           boundType: "point",
           coordinates: {
@@ -218,7 +219,7 @@ export default function LocationSelector({ type, isMandatory, filterName = "loca
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[352px] border rounded-md shadow-sm p-0" align="start">
+      <PopoverContent className="w-[392px] border rounded-md shadow-sm p-0" align="start">
         <div className="flex justify-between items-center p-4 py-2 border-b">
           <span className="font-medium">Location</span>
           <Button

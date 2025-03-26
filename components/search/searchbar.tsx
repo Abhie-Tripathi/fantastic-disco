@@ -16,13 +16,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Search, X } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "../ui/button";
 
-export default function MultiSelectSearchBar() {
+interface MultiSelectSearchBarProps {
+  trigger?: React.ReactNode;
+  className?: string;
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+}
+
+export default function MultiSelectSearchBar({
+  trigger,
+  className = "",
+  align = "start",
+  sideOffset = 4,
+}: MultiSelectSearchBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { getLocalFilterValue, localFilters } = useFilterContext();
@@ -32,7 +45,7 @@ export default function MultiSelectSearchBar() {
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const { getEvents, isLoading} = useEventsService();
+  const { getEvents, isLoading } = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -63,14 +76,17 @@ export default function MultiSelectSearchBar() {
           if (abortControllerRef.current) {
             abortControllerRef.current.abort();
           }
-          
+
           // Create new AbortController for this request
           abortControllerRef.current = new AbortController();
-          
-          const response = await getEvents({
-            query: value,
-          }, abortControllerRef.current.signal);
-          
+
+          const response = await getEvents(
+            {
+              query: value,
+            },
+            abortControllerRef.current.signal
+          );
+
           const filteredResults =
             (response?.events as Event[])?.filter(
               (event) =>
@@ -79,7 +95,7 @@ export default function MultiSelectSearchBar() {
           setSearchResults(filteredResults);
         } catch (err) {
           // Only log error if it's not an abort error
-          if (err instanceof Error && err.name !== 'AbortError') {
+          if (err instanceof Error && err.name !== "AbortError") {
             console.error("Error fetching search results:", err);
           }
           setSearchResults([]);
@@ -165,57 +181,96 @@ export default function MultiSelectSearchBar() {
     };
   }, []);
 
+  // Create a default trigger if none is provided
+  const defaultTrigger = (
+    <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
+      <Search className="ml-2 text-gray-400" />
+      {selectedItems.map((item) => (
+        <div
+          key={item.basic.id}
+          className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+        >
+          <span className="text-sm">{item.basic.name}</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemoveItem(item);
+            }}
+            className="ml-2 focus:outline-none"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+      <div className="flex-grow flex items-center">
+        <Input
+          type="text"
+          placeholder={selectedItems.length ? "" : "Search Events"}
+          value={searchTerm}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
+        />
+      </div>
+    </div>
+  );
+
   return (
-    <form onSubmit={handleSearchSubmit} className="w-full">
+    <form onSubmit={handleSearchSubmit} className={`w-full ${className}`}>
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
-              <Search className="ml-2 text-gray-400" />
-              {selectedItems.map((item) => (
-                <div
-                  key={item.basic.id}
-                  className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
-                >
-                  <span className="text-sm">{item.basic.name}</span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      handleRemoveItem(item);
-                      e.preventDefault();
-                    }}
-                    className="ml-2 focus:outline-none"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-              <div className="flex-grow flex items-center">
-                <Input
-                  type="text"
-                  placeholder={selectedItems.length ? "" : "Search Events"}
-                  value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between px-3 py-5 text-base font-normal"
+            >
+              <div className="flex items-center justify-between w-full">
+                Search Events 
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                    open ? "rotate-180" : ""
+                  }`}
                 />
               </div>
-            </div>
+            </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
-            align="start"
+            className="p-0 w-[var(--radix-popover-trigger-width)] border-none shadow-lg"
+            align={align}
+            sideOffset={sideOffset}
           >
+            <div className="flex items-center flex-wrap gap-2 w-full p-2">
+              {selectedItems.length > 0 &&
+                selectedItems.map((item) => (
+                  <div
+                    key={item.basic.id}
+                    className="flex items-center bg-gray-200 rounded-full px-3 py-1"
+                  >
+                    <span className="text-xs">{item.basic.name}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveItem(item);
+                      }}
+                      className="ml-2 focus:outline-none"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+            </div>
             <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
+                placeholder="Search events..."
               />
               <CommandEmpty>
                 {isLoading ? "Searching..." : "No results found."}
               </CommandEmpty>
-              {/* {error && (
-                <div className="p-2 text-red-500">Error: {error.message}</div>
-              )} */}
               <CommandGroup>
                 <CommandList>
                   {searchResults.map((event, index) => (
