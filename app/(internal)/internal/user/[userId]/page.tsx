@@ -277,7 +277,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
         )}
 
         <div className="flex gap-4 my-6">
-          {userDetails?.user_linkedin && (
+          {/* {userDetails?.user_linkedin && (
             <Link
               href={userDetails?.user_linkedin}
               target="_blank"
@@ -285,7 +285,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
             >
               <Linkedin color="#0077B5" className="cursor-pointer" />
             </Link>
-          )}
+          )} */}
           {userDetails?.user_twitterId && (
             <Link
               href={userDetails?.user_twitterId}

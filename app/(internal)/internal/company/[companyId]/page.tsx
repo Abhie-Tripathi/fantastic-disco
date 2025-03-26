@@ -317,7 +317,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           )}
 
         <div className="flex gap-4 my-6">
-          {companyDetails?.social?.linkedinId && (
+          {/* {companyDetails?.social?.linkedinId && (
             <Link
               href={companyDetails?.social?.linkedinId}
               target="_blank"
@@ -325,7 +325,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             >
               <Linkedin color="#0077B5" className="cursor-pointer" />
             </Link>
-          )}
+          )} */}
           {companyDetails?.social?.twitterId && (
             <Link
               href={companyDetails?.social?.twitterId}
