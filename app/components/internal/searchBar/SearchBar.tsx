@@ -102,7 +102,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 console.log(type);
                 
                 if(type==="T_BRAND_BUILDING"){
-                  console.log(eventSuggestion);
                   
                   updatedData = eventSuggestion.map((item:EventSuggestionItem)=>({
                     key:item?.id,
@@ -113,7 +112,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                   }))
                 }
                 else if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {
-                  console.log(eventSuggestion);
                   
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
@@ -135,7 +133,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-                console.log(updatedData);
                 
                 setRestructureData(updatedData);
             }
