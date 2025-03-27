@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import { ChartFilters } from "@/components/trendsChart/chart-filters";
 import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { useEventsService } from "@/services/eventsService";
+import { useQuery } from "@tanstack/react-query";
+import { useFilterContext } from "@/context/filterContext";
 
 export default function VisualizePage() {
   const params = useParams();
@@ -25,6 +28,42 @@ export default function VisualizePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentLevel, setCurrentLevel] = useState(0);
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([]);
+  const { getEventCountByCity } = useEventsService();
+  const { getLocalFilterValue } = useFilterContext();
+  const [queryParams, setQueryParams] = useState("");
+
+  const buildQueryParams = () => {
+    const params = new URLSearchParams();
+    params.append("groupBy", "state");
+
+    const locationId = getLocalFilterValue("locationIds");
+    if (locationId) {
+      params.append("locationIds", locationId);
+    }
+
+    const activeGte = getLocalFilterValue("active_gte");
+    if (activeGte) {
+      params.append("active_gte", activeGte);
+    }
+
+    const activeLte = getLocalFilterValue("active_lte");
+    if (activeLte) {
+      params.append("active_lte", activeLte);
+    }
+
+    return params.toString();
+  };
+
+  const { data: eventCountData, refetch } = useQuery({
+    queryKey: ["eventCount", params.type, queryParams],
+    queryFn: async () => {
+      console.log("Fetching with params:", queryParams);
+      const response = await getEventCountByCity(queryParams);
+      console.log("API Response:", response);
+      return response;
+    },
+    enabled: params.type === "visitor-flow" && !!queryParams,
+  });
 
   const handleChartClick = (params: any) => {
     if (chartInstance.current && params.treePathInfo) {
@@ -41,14 +80,34 @@ export default function VisualizePage() {
     }
   };
 
-  const handleFiltersChange = (filters: any) => {
+  const handleFiltersChange = async (filters: any) => {
     if (chartInstance.current) {
       setCurrentLevel(0);
       setHierarchyLevels(filters.hierarchyLevels);
-      const options = getChartOptions(params.type as string, filters.hierarchyLevels);
+      
+      // Build new query params and trigger API call
+      const newQueryParams = buildQueryParams();
+      console.log("New Query Params:", newQueryParams);
+      setQueryParams(newQueryParams);
+      
+      // Refetch data with new params
+      await refetch();
+      
+      // Update chart with new data
+      console.log("Current eventCountData:", eventCountData);
+      const options = getChartOptions(params.type as string, filters.hierarchyLevels, eventCountData);
       chartInstance.current.setOption(options);
     }
   };
+
+  // Add initial effect to set query parameters
+  useEffect(() => {
+    if (params.type === "visitor-flow") {
+      const initialParams = buildQueryParams();
+      console.log("Setting initial query params:", initialParams);
+      setQueryParams(initialParams);
+    }
+  }, [params.type]);
 
   useEffect(() => {
     const initChart = async () => {
@@ -62,7 +121,8 @@ export default function VisualizePage() {
         chartRef.current.style.height = "600px";
         chartInstance.current = echarts.init(chartRef.current);
         
-        const options = getChartOptions(params.type as string);
+        console.log("Initializing chart with data:", eventCountData);
+        const options = getChartOptions(params.type as string, hierarchyLevels, eventCountData);
         chartInstance.current.setOption(options);
         
         // Add click event handlers
@@ -83,7 +143,7 @@ export default function VisualizePage() {
         chartInstance.current.dispose();
       }
     };
-  }, [params.type]);
+  }, [params.type, eventCountData, hierarchyLevels]);
 
   return (
     <div className="min-h-screen bg-gray-50">

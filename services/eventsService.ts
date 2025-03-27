@@ -265,6 +265,15 @@ export const useEventsService = () => {
     );
   };
 
+  const getEventCountByCity = async (params: string) => {
+    return api.request<{ data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }>(
+      `${endpoints.event.events}/count?${params}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   return {
     getEvents,
     saveEvent,
@@ -285,6 +294,7 @@ export const useEventsService = () => {
     getEventCoOrganizerDetails,
     getEventsRankingDetailsById,
     getRecentSearch,
+    getEventCountByCity,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

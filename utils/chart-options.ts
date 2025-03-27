@@ -129,16 +129,20 @@ interface TreeNode {
   rawData?: Record<string, any>;
 }
 
-function generateHierarchicalData(hierarchyLevels: HierarchyLevel[]): TreeNode[] {
+function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: { data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }): TreeNode[] {
+  console.log("Generating hierarchical data with:", { hierarchyLevels, apiData });
+  
   if (hierarchyLevels.length === 0) {
-    return dummyData.cities.map(city => ({
+    const result = apiData?.data.map(city => ({
       name: city.name,
-      value: city.value,
+      value: city.count,
       rawData: {
         location: city.name,
         category: null,
       }
-    }));
+    })) || [];
+    console.log("No hierarchy levels, returning:", result);
+    return result;
   }
 
   const processLevel = (
@@ -146,26 +150,30 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[]): TreeNode[]
     remainingLevels: HierarchyLevel[]
   ): TreeNode[] => {
     const isLastLevel = remainingLevels.length === 0;
+    console.log("Processing level:", { level, isLastLevel, remainingLevels });
 
     switch (level.value) {
       case "location":
-        return dummyData.cities.map(city => ({
+        const locationResult = (apiData?.data || []).map(city => ({
           name: city.name,
-          value: city.value,
+          value: city.count,
           children: isLastLevel ? undefined : 
             remainingLevels.length > 0 
               ? processLevel(remainingLevels[0], remainingLevels.slice(1))
               : undefined
         }));
+        console.log("Location level result:", locationResult);
+        return locationResult;
 
       case "category":
-        return dummyData.categories.map(category => {
+        const categoryResult = dummyData.categories.map(category => {
           const categoryValue = (value: number) => Math.floor(value * (category.baseValue || 0));
+          const totalCount = apiData?.data.reduce((sum, city) => sum + city.count, 0) || 0;
           
           if (isLastLevel) {
             return {
               name: category.name,
-              value: categoryValue(dummyData.cities.reduce((sum, city) => sum + city.value, 0))
+              value: categoryValue(totalCount)
             };
           }
 
@@ -177,20 +185,24 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[]): TreeNode[]
             name: category.name,
             value: children 
               ? children.reduce((sum, child) => sum + child.value, 0)
-              : categoryValue(dummyData.cities.reduce((sum, city) => sum + city.value, 0)),
+              : categoryValue(totalCount),
             children
           };
         });
+        console.log("Category level result:", categoryResult);
+        return categoryResult;
 
       default:
         return [];
     }
   };
 
-  return processLevel(hierarchyLevels[0], hierarchyLevels.slice(1));
+  const result = processLevel(hierarchyLevels[0], hierarchyLevels.slice(1));
+  console.log("Final hierarchical data:", result);
+  return result;
 }
 
-export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] = []): EChartsOption {
+export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] = [], apiData?: { data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }): EChartsOption {
   const options: Record<string, EChartsOption> = {
     "geographic-events": {
       title: {
@@ -315,7 +327,7 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
           name: "Distribution",
           type: "treemap",
           visibleMin: 100,
-          data: generateHierarchicalData(hierarchyLevels),
+          data: generateHierarchicalData(hierarchyLevels, apiData),
           leafDepth: 1,
           drillDownIcon: '▶',
           levels: [
