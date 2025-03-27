@@ -304,7 +304,7 @@ const EventTrends = () => {
           </div>
         </div>
         {isLoading ? (
-          <Loading className="absolute right-1/2 -bottom-3/4" />
+          <Loading />
         ) : error ? (
           <div className={styles.zeroState_container}>
             <Image
