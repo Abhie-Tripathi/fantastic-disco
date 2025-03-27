@@ -58,6 +58,7 @@ const authOptions: NextAuthOptions = {
           token.name = profile.name || "";
           token.email = profile.email || "";
           token.picture = profile.image || "";
+          token.accessToken = account.access_token || "";
         }
       }
       if (account && account.provider === "linkedin") {

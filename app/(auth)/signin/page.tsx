@@ -57,7 +57,7 @@ export default function SignInForm() {
       </p>
       <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
         <Button
-          onClick={() => signIn("google", { callbackUrl: "/internal" })}
+          onClick={() => signIn("google")}
           variant={"outline"}
           className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >
