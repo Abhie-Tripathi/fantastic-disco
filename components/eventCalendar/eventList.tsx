@@ -60,7 +60,7 @@ export default function EventList({
     queryFn: () =>
       source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(
         trackerId || "", 
-        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}`
         + (isEventeli ? `&type=${active}` : ''),
         true
       ),

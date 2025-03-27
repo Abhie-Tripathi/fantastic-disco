@@ -5,6 +5,7 @@ import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
 import DropdownRef from '../../employee/listView/DropdownRef';
+import { Item } from '@radix-ui/react-select';
 interface EventSuggestionItem {
   key: string | number;
   id?:any;
@@ -16,6 +17,7 @@ interface EventSuggestionItem {
   city?: string;
   country?: string;
   host?:string;
+  website?:string;
   tableEntry?: string;
 }
 
@@ -55,7 +57,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               if(type==="T_BRAND_BUILDING"){
                 setEventSuggestion(data.designations);
               }
-              else if(type==="T_COMPETITOR"){
+              else if(type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"){
                 
                 setEventSuggestion(data.companies);
               }else
@@ -84,6 +86,15 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         return () => clearTimeout(debounceTimeout);
           }else setEventSuggestion([]);
       }, [searchInput]);
+      const getDomain = (url?: string) => {
+        if (!url || url === "undefined") return "";
+        try {
+          const hostname = new URL(url).hostname;
+          return hostname.replace("www.", "");
+        } catch (error) {
+          return url;
+        }
+      };
       useEffect(()=>{
             if(eventSuggestion?.length>0){  
                 setIsOpen(true);
@@ -101,14 +112,21 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     tableEntry: item?.name || ''
                   }))
                 }
-                else if (type === "T_COMPETITOR") {
+                else if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {
+                  console.log(eventSuggestion);
+                  
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
                     city: item?.location?.cityName || '',
                     country: item?.location?.countryName || '',
-                    tableEntry: item?.host? item.host:item.name
-                  }));
+                    tableEntry: item.host && item.host !== "undefined" 
+                      ? item.host 
+                      : item.website && item.website !== "undefined" 
+                      ? getDomain(item.website) 
+                      : item.name
+                }));
+                  
                 } else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
@@ -117,6 +135,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
+                console.log(updatedData);
+                
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
