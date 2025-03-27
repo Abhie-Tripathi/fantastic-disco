@@ -17,6 +17,7 @@ interface Props {
     estimatedExhibitors:
       | NonNullable<Event["insights"]>["estimatedExhibitors"]
       | undefined;
+    estimatedVisitorRangeTag: string | undefined | null;
   };
   restrictedData: {
     estimatedVisitors: any;
@@ -28,7 +29,8 @@ export const EventAudienceEstimates = ({
   audienceEstimateData,
   restrictedData,
 }: Props) => {
-  const { estimatedAttendance, estimatedExhibitors } = audienceEstimateData;
+  const { estimatedAttendance, estimatedExhibitors, estimatedVisitorRangeTag } =
+    audienceEstimateData;
   const { estimatedVisitors, estimatedExhibitor } = restrictedData;
 
   const parseEstimatedExhibitor = (
@@ -102,7 +104,15 @@ export const EventAudienceEstimates = ({
         <p className={`text-[#6750A4] font-semibold text-lg `}>
           {estimatedAttendance ? (
             hasEstimatedVisitor ? (
-              numberWithCommas(estimatedAttendance)
+              <div className="flex flex-col">
+                {estimatedVisitorRangeTag && (
+                  <span>
+                    {estimatedVisitorRangeTag[0].toUpperCase() +
+                      estimatedVisitorRangeTag.substring(1).toLowerCase()}
+                  </span>
+                )}
+                <span>{numberWithCommas(estimatedAttendance)}</span>
+              </div>
             ) : (
               <Restriction />
             )

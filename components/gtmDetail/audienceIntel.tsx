@@ -8,6 +8,7 @@ import { DesignationSpread } from "../eventDetail/designationSpread";
 import { EventAudienceEstimates } from "../eventDetail/eventAudienceEstimates";
 import { Heading } from "../eventDetail/heading";
 import { EventParticipants } from "./eventParticipants";
+import { isEventeli } from "@/config";
 
 interface Props {
   eventDetails: Event;
@@ -37,7 +38,7 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
-  const { estimatedAttendance, estimatedExhibitors } =
+  const { estimatedAttendance, estimatedExhibitors, estimatedVisitorRangeTag } =
     (eventDetails && eventDetails.insights) || {};
 
   const [ref, inView] = useInView({
@@ -58,16 +59,19 @@ export const AudienceIntel = ({
         tooltipDescription="Provides insights into exhibitors, speakers, and sponsors."
       />
       <div className="flex flex-col gap-6">
-        {/* <EventAudienceEstimates
-          audienceEstimateData={{
-            estimatedAttendance: estimatedAttendance,
-            estimatedExhibitors: estimatedExhibitors,
-          }}
-          restrictedData={{
-            estimatedVisitors: estimatedVisitors,
-            estimatedExhibitor: estimatedExhibitor,
-          }}
-        /> */}
+        {isEventeli && (
+          <EventAudienceEstimates
+            audienceEstimateData={{
+              estimatedAttendance: estimatedAttendance,
+              estimatedExhibitors: estimatedExhibitors,
+              estimatedVisitorRangeTag: estimatedVisitorRangeTag,
+            }}
+            restrictedData={{
+              estimatedVisitors: estimatedVisitors,
+              estimatedExhibitor: estimatedExhibitor,
+            }}
+          />
+        )}
         <div className="flex gap-6 max-xl:flex-col max-h-full xl:max-h-96">
           <AudienceSpread
             restrictedData={audienceSpreadRestriction}

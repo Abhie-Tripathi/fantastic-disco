@@ -539,11 +539,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
               <p className="flex gap-3 items-center">
                 Organizer
-                {organizer && Object.keys(organizer).length > 0 && (
+                {/* {organizer && Object.keys(organizer).length > 0 && (
                   <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
                     {Object.keys.length.toString().padStart(2, "0")}
                   </span>
-                )}
+                )} */}
               </p>
             </AccordionTrigger>
             <AccordionContent className="h-fit">

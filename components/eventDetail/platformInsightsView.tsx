@@ -40,8 +40,13 @@ export const GtmView = ({
   isAnalyticsEnabled,
   isTrustScoreEnabled,
 }: GtmViewProps) => {
-  const { scores, trustScore, estimatedAttendance, estimatedExhibitors } =
-    (eventDetails && eventDetails.insights) || {};
+  const {
+    scores,
+    trustScore,
+    estimatedAttendance,
+    estimatedExhibitors,
+    estimatedVisitorRangeTag,
+  } = (eventDetails && eventDetails.insights) || {};
   const { morphedData } = useFilterContext();
   const { estimatedVisitors, estimatedExhibitor } = morphedData;
   return (
@@ -56,31 +61,31 @@ export const GtmView = ({
         >
           <>
             {/* {scores &&
-                      scores.impactScore !== 0 &&
-                      scores.impactScore !== null && (
-                        <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                                  Impact Score
-                                </h1>
-                              </TooltipTrigger>
-                              <TooltipContent className="w-56 tooltip-content-styles">
-                                <p className="text-[var(--secondary-text-color)] font-medium">
-                                  Quantifies the significance of an event within a
-                                  specific location.
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          {isAnalyticsEnabled ? (
-                            <CircularProgressBar value={scores.impactScore} />
-                          ) : (
-                            <Restriction />
-                          )}
-                        </div>
-                      )} */}
+              scores.impactScore !== 0 &&
+              scores.impactScore !== null && (
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                          Impact Score
+                        </h1>
+                      </TooltipTrigger>
+                      <TooltipContent className="w-56 tooltip-content-styles">
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          Quantifies the significance of an event within a
+                          specific location.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  {isAnalyticsEnabled ? (
+                    <CircularProgressBar value={scores.impactScore} />
+                  ) : (
+                    <Restriction />
+                  )}
+                </div>
+              )} */}
             {trustScore !== null &&
               trustScore !== undefined &&
               trustScore > 0 && (
@@ -168,6 +173,7 @@ export const GtmView = ({
         audienceEstimateData={{
           estimatedAttendance: estimatedAttendance,
           estimatedExhibitors: estimatedExhibitors,
+          estimatedVisitorRangeTag: estimatedVisitorRangeTag,
         }}
         restrictedData={{
           estimatedVisitors: estimatedVisitors,
@@ -205,31 +211,31 @@ export const GeoView = ({
         >
           <>
             {/* {scores &&
-                        scores.impactScore !== 0 &&
-                        scores.impactScore !== null && (
-                          <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                                    Impact Score
-                                  </h1>
-                                </TooltipTrigger>
-                                <TooltipContent className="w-56 tooltip-content-styles">
-                                  <p className="text-[var(--secondary-text-color)] font-medium">
-                                    Quantifies the significance of an event within a
-                                    specific location.
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            {isAnalyticsEnabled ? (
-                              <CircularProgressBar value={scores.impactScore} />
-                            ) : (
-                              <Restriction />
-                            )}
-                          </div>
-                        )} */}
+              scores.impactScore !== 0 &&
+              scores.impactScore !== null && (
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                          Impact Score
+                        </h1>
+                      </TooltipTrigger>
+                      <TooltipContent className="w-56 tooltip-content-styles">
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          Quantifies the significance of an event within a
+                          specific location.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  {isAnalyticsEnabled ? (
+                    <CircularProgressBar value={scores.impactScore} />
+                  ) : (
+                    <Restriction />
+                  )}
+                </div>
+              )} */}
             {trustScore !== null &&
               trustScore !== undefined &&
               trustScore > 0 && (

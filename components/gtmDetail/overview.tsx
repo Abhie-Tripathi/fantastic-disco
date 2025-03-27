@@ -12,6 +12,7 @@ import { DetailMapComponent } from "../trendsWeather";
 import AlertList from "./alertsList";
 import SearchEventsCTAButton from "./searchEventsCTAButton";
 import TrackerRelevanceScore from "./trackerRelevanceScore";
+import { EVENT_TYPE_GROUPS } from "@/data/trends";
 
 interface Props {
   eventDetails: Event;
@@ -89,6 +90,7 @@ export const Overview = ({
     eventLocation,
     tags,
     format,
+    primaryEventType,
     entryType,
     website,
   } = eventDetails.basic || {};
@@ -104,6 +106,7 @@ export const Overview = ({
       ? ""
       : ""
     : "";
+  const isSocialEvent = EVENT_TYPE_GROUPS.Social.includes(primaryEventType);
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       <AlertList alerts={alerts} />
@@ -151,7 +154,7 @@ export const Overview = ({
               </span>
             )}
           </div>
-          {categories && categories.length > 0 && (
+          {!isSocialEvent && categories && categories.length > 0 && (
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">Category</h1>
               <ul className="flex flex-row flex-wrap gap-3">
