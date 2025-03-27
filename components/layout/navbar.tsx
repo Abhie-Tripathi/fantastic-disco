@@ -133,11 +133,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (storedUser) {
-      // Only check for department and imageURL (profile picture)
       const fields = [];
-      if (!storedUser.department || storedUser.department === "") {
-        fields.push("department");
-      }
       if (!storedUser.imageURL || storedUser.imageURL === "") {
         fields.push("profilePicture");
       }
@@ -328,7 +324,7 @@ export default function Navbar() {
                               </span>
                             </div>
                             <p className="text-sm text-muted-foreground mt-0.5">
-                              {field === "profilePicture" ? "Profile picture" : "Department"} is missing from your profile
+                              Profile picture is missing from your profile
                             </p>
                           </div>
                         </div>
