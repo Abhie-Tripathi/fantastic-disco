@@ -1006,6 +1006,14 @@ const Pages = () => {
     console.log(eventTypes);
     
     setLocalFilter("eventTypes",eventTypes.join(","))
+    if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
+      const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
+          .map((item) => item.slug)
+          .filter(Boolean);
+  
+      setLocalFilter("designations", slugs.join(","));
+  }
+  
     if(editData?.filterValues?.locationIds){
       const ids = Object?.keys(editData?.filterValues?.locationIds);
       setLocalFilter("locationIds", ids.join(","))
