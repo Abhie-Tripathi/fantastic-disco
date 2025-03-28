@@ -173,7 +173,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const {
     id,
     name,
-    bannerUrl,
     logoUrl: eventLogoUrl,
     startDateTime,
     endDateTime,
@@ -343,7 +342,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   return (
     <div className="p-6">
-      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         {showBackToSearch && (
           <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
             <ArrowLeft width="14px" height="14px" color="#6750A4" />
@@ -367,7 +366,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </button>
           </div>
         </div> */}
-        <div className="flex mt-0 lg:mt-4 gap-4 items-start flex-col lg:flex-row">
+        <div className="flex mt-3 gap-4 items-start flex-col lg:flex-row">
           {!website && !eventLogoUrl ? (
             <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
               <span className="text-[#5055A3] text-2xl font-semibold">
@@ -450,11 +449,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   </TooltipProvider>
                 )}
               </div>
-              {website && (
-                <Link href={website} target="_blank" rel="noopener noreferrer" className="self-center">
-                  <Globe width="16px" height="16px" color="#666666" />
-                </Link>
-              )}
             </div>
             {name && <p className="text-lg font-medium">{name}</p>}
           </div>
@@ -554,13 +548,31 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 venueName !== null &&
                 venueName !== undefined && (
                   <p
-                    className="mt-1 text-sm hover:underline hover:underline-offset-2 cursor-pointer text-primary"
+                    className="mt-1 w-fit text-sm hover:underline hover:underline-offset-2 cursor-pointer"
                     onClick={() => setShowAddress(!showAddress)}
                   >
-                    Show Address
+                    show address
                   </p>
                 )}
             </span>
+          </div>
+        )}
+
+        {website && (
+          <div className="flex gap-2 items-center my-4">
+            <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+              <span className="text-[#666666] text-md font-bold">
+                <Globe width={20} height={20} />
+              </span>
+            </div>
+            <Link
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:underline-offset-2 cursor-pointer text-sm"
+            >
+              Website
+            </Link>
           </div>
         )}
         <BookMarkEvent eventId={basic.id} interests={interests} />
@@ -803,7 +815,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <ButtonUI
+        {/* <ButtonUI
           type="button"
           onClick={() =>
             router.push(`/internal/event/${params.eventId}?view=notes`)
@@ -818,7 +830,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <span className="text-sm">Notes & Discussion</span>
           </div>
           <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
-        </ButtonUI>
+        </ButtonUI> */}
       </aside>
       <div
         className={`ml-auto w-[72%] max-xl:w-[62%] ${

@@ -107,10 +107,11 @@ export const EventAudienceEstimates = ({
               <div className="flex gap-4 flex-row-reverse w-fit">
                 {estimatedVisitorRangeTag && (
                   <span
-                    className="text-primary 
-                   bg-[var(--tabs-background-color)] flex items-center
-                   justify-center h-7 font-semibold text-sm py-1 px-4 border
-                   border-[#ebdcff] rounded-md w-fit text-center"
+                    className="text-[#0062D1] dark:bg-[#10233D]
+                     dark:border-[#0D3868] bg-[#EBF5FF] flex 
+                     items-center justify-center h-7 font-semibold 
+                     text-sm py-1 px-4 border-[#CCE6FF] border 
+                     rounded-md w-24 text-center"
                   >
                     {estimatedVisitorRangeTag[0].toUpperCase() +
                       estimatedVisitorRangeTag.substring(1).toLowerCase()}
