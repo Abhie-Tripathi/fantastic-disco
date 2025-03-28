@@ -21,13 +21,26 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness, Moon, Sun, UserSearch, Settings, LogOut, ChevronDown } from 'lucide-react'
+import {
+  BriefcaseBusiness,
+  Moon,
+  Sun,
+  UserSearch,
+  Settings,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context";
 import { useAuthContext } from "@/context/auth";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { endOfMonth } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -366,7 +379,11 @@ const Sidebar = () => {
         <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="profile" className="border-none">
-              <AccordionTrigger className={`hover:no-underline  ${!isHovered ? "[&>svg]:hidden" : ""} hover:bg-muted/50 rounded-md transition-colors py-0`}>
+              <AccordionTrigger
+                className={`hover:no-underline  ${
+                  !isHovered ? "[&>svg]:hidden" : ""
+                } hover:bg-muted/50 rounded-md transition-colors py-0`}
+              >
                 <div className="flex items-center gap-2">
                   <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm">
                     {generateProfileName()}
@@ -394,14 +411,14 @@ const Sidebar = () => {
                       <UserSearch className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Profile</span>
                     </Button>
-                    {!isEventeli && <Button
+                    <Button
                       variant="ghost"
                       className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
                       onClick={() => handleSettingsClick()}
                     >
                       <Settings className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Settings</span>
-                    </Button>}
+                    </Button>
                     <div className="h-px bg-border my-1" />
                     <Button
                       variant="ghost"
@@ -421,17 +438,23 @@ const Sidebar = () => {
               variant="ghost"
               size="icon"
               onClick={() => toggleTheme()}
-              className={`w-full hover:bg-muted ${isHovered ? "justify-start px-3" : "justify-center px-0"}`}
+              className={`w-full hover:bg-muted ${
+                isHovered ? "justify-start px-3" : "justify-center px-0"
+              }`}
             >
               {theme === "dark" ? (
                 <>
                   <Sun className="h-5 w-5 transition-all" />
-                  {isHovered && <span className="ml-3.5 text-sm">Light Mode</span>}
+                  {isHovered && (
+                    <span className="ml-3.5 text-sm">Light Mode</span>
+                  )}
                 </>
               ) : (
                 <>
                   <Moon className="h-5 w-5 transition-all" />
-                  {isHovered && <span className="ml-3.5 text-sm">Dark Mode</span>}
+                  {isHovered && (
+                    <span className="ml-3.5 text-sm">Dark Mode</span>
+                  )}
                 </>
               )}
               <span className="sr-only">Toggle theme</span>
