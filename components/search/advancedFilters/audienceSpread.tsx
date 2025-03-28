@@ -32,7 +32,6 @@ export default function AudienceSpreadSelector({ variant = "popover" }: Audience
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
   const enabled = morphedData.audienceSpread?.isEnabled;
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-
   const selectedCountries = useMemo(() => 
     getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || []
   , [localFilters.audienceSpread]);

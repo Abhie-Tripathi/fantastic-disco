@@ -92,6 +92,7 @@ export function useDefaultFilters() {
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => {
     const recentSearchParams = {
+      eventIds: recentSearch.filterValues.eventIds?.join(",") ?? undefined,
       eventFormats:
         recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
       status: recentSearch.filterValues.status?.join(",") ?? undefined,
@@ -154,7 +155,8 @@ export function useDefaultFilters() {
 
     if (
       !recentSearch.filterValues.active_gte &&
-      !recentSearch.filterValues.active_lte
+      !recentSearch.filterValues.active_lte &&
+      !recentSearch.filterValues.eventIds
     ) {
       recentSearchParams.active_gte = startOfMonth(new Date()).toISOString();
       recentSearchParams.active_lte = endOfMonth(

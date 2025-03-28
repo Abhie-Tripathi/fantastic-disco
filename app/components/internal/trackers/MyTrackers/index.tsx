@@ -91,7 +91,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   }, []);
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&type=trackers&refresh=true`);
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&type=trackers`);
     
     if(result && isMounted.current){
       console.log(result);

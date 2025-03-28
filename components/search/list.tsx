@@ -971,7 +971,7 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {event.insights?.economicImpact !== undefined && (
+                      {isEventeli && event.insights?.economicImpact !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Economic Impact

@@ -86,7 +86,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
       </div>
       {enableCompareOptions && (
         <div className="space-y-4 p-4 py-2 pt-0">
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium">Compare with Past data</h3>
             <Switch
               disabled
@@ -96,7 +96,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
             <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
               Coming Soon
             </span>
-          </div>
+          </div> */}
           {compareEnabled && (
             <div className="space-y-2 flex flex-col">
               {comparisonOptions.map((option) => (
