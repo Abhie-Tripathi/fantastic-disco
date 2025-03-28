@@ -8,12 +8,14 @@ import WorldMap from "../prospectDetail/worldMap";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Event } from "@/types/events";
+import { useState } from "react";
+import { useCompanyService } from "@/services/companyService";
 
 interface Props {
-  companyId: string;
-  upcomingEvents: (Event & { association: string })[];
+  userId: string;
+  upcomingEventsData: (Event & { association: string })[];
   upcomingEventsCount: number;
-  pastEvents: (Event & { association: string })[];
+  pastEventsData: (Event & { association: string })[];
   pastEventsCount: number;
   loadMoreEvents: any;
 }
@@ -45,13 +47,37 @@ function getDayFromDate(dateString: string) {
 }
 
 export const EventCalendar = ({
-  companyId,
-  upcomingEvents,
+  userId,
+  upcomingEventsData,
   upcomingEventsCount,
-  pastEvents,
+  pastEventsData,
   pastEventsCount,
-  loadMoreEvents,
+  // loadMoreEvents,
 }: Props) => {
+
+  const [pastEvents, setPastEvents] = useState<any[]>(pastEventsData);
+
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>(upcomingEventsData);
+
+  const { getUserEvents } = useCompanyService();
+
+  const loadMoreEvents = async (type: string) => {
+    if (type === "past") {
+      const moreEvents = await getUserEvents(
+        userId,
+        "past",
+        pastEvents.length
+      );
+      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+    } else if (type === "upcoming") {
+      const moreEvents = await getUserEvents(
+        userId,
+        "upcomming",
+        upcomingEvents.length
+      );
+      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
+    }
+  };
 
   const activeTab = upcomingEventsCount > 0 ? "upcoming" : "past";
   return (
@@ -304,7 +330,7 @@ export const EventCalendar = ({
           </Text>
         </div>
 
-        <WorldMap companyId={companyId} source={"userDetail"} />
+        <WorldMap companyId={userId} source={"userDetail"} />
 
         {/* <div className="flex justify-between">
           <Text
