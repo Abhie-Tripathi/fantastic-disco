@@ -228,7 +228,6 @@ export const DetailMapComponent = ({
                 <Text color="secondary">
                   {[
                     venueLocation?.city?.name,
-                    venueLocation?.state?.name,
                     venueLocation?.country?.name,
                   ]
                     .filter(Boolean)
