@@ -97,7 +97,7 @@ export default function MapComponent({
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  
+
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -346,6 +346,7 @@ export default function MapComponent({
         currentZoomGroup === "event" &&
         mapRef.current
       ) {
+        await new Promise((resolve) => setTimeout(resolve, 600));
         const map = mapRef.current.getMap();
         const center = map.getCenter();
         const bounds = map.getBounds();
@@ -365,6 +366,8 @@ export default function MapComponent({
               radius: radius,
             },
           };
+
+          console.log(viewBound);
 
           try {
             const modifiedSearchParams = searchParams
@@ -489,8 +492,11 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (location?.type === "locationIds" && location.locationIds.length > 0 && location.locationIds!=="defaultLoc") {
-        
+      if (
+        location?.type === "locationIds" &&
+        location.locationIds.length > 0 &&
+        location.locationIds !== "defaultLoc"
+      ) {
         try {
           const details = await getLocationDetails(location.locationIds);
           if (
@@ -743,7 +749,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {isEventeli && source!=="tracker" && (
+                  {isEventeli && source !== "tracker" && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}

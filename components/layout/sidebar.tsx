@@ -376,9 +376,9 @@ const Sidebar = () => {
                       <span className="text-sm font-medium">
                         {storedUser?.firstname} {storedUser?.lastname}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      {/* <span className="text-xs text-muted-foreground">
                         {storedUser?.email}
-                      </span>
+                      </span> */}
                     </div>
                   )}
                 </div>
@@ -394,14 +394,14 @@ const Sidebar = () => {
                       <UserSearch className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Profile</span>
                     </Button>
-                    <Button
+                    {!isEventeli && <Button
                       variant="ghost"
                       className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
                       onClick={() => handleSettingsClick()}
                     >
                       <Settings className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Settings</span>
-                    </Button>
+                    </Button>}
                     <div className="h-px bg-border my-1" />
                     <Button
                       variant="ghost"
