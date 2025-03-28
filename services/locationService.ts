@@ -192,7 +192,11 @@ export const useLocationService = () => {
     locationName: string
   ): Promise<BBox | undefined> => {
     const normalizedName = locationName.toLowerCase().trim();
-    if (normalizedName === "united states" || normalizedName === "us") {
+    if (
+      normalizedName === "united states" ||
+      normalizedName === "us" ||
+      normalizedName === "usa"
+    ) {
       const [name, bbox] = country_bounding_boxes["US"];
       return bbox;
     }
