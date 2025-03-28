@@ -17,7 +17,6 @@ interface Props {
   upcomingEventsCount: number;
   pastEventsData: (Event & { association: string })[];
   pastEventsCount: number;
-  loadMoreEvents: any;
 }
 
 const getMonthFromDate = (dateString: string) => {
