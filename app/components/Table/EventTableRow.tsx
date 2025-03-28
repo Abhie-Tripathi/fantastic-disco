@@ -451,7 +451,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.rankings) &&
         event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.trustScore !== null ? (
+            {event.insights?.trustScore !== null && event.insights?.trustScore !== 0 ? (
               event.insights?.trustChangePercentage > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
                   {event.insights?.trustScore}%
