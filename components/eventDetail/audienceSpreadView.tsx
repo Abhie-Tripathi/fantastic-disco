@@ -1,18 +1,16 @@
 "use client";
-import { Event } from "@/types/events";
-import * as Flags from "country-flag-icons/react/3x2";
-import { CircleSlash } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Text from "../new-ui/Text";
-import { Layer, Map, Marker, Source } from "react-map-gl";
-import { useTheme } from "@/context";
-import "mapbox-gl/dist/mapbox-gl.css";
-import * as echarts from "echarts";
 import worldGeoJson from "@/data/world.json";
+import { Event } from "@/types/events";
 import {
   getCountryName,
   getUpdatedCountryISOCode,
 } from "@/utils/convertCountryName";
+import * as Flags from "country-flag-icons/react/3x2";
+import * as echarts from "echarts";
+import { CircleSlash } from "lucide-react";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useRef, useState } from "react";
+import Text from "../new-ui/Text";
 
 interface Props {
   audienceSpread: NonNullable<Event["audience"]>["audienceSpread"] | undefined;
@@ -114,7 +112,6 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
       : [];
 
     const maxPercentage = Math.max(...data.map((d) => d.value));
-    const minPercentage = Math.min(...data.map((d) => d.value));
 
     const option = {
       tooltip: {
@@ -150,7 +147,7 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
         },
       },
       visualMap: {
-        min: minPercentage,
+        min: 0,
         max: maxPercentage,
         inRange: {
           color: ["#E7D4E8", "#6750a4"],
@@ -224,7 +221,7 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
       window.removeEventListener("resize", handleResize);
     };
   }, [audienceSpread]);
-  return <div ref={chartRef} className="w-full h-96 xl:h-full" />;
+  return <div ref={chartRef} className="w-full h-96" />;
 };
 
 export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
