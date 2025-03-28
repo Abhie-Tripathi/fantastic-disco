@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { isEventeli } from "@/config";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
@@ -29,16 +30,16 @@ import { Event, EventPOCDetails, TTabs } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { ArrowLeft, Globe, Location } from "geist-icons";
+import { ArrowLeft, Location } from "geist-icons";
 import {
   CalendarDays,
   ChevronRight,
+  Globe,
   MailIcon,
   MapPin,
   MessageSquareMore,
   PhoneIcon,
   Radio,
-  Share2,
   Star,
 } from "lucide-react";
 import Link from "next/link";
@@ -54,6 +55,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
+  const [showAddress, setShowAddress] = useState(false);
   const {
     getEventDetailById,
     getEventPOCDetails,
@@ -171,7 +173,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const {
     id,
     name,
-    bannerUrl,
     logoUrl: eventLogoUrl,
     startDateTime,
     endDateTime,
@@ -183,8 +184,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     rating,
   } = basic || {};
 
-  const { scores, trustScore, exhibitorsCount, speakersCount, sponsorsCount } =
-    insights || {};
+  const {
+    scores,
+    trustScore,
+    exhibitorsCount,
+    speakersCount,
+    sponsorsCount,
+    estimatedAttendance,
+    estimatedExhibitors,
+    economicImpactBreakdown,
+  } = insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
     logoUrl: organizerLogoUrl,
@@ -198,11 +207,27 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       Object.entries(scores).filter(([key, _]) => key !== "impactScore")
     );
 
-  const isInsightVisible =
-    (filteredScores &&
-      Object.values(filteredScores).every((value) => value !== null)) ||
-    (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
-    (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
+  const isInsightVisible = isEventeli
+    ? (filteredScores &&
+        Object.values(filteredScores).every((value) => value !== null)) ||
+      (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
+      (economicImpactBreakdown !== null &&
+        economicImpactBreakdown !== undefined &&
+        Object.keys(economicImpactBreakdown).length > 0) ||
+      (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
+      (estimatedAttendance !== null &&
+        estimatedAttendance !== "" &&
+        estimatedAttendance !== undefined) ||
+      (estimatedExhibitors !== null &&
+        estimatedExhibitors !== "" &&
+        estimatedExhibitors !== undefined)
+    : (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
+      (estimatedAttendance !== null &&
+        estimatedAttendance !== "" &&
+        estimatedAttendance !== undefined) ||
+      (estimatedExhibitors !== null &&
+        estimatedExhibitors !== "" &&
+        estimatedExhibitors !== undefined);
 
   const isAudienceVisible =
     (audienceSpread && Object.keys(audienceSpread).length > 0) ||
@@ -239,15 +264,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isPostponed = status === "postponed";
 
   const venueName = eventLocation?.venue?.name;
-  const venueAddress =
-    eventLocation?.venue?.address ||
-    [
-      eventLocation?.city?.name !== "Online" && eventLocation?.city?.name,
-      eventLocation?.state?.name !== "Online" && eventLocation?.state?.name,
-      eventLocation?.country?.name !== "Online" && eventLocation?.country?.name,
-    ]
-      .filter(Boolean)
-      .join(", ");
+  const venueAddress = [eventLocation?.city?.name, eventLocation?.country?.name]
+    .filter(Boolean)
+    .join(", ");
 
   const organizerAddress = (() => {
     if (organizerLocation) {
@@ -323,7 +342,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   return (
     <div className="p-6">
-      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         {showBackToSearch && (
           <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
             <ArrowLeft width="14px" height="14px" color="#6750A4" />
@@ -335,19 +354,19 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </span>
           </Button>
         )}
-        <div className="flex items-center py-4">
+        {/* <div className="flex items-center py-4">
           <div className="flex gap-4 items-center">
             {website && (
               <Link href={website} target="_blank" rel="noopener noreferrer">
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
-            {/* <button onClick={handleShare}>
+            <button onClick={handleShare}>
               <Share2 width="17px" height="17px" color="#666666" />
-            </button> */}
+            </button>
           </div>
-        </div>
-        <div className="flex mt-0 lg:mt-4 gap-4 items-start flex-col lg:flex-row">
+        </div> */}
+        <div className="flex mt-3 gap-4 items-start flex-col lg:flex-row">
           {!website && !eventLogoUrl ? (
             <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
               <span className="text-[#5055A3] text-2xl font-semibold">
@@ -481,13 +500,23 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </span>
             <span>
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
-                <Text fontWeight="semibold" variant="noMargin">
+                <p className="text-[var(--primary-text-color)] font-semibold text-sm ">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                </Text>
+                </p>
               ) : venueName ? (
-                <Text fontWeight="semibold" variant="noMargin">
-                  {venueName}
-                </Text>
+                <p className="text-[var(--primary-text-color)] font-semibold text-sm">
+                  <span>{venueName}</span>
+
+                  {showAddress &&
+                    eventLocation &&
+                    eventLocation.venue &&
+                    eventLocation.venue.address && (
+                      <span>
+                        {", "}
+                        {eventLocation?.venue?.address || ""}
+                      </span>
+                    )}
+                </p>
               ) : (
                 <TooltipProvider>
                   <Tooltip>
@@ -509,11 +538,41 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </TooltipProvider>
               )}
               {venueAddress !== "Online" && (
-                <Text variant="noMargin" color="secondary">
+                <p className="text-[var(--secondary-text-color)] text-sm">
                   {venueAddress}
-                </Text>
+                </p>
               )}
+              {typeOfEvent !== "online" &&
+                typeOfEvent !== "hybrid" &&
+                venueName !== "" &&
+                venueName !== null &&
+                venueName !== undefined && (
+                  <p
+                    className="mt-1 w-fit text-sm hover:underline hover:underline-offset-2 cursor-pointer"
+                    onClick={() => setShowAddress(!showAddress)}
+                  >
+                    show address
+                  </p>
+                )}
             </span>
+          </div>
+        )}
+
+        {website && (
+          <div className="flex gap-2 items-center my-4">
+            <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+              <span className="text-[#666666] text-md font-bold">
+                <Globe width={20} height={20} />
+              </span>
+            </div>
+            <Link
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:underline-offset-2 cursor-pointer text-sm"
+            >
+              Website
+            </Link>
           </div>
         )}
         <BookMarkEvent eventId={basic.id} interests={interests} />
@@ -539,11 +598,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
               <p className="flex gap-3 items-center">
                 Organizer
-                {organizer && Object.keys(organizer).length > 0 && (
+                {/* {organizer && Object.keys(organizer).length > 0 && (
                   <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
                     {Object.keys.length.toString().padStart(2, "0")}
                   </span>
-                )}
+                )} */}
               </p>
             </AccordionTrigger>
             <AccordionContent className="h-fit">
@@ -756,7 +815,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <ButtonUI
+        {/* <ButtonUI
           type="button"
           onClick={() =>
             router.push(`/internal/event/${params.eventId}?view=notes`)
@@ -771,7 +830,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <span className="text-sm">Notes & Discussion</span>
           </div>
           <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
-        </ButtonUI>
+        </ButtonUI> */}
       </aside>
       <div
         className={`ml-auto w-[72%] max-xl:w-[62%] ${
@@ -813,25 +872,25 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   ))}
               </div>
               {/* <div className="flex gap-4 pb-2 pr-2">
-              <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
-                <Image
-                  src={"/dollar.svg"}
-                  alt="Dollar"
-                  width={10}
-                  height={10}
-                />
-                Cost Estimate
-              </button>
-              <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
-                <Image
-                  src={"/eventRelevance.svg"}
-                  alt="Speaker"
-                  width={15}
-                  height={15}
-                />
-                Event Relevance
-              </button>
-            </div> */}
+                <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
+                  <Image
+                    src={"/dollar.svg"}
+                    alt="Dollar"
+                    width={10}
+                    height={10}
+                  />
+                  Cost Estimate
+                </button>
+                <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
+                  <Image
+                    src={"/eventRelevance.svg"}
+                    alt="Speaker"
+                    width={15}
+                    height={15}
+                  />
+                  Event Relevance
+                </button>
+              </div> */}
             </ul>
 
             <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">

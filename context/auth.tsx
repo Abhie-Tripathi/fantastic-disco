@@ -162,8 +162,8 @@ export const AuthContextProvider = ({ children }: any) => {
       setUser(null);
       return;
     }
-    const userLocation = await fetchUserLocation(userData?.primaryLocation);
-    setUser({ ...userData, userLocation: userLocation as UserLocation });
+    // const userLocation = await fetchUserLocation(userData?.primaryLocation);
+    setUser(userData);
   }, [request]);
 
   const generateOTP = async (

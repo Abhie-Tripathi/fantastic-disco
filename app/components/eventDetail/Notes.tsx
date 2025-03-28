@@ -137,7 +137,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       }
     }else{
       try{
-        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2]);
+        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2] === "event" ? "outreach" : path[2]);
         if (data && data.comments) {
           if (data.comments && data.comments?.length > 0){
             setZeroState(false);

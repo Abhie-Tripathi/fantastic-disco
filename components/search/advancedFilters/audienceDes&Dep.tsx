@@ -58,7 +58,6 @@ export default function AudienceDesAndDepSelector({
     useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
   const enabled = morphedData.audienceProfile?.isEnabled;
-
   const selectedLabels = useMemo(() => {
     const filterDesignations =
       getLocalFilterValue(filterName as keyof Filters || "designations")
