@@ -80,7 +80,7 @@ export const EventAudienceEstimates = ({
   const isEstimatedExhibitorEnabled =
     estimatedExhibitor && estimatedExhibitor.isEnabled && hasEstimatedExhibitor;
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-col gap-6 md:flex-row">
       <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
         <TooltipProvider>
           <Tooltip>
@@ -104,9 +104,14 @@ export const EventAudienceEstimates = ({
         <p className={`text-[#6750A4] font-semibold text-lg `}>
           {estimatedAttendance ? (
             hasEstimatedVisitor ? (
-              <div className="flex flex-col">
+              <div className="flex gap-4 flex-row-reverse w-fit">
                 {estimatedVisitorRangeTag && (
-                  <span>
+                  <span
+                    className="text-primary 
+                   bg-[var(--tabs-background-color)] flex items-center
+                   justify-center h-7 font-semibold text-sm py-1 px-4 border
+                   border-[#ebdcff] rounded-md w-fit text-center"
+                  >
                     {estimatedVisitorRangeTag[0].toUpperCase() +
                       estimatedVisitorRangeTag.substring(1).toLowerCase()}
                   </span>

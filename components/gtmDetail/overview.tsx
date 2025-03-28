@@ -13,6 +13,12 @@ import AlertList from "./alertsList";
 import SearchEventsCTAButton from "./searchEventsCTAButton";
 import TrackerRelevanceScore from "./trackerRelevanceScore";
 import { EVENT_TYPE_GROUPS } from "@/data/trends";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Props {
   eventDetails: Event;
@@ -181,7 +187,27 @@ export const Overview = ({
                 Entry Fees
               </h1>
 
-              {entryType ? (
+              {isSocialEvent ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-[var(--primary-color)] font-semibold cursor-pointer">
+                        NA
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-35}
+                      className="w-fit tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Not Available
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : entryType ? (
                 <span className="text-[var(--primary-color)] font-semibold">
                   {_.startCase(_.toLower(_.replace(entryType, /_/g, " ")))}
                 </span>
