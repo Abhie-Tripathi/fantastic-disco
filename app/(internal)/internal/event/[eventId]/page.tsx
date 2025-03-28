@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { isEventeli } from "@/config";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
@@ -183,8 +184,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     rating,
   } = basic || {};
 
-  const { scores, trustScore, exhibitorsCount, speakersCount, sponsorsCount } =
-    insights || {};
+  const {
+    scores,
+    trustScore,
+    exhibitorsCount,
+    speakersCount,
+    sponsorsCount,
+    estimatedAttendance,
+    estimatedExhibitors,
+    economicImpact,
+    economicImpactBreakdown,
+  } = insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
     logoUrl: organizerLogoUrl,
@@ -198,11 +208,27 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       Object.entries(scores).filter(([key, _]) => key !== "impactScore")
     );
 
-  const isInsightVisible =
-    (filteredScores &&
-      Object.values(filteredScores).every((value) => value !== null)) ||
-    (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
-    (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
+  const isInsightVisible = isEventeli
+    ? (filteredScores &&
+        Object.values(filteredScores).every((value) => value !== null)) ||
+      (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
+      (economicImpactBreakdown !== null &&
+        economicImpactBreakdown !== undefined &&
+        Object.keys(economicImpactBreakdown).length > 0) ||
+      (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
+      (estimatedAttendance !== null &&
+        estimatedAttendance !== "" &&
+        estimatedAttendance !== undefined) ||
+      (estimatedExhibitors !== null &&
+        estimatedExhibitors !== "" &&
+        estimatedExhibitors !== undefined)
+    : (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
+      (estimatedAttendance !== null &&
+        estimatedAttendance !== "" &&
+        estimatedAttendance !== undefined) ||
+      (estimatedExhibitors !== null &&
+        estimatedExhibitors !== "" &&
+        estimatedExhibitors !== undefined);
 
   const isAudienceVisible =
     (audienceSpread && Object.keys(audienceSpread).length > 0) ||
@@ -241,11 +267,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const venueName = eventLocation?.venue?.name;
   const venueAddress =
     eventLocation?.venue?.address ||
-    [
-      eventLocation?.city?.name !== "Online" && eventLocation?.city?.name,
-      eventLocation?.state?.name !== "Online" && eventLocation?.state?.name,
-      eventLocation?.country?.name !== "Online" && eventLocation?.country?.name,
-    ]
+    [eventLocation?.city?.name, eventLocation?.country?.name]
       .filter(Boolean)
       .join(", ");
 
