@@ -11,6 +11,7 @@ import {
 } from "@/types/locations";
 import { FeatureCollection, Polygon, MultiPolygon, Point, BBox } from "geojson";
 import { LocationResponse } from "@/types/suggestion";
+import { country_bounding_boxes } from "@/data/countryboundingbox";
 
 export const useLocationService = () => {
   const api = useApi();
@@ -94,10 +95,13 @@ export const useLocationService = () => {
     input: string,
     locationType?: string
   ) => {
-    return api.request<SearchLocationResponse>(`${endpoints.suggestions.location}`, {
-      method: "GET",
-      params: { query: input, type: locationType },
-    });
+    return api.request<SearchLocationResponse>(
+      `${endpoints.suggestions.location}`,
+      {
+        method: "GET",
+        params: { query: input, type: locationType },
+      }
+    );
   };
 
   const getLocationDetails = async (id: string) => {
@@ -187,6 +191,16 @@ export const useLocationService = () => {
   const getLocationBBox = async (
     locationName: string
   ): Promise<BBox | undefined> => {
+    const normalizedName = locationName.toLowerCase().trim();
+    if (normalizedName === "united states" || normalizedName === "usa") {
+      const [name, bbox] = country_bounding_boxes["US"];
+      return bbox;
+    }
+    if (normalizedName === "new zealand" || normalizedName === "nz") {
+      const [name, bbox] = country_bounding_boxes["NZ"];
+      return bbox;
+    }
+
     try {
       const response = await externalAxios.get<NominatimSearchResult[]>(
         "https://nominatim.openstreetmap.org/search",

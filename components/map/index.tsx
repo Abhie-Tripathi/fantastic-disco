@@ -367,8 +367,6 @@ export default function MapComponent({
             },
           };
 
-          console.log(viewBound);
-
           try {
             const modifiedSearchParams = searchParams
               ?.toString()
