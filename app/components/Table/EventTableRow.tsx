@@ -474,7 +474,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {/* Forecasted Column */}
       {show.includes(Show.forecasted) && (
         <TableCell className="text-center">
-          {getForecastedStatus(event.basic.startDateTime)}
+          {getForecastedStatus(event.advance?.rehostDate)}
         </TableCell>
       )}
 
