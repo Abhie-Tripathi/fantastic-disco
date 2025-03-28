@@ -368,7 +368,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(localFilters);
   
   const replaceLocalFilter = useCallback(
     (oldKey: keyof Filters, newKey: keyof Filters, newValue: string) => {
