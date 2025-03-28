@@ -1,3 +1,6 @@
+import { endpoints } from "@/config/endpoints";
+import { useAuthContext } from "@/context";
+import { UserResponse } from "@/types/user";
 import NextAuth, { AuthOptions, NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
@@ -45,7 +48,7 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account && account.provider === "google") {
-        console.log("SignIn callback", { account, profile });
+        return true;
       } else if (account && account.provider === "linkedin") {
         console.log("SignIn callback", { account, profile });
       }
@@ -53,13 +56,31 @@ const authOptions: NextAuthOptions = {
     },
     async jwt({ token, account, profile }) {
       if (account && account.provider === "google") {
-        if (account && profile) {
-          token.id = profile.sub || token.sub || "";
-          token.name = profile.name || "";
-          token.email = profile.email || "";
-          token.picture = profile.image || "";
-          token.accessToken = account.access_token || "";
+        try {
+          const result = await fetch(
+            endpoints.auth.ssoSignIn(account.provider || ""),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ accessToken: account.access_token }),
+            }
+          );
+          console.log(result.json());
+          return {
+            ...token,
+          };
+        } catch (err) {
+          console.error("Sign in error:", err);
         }
+        // if (account && profile) {
+        //   token.id = profile.sub || token.sub || "";
+        //   token.name = profile.name || "";
+        //   token.email = profile.email || "";
+        //   token.picture = profile.image || "";
+        //   token.accessToken = account.access_token || "";
+        // }
       }
       if (account && account.provider === "linkedin") {
         if (account && profile) {
@@ -69,6 +90,7 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      console.log("Token", token);
       if (token) {
         session.user = {
           name: token.name,

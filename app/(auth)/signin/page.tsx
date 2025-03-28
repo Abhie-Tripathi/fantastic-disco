@@ -21,6 +21,7 @@ type SignInData = z.infer<typeof SignInFormSchema>;
 export default function SignInForm() {
   const { signin, error, isLoading, setError } = useAuthContext();
   const { data, status } = useSession();
+  console.log(data, status);
 
   const {
     control,

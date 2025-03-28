@@ -53,6 +53,12 @@ type authContextType = {
       | null
   ) => void;
   signOut: () => void;
+  SSOSignIn: (
+    provider: string,
+    accessToken: string,
+    flow: AuthFlow,
+    redirectTo: string
+  ) => Promise<any>;
   generateOTP: (
     email: string,
     industry?: string,
@@ -93,6 +99,7 @@ const authContextDefaultValues: authContextType = {
   ) => {},
   setUser: () => {},
   signOut: () => {},
+  SSOSignIn: () => Promise.resolve(null),
   generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
@@ -333,6 +340,35 @@ export const AuthContextProvider = ({ children }: any) => {
     // router.push("/signin");
   }, [request, router]);
 
+  const SSOSignIn = useCallback(
+    async (
+      provider: string,
+      accessToken: string,
+      flow: AuthFlow,
+      redirectTo: string
+    ) => {
+      try {
+        const result = await request<{ user: UserResponse }>(
+          endpoints.auth.ssoSignIn(provider),
+          {
+            method: "POST",
+            data: { accessToken: accessToken },
+          }
+        );
+        if (result) {
+          if (result.user) {
+            await newcheckAuth();
+            setLocalStorage(result.user);
+            handleFlowAction(flow, redirectTo);
+          }
+        }
+      } catch (err) {
+        console.error("Sign in error:", err);
+      }
+    },
+    [request, router]
+  );
+
   useEffect(() => {
     if (token && token.length > 0) {
       const verifyToken = async () => {
@@ -504,6 +540,7 @@ export const AuthContextProvider = ({ children }: any) => {
     isVerifiedToken,
     signin,
     signOut,
+    SSOSignIn,
     setError,
     isLoading,
     setUser,
