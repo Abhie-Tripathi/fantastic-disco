@@ -105,7 +105,7 @@ export const useTrackerServices = () => {
    
     const getTrackerDetail=(trackerId:string, params?:string):Promise<Tracker| undefined>=>{
       return api.request(
-        `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}?refresh=true`,
+        `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}`,
       );
     }
     const delTracker=(trackerId: string)=>{

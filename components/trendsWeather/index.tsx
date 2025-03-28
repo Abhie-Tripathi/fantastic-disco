@@ -226,11 +226,7 @@ export const DetailMapComponent = ({
           ? typeOfEvent !== "online" && (
               <div className="flex justify-between border-t-2 pt-4">
                 <Text color="secondary">
-                  {[
-                    venueLocation?.city?.name,
-                    venueLocation?.state?.name,
-                    venueLocation?.country?.name,
-                  ]
+                  {[venueLocation?.city?.name, venueLocation?.country?.name]
                     .filter(Boolean)
                     .join(", ")}
                 </Text>

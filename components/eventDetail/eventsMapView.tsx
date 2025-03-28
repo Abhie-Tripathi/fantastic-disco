@@ -87,9 +87,6 @@ const EventsMapView: React.FC<MapProps> = ({
         view: "map",
         ...(startDate && { active_gte: new Date(startDate).toISOString() }),
         ...(endDate && { active_lte: new Date(endDate).toISOString() }),
-        ...(eventLocation?.city?.id && {
-          locationIds: eventLocation?.city?.id || "",
-        }),
         ...(latitude && longitude && { viewBound: JSON.stringify(viewBound) }),
       }),
     refetchOnWindowFocus: false,
@@ -139,7 +136,7 @@ const EventsMapView: React.FC<MapProps> = ({
             isEventeli ? "h-[430px]" : "h-[308px]"
           }`}
         >
-          Failed to fetch the nearby events
+          Failed to fetch nearby events
         </div>
       ) : (
         <Map

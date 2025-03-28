@@ -16,6 +16,7 @@ import SearchBar from "@/components/search/searchbar";
 import { useLocationService } from '@/services/locationService';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { isEventeli } from '@/config';
 
 interface Props {
     theme: string | null
@@ -39,13 +40,22 @@ const Research = ({ theme }: Props) => {
 
     useEffect(() => {
         const locationId = getLocalFilterValue("locationIds");
-        const firstLocationId = locationId
+        const viewBound = getLocalFilterValue("viewBound");
+
+        if (locationId) {
+            const firstLocationId = locationId
             ? locationId.split(",")[0].trim() // Split by comma and get the first value
             : null; // Handle empty or null cases
 
-        if (firstLocationId) {
-            getLatLong(firstLocationId)
+            if (firstLocationId) {
+                getLatLong(firstLocationId)
+            }
+        } else if (isEventeli && viewBound) {
+            const view_bound = JSON.parse(viewBound);
+            const value = { lat: view_bound?.coordinates?.latitude, long: view_bound?.coordinates?.longitude }
+            setLatLang(value);
         }
+        
     }, [localFilters])
     const router = useRouter()
 
