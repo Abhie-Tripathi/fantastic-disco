@@ -492,7 +492,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="grid place-items-center min-h-screen gap-y-10 p-6">
+    <div className="grid place-items-center gap-y-10 p-6">
       <div className="grid place-items-center max-w-5xl">
         <div
           className="flex gap-2 justify-start"
@@ -597,7 +597,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 border bg-background rounded-md p-4">
+          {/* <div className="grid gap-3 border bg-background rounded-md p-4">
             <div className="grid grid-cols-2 border-b pb-3">
               <div className="font-semibold">Outreach</div>
               <div className="ml-5">Kanban board</div>
@@ -664,22 +664,22 @@ export default function ProductsPage() {
                           >
                             <CheckIcon />
                           </button>
-                          {/* <button
+                          <button
                             className="flex items-center justify-center border rounded w-10 h-10 text-base"
                             onClick={() => removeOutreachScreenBox(box)}
                           >
                             <CrossIcon />
-                          </button> */}
+                          </button>
                         </div>
                       )}
                     </div>
                   ))}
-                {/* <button
+                <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addOutreachScreenBox}
                 >
                   <PlusIcon />
-                </button> */}
+                </button>
               </div>
             </div>
             <div className="grid place-items-center">
@@ -699,7 +699,7 @@ export default function ProductsPage() {
                   ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
