@@ -28,7 +28,11 @@ interface commonViewProps extends Pick<Props, "eventDetails"> {
   isTrustScoreEnabled: boolean;
 }
 
-interface GtmViewProps extends commonViewProps {}
+interface GtmViewProps
+  extends Pick<
+    commonViewProps,
+    "eventDetails" | "morphedData" | "isTrustScoreEnabled"
+  > {}
 
 interface GeoViewProps extends commonViewProps {
   roundedEstimatedEconomicImpact: number;
@@ -38,15 +42,136 @@ interface GeoViewProps extends commonViewProps {
 export const GtmView = ({
   morphedData,
   eventDetails,
+  isTrustScoreEnabled,
 }: GtmViewProps) => {
   const {
     estimatedAttendance,
     estimatedExhibitors,
     estimatedVisitorRangeTag,
+    trustScore,
   } = (eventDetails && eventDetails.insights) || {};
   const { estimatedVisitors, estimatedExhibitor } = morphedData;
   return (
-    <div className="flex flex-col gap-6 max-xl:flex-col max-xl:h-auto">
+    <div className="flex flex-col gap-6">
+      {trustScore !== null && trustScore != null && trustScore > 0 && (
+        <div className="flex gap-6 max-xl:h-auto">
+          <div
+            className={
+              "grid w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2 gap-6 max-xl:w-full"
+            }
+          >
+            <>
+              {/* {scores &&
+              scores.impactScore !== 0 &&
+              scores.impactScore !== null && (
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                          Impact Score
+                        </h1>
+                      </TooltipTrigger>
+                      <TooltipContent className="w-56 tooltip-content-styles">
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          Quantifies the significance of an event within a
+                          specific location.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  {isAnalyticsEnabled ? (
+                    <CircularProgressBar value={scores.impactScore} />
+                  ) : (
+                    <Restriction />
+                  )}
+                </div>
+              )} */}
+              {trustScore !== null &&
+                trustScore !== undefined &&
+                trustScore > 0 && (
+                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            Trust Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            Reflects an event&apos;s reliability and user
+                            confidence based on interest, feedback, and past
+                            attendance.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isTrustScoreEnabled ? (
+                      <CircularProgressBar
+                        value={Math.round(trustScore ?? 0)}
+                      />
+                    ) : (
+                      <Restriction />
+                    )}
+                  </div>
+                )}
+              {/* {scores &&
+                scores.inboundScore !== null &&
+                scores.inboundScore > 0 && (
+                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            Inbound Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            The number of attendees traveling to the event from
+                            other cities within the host country.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.inboundScore} />
+                    ) : (
+                      <Restriction />
+                    )}
+                  </div>
+                )}
+              {scores &&
+                scores.internationalScore !== null &&
+                scores.internationalScore > 0 && (
+                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            International Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            The number of attendees traveling to the event from
+                            outside the host country.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.internationalScore} />
+                    ) : (
+                      <Restriction />
+                    )}
+                  </div>
+                )} */}
+            </>
+          </div>
+        </div>
+      )}
       <EventAudienceEstimates
         audienceEstimateData={{
           estimatedAttendance: estimatedAttendance,
@@ -349,8 +474,6 @@ export const PlatformInsightsView = ({ eventDetails }: Props) => {
     <GtmView
       morphedData={morphedData}
       eventDetails={eventDetails}
-      filteredScores={filteredScores}
-      isAnalyticsEnabled={isAnalyticsEnabled}
       isTrustScoreEnabled={isTrustScoreEnabled}
     />
   );
