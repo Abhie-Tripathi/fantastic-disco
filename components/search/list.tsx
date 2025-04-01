@@ -338,7 +338,6 @@ const EventListItem = ({
   global?: string;
 }) => {
   const address = event.basic.eventLocation ? (
-    event.basic.eventLocation.venue?.name === "Online" ||
     event.basic.format === "online" ? (
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" /> Online
@@ -348,15 +347,15 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation.venue?.name || "TBA",
-          event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.state?.name
+          event.basic.eventLocation?.venue?.name || "TBA",
+          event.basic.eventLocation?.city?.name,
+          event.basic.eventLocation?.state?.name !==
+          event.basic.eventLocation?.city?.name
+            ? event.basic.eventLocation?.state?.name
             : null,
-          event.basic.eventLocation.country?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.country?.name
+          event.basic.eventLocation?.country?.name !==
+          event.basic.eventLocation?.city?.name
+            ? event.basic.eventLocation?.country?.name
             : null,
         ]
           .filter(Boolean)
@@ -364,15 +363,15 @@ const EventListItem = ({
       </span>
     ) : (
       [
-        event.basic.eventLocation.venue?.name,
-        event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.state?.name
+        event.basic.eventLocation?.venue?.name || "TBA",
+        event.basic.eventLocation?.city?.name,
+        event.basic.eventLocation?.state?.name !==
+        event.basic.eventLocation?.city?.name
+          ? event.basic.eventLocation?.state?.name
           : null,
-        event.basic.eventLocation.country?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.country?.name
+        event.basic.eventLocation?.country?.name !==
+        event.basic.eventLocation?.city?.name
+          ? event.basic.eventLocation?.country?.name
           : null,
       ]
         .filter(Boolean)
@@ -972,7 +971,7 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {event.insights?.economicImpact !== undefined && (
+                      {isEventeli && event.insights?.economicImpact !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Economic Impact
@@ -987,7 +986,8 @@ const EventListItem = ({
                     </div>
 
                     <div className="space-y-4">
-                      {showValues.includes(Show.scores) &&
+                      {isEventeli &&
+                        showValues.includes(Show.scores) &&
                         event.insights?.scores && (
                           <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
                             <CircularProgress
@@ -1026,10 +1026,10 @@ const EventListItem = ({
                               Estimated Exhibitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedExhibitors == "0" ||
+                              {event.insights?.estimatedExhibitors == "" ||
                               event.insights?.estimatedExhibitors == null
                                 ? "--"
-                                : event.insights?.estimatedExhibitors}
+                                : formatExhibitorCount(event.insights?.estimatedExhibitors)}
                             </p>
                           </div>
                         )}
@@ -1046,7 +1046,8 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {showValues.includes(Show.economicImpact) &&
+                      {isEventeli &&
+                        showValues.includes(Show.economicImpact) &&
                         event.insights?.economicImpact !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
@@ -1121,6 +1122,19 @@ const UnplannedCard = ({ event }: { event: Event }) => {
       );
     })
     .map((eventType) => eventType.name);
+
+  function formatExhibitorCount(value: string | number | null): string {
+    if (value === null || value === undefined) return "-";
+
+    const stringValue = String(value);
+    const values = stringValue.split("-");
+
+    if (values.length === 2 && values[0] === values[1]) {
+      return Number(values[0]).toLocaleString();
+    }
+
+    return stringValue.toLocaleString();
+  }
 
   return (
     <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">

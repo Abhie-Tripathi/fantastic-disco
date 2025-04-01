@@ -32,7 +32,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const [event, setEvent] = useState();
   return (
     <>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />

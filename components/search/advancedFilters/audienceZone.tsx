@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
 import { LockClosedSmall } from "geist-icons";
+import { cn } from "@/lib/utils";
 export default function AudienceZoneSatusSelector() {
-  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, morphedData } =
+    useFilterContext();
   const enabled = morphedData.audienceZone.isEnabled;
   const isEnabled = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
@@ -26,15 +28,14 @@ export default function AudienceZoneSatusSelector() {
   };
 
   return (
-    <Button
-      variant="outline"
-      disabled={!enabled}
-      className="w-full justify-between px-3 py-5 text-base font-normal"
+    <div
+      className={cn(
+        buttonVariants({ variant: "outline" }),
+        "w-full justify-between px-3 py-5 text-base font-normal"
+      )}
     >
-       <div className="flex items-center">
-      {!enabled && 
-            <LockClosedSmall color="var(--secondary-text-color)" />
-            }
+      <div className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
         <span className="mr-2">Audience Zone</span>
       </div>
       <Switch
@@ -42,6 +43,6 @@ export default function AudienceZoneSatusSelector() {
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />
-    </Button>
+    </div>
   );
 }

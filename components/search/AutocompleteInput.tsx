@@ -154,8 +154,10 @@ export default function AutocompleteInput({
               selectedLocations.map((location) => (
                 <Badge key={location.id} variant="secondary">
                   {location.description}
-                  <button
-                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         handleRemove(location);
@@ -168,7 +170,7 @@ export default function AutocompleteInput({
                     onClick={() => handleRemove(location)}
                   >
                     <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  </button>
+                  </div>
                 </Badge>
               ))
             ) : selectedLocations.length === 1 ? (

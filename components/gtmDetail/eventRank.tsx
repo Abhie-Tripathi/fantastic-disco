@@ -2,7 +2,10 @@
 import { useFilterContext } from "@/context/filterContext";
 import { Event, OverallRankingsDetail, RankingData } from "@/types/events";
 import { format } from "date-fns";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import {
+  ArrowDown, ArrowLeftIcon,
+  ArrowRightIcon, ArrowUp
+} from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import "swiper/css";
@@ -399,7 +402,7 @@ export const EventRank = ({
   );
 
   const swiperRankComponents = (
-    <div className="hidden max-[1400px]:flex max-[1400px]: justify-center w-full">
+    <div className="hidden max-[1400px]:flex max-[1400px]:justify-center w-full">
       <Swiper
         className="w-full h-full"
         modules={[Navigation, Pagination]}
@@ -450,10 +453,10 @@ export const EventRank = ({
           </SwiperSlide>
         )}
         <div className="custom-prev-ranking flex justify-center items-center absolute left-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
-          &#8592;
+          <ArrowLeftIcon className="w-4 h-4" />
         </div>
         <div className="custom-next-ranking flex justify-center items-center absolute right-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
-          &#8594;
+           <ArrowRightIcon className="w-4 h-4" />
         </div>
         <div className="custom-pagination flex justify-center mt-4"></div>
       </Swiper>

@@ -55,7 +55,7 @@ const EventCard = memo(
     }, [mapRef]);
 
     const address = event.basic.eventLocation
-      ? event.basic.eventLocation.city?.name === "Online"
+      ? event.basic.format === "online"
         ? "Online"
         : [
             event.basic.eventLocation?.venue?.name || "TBA",
@@ -384,9 +384,8 @@ function EventList({
           radius: mapRadius,
         },
       };
-      console.log(viewBound);
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      params.set("viewBound", JSON.stringify(viewBound));
+      if (params.get("locationIds")) params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 

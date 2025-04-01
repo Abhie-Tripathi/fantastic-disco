@@ -1,4 +1,23 @@
 "use client";
+import { isEventeli } from "@/config";
+import { endpoints } from "@/config/endpoints";
+import { baseUrl } from "@/constants";
+import { sessionKeys } from "@/data/onboarding";
+import { useApi } from "@/hooks/useApi";
+import { useEventsService } from "@/services/eventsService";
+import { useLocationService } from "@/services/locationService";
+import { useProductSettingServices } from "@/services/settingservices/productService";
+import {
+  AuthFlow,
+  PrimaryLocation,
+  UserLocation,
+  VerifyOTP,
+} from "@/types/auth/user";
+import { SettingsInterestData } from "@/types/onboarding";
+import { GAEvent } from "@/utils/GAEvent";
+import { getRestrictedUrl } from "@/utils/generateUrl";
+import { myFetch } from "@/utils/myFetch";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -9,29 +28,8 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
-import { authEndpoints, baseUrl } from "@/constants";
+import { SignUpDTO, TSignInFormSchema } from "../types";
 import { UserResponse } from "../types/user";
-import { SignUpResponse, SignInResponse } from "../types";
-import { TSignInFormSchema, SignUpDTO } from "../types";
-import { myFetch } from "@/utils/myFetch";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useApi } from "@/hooks/useApi";
-import { useProductSettingServices } from "@/services/settingservices/productService";
-import { SettingResearchData, SettingsInterestData } from "@/types/onboarding";
-import { useEventsService } from "@/services/eventsService";
-import { getRestrictedUrl } from "@/utils/generateUrl";
-import { GAEvent } from "@/utils/GAEvent";
-import { endpoints } from "@/config/endpoints";
-import {
-  AuthFlow,
-  PrimaryLocation,
-  UserLocation,
-  VerifyOTP,
-} from "@/types/auth/user";
-import { sessionKeys } from "@/data/onboarding";
-import { useLocationService } from "@/services/locationService";
-import { isEventeli } from "@/config";
 
 type authContextType = {
   user: UserResponse | null;
@@ -164,8 +162,8 @@ export const AuthContextProvider = ({ children }: any) => {
       setUser(null);
       return;
     }
-    const userLocation = await fetchUserLocation(userData?.primaryLocation);
-    setUser({ ...userData, userLocation: userLocation as UserLocation });
+    // const userLocation = await fetchUserLocation(userData?.primaryLocation);
+    setUser(userData);
   }, [request]);
 
   const generateOTP = async (

@@ -31,32 +31,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={sora.className}>
-      <body>
-        <ToastContainer />
-        <ReactQueryProvider>
-          <AuthContextProvider>
-            <div className={`relative p-8 bg-[#FAFAFF] min-h-screen`}>
-              <Image
-                className="absolute bottom-0 left-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
-                src={Coordinate_Onboarding_Icon}
-                alt="Icon"
-              />
-              <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
-                <Image src={logo} alt="logo" width={45} height={55} />
-                <Image src={whr} alt="whr" />
-              </div>
-              <Image
-                className="absolute top-0 right-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
-                src={Outreach_Onboarding_Icon}
-                alt="Icon"
-              />
-              <main className="flex flex-col justify-center w-full">{children}</main>
+    <>
+      <ToastContainer />
+      <ReactQueryProvider>
+        <AuthContextProvider>
+          <div className={`relative p-8 bg-[#FAFAFF] min-h-screen`}>
+            <Image
+              className="absolute bottom-0 left-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
+              src={Coordinate_Onboarding_Icon}
+              alt="Icon"
+            />
+            <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
             </div>
-            <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
-          </AuthContextProvider>
-        </ReactQueryProvider>
-      </body>
-    </html>
+            <Image
+              className="absolute top-0 right-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
+              src={Outreach_Onboarding_Icon}
+              alt="Icon"
+            />
+            <main className="flex flex-col justify-center w-full">
+              {children}
+            </main>
+          </div>
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
+        </AuthContextProvider>
+      </ReactQueryProvider>
+    </>
   );
 }

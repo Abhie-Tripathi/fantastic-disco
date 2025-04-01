@@ -86,6 +86,7 @@ const EventTrends = () => {
       groupBy: "date",
       dateView: "day",
     });
+    console.log(searchParams.toString());
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
@@ -267,12 +268,12 @@ const EventTrends = () => {
       )}
       <div className="relative">
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
-          <EventTypeSelector />
+          <EventTypeSelector variant="popover" />
           <div className="flex flex-col gap-2 items-start">
             <LocationSelector />
           </div>
           <div className="flex flex-col gap-2 items-start">
-            <DateRangeSelector />
+            <DateRangeSelector/>
           </div>
           <div className="flex flex-col gap-2 items-start">
             <ColumnsSelector
@@ -303,7 +304,7 @@ const EventTrends = () => {
           </div>
         </div>
         {isLoading ? (
-          <Loading className="absolute right-1/2 -bottom-3/4" />
+          <Loading />
         ) : error ? (
           <div className={styles.zeroState_container}>
             <Image

@@ -21,7 +21,8 @@ import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
 // import enabledFilters from "@/public/data/enabledFilters";
 import { Badge } from "@/components/ui/badge";
-const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
+
+const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
   const { localFilters } = useFilterContext();
   const handleTabChange = (value: string) => {

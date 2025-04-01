@@ -61,11 +61,11 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
                       <span>List</span>
                     </TabsTrigger>
                     <TabsTrigger
-                      value="globe"
+                      value="map"
                       className="flex gap-2 items-center h-full"
                     >
                       <Globe className="w-3 h-3" />
-                      Globe
+                      Map
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>

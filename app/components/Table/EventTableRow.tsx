@@ -249,13 +249,17 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               )}
             </div>
             <div className="truncate font-medium">
-              <Link
-                href={`/internal/event/${event.basic.id}`}
-                className="hover:text-primary transition-colors"
-                title={event.basic.name}
-              >
-                {event.basic.name}
-              </Link>
+              {event.basic.primaryEventType === "holiday" ? (
+                <span title={event.basic.name}>{event.basic.name}</span>
+              ) : (
+                <Link
+                  href={`/internal/event/${event.basic.id}`}
+                  className="hover:text-primary transition-colors"
+                  title={event.basic.name}
+                >
+                  {event.basic.name}
+                </Link>
+              )}
             </div>
             <div className="text-sm text-muted-foreground truncate">
               {event.basic.organizer?.name}
@@ -294,19 +298,23 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.eventLocation.venue?.displayName ||
-            (event.basic.format === "online" ? "Online" : "TBA")}
+          {event.basic.primaryEventType === "holiday" ? (
+            "-"
+          ) : (
+            event.basic.eventLocation?.venue?.name ||
+            (event.basic.format === "online" ? "Online" : "TBA")
+          )}
         </div>
       </TableCell>
 
       {/* City Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.city?.name)}
+        {displayValue(event.basic.eventLocation?.city?.name)}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.country?.name)}
+        {displayValue(event.basic.eventLocation?.country?.name)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
@@ -340,16 +348,26 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <span className="flex items-center gap-1">
-                  {event.basic.categories[0]?.name}
-                  {event.basic.categories.length > 1 && (
-                    <span className="text-xs font-bold text-muted-foreground">
-                      +{event.basic.categories.length - 1}
-                    </span>
-                  )}
+                  {event.basic.primaryEventType === "holiday" 
+                    ? event.basic.eventTypes[0]?.name
+                    : event.basic.categories[0]?.name}
+                  {event.basic.primaryEventType === "holiday" 
+                    ? (event.basic.eventTypes.length > 1 && (
+                        <span className="text-xs font-bold text-muted-foreground">
+                          +{event.basic.eventTypes.length - 1}
+                        </span>
+                      ))
+                    : (event.basic.categories.length > 1 && (
+                        <span className="text-xs font-bold text-muted-foreground">
+                          +{event.basic.categories.length - 1}
+                        </span>
+                      ))}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                {event.basic.categories.map((item) => item.name).join(" | ")}
+                {event.basic.primaryEventType === "holiday"
+                  ? event.basic.eventTypes.map((item) => item.name).join(" | ")
+                  : event.basic.categories.map((item) => item.name).join(" | ")}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -433,9 +451,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.rankings) &&
         event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.trustScore !== null &&
-            (event.insights?.trustChangePercentage > 1 ||
-              event.insights?.trustChangePercentage < -1) ? (
+            {event.insights?.trustScore !== null && event.insights?.trustScore !== 0 ? (
               event.insights?.trustChangePercentage > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
                   {event.insights?.trustScore}%
@@ -443,13 +459,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     <ArrowUp className="w-4 h-4 inline" />
                   </span>
                 </div>
-              ) : (
+              ) : event.insights?.trustChangePercentage < 0 ? (
                 <div className="text-danger-text flex items-center justify-center gap-1">
                   {event.insights?.trustScore}%
                   <span className="text-red-500 bg-red-100 rounded-full p-1">
                     <ArrowDown className="w-4 h-4  inline" />
                   </span>
                 </div>
+              ) : (
+                <div>{event.insights?.trustScore}%</div>
               )
             ) : (
               "-"
@@ -474,7 +492,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {/* Forecasted Column */}
       {show.includes(Show.forecasted) && (
         <TableCell className="text-center">
-          {getForecastedStatus(event.basic.startDateTime)}
+          {getForecastedStatus(event.advance?.rehostDate)}
         </TableCell>
       )}
 
@@ -549,7 +567,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )} */}
 
       {/* Inbound Score Column */}
-      {show.includes(Show.scores) &&
+      {isEventeli &&
+        show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.inboundScore !== 0 &&
@@ -560,7 +579,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* International Score Column */}
-      {show.includes(Show.scores) &&
+      {isEventeli &&
+        show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.internationalScore !== 0 &&
@@ -571,7 +591,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Economic Impact Column */}
-      {show.includes(Show.economicImpact) &&
+      {isEventeli &&
+        show.includes(Show.economicImpact) &&
         event.insights?.economicImpact !== undefined && (
           <TableCell className="text-right">
             {formatEstimatedSpend(event.insights.economicImpact)}
@@ -865,14 +886,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           className="sticky right-0 bg-background z-0 w-[68px]"
           style={{ zIndex: 0, background: "var(--heading-background-color)" }}
         >
-          <ActionPopover
-            view={view}
-            setEventId={setEventId}
-            setInterest={setInterest}
-            trackerId={trackerId}
-            eventId={event.basic.id}
-            interests={event.interests}
-          />
+          {event.basic.primaryEventType !== "holiday" && (
+            <ActionPopover
+              view={view}
+              setEventId={setEventId}
+              setInterest={setInterest}
+              trackerId={trackerId}
+              eventId={event.basic.id}
+              interests={event.interests}
+            />
+          )}
         </TableCell>
       )}
     </TableRow>
