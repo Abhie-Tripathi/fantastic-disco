@@ -266,7 +266,7 @@ export const useEventsService = () => {
   };
 
   const getEventCountByCity = async (params: string) => {
-    return api.request<{ data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }>(
+    return api.request<Array<{ count: number; id: string; name: string; latitude: string; longitude: string }>>(
       `${endpoints.event.events}/count?${params}`,
       {
         method: "GET",

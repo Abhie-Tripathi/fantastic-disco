@@ -27,6 +27,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { useFilterContext } from "@/context/filterContext"
 
 type HierarchyLevel = {
   id: string;
@@ -95,8 +96,8 @@ function SortableItem({ level, index, onValueChange, onRemove, disabled }: Sorta
         </SelectTrigger>
         <SelectContent>
           {HIERARCHY_OPTIONS.map((option) => (
-            <SelectItem 
-              key={option.id} 
+            <SelectItem
+              key={option.id}
               value={option.id}
               disabled={disabled}
             >
@@ -119,7 +120,7 @@ function SortableItem({ level, index, onValueChange, onRemove, disabled }: Sorta
 }
 
 export function ChartFilters({ type, onFiltersChange }: ChartFiltersProps) {
-  const [isApplying, setIsApplying] = useState(false);
+  const { applyFilters } = useFilterContext();
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
@@ -145,10 +146,10 @@ export function ChartFilters({ type, onFiltersChange }: ChartFiltersProps) {
 
   // Function to add new hierarchy level
   const addHierarchyLevel = (option: typeof HIERARCHY_OPTIONS[number]) => {
-    setHierarchyLevels([...hierarchyLevels, { 
-      id: option.id, 
-      label: option.label, 
-      value: option.id 
+    setHierarchyLevels([...hierarchyLevels, {
+      id: option.id,
+      label: option.label,
+      value: option.id
     }]);
   };
 
@@ -158,22 +159,19 @@ export function ChartFilters({ type, onFiltersChange }: ChartFiltersProps) {
   };
 
   const handleApply = () => {
-    setIsApplying(true);
     onFiltersChange?.({ hierarchyLevels });
-    setTimeout(() => {
-      setIsApplying(false);
-    }, 1000);
+    applyFilters();
   };
 
   return (
     <div className="space-y-4">
-      <LocationSelector/>
-      <DateRangeSelector/>
+      <LocationSelector />
+      <DateRangeSelector />
 
       {type === "visitor-flow" && (
         <div className="space-y-4">
           <Label>Hierarchy Levels</Label>
-          
+
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -231,8 +229,8 @@ export function ChartFilters({ type, onFiltersChange }: ChartFiltersProps) {
         </div>
       )}
 
-      <Button onClick={handleApply} className="w-full" disabled={isApplying}>
-        {isApplying ? "Applying..." : "Apply Filters"}
+      <Button onClick={handleApply} className="w-full">
+        Apply Filters
       </Button>
     </div>
   )

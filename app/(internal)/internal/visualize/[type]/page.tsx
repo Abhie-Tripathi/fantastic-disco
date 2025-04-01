@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import * as echarts from "echarts";
-// Import all necessary echarts modules
+
 import "echarts/lib/chart/treemap";
 import "echarts/lib/chart/map";
 import "echarts/lib/chart/bar";
@@ -19,56 +19,168 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
+import { useFilterState } from "@/hooks/useFilterState";
 
 export default function VisualizePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentLevel, setCurrentLevel] = useState(0);
-  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([]);
-  const { getEventCountByCity } = useEventsService();
-  const { getLocalFilterValue } = useFilterContext();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([{
+    id: "location",
+    label: "Location",
+    value: "location"
+  }, {
+    id: "category",
+    label: "Category",
+    value: "category"
+  }]);
+  const { getEventCountByCity, getEventsCount } = useEventsService();
+  const { getFilterValue } = useFilterState();
   const [queryParams, setQueryParams] = useState("");
 
-  const buildQueryParams = () => {
-    const params = new URLSearchParams();
-    params.append("groupBy", "state");
+  const locationId = getFilterValue("locationIds");
+  const activeGte = getFilterValue("active_gte");
+  const activeLte = getFilterValue("active_lte");
 
-    const locationId = getLocalFilterValue("locationIds");
+  const buildQueryParams = (category?: string, groupBy?: string) => {
+    const params = new URLSearchParams();
+
     if (locationId) {
       params.append("locationIds", locationId);
     }
 
-    const activeGte = getLocalFilterValue("active_gte");
     if (activeGte) {
       params.append("active_gte", activeGte);
     }
 
-    const activeLte = getLocalFilterValue("active_lte");
     if (activeLte) {
       params.append("active_lte", activeLte);
     }
 
+    if (category) {
+      params.append("categories", category);
+    }
+
+    // Add groupBy=state when location is first in hierarchy
+    const isLocationFirst = hierarchyLevels[0]?.value === "location";
+    if (isLocationFirst || groupBy === "state") {
+      params.append("groupBy", "state");
+    }
+
+    if (!locationId && !activeGte && !activeLte && !category && !isLocationFirst) {
+      return null;
+    }
+
+    console.log("params", params.toString());
+
     return params.toString();
   };
 
+  const categories = [
+    "agriculture-forestry",
+    "animals-pets",
+    "apparel-fashion",
+    "arts-crafts",
+    "automotive",
+    "baby-kids"
+  ];
+
   const { data: eventCountData, refetch } = useQuery({
-    queryKey: ["eventCount", params.type, queryParams],
+    queryKey: ["eventCount", params.type, searchParams.toString(), hierarchyLevels, selectedCategory],
     queryFn: async () => {
-      console.log("Fetching with params:", queryParams);
-      const response = await getEventCountByCity(queryParams);
-      console.log("API Response:", response);
-      return response;
+      // Check if category is the first level
+      const isCategoryFirst = hierarchyLevels[0]?.value === "category";
+      const isLocationFirst = hierarchyLevels[0]?.value === "location";
+
+      if (isCategoryFirst) {
+        if (selectedCategory) {
+          // If a category is selected, fetch state-wise data for that category
+          const queryParams = buildQueryParams(selectedCategory, "state");
+          if (!queryParams) return null;
+          return await getEventCountByCity(queryParams);
+        } else {
+          // Initial load - fetch category counts
+          const results = await Promise.all(
+            categories.map(async (category) => {
+              const queryParams = buildQueryParams(category);
+              if (!queryParams) return null;
+              const response = await getEventsCount({ 
+                locationIds: locationId, 
+                active_gte: activeGte, 
+                active_lte: activeLte, 
+                categories: category 
+              });
+              if (!response) return null;
+
+              return {
+                category: category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                count: (response as any).count
+              };
+            })
+          );
+
+          return results;
+        }
+      } else if (isLocationFirst) {
+        if (selectedCategory) {
+          // If a location is selected, fetch category data for all categories for that location
+          const results = await Promise.all(
+            categories.map(async (category) => {
+              const queryParams = buildQueryParams(category);
+              if (!queryParams) return null;
+              const response = await getEventsCount({ 
+                locationIds: selectedCategory, // Use selected location ID
+                active_gte: activeGte, 
+                active_lte: activeLte, 
+                categories: category 
+              });
+              if (!response) return null;
+
+              return {
+                category: category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                count: (response as any).count
+              };
+            })
+          );
+
+          return results.filter(Boolean);
+        } else {
+          // Initial load - fetch state-wise data
+          const queryParams = buildQueryParams(undefined, "state");
+          if (!queryParams) return null;
+          return await getEventCountByCity(queryParams);
+        }
+      } else {
+        // Use the original API call for other cases
+        const queryParams = buildQueryParams();
+        if (!queryParams) return null;
+        return await getEventCountByCity(queryParams);
+      }
     },
-    enabled: params.type === "visitor-flow" && !!queryParams,
+    enabled: params.type === "visitor-flow",
   });
+
+  console.log("eventCountData", eventCountData);
 
   const handleChartClick = (params: any) => {
     if (chartInstance.current && params.treePathInfo) {
-      // Only allow drill down if there are more levels to show
-      if (currentLevel < hierarchyLevels.length - 1) {
+      const isCategoryFirst = hierarchyLevels[0]?.value === "category";
+      const isLocationFirst = hierarchyLevels[0]?.value === "location";
+      
+      if ((isCategoryFirst || isLocationFirst) && currentLevel === 0) {
+        // When clicking a category/location in first level
+
+        const selectedValue = isCategoryFirst 
+          ? params.data.rawData?.category?.toLowerCase().replace(/\s+/g, '-')
+          : params.data.rawData?.id;
+        setSelectedCategory(selectedValue);
+        setCurrentLevel(1);
+      } else if (currentLevel < hierarchyLevels.length - 1) {
         setCurrentLevel(currentLevel + 1);
       }
     }
@@ -77,63 +189,49 @@ export default function VisualizePage() {
   const handleBreadcrumbClick = (params: any) => {
     if (chartInstance.current) {
       setCurrentLevel(params.nodeIndex);
+      if (params.nodeIndex === 0) {
+        setSelectedCategory(null);
+      }
     }
   };
 
   const handleFiltersChange = async (filters: any) => {
     if (chartInstance.current) {
       setCurrentLevel(0);
+      setSelectedCategory(null);
       setHierarchyLevels(filters.hierarchyLevels);
-      
-      // Build new query params and trigger API call
-      const newQueryParams = buildQueryParams();
-      console.log("New Query Params:", newQueryParams);
-      setQueryParams(newQueryParams);
-      
-      // Refetch data with new params
+
       await refetch();
-      
-      // Update chart with new data
-      console.log("Current eventCountData:", eventCountData);
-      const options = getChartOptions(params.type as string, filters.hierarchyLevels, eventCountData);
+
+      const options = getChartOptions(params.type as string, filters.hierarchyLevels, eventCountData as any);
       chartInstance.current.setOption(options);
     }
   };
-
-  // Add initial effect to set query parameters
-  useEffect(() => {
-    if (params.type === "visitor-flow") {
-      const initialParams = buildQueryParams();
-      console.log("Setting initial query params:", initialParams);
-      setQueryParams(initialParams);
-    }
-  }, [params.type]);
 
   useEffect(() => {
     const initChart = async () => {
       if (!chartRef.current) return;
 
-      try {
-        if (chartInstance.current) {
-          chartInstance.current.dispose();
-        }
-
-        chartRef.current.style.height = "600px";
-        chartInstance.current = echarts.init(chartRef.current);
-        
-        console.log("Initializing chart with data:", eventCountData);
-        const options = getChartOptions(params.type as string, hierarchyLevels, eventCountData);
-        chartInstance.current.setOption(options);
-        
-        // Add click event handlers
-        chartInstance.current.on('click', handleChartClick);
-        chartInstance.current.on('breadcrumbclick', handleBreadcrumbClick);
-        
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error initializing chart:", error);
-        setIsLoading(false);
+      // try {
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
       }
+
+      chartRef.current.style.height = "600px";
+      chartInstance.current = echarts.init(chartRef.current);
+
+      console.log("Initializing chart with data:", eventCountData, hierarchyLevels);
+      const options = getChartOptions(params.type as string, hierarchyLevels, eventCountData as any);
+      chartInstance.current.setOption(options);
+
+      chartInstance.current.on('click', handleChartClick);
+      chartInstance.current.on('breadcrumbclick', handleBreadcrumbClick);
+
+      setIsLoading(false);
+      // } catch (error) {
+      //   console.error("Error initializing chart:", error);
+      //   setIsLoading(false);
+      // }
     };
 
     initChart();
@@ -155,8 +253,8 @@ export default function VisualizePage() {
 
         <div className="grid lg:grid-cols-[350px,1fr] gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <ChartFilters 
-              type={params.type as string} 
+            <ChartFilters
+              type={params.type as string}
               onFiltersChange={handleFiltersChange}
             />
           </div>

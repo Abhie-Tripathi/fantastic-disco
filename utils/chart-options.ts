@@ -91,118 +91,137 @@ export type HierarchyLevel = {
   value: string;
 };
 
-// Simplified dummy data with more realistic values and cities
-const dummyData = {
-  cities: [
-    { name: "Mumbai", value: 12500 },
-    { name: "Delhi", value: 11800 },
-    { name: "Bangalore", value: 10200 },
-    { name: "Hyderabad", value: 8500 },
-    { name: "Chennai", value: 7800 },
-    { name: "Kolkata", value: 7200 },
-    { name: "Pune", value: 6500 },
-    { name: "Ahmedabad", value: 5800 },
-    { name: "Jaipur", value: 4200 },
-    { name: "Lucknow", value: 3800 },
-    { name: "Chandigarh", value: 3200 },
-    { name: "Kochi", value: 2800 },
-  ],
-  categories: [
-    { name: "Electronics & Technology", baseValue: 0.18 },
-    { name: "Fashion & Apparel", baseValue: 0.15 },
-    { name: "Food & Beverages", baseValue: 0.14 },
-    { name: "Healthcare & Wellness", baseValue: 0.12 },
-    { name: "Home & Furniture", baseValue: 0.10 },
-    { name: "Beauty & Personal Care", baseValue: 0.08 },
-    { name: "Sports & Fitness", baseValue: 0.07 },
-    { name: "Books & Education", baseValue: 0.06 },
-    { name: "Travel & Leisure", baseValue: 0.05 },
-    { name: "Automotive", baseValue: 0.03 },
-    { name: "Jewelry & Accessories", baseValue: 0.02 },
-  ],
-};
 
 interface TreeNode {
   name: string;
   value: number;
   children?: TreeNode[];
-  rawData?: Record<string, any>;
+  rawData?: {
+    id?: string;
+    category?: string | null;
+    location?: string;
+  };
 }
 
-function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: { data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }): TreeNode[] {
+type LocationData = {
+  count: number;
+  id: string;
+  name: string;
+  latitude: string;
+  longitude: string;
+};
+
+type CategoryData = {
+  category: string;
+  count: number;
+  children?: LocationData[];
+};
+
+type ApiData = LocationData | CategoryData;
+
+function isLocationData(item: ApiData | undefined | null): item is LocationData {
+  return item !== undefined && item !== null && 'name' in item && 'id' in item && 'latitude' in item && 'longitude' in item;
+}
+
+function isCategoryData(item: ApiData | undefined | null): item is CategoryData {
+  return item !== undefined && item !== null && 'category' in item;
+}
+
+function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: ApiData[]): TreeNode[] {
   console.log("Generating hierarchical data with:", { hierarchyLevels, apiData });
-  
+
+  if (!apiData || apiData.length === 0) return [];
+
+  // Check if we're dealing with category-first data
+  const isCategoryFirst = hierarchyLevels[0]?.value === "category" &&
+    isCategoryData(apiData[0]);
+
   if (hierarchyLevels.length === 0) {
-    const result = apiData?.data.map(city => ({
-      name: city.name,
-      value: city.count,
-      rawData: {
-        location: city.name,
-        category: null,
+    const result = apiData.map(item => {
+      if (isCategoryFirst && isCategoryData(item)) {
+        const node: TreeNode = {
+          name: item.category,
+          value: item.count,
+          rawData: {
+            category: item.category
+          }
+        };
+        return node;
+      } else if (isLocationData(item)) {
+        const node: TreeNode = {
+          name: item.name,
+          value: item.count,
+          rawData: {
+            location: item.name,
+            category: null,
+            id: item.id,
+
+          }
+        };
+        return node;
       }
-    })) || [];
+      return null;
+    }).filter((item): item is TreeNode => item !== null);
     console.log("No hierarchy levels, returning:", result);
     return result;
   }
 
-  const processLevel = (
-    level: HierarchyLevel,
-    remainingLevels: HierarchyLevel[]
-  ): TreeNode[] => {
-    const isLastLevel = remainingLevels.length === 0;
-    console.log("Processing level:", { level, isLastLevel, remainingLevels });
+  const level = hierarchyLevels[0];
+  console.log("Processing level:", { level });
 
-    switch (level.value) {
-      case "location":
-        const locationResult = (apiData?.data || []).map(city => ({
-          name: city.name,
-          value: city.count,
-          children: isLastLevel ? undefined : 
-            remainingLevels.length > 0 
-              ? processLevel(remainingLevels[0], remainingLevels.slice(1))
-              : undefined
-        }));
-        console.log("Location level result:", locationResult);
-        return locationResult;
-
-      case "category":
-        const categoryResult = dummyData.categories.map(category => {
-          const categoryValue = (value: number) => Math.floor(value * (category.baseValue || 0));
-          const totalCount = apiData?.data.reduce((sum, city) => sum + city.count, 0) || 0;
-          
-          if (isLastLevel) {
-            return {
-              name: category.name,
-              value: categoryValue(totalCount)
-            };
-          }
-
-          const children = remainingLevels.length > 0 
-            ? processLevel(remainingLevels[0], remainingLevels.slice(1))
-            : undefined;
-
-          return {
-            name: category.name,
-            value: children 
-              ? children.reduce((sum, child) => sum + child.value, 0)
-              : categoryValue(totalCount),
-            children
-          };
-        });
+  switch (level.value) {
+    case "category": {
+      if (isCategoryFirst) {
+        // For category-first hierarchy, we'll use the actual category data from API
+        const categoryResult = apiData
+          .filter(isCategoryData)
+          .map(item => ({
+            name: item.category,
+            value: item.count,
+            rawData: {
+              category: item.category
+            }
+          }));
         console.log("Category level result:", categoryResult);
         return categoryResult;
-
-      default:
-        return [];
+      }
     }
-  };
 
-  const result = processLevel(hierarchyLevels[0], hierarchyLevels.slice(1));
-  console.log("Final hierarchical data:", result);
-  return result;
+    case "location": {
+      // For location level, we'll use the location data directly
+      const locationResult = apiData
+        .filter(isLocationData)
+        .map(item => ({
+          name: item.name,
+          value: item.count,
+          rawData: {
+            location: item.name,
+            category: null,
+            id: item.id,
+          }
+        }));
+      console.log("Location level result:", locationResult);
+      return locationResult;
+    }
+
+    case "maturity": {
+      // For maturity level, we'll distribute the total value across maturity levels
+      const totalValue = apiData.reduce((sum, item) => sum + (isLocationData(item) ? item.count : 0), 0);
+      const maturityResult = maturityLevels.map(maturity => ({
+        name: maturity.name,
+        value: Math.floor(totalValue * maturity.baseValue)
+      }));
+      console.log("Maturity level result:", maturityResult);
+      return maturityResult;
+    }
+
+    default:
+      return [];
+  }
 }
 
-export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] = [], apiData?: { data: Array<{ count: number; id: string; name: string; latitude: string; longitude: string }> }): EChartsOption {
+export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] = [], apiData?: ApiData[]): EChartsOption {
+
   const options: Record<string, EChartsOption> = {
     "geographic-events": {
       title: {
