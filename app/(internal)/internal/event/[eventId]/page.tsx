@@ -221,7 +221,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       (estimatedExhibitors !== null &&
         estimatedExhibitors !== "" &&
         estimatedExhibitors !== undefined)
-    : (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
+    : (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
+      (eventRankingDetails && Object.keys(eventRankingDetails).length > 0) ||
       (estimatedAttendance !== null &&
         estimatedAttendance !== "" &&
         estimatedAttendance !== undefined) ||
