@@ -72,8 +72,8 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
     []
   );
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
-  const [pastEvents, setPastEvents] = useState<any[]>([]);
+  // const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  // const [pastEvents, setPastEvents] = useState<any[]>([]);
 
   const {
     getCompanyDetailById,
@@ -110,8 +110,8 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           ? eventPOCDataResult.value
           : null;
       setEventPOCDetails(eventPOCData?.companyPoc || []);
-      setUpcomingEvents(upcomingEventRes.events || []);
-      setPastEvents(pastEventRes.events || []);
+      // setUpcomingEvents(upcomingEventRes.events || []);
+      // setPastEvents(pastEventRes.events || []);
       if (companyResponse && companyResponse?.companyData.logo !== null) {
         setCompLogo(companyResponse.companyData.logo);
       } else if (
@@ -130,7 +130,9 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       return {
         companyDetails: companyResponse?.companyData,
         upcomingEventsCount: upcomingEventRes.count,
+        upcomingEventsData: upcomingEventRes.events || [],
         pastEventsCount: pastEventRes.count,
+        pastEventsData: pastEventRes.events || [],
       };
     },
     refetchOnWindowFocus: false,
@@ -147,7 +149,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   }
 
   if (!company) return null;
-  const { companyDetails, upcomingEventsCount, pastEventsCount } = company;
+  const { companyDetails, upcomingEventsCount, pastEventsCount, pastEventsData, upcomingEventsData } = company;
 
   const handleScrollTo = (section: string) => {
     const element = document.querySelector(`.${section}`);
@@ -183,23 +185,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     }
   };
 
-  const loadMoreEvents = async (type: string) => {
-    if (type === "past") {
-      const moreEvents = await getCompanyEvents(
-        params.companyId,
-        "past",
-        pastEvents.length
-      );
-      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
-    } else if (type === "upcoming") {
-      const moreEvents = await getCompanyEvents(
-        params.companyId,
-        "upcomming",
-        upcomingEvents.length
-      );
-      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
-    }
-  };
+  // const loadMoreEvents = async (type: string) => {
+  //   if (type === "past") {
+  //     const moreEvents = await getCompanyEvents(
+  //       params.companyId,
+  //       "past",
+  //       pastEvents.length
+  //     );
+  //     setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+  //   } else if (type === "upcoming") {
+  //     const moreEvents = await getCompanyEvents(
+  //       params.companyId,
+  //       "upcomming",
+  //       upcomingEvents.length
+  //     );
+  //     setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
+  //   }
+  // };
 
   return (
     <div className="p-6 pt-0">
@@ -510,11 +512,11 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
 
           <EventCalendar
             companyId={params.companyId}
-            upcomingEvents={upcomingEvents}
+            upcomingEventsData={upcomingEventsData}
             upcomingEventsCount={upcomingEventsCount}
-            pastEvents={pastEvents}
+            pastEventsData={pastEventsData}
             pastEventsCount={pastEventsCount}
-            loadMoreEvents={loadMoreEvents}
+            // loadMoreEvents={loadMoreEvents}
           />
         </section>
       </div>

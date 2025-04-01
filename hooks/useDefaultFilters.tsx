@@ -356,6 +356,7 @@ export function useDefaultFilters() {
     }
     trendsParams.delete("viewBound");
     trendsParams.delete("show");
+    trendsParams.delete("eventIds");
     trendsParams.set("eventTypes", defaultTrendsParams.eventTypes.join(","));
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
