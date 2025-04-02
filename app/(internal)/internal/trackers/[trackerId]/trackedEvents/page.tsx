@@ -271,7 +271,6 @@ const Page = ({ params }: { params: any }) => {
   }, [data, savedEventCount]);
   useEffect(()=>{
     const res = eventCount.find((count) => count.type.toLowerCase() === active);
-    console.log(res)
     
     setActiveCount(res?.totalCount || 0);
     
