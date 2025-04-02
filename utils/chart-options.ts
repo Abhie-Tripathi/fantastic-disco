@@ -2,49 +2,7 @@ import type { EChartsOption } from "echarts";
 import * as echarts from 'echarts';
 import { registerMap } from 'echarts';
 
-const indianZones = [
-  {
-    name: "North India",
-    value: 2000,
-    children: [
-      { name: "Delhi", value: 1100 },
-      { name: "Lucknow", value: 300 },
-      { name: "Kanpur", value: 250 },
-      { name: "Jaipur", value: 350 },
-    ],
-  },
-  {
-    name: "South India",
-    value: 2550,
-    children: [
-      { name: "Bangalore", value: 1000 },
-      { name: "Hyderabad", value: 800 },
-      { name: "Chennai", value: 750 },
-    ],
-  },
-  {
-    name: "West India",
-    value: 2750,
-    children: [
-      { name: "Mumbai", value: 1200 },
-      { name: "Pune", value: 500 },
-      { name: "Ahmedabad", value: 450 },
-      { name: "Surat", value: 400 },
-      { name: "Indore", value: 200 },
-    ],
-  },
-  {
-    name: "East India",
-    value: 850,
-    children: [
-      { name: "Kolkata", value: 700 },
-      { name: "Bhopal", value: 150 },
-    ],
-  },
-].map((zone) => ({
-  ...zone,
-  value: zone.children.reduce((sum, city) => sum + city.value, 0), // Calculate value dynamically
-}));
+
 
 const maturityLevels = [
   { name: "New", baseValue: 0.25 },
@@ -53,35 +11,7 @@ const maturityLevels = [
   { name: "Flagship", baseValue: 0.15 },
 ];
 
-const categories = [
-  { name: "Agriculture & Forestry", baseValue: 0.08 },
-  { name: "Animals & Pets", baseValue: 0.05 },
-  { name: "Apparel & Clothing", baseValue: 0.1 },
-  { name: "Arts & Crafts", baseValue: 0.07 },
-  { name: "Auto & Automotive", baseValue: 0.09 },
-  { name: "Baby, Kids & Maternity", baseValue: 0.08 },
-  { name: "Banking & Finance", baseValue: 0.1 },
-  { name: "Building & Construction", baseValue: 0.09 },
-  { name: "Business Services", baseValue: 0.1 },
-  { name: "Education & Training", baseValue: 0.08 },
-  { name: "Electric & Electronics", baseValue: 0.08 },
-  { name: "Entertainment & Media", baseValue: 0.08 },
-];
 
-const generateCategoryData = (baseValue: number) => {
-  return categories.map((category) => ({
-    name: category.name,
-    value: Math.floor(baseValue * category.baseValue),
-  }));
-};
-
-const generateMaturityData = (cityValue: number) => {
-  return maturityLevels.map((maturity) => ({
-    name: maturity.name,
-    value: Math.floor(cityValue * maturity.baseValue),
-    children: generateCategoryData(cityValue * maturity.baseValue),
-  }));
-};
 
 // Register the world map data
 
@@ -100,6 +30,7 @@ interface TreeNode {
     id?: string;
     category?: string | null;
     location?: string;
+    maturity?: string;
   };
 }
 
@@ -136,6 +67,10 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
   const isCategoryFirst = hierarchyLevels[0]?.value === "category" &&
     isCategoryData(apiData[0]);
 
+  console.log("isCategoryFirst", isCategoryFirst);
+
+  console.log("hierarchyLevels", hierarchyLevels);
+
   if (hierarchyLevels.length === 0) {
     const result = apiData.map(item => {
       if (isCategoryFirst && isCategoryData(item)) {
@@ -155,7 +90,6 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
             location: item.name,
             category: null,
             id: item.id,
-
           }
         };
         return node;
@@ -180,7 +114,16 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
             value: item.count,
             rawData: {
               category: item.category
-            }
+            },
+            children: item.children?.map(child => ({
+              name: child.name,
+              value: child.count,
+              rawData: {
+                location: child.name,
+                category: item.category,
+                id: child.id
+              }
+            }))
           }));
         console.log("Category level result:", categoryResult);
         return categoryResult;
@@ -188,6 +131,27 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
     }
 
     case "location": {
+      if (isCategoryData(apiData[0])) {
+        const categoryResult = apiData
+          .filter(isCategoryData)
+          .map(item => ({
+            name: item.category,
+            value: item.count,
+            rawData: {
+              category: item.category
+            },
+            children: item.children?.map(child => ({
+              name: child.name,
+              value: child.count,
+              rawData: {
+                location: child.name,
+                category: item.category,
+                id: child.id
+              }
+            }))
+          }));
+        return categoryResult;
+      }
       // For location level, we'll use the location data directly
       const locationResult = apiData
         .filter(isLocationData)
@@ -209,7 +173,10 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
       const totalValue = apiData.reduce((sum, item) => sum + (isLocationData(item) ? item.count : 0), 0);
       const maturityResult = maturityLevels.map(maturity => ({
         name: maturity.name,
-        value: Math.floor(totalValue * maturity.baseValue)
+        value: Math.floor(totalValue * maturity.baseValue),
+        rawData: {
+          maturity: maturity.name
+        }
       }));
       console.log("Maturity level result:", maturityResult);
       return maturityResult;
@@ -327,11 +294,6 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
       ],
     },
     "visitor-flow": {
-      title: {
-        text: "Visitor Distribution",
-        left: "center",
-        top: 20,
-      },
       tooltip: {
         formatter: (params: any) => {
           const value = params.value;
@@ -341,8 +303,11 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
           return `${params.name}<br/>Value: ${value.toLocaleString()}<br/>Share: ${percent}`;
         },
       },
+      
       series: [
         {
+          height: "100%",
+          width: "100%",
           name: "Distribution",
           type: "treemap",
           visibleMin: 100,
@@ -379,16 +344,6 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
               },
             }
           ],
-          breadcrumb: {
-            show: true,
-            height: 30,
-            bottom: "bottom",
-            emphasis: {
-              // itemStyle: {
-              //   color: '#fff'
-              // }
-            }
-          },
           label: {
             show: true,
             formatter: (params: any) => {

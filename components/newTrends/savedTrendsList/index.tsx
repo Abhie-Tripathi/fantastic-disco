@@ -402,8 +402,8 @@ const SavedTrendsList = ({
     (trend) => trend.id === activeCard
   );
   return (
-    <div className="flex flex-col gap-4 w-full bg-[#FAFAFA] p-6">
-      <h1 className="font-medium">SAVED TRENDS</h1>
+    <div className="flex flex-col gap-4 w-full  p-6">
+      {/* <h1 className="font-medium">SAVED TRENDS</h1> */}
       <SwiperCarousel
         initialSlideIndex={initialSlideIndex}
         activeCard={activeCard}

@@ -253,10 +253,10 @@ export default function VisualizePage() {
 
         <div className="grid lg:grid-cols-[350px,1fr] gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <ChartFilters
+            {/* <ChartFilters
               type={params.type as string}
               onFiltersChange={handleFiltersChange}
-            />
+            /> */}
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-sm border relative">
