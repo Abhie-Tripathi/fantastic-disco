@@ -497,7 +497,6 @@ if (!share) {
   closeShareModal();
 }
 };
-console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
