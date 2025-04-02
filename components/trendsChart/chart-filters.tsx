@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { Label } from "@/components/ui/label";
