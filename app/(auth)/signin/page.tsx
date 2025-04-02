@@ -3,25 +3,30 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context";
+import { sessionKeys } from "@/data/onboarding";
 import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
-import { signIn, useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/ui/Loading";
+import { endpoints } from "@/config/endpoints";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
-  const { signin, error, isLoading, setError } = useAuthContext();
+  const router = useRouter();
+  const { signin, error, isLoading, setError, signInSSO } = useAuthContext();
   const { data, status } = useSession();
-  console.log(data, status);
 
   const {
     control,
@@ -51,6 +56,19 @@ export default function SignInForm() {
     }
   }, [errors.email?.message]);
 
+  // const { isLoading: ssoSignInLoading } = useQuery({
+  //   queryKey: ["signInSSO"],
+  //   queryFn: () => signInSSO,
+  //   enabled: status === "authenticated",
+  //   refetchOnWindowFocus: false,
+  // });
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      signInSSO();
+    }
+  }, [status, data]);
+
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4 h-[45dvh]">
       <p className="font-semibold text-lg leading-6 text-center mb-5">
@@ -66,7 +84,7 @@ export default function SignInForm() {
           <span className="mt-1">Google</span>
         </Button>
         <Button
-          onClick={() => signIn("linkedin", { callbackUrl: "/internal" })}
+          onClick={() => signIn("linkedin")}
           variant={"outline"}
           className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >

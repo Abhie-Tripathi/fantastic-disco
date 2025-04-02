@@ -1,7 +1,4 @@
-import { endpoints } from "@/config/endpoints";
-import { useAuthContext } from "@/context";
-import { UserResponse } from "@/types/user";
-import NextAuth, { AuthOptions, NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 const authOptions: NextAuthOptions = {
@@ -50,52 +47,32 @@ const authOptions: NextAuthOptions = {
       if (account && account.provider === "google") {
         return true;
       } else if (account && account.provider === "linkedin") {
-        console.log("SignIn callback", { account, profile });
+        return true;
       }
       return true;
     },
     async jwt({ token, account, profile }) {
       if (account && account.provider === "google") {
-        try {
-          const result = await fetch(
-            endpoints.auth.ssoSignIn(account.provider || ""),
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ accessToken: account.access_token }),
-            }
-          );
-          console.log(result.json());
-          return {
-            ...token,
-          };
-        } catch (err) {
-          console.error("Sign in error:", err);
-        }
-        // if (account && profile) {
-        //   token.id = profile.sub || token.sub || "";
-        //   token.name = profile.name || "";
-        //   token.email = profile.email || "";
-        //   token.picture = profile.image || "";
-        //   token.accessToken = account.access_token || "";
-        // }
+        token.accessToken = account.access_token;
+        token.name = profile?.name || token.name;
+        token.email = profile?.email || token.email;
+        token.provider = account.provider || "";
       }
       if (account && account.provider === "linkedin") {
-        if (account && profile) {
-          console.log("Linkedin", account, profile);
-        }
+        token.accessToken = account.access_token;
+        token.name = profile?.name || token.name;
+        token.email = profile?.email || token.email;
+        token.provider = account.provider || "";
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("Token", token);
       if (token) {
         session.user = {
           name: token.name,
           email: token.email,
-          image: token.picture,
+          accessToken: token.accessToken,
+          provider: token.provider,
         };
       }
       return session;

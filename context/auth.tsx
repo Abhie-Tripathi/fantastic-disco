@@ -35,6 +35,7 @@ import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
 import { signOut as signOutSSO, useSession } from "next-auth/react";
 import { endOfMonth, format, startOfMonth } from "date-fns";
+import { useProfileServices } from "@/services/profileService";
 
 type authContextType = {
   user: UserResponse | null;
@@ -53,12 +54,9 @@ type authContextType = {
       | null
   ) => void;
   signOut: () => void;
-  SSOSignIn: (
-    provider: string,
-    accessToken: string,
-    flow: AuthFlow,
-    redirectTo: string
-  ) => Promise<any>;
+  signInSSO: () => Promise<any>;
+  signUpSSO: () => Promise<any>;
+  updateIndustry: (formData: any) => Promise<any>;
   generateOTP: (
     email: string,
     industry?: string,
@@ -99,7 +97,9 @@ const authContextDefaultValues: authContextType = {
   ) => {},
   setUser: () => {},
   signOut: () => {},
-  SSOSignIn: () => Promise.resolve(null),
+  signInSSO: () => Promise.resolve(null),
+  signUpSSO: () => Promise.resolve(null),
+  updateIndustry: () => Promise.resolve(null),
   generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
@@ -113,6 +113,7 @@ export const AuthContext = createContext<authContextType>(
 export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
+  const { updateMyProfileData } = useProfileServices();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
@@ -285,11 +286,12 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push(
-          status === "authenticated"
-            ? `/internal/search/events?${urlParams}`
-            : `/verify-otp?email=${userDto.email}`
-        );
+        router.push(`/verify-otp?email=${userDto.email}`);
+        // router.push(
+        //   status === "authenticated"
+        //     ? `/internal/search/events?${urlParams}`
+        //     : `/verify-otp?email=${userDto.email}`
+        // );
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {
@@ -329,41 +331,85 @@ export const AuthContextProvider = ({ children }: any) => {
   );
 
   const signOut = useCallback(async () => {
-    // setUser(null);
-    // deleteLocalStorage();
+    setUser(null);
+    deleteLocalStorage();
     localStorage.removeItem("walkthroughCompleted");
-    // sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    // await request(endpoints.auth.logout, {
-    //   method: "POST",
-    // });
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    await request(endpoints.auth.logout, {
+      method: "POST",
+    });
     signOutSSO({ callbackUrl: "/signin" });
     // router.push("/signin");
   }, [request, router]);
 
-  const SSOSignIn = useCallback(
-    async (
-      provider: string,
-      accessToken: string,
-      flow: AuthFlow,
-      redirectTo: string
-    ) => {
-      try {
-        const result = await request<{ user: UserResponse }>(
-          endpoints.auth.ssoSignIn(provider),
-          {
-            method: "POST",
-            data: { accessToken: accessToken },
-          }
-        );
-        if (result) {
-          if (result.user) {
-            await newcheckAuth();
-            setLocalStorage(result.user);
-            handleFlowAction(flow, redirectTo);
-          }
+  const signInSSO = useCallback(async () => {
+    try {
+      const origin = window.location.origin;
+      const res = await fetch(`${origin}/api/auth/session`);
+      const session = await res.json();
+      const result = await request<{ user: UserResponse }>(
+        endpoints.auth.ssoSignIn(session.user.provider),
+        {
+          method: "POST",
+          data: { accessToken: session.user.accessToken },
         }
-      } catch (err) {
-        console.error("Sign in error:", err);
+      );
+      if (result) {
+        if (!result.user.isNewUser) {
+          window.localStorage.setItem("user", JSON.stringify(result.user));
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(["research"])
+          );
+          sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+          router.push("/internal");
+        } else {
+          router.push("/signup");
+        }
+      }
+    } catch (err) {
+      console.error("Sign in error:", err);
+    }
+  }, [request, router]);
+
+  const signUpSSO = useCallback(async () => {
+    try {
+      const origin = window.location.origin;
+      const res = await fetch(`${origin}/api/auth/session`);
+      const session = await res.json();
+      const result = await request<{ user: UserResponse }>(
+        endpoints.auth.ssoSignIn(session.user.provider),
+        {
+          method: "POST",
+          data: { accessToken: session.user.accessToken },
+        }
+      );
+      if (result) {
+        if (!result.user.isNewUser) {
+          window.localStorage.setItem("user", JSON.stringify(result.user));
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(["research"])
+          );
+          sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+          router.push("/internal");
+        } else {
+          router.push("/signup");
+        }
+      }
+    } catch (err) {
+      console.error("Sign in error:", err);
+    }
+  }, [request, router]);
+
+  const updateIndustry = useCallback(
+    async (formData: any) => {
+      try {
+        delete formData.email;
+        await updateMyProfileData({ formData });
+        router.push(`/internal/search/events?${urlParams}`);
+      } catch (error) {
+        console.log("Error", error);
       }
     },
     [request, router]
@@ -540,7 +586,9 @@ export const AuthContextProvider = ({ children }: any) => {
     isVerifiedToken,
     signin,
     signOut,
-    SSOSignIn,
+    signInSSO,
+    signUpSSO,
+    updateIndustry,
     setError,
     isLoading,
     setUser,

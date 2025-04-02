@@ -27,7 +27,9 @@ import LinkedinIcon from "/public/linkedin.svg";
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
-  const { signup, error, setError } = useAuthContext();
+  const { signup, error, setError, signUpSSO, user, updateIndustry } =
+    useAuthContext();
+
   const { getFilterValue, deleteFilter } = useFilterState();
   const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
@@ -43,7 +45,6 @@ const GtmSignUpForm = () => {
     resolver: zodResolver(SignUpFormSchema),
   });
   const { data: session, status } = useSession();
-  console.log(session, status);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -73,7 +74,11 @@ const GtmSignUpForm = () => {
     sessionStorage.setItem("flow", "signUp");
 
     try {
-      await signup(signUpDTOData);
+      if (user && user?.isNewUser && status === "authenticated") {
+        await updateIndustry(signUpDTOData);
+      } else {
+        await signup(signUpDTOData);
+      }
     } catch (error) {
       console.error("Signup error:", error);
     }
@@ -113,16 +118,16 @@ const GtmSignUpForm = () => {
   }, [errors.email?.message]);
 
   useEffect(() => {
-    if (status === "authenticated" || status === "unauthenticated") {
-      if (session && session.user && session.user?.email) {
-        setValue("email", session.user?.email);
-      }
-      toast({
-        variant: "default",
-        title: "Please Select Industry",
-      });
+    if (status === "authenticated") {
+      signUpSSO();
     }
   }, [status]);
+
+  useEffect(() => {
+    if (user && user.isNewUser) {
+      setValue("email", user.email || "");
+    }
+  }, [user]);
 
   const generateOtp = async () => {
     const dataToSend = {
@@ -200,7 +205,7 @@ const GtmSignUpForm = () => {
         <>
           <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
             <Button
-              onClick={() => signIn("google", { callbackUrl: "/signup" })}
+              onClick={() => signIn("google")}
               variant={"outline"}
               className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
@@ -208,7 +213,7 @@ const GtmSignUpForm = () => {
               <span className="mt-1">Google</span>
             </Button>
             <Button
-              onClick={() => signIn("linkedin", { callbackUrl: "/signup" })}
+              onClick={() => signIn("linkedin")}
               variant={"outline"}
               className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
