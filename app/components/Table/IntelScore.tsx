@@ -3,7 +3,8 @@ import { PieChart, Pie, Sector, ResponsiveContainer, Tooltip } from "recharts";
 
 // Sample Data with Fixed Fill Colors
 const data = [
-  { name: "People", value: 40, fill: "#646BDC" },
+  { name: "Total", value: 0, fill: "#646BDC" },
+  // { name: "People", value: 40, fill: "#646BDC" },
   // { name: "Purpose", value: 20, fill: "#E99CD4" },
   // { name: "Prospect", value: 40, fill: "#9B86D4" },
 ];
@@ -60,12 +61,21 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
 export default function PieChartComponent({
   width = "100px",
   height = "100px",
+  intelScore,
 }: {
   width?: string;
   height?: string;
+  intelScore: any;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  console.log(intelScore);
+  // const intelScore = [
+  //   {
+  //     name: "Total",
+  //     value: 40,
+  //     fill: "#646BDC",
+  //   }
+  // ];
   const onPieEnter = useCallback((_: unknown, index: number) => {
     setActiveIndex(index);
   }, []);
@@ -77,7 +87,7 @@ export default function PieChartComponent({
           <Pie
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
-            data={data}
+            data={intelScore}
             cx="50%"
             cy="50%"
             innerRadius="80%"
@@ -95,7 +105,7 @@ export default function PieChartComponent({
             fontSize="14px"
             fontWeight="bold"
           >
-            {totalValue}
+            {intelScore?.reduce((sum, item) => sum + item.value, 0)}
           </text>
         </PieChart>
       </ResponsiveContainer>

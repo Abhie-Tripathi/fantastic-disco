@@ -82,7 +82,13 @@ const EventCard = memo(
       }
       onHover();
     };
-
+    const intelScoreData = [
+      {
+        name: "Total",
+        value: event?.intelScore,
+        fill: "#646BDC",
+      }
+    ];
     return (
       <Link href={`/internal/event/${event.basic.id}`}>
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -205,7 +211,7 @@ const EventCard = memo(
                 </div>
                 {trackerId&&
                 <div>
-                <IntelScore width="85px" height="80px"/>
+                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
                 </div>
                 }
                 </div>

@@ -384,7 +384,13 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: event?.intelScore,
+      fill: "#646BDC",
+    }
+  ];
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
@@ -893,7 +899,7 @@ const EventListItem = ({
                     {trackerId && 
                     <div className="space-y-4">
                     <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded p-2 min-h-[196px]">
-                      <IntelScore width="80px" height="85px"/>
+                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
                       </div>
                     </div>
                     }
@@ -958,7 +964,7 @@ const EventListItem = ({
                     {trackerId &&
                     <div className="space-y-4">
                     <div className="grid grid-rows-1 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded">
-                      <IntelScore width="80px" height="85px"/>
+                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
                       </div>
                     </div>
                     }

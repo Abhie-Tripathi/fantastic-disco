@@ -70,7 +70,7 @@ export default function EventList({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
+ 
   const handleSort = (newSortValue: string) => {
     setSortBy(newSortValue);
   };
@@ -96,7 +96,13 @@ export default function EventList({
             .filter(Boolean)
             .join(", ")
       : "Venue to be announced";
-
+    const intelScoreData = [
+        {
+          name: "Total",
+          value: event?.intelScore || 0,
+          fill: "#646BDC",
+        }
+    ];
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -219,7 +225,7 @@ export default function EventList({
                 </div>
                 {trackerId&&
                 <div>
-                <IntelScore width="85px" height="80px"/>
+                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
                 </div>
                 }
                 </div>

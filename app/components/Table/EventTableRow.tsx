@@ -125,6 +125,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 }) => {
   
   // console.log(interest);
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: event?.intelScore || 0,
+      fill: "#646BDC",
+    }
+  ];
   
   return (
     <TableRow key={event.basic.id}>
@@ -235,19 +242,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.eventLocation.venue?.displayName ||
+          {event.basic.eventLocation?.name ||
             (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
       {/* City Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.city?.name)}
+        {displayValue(event.basic.eventLocation?.cityName)}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.country?.name)}
+        {displayValue(event.basic.eventLocation?.countryName)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
@@ -504,14 +511,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
           </TableCell>
         )}
-        {trackerId &&
+        {/* {trackerId &&
         <TableCell
         className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
         style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
         >
-        <IntelScore width="100%" height="60px"/>
+        <IntelScore width="100%" height="70px"/>
         </TableCell>
-        }
+        } */}
       {(type==="T_PEOPLE_FINDER" && view!=="bookmarked") &&
       <>
       <TableCell
@@ -541,7 +548,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
         style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
         >
-        <IntelScore width="100%" height="60px"/>
+        <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>
         </TableCell>
       </>
       }
@@ -602,12 +609,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
        {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
        </span>
       </TableCell> */}
-      {/* <TableCell
+      <TableCell
         className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
         style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
         >
-        <IntelScore width="100%" height="60px"/>
-        </TableCell> */}
+        <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>
+        </TableCell>
       </>
       }
       {(type==="T_PRODUCT_KEYWORDS" && view!=="bookmarked")&&
