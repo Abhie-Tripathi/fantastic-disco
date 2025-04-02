@@ -76,7 +76,7 @@ const CarouselComponent = ({ companyData }: CarouselProp) => {
             </CarouselItem>
           )}
 
-          {companyData.stats.upcomingEvents > 0 && (
+          {/* {companyData.stats.upcomingEvents > 0 && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
@@ -85,12 +85,9 @@ const CarouselComponent = ({ companyData }: CarouselProp) => {
                 <span className="text-base font-semibold flex items-center gap-2">
                   {companyData.stats.upcomingEvents}
                 </span>
-                {/* <div className="flex" >
-                  {companyData.stats.upcomingEvents}
-                </div> */}
               </div>
             </CarouselItem>
-          )}
+          )} */}
 
           {companyData.eventExhibited > 0 && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
