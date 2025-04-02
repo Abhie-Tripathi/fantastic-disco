@@ -15,25 +15,38 @@ import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
+import BulkActionPopover from "./BulkActionPopover";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { Button } from "@/components/ui/button";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
   eventType?: string;
   view?: string;
+  showCheckBox?: boolean;
 }
 const EventTable = ({
   source,
   trackerId,
   eventType,
   view,
+  showCheckBox,
 }: EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
+  const [isChecked,setIsChecked]=useState<boolean>(false);
+  const [totalChecked,setTotalChecked] =useState<string[]>([]);
+  const bulkOption=["Attend","Speak"]
   const { localFilters } = useFilterContext();
   const { data } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error: isConfigError,
+  } = useConfiguration.interest();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
@@ -95,10 +108,21 @@ const EventTable = ({
   };
   useEffect(() => {
     if (events?.length > 0) {
+      setTotalChecked([]);
+      setIsChecked(false);
       setUpdatedEvents(events);
     }
   }, [events]);
-
+  const handleCheckboxChange=(event: React.ChangeEvent<HTMLInputElement>)=>{
+    const isChecked=event.target.checked
+    setIsChecked(isChecked)
+    if(isChecked){
+      const resultId=events.map((event)=> event.basic.id)
+      setTotalChecked(resultId);
+    }else{
+      setTotalChecked([]);
+    }
+  }
   useEffect(() => {
     if (!events) return;
 
@@ -183,10 +207,40 @@ const EventTable = ({
         );
     } else return <ZeroState text="No events found" />;
   }
-  console.log(events);
+  const actions = [
+    ...interestConfiguration?.interest || [],
+    ...([{ label: "Bookmark", status: "BOOKMARK" }])
+    // ...(!interests?.bookmark ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
 
   return (
     <div className="w-full flex flex-col h-full">
+      <div className="flex items-center justify-between gap-4 pl-4 pb-2" style={{ height: showCheckBox ? "50px" : "auto" }}>
+      <div className="flex items-center gap-4">
+      {showCheckBox &&
+      <div>
+      <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
+      <div>Select events to perform action</div>
+      </div>
+      }
+      {showCheckBox &&
+      <div className="flex min-w-[130px]">
+      <BulkActionPopover options={actions}/>
+      </div>
+      }
+      </div>
+      <div>
+      {totalChecked.length>0 &&
+      <Button
+      type="submit"
+      className="w-30 self-center"
+      disabled={isLoading}
+      >
+      Submit
+      </Button>
+      }
+      </div>
+      </div>
       <div className="flex-1 overflow-hidden rounded-md border bg-background">
         <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-210px)]"} overflow-auto`}>
           <Table>
@@ -194,6 +248,11 @@ const EventTable = ({
             <TableBody className="overflow-auto">
               {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow
+                  totalChecked={totalChecked}
+                  isChecked={isChecked}
+                  setIsChecked={setIsChecked}
+                  setTotalChecked={setTotalChecked}
+                  showCheckBox={showCheckBox}
                   global={view}
                   view={query.eventType}
                   setEventId={setEventId}

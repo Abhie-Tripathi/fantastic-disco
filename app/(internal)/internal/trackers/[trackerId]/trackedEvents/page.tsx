@@ -9,6 +9,7 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import "chart.js/auto";
+import BulkImport from "@/components/bulk-import";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from '@/public/trackerNullState.svg';
 const Trackers = React.lazy(
@@ -44,7 +45,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import EventCalendar from "@/components/eventCalendar";
 import { isEventeli } from "@/config";
 import SortDropdown from "@/components/search/sortDropdown";
-import { NotebookPen, Share2 } from "lucide-react";
+import {NotebookPen, Share2} from "lucide-react";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -83,6 +84,7 @@ const Page = ({ params }: { params: any }) => {
   const router = useRouter();
   const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
+  const [bulkActions,setBulkActions]=useState(["Take Action"])
   // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType=searchParams.get("view");
@@ -104,6 +106,7 @@ const Page = ({ params }: { params: any }) => {
       setIsNewCall(true);
   }, [editTrue])
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
+  const [showCheckBox,setShowCheckBox]=useState<boolean>(false);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
   const [sendInvite,setSendInvite]=useState(false);
@@ -508,7 +511,7 @@ if (!share) {
     {/* <SideNav/> */}
     {/* {(isLoading && view==="list") && <Loading/>} */}
     <Suspense fallback={<p>Loading feed...</p>}>
-      <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
+      <div className="flex gap-2 mt-[54px] mb-[24px] flex-col w-[100%]">
         <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
         {/* <div className={styles.new}></div> */}
           <div className="flex gap-2">
@@ -695,6 +698,8 @@ if (!share) {
           </Button>
           </Link>
           <SortDropdown />
+          <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>
+          
           </div>
         </div>
 
@@ -709,7 +714,7 @@ if (!share) {
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
-          <Table source="tracker" trackerId={trackerId} eventType={active || ""}/>
+          <Table source="tracker" trackerId={trackerId} eventType={active || ""} showCheckBox={showCheckBox}/>
           </Suspense>
           </div>
         )}
@@ -742,7 +747,7 @@ if (!share) {
     ) : ( */}
       <>
         {/* <Alerts /> */}
-        <List source="tracker" trackerId={params.trackerId}/>
+        <List source="tracker" trackerId={params.trackerId} showCheckBox={showCheckBox}/>
       </>
     {/* )} */}
   </div>

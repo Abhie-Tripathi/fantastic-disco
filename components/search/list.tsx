@@ -117,15 +117,19 @@ interface EventListProps {
   trackerId?: string;
   source?: string;
   view?: string;
+  showCheckBox?: boolean;
 }
 
 export default function EventAccordion({
   source,
   trackerId,
   view,
+  showCheckBox,
 }: EventListProps) {
   const searchParams = useSearchParams();
   const { data: trackerData } = useTrackerContext();
+  const [isChecked,setIsChecked]=useState<boolean>(false);
+  const [totalChecked,setTotalChecked] =useState<string[]>([]);
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()

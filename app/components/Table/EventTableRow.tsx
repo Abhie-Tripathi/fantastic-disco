@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +35,11 @@ interface EventTableRowProps {
   global?: string;
   view?: string;
   localFilters: Filters;
+  showCheckBox?:boolean;
+  totalChecked:string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>
+  isChecked:boolean;
+  setIsChecked:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function getForecastedStatus(data: any) {
@@ -124,7 +129,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setInterest,
   view,
   global,
+  showCheckBox,
+  totalChecked,
+  isChecked,
+  setIsChecked,
+  setTotalChecked
 }) => {
+  console.log("event table row called");
   const { getFilterValue } = useFilterState();
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
@@ -137,9 +148,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
     .filter(Boolean);
+  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-
+    const handleCheckboxChange = (event:React.ChangeEvent<HTMLInputElement>, id:string) => {
+      if (event.target.checked) {
+        console.log(totalChecked);
+        
+        if(totalChecked.length===itemsPerPage-1) setIsChecked(!isChecked)
+        setTotalChecked?.((prev) => [...prev, id]);
+      } else {
+        if(isChecked) setIsChecked(!isChecked);
+        setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+      }
+    };
+    
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -148,6 +171,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         style={{ zIndex: 0 }}
       >
         <div className="flex gap-4">
+          {showCheckBox &&
+          <input type="checkbox" checked={totalChecked.includes(event.basic.id)} onChange={(e)=>handleCheckboxChange(e,event.basic.id)}/>
+          }
           {/* Logo Section */}
           <div className="flex-shrink-0">
             {event.basic.logoUrl ? (
