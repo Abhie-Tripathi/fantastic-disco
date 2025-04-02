@@ -48,6 +48,8 @@ import EventRankingSelector from "@/components/search/advancedFilters/eventRanki
 import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
 import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
+import Seniority from "@/app/components/prospect/Filters/seniority";
+import Department from "@/app/components/prospect/Filters/department";
 import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductTopics from "@/components/search/advancedFilters/product&Topics";
@@ -213,7 +215,7 @@ const gtmFilters: {
         {
           id: "category",
           component: "CategorySelector",
-          filterName: "companyCategoryIds",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -222,15 +224,16 @@ const gtmFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        {
-          id: "product-topics",
-          component: "ProductTopics",
-          filterName: "companyProductIds",
-          enabled: true,
-        },
+        // {
+        //   id: "product-topics",
+        //   component: "ProductTopics",
+        //   filterName: "eventProductIds",
+        //   enabled: true,
+        // },
         {
           id: "companyType",
           component: "CompanyType",
+          filterName: "eventParticipationType",
           enabled: true,
         },
         {
@@ -264,10 +267,22 @@ const gtmFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
           filterName: "userJobTitle",
           enabled: true,
         },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        }
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -290,13 +305,20 @@ const gtmFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
           filterName: "userJobTitle",
           enabled: true,
         },
         {
           id: "category",
           component: "CategorySelector",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -305,11 +327,11 @@ const gtmFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        {
-          id: "product-topics",
-          component: "ProductTopics",
-          enabled: true,
-        },
+        // {
+        //   id: "product-topics",
+        //   component: "ProductTopics",
+        //   enabled: true,
+        // },
         {
           id: "people-followers",
           component: "EventFollowers",
@@ -479,7 +501,7 @@ const geoFilters: {
         {
           id: "category",
           component: "CategorySelector",
-          filterName: "companyCategoryIds",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -488,15 +510,16 @@ const geoFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        {
-          id: "product-topics",
-          component: "ProductTopics",
-          filterName: "companyProductIds",
-          enabled: true,
-        },
+        // {
+        //   id: "product-topics",
+        //   component: "ProductTopics",
+        //   filterName: "eventProductIds",
+        //   enabled: true,
+        // },
         {
           id: "companyType",
           component: "CompanyType",
+          filterName: "eventParticipationType",
           enabled: true,
         },
         {
@@ -530,10 +553,22 @@ const geoFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
           filterName: "userJobTitle",
           enabled: true,
         },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        }
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -556,13 +591,20 @@ const geoFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
           filterName: "userJobTitle",
           enabled: true,
         },
         {
           id: "category",
           component: "CategorySelector",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -571,11 +613,11 @@ const geoFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        {
-          id: "product-topics",
-          component: "ProductTopics",
-          enabled: true,
-        },
+        // {
+        //   id: "product-topics",
+        //   component: "ProductTopics",
+        //   enabled: true,
+        // },
         {
           id: "people-followers",
           component: "EventFollowers",
@@ -634,6 +676,8 @@ const getFilterComponent = (componentName: string) => {
     EstablishedYear,
     Industry,
     CompanyType,
+    Seniority,
+    Department,
   };
 
   return components[componentName];
