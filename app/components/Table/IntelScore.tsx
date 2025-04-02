@@ -4,8 +4,8 @@ import { PieChart, Pie, Sector, ResponsiveContainer, Tooltip } from "recharts";
 // Sample Data with Fixed Fill Colors
 const data = [
   { name: "People", value: 40, fill: "#646BDC" },
-  { name: "Purpose", value: 20, fill: "#E99CD4" },
-  { name: "Prospect", value: 40, fill: "#9B86D4" },
+  // { name: "Purpose", value: 20, fill: "#E99CD4" },
+  // { name: "Prospect", value: 40, fill: "#9B86D4" },
 ];
 
 const totalValue = data.reduce((sum, item) => sum + item.value, 0);
@@ -80,12 +80,12 @@ export default function PieChartComponent({
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius="70%"
+            innerRadius="80%"
             outerRadius="100%"
             dataKey="value"
             onMouseEnter={onPieEnter}
           />
-          <Tooltip content={<CustomTooltip />} />
+          {/* <Tooltip content={<CustomTooltip />} /> */}
           <text
             x="50%"
             y="50%"
