@@ -116,7 +116,7 @@ const Dashboard = () => {
   };
 
   const fetchTrackerData = async () => {
-    const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true&type=trackers`);
+    const trackerData: any = await getTrackers(`limit=4&offset=0&type=trackers`);
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
       const locations = Object.values(

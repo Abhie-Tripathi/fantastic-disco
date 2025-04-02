@@ -17,27 +17,28 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
 const filterData = [
   { id: "organizer", label: "Organizer", isEnabled: true },
   { id: "exhibitor", label: "Exhibitor", isEnabled: true },
   { id: "sponsor", label: "Sponsor", isEnabled: true },
-  { id: "speaker", label: "Speaker", isEnabled: true },
-  { id: "attendee", label: "Attendee", isEnabled: true },
+  // { id: "speaker", label: "Speaker", isEnabled: true },
+  { id: "visitor", label: "Attendee", isEnabled: true },
 ];
 
 interface CompanyTypeProps {
   variant?: "accordion" | "popover";
+  filterName: keyof Filters;
 }
 
-export default function CompanyType({ variant = "popover" }: CompanyTypeProps) {
+export default function CompanyType({ filterName, variant = "popover" }: CompanyTypeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("companyType").split(",").filter(Boolean),
+    () => getLocalFilterValue(filterName).split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -45,7 +46,7 @@ export default function CompanyType({ variant = "popover" }: CompanyTypeProps) {
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-    setLocalFilter("companyType", newRanges.join(","));
+    setLocalFilter(filterName, newRanges.join(","));
   };
 
   const triggerContent = (

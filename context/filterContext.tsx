@@ -196,6 +196,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         pathname === "/internal/search/events" &&
         !params.active_gte &&
         !params.active_lte
+        && !params.eventIds
       ) {
         params.active_gte = startOfMonth(new Date()).toISOString().split('T')[0];
         params.active_lte = endOfMonth(addMonths(new Date(), 3)).toISOString().split('T')[0];
@@ -281,7 +282,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const clearLocalFilters = useCallback(() => {
     const params = new URLSearchParams();
 
-    // Preserve the date range when clearing filters
     params.set("active_gte", startOfMonth(new Date()).toISOString().split('T')[0]);
     params.set(
       "active_lte",
@@ -368,7 +368,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-
+  
   const replaceLocalFilter = useCallback(
     (oldKey: keyof Filters, newKey: keyof Filters, newValue: string) => {
       setLocalFilters((prev) => {
