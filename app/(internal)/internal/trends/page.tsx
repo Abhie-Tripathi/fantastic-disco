@@ -421,7 +421,8 @@ const EventTrends = () => {
                       Category Required
                     </p>
                     <p className="text-xs text-destructive/80">
-                      Please select at least one category to view the treemap visualization
+                      Please select at least one category to view the treemap
+                      visualization
                     </p>
                   </div>
                 </div>
@@ -443,14 +444,14 @@ const EventTrends = () => {
                   "Apply Filters"
                 )}
               </Button>
-              <Button
-                variant="outline"
-                className="w-full h-10"
-                onClick={() => setShowNotificationForm(true)}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Trend
-              </Button>
+
+              {activeView !== "treemap" && (
+                <SaveTrend
+                  searchParams={searchParams}
+                  isLoading={isLoading}
+                  setShowNotificationForm={setShowNotificationForm}
+                />
+              )}
             </div>
           </div>
         </div>
