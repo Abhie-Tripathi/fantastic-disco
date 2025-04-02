@@ -53,6 +53,7 @@ import Department from "@/app/components/prospect/Filters/department";
 import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductTopics from "@/components/search/advancedFilters/product&Topics";
+import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
 import MultiSelectSearchBar from "@/components/search/searchbar";
 import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
 import { Switch } from "@/components/ui/switch";
@@ -224,12 +225,12 @@ const gtmFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        // {
-        //   id: "product-topics",
-        //   component: "ProductTopics",
-        //   filterName: "eventProductIds",
-        //   enabled: true,
-        // },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
         {
           id: "companyType",
           component: "CompanyType",
@@ -327,11 +328,12 @@ const gtmFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        // {
-        //   id: "product-topics",
-        //   component: "ProductTopics",
-        //   enabled: true,
-        // },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
         {
           id: "people-followers",
           component: "EventFollowers",
@@ -510,12 +512,12 @@ const geoFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        // {
-        //   id: "product-topics",
-        //   component: "ProductTopics",
-        //   filterName: "eventProductIds",
-        //   enabled: true,
-        // },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
         {
           id: "companyType",
           component: "CompanyType",
@@ -613,11 +615,12 @@ const geoFilters: {
           filterName: "companyLocationIds",
           enabled: true,
         },
-        // {
-        //   id: "product-topics",
-        //   component: "ProductTopics",
-        //   enabled: true,
-        // },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
         {
           id: "people-followers",
           component: "EventFollowers",
@@ -648,6 +651,7 @@ const getFilterComponent = (componentName: string) => {
     CategorySelector,
     EventFormatSelector,
     ProductTopics,
+    ProductTopicsNew,
     LocationSelector,
     DateRangeSelector,
     StatusSelector,
