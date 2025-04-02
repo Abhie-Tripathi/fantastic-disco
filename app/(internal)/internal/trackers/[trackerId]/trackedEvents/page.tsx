@@ -99,6 +99,7 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
+  const [activeCount,setActiveCount]=useState<number>(0);
   useEffect(() => {
     if (editTrue)
       setIsNewCall(true);
@@ -268,6 +269,13 @@ const Page = ({ params }: { params: any }) => {
     
     setLoading(true);
   }, [data, savedEventCount]);
+  useEffect(()=>{
+    const res = eventCount.find((count) => count.type.toLowerCase() === active);
+    console.log(res)
+    
+    setActiveCount(res?.totalCount || 0);
+    
+  },[active, eventCount])
   // useEffect(()=>{
   //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
   // },[typeOfEvent])
@@ -448,19 +456,6 @@ const Page = ({ params }: { params: any }) => {
     
     trackerLoc=ids;
   }
-  
-const activeVal =
- active ===
-  "Active Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
-    : active ===
-      "New Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
-    : active ===
-      "Expired Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
-    : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-  console.log(data);
   useEffect(() => {
     const handlePopState = (event: any) => {
         if (event.state && event.state.shareOpen) {
@@ -502,6 +497,7 @@ if (!share) {
   closeShareModal();
 }
 };
+console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -751,7 +747,7 @@ if (!share) {
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
-              {(Number(activeVal)===0 && active==="Saved Events")?
+              {(Number(activeCount)===0 && active==="Saved Events")?
               <div className="px-10 py-5">
                 <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
@@ -791,7 +787,7 @@ if (!share) {
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeVal}/>
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount}/>
             </Suspense>
           </div>
         )}
