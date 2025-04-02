@@ -82,13 +82,20 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       })
   }
   },[searchValue])
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&refresh=true`);
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&type=trackers`);
     
-    if(result){
+    if(result && isMounted.current){
       console.log(result);
-      
+      setDataPresent(true);
         setAllTracker(result?.trackers);   
             
       setSingleTrackerData(result.trackers[0]);

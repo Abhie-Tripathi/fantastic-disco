@@ -97,7 +97,7 @@ export interface BaseFilterValue {
 
 export interface CreateFilterValue extends BaseFilterValue {
   locationIds?: string;
-  viewBound?: string;
+  viewBound?: ViewBound;
   eventTypes: string;
   columns: string;
 }

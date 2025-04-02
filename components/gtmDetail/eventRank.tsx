@@ -1,12 +1,11 @@
 "use client";
 import { useFilterContext } from "@/context/filterContext";
-import {
-  Event,
-  OverallRankingsDetail,
-  RankingData
-} from "@/types/events";
+import { Event, OverallRankingsDetail, RankingData } from "@/types/events";
 import { format } from "date-fns";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import {
+  ArrowDown, ArrowLeftIcon,
+  ArrowRightIcon, ArrowUp
+} from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import "swiper/css";
@@ -127,6 +126,10 @@ const EventRankCarousel = ({
             precedingEvents.map((event) => {
               const { id, name, rank, startDateTime, endDateTime, location } =
                 event;
+              const [region, country] = [
+                location?.STATE?.name || location?.CITY?.name,
+                location?.COUNTRY?.name,
+              ].filter(Boolean);
               return (
                 <SwiperSlide
                   className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]"
@@ -135,7 +138,7 @@ const EventRankCarousel = ({
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/search/${id}`}
+                    href={`/internal/event/${id}`}
                     className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3 dark:border-[var(--border-color)]"
                   >
                     <p className="text-xl font-semibold p-2">
@@ -152,7 +155,17 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {`${location.STATE?.name}, ${location.COUNTRY?.name}`}
+                          {/* {[
+                            location?.STATE?.name || location?.CITY?.name,
+                            location?.COUNTRY?.name,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")} */}
+                          {region && country
+                            ? region === country
+                              ? region
+                              : `${region}, ${country}`
+                            : region || country || ""}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
@@ -167,7 +180,7 @@ const EventRankCarousel = ({
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href={`/search/${eventId}`}
+              href={`/internal/event/${eventId}`}
               className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
             >
               <p className="text-xl font-semibold p-2">
@@ -184,7 +197,13 @@ const EventRankCarousel = ({
                 </Text>
                 <div className="flex justify-between gap-4">
                   <Text color="secondary" variant="noMargin">
-                    {`${STATE?.name}, ${COUNTRY?.name}`}
+                    {STATE?.name || COUNTRY?.name
+                      ? STATE?.name === "Online" || COUNTRY?.name === "Online"
+                        ? [STATE?.name || COUNTRY?.name].filter(Boolean)
+                        : [STATE?.name, COUNTRY?.name]
+                            .filter(Boolean)
+                            .join(", ")
+                      : ""}
                   </Text>
                   <Text color="secondary" variant="noMargin">
                     {format(new Date(startDateTime), "MMM dd")}
@@ -196,8 +215,12 @@ const EventRankCarousel = ({
           {succeedingEvents &&
             succeedingEvents.length > 0 &&
             succeedingEvents.map((event) => {
-              const { id, name, rank, startDateTime, endDateTime, location } =
+              const { id, name, rank, startDateTime, location } =
                 event;
+              const [region, country] = [
+                location?.STATE?.name || location?.CITY?.name,
+                location?.COUNTRY?.name,
+              ].filter(Boolean);
               return (
                 <SwiperSlide
                   className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]"
@@ -206,7 +229,7 @@ const EventRankCarousel = ({
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/search/${id}`}
+                    href={`/internal/event/${id}`}
                     className="flex flex-row gap-2 border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                   >
                     <p className="text-xl font-semibold p-2">
@@ -223,7 +246,11 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {`${location.STATE?.name}, ${location.COUNTRY?.name}`}
+                          {region && country
+                            ? region === country
+                              ? region
+                              : `${region}, ${country}`
+                            : region || country || ""}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
@@ -375,7 +402,7 @@ export const EventRank = ({
   );
 
   const swiperRankComponents = (
-    <div className="hidden max-[1400px]:flex max-[1400px]: justify-center w-full">
+    <div className="hidden max-[1400px]:flex max-[1400px]:justify-center w-full">
       <Swiper
         className="w-full h-full"
         modules={[Navigation, Pagination]}
@@ -426,10 +453,10 @@ export const EventRank = ({
           </SwiperSlide>
         )}
         <div className="custom-prev-ranking flex justify-center items-center absolute left-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
-          &#8592;
+          <ArrowLeftIcon className="w-4 h-4" />
         </div>
         <div className="custom-next-ranking flex justify-center items-center absolute right-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
-          &#8594;
+           <ArrowRightIcon className="w-4 h-4" />
         </div>
         <div className="custom-pagination flex justify-center mt-4"></div>
       </Swiper>

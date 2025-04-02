@@ -8,7 +8,7 @@ import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
-import { isEventeli } from '@/config';
+import { BASE_URL, isEventeli } from '@/config';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -93,7 +93,7 @@ export const useTrackerServices = () => {
       console.log(params);
       
       const response = await api.request<EventResponse>(
-        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
+        `${BASE_URL}/me/account/saved-events?limit=${params.limit|| 10}&offset=${params.offset || 0}`,
         {
           method: "GET"
         }
@@ -105,7 +105,7 @@ export const useTrackerServices = () => {
    
     const getTrackerDetail=(trackerId:string, params?:string):Promise<Tracker| undefined>=>{
       return api.request(
-        `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}?refresh=true`,
+        `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}`,
       );
     }
     const delTracker=(trackerId: string)=>{
@@ -288,7 +288,7 @@ export const useTrackerServices = () => {
         return response;
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
@@ -303,7 +303,7 @@ export const useTrackerServices = () => {
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
       // console.log(type);
-      const newParams=new URLSearchParams(searchParams);
+      const newParams=new URLSearchParams(searchParams.toString());
       const type=newParams.get("type");
       newParams.delete("type");
       const entries = Array.from(newParams.entries());

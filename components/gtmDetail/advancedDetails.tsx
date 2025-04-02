@@ -18,7 +18,7 @@ import { Event, EventEditionDetailResponse } from "@/types/events";
 import { format } from "date-fns";
 import { capitalize } from "lodash";
 import { CircleSlash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Heading } from "../eventDetail/heading";
@@ -51,6 +51,15 @@ const CarouselComponent = ({
   const [api, setApi] = useState<CarouselApi>();
   const [isSlidingEnabled, setIsSlidingEnabled] = useState<boolean>();
 
+  const isFutureForecastedDate = useMemo(() => {
+    if (rehostDate) {
+      const forecastDate = new Date(rehostDate);
+      const today = new Date();
+      return forecastDate > today;
+    }
+    return false;
+  }, [rehostDate]);
+
   const hasMaturityOption =
     maturityLevels &&
     maturityLevels.options.find(
@@ -60,7 +69,7 @@ const CarouselComponent = ({
   const hasFrequencyOption =
     frequencies &&
     frequencies.options.find(
-      (option: { id: string }) => option.id === frequency
+      (option: { id: string }) => option.id === frequency?.toLocaleLowerCase()
     );
 
   const hasSeriesEvent =
@@ -233,7 +242,7 @@ const CarouselComponent = ({
                 <div className="flex gap-4 flex-wrap">
                   {isFrequencyEnabled ? (
                     frequency ? (
-                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
+                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-28 text-center">
                         {capitalize(frequency)}
                       </span>
                     ) : (
@@ -249,7 +258,7 @@ const CarouselComponent = ({
               </div>
             </CarouselItem>
           )}
-          {rehostDate && (
+          {rehostDate && isFutureForecastedDate && (
             <CarouselItem
               className={`relative ${
                 isSlidingEnabled
@@ -262,7 +271,7 @@ const CarouselComponent = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                        Rehost Month
+                        Forecasted
                       </h1>
                     </TooltipTrigger>
                     <TooltipContent
@@ -321,7 +330,7 @@ const CarouselComponent = ({
                   <>
                     {isBranded && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
+                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-32 ${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
                       >
@@ -330,7 +339,7 @@ const CarouselComponent = ({
                     )}
                     {isSeries && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
+                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-32${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
                       >

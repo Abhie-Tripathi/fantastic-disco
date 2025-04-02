@@ -8,14 +8,15 @@ import WorldMap from "../prospectDetail/worldMap";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Event } from "@/types/events";
+import { useState } from "react";
+import { useCompanyService } from "@/services/companyService";
 
 interface Props {
-  companyId: string;
-  upcomingEvents: (Event & { association: string })[];
+  userId: string;
+  upcomingEventsData: (Event & { association: string })[];
   upcomingEventsCount: number;
-  pastEvents: (Event & { association: string })[];
+  pastEventsData: (Event & { association: string })[];
   pastEventsCount: number;
-  loadMoreEvents: any;
 }
 
 const getMonthFromDate = (dateString: string) => {
@@ -45,13 +46,37 @@ function getDayFromDate(dateString: string) {
 }
 
 export const EventCalendar = ({
-  companyId,
-  upcomingEvents,
+  userId,
+  upcomingEventsData,
   upcomingEventsCount,
-  pastEvents,
+  pastEventsData,
   pastEventsCount,
-  loadMoreEvents,
+  // loadMoreEvents,
 }: Props) => {
+
+  const [pastEvents, setPastEvents] = useState<any[]>(pastEventsData);
+
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>(upcomingEventsData);
+
+  const { getUserEvents } = useCompanyService();
+
+  const loadMoreEvents = async (type: string) => {
+    if (type === "past") {
+      const moreEvents = await getUserEvents(
+        userId,
+        "past",
+        pastEvents.length
+      );
+      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+    } else if (type === "upcoming") {
+      const moreEvents = await getUserEvents(
+        userId,
+        "upcomming",
+        upcomingEvents.length
+      );
+      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
+    }
+  };
 
   const activeTab = upcomingEventsCount > 0 ? "upcoming" : "past";
   return (
@@ -134,10 +159,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                      <span className={`${event.basic.status === "postponed" || event.basic.status === "cancelled" ? "line-through" : ""}`} >
                         {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event.basic.status === "CANCELLED" && (
+                      {event.basic.status === "cancelled" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -145,7 +170,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event.basic.status === "POSTPONED" && (
+                      {event.basic.status === "postponed" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"
@@ -229,10 +254,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                      <span className={`${event.basic.status === "postponed" || event.basic.status === "cancelled" ? "line-through" : ""}`} >
                         {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event.basic.status === "CANCELLED" && (
+                      {event.basic.status === "cancelled" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -240,7 +265,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event.basic.status === "POSTPONED" && (
+                      {event.basic.status === "postponed" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"
@@ -304,7 +329,7 @@ export const EventCalendar = ({
           </Text>
         </div>
 
-        <WorldMap companyId={companyId} source={"userDetail"} />
+        <WorldMap companyId={userId} source={"userDetail"} />
 
         {/* <div className="flex justify-between">
           <Text

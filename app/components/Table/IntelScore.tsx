@@ -8,7 +8,11 @@ const data = [
   // { name: "Purpose", value: 20, fill: "#E99CD4" },
   // { name: "Prospect", value: 40, fill: "#9B86D4" },
 ];
-
+interface IntelValue{
+  name:string;
+  value:number;
+  fill:string;
+}
 const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
 // Function to render the active shape (hover effect)
@@ -65,10 +69,11 @@ export default function PieChartComponent({
 }: {
   width?: string;
   height?: string;
-  intelScore: any;
+  intelScore: IntelValue[];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  console.log(intelScore);
+  // console.log(intelScore);
+  const totalValue = intelScore.reduce((sum, item) => sum + item.value, 0);
   // const intelScore = [
   //   {
   //     name: "Total",
@@ -84,17 +89,31 @@ export default function PieChartComponent({
     <div style={{ width, height }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-          <Pie
-            activeIndex={activeIndex}
-            activeShape={renderActiveShape}
-            data={intelScore}
+        {totalValue > 0 ? (
+            // Render Pie if values exist
+            <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
+              data={intelScore}
+              cx="50%"
+              cy="50%"
+              innerRadius="80%"
+              outerRadius="100%"
+              dataKey="value"
+              onMouseEnter={onPieEnter}
+            />
+          ) : (
+            // Render Empty Circle if total value is 0
+            <circle
             cx="50%"
             cy="50%"
             innerRadius="80%"
             outerRadius="100%"
-            dataKey="value"
-            onMouseEnter={onPieEnter}
-          />
+              stroke="#E0E0E0"
+              fill="none"
+              strokeWidth={2}
+            />
+          )}
           {/* <Tooltip content={<CustomTooltip />} /> */}
           <text
             x="50%"
@@ -105,7 +124,7 @@ export default function PieChartComponent({
             fontSize="14px"
             fontWeight="bold"
           >
-            {intelScore?.reduce((sum, item) => sum + item.value, 0)}
+            {intelScore?.reduce((sum:number, item:IntelValue) => sum + item.value, 0)}
           </text>
         </PieChart>
       </ResponsiveContainer>

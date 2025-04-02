@@ -43,7 +43,7 @@ export default function EstimatedEconomicSelector() {
       ? [...currentShow, "economicImpact"]
       : currentShow.filter((item) => item !== "economicImpact");
 
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
 
     // Update the 'show' parameter
     if (newShow.length > 0) {

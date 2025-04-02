@@ -24,16 +24,9 @@ import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useConfigurationService } from "@/services/configurationService";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { MembershipData } from "@/types/user";
+import { isEventeli } from "@/config";
+import { TrackerData } from "@/types/dashboard";
 
-interface TrackerData {
-  id: string;
-  location: string[];
-  name: string;
-  newCount: number;
-  expiredCount: number;
-  activeCount: number;
-  type: string;
-}
 interface OutreachLastChat {
   eventName: string;
   status: string;
@@ -51,7 +44,6 @@ interface ProfileData {
   department: string;
 }
 const Dashboard = () => {
-
   let role = "sa";
   let outreach = role === "sa";
   let prospect = true;
@@ -75,7 +67,7 @@ const Dashboard = () => {
     enquiryId: "",
     enquiryStatus: "",
   });
-  const [value, setValue] = useState<string>("empty");
+  const [value, setValue] = useState<string>("");
   const [membershipData, setMembershipData] = useState<MembershipData>();
   const [profileData, setProfileData] = useState<ProfileData>({
     name: "",
@@ -124,15 +116,46 @@ const Dashboard = () => {
   };
 
   const fetchTrackerData = async () => {
-    const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true`);
+    const trackerData: any = await getTrackers(`limit=4&offset=0&type=trackers`);
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
-      const locations = Object.values(tracker.filterValues?.locationIds || {}).map((item: any) => item.displayName);
-      const value: TrackerData = { id: tracker.id, name: tracker.name, newCount: tracker.groupedEventsCount.new, activeCount: tracker.groupedEventsCount.active, expiredCount: tracker.groupedEventsCount.past, location: locations, type: tracker.type }
-      fetchedTrackers.push(value)
-    })
-    setTrackerData(fetchedTrackers)
-  }
+      const locations = Object.values(
+        tracker.filterValues?.locationIds || {}
+      ).map((item: any) => item.displayName);
+      let transformedData = [];
+
+      if (isEventeli) {
+        transformedData = Object.keys(tracker?.groupedEventsCount).map(
+          (key) => ({
+            type: key.charAt(0).toUpperCase() + key.slice(1),
+            totalCount: tracker?.groupedEventsCount[key].total || 0,
+            newCount: tracker?.groupedEventsCount[key].new || 0,
+          })
+        );
+      } else {
+        transformedData = Object.entries(tracker?.groupedEventsCount || {}).map(
+          ([key, value]) => ({
+            type: key.charAt(0).toUpperCase() + key.slice(1),
+            totalCount: Number(value) || 0,
+            newCount: 0,
+          })
+        );
+      }
+
+      const value: TrackerData = {
+        id: tracker.id,
+        name: tracker.name,
+        newCount: tracker.groupedEventsCount.new,
+        activeCount: tracker.groupedEventsCount.active,
+        expiredCount: tracker.groupedEventsCount.past,
+        location: locations,
+        type: tracker.type,
+        eventsCount: transformedData,
+      };
+      fetchedTrackers.push(value);
+    });
+    setTrackerData(fetchedTrackers);
+  };
   // useEffect(()=>{
   //   console.log("tracker data," , trackerData)
   // },[trackerData])
@@ -154,15 +177,17 @@ const Dashboard = () => {
 
   const fetchOutreachMessage = async () => {
     const data = await getLatestComment();
-    const messageData: OutreachLastChat = {
-      eventName: data.event.name,
-      status: data.enquiry.enquiryStatusLabel,
-      comment: data.comment.content,
-      eventId: data.event.id,
-      enquiryId: data.enquiry.enquiryId,
-      enquiryStatus: data.enquiry.enquiryStatus,
-    };
-    setOutreachChat(messageData);
+    if (data && data.comment && data.event && data.enquiry) {
+      const messageData: OutreachLastChat = {
+        eventName: data.event.name,
+        status: data.enquiry.enquiryStatusLabel,
+        comment: data.comment.content,
+        eventId: data.event.id,
+        enquiryId: data.enquiry.enquiryId,
+        enquiryStatus: data.enquiry.enquiryStatus,
+      };
+      setOutreachChat(messageData);
+    }
   };
 
   // const fetchRecentSearch = async () => {
@@ -238,6 +263,7 @@ const Dashboard = () => {
         fetchProfileData(),
         fetchMembershipData(),
       ]);
+      setLoading(false);
     };
 
     fetchData();
@@ -258,23 +284,25 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Simulate a delay for loading state (optional)
-    const timer = setTimeout(() => {
-      // Check if any state has meaningful data
-      if (
-        !isCoordinateEmpty(coordinateData) ||
-        !isPromoteEmpty(promoteData) ||
-        trackerData.length > 0 ||
-        !isOutreachEmpty(outreachData)
-      ) {
-        setValue("filled");
-      } else {
-        setValue("empty");
-      }
-      setLoading(false); // Set loading to false after the computation
-    }, 500); // Adjust delay if needed
+    if (!loading) {
+      // Simulate a delay for loading state (optional)
+      const timer = setTimeout(() => {
+        // Check if any state has meaningful data
+        if (
+          !isCoordinateEmpty(coordinateData) ||
+          !isPromoteEmpty(promoteData) ||
+          trackerData.length > 0 ||
+          !isOutreachEmpty(outreachData)
+        ) {
+          setValue("filled");
+        } else {
+          setValue("empty");
+        }
+        setLoading(false); // Set loading to false after the computation
+      }, 500); // Adjust delay if needed
 
-    return () => clearTimeout(timer); // Cleanup timeout on component unmount
+      return () => clearTimeout(timer); // Cleanup timeout on component unmount
+    }
   }, [coordinateData, promoteData, trackerData, outreachData]);
 
   return (

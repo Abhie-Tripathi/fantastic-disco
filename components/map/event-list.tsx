@@ -30,6 +30,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import IntelScore from "@/app/components/Table/IntelScore";
+import { viewBound } from "@/types/events/dto/event-query.dto";
 
 const EventCard = memo(
   ({
@@ -57,7 +58,7 @@ const EventCard = memo(
     }, [mapRef]);
 
     const address = event.basic.eventLocation
-      ? event.basic.eventLocation.city?.name === "Online"
+      ? event.basic.format === "online"
         ? "Online"
         : [
             event.basic.eventLocation?.venue?.name || "TBA",
@@ -85,8 +86,8 @@ const EventCard = memo(
     const intelScoreData = [
       {
         name: "Total",
-        value: event?.intelScore,
-        fill: "#646BDC",
+        value: event?.intelScore || 0,
+        fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
       }
     ];
     return (
@@ -336,7 +337,7 @@ function EventList({
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
-  const [sortBy, setSortBy] = useState("start");
+  const [sortBy, setSortBy] = useState("-score");
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -402,7 +403,7 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      params.set("viewBound", JSON.stringify(viewBound));
+      if (params.get("locationIds")) params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 
@@ -410,7 +411,7 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", source==="tracker"?eventType:filteredParams.toString(), currentPage, sortBy],
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
@@ -422,7 +423,7 @@ function EventList({
           )
         : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -561,7 +562,6 @@ function EventList({
         </div>
       );
     }
-    console.log(currentPage);
 
     return (
       <>

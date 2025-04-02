@@ -100,25 +100,38 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         return location?.displayName;
       });
     setLocations(eventLocation);
+    const CountValues = {
+      geo : ['social','business','unattended'],
+      gtm : ['active','past', 'new']
+    }
     if(isEventeli){
-    const transformedData = Object.keys(item?.groupedEventsCount).map((key) => ({
-      type: key.charAt(0).toUpperCase() + key.slice(1),
-      totalCount: item?.groupedEventsCount[key].total || 0,
-      newCount: item?.groupedEventsCount[key].new || 0,
-      // logo: key === "business" ? "Building" : key === "past" ? Vectore8 : Vectore6,
-    }));
-    setEventCount(transformedData);
-  }else{
-    const transformedData = Object.entries(item?.groupedEventsCount || {}).map(([key, value]) => {
-      const numericValue = Number(value) || 0;
-    
+    const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: numericValue,
-        newCount: (key === "new" ? numericValue : 0),
+        totalCount :  item?.groupedEventsCount[key].total || 0,
+        newCount : item?.groupedEventsCount[key].new || 0
+      }
+    })
+    setEventCount(transformedData);
+  }else{
+    const transformedData =  CountValues.gtm.map((key)=>{
+      return {
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount :  item?.groupedEventsCount[key] || 0,
+        newCount : item?.groupedEventsCount[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
-      };
-    });
+      }
+    })
+    // const transformedData = Object.entries(item?.groupedEventsCount || {}).map(([key, value]) => {
+    //   const numericValue = Number(value) || 0;
+    
+    //   return {
+    //     type: key.charAt(0).toUpperCase() + key.slice(1),
+    //     totalCount: numericValue,
+    //     newCount: (key === "new" ? numericValue : 0),
+    //     logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
+    //   };
+    // });
     setEventCount(transformedData);
   }
     
@@ -168,7 +181,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
           {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
           <div  className={`${
             locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)]`}>{locations && locations[0]}</div>
+            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations && locations[0]}</div>
           {locations?.length > 1 &&  (
             <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}

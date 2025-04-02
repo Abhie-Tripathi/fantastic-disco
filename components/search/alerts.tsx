@@ -29,19 +29,19 @@ export default function Alerts() {
       filteredParams.set("eventTypes", "alert");
       filteredParams.set("view", "list");
 
-      if (filteredParams.get("geoCoordinates")) {
-        const geoCoordinates = JSON.parse(
-          filteredParams.get("geoCoordinates") || ""
+      if (filteredParams.get("viewBound")) {
+        const viewBound = JSON.parse(
+          filteredParams.get("viewBound") || ""
         );
-        filteredParams.delete("geoCoordinates");
+        filteredParams.delete("viewBound");
         filteredParams.set(
           "viewBound",
           JSON.stringify({
             boundType: "point",
             coordinates: {
-              latitude: geoCoordinates.latitude,
-              longitude: geoCoordinates.longitude,
-              radius: geoCoordinates.radius,
+              latitude: viewBound.coordinates.latitude,
+              longitude: viewBound.coordinates.longitude,
+              radius: viewBound.coordinates.radius,
             },
           })
         );

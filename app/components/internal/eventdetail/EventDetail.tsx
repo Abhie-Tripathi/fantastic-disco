@@ -242,7 +242,7 @@ const EventDetail = ({
             </div>
             {singleEventData && (
               <>
-                <SingleEvent {...singleEventData?.basic} />
+                <SingleEvent event={singleEventData} />
                 <EventDescription
                   description={singleEventData?.basic?.description}
                   open={openEventDetails}

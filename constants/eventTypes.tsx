@@ -23,7 +23,7 @@ export const eventTypeIcons: Record<string, JSX.Element> = {
   community: <Image src={community} alt="community" className="w-4 h-4" />,
   "performing-arts": <Image src={arts} alt="arts" className="w-4 h-4" />,
   festival: <Image src={festivals} alt="fests" className="w-4 h-4" />,
-  tradeshows: <Image src={conference} alt="conference" className="w-4 h-4" />,
+  tradeshows: <Image src={expo} alt="tradeshows" className="w-4 h-4" />,
 };  
 
 export const eventTypeColors: Record<string, string> = {

@@ -135,7 +135,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue, trackerId } = useTrackerContext();
   const router=useRouter();
   const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
@@ -220,7 +220,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setHideTemplate(!hideTemplate);
   // };
   const [hideTemplate, setHideTemplate] = useState<boolean>(!getFilterValue("showTemplates") || true);
-  const [dataPresent, setDataPresent] = useState(true);
+  const [dataPresent, setDataPresent] = useState(false);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
@@ -228,7 +228,7 @@ const Trackers = ({ searchParams }: Search) => {
   const [isData, setIsData] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      const data= await getTrackers(`offset=0&limit=0`);
+      const data= await getTrackers(`offset=0&limit=0&type=trackers`);
       
       if (data) setIsLoading(false)
       if (data?.count) {
@@ -366,7 +366,7 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
-  useEffect(()=>{
+  useEffect(()=>{ 
     if(isEventeli){
       if((singleTrackerData?.groupedEventsCount?.business?.total??0)>0) setActiveType("business");
       else setActiveType("social");
@@ -493,18 +493,19 @@ const Trackers = ({ searchParams }: Search) => {
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
     ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
-      <NullState image={TrackerNullState}  title="Some issue with map view."/>
-      // <Map
-      //   isGlobal={true}
-      //   source="tracker"
-      // eventType={activeType}
-      //   searchParams="active"
-      //   trackerId={singleTrackerData?.id || ""}
-      //   trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
-      //   trackerType={singleTrackerData?.type || ""}
-      // />
+      // <NullState image={TrackerNullState}  title="Some issue with map view."/>
+      <Map
+        isGlobal={true}
+        source="tracker"
+        eventType={activeType}
+        searchParams="active"
+        trackerId={singleTrackerData?.id || ""}
+        trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+        trackerType={singleTrackerData?.type || ""}
+      />
     )}
   </div>
+
 </Suspense>
 
     {/* )} */}

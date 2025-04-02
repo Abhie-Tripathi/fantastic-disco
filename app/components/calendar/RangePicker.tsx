@@ -18,6 +18,12 @@ const RangePicker = ({ startDate, endDate, disabled } : CalendarProps) => {
         end: parseDate(endValue)
     });
 
+    const handleValueChange = (newValue: { start: any; end: any } | null) => {
+        if (newValue) {
+            setValue(newValue);
+        }
+    };
+
     useEffect(() => {
         if (startDate) {
             const startDateParts = startDate.split('/');
@@ -42,7 +48,7 @@ const RangePicker = ({ startDate, endDate, disabled } : CalendarProps) => {
     }, [startValue, endValue]);
     return (
         <DateRangePicker className={styles.reactAriaDateRangePicker} value={value}
-            onChange={setValue} >
+            onChange={handleValueChange} >
             <Label></Label>
             <Group className={styles.reactAriaGroup}>
                 <DateInput className={styles.reactAriaDateInput} slot="start">

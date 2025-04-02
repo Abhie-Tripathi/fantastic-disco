@@ -20,7 +20,7 @@ import { VerifyOTP } from "@/types/auth/user";
 import { SettingsInterestData } from "@/types/onboarding";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { endOfMonth, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -48,15 +48,15 @@ export default function NewVerificationForm() {
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
   const categories = sessionCategories && JSON.parse(sessionCategories);
 
+  const formatDateForFilter = (date: Date) => {
+    return format(date, "yyyy-MM-dd");
+  };
+
   const urlParams = useMemo(() => {
     const params = new URLSearchParams();
     const currentDate = new Date();
-    const startDate = new Date(
-      startOfMonth(currentDate).setHours(5, 30, 0, 0)
-    ).toISOString();
-    const endDate = new Date(
-      endOfMonth(currentDate).setHours(5, 30, 0, 0)
-    ).toISOString();
+    const startDate = formatDateForFilter(startOfMonth(currentDate));
+    const endDate = formatDateForFilter(endOfMonth(currentDate));
 
     params.set("view", "map");
     params.set("status", "active,cancelled,postponed");

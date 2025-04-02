@@ -23,7 +23,6 @@ import { ProspectList } from "@/app/components/prospect/ProspectList";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import ProductTopics from "@/app/components/prospect/Filters/productTopics";
-import CompanyType from "@/app/components/prospect/Filters/companyType";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
 import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
 import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
@@ -35,6 +34,8 @@ import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CompanyListResponse } from "@/types/prospect";
 import DesignationFilter from "@/app/components/prospect/Filters/designation";
+import { isEventeli } from "@/config";
+import NotFound from "@/app/not-found";
 
 interface ProspectFilters {
   id: string;
@@ -168,12 +169,10 @@ const Prospect = () => {
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getCompanyList(searchParams.toString()),
-    // enabled:
-    //   !!searchParams.toString() &&
-    //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
+    enabled: !isEventeli,
   });
 
   const companies = companyData?.companyData || [];
@@ -191,6 +190,12 @@ const Prospect = () => {
   const handleTabChange = (prop: string) => {
     setFilter("viewBy", prop);
   };
+
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -376,7 +381,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <ProspectList companies={companies} count={count} />
+                <ProspectList/>
               )}
             </TabsContent>
 
@@ -397,7 +402,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <PeopleList people={peopleData} count={count} />
+                <PeopleList />
               )}
             </TabsContent>
           </div>

@@ -22,17 +22,16 @@ export const useCompanyService = () => {
 
   const getCompanyList = (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);
-    const url =
-      params.get("viewBy") === "user"
-        ? endpoints.prospect.users.list
-        : endpoints.prospect.company.list;
+    const url = endpoints.prospect.company.list;
+    return api.request(url, {
+      method: "GET",
+      params: params,
+    });
+  };
 
-    // params.set("limit", params.get("take") || "10");
-    // params.set("offset", params.get("skip") || "0");
-    // params.delete("skip");
-    // params.delete("take");
-    params.delete("viewBy");
-
+  const getPeopleList = (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const url = endpoints.prospect.users.list;
     return api.request(url, {
       method: "GET",
       params: params,
@@ -103,9 +102,16 @@ export const useCompanyService = () => {
     );
   };
 
-  const getEventCountByCountry = (companyId: string | number, source: string) => {
+  const getEventCountByCountry = (
+    companyId: string | number,
+    source: string
+  ) => {
     return api.request(
-      `${source === "userDetail" ? endpoints.prospect.users.detail : endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
+      `${
+        source === "userDetail"
+          ? endpoints.prospect.users.detail
+          : endpoints.prospect.company.detail
+      }/${companyId}/events?groupBy=country`,
       {
         method: "GET",
       }
@@ -128,12 +134,9 @@ export const useCompanyService = () => {
   };
 
   const getUserDetailById = (userId: string | number) => {
-    return api.request<any>(
-      `${endpoints.prospect.users.detail}/${userId}`,
-      {
-        method: "GET",
-      }
-    );
+    return api.request<any>(`${endpoints.prospect.users.detail}/${userId}`, {
+      method: "GET",
+    });
   };
 
   const getUserEvents = (
@@ -151,6 +154,7 @@ export const useCompanyService = () => {
 
   return {
     getCompanyList,
+    getPeopleList,
     unlockUserDetail,
     unlockPocDetail,
     getCompanyDetailById,

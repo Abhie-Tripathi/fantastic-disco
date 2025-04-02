@@ -119,25 +119,23 @@ export default function EventCalendar({
     queryKey:
       source !== "tracker"
         ? ["events", view, currentDate, searchParams.toString()]
-        : [currentDate, active, view],
+        : ["events", currentDate, active, view],
     queryFn: async () => {
-      setShowEventList(false)
+      setShowEventList(false);
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
-      updatedParams.set("active_gte", moment(start).toISOString());
-      updatedParams.set("active_lte", moment(end).toISOString());
+      updatedParams.set("active_gte", moment(start).format("YYYY-MM-DD"));
+      updatedParams.set("active_lte", moment(end).format("YYYY-MM-DD"));
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerStartDate = `${moment(start).toISOString()}`;
-      const trackerEndDate =`${moment(end).toISOString()}`;
+      const trackerStartDate = `${moment(start).format("YYYY-MM-DD")}`;
+      const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
           : await getCalendarViewEvents(
               trackerId || "",
-              `type=${
-                active
-              }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
+              `type=${active}&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
             );
@@ -323,6 +321,16 @@ export default function EventCalendar({
     }
   };
 
+  if (
+    isEventeli &&
+    !searchParams.get("viewBound") &&
+    !searchParams.get("locationIds") &&
+    source !== "tracker" &&
+    !searchParams.get("eventIds")
+  ) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
+
   const renderCalendarContent = () => {
     if (isEventsLoading) {
       return <Loading />;
@@ -418,7 +426,7 @@ export default function EventCalendar({
           </div>
         )
       ) : (
-        <div className="flex custom-calendar">
+        <div className="flex custom-calendar overflow-y-scroll">
           <div
             className={`flex flex-col  ${
               showEventList ? "w-[calc(100%-345px)]" : "w-full"

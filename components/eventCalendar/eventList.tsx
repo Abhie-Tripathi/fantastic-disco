@@ -44,7 +44,7 @@ export default function EventList({
 }) {
   const { getFilterValue } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "start");
+  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "-score");
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
@@ -61,7 +61,7 @@ export default function EventList({
     queryFn: () =>
       source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(
         trackerId || "", 
-        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}`
         + (isEventeli ? `&type=${active}` : ''),
         true
       ),
@@ -85,7 +85,7 @@ export default function EventList({
 
   const EventCard = ({ event }: { event: Event }) => {
     const address = event.basic.eventLocation
-      ? event.basic.eventLocation.city?.name === "Online"
+      ? event.basic.format === "online"
         ? "Online"
         : [
             event.basic.eventLocation?.venue?.name || "TBA",
@@ -96,13 +96,13 @@ export default function EventList({
             .filter(Boolean)
             .join(", ")
       : "Venue to be announced";
-    const intelScoreData = [
+      const intelScoreData = [
         {
           name: "Total",
           value: event?.intelScore || 0,
-          fill: "#646BDC",
+          fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
         }
-    ];
+      ];
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">

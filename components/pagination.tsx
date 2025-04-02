@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -39,6 +40,9 @@ export function PaginationComponent({
   showEntriesCount = true,
   paginationItems = ["10", "20"],
 }: PaginationComponentProps) {
+  const pathname = usePathname();
+  const hideLastPage = pathname === '/internal/search/companies' || pathname === '/internal/search/people';
+
   const renderPaginationItems = () => {
     const items = [];
     const maxVisiblePages = 5;
@@ -101,17 +105,19 @@ export function PaginationComponent({
         );
       }
 
-      items.push(
-        <PaginationItem key={totalPages}>
-          <PaginationLink
-            href="#"
-            onClick={() => onPageChange(totalPages)}
-            isActive={totalPages === currentPage}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
+      if (!hideLastPage) {
+        items.push(
+          <PaginationItem key={totalPages}>
+            <PaginationLink
+              href="#"
+              onClick={() => onPageChange(totalPages)}
+              isActive={totalPages === currentPage}
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
     }
 
     return items;

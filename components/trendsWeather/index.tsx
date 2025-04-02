@@ -16,8 +16,8 @@ import { EventDate } from "@/types/events/eventDetail";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef, useState } from "react";
-import EventsListView from "../detailPageEventsList/eventsListView";
-import EventsMapView from "../detailPageEventsList/eventsMapView";
+import EventsListView from "../eventDetail/eventsListView";
+import EventsMapView from "../eventDetail/eventsMapView";
 interface Props {
   eventDetails: Event;
   venueLocation: Event["basic"]["eventLocation"] | null;
@@ -226,11 +226,7 @@ export const DetailMapComponent = ({
           ? typeOfEvent !== "online" && (
               <div className="flex justify-between border-t-2 pt-4">
                 <Text color="secondary">
-                  {[
-                    venueLocation?.city?.name,
-                    venueLocation?.state?.name,
-                    venueLocation?.country?.name,
-                  ]
+                  {[venueLocation?.city?.name, venueLocation?.country?.name]
                     .filter(Boolean)
                     .join(", ")}
                 </Text>
