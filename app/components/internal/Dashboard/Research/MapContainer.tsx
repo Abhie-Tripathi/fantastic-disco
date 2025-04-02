@@ -42,7 +42,7 @@ const MapContainer = ({ theme, latLang, location, searchHandler }: Props) => {
                     </div>
                     <div className='flex flex-col'>
                         <div className="color-black font-[var(--font-weight-medium)] text-xs">{firstLocation}</div>
-                        <div className="text-xs text-[var(--secondary-text-color)]">{restLocation}</div>
+                        <div className="line-clamp-1 text-xs text-[var(--secondary-text-color)]" title={restLocation} >{restLocation}</div>
                     </div>
                 </div>
                 <div className='w-full flex justify-center absolute bottom-[50px]'>
