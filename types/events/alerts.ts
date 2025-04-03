@@ -4,17 +4,32 @@ export interface AlertResponse {
   }
   
   export interface Alert {
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    level: string;
-    startDate: string;
-    endDate: string;
-    originLatitude: string;
-    originLongitude: string;
-    lastModified: string;
+    basic: {
+      id: string;
+      name: string;
+      description: string;
+      type: string;
+      level: string;
+      startDate: string;
+      endDate: string;
+      lastModified: string;
+      eventLocation: {
+        originLatitude: string;
+        originLongitude: string;
+      };
+    };
   }
+
+
+  export interface AlertCount {
+    count: AlertCountItem[];
+  }
+
+  export interface AlertCountItem {
+    alertType: string;
+    count: number;
+  }
+  
   
   export interface AlertPolygonResponse {
     bbox: null | number[];

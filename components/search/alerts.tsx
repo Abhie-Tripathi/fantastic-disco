@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { useEventsService } from "@/services/eventsService";
 import { useSearchParams } from "next/navigation";
-import { AlertResponse } from "@/types/events/alerts";
+import {
+  AlertResponse,
+  AlertCount,
+  AlertCountItem,
+} from "@/types/events/alerts";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Info, TriangleAlert } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,22 +21,41 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
+import { Button } from "@/components/ui/button";
 
 export default function Alerts() {
   const searchParams = useSearchParams();
-  const { getEventsWithSearchParams } = useEventsService();
+  const { getEventsWithSearchParams, getEventsCount } = useEventsService();
   const [alerts, setAlerts] = useState<AlertResponse | null>(null);
+  const [alertCounts, setAlertCounts] = useState<AlertCountItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    const fetchAlertCounts = async () => {
+      const alertCounts = (await getEventsCount({
+        eventTypes: "alert",
+        groupBy: "eventType",
+      })) as unknown as AlertCount;
+
+      if (alertCounts?.count) {
+        setAlertCounts(alertCounts.count);
+      }
+    };
+
+    fetchAlertCounts();
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchAlerts = async () => {
       const filteredParams = new URLSearchParams(searchParams.toString());
       filteredParams.set("eventTypes", "alert");
       filteredParams.set("view", "list");
+      filteredParams.set("page", currentPage.toString());
+      filteredParams.set("limit", itemsPerPage.toString());
 
       if (filteredParams.get("viewBound")) {
-        const viewBound = JSON.parse(
-          filteredParams.get("viewBound") || ""
-        );
+        const viewBound = JSON.parse(filteredParams.get("viewBound") || "");
         filteredParams.delete("viewBound");
         filteredParams.set(
           "viewBound",
@@ -53,14 +76,11 @@ export default function Alerts() {
     };
 
     fetchAlerts();
-  }, [searchParams]);
+  }, [searchParams, currentPage]);
 
   if (!alerts || !alerts.events || alerts.events.length === 0) return null;
 
-  const groupedAlerts = alerts.events.reduce((acc, alert) => {
-    acc[alert.type] = (acc[alert.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const totalPages = Math.ceil(alerts.count / itemsPerPage);
 
   return (
     <Card className="w-full mb-6 shadow-none border bg-background">
@@ -75,12 +95,12 @@ export default function Alerts() {
                 <div>
                   <h2 className="text-lg font-semibold">Alerts Overview</h2>
                   <p className="text-sm text-muted-foreground text-left">
-                    {alerts.events.length} active alerts
+                    {alerts.count} active alerts
                   </p>
                 </div>
                 <div className="flex items-center gap-4 ml-4">
-                  {Object.entries(groupedAlerts).map(([type, count], index) => (
-                    <div key={type} className="flex items-center">
+                  {alertCounts.map(({ alertType, count }, index) => (
+                    <div key={alertType} className="flex items-center">
                       {index > 0 && (
                         <Separator
                           orientation="vertical"
@@ -90,8 +110,8 @@ export default function Alerts() {
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 rounded-lg bg-background px-3 py-1.5">
                           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-                            {alertIcons[type] ||
-                              (type.toLowerCase() === "warning" ? (
+                            {alertIcons[alertType] ||
+                              (alertType.toLowerCase() === "warning" ? (
                                 <AlertTriangle className="h-4 w-4 text-primary" />
                               ) : (
                                 <Info className="h-4 w-4 text-primary" />
@@ -99,7 +119,7 @@ export default function Alerts() {
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-medium capitalize">
-                              {type.toLowerCase()}
+                              {alertType.toLowerCase()}
                             </span>
                             <Badge className="h-5 px-2 text-xs font-semibold no-underline">
                               {count} {count === 1 ? "alert" : "alerts"}
@@ -118,24 +138,27 @@ export default function Alerts() {
               {alerts.events
                 .sort(
                   (a, b) =>
-                    new Date(a.startDate).getTime() -
-                    new Date(b.startDate).getTime()
+                    new Date(a.basic.startDate).getTime() -
+                    new Date(b.basic.startDate).getTime()
                 )
                 .map((alert, index) => (
                   <Card
                     key={index}
                     className={cn(
                       "bg-card transition-colors border-2",
-                      getAlertLevelBorderColor(alert.level)
+                      getAlertLevelBorderColor(alert.basic.level)
                     )}
                   >
                     <CardContent className="flex items-start justify-between p-4">
                       <div className="flex flex-col gap-1">
                         <h3 className="font-medium">
-                          {alert.name || alert.type}
+                          {alert.basic.name || alert.basic.type}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {formattedDateRange(alert.startDate, alert.endDate)}
+                          {formattedDateRange(
+                            alert.basic.startDate,
+                            alert.basic.endDate
+                          )}
                         </p>
                       </div>
                       <div
@@ -143,8 +166,8 @@ export default function Alerts() {
                           "flex h-8 w-8 items-center justify-center rounded-md border-2"
                         }
                       >
-                        {alertIcons[alert.type] ||
-                          (alert.type.toLowerCase() === "warning" ? (
+                        {alertIcons[alert.basic.type] ||
+                          (alert.basic.type.toLowerCase() === "warning" ? (
                             <AlertTriangle className="h-4 w-4 text-primary" />
                           ) : (
                             <Info className="h-4 w-4 text-primary" />
@@ -154,6 +177,30 @@ export default function Alerts() {
                   </Card>
                 ))}
             </div>
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

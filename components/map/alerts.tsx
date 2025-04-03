@@ -14,6 +14,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { Alert } from "@/types/events/alert";
+import { AlertCount, AlertCountItem } from "@/types/events/alerts";
 import { formattedDateRange } from "@/utils/date";
 
 interface AlertResponse {
@@ -88,8 +89,8 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
 
   const {
     data: alerts,
-    error,
-    isLoading,
+    error: alertsError,
+    isLoading: alertsLoading,
   } = useQuery<AlertResponse, Error>({
     queryKey: ["alerts", filteredParams.toString()],
     queryFn: async () => {
@@ -99,11 +100,27 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
     refetchOnWindowFocus: false,
   });
 
+  const {
+    data: alertCounts,
+    error: countsError,
+    isLoading: countsLoading,
+  } = useQuery<AlertCount, Error>({
+    queryKey: ["alertCounts", filteredParams.toString()],
+    queryFn: async () => {
+      const response = await eventService.getEventsCount({
+        eventTypes: "alert",
+        groupBy: "eventType",
+      });
+      return { count: response as unknown as AlertCountItem[] } as AlertCount;
+    },
+    refetchOnWindowFocus: false,
+  });
+
   const selectedAlertData = useMemo(() => {
     return alerts?.events.find((alert: Alert) => alert.id === selectedAlert);
   }, [alerts, selectedAlert]);
 
-  if (error || !alerts?.events?.length) return null;
+  if (alertsError || countsError || !alerts?.events?.length) return null;
 
   const onClickHandler = (id: string) => {
     setSelectedAlert(id);
@@ -121,12 +138,16 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
           ) : (
             <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
               <AlertTriangle className="w-4 h-4 mr-2" />
-              Possibility of
-              <span className={cn("mx-1 font-semibold underline text-primary")}>
-                {alerts.events.length} Alert
-                {alerts.events.length !== 1 && "s"}
-              </span>
-              in this Region
+              <div className="flex items-center gap-2">
+                {alertCounts?.count.map(({ alertType, count }: AlertCountItem, index: number) => (
+                  <React.Fragment key={alertType}>
+                    {index > 0 && <span className="text-muted-foreground">•</span>}
+                    <span className="font-semibold">
+                      {count} {alertType.toLowerCase()}
+                    </span>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           )}
         </PopoverTrigger>
