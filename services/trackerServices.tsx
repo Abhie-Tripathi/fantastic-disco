@@ -337,6 +337,14 @@ export const useTrackerServices = () => {
     //   );
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
+    const presetData = async(name:string, data:any)=>{
+      const urlParams = new URLSearchParams(data).toString();
+      console.log(urlParams);
+      
+      const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`)
+      console.log(response);
+      
+    }
     return {
       removeBookmark,
       createTracker,
@@ -361,6 +369,7 @@ export const useTrackerServices = () => {
       getSavedEvents,
       getTrackerDetail,
       getTrackerEvents,
+      presetData,
       isLoading: api.isLoading,
       error: api.error,
     };

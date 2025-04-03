@@ -5,6 +5,7 @@ import Competitor from "/public/competitor.svg";
 import Keywords from "/public/keywords.svg";
 import Speaking from "/public/speaking.svg";
 import Template from "/public/template.svg";
+import {useTrackerServices} from '@/services/trackerServices'
 // import kewwordPresetJson from "@/public/data/presetJson/keyword.json";
 // import competitorPresetJson from "@/public/data/presetJson/competitor.json";
 // import speakerPresetJson from "@/public/data/presetJson/speaker.json";
@@ -39,7 +40,10 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<
     PresetJsonData[]
   >([]);
-
+  const {presetData}=useTrackerServices();
+  const [inputValue,setInputValue]=useState<string>();
+  const [selectedLocation,setSelectedLocation]= useState<string[]>();
+  const [selectedCategory,setSelectedCategory]=useState<string[]>();
   const [shortlistPage, setShortlistPage] = useState(1);
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
   const [count, setCount] = useState<number>(0);
@@ -64,22 +68,33 @@ const Presets = ({ template, handlePresetClick }: Props) => {
 
   const fetchPresetJson = async () => {
     try {
-      const apiData = await coordinateService.getPresetJson(
-        template?.name,
-        shortlistPage
-      );
-      if (apiData) {
-        setPresetTemplateData((prev) => [...prev, ...apiData.data]);
-        setCount(apiData.totalCount);
+      // const apiData = await coordinateService.getPresetJson(
+      //   template?.name,
+      //   shortlistPage
+      // );
+      console.log(inputValue);
+      
+      const data={
+        trackerType: template?.name,
+        ...(inputValue.length>0 && {keyword: inputValue})
       }
+      const result = await presetData(template?.name, data);
+      // if (apiData) {
+      //   setPresetTemplateData((prev) => [...prev, ...apiData.data]);
+      //   setCount(apiData.totalCount);
+      // }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
+  const inputFunction=(value:string)=>{
+    console.log(value);
+    
+    setInputValue(value);
+  }
   useEffect(() => {
     fetchPresetJson();
-  }, [shortlistPage]);
+  }, [shortlistPage, inputValue]);
 
   return (
     <div>
@@ -94,6 +109,8 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2">
       <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
       <input
+        value={inputValue}
+        onChange={(e)=>inputFunction(e.target.value)}
         className="outline-none w-full bg-transparent"
         placeholder="Enter Pre-sets name"
       />
