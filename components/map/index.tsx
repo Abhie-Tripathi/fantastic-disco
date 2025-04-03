@@ -543,7 +543,7 @@ export default function MapComponent({
 
       console.log("flying to default loc")
       mapRef.current.flyTo({
-        center: [78.9629, 20.5937],
+        center: [35.2433, 38.9637],
         zoom: 0.8,
         duration: 3000,
         essential: true,
