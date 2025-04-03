@@ -562,7 +562,6 @@ export default function MapComponent({
       });
     }
     if (locationBBox && location.locationIds != "defaultLoc") {
-      console.log("hhiii")
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
