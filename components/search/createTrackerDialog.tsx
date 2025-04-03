@@ -30,7 +30,7 @@ export default function CreateTrackerDialog({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { localFilters } = useFilterContext();
+  const { localFilters, getLocalFilterValue } = useFilterContext();
 
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
@@ -47,7 +47,26 @@ export default function CreateTrackerDialog({
     setTrackerName(newName);
     setError(validateName(newName));
   };
+  const showsData: string[] = [];
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings"
+  };
   const adaptedParams = searchParams;
+  const filters = getLocalFilterValue("show").split(",");
+  Object.entries(mapping).forEach(([key, value]) => {
+    if (filters.includes(key)) {
+      showsData.push(value);
+    }
+  });
+  
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {
@@ -58,7 +77,6 @@ export default function CreateTrackerDialog({
       delete adaptedParams.groupBy;
     }
     setIsLoading(true);
-
     const formData = {
       name: trackerName,
       filterValues: {
@@ -72,6 +90,7 @@ export default function CreateTrackerDialog({
         entryType: localFilters.entryType,
         ratings: localFilters.ratings,
         onlyBranded: localFilters.onlyBranded,
+        maturity: localFilters.maturity,
         onlySeries: localFilters.onlySeries,
         frequencies: localFilters.frequencies,
         includeKeywords: localFilters.includeKeywords,
@@ -84,6 +103,9 @@ export default function CreateTrackerDialog({
         international_score_gte: localFilters.international_score_gte,
         international_score_lte: localFilters.international_score_lte,
         top: localFilters.top,
+        designations: localFilters.designations,
+        audienceSpread: localFilters.audienceSpread,
+        show: showsData.join(","),
       },
       type: "T_CUSTOM",
     };

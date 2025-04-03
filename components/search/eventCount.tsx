@@ -4,7 +4,7 @@ import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-const EventCount = () => {
+const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
@@ -18,6 +18,12 @@ const EventCount = () => {
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
   });
+
+  const label: Record<string, string> = {
+    events: "Events Found",
+    people: "People Found",
+    companies: "Companies Found",
+  };
 
   if (error) {
     return (
@@ -36,11 +42,11 @@ const EventCount = () => {
         <Badge className="bg-primary text-white">
           {new Intl.NumberFormat("en", {
             notation: "compact",
-            maximumFractionDigits: 1,
+            maximumFractionDigits: 2,
           }).format((data as any)?.count || 0)}
         </Badge>
       )}
-      <p className="text-primary font-semibold">Events Found</p>
+      <p className="text-primary font-semibold">{label[view]}</p>
     </div>
   );
 };

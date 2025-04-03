@@ -1,8 +1,22 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
@@ -12,20 +26,17 @@ const filterData = [
   { id: "1000-5000", label: "1k - 5k", isEnabled: true },
   { id: "5000-10000", label: "5k - 10k", isEnabled: true },
   { id: "10000-25000", label: "10k - 25k", isEnabled: true },
-  // { id: "201-500", label: "201 - 500", min: 201, max: 500, isEnabled: true },
-  // { id: "501-1000", label: "501 - 1000", min: 501, max: 1000, isEnabled: true },
-  // { id: "1001-2000", label: "1001 - 2000", min: 1001, max: 2000, isEnabled: true },
-  // { id: "2001-5000", label: "2001 - 5000", min: 2001, max: 5000, isEnabled: true },
-  // { id: "5001-10000", label: "5001 - 10000", min: 5001, max: 10000, isEnabled: true },
-  // { id: "10001", label: "10001+", min: 10001, max: Infinity, isEnabled: true },
 ];
 
-export default function CompanySize() {
-  const { setLocalFilter, getLocalFilterValue, morphedData } =
-    useFilterContext();
+interface CompanySizeProps {
+  variant?: "accordion" | "popover";
+}
 
-  const estimatedVisitorsOptions = filterData;
-  // const enabled = morphedData?.estimatedVisitors?.isEnabled;
+export default function CompanySize({
+  variant = "accordion",
+}: CompanySizeProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
     () => getLocalFilterValue("communitySize").split(",").filter(Boolean),
@@ -36,14 +47,26 @@ export default function CompanySize() {
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-
     setLocalFilter("communitySize", newRanges.join(","));
   };
 
-  return (
+  const triggerContent = (
+    <div className="flex items-center justify-between w-full">
+      <span className="flex items-center gap-2">
+        Company Size
+        {selectedRanges.length > 0 && (
+          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+            {selectedRanges.length}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+
+  const content = (
     <div className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
       <div className="p-4 space-y-4">
-        {estimatedVisitorsOptions?.map((range: EventType) => (
+        {filterData.map((range: EventType) => (
           <div key={range.id} className="flex items-center space-x-2">
             <Checkbox
               id={range.id}
@@ -56,5 +79,49 @@ export default function CompanySize() {
         ))}
       </div>
     </div>
+  );
+
+  if (variant === "popover") {
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between px-3 py-5 text-base font-normal"
+          >
+            {triggerContent}
+            <ChevronDown
+              className={`ml-2 h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
+          {content}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="companySize" className="border rounded-md">
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
+        >
+          {triggerContent}
+        </AccordionTrigger>
+        <AccordionContent>{content}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

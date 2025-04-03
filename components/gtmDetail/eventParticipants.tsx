@@ -157,8 +157,8 @@ export const EventParticipants = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
-}: // eventSponsorData,
-{
+  // eventSponsorData,
+}: {
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];

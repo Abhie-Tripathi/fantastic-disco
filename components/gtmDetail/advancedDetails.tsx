@@ -18,7 +18,7 @@ import { Event, EventEditionDetailResponse } from "@/types/events";
 import { format } from "date-fns";
 import { capitalize } from "lodash";
 import { CircleSlash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Heading } from "../eventDetail/heading";
@@ -51,6 +51,15 @@ const CarouselComponent = ({
   const [api, setApi] = useState<CarouselApi>();
   const [isSlidingEnabled, setIsSlidingEnabled] = useState<boolean>();
 
+  const isFutureForecastedDate = useMemo(() => {
+    if (rehostDate) {
+      const forecastDate = new Date(rehostDate);
+      const today = new Date();
+      return forecastDate > today;
+    }
+    return false;
+  }, [rehostDate]);
+
   const hasMaturityOption =
     maturityLevels &&
     maturityLevels.options.find(
@@ -60,7 +69,7 @@ const CarouselComponent = ({
   const hasFrequencyOption =
     frequencies &&
     frequencies.options.find(
-      (option: { id: string }) => option.id === frequency
+      (option: { id: string }) => option.id === frequency?.toLocaleLowerCase()
     );
 
   const hasSeriesEvent =
@@ -249,7 +258,7 @@ const CarouselComponent = ({
               </div>
             </CarouselItem>
           )}
-          {rehostDate && (
+          {rehostDate && isFutureForecastedDate && (
             <CarouselItem
               className={`relative ${
                 isSlidingEnabled
@@ -262,7 +271,7 @@ const CarouselComponent = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                        Rehost Month
+                        Forecasted
                       </h1>
                     </TooltipTrigger>
                     <TooltipContent

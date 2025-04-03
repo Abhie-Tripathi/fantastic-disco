@@ -26,7 +26,6 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { MembershipData } from "@/types/user";
 import { isEventeli } from "@/config";
 import { TrackerData } from "@/types/dashboard";
-import { useSession } from "next-auth/react";
 
 interface OutreachLastChat {
   eventName: string;
@@ -117,7 +116,7 @@ const Dashboard = () => {
   };
 
   const fetchTrackerData = async () => {
-    const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true&type=trackers`);
+    const trackerData: any = await getTrackers(`limit=4&offset=0&type=trackers`);
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
       const locations = Object.values(

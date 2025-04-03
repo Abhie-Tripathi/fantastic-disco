@@ -489,7 +489,7 @@ const Pages = () => {
       const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
-      .map(value => value.replace(/[^\w\s]/g, ''))
+      .map(value => value.replace(/,/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -519,7 +519,7 @@ const Pages = () => {
       const speakerCompany = customData
       .map((item: {}) => Object.values(item)[1] as string | undefined)
       .filter((value): value is string => value !== undefined) 
-      .map(value => value.replace(/[^\w\s]/g, ''))
+      .map(value => value.replace(/,/g, '')) 
       .join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
@@ -550,7 +550,7 @@ const Pages = () => {
       const userCompany = customData
       .map((item: {}) => Object.values(item)[1]) 
       .filter((value): value is string => value !== undefined && value !== null)
-      .map(value => value.replace(/[^\w\s]/g, '')) 
+      .map(value => value.replace(/,/g, '')) 
       .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
@@ -1006,6 +1006,14 @@ const Pages = () => {
     console.log(eventTypes);
     
     setLocalFilter("eventTypes",eventTypes.join(","))
+    if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
+      const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
+          .map((item) => item.slug)
+          .filter(Boolean);
+  
+      setLocalFilter("designations", slugs.join(","));
+  }
+  
     if(editData?.filterValues?.locationIds){
       const ids = Object?.keys(editData?.filterValues?.locationIds);
       setLocalFilter("locationIds", ids.join(","))
@@ -1660,20 +1668,20 @@ return (
                   {!isEventeli && (
                   <EstimatedExhibitorsSelector/>
                   )}
-                  <EventAnalyticsSelector/>
-                  <EstimatedEconomicImpactSelector/>
+                 {isEventeli && <EventAnalyticsSelector/>}
+                  {isEventeli && <EstimatedEconomicImpactSelector/>}
                   <EventRankingSelector/>
                   </div>
                 </TabsContent>
-                <TabsContent value="audienceIntel">
+                {!isEventeli && <TabsContent value="audienceIntel">
                   <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
-                    <AudienceQualitySelector />
-                    <ExhibitorQualitySelector />
+                    {/* <AudienceQualitySelector />
+                    <ExhibitorQualitySelector /> */}
                     <AudienceZoneSelector/>
                     <AudienceProfileSelector/>
                     <AudienceSpreadSelector/>
                     </div>
-                </TabsContent>
+                </TabsContent>}
           </Tabs>
     </div>
   </Suspense>

@@ -19,6 +19,7 @@ import {
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import _ from "lodash";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -28,7 +29,7 @@ import {
   EllipsisVerticalIcon,
   MapPin,
   Trash,
-  X
+  X,
 } from "lucide-react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -63,7 +64,8 @@ const SavedTrendCard = ({
   const { locationIds, viewBound, active_gte, active_lte, eventTypes } =
     filterValues;
   const locationDetail = locationIds && Object.values(locationIds);
-  const viewBoundDetail: ViewBound = viewBound && JSON.parse(viewBound);
+  const viewBoundDetail: ViewBound =
+    (viewBound as unknown as ViewBound) || undefined;
   const displayName =
     (locationDetail && locationDetail[0].name) ||
     (viewBoundDetail &&
@@ -99,11 +101,7 @@ const SavedTrendCard = ({
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
-    const viewBound = geoCoordinate
-      ? JSON.stringify({
-          ...(geoCoordinate && { coordinates: JSON.parse(geoCoordinate) }),
-        })
-      : undefined;
+    const viewBound = geoCoordinate ? JSON.parse(geoCoordinate) : undefined;
     const BaseFilterValue: BaseFilterValue = {
       groupBy: "date",
       dateView: "day",
@@ -111,7 +109,7 @@ const SavedTrendCard = ({
       active_lte: active_lte || "",
     };
     const extractCoordinates = data.filterValues.viewBound
-      ? (JSON.parse(data.filterValues.viewBound) as ViewBound).coordinates
+      ? (data.filterValues.viewBound as unknown as ViewBound).coordinates
       : null;
     const normalizedViewBound = extractCoordinates
       ? JSON.stringify({
@@ -133,9 +131,7 @@ const SavedTrendCard = ({
         ? FilterValue.eventTypes.split(",").sort()
         : [],
       ...(FilterValue.locationIds && { locationIds: FilterValue.locationIds }),
-      ...(viewBound &&
-        FilterValue.viewBound &&
-        JSON.parse(FilterValue.viewBound || "")),
+      ...((viewBound && FilterValue.viewBound && FilterValue.viewBound) || ""),
     };
     const normalizedPropsData = {
       ...data.filterValues,
@@ -146,8 +142,8 @@ const SavedTrendCard = ({
       ...(locationIds && {
         locationIds: Object.keys(data.filterValues.locationIds || {}).join(","),
       }),
-      ...(normalizedViewBound && {
-        viewBound: normalizedViewBound,
+      ...(data.filterValues.viewBound && {
+        viewBound: data.filterValues.viewBound,
       }),
     };
 
@@ -160,7 +156,10 @@ const SavedTrendCard = ({
         JSON.stringify(normalizedPropsData.columns) &&
       (normalizedParamsData.locationIds
         ? normalizedParamsData.locationIds === normalizedPropsData.locationIds
-        : normalizedParamsData.viewBound === normalizedPropsData.viewBound) &&
+        : _.isEqual(
+            normalizedParamsData.viewBound,
+            normalizedPropsData.viewBound
+          )) &&
       activeCard === data.id;
     return fieldsMatch;
   }, [queryParams]);
@@ -198,25 +197,11 @@ const SavedTrendCard = ({
       viewBound,
     } = filterValues;
 
-    const parsedViewBoundData: ViewBound | null = viewBound
-      ? JSON.parse(viewBound)
-      : null;
-    const { coordinates } = parsedViewBoundData || {};
-
-    const geoCoordinates =
-      coordinates && Object.keys(coordinates).length > 0
-        ? {
-            ...(coordinates.latitude && { latitude: coordinates.latitude }),
-            ...(coordinates.longitude && { longitude: coordinates.longitude }),
-            ...(coordinates.radius && { radius: coordinates.radius }),
-          }
-        : null;
-
     if (locationIds) {
       deleteMultipleLocalFilters(["viewBound"]);
     }
 
-    if (geoCoordinates) {
+    if (viewBound) {
       deleteMultipleLocalFilters(["locationIds"]);
     }
 
@@ -236,8 +221,8 @@ const SavedTrendCard = ({
               .map((location) => location)
               .join(","),
           }
-        : geoCoordinates
-        ? { geoCoordinates: JSON.stringify(geoCoordinates) }
+        : viewBound
+        ? { viewBound: JSON.stringify(viewBound) }
         : {}),
       ...(id && { activeCard: id }),
     });
@@ -284,23 +269,23 @@ const SavedTrendCard = ({
           <p className="font-bold">{name}</p>
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
             <MapPin width={14} height={14} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium">
+            <span className="rounded-full border-primary bg-white text-primary font-medium w-40 truncate">
               {displayName}
             </span>
             {locationCount > 0 && <span>+{locationCount}</span>}
           </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
             <Calendar width={13} height={13} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium">
+            <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
               {renderFormattedDates(startDate, endDate)}
             </span>
           </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm ">
             <BriefcaseBusiness width={13} height={13} color="#000000" />
             {savedTrendEventTypes.length > 0 && (
-              <span className="rounded-full border-primary bg-white text-primary font-medium">
+              <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
                 {savedTrendEventTypes[0]}
               </span>
             )}

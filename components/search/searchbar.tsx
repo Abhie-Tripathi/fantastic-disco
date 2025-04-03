@@ -20,11 +20,12 @@ import { Search, X } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function MultiSelectSearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
   const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function MultiSelectSearchBar() {
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const { getEvents, isLoading} = useEventsService();
+  const { getEvents, isLoading } = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -63,14 +64,17 @@ export default function MultiSelectSearchBar() {
           if (abortControllerRef.current) {
             abortControllerRef.current.abort();
           }
-          
+
           // Create new AbortController for this request
           abortControllerRef.current = new AbortController();
-          
-          const response = await getEvents({
-            query: value,
-          }, abortControllerRef.current.signal);
-          
+
+          const response = await getEvents(
+            {
+              query: value,
+            },
+            abortControllerRef.current.signal
+          );
+
           const filteredResults =
             (response?.events as Event[])?.filter(
               (event) =>
@@ -79,7 +83,7 @@ export default function MultiSelectSearchBar() {
           setSearchResults(filteredResults);
         } catch (err) {
           // Only log error if it's not an abort error
-          if (err instanceof Error && err.name !== 'AbortError') {
+          if (err instanceof Error && err.name !== "AbortError") {
             console.error("Error fetching search results:", err);
           }
           setSearchResults([]);
@@ -165,13 +169,21 @@ export default function MultiSelectSearchBar() {
     };
   }, []);
 
+  const isDashboard = pathName == "/internal";
+
   return (
     <form onSubmit={handleSearchSubmit} className="w-full">
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
-              <Search className="ml-2 text-gray-400" />
+            <div
+              className={`flex items-center flex-wrap bg-background rounded-md shadow-sm border ${
+                isDashboard ? "p-2" : "p-0"
+              }`}
+            >
+              <Search
+                className={`ml-2 text-gray-400 ${isDashboard ? "" : "w-4 h-4"}`}
+              />
               {selectedItems.map((item) => (
                 <div
                   key={item.basic.id}
@@ -196,7 +208,9 @@ export default function MultiSelectSearchBar() {
                   placeholder={selectedItems.length ? "" : "Search Events"}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
+                  className={`pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none ${
+                    isDashboard ? "text-base" : "text-sm"
+                  }`}
                 />
               </div>
             </div>

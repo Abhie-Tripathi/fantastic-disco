@@ -155,7 +155,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   const heatmapCategory = hasEvents ? eventsForDay[0]?.heatmapCategory : null;
   const backgroundColor = hasEvents
     ? heatmapColors.find((color) => color.name === heatmapCategory)?.color
-    : theme === "dark" ? "#171717" : "#FAFAFA";
+    : theme === "dark" ? "#171717" : "#fff";
 
   const handleMouseEnter = () => {
     setOpen(true);

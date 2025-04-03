@@ -19,7 +19,7 @@ const maturityLevels = [
   { id: "flagship", label: "Flagship" },
 ];
 interface EditionProps{
-  source:string,
+  source?:string,
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
 }
