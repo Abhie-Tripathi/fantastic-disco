@@ -496,6 +496,7 @@ if (!share) {
   closeShareModal();
 }
 };
+console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -745,7 +746,7 @@ if (!share) {
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
-              {(Number(activeCount)===0 && active==="Saved Events")?
+              {(Number(activeCount)===0 && active==="bookmarked")?
               <div className="px-10 py-5">
                 <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
