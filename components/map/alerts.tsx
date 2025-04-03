@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
-import { Alert } from "@/types/events/alert";
-import { AlertCount, AlertCountItem } from "@/types/events/alerts";
+import { Alert, AlertCount, AlertCountItem } from "@/types/events/alerts";
 import { formattedDateRange } from "@/utils/date";
 
 interface AlertResponse {
@@ -38,20 +37,20 @@ export function AlertItem({
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium capitalize text-muted-foreground">
-          {alert.type.toLowerCase()}
+          {alert.basic.type.toLowerCase()}
         </span>
         <span
           className={cn(
             "p-1 border-2 rounded-sm",
-            getAlertLevelBorderColor(alert.level.toLowerCase())
+            getAlertLevelBorderColor(alert.basic.level.toLowerCase())
           )}
         >
-          {alertIcons[alert.type]}
+          {alertIcons[alert.basic.type]}
         </span>
       </div>
-      <p className="text-sm">{alert.name || `New ${alert.type} alert`}</p>
+      <p className="text-sm">{alert.basic.name || `New ${alert.basic.type} alert`}</p>
       <time className="text-xs text-muted-foreground">
-        {formattedDateRange(alert.startDate, alert.endDate)}
+        {formattedDateRange(alert.basic.startDate, alert.basic.endDate)}
       </time>
     </div>
   );
@@ -69,6 +68,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.set("eventTypes", "alert");
   filteredParams.set("view", "list");
+
   if (filteredParams.get("viewBound")) {
     const viewBound = JSON.parse(
       filteredParams.get("viewBound")?.toString() || "{}"
@@ -89,8 +89,8 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
 
   const {
     data: alerts,
-    error: alertsError,
-    isLoading: alertsLoading,
+    error,
+    isLoading,
   } = useQuery<AlertResponse, Error>({
     queryKey: ["alerts", filteredParams.toString()],
     queryFn: async () => {
@@ -102,25 +102,23 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
 
   const {
     data: alertCounts,
-    error: countsError,
-    isLoading: countsLoading,
   } = useQuery<AlertCount, Error>({
-    queryKey: ["alertCounts", filteredParams.toString()],
+    queryKey: ["alertCounts"],
     queryFn: async () => {
       const response = await eventService.getEventsCount({
         eventTypes: "alert",
         groupBy: "eventType",
       });
-      return { count: response as unknown as AlertCountItem[] } as AlertCount;
+      return response as unknown as AlertCount;
     },
     refetchOnWindowFocus: false,
   });
 
   const selectedAlertData = useMemo(() => {
-    return alerts?.events.find((alert: Alert) => alert.id === selectedAlert);
+    return alerts?.events.find((alert: Alert) => alert.basic.id === selectedAlert);
   }, [alerts, selectedAlert]);
 
-  if (alertsError || countsError || !alerts?.events?.length) return null;
+  if (error || !alerts?.events?.length) return null;
 
   const onClickHandler = (id: string) => {
     setSelectedAlert(id);
@@ -138,16 +136,12 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
           ) : (
             <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
               <AlertTriangle className="w-4 h-4 mr-2" />
-              <div className="flex items-center gap-2">
-                {alertCounts?.count.map(({ alertType, count }: AlertCountItem, index: number) => (
-                  <React.Fragment key={alertType}>
-                    {index > 0 && <span className="text-muted-foreground">•</span>}
-                    <span className="font-semibold">
-                      {count} {alertType.toLowerCase()}
-                    </span>
-                  </React.Fragment>
-                ))}
-              </div>
+              Possibility of
+              <span className={cn("mx-1 font-semibold underline text-primary")}>
+                {alerts.total} Alert
+                {alerts.total !== 1 && "s"}
+              </span>
+              in this Region
             </div>
           )}
         </PopoverTrigger>
@@ -156,9 +150,9 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
             <div className="[&>*:not(:last-child)]:border-b">
               {alerts.events.map((alert: Alert) => (
                 <AlertItem
-                  key={alert.id}
+                  key={alert.basic.id}
                   alert={alert}
-                  onClick={() => onClickHandler(alert.id)}
+                  onClick={() => onClickHandler(alert.basic.id)}
                 />
               ))}
             </div>

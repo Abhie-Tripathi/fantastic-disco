@@ -169,7 +169,7 @@ export default function EventCalendar({
 
       return {
         holidays,
-        alerts: (alerts?.events as any[]) || [],
+        alerts: (alerts?.events as Alert[]) || [],
       };
     },
     enabled: !!isEventeli,
