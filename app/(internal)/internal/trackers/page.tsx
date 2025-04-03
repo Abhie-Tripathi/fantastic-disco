@@ -311,7 +311,7 @@ const Trackers = ({ searchParams }: Search) => {
       setLocations(ids);
       // setLocalFilter("locationIds", ids.join(","))
       // console.log(ids);
-    }
+    }else setLocations("");
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)

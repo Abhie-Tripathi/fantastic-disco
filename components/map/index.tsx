@@ -155,11 +155,6 @@ export default function MapComponent({
         : getFilterValue("locationIds").length === 0
         ? "defaultLoc"
         : getFilterValue("locationIds");
-    if (locationIds === "defaultLoc")
-      setViewport({
-        ...viewport,
-        zoom: 1,
-      });
 
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -544,6 +539,17 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
+    if (location.locationIds == "defaultLoc") {
+
+      console.log("flying to default loc")
+      mapRef.current.flyTo({
+        center: [78.9629, 20.5937],
+        zoom: 0.8,
+        duration: 3000,
+        essential: true,
+      });
+    }
+
     if (location?.type === "geoCoordinates") {
       const { coordinates } = location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
@@ -555,7 +561,8 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (locationBBox) {
+    if (locationBBox && location.locationIds != "defaultLoc") {
+      console.log("hhiii")
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -566,7 +573,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-  }, [location, mapRef.current, locationBBox]);
+  }, [location, mapRef.current, locationBBox, trackerId]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
