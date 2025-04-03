@@ -298,9 +298,9 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
         formatter: (params: any) => {
           const value = params.value;
           const percent = params.treePathInfo
-            ? ((value / params.treePathInfo[0].value) * 100).toFixed(1) + "%"
-            : "100%";
-          return `${params.name}<br/>Value: ${value.toLocaleString()}<br/>Share: ${percent}`;
+            ? ((value / params.treePathInfo[0].value) * 100).toFixed(1)
+            : "100";
+          return `${params.name}<br/>${value.toLocaleString()} (${percent}%)`;
         },
       },
       
