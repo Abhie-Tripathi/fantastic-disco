@@ -340,15 +340,28 @@ const EventTrends = () => {
     applyFilters({ resetPage: true });
   };
 
+  const handleViewChange = (view: "line" | "treemap" | "table") => {
+    setActiveView(view);
+    if (view === "treemap") {
+      const defaultCategories = "animals-pets,apparel-fashion,arts-crafts,automotive,baby-kids";
+      setLocalFilter("categories", defaultCategories);
+      applyFilters({ resetPage: true });
+    }
+  };
+
   return (
-    <div className="flex h-[calc(100vh-60px)]">
+    <div
+      className={`flex h-[calc(100vh-60px)] ${
+        isFiltersCollapsed ? "pl-6" : "pl-0"
+      }`}
+    >
       {/* Enhanced Filters Sidebar */}
       <div
         className={`relative transition-all duration-300 ${
           isFiltersCollapsed ? "w-0" : "w-80"
         }`}
       >
-        <div className="h-full bg-background border-r flex flex-col">
+        <div className={`h-full bg-background  flex flex-col ${isFiltersCollapsed ? '' : 'border-r'}`}>
           <ScrollArea className="flex-1">
             <div className="space-y-4 p-4">
               <div className="flex flex-col space-y-1">
@@ -380,8 +393,12 @@ const EventTrends = () => {
             </div>
           </ScrollArea>
 
-          <div className="w-full sticky bottom-0 bg-background z-10">
-            <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3 mb-3">
+          <div
+            className={`w-full bg-background z-10 transition-all duration-300 ${
+              isFiltersCollapsed ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
               <div className="flex items-center justify-between mb-2">
                 <Button
                   variant="ghost"
@@ -455,10 +472,34 @@ const EventTrends = () => {
             </div>
           </div>
         </div>
+        {!isFiltersCollapsed && (
+          <button
+            onClick={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
+            className="group absolute -right-4 top-8 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+          >
+            <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
+          </button>
+        )}
+
+        {isFiltersCollapsed && (
+          <div className="fixed left-[81px] top-[90px] z-30">
+            <button
+              onClick={() => setIsFiltersCollapsed(false)}
+              className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+            >
+              <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" />
+              {filterCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
+                  {filterCount}
+                </span>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto">
+      <div className={`flex-1 overflow-auto ${isFiltersCollapsed ? 'pl-6' : ''}`}>
         <div className="p-6">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
@@ -486,7 +527,7 @@ const EventTrends = () => {
                     activeView === template.id ? "border-primary" : ""
                   }`}
                   onClick={() =>
-                    setActiveView(template.id as "line" | "treemap" | "table")
+                    handleViewChange(template.id as "line" | "treemap" | "table")
                   }
                 >
                   <div className="flex flex-col">
