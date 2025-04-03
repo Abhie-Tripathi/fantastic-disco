@@ -96,6 +96,7 @@ export default function EventList({
             .filter(Boolean)
             .join(", ")
       : "Venue to be announced";
+      const type=getFilterValue("type");
       const intelScoreData = [
         {
           name: "Total",

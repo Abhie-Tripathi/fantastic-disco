@@ -40,25 +40,24 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
 
   return (
     <div
-      style={{
-        width: "90px",
-        zIndex: 999,
-        position: "sticky",
-        left: coordinate.x - 20,
-        top: coordinate.y - 40,
-        background: "white",
-        fontSize: "12px",
-        borderRadius: "6px",
-        textAlign: "center",
-        pointerEvents: "none",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
-      }}
-    >
-      {payload[0].name}
-      <div>
-       {payload[0].value}
-       </div>
-    </div>
+  className="bg-gray-800 text-gray-100"
+  style={{
+    width: "90px",
+    zIndex: 999,
+    fontSize:"10px",
+    position: "sticky",
+    left: coordinate.x - 40,
+    top: coordinate.y - 50,
+    padding: "2px",
+    borderRadius: "4px",
+    textAlign: "center",
+    pointerEvents: "none",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
+  }}
+>
+  Relevance Score
+</div>
+
   );
 };
 
@@ -114,7 +113,7 @@ export default function PieChartComponent({
               strokeWidth={2}
             />
           )}
-          {/* <Tooltip content={<CustomTooltip />} /> */}
+          <Tooltip content={<CustomTooltip />} />
           <text
             x="50%"
             y="50%"

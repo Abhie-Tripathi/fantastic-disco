@@ -20,6 +20,7 @@ import { Event } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { useFilterState } from "@/hooks/useFilterState";
 import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";
 import { MapRef } from "react-map-gl";
@@ -47,7 +48,7 @@ const EventCard = memo(
     trackerId: string|undefined;
   }) => {
     const [mapZoom, setMapZoom] = useState(0);
-
+    const {getFilterValue} = useFilterState();
     useEffect(() => {
       if (mapRef.current) {
         setMapZoom(mapRef.current.getZoom());
@@ -56,7 +57,7 @@ const EventCard = memo(
         });
       }
     }, [mapRef]);
-
+    const type=getFilterValue("type");
     const address = event.basic.eventLocation
       ? event.basic.format === "online"
         ? "Online"

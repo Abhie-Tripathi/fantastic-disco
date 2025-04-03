@@ -1012,8 +1012,9 @@ const EventListItem = ({
                     </div>
                     {trackerId && 
                     <div className="space-y-4">
-                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded p-2 min-h-[196px]">
+                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 min-h-[196px]">
                       <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
+                      <div>Relevance Score</div>
                       </div>
                     </div>
                     }                    {global !== "global" && (
@@ -1079,8 +1080,9 @@ const EventListItem = ({
                     </div>
                     {trackerId &&
                     <div className="space-y-4">
-                    <div className="grid grid-rows-1 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded">
+                    <div className="grid grid-rows-1 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
                       <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
+                      <div className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm" style={{fontSize:"10px"}}>Relevance Score</div>
                       </div>
                     </div>
                     }
