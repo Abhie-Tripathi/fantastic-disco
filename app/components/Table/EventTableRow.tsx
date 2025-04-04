@@ -298,23 +298,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.primaryEventType === "holiday" ? (
-            "-"
-          ) : (
-            event.basic.eventLocation?.venue?.name ||
-            (event.basic.format === "online" ? "Online" : "TBA")
-          )}
+          {event.basic.primaryEventType === "holiday"
+            ? "-"
+            : event.basic.format === "online"
+            ? "Online"
+            : event.basic.eventLocation?.locationType == "VENUE"
+            ? event.basic.eventLocation.name
+            : "TBA"}
         </div>
       </TableCell>
 
       {/* City Column */}
-      <TableCell>
-        {displayValue(event.basic.eventLocation?.city?.name)}
-      </TableCell>
+      <TableCell>{displayValue(event.basic.eventLocation?.cityName)}</TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.country?.name)}
+        {displayValue(event.basic.eventLocation?.countryName)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
@@ -348,20 +347,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <span className="flex items-center gap-1">
-                  {event.basic.primaryEventType === "holiday" 
+                  {event.basic.primaryEventType === "holiday"
                     ? event.basic.eventTypes[0]?.name
                     : event.basic.categories[0]?.name}
-                  {event.basic.primaryEventType === "holiday" 
-                    ? (event.basic.eventTypes.length > 1 && (
+                  {event.basic.primaryEventType === "holiday"
+                    ? event.basic.eventTypes.length > 1 && (
                         <span className="text-xs font-bold text-muted-foreground">
                           +{event.basic.eventTypes.length - 1}
                         </span>
-                      ))
-                    : (event.basic.categories.length > 1 && (
+                      )
+                    : event.basic.categories.length > 1 && (
                         <span className="text-xs font-bold text-muted-foreground">
                           +{event.basic.categories.length - 1}
                         </span>
-                      ))}
+                      )}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -451,7 +450,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.rankings) &&
         event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.trustScore !== null && event.insights?.trustScore !== 0 ? (
+            {event.insights?.trustScore !== null &&
+            event.insights?.trustScore !== 0 ? (
               event.insights?.trustChangePercentage > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
                   {event.insights?.trustScore}%

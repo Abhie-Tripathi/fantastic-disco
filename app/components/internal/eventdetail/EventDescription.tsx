@@ -13,20 +13,24 @@ import { useTheme } from "@/context";
 import { formatEventDates } from "@/utils/dateFormat";
 import { Calendar, Location } from "geist-icons";
 import { GAEvent } from "@/utils/GAEvent";
-
+import { Event } from "@/types/events";
 
 const formatDate = (dateString: string | null): string => {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
-  return date.toLocaleDateString('en-GB', options);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("en-GB", options);
 };
 interface DetailsProps {
   description: string;
   open: boolean;
   speakers: boolean;
   shortlist: boolean;
-  eventDetail: any;
+  eventDetail: Event["basic"];
 }
 
 const EventDescription = ({
@@ -34,23 +38,33 @@ const EventDescription = ({
   open,
   speakers,
   shortlist,
-  eventDetail
+  eventDetail,
 }: DetailsProps) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
-    <div
-      className={`${styles.container} card`}
-    >
+    <div className={`${styles.container} card`}>
       <div
         className={styles.header}
         onClick={() => {
           setAccordianToggle(!accordianToggle);
-          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Event Details", "Expanded");
+          !accordianToggle &&
+            GAEvent(
+              "Coordinate",
+              "Enquiry Detail",
+              "Event Details",
+              "Expanded"
+            );
         }}
       >
-        <Image src={PageIcon} width={24} height={24} alt="page" className={iconClass} />
+        <Image
+          src={PageIcon}
+          width={24}
+          height={24}
+          alt="page"
+          className={iconClass}
+        />
         <div className={styles.eventDetail_header}>
           Event Details
           <span className={styles.image_container}>
@@ -67,8 +81,17 @@ const EventDescription = ({
               }`}
             >
               {/* <Image src={CalendarIcon} alt="date" className={iconClass} height={18} width={18} /> */}
-              <Calendar height={'16px'} width={'16px'} color="var(--primary-text-color)" />
-              <div className={styles.date}>{formatEventDates(eventDetail.startDateTime, eventDetail.endDateTime)}</div>
+              <Calendar
+                height={"16px"}
+                width={"16px"}
+                color="var(--primary-text-color)"
+              />
+              <div className={styles.date}>
+                {formatEventDates(
+                  eventDetail.startDateTime,
+                  eventDetail.endDateTime
+                )}
+              </div>
             </div>
             {shortlist && (
               <div className={styles.statusContainer}>
@@ -80,12 +103,22 @@ const EventDescription = ({
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
               {/* <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} /> */}
-              <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+              <Location
+                height={"16px"}
+                width={"16px"}
+                color="var(--primary-text-color)"
+                style={{ display: "flex" }}
+              />
               <div className={styles.location}>
-                {(eventDetail.eventLocation?.city?.name && eventDetail.eventLocation?.country?.name) ?
-                  (eventDetail.eventLocation.city.name !== eventDetail.eventLocation?.country.name ?eventDetail.eventLocation.city.name +', '+eventDetail.eventLocation?.country.name: eventDetail.eventLocation.country.name) :
-                  eventDetail.eventLocation.country.name
-                }
+                {eventDetail.eventLocation?.cityName &&
+                eventDetail.eventLocation?.countryName
+                  ? eventDetail.eventLocation.cityName !==
+                    eventDetail.eventLocation?.countryName
+                    ? eventDetail.eventLocation.cityName +
+                      ", " +
+                      eventDetail.eventLocation?.countryName
+                    : eventDetail.eventLocation.countryName
+                  : eventDetail.eventLocation.countryName}
               </div>
             </div>
             {/* <div className={styles.locationContainer_direction}>
@@ -100,12 +133,12 @@ const EventDescription = ({
               </span>
             </div> */}
           </div>
-          {description &&
-          <div className={`${styles.descContainer}`}>
-            {/* <div className={styles.descHeading}>Description</div> */}
-            <div className={styles.description}>{description}</div>
-          </div>
-          }
+          {description && (
+            <div className={`${styles.descContainer}`}>
+              {/* <div className={styles.descHeading}>Description</div> */}
+              <div className={styles.description}>{description}</div>
+            </div>
+          )}
           {speakers && (
             <div className={styles.speakersContainer}>
               <div className={styles.speakerHeading}>Speakers</div>

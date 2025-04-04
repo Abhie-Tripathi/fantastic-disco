@@ -127,10 +127,22 @@ const BasicEventSchema = z.object({
     })
   ),
   eventLocation: z.object({
-    country: CountrySchema.nullable(),
-    venue: VenueSchema.nullable(),
-    city: CitySchema.nullable(),
-    state: StateSchema.nullable(),
+    id: z.string(),
+    name: z.string(),
+    cityId: z.string().nullable(),
+    cityName: z.string().nullable(),
+    stateId: z.string().nullable(),
+    stateName: z.string().nullable(),
+    countryId: z.string().nullable(),
+    countryName: z.string().nullable(),
+    latitude: z.string().nullable(),
+    longitude: z.string().nullable(),
+    address: z.string().nullable(),
+    displayName: z.string().nullable(),
+    businessScore: z.number().optional(),
+    socialScore: z.number().optional(),
+    reason: z.string().optional(),
+    locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
   }),
   organizer: z
     .object({

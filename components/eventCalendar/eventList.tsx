@@ -58,12 +58,16 @@ export default function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
-      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(
-        trackerId || "", 
-        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}`
-        + (isEventeli ? `&type=${active}` : ''),
-        true
-      ),
+      source !== "tracker"
+        ? eventService.getEventsWithSearchParams(filteredParams.toString())
+        : getCalendarViewEvents(
+            trackerId || "",
+            `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${
+              (currentPage - 1) * 20
+            }&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}` +
+              (isEventeli ? `&type=${active}` : ""),
+            true
+          ),
   });
 
   const handlePageChange = (page: number) => {
@@ -87,10 +91,12 @@ export default function EventList({
       ? event.basic.format === "online"
         ? "Online"
         : [
-            event.basic.eventLocation?.venue?.name || "TBA",
-            event.basic.eventLocation?.city?.name,
-            event.basic.eventLocation?.state?.name,
-            event.basic.eventLocation?.country?.name,
+            event.basic.eventLocation?.locationType === "VENUE"
+              ? event.basic.eventLocation?.name
+              : "TBA",
+            event.basic.eventLocation?.cityName,
+            event.basic.eventLocation?.stateName,
+            event.basic.eventLocation?.countryName,
           ]
             .filter(Boolean)
             .join(", ")
@@ -103,10 +109,10 @@ export default function EventList({
             <div className="flex items-start gap-3">
               {event.basic.logoUrl ? (
                 <img
-                    src={event.basic.logoUrl}
-                    alt={`${event.basic.name} logo`}
-                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
-                  />
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
               ) : event.basic.website ? (
                 <div className="w-12 h-12 relative">
                   <img

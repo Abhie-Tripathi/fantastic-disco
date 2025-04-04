@@ -264,8 +264,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
 
-  const venueName = eventLocation?.venue?.name;
-  const venueAddress = [eventLocation?.city?.name, eventLocation?.country?.name]
+  const venueName =
+    eventLocation?.locationType === "VENUE" ? eventLocation?.name : null;
+  const venueAddress = [eventLocation?.cityName, eventLocation?.countryName]
     .filter(Boolean)
     .join(", ");
 
@@ -508,15 +509,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <p className="text-[var(--primary-text-color)] font-semibold text-sm">
                   <span>{venueName}</span>
 
-                  {showAddress &&
-                    eventLocation &&
-                    eventLocation.venue &&
-                    eventLocation.venue.address && (
-                      <span>
-                        {", "}
-                        {eventLocation?.venue?.address || ""}
-                      </span>
-                    )}
+                  {showAddress && eventLocation && eventLocation.address && (
+                    <span>
+                      {", "}
+                      {eventLocation?.address || ""}
+                    </span>
+                  )}
                 </p>
               ) : (
                 <TooltipProvider>

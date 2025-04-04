@@ -58,10 +58,12 @@ const EventCard = memo(
       ? event.basic.format === "online"
         ? "Online"
         : [
-            event.basic.eventLocation?.venue?.name || "TBA",
-            event.basic.eventLocation?.city?.name,
-            event.basic.eventLocation?.state?.name,
-            event.basic.eventLocation?.country?.name,
+            event.basic.eventLocation?.locationType === "VENUE"
+              ? event.basic.eventLocation?.name
+              : "TBA",
+            event.basic.eventLocation?.cityName,
+            event.basic.eventLocation?.stateName,
+            event.basic.eventLocation?.countryName,
           ]
             .filter(Boolean)
             .join(", ")
@@ -86,12 +88,12 @@ const EventCard = memo(
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
           <CardContent className="p-3">
             <div className="flex items-start gap-3">
-            {event.basic.logoUrl ? (
+              {event.basic.logoUrl ? (
                 <img
-                    src={event.basic.logoUrl}
-                    alt={`${event.basic.name} logo`}
-                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
-                  />
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
               ) : event.basic.website ? (
                 <div className="w-12 h-12 relative">
                   <img
@@ -300,7 +302,7 @@ function EventList({
   onEventLeave,
   searchParam,
 }: {
-  eventType?:string;
+  eventType?: string;
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
@@ -333,18 +335,19 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius = Math.max(
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([ne.lng, center.lat]),  // East point
-          { units: "kilometers" }
-        ),
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([center.lng, ne.lat]),  // North point
-          { units: "kilometers" }
-        )
-      ) * Math.sqrt(2);
+      const radius =
+        Math.max(
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([ne.lng, center.lat]), // East point
+            { units: "kilometers" }
+          ),
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([center.lng, ne.lat]), // North point
+            { units: "kilometers" }
+          )
+        ) * Math.sqrt(2);
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);
@@ -385,7 +388,8 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      if (params.get("locationIds")) params.set("viewBound", JSON.stringify(viewBound));
+      if (params.get("locationIds"))
+        params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 
@@ -393,7 +397,13 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryKey: [
+      "events",
+      filteredParams.toString(),
+      currentPage,
+      sortBy,
+      eventType,
+    ],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
@@ -405,7 +415,7 @@ function EventList({
           )
         : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

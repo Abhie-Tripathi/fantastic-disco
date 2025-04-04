@@ -347,15 +347,17 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation?.venue?.name || "TBA",
-          event.basic.eventLocation?.city?.name,
-          event.basic.eventLocation?.state?.name !==
-          event.basic.eventLocation?.city?.name
-            ? event.basic.eventLocation?.state?.name
+          event.basic.eventLocation?.locationType === "VENUE"
+            ? event.basic.eventLocation?.name
+            : "TBA",
+          event.basic.eventLocation?.cityName,
+          event.basic.eventLocation?.stateName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.stateName
             : null,
-          event.basic.eventLocation?.country?.name !==
-          event.basic.eventLocation?.city?.name
-            ? event.basic.eventLocation?.country?.name
+          event.basic.eventLocation?.countryName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.countryName
             : null,
         ]
           .filter(Boolean)
@@ -363,15 +365,17 @@ const EventListItem = ({
       </span>
     ) : (
       [
-        event.basic.eventLocation?.venue?.name || "TBA",
-        event.basic.eventLocation?.city?.name,
-        event.basic.eventLocation?.state?.name !==
-        event.basic.eventLocation?.city?.name
-          ? event.basic.eventLocation?.state?.name
+        event.basic.eventLocation?.locationType === "VENUE"
+          ? event.basic.eventLocation?.name
+          : "TBA",
+        event.basic.eventLocation?.cityName,
+        event.basic.eventLocation?.stateName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.stateName
           : null,
-        event.basic.eventLocation?.country?.name !==
-        event.basic.eventLocation?.city?.name
-          ? event.basic.eventLocation?.country?.name
+        event.basic.eventLocation?.countryName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.countryName
           : null,
       ]
         .filter(Boolean)
@@ -971,18 +975,19 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {isEventeli && event.insights?.economicImpact !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(
-                              event.insights?.economicImpact
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {isEventeli &&
+                        event.insights?.economicImpact !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Economic Impact
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatEstimatedSpend(
+                                event.insights?.economicImpact
+                              )}
+                            </p>
+                          </div>
+                        )}
                     </div>
 
                     <div className="space-y-4">
@@ -1029,7 +1034,9 @@ const EventListItem = ({
                               {event.insights?.estimatedExhibitors == "" ||
                               event.insights?.estimatedExhibitors == null
                                 ? "--"
-                                : formatExhibitorCount(event.insights?.estimatedExhibitors)}
+                                : formatExhibitorCount(
+                                    event.insights?.estimatedExhibitors
+                                  )}
                             </p>
                           </div>
                         )}
