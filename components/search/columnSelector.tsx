@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterContext } from "@/context/filterContext";
 import { useSearchParams } from "next/navigation";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { columnsDropdown } from "@/data/trends";
+import { columnsDropdown, treemapColumnsDropdown } from "@/data/trends";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { TEventColumnType, Thresholds } from "@/types";
 import { cn } from "@/lib/utils";
@@ -19,9 +19,11 @@ import { cn } from "@/lib/utils";
 type EventGroupType = "social" | "business";
 
 export default function ColumnsSelector({
+  view,
   selectedEventType,
   handleSelectChange,
 }: {
+  view: "line" | "treemap" | "table";
   selectedEventType: keyof Thresholds;
   handleSelectChange: (value: TEventColumnType) => void;
 }) {
@@ -43,6 +45,8 @@ export default function ColumnsSelector({
     }
     setIsOpen(open);
   };
+
+  const columns = view === "treemap" ? treemapColumnsDropdown : columnsDropdown;
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -79,7 +83,7 @@ export default function ColumnsSelector({
           }}
         >
           <div className="space-y-3 p-2">
-            {columnsDropdown.map(({ label, value, enable }) => (
+            {columns.map(({ label, value, enable }) => (
               <div
                 key={value}
                 className="flex items-center space-x-2 cursor-pointer"

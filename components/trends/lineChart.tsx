@@ -608,7 +608,7 @@ const LineChartComponent = ({
 
   return (
     <div ref={chartRef}>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={420}>
         <AreaChart
           data={graphData}
           margin={{

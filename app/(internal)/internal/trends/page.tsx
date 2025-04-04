@@ -343,7 +343,8 @@ const EventTrends = () => {
   const handleViewChange = (view: "line" | "treemap" | "table") => {
     setActiveView(view);
     if (view === "treemap") {
-      const defaultCategories = "animals-pets,apparel-fashion,arts-crafts,automotive,baby-kids";
+      const defaultCategories =
+        "animals-pets,apparel-fashion,arts-crafts,automotive,baby-kids";
       setLocalFilter("categories", defaultCategories);
       applyFilters({ resetPage: true });
     }
@@ -361,7 +362,11 @@ const EventTrends = () => {
           isFiltersCollapsed ? "w-0" : "w-80"
         }`}
       >
-        <div className={`h-full bg-background  flex flex-col ${isFiltersCollapsed ? '' : 'border-r'}`}>
+        <div
+          className={`h-full bg-background  flex flex-col ${
+            isFiltersCollapsed ? "" : "border-r"
+          }`}
+        >
           <ScrollArea className="flex-1">
             <div className="space-y-4 p-4">
               <div className="flex flex-col space-y-1">
@@ -380,6 +385,7 @@ const EventTrends = () => {
                 <CategorySelector maxCategories={5} variant="accordion" />
               )}
               <ColumnsSelector
+                view={activeView}
                 selectedEventType={selectedEventType}
                 handleSelectChange={handleSelectChange}
               />
@@ -499,12 +505,14 @@ const EventTrends = () => {
       </div>
 
       {/* Main Content */}
-      <div className={`flex-1 overflow-auto ${isFiltersCollapsed ? 'pl-6' : ''}`}>
-        <div className="p-6">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
+      <div
+        className={`flex-1 overflow-auto ${isFiltersCollapsed ? "pl-6" : ""}`}
+      >
+        <div className="px-6 py-4">
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h1 className="text-2xl font-semibold mb-1">
+                <h1 className="text-xl font-semibold mb-1">
                   Trend Explorations
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -523,15 +531,17 @@ const EventTrends = () => {
               {ViewTemplates.map((template) => (
                 <Card
                   key={template.id}
-                  className={`p-6 cursor-pointer hover:border-primary/50 transition-colors ${
+                  className={`p-4 cursor-pointer hover:border-primary/50 transition-colors ${
                     activeView === template.id ? "border-primary" : ""
                   }`}
                   onClick={() =>
-                    handleViewChange(template.id as "line" | "treemap" | "table")
+                    handleViewChange(
+                      template.id as "line" | "treemap" | "table"
+                    )
                   }
                 >
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-3 mb-3">
                       <div className="text-primary">{template.icon}</div>
                       <h3 className="font-medium">{template.title}</h3>
                     </div>
@@ -573,14 +583,19 @@ const EventTrends = () => {
                     width={150}
                     height={150}
                   />
-                  <div>Set filters to view data</div>
+                  <div>
+                    Explore global trends across event types over the past
+                    decade.
+                  </div>
                 </div>
               ) : graphData && graphData.length > 0 ? (
                 <>
                   {activeView === "line" && (
-                    <Card className="p-6">
+                    <Card className="p-6 relative">
                       <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-medium">Trend Analysis</h2>
+                        <h2 className="text-lg font-medium absolute top-6 left-6">
+                          Trend Analysis
+                        </h2>
                       </div>
                       <div className={styles.predictedAttendence_container}>
                         <LineChartComponent

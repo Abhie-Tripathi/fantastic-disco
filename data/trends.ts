@@ -57,6 +57,48 @@ export const columnsDropdown: ColumnDropdown[] = [
   },
 ];
 
+export const treemapColumnsDropdown: ColumnDropdown[] = [
+  {
+    label: "Number of events",
+    value: "eventCount",
+    tooltipDescription: "Count of events per each day",
+    enable: true,
+  },
+  {
+    label: "Predicted Attendance",
+    value: "predictedAttendance",
+    tooltipDescription: "No of people estimated to attend a event",
+    enable: false,
+  },
+  {
+    label: "Inbound Estimate",
+    value: "inboundEstimate",
+    tooltipDescription:
+      "The number of attendees traveling to the event from other cities within the host country",
+    enable: false,
+  },
+  {
+    label: "International Estimate",
+    value: "internationalEstimate",
+    tooltipDescription:
+      " The number of attendees traveling to the event from outside the host country",
+    enable: false,
+  },
+  {
+    label: "Economic Impact",
+    value: "economicImpact",
+    tooltipDescription:
+      "The estimated amount of money the event contributes to the local economy",
+    enable: false,
+  },
+  {
+    label: "Impact Score",
+    value: "impactScore",
+    tooltipDescription: "",
+    enable: false,
+  },
+];
+
 export const subCategories: SubColumn[] = [
   {
     slug: "festival",
