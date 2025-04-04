@@ -52,7 +52,6 @@ type authContextType = {
   ) => void;
   signOut: () => void;
   signInSSO: () => Promise<any>;
-  signUpSSO: () => Promise<any>;
   updateIndustry: (formData: any) => Promise<any>;
   generateOTP: (
     email: string,
@@ -96,7 +95,6 @@ const authContextDefaultValues: authContextType = {
   setUser: () => {},
   signOut: () => {},
   signInSSO: () => Promise.resolve(null),
-  signUpSSO: () => Promise.resolve(null),
   updateIndustry: () => Promise.resolve(null),
   generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
@@ -371,36 +369,6 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   }, [request, router]);
 
-  const signUpSSO = useCallback(async () => {
-    setIsAuthenticating(true);
-    try {
-      const origin = window.location.origin;
-      const res = await fetch(`${origin}/api/auth/session`);
-      const session = await res.json();
-      const result = await request<{ user: UserResponse }>(
-        endpoints.auth.ssoSignIn(session.user.provider),
-        {
-          method: "POST",
-          data: { accessToken: session.user.accessToken },
-        }
-      );
-      if (result) {
-        if (!result.user.isNewUser) {
-          window.localStorage.setItem("user", JSON.stringify(result.user));
-          localStorage.removeItem("walkthroughCompleted");
-          sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          router.push("/internal");
-        } else {
-          router.push("/signup");
-        }
-      }
-    } catch (err) {
-      console.error("Sign in error:", err);
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, [request, router]);
-
   const updateIndustry = useCallback(
     async (formData: any) => {
       try {
@@ -586,7 +554,6 @@ export const AuthContextProvider = ({ children }: any) => {
     signin,
     signOut,
     signInSSO,
-    signUpSSO,
     updateIndustry,
     setError,
     isLoading,

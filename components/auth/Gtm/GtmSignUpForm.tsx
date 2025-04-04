@@ -32,7 +32,6 @@ const GtmSignUpForm = () => {
     signup,
     error,
     setError,
-    signUpSSO,
     signInSSO,
     user,
     updateIndustry,
