@@ -555,19 +555,21 @@ const EventTrends = () => {
           </div>
 
           {/* Saved Trends List */}
-          {/* {savedTrendsList && savedTrendsList?.trackers.length > 0 && (
-            <div className="mb-6">
-              <Card className="p-4">
-                <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                  <Save className="w-4 h-4" />
-                  Saved Trends
-                </h3>
-                <SavedTrendsList
-                  savedTrendsList={savedTrendsList?.trackers || []}
-                />
-              </Card>
-            </div>
-          )} */}
+          {savedTrendsList &&
+            activeView !== "treemap" &&
+            savedTrendsList?.trackers.length > 0 && (
+              <div className="mb-4">
+                <Card className="p-4">
+                  <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                    <Save className="w-4 h-4" />
+                    Saved Trends
+                  </h3>
+                  <SavedTrendsList
+                    savedTrendsList={savedTrendsList?.trackers || []}
+                  />
+                </Card>
+              </div>
+            )}
 
           {/* Content Area */}
 
