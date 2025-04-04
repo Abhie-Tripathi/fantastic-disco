@@ -84,20 +84,20 @@ function SortableItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 bg-white rounded-md p-1 ${
+      className={`flex items-center gap-2 bg-background rounded-md p-1 ${
         isDragging ? "shadow-lg" : ""
       }`}
     >
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab hover:bg-muted rounded p-1"
+        className="cursor-grab hover:bg-muted/50 rounded p-1"
       >
         <DragHandleDots2Icon className="h-5 w-5 text-muted-foreground" />
       </div>
 
       <Select value={level.value} onValueChange={onValueChange}>
-        <SelectTrigger className="flex-1">
+        <SelectTrigger className="flex-1 bg-background">
           <SelectValue placeholder="Select level" />
         </SelectTrigger>
         <SelectContent>
