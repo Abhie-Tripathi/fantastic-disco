@@ -1,9 +1,9 @@
 "use client";
+import { LoadingPage } from "@/components/auth/loadingPage";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context";
-import { sessionKeys } from "@/data/onboarding";
 import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,15 +17,20 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
-import { useQuery } from "@tanstack/react-query";
-import Loading from "@/components/ui/Loading";
-import { endpoints } from "@/config/endpoints";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
   const router = useRouter();
-  const { signin, error, isLoading, setError, signInSSO } = useAuthContext();
+  const {
+    signin,
+    error,
+    isLoading,
+    setError,
+    signInSSO,
+    isAuthenticating,
+    user,
+  } = useAuthContext();
   const { data, status } = useSession();
 
   const {
@@ -55,8 +60,6 @@ export default function SignInForm() {
       GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Empty");
     }
   }, [errors.email?.message]);
-
-  // const { isLoading: ssoSignInLoading } = useQuery({
   //   queryKey: ["signInSSO"],
   //   queryFn: () => signInSSO,
   //   enabled: status === "authenticated",
@@ -68,6 +71,10 @@ export default function SignInForm() {
       signInSSO();
     }
   }, [status, data]);
+
+  if (isAuthenticating) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4 h-[45dvh]">

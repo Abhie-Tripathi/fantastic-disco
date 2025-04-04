@@ -1,4 +1,25 @@
 "use client";
+import { isEventeli } from "@/config";
+import { endpoints } from "@/config/endpoints";
+import { baseUrl } from "@/constants";
+import { sessionKeys } from "@/data/onboarding";
+import { useApi } from "@/hooks/useApi";
+import { useEventsService } from "@/services/eventsService";
+import { useLocationService } from "@/services/locationService";
+import { useProfileServices } from "@/services/profileService";
+import {
+  AuthFlow,
+  PrimaryLocation,
+  UserLocation,
+  VerifyOTP,
+} from "@/types/auth/user";
+import { SettingsInterestData } from "@/types/onboarding";
+import { GAEvent } from "@/utils/GAEvent";
+import { getRestrictedUrl } from "@/utils/generateUrl";
+import { myFetch } from "@/utils/myFetch";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { signOut as signOutSSO } from "next-auth/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -10,32 +31,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
-import { authEndpoints, baseUrl } from "@/constants";
+import { SignUpDTO, TSignInFormSchema } from "../types";
 import { UserResponse } from "../types/user";
-import { SignUpResponse, SignInResponse } from "../types";
-import { TSignInFormSchema, SignUpDTO } from "../types";
-import { myFetch } from "@/utils/myFetch";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useApi } from "@/hooks/useApi";
-import { useProductSettingServices } from "@/services/settingservices/productService";
-import { SettingResearchData, SettingsInterestData } from "@/types/onboarding";
-import { useEventsService } from "@/services/eventsService";
-import { getRestrictedUrl } from "@/utils/generateUrl";
-import { GAEvent } from "@/utils/GAEvent";
-import { endpoints } from "@/config/endpoints";
-import {
-  AuthFlow,
-  PrimaryLocation,
-  UserLocation,
-  VerifyOTP,
-} from "@/types/auth/user";
-import { sessionKeys } from "@/data/onboarding";
-import { useLocationService } from "@/services/locationService";
-import { isEventeli } from "@/config";
-import { signOut as signOutSSO, useSession } from "next-auth/react";
-import { endOfMonth, format, startOfMonth } from "date-fns";
-import { useProfileServices } from "@/services/profileService";
 
 type authContextType = {
   user: UserResponse | null;
@@ -72,6 +69,7 @@ type authContextType = {
   ) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
+  isAuthenticating: boolean;
 };
 interface newUserResponse {
   user: {
@@ -104,6 +102,7 @@ const authContextDefaultValues: authContextType = {
   verifyOtp: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
   setProfilePic: () => {},
+  isAuthenticating: false,
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -114,21 +113,17 @@ export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
   const { updateMyProfileData } = useProfileServices();
-  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
-  const [loginError, setLoginError] = useState<string>("");
   const { getLocationName } = useLocationService();
   const { request, error, isLoading, setError } = useApi<any>();
-  const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
-  const { updateResearchData } = useProductSettingServices();
   const eventService = useEventsService();
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
 
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
-  const { data: session, status } = useSession();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
   const categories = sessionCategories && JSON.parse(sessionCategories);
@@ -222,7 +217,7 @@ export const AuthContextProvider = ({ children }: any) => {
       ...(flow && { flow }),
     });
     try {
-      const data = await request(url, {
+      await request(url, {
         method: "POST",
         data: { ...dataToSend },
       });
@@ -282,16 +277,11 @@ export const AuthContextProvider = ({ children }: any) => {
   const signup = useCallback(
     async (userDto: SignUpDTO) => {
       try {
-        const data = await request(endpoints.auth.signUp, {
+        await request(endpoints.auth.signUp, {
           method: "POST",
           data: { ...userDto },
         });
         router.push(`/verify-otp?email=${userDto.email}`);
-        // router.push(
-        //   status === "authenticated"
-        //     ? `/internal/search/events?${urlParams}`
-        //     : `/verify-otp?email=${userDto.email}`
-        // );
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {
@@ -343,6 +333,7 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [request, router]);
 
   const signInSSO = useCallback(async () => {
+    setIsAuthenticating(true);
     try {
       const origin = window.location.origin;
       const res = await fetch(`${origin}/api/auth/session`);
@@ -354,9 +345,14 @@ export const AuthContextProvider = ({ children }: any) => {
           data: { accessToken: session.user.accessToken },
         }
       );
+
       if (result) {
-        if (!result.user.isNewUser) {
+        if (result.user) {
           window.localStorage.setItem("user", JSON.stringify(result.user));
+          setUser(result.user);
+        }
+
+        if (!result.user.isNewUser) {
           localStorage.setItem(
             "walkthroughCompleted",
             JSON.stringify(["research"])
@@ -364,15 +360,19 @@ export const AuthContextProvider = ({ children }: any) => {
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           router.push("/internal");
         } else {
+          localStorage.removeItem("walkthroughCompleted");
           router.push("/signup");
         }
       }
     } catch (err) {
       console.error("Sign in error:", err);
+    } finally {
+      setIsAuthenticating(false);
     }
   }, [request, router]);
 
   const signUpSSO = useCallback(async () => {
+    setIsAuthenticating(true);
     try {
       const origin = window.location.origin;
       const res = await fetch(`${origin}/api/auth/session`);
@@ -387,10 +387,7 @@ export const AuthContextProvider = ({ children }: any) => {
       if (result) {
         if (!result.user.isNewUser) {
           window.localStorage.setItem("user", JSON.stringify(result.user));
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(["research"])
-          );
+          localStorage.removeItem("walkthroughCompleted");
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           router.push("/internal");
         } else {
@@ -399,6 +396,8 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     } catch (err) {
       console.error("Sign in error:", err);
+    } finally {
+      setIsAuthenticating(false);
     }
   }, [request, router]);
 
@@ -608,6 +607,7 @@ export const AuthContextProvider = ({ children }: any) => {
         // setLocalStorage(updatedUser);
       }
     },
+    isAuthenticating,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
