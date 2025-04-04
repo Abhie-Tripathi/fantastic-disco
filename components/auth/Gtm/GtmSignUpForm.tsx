@@ -27,7 +27,7 @@ import LinkedinIcon from "/public/linkedin.svg";
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
-  const { signup, error, setError, signUpSSO, user, updateIndustry } =
+  const { signup, error, setError, signUpSSO, user, updateIndustry, userAuthenticated } =
     useAuthContext();
 
   const { getFilterValue, deleteFilter } = useFilterState();
@@ -74,7 +74,7 @@ const GtmSignUpForm = () => {
     sessionStorage.setItem("flow", "signUp");
 
     try {
-      if (user && user?.isNewUser && status === "authenticated") {
+      if (user && user?.isNewUser && (status === "authenticated" || userAuthenticated)) {
         await updateIndustry(signUpDTOData);
       } else {
         await signup(signUpDTOData);

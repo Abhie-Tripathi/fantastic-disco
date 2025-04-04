@@ -36,6 +36,7 @@ import { isEventeli } from "@/config";
 import { signOut as signOutSSO, useSession } from "next-auth/react";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { useProfileServices } from "@/services/profileService";
+import { useTrackerServices } from "@/services/trackerServices";
 
 type authContextType = {
   user: UserResponse | null;
@@ -45,6 +46,7 @@ type authContextType = {
     | undefined;
   isVerifiedToken: boolean;
   isLoading: boolean;
+  userAuthenticated: boolean;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
@@ -56,6 +58,10 @@ type authContextType = {
   signOut: () => void;
   signInSSO: () => Promise<any>;
   signUpSSO: () => Promise<any>;
+  signUpSSO10times: (
+    token: string,
+    userId: number,
+  ) => Promise<any>;
   updateIndustry: (formData: any) => Promise<any>;
   generateOTP: (
     email: string,
@@ -88,6 +94,7 @@ const authContextDefaultValues: authContextType = {
   error: null,
   isLoading: false,
   isVerifiedToken: false,
+  userAuthenticated: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
   setError: (
@@ -99,6 +106,7 @@ const authContextDefaultValues: authContextType = {
   signOut: () => {},
   signInSSO: () => Promise.resolve(null),
   signUpSSO: () => Promise.resolve(null),
+  signUpSSO10times: () => Promise.resolve(null),
   updateIndustry: () => Promise.resolve(null),
   generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
@@ -114,6 +122,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
   const { updateMyProfileData } = useProfileServices();
+  const { verify10timesAccess } = useTrackerServices();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
@@ -124,10 +133,10 @@ export const AuthContextProvider = ({ children }: any) => {
   const { updateResearchData } = useProductSettingServices();
   const eventService = useEventsService();
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
+  const [userAuthenticated, setUserAuthenticated] = useState(false);
 
   const searchParams = useSearchParams();
 
-  const token = searchParams.get("token");
   const { data: session, status } = useSession();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
@@ -402,6 +411,35 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   }, [request, router]);
 
+  const signUpSSO10times = useCallback(async (token: string, userId: number) => {
+    try {
+      const formData = { token, userId };
+      const result = await verify10timesAccess(formData);
+
+      if (result) {
+        setUserAuthenticated(true);
+
+        if (result.user) {
+          window.localStorage.setItem("user", JSON.stringify(result.user));
+          setUser(result.user);
+        }
+
+        if (!result.user.isNewUser) {
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(["research"])
+          );
+          router.push("/internal/search/events");
+        } else {
+          localStorage.removeItem("walkthroughCompleted");
+          router.push("/signup");
+        }
+      }
+    } catch (error) {
+      console.error("Verification failed:", error);
+    }
+  }, [request, router]);
+
   const updateIndustry = useCallback(
     async (formData: any) => {
       try {
@@ -414,66 +452,6 @@ export const AuthContextProvider = ({ children }: any) => {
     },
     [request, router]
   );
-
-  useEffect(() => {
-    if (token && token.length > 0) {
-      const verifyToken = async () => {
-        const formData = {
-          token: token,
-          invite: true,
-        };
-        const url = `${baseUrl}/auth/customer/reset-password/page`;
-        try {
-          const { data, error } = await myFetch(url, {
-            method: "POST",
-            body: JSON.stringify(formData),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          console.log(data, error);
-          if (error) {
-            console.error("Error fetching data:", error);
-            router.push("/signin");
-          } else {
-            const { id, firstname, lastname, email, role, profilePicture } =
-              data.info;
-            const user = {
-              user: {
-                id: id,
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                role: role,
-                profilePicture: profilePicture,
-              },
-            };
-            const userObject = {
-              user: {
-                id: id,
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                role: role,
-                profilePicture: profilePicture,
-              },
-            };
-            localStorage.setItem(
-              "walkthroughCompleted",
-              JSON.stringify(["research"])
-            );
-            setUser(data.info);
-            setLocalStorage(userObject);
-            setIsVerifiedToken(true);
-          }
-        } catch (err) {
-          console.error("Fetch failed:", err);
-          router.push("/signin");
-        }
-      };
-      verifyToken();
-    } else setIsVerifiedToken(true);
-  }, []);
 
   const setLocalStorage = (user?: UserResponse | newUserResponse) => {
     window.localStorage.setItem("user", JSON.stringify(user));
@@ -565,17 +543,6 @@ export const AuthContextProvider = ({ children }: any) => {
     const user = window.localStorage.getItem("user");
     if (user) {
       setUser(JSON.parse(user).user);
-    } else {
-      const publicPaths = ["/signup", "/forgot-password", "/verify-otp"];
-
-      const isPublicPath =
-        publicPaths.includes(pathName) ||
-        pathName.startsWith("/reset") ||
-        (token && token.length > 0);
-
-      if (!isPublicPath) {
-        // router.push("/signin");
-      }
     }
   }, [pathName, router, isProfileUpdated]);
 
@@ -584,10 +551,12 @@ export const AuthContextProvider = ({ children }: any) => {
     error,
     signup,
     isVerifiedToken,
+    userAuthenticated,
     signin,
     signOut,
     signInSSO,
     signUpSSO,
+    signUpSSO10times,
     updateIndustry,
     setError,
     isLoading,

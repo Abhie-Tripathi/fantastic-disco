@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTrackerServices } from "@/services/trackerServices";
 import Loading from "@/app/components/UI/Loading";
+import { useAuthContext } from "@/context";
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { signUpSSO10times } = useAuthContext();
   const { verifyAccess } = useTrackerServices(); 
 
   // Get query params safely
@@ -14,10 +16,11 @@ export default function Page() {
   const otp = searchParams.get("otp") || "";
   const target = searchParams.get("target") || "";
   const targetId = searchParams.get("targetId") || "";
+  const source = searchParams.get("source") || "";
+  const token = searchParams.get("token") || "";
+  const userId = Number(searchParams.get("userId") || "");
 
   useEffect(() => {
-    if (!email || !otp || !target || !targetId) return;
-
     const verify = async () => {
       try {
         const formData = { email, otp, target, targetId };
@@ -31,8 +34,18 @@ export default function Page() {
       }
     };
 
-    verify();
-  }, [email, otp, target, targetId, router]); 
+    if (source === "10times") {
+      if (!source || !token || !userId) return;
+      signUpSSO10times(token, userId);
+    } else {
+      if (!email || !otp || !target || !targetId) return;
+      verify();
+    }
+  }, [email, otp, target, targetId, router]);
 
-  return <div><Loading/></div>;
+  return (
+    <div>
+      <Loading />
+    </div>
+  );
 }
