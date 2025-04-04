@@ -49,9 +49,10 @@ interface Props {
   // setActiveBtn: (value: string) => void;
   isApproved?: boolean;
   setIsApproved?: (value: boolean) => void
+  source?: string;
 }
 const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
-  handleCollapseForm, isApproved, setIsApproved }: Props) => {
+  handleCollapseForm, isApproved, setIsApproved, source = "GTM" }: Props) => {
   console.log("prefilled", prefilledEvent)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -246,6 +247,9 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
                 </div>
               </div>
             </div>
+        {source !== "GTM" &&
+          <>
+          
             <div className={styles.hashtagsContainer}>
               <HashtagContainer formTheme={formTheme} loadingState={loadingState} hashtags={formState.hashtags}
                 handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
@@ -254,6 +258,8 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
               <div className={`text-sm font-medium ${formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#ffffff]"}`}>Share</div>
               <ShareButtons formTheme={formTheme} copyIcon disabled={true} shareUrl='www.10times.com' />
             </div>
+          </>
+        }
           </div>
           <div className={styles.rightSection}>
             <div>
@@ -274,6 +280,9 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
                 formState={formState} /></div>
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
+
+        {source !== "GTM" &&
+          <>
             <div className={styles.resgitrationContainer}><RegistrationForm
               formTheme={formTheme}
               isApproved={isApproved} setIsApproved={setIsApproved}
@@ -328,6 +337,8 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
               </div>
               <button className={formTheme === "dark" ? styles.darkBtn : ""} onClick={() => handleFormCollapse()}>Yes</button>
             </div>
+          </>
+        }
           </div>
         </div>
       </div>
