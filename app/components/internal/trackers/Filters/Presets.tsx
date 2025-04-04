@@ -43,6 +43,13 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   const {presetData}=useTrackerServices();
   const [inputValue,setInputValue]=useState<string>();
   const [selectedLocation,setSelectedLocation]= useState<string[]>();
+  const [sortBy, setSortBy]=useState({value:"eventCount", label:"desc"});
+  const sortOptions=
+    [
+      { value: "eventCount", label: "Event Count" },
+      { value: "newEventCount", label: "New Event Count" },
+      { value: "start", label: "Rank" },
+  ]
   const [selectedCategory,setSelectedCategory]=useState<string[]>();
   const [shortlistPage, setShortlistPage] = useState(1);
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
@@ -72,13 +79,24 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       //   template?.name,
       //   shortlistPage
       // );
-      console.log(inputValue);
+      console.log(inputValue,selectedCategory, selectedLocation);
       
-      const data={
-        trackerType: template?.name,
-        ...(inputValue.length>0 && {keyword: inputValue})
-      }
+      const data = {
+        trackerType: template?.name || "",
+        ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
+        ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
+        // ...(sortBy.value==="newEventCount"?{sortBy.value: sortBy.label}:{})
+        ...(inputValue?.length ? { keywords: inputValue } : {}),
+        ...(selectedLocation?.length ? { countryIds: selectedLocation.join(",") } : {}),
+        ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
+      };
+      console.log(data);
+      
       const result = await presetData(template?.name, data);
+      console.log(result);
+      if(result){
+        setPresetTemplateData(result)
+      }
       // if (apiData) {
       //   setPresetTemplateData((prev) => [...prev, ...apiData.data]);
       //   setCount(apiData.totalCount);
@@ -93,9 +111,12 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     setInputValue(value);
   }
   useEffect(() => {
+    console.log("useEffect called");
+    
     fetchPresetJson();
-  }, [shortlistPage, inputValue]);
-
+  }, [shortlistPage, inputValue, selectedLocation, selectedCategory, template, sortBy]);
+  console.log(sortBy);
+  
   return (
     <div>
       <div className="flex justify-center	gap-2 items-center font-semibold">
@@ -117,13 +138,13 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     </div>
     </div>
     <div className="w-[20%]">
-    <LocationSelector />
+    <LocationSelector setSelectedLocation={setSelectedLocation} selectedLocation={selectedLocation}/>
     </div>
     <div className="w-[20%]">
-    <CategorySelector />
+    <CategorySelector selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
     </div>
     <div className="h-[100%]">
-    <SortDropdown />
+    <SortDropdown sortOptions={sortOptions} sortBy={sortBy} setSortBy={setSortBy}/>
     </div>
   </div>
       <div
@@ -131,80 +152,78 @@ const Presets = ({ template, handlePresetClick }: Props) => {
         ref={shortlistRef}
       >
         <div className={styles.presetContainer}>
-          {presetTemplateData
-            .filter((item) => item.url === template?.name)
-            .map((item, ind) => (
-              <div
-                key={ind}
-                className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
-                onClick={
-                  item.enabled
-                    ? () =>
-                        handlePresetClick(
-                          item,
-                          item.id,
-                          item.url,
-                          item.trackerName
-                        )
-                    : undefined
-                }
-                style={{ cursor: item.enabled ? "pointer" : "unset" }}
-              >
-                <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">
-                  <div className={styles.account}>
-                    <Image
-                      src={
-                        item.url === "T_COMPETITOR"
-                          ? Competitor
-                          : item.url === "T_PRODUCT_KEYWORDS"
-                          ? Keywords
-                          : item.url === "T_SPEAKING_OPPORTUNITY"
-                          ? Speaking
-                          : Keywords
-                      }
-                      alt="people"
-                    />
-                  </div>
-                  <div>
-                    <Image src={Template} alt="template" />
-                  </div>
-                  {item?.eventCount && parseInt(item.eventCount) > 0 && (
-                    <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md">
-                      {formatCount(parseInt(item.eventCount))} events
-                    </div>
-                  )}
-                </div>
-                <div className="w-full h-[60%] flex flex-col gap-3">
-                  {/* <div className="flex justify-between items-center">
-                    <div className="flex h-full items-center gap-1">
-                      <Image
-                        src={Vector1}
-                        alt="vector1"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      />
-                      <div style={{ color: "#585871", fontSize: "12px" }}>
-                        PRE-SET
-                      </div>
-                    </div>
-                    {item.enabled ? 
-                      <div className={`${styles.domain}`} >
-                        {item.presetType}
-                      </div> :
-                      <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
-                        Coming Soon
-                      </div>
-                    }
-                  </div> */}
-                  <div className={styles.bottomViewTwo}>
-                    {item?.trackerName}
-                  </div>
-                  <div className={styles.text}>{item?.content}</div>
-                </div>
-              </div>
+          {presetTemplateData?.map((item)=>(
+               <div
+               key={item.id}
+               className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
+               onClick={
+                 item.enabled
+                   ? () =>
+                       handlePresetClick(
+                         item,
+                         item.id,
+                         item.url,
+                         item.trackerName
+                       )
+                   : undefined
+               }
+               style={{ cursor: item.enabled ? "pointer" : "unset" }}
+             >
+               <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">
+                 <div className={styles.account}>
+                   <Image
+                     src={
+                       item.url === "T_COMPETITOR"
+                         ? Competitor
+                         : item.url === "T_PRODUCT_KEYWORDS"
+                         ? Keywords
+                         : item.url === "T_SPEAKING_OPPORTUNITY"
+                         ? Speaking
+                         : Keywords
+                     }
+                     alt="people"
+                   />
+                 </div>
+                 <div>
+                   <Image src={Template} alt="template" />
+                 </div>
+                 {item?.totalEvent && parseInt(item.totalEvent) > 0 && (
+                   <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md">
+                     {item.totalEvent} events
+                   </div>
+                 )}
+               </div>
+               <div className="w-full h-[60%] flex flex-col gap-3">
+                 {/* <div className="flex justify-between items-center">
+                   <div className="flex h-full items-center gap-1">
+                     <Image
+                       src={Vector1}
+                       alt="vector1"
+                       style={{
+                         display: "flex",
+                         alignItems: "center",
+                         justifyContent: "center",
+                       }}
+                     />
+                     <div style={{ color: "#585871", fontSize: "12px" }}>
+                       PRE-SET
+                     </div>
+                   </div>
+                   {item.enabled ? 
+                     <div className={`${styles.domain}`} >
+                       {item.presetType}
+                     </div> :
+                     <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
+                       Coming Soon
+                     </div>
+                   }
+                 </div> */}
+                 <div className={styles.bottomViewTwo}>
+                   {item?.name}
+                 </div>
+                 <div className={styles.text}>{item?.description}</div>
+               </div>
+             </div>
             ))}
         </div>
         {presetTemplateData.length < count && (

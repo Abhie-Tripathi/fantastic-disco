@@ -26,40 +26,46 @@ interface SortOption {
   label: string;
 }
 
-const sortOptions: SortOption[] = [
-  { value: "score", label: "Popularity" },
-  { value: "title", label: "Title" },
-  { value: "start", label: "Start Date" },
-  { value: "end", label: "End Date" },
-  { value: "added", label: "Newly Added" },
-  { value: "updated", label: "Last Updated" },
-  { value: "visitors", label: "Estimated Visitors" },
-  { value: "exhibitors", label: "Estimated Exhibitors" },
-  // { value: "duration", label: "Duration" },
-  // { value: "impactScore", label: "Impact Score" },
-  { value: "inboundScore", label: "Inbound Score" },
-  { value: "internationalScore", label: "International Score" },
-  // { value: "inboundEstimate", label: "Inbound Estimate" },
-  // { value: "internationalEstimate", label: "International Estimate" },
-  { value: "distance", label: "Distance" },
-  { value: "status", label: "Status" },
-];
+// const sortOptions: SortOption[] = [
+//   { value: "score", label: "Popularity" },
+//   { value: "title", label: "Title" },
+//   { value: "start", label: "Start Date" },
+//   { value: "end", label: "End Date" },
+//   { value: "added", label: "Newly Added" },
+//   { value: "updated", label: "Last Updated" },
+//   { value: "visitors", label: "Estimated Visitors" },
+//   { value: "exhibitors", label: "Estimated Exhibitors" },
+//   // { value: "duration", label: "Duration" },
+//   // { value: "impactScore", label: "Impact Score" },
+//   { value: "inboundScore", label: "Inbound Score" },
+//   { value: "internationalScore", label: "International Score" },
+//   // { value: "inboundEstimate", label: "Inbound Estimate" },
+//   // { value: "internationalEstimate", label: "International Estimate" },
+//   { value: "distance", label: "Distance" },
+//   { value: "status", label: "Status" },
+// ];
 
 interface SortDropdownProps {
+  sortOptions:SortOption[];
   compact?: boolean;
   value?: string;
   onSort?: (value: string) => void;
+  sortBy: SortOption;
+  setSortBy: React.Dispatch<React.SetStateAction<SortOption>>;
 }
 
 const SortDropdown = ({
   compact = false,
   value,
   onSort,
+  sortOptions,
+  sortBy,
+  setSortBy
 }: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
 
-  const sortParam = value || getFilterValue("sortBy") || "-score";
+  const sortParam = value || getFilterValue("sortBy") || "-eventCount";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
@@ -71,17 +77,19 @@ const SortDropdown = ({
   };
 
   const handleApply = () => {
-    const sortValue = sortOrder === "desc" ? `-${sortField}` : sortField;
+    const sortValue = sortOrder === "desc" ? `${sortField}` : sortField;
     if (onSort) {
       onSort(sortValue);
     } else {
       setFilter("sortBy", sortValue);
     }
+    setSortBy({ value: sortValue, label: sortOrder });
     setOpen(false);
   };
-
+  console.log(sortOptions);
+  
   useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "-score";
+    const newSortParam = value || getFilterValue("sortBy") || "-eventCount";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
   }, [getFilterValue, value]);

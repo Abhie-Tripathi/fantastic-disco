@@ -343,7 +343,7 @@ export const useTrackerServices = () => {
       
       const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`)
       console.log(response);
-      
+      return response;
     }
     return {
       removeBookmark,

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -9,74 +8,39 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterState } from "@/hooks/useFilterState";
-import data from '@/public/data/countryData.json'
-const EventEntries = [
-  { id: "free", label: "Free" },
-  { id: "paid", label: "Paid" },
-];
-interface EventEntryProps{
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
+import data from '@/public/data/countryData.json';
+
+interface CountryData {
+  code: string;
+  displayName: string;
 }
-export default function LocationSelector({
+interface LocationSelectorProps {
+  source: string;
+  selectedLocation: string[];
+  setSelectedLocation: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const LocationSelector = React.memo(function LocationSelector({
   source,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: EventEntryProps) {
-  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  setSelectedLocation,
+  selectedLocation = [],
+}: LocationSelectorProps) {
+  console.log("locationSelector called");
+  
+  const { getFilterValue, searchParams } = useFilterState();
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-    []
-  );
 
-  const selectedStatuses =
-    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-  const setSelectedStatuses =
-    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
+  const handleStatusToggle = (statusId: string) => {
+    setSelectedLocation((prev = []) =>
+      prev.includes(statusId)
+        ? prev.filter((id) => id !== statusId)
+        : [...prev, statusId]
+    );
+  };
 
-    // React.useEffect(() => {
-    //   if(source!=="tracker" && setSelectedStatuses){
-    //   const currentFilter = getFilterValue("entryType");
-    //   setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-    //   }
-    // }, [searchParams, getFilterValue]);
-  
-    const selectedStatus = selectedStatuses.length;
-  
-    const handleStatusToggle = (statusId: string) => {
-      console.log(statusId);
-      
-      if(setSelectedStatuses)
-      setSelectedStatuses((prev) =>
-        prev.includes(statusId)
-          ? prev.filter((id) => id !== statusId)
-          : [...prev, statusId]
-      );
-      
-    };
-  
-    // const handleSelectAll = (checked: boolean) => {
-    //   setSelectedStatuses(
-    //     checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
-    //   );
-    // };
-  
-    // const isAllSelected = selectedStatuses.length === EventEntries.length;
-  
-    const handleApply = () => {
-      if(source!=="tracker")
-      setFilter("entryType", selectedStatuses.join(","));
-      setIsOpen(false);
-    };
-  
-    const onOpenChange = (open: boolean) => {
-      if (!open) {
-        handleApply();
-      }
-      setIsOpen(open);
-    };
-  
+  const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -92,9 +56,9 @@ export default function LocationSelector({
         >
           <div className="flex items-center">
             <span className="mr-2">Location</span>
-            {selectedStatus > 0 && (
+            {selectedLocation?.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedStatus}
+                {selectedLocation?.length}
               </span>
             )}
           </div>
@@ -109,38 +73,13 @@ export default function LocationSelector({
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Entry</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
-
         <div className="p-2 space-y-2 h-[200px] overflow-scroll">
-          {/* <div className="flex items-center space-x-2">
-            <Checkbox
-              id="select-all"
-              className="rounded-none"
-              checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
-            />
-            <label
-              htmlFor="select-all"
-              className=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Select All
-            </label>
-          </div> */}
-          {data.map((item) => (
+          {data.map((item: CountryData) => (
             <div key={item.code} className="flex items-center space-x-2">
               <Checkbox
                 id={item.code}
                 className="rounded-none"
-                checked={selectedStatuses.includes(item.code)}
+                checked={selectedLocation.includes(item.code)}
                 onCheckedChange={() => handleStatusToggle(item.code)}
               />
               <label
@@ -155,4 +94,8 @@ export default function LocationSelector({
       </PopoverContent>
     </Popover>
   );
-}
+});
+
+LocationSelector.displayName = "LocationSelector";
+
+export default LocationSelector;

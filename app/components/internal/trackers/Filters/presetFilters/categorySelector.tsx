@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,94 +7,60 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useFilterContext } from "@/context/filterContext";
-const EventEntries = [
-  { id: "free", label: "Free" },
-  { id: "paid", label: "Paid" },
-];
-interface EventEntryProps{
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
-}
-export default function CategorySelector({
-  source,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: EventEntryProps) {
-  const { setFilter, getFilterValue, searchParams } = useFilterState();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-    []
-  );
-  const {morphedData } = useFilterContext();
-  const categories = morphedData.categories.options
-  const selectedStatuses =
-    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-  const setSelectedStatuses =
-    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
-    // React.useEffect(() => {
-    //   if(source!=="tracker" && setSelectedStatuses){
-    //   const currentFilter = getFilterValue("entryType");
-    //   setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-    //   }
-    // }, [searchParams, getFilterValue]);
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+interface CategorySelectorProps {
+  source?: string;
+  selectedCategory?: string[];
+  setSelectedCategory?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const CategorySelector = React.memo(function CategorySelector({
+  source,
+  selectedCategory = [],
+  setSelectedCategory,
+}: CategorySelectorProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const { morphedData } = useFilterContext();
   
-    const selectedStatus = selectedStatuses.length;
-  
-    const handleStatusToggle = (statusId: string) => {
-      console.log(statusId);
-      
-      if(setSelectedStatuses)
-      setSelectedStatuses((prev) =>
-        prev.includes(statusId)
-          ? prev.filter((id) => id !== statusId)
-          : [...prev, statusId]
+  // Safely get categories with fallback
+  const categories: Category[] = React.useMemo(() => {
+    return morphedData?.categories?.options || [];
+  }, [morphedData]);
+
+  const handleStatusToggle = React.useCallback((categorySlug: string) => {
+    console.log(categorySlug);
+    
+    if (setSelectedCategory) {
+      setSelectedCategory((prev=[]) =>
+        prev?.includes(categorySlug)
+          ? prev.filter(slug => slug !== categorySlug)
+          : [...prev, categorySlug]
       );
-      
-    };
-  
-    // const handleSelectAll = (checked: boolean) => {
-    //   setSelectedStatuses(
-    //     checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
-    //   );
-    // };
-  
-    // const isAllSelected = selectedStatuses.length === EventEntries.length;
-  
-    const handleApply = () => {
-      if(source!=="tracker")
-      setFilter("entryType", selectedStatuses.join(","));
-      setIsOpen(false);
-    };
-  
-    const onOpenChange = (open: boolean) => {
-      if (!open) {
-        handleApply();
-      }
-      setIsOpen(open);
-    };
-  
+    }
+  }, [setSelectedCategory]);
 
   return (
-    <Popover open={isOpen} onOpenChange={onOpenChange}>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
-          onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
-          aria-haspopup="true"
         >
           <div className="flex items-center">
             <span className="mr-2">Category</span>
-            {selectedStatus > 0 && (
+            {selectedCategory?.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedStatus}
+                {selectedCategory.length}
               </span>
             )}
           </div>
@@ -110,39 +75,14 @@ export default function CategorySelector({
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Entry</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
-
         <div className="p-2 space-y-2 h-[200px] overflow-scroll">
-          {/* <div className="flex items-center space-x-2">
-            <Checkbox
-              id="select-all"
-              className="rounded-none"
-              checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
-            />
-            <label
-              htmlFor="select-all"
-              className=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Select All
-            </label>
-          </div> */}
           {categories.map((item) => (
             <div key={item.id} className="flex items-center space-x-2">
               <Checkbox
-                id={item.code}
+                id={item.id}
                 className="rounded-none"
-                checked={selectedStatuses.includes(item.id)}
-                onCheckedChange={() => handleStatusToggle(item.id)}
+                checked={selectedCategory?.includes(item.slug) || false}
+                onCheckedChange={() => handleStatusToggle(item.slug)}
               />
               <label
                 htmlFor={item.slug}
@@ -156,4 +96,8 @@ export default function CategorySelector({
       </PopoverContent>
     </Popover>
   );
-}
+});
+
+CategorySelector.displayName = "CategorySelector";
+
+export default CategorySelector;
