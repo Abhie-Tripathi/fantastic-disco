@@ -155,6 +155,7 @@ export default function EventCalendar({
     queryFn: async () => {
       const alertSearchParams = new URLSearchParams(searchParams.toString());
       alertSearchParams.set("eventTypes", "alert");
+      alertSearchParams.set("limit", "50");
       const query = Object.fromEntries(alertSearchParams.entries());
       const alerts = await getEvents(query);
 
