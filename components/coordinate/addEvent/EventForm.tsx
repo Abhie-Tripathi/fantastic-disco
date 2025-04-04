@@ -19,10 +19,13 @@ import SimilarEventCard from "./SimilarEventCard";
 // import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useCoordinateService } from "@/services/coordinateService";
 import LoadingSkeleton from "./LoadingSkeleton";
+import { useAuthContext } from "@/context";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
-  eventFormState: "default" | "similarEvents" | "editEvents" | "fetching";
+  eventFormState: "default" | "similarEvents" | "editEvents" | "fetching" | "validating";
   setEventFormState: any;
+  resetForm: any;
 }
 
 const eventData = {
@@ -38,7 +41,7 @@ const eventData = {
   eventType: "Tradeshow",
 };
 
-const EventForm = ({ eventFormState, setEventFormState }: Props) => {
+const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   //   const participationOptions = [
   //     { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
   //     { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
@@ -46,11 +49,15 @@ const EventForm = ({ eventFormState, setEventFormState }: Props) => {
   //     { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
   //   ];
 
+  const { user } = useAuthContext();
+
   const [eventData, setEventData] = useState<any>();
 
   const [similarEvents, setSimilarEvents] = useState<any>([]);
 
   const coordinateService = useCoordinateService();
+
+  const { toast } = useToast();
 
   const formState = {
     startDate: "2025-04-12",
@@ -88,18 +95,18 @@ const EventForm = ({ eventFormState, setEventFormState }: Props) => {
     countryName: "",
     timeZone: "GMT+05:30 Chennai",
     timeZoneKey: 1,
-    startDate: "2025-04-12",
-    endDate: "2025-04-13",
-    startTime: "12:00 A.M",
-    endTime: "12:00 A.M",
+    startDate: "",
+    endDate: "",
+    startTime: "",
+    endTime: "",
     // eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
     eventFormat: "In-person",
     boothNumber: "",
     participationMessage: "",
     banner: { placeHolder: Placeholder, file: null },
     venue: "",
-    latitude: 37.7749,
-    longitude: -122.4194,
+    latitude: Number(''),
+    longitude: Number(''),
     hashtags: [],
     query: "",
     isEventNameEmpty: false,
@@ -137,7 +144,62 @@ const EventForm = ({ eventFormState, setEventFormState }: Props) => {
 
   const handleCollapseForm = () => {};
 
+  const checkFormValidation = (callback: any) => {
+
+    if (!mainEventState.eventName || mainEventState.eventName === "") {
+      handleChange('isEventNameEmpty', true);
+      // handleChange('isEventFormatEmpty', true);
+    } else {
+      handleChange('isEventNameEmpty', false);
+    }
+
+    if (!mainEventState.participationType) {
+      handleChange('isEventParticipationEmpty', true);
+    } else {
+      handleChange('isEventParticipationEmpty', false);
+    }
+
+    if (!mainEventState.event_type) {
+      handleChange('isEventTypeEmpty', true)
+    } else {
+      handleChange('isEventTypeEmpty', false)
+    }
+
+    if ((!mainEventState.query && !mainEventState.latitude) || !mainEventState.longitude) {
+      handleChange('isEventFormatEmpty', true);
+    } else {
+        handleChange('isEventFormatEmpty', false);
+    }
+    
+    if (
+      !mainEventState.eventName.trim() ||
+      !mainEventState.eventFormat ||
+      !mainEventState.startTime ||
+      !mainEventState.endTime ||
+      !mainEventState.startDate ||
+      !mainEventState.endDate ||
+      !mainEventState.participationType ||
+      // !eventState.participationMessage ||
+      // Check location fields only for "In-person" or "Hybrid" events
+      ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
+          (!mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
+    ) {
+        toast({
+          title: "Please fill in all the required fields",
+          variant: "destructive",
+        });
+        setEventFormState("default");
+        return; // Exit the function if any field is missing
+    }
+
+    callback();
+  }
+
+
   const handleSaveClick = async () => {
+
+    setEventFormState("fetching");    
+
     const e_data = {
       name: mainEventState.eventName,
       logo:
@@ -160,12 +222,67 @@ const EventForm = ({ eventFormState, setEventFormState }: Props) => {
     if (apiData.count > 0) {
       setEventFormState("similarEvents");
       setSimilarEvents(apiData.events);
+    } else {
+      // sendMail();
+      resetForm();
+      toast({
+        title: "Request has been submitted!",
+        variant: "default",
+      });
     }
   };
 
+  const sendMail = async() => {
+    const formData = new FormData();
+    formData.append("firstName", user?.firstname);
+    formData.append("lastName", user?.lastname);
+    formData.append("busEmail", user?.email);
+    formData.append("companyName", user?.accountId);
+    formData.append("jobTitle", user?.designation);
+    formData.append("phoneNumber", user?.phoneNumber);
+
+    const description = {
+      userDetail: user,
+      eventDetail: mainEventState,
+    }
+
+    formData.append("description", JSON.stringify(description));
+
+    const formData1 = {
+      firstName: user?.firstname,
+      lastName: user?.lastname,
+      busEmail: user?.email,
+      companyName: user?.accountId,
+      jobTitle: user?.designation,
+      phoneNumber: user?.phoneNumber,
+      description: JSON.stringify(description),
+    }
+
+    /*
+      const response = await fetch("http://stg-board.10times.com/enquiry/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const apiData1 = await response.json();
+      console.log('apiData', apiData1);return false;
+    */
+
+    const apiData: any = await coordinateService.addNewEvent(formData1);
+
+    console.log('apiData', apiData);
+
+    if (apiData.success) {
+      toast({
+        title: "Request has been submitted!",
+        variant: "default",
+      });
+    }
+  }
+
   useEffect(() => {
-    if (eventFormState === "fetching") {
-      handleSaveClick();
+    if (eventFormState === "validating") {
+      checkFormValidation(handleSaveClick);
     }
   }, [eventFormState]);
 

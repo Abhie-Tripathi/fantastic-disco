@@ -13,6 +13,7 @@ import SampleTable from "./SampleTable";
 import { useEffect, useState } from "react";
 import { useCoordinateService } from "@/services/coordinateService";
 import { async } from "@firebase/util";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Props {
   mappedHeaders: any;
@@ -100,6 +101,11 @@ const BulkImport = ({
   //   setAllMatchTrue(temp);
   // }, mappedHeaders);
 
+  const handleSelectAll = () => {
+    console.log('csvData2', csvData2);
+    
+  }
+
   return (
     <div className="px-3 flex flex-col gap-4">
       <div className="flex items-center gap-4 bg-[var(--background-secondary-color)] px-4 py-5 border border-[var(--border-color)] rounded-sm text-sm">
@@ -170,6 +176,14 @@ const BulkImport = ({
               Here's What We Found for You! Choose from the events below and add
               them
             </div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center" >
+                <Checkbox />
+                Select Results
+              </div>
+              <Button size="sm" onClick={handleSelectAll} >Add Events</Button>
+            </div>
           </div>
 
           {/* <EventCard {...eventData} />
@@ -196,7 +210,8 @@ const BulkImport = ({
                 startDate: item.startDateTime,
                 endDate: item.endDateTime,
                 venue: item.address,
-                eventType: item.participation,
+                eventType: item.type,
+                participationType: item.participation,
               }
               return <EventCard {...e_data} />
             }

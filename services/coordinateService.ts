@@ -371,6 +371,17 @@ export const useCoordinateService = () => {
     return duplicateEventData;
   }
 
+  const addNewEvent = async(formData: any) => {
+    const data = await externalAxios.get<any>(
+      `https://stg-board.10times.com/enquiry/submit`,
+      {
+        method: "POST",
+        data: formData,
+      }
+    );
+    return data.data;
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -399,6 +410,7 @@ export const useCoordinateService = () => {
     fetchEvents,
     fetchSimilarEvents,
     checkDuplicate,
+    addNewEvent,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

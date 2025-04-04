@@ -4,7 +4,7 @@ import { formattedDateRange } from "@/utils/date";
 import { Calendar, Check, Cross } from "geist-icons";
 import { useToast } from "@/hooks/use-toast";
 import InterestSelector from "./InterestSelector";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { InterestConfiguration } from "@/types/configuration";
 import { useIntent } from "@/hooks/useIntent";
@@ -21,6 +21,7 @@ interface Props {
   city?: string | null;
   country?: string | null;
   eventType: string;
+  participationType?: string | null;
 }
 
 const EventCard = (eventData: Props) => {
@@ -103,6 +104,16 @@ const EventCard = (eventData: Props) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (interestConfiguration && eventData?.participationType) {
+      console.log('ss1', eventData);
+      const ss = interestConfiguration.interest.find(item => item.label.toLowerCase() === eventData.participationType.toLowerCase());
+      console.log('ss', ss);
+      if (ss)
+        setSelectedAction(ss);
+    }
+  }, [])
 
   if (eventRejected) return <></>;
 
