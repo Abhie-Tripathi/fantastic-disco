@@ -31,12 +31,23 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
   const [currentLevel, setCurrentLevel] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [dataHistory, setDataHistory] = useState<DataHistory[]>([]);
-  const [currentPath, setCurrentPath] = useState<Array<{ name: string; value: string }>>([]);
+  const [currentPath, setCurrentPath] = useState<
+    Array<{ name: string; value: string }>
+  >([]);
+
+  // Reset state when hierarchy levels change
+  useEffect(() => {
+    setCurrentLevel(0);
+    setSelectedCategory(null);
+    setDataHistory([]);
+    setCurrentPath([]);
+  }, [hierarchyLevels]);
 
   const locationId = getFilterValue("locationIds");
   const activeGte = getFilterValue("active_gte");
   const activeLte = getFilterValue("active_lte");
   const categories = getFilterValue("categories").split(",");
+  const eventTypes = getFilterValue("eventTypes");
 
   const { data: locationDetails } = useQuery({
     queryKey: ["locationDetails", locationId],
@@ -87,6 +98,10 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       params.append("categories", category);
     }
 
+    if (eventTypes) {
+      params.append("eventTypes", eventTypes);
+    }
+
     if (groupBy) {
       params.append("groupBy", getGroupBy());
     }
@@ -121,6 +136,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       locationDetails,
       categories,
       currentLevel,
+      eventTypes,
     ],
     queryFn: async () => {
       const isCategoryFirst = hierarchyLevels[0]?.value === "category";
@@ -205,34 +221,45 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
           : params.data.rawData?.id;
         setSelectedCategory(selectedValue);
         setCurrentLevel(1);
-        
+
         // Update path and save to history
-        const newPath = [{
-          name: params.name,
-          value: selectedValue || ""
-        }];
+        const newPath = [
+          {
+            name: params.name,
+            value: selectedValue || "",
+          },
+        ];
         setCurrentPath(newPath);
-        setDataHistory(prev => [...prev, {
-          level: currentLevel,
-          data: eventCountData,
-          selectedCategory: null,
-          path: newPath
-        }]);
+        setDataHistory((prev) => [
+          ...prev,
+          {
+            level: currentLevel,
+            data: eventCountData,
+            selectedCategory: null,
+            path: newPath,
+          },
+        ]);
       } else if (currentLevel < hierarchyLevels.length - 1) {
         setCurrentLevel(currentLevel + 1);
-        
+
         // Update path and save to history
-        const newPath = [...currentPath, {
-          name: params.name,
-          value: params.data.rawData?.id || ""
-        }];
+        const newPath = [
+          ...currentPath,
+          {
+            name: params.name,
+            value: params.data.rawData?.id || "",
+          },
+        ];
         setCurrentPath(newPath);
-        setDataHistory(prev => [...prev, {
-          level: currentLevel,
-          data: eventCountData,
-          selectedCategory: selectedCategory,
-          path: newPath
-        }]);
+        setDataHistory((prev) => [
+          ...prev,
+          {
+            level: currentLevel,
+            data: eventCountData,
+            selectedCategory: selectedCategory,
+            path: newPath,
+          },
+        ]);
       }
     }
   };
@@ -245,7 +272,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       setSelectedCategory(null);
       setCurrentPath([]);
       setDataHistory([]);
-      
+
       // Update the chart with initial data
       if (chartInstance.current && eventCountData) {
         const options = getChartOptions(
@@ -257,8 +284,8 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       }
     } else {
       // If clicking on a previous level, go back to that level
-      const targetData = dataHistory.find(h => h.level === level);
-      
+      const targetData = dataHistory.find((h) => h.level === level);
+
       if (targetData) {
         // Update the chart with historical data
         if (chartInstance.current) {
@@ -269,14 +296,14 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
           );
           chartInstance.current.setOption(options);
         }
-        
+
         // Update state to match historical data
         setCurrentLevel(level);
         setSelectedCategory(targetData.selectedCategory);
         setCurrentPath(targetData.path);
-        
+
         // Remove future history entries
-        setDataHistory(prev => prev.slice(0, level));
+        setDataHistory((prev) => prev.slice(0, level));
       }
     }
   };
