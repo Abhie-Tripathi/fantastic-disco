@@ -9,7 +9,6 @@ import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
 import { BASE_URL, isEventeli } from '@/config';
-import { UserResponse } from '@/types/user';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -119,13 +118,6 @@ export const useTrackerServices = () => {
     }
     const verifyAccess=async (formData: {otp: string, email:string, target:string, targetId:string})=>{
       return await api.request(`${endpoints.tracker.verifyAccess}`, {
-        method:"POST",
-        data:formData,
-      });
-    }
-
-    const verify10timesAccess=async (formData: {token: string, userId: number})=>{
-      return await api.request<{ user: UserResponse }>(`${endpoints.auth.ssoSignIn("10times")}`, {
         method:"POST",
         data:formData,
       });
@@ -363,7 +355,6 @@ export const useTrackerServices = () => {
       delTracker,
       getTrackers,
       verifyAccess,
-      verify10timesAccess,
       saveIntent,
       saveNewEvent,
       deleteNewEvent,

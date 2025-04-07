@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
+import { LoadingPage } from "../loadingPage";
 import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
@@ -27,8 +28,16 @@ import LinkedinIcon from "/public/linkedin.svg";
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
-  const { signup, error, setError, signUpSSO, user, updateIndustry, userAuthenticated } =
-    useAuthContext();
+  const {
+    signup,
+    error,
+    setError,
+    signInSSO,
+    user,
+    updateIndustry,
+    isAuthenticating,
+    userAuthenticated,
+  } = useAuthContext();
 
   const { getFilterValue, deleteFilter } = useFilterState();
   const [email, setEmail] = useState("");
@@ -121,13 +130,17 @@ const GtmSignUpForm = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      signUpSSO();
+      signInSSO();
     }
   }, [status]);
 
   useEffect(() => {
     if (user && user.isNewUser) {
       setValue("email", user.email || "");
+      toast({
+        description: "Please select your industry",
+        variant: "default",
+      });
     }
   }, [user]);
 
@@ -197,6 +210,10 @@ const GtmSignUpForm = () => {
       return updatedCategoriesArray;
     });
   };
+
+  if (isAuthenticating) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">

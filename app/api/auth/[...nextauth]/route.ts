@@ -9,7 +9,7 @@ const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET || "",
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
           prompt: "consent",
@@ -20,7 +20,7 @@ const authOptions: NextAuthOptions = {
     }),
     LinkedInProvider({
       clientId: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID || "",
-      clientSecret: process.env.NEXT_LINKEDIN_CLIENT_SECRET || "",
+      clientSecret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET  || "",
       client: { token_endpoint_auth_method: "client_secret_post" },
       issuer: "https://www.linkedin.com",
       profile: (profile) => ({
