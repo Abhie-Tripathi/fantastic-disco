@@ -8,22 +8,23 @@ import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
 import { useTheme } from "@/context/theme";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 interface CustomDayHeaderProps {
   date: Date;
-  label: string;
   alerts: any[] | undefined;
 }
 
 export const CustomDayHeader = ({
   date,
-  label,
   alerts,
 }: CustomDayHeaderProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const searchParams = useSearchParams();
   const alertsForDay = alerts?.filter(
     (alert) =>
-      moment(alert.startDate).format("YYYY-MM-DD") ===
+      moment(alert.basic.startDate).format("YYYY-MM-DD") ===
       moment(date).format("YYYY-MM-DD")
   );
 
@@ -36,7 +37,12 @@ export const CustomDayHeader = ({
   };
 
   return (
-    <div
+    <Link
+      href={`?${new URLSearchParams({
+        ...Object.fromEntries(searchParams.entries()),
+        active_gte: moment(date).format("YYYY-MM-DD"),
+        active_lte: moment(date).format("YYYY-MM-DD"),
+      }).toString()}`}
       className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA] dark:bg-[#171717] relative`}
     >
       <div className={`text-sm font-semibold`}>
@@ -58,24 +64,24 @@ export const CustomDayHeader = ({
               <div className="text-left" key={alertForDay.id}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium capitalize text-muted-foreground">
-                    {alertForDay.type.toLowerCase()}
+                    {alertForDay.basic.type.toLowerCase()}
                   </span>
                   <span
                     className={cn(
                       "p-1 border-2 rounded-sm",
-                      getAlertLevelBorderColor(alertForDay.level.toLowerCase())
+                      getAlertLevelBorderColor(alertForDay.basic.level.toLowerCase())
                     )}
                   >
-                    {alertIcons[alertForDay.type]}
+                    {alertIcons[alertForDay.basic.type]}
                   </span>
                 </div>
                 <p className="text-sm">
-                  {alertForDay.name || `New ${alertForDay.type} alert`}
+                  {alertForDay.basic.name || `New ${alertForDay.basic.type} alert`}
                 </p>
                 <time className="text-xs text-muted-foreground">
                   {formattedDateRange(
-                    alertForDay.startDate,
-                    alertForDay.endDate
+                    alertForDay.basic.startDate,
+                    alertForDay.basic.endDate
                   )}
                 </time>
               </div>
@@ -83,7 +89,7 @@ export const CustomDayHeader = ({
           </PopoverContent>
         </Popover>
       )}
-    </div>
+    </Link>
   );
 };
 
@@ -195,17 +201,17 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
         </div>
       )}
 
-      {alertEventsForDay && alertEventsForDay[0] && (
+      {alertEventsForDay && alertEventsForDay.map((alert) => (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             className={cn(
               "absolute top-2 left-2 border-2 p-1 rounded-sm bg-background",
-              getAlertLevelBorderColor(alertEventsForDay[0].level)
+              getAlertLevelBorderColor(alert.basic.level)
             )}
           >
-            {alertIcons[alertEventsForDay[0].type]}
+            {alertIcons[alert.basic.type]}
           </PopoverTrigger>
           <PopoverContent
             onMouseEnter={handleMouseEnter}
@@ -214,33 +220,33 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
             <div className="text-left">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium capitalize text-muted-foreground">
-                  {alertEventsForDay[0].type.toLowerCase()}
+                  {alert.basic.type.toLowerCase()}
                 </span>
                 <span
                   className={cn(
                     "p-1 border-2 rounded-sm",
                     getAlertLevelBorderColor(
-                      alertEventsForDay[0].level.toLowerCase()
+                      alert.basic.level.toLowerCase()
                     )
                   )}
                 >
-                  {alertIcons[alertEventsForDay[0].type]}
+                  {alertIcons[alert.basic.type]}
                 </span>
               </div>
               <p className="text-sm">
-                {alertEventsForDay[0].name ||
-                  `New ${alertEventsForDay[0].type} alert`}
+                {alert.basic.name ||
+                  `New ${alert.basic.type} alert`}
               </p>
               <time className="text-xs text-muted-foreground">
                 {formattedDateRange(
-                  alertEventsForDay[0].startDate,
-                  alertEventsForDay[0].endDate
+                  alert.basic.startDate,
+                  alert.basic.endDate
                 )}
               </time>
             </div>
           </PopoverContent>
         </Popover>
-      )}
+      ))}
     </div>
   );
 };

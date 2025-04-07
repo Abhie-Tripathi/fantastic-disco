@@ -22,65 +22,82 @@ import {
 import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
+import { PaginationComponent } from "@/components/pagination";
 
 export default function Alerts() {
   const searchParams = useSearchParams();
   const { getEventsWithSearchParams, getEventsCount } = useEventsService();
   const [alerts, setAlerts] = useState<AlertResponse | null>(null);
   const [alertCounts, setAlertCounts] = useState<AlertCountItem[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [offset, setOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCounts, setIsLoadingCounts] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchAlertCounts = async () => {
-      const alertCounts = (await getEventsCount({
-        eventTypes: "alert",
-        groupBy: "eventType",
-      })) as unknown as AlertCount;
+      setIsLoadingCounts(true);
+      try {
+        const alertCounts = (await getEventsCount({
+          ...Object.fromEntries(searchParams.entries()),
+          eventTypes: "alert",
+          groupBy: "alertType",
+        })) as unknown as AlertCount;
 
-      if (alertCounts?.count) {
-        setAlertCounts(alertCounts.count);
+        if (alertCounts?.count) {
+          setAlertCounts(alertCounts.count);
+        }
+      } finally {
+        setIsLoadingCounts(false);
       }
     };
 
     fetchAlertCounts();
   }, [searchParams]);
 
+  console.log(alertCounts);
+
   useEffect(() => {
     const fetchAlerts = async () => {
-      const filteredParams = new URLSearchParams(searchParams.toString());
-      filteredParams.set("eventTypes", "alert");
-      filteredParams.set("view", "list");
-      filteredParams.set("page", currentPage.toString());
-      filteredParams.set("limit", itemsPerPage.toString());
+      setIsLoading(true);
+      try {
+        const filteredParams = new URLSearchParams(searchParams.toString());
+        filteredParams.set("eventTypes", "alert");
+        filteredParams.set("view", "list");
+        filteredParams.set("offset", offset.toString());
+        filteredParams.set("limit", itemsPerPage.toString());
 
-      if (filteredParams.get("viewBound")) {
-        const viewBound = JSON.parse(filteredParams.get("viewBound") || "");
-        filteredParams.delete("viewBound");
-        filteredParams.set(
-          "viewBound",
-          JSON.stringify({
-            boundType: "point",
-            coordinates: {
-              latitude: viewBound.coordinates.latitude,
-              longitude: viewBound.coordinates.longitude,
-              radius: viewBound.coordinates.radius,
-            },
-          })
-        );
+        if (filteredParams.get("viewBound")) {
+          const viewBound = JSON.parse(filteredParams.get("viewBound") || "");
+          filteredParams.delete("viewBound");
+          filteredParams.set(
+            "viewBound",
+            JSON.stringify({
+              boundType: "point",
+              coordinates: {
+                latitude: viewBound.coordinates.latitude,
+                longitude: viewBound.coordinates.longitude,
+                radius: viewBound.coordinates.radius,
+              },
+            })
+          );
+        }
+        const fetchedAlerts = (await getEventsWithSearchParams(
+          filteredParams.toString()
+        )) as AlertResponse;
+        setAlerts(fetchedAlerts);
+      } finally {
+        setIsLoading(false);
       }
-      const fetchedAlerts = (await getEventsWithSearchParams(
-        filteredParams.toString()
-      )) as AlertResponse;
-      setAlerts(fetchedAlerts);
     };
 
     fetchAlerts();
-  }, [searchParams, currentPage]);
+  }, [searchParams, offset, itemsPerPage]);
 
   if (!alerts || !alerts.events || alerts.events.length === 0) return null;
 
   const totalPages = Math.ceil(alerts.count / itemsPerPage);
+  const currentPage = Math.floor(offset / itemsPerPage) + 1;
 
   return (
     <Card className="w-full mb-6 shadow-none border bg-background">
@@ -95,110 +112,119 @@ export default function Alerts() {
                 <div>
                   <h2 className="text-lg font-semibold">Alerts Overview</h2>
                   <p className="text-sm text-muted-foreground text-left">
-                    {alerts.count} active alerts
+                    {isLoadingCounts ? "Loading..." : `${alerts.count} alerts`}
                   </p>
                 </div>
                 <div className="flex items-center gap-4 ml-4">
-                  {alertCounts.map(({ alertType, count }, index) => (
-                    <div key={alertType} className="flex items-center">
-                      {index > 0 && (
-                        <Separator
-                          orientation="vertical"
-                          className="mx-4 h-8"
-                        />
-                      )}
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 rounded-lg bg-background px-3 py-1.5">
-                          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-                            {alertIcons[alertType] ||
-                              (alertType.toLowerCase() === "warning" ? (
-                                <AlertTriangle className="h-4 w-4 text-primary" />
-                              ) : (
-                                <Info className="h-4 w-4 text-primary" />
-                              ))}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium capitalize">
-                              {alertType.toLowerCase()}
-                            </span>
-                            <Badge className="h-5 px-2 text-xs font-semibold no-underline">
-                              {count} {count === 1 ? "alert" : "alerts"}
-                            </Badge>
+                  {isLoadingCounts ? (
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-md bg-muted animate-pulse" />
+                      <div className="h-5 w-20 rounded bg-muted animate-pulse" />
+                    </div>
+                  ) : (
+                    alertCounts.map(({ alertType, count }, index) => (
+                      <div key={alertType} className="flex items-center">
+                        {index > 0 && (
+                          <Separator
+                            orientation="vertical"
+                            className="mx-4 h-8"
+                          />
+                        )}
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 rounded-lg bg-background px-3 py-1.5">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                              {alertIcons[alertType] ||
+                                (alertType.toLowerCase() === "warning" ? (
+                                  <AlertTriangle className="h-4 w-4 text-primary" />
+                                ) : (
+                                  <Info className="h-4 w-4 text-primary" />
+                                ))}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium capitalize">
+                                {alertType.toLowerCase()}
+                              </span>
+                              <Badge className="h-5 px-2 text-xs font-semibold no-underline">
+                                {count} {count === 1 ? "alert" : "alerts"}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4">
             <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 pt-4">
-              {alerts.events
-                .sort(
-                  (a, b) =>
-                    new Date(a.basic.startDate).getTime() -
-                    new Date(b.basic.startDate).getTime()
-                )
-                .map((alert, index) => (
-                  <Card
-                    key={index}
-                    className={cn(
-                      "bg-card transition-colors border-2",
-                      getAlertLevelBorderColor(alert.basic.level)
-                    )}
-                  >
-                    <CardContent className="flex items-start justify-between p-4">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="font-medium">
-                          {alert.basic.name || alert.basic.type}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {formattedDateRange(
-                            alert.basic.startDate,
-                            alert.basic.endDate
-                          )}
-                        </p>
-                      </div>
-                      <div
-                        className={
-                          "flex h-8 w-8 items-center justify-center rounded-md border-2"
-                        }
+              {isLoading
+                ? Array.from({ length: itemsPerPage }).map((_, index) => (
+                    <Card key={index} className="bg-card border-2">
+                      <CardContent className="flex items-start justify-between p-4">
+                        <div className="flex flex-col gap-1 w-full">
+                          <div className="h-5 w-3/4 rounded bg-muted animate-pulse" />
+                          <div className="h-4 w-1/2 rounded bg-muted animate-pulse" />
+                        </div>
+                        <div className="h-8 w-8 rounded-md bg-muted animate-pulse" />
+                      </CardContent>
+                    </Card>
+                  ))
+                : alerts.events
+                    .sort(
+                      (a, b) =>
+                        new Date(a.basic.startDate).getTime() -
+                        new Date(b.basic.startDate).getTime()
+                    )
+                    .map((alert, index) => (
+                      <Card
+                        key={index}
+                        className={cn(
+                          "bg-card transition-colors border-2",
+                          getAlertLevelBorderColor(alert.basic.level)
+                        )}
                       >
-                        {alertIcons[alert.basic.type] ||
-                          (alert.basic.type.toLowerCase() === "warning" ? (
-                            <AlertTriangle className="h-4 w-4 text-primary" />
-                          ) : (
-                            <Info className="h-4 w-4 text-primary" />
-                          ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <CardContent className="flex items-start justify-between p-4">
+                          <div className="flex flex-col gap-1">
+                            <h3 className="font-medium">
+                              {alert.basic.name || alert.basic.type}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {formattedDateRange(
+                                alert.basic.startDate,
+                                alert.basic.endDate
+                              )}
+                            </p>
+                          </div>
+                          <div
+                            className={
+                              "flex h-8 w-8 items-center justify-center rounded-md border-2"
+                            }
+                          >
+                            {alertIcons[alert.basic.type] ||
+                              (alert.basic.type.toLowerCase() === "warning" ? (
+                                <AlertTriangle className="h-4 w-4 text-primary" />
+                              ) : (
+                                <Info className="h-4 w-4 text-primary" />
+                              ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
             </div>
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+              <div className="mt-4">
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  count={alerts.count}
+                  onPageChange={(page) => setOffset((page - 1) * itemsPerPage)}
+                  onItemsPerPageChange={(value) =>
+                    setItemsPerPage(Number(value))
                   }
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </Button>
+                />
               </div>
             )}
           </AccordionContent>
