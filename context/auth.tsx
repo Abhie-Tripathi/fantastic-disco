@@ -122,9 +122,17 @@ export const AuthContextProvider = ({ children }: any) => {
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
-  const sessionCategories =
-    (sessionStorage && sessionStorage.getItem("categories")) || "";
-  const categories = sessionCategories && JSON.parse(sessionCategories);
+
+  const categories  = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const sessionCategories = sessionStorage.getItem("categories");
+      return sessionCategories ? JSON.parse(sessionCategories) : null;
+    } catch (error) {
+      console.log("Failed to parse sessionStorage categories", error);
+      return null;
+    }
+  }, []);
 
   const formatDateForFilter = (date: Date) => {
     return format(date, "yyyy-MM-dd");
