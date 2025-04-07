@@ -46,6 +46,8 @@ const GtmSignUpForm = () => {
   });
   const { data: session, status } = useSession();
 
+  const signUpFlow = (user && user?.isNewUser && (status === "authenticated" || userAuthenticated)) ? 'sso' : 'default';
+
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
 
@@ -74,7 +76,7 @@ const GtmSignUpForm = () => {
     sessionStorage.setItem("flow", "signUp");
 
     try {
-      if (user && user?.isNewUser && (status === "authenticated" || userAuthenticated)) {
+      if (signUpFlow === 'sso') {
         await updateIndustry(signUpDTOData);
       } else {
         await signup(signUpDTOData);
@@ -198,73 +200,79 @@ const GtmSignUpForm = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
-      <p className="font-semibold text-lg leading-6 text-center mb-5">
-        Create your account
-      </p>
-      {status === "unauthenticated" && (
+      {signUpFlow === 'default' &&
         <>
-          <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
-            <Button
-              onClick={() => signIn("google")}
-              variant={"outline"}
-              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
-            >
-              <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="mt-1">Google</span>
-            </Button>
-            <Button
-              onClick={() => signIn("linkedin")}
-              variant={"outline"}
-              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
-            >
-              <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="mt-1">LinkedIn</span>
-            </Button>
-          </div>
-          <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+          <p className="font-semibold text-lg leading-6 text-center mb-5">
+            Create your account
+          </p>
+          {status === "unauthenticated" && (
+            <>
+              <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
+                <Button
+                  onClick={() => signIn("google")}
+                  variant={"outline"}
+                  className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+                >
+                  <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+                  <span className="mt-1">Google</span>
+                </Button>
+                <Button
+                  onClick={() => signIn("linkedin")}
+                  variant={"outline"}
+                  className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+                >
+                  <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+                  <span className="mt-1">LinkedIn</span>
+                </Button>
+              </div>
+              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+            </>
+          )}
         </>
-      )}
+      }
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full mt-4"
       >
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => (
-            <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
-              <Input
-                className="rounded-sm bg-white ring-1
-                ring-primary outline outline-[#D2D2F3] outline-offset-2
-                focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] 
-                focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
-                id="email"
-                type="email"
-                {...field}
-                placeholder="Email"
-                value={field.value}
-                onChange={(e) => {
-                  field.onChange(e);
-                  setError(null);
-                }}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-              {error && (
-                <Alert
-                  variant="destructive"
-                  className="w-fit self-center border-none p-0"
-                >
-                  <AlertDescription className="capitalize flex items-center">
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    {error.message}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-          )}
-        />
+        {signUpFlow === 'default' &&
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
+                <Input
+                  className="rounded-sm bg-white ring-1
+                  ring-primary outline outline-[#D2D2F3] outline-offset-2
+                  focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] 
+                  focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
+                  id="email"
+                  type="email"
+                  {...field}
+                  placeholder="Email"
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setError(null);
+                  }}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                )}
+                {error && (
+                  <Alert
+                    variant="destructive"
+                    className="w-fit self-center border-none p-0"
+                  >
+                    <AlertDescription className="capitalize flex items-center">
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      {error.message}
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            )}
+          />
+        }
         <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
           Choose an Industry Relevant to You
         </p>
@@ -309,42 +317,46 @@ const GtmSignUpForm = () => {
               Signing up...
             </>
           ) : (
-            "Sign Up"
+            signUpFlow === 'default' ? "Sign Up" : "Submit"
           )}
         </Button>
       </form>
 
-      <div className="text-center py-2 text-sm">
-        Already have an account?
-        <Link
-          onClick={() => signOut({ callbackUrl: "/signin" })}
-          href="/signin"
-          className="text-[#6750a4] cursor-pointer font-medium"
-        >
-          {" "}
-          Log In
-        </Link>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="text-center text-[#808080] text-[12px]">
-          By signing up, you agree to our
+      {signUpFlow === 'default' &&
+      <>
+        <div className="text-center py-2 text-sm">
+          Already have an account?
           <Link
-            target="_blank"
-            href={"https://whr.ai/terms-of-service"}
-            className="text-[#6750a4] font-medium ml-1"
+            onClick={() => signOut({ callbackUrl: "/signin" })}
+            href="/signin"
+            className="text-[#6750a4] cursor-pointer font-medium"
           >
-            Terms{" "}
-          </Link>
-          and
-          <Link
-            target="_blank"
-            href={"https://whr.ai/privacy-policy"}
-            className="text-[#6750a4] font-medium ml-1"
-          >
-            Privacy Policy
+            {" "}
+            Log In
           </Link>
         </div>
-      </div>
+        <div className="flex items-center gap-2">
+          <div className="text-center text-[#808080] text-[12px]">
+            By signing up, you agree to our
+            <Link
+              target="_blank"
+              href={"https://whr.ai/terms-of-service"}
+              className="text-[#6750a4] font-medium ml-1"
+            >
+              Terms{" "}
+            </Link>
+            and
+            <Link
+              target="_blank"
+              href={"https://whr.ai/privacy-policy"}
+              className="text-[#6750a4] font-medium ml-1"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
+      </>
+      }
     </div>
   );
 };

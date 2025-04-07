@@ -437,6 +437,7 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     } catch (error) {
       console.error("Verification failed:", error);
+      router.push("/signup");
     }
   }, [request, router]);
 
