@@ -136,7 +136,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   );
   const alertEventsForDay = unAttended.alerts?.filter(
     (event: Alert) =>
-      moment(event.startDate).format("YYYY-MM-DD") === formattedDate
+      moment(event.basic.startDate).format("YYYY-MM-DD") === formattedDate
   );
 
   const businessEvents =
