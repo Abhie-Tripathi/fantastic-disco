@@ -95,7 +95,7 @@ export default function Alerts() {
                 <div>
                   <h2 className="text-lg font-semibold">Alerts Overview</h2>
                   <p className="text-sm text-muted-foreground text-left">
-                    {alerts.count} active alerts
+                    {alerts.count} alerts
                   </p>
                 </div>
                 <div className="flex items-center gap-4 ml-4">
