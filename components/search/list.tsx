@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event } from "@/types/events/events";
+import { Event, SingleEventLocation } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
@@ -346,36 +346,64 @@ const EventListItem = ({
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
-        {[
-          event.basic.eventLocation?.locationType === "VENUE"
-            ? event.basic.eventLocation?.name
-            : "TBA",
-          event.basic.eventLocation?.cityName,
-          event.basic.eventLocation?.stateName !==
-          event.basic.eventLocation?.cityName
-            ? event.basic.eventLocation?.stateName
-            : null,
-          event.basic.eventLocation?.countryName !==
-          event.basic.eventLocation?.cityName
-            ? event.basic.eventLocation?.countryName
-            : null,
-        ]
-          .filter(Boolean)
-          .join(", ")}
+        {Array.isArray(event.basic.eventLocation)
+          ? event.basic.eventLocation.map((loc, index) => (
+              <span key={loc.id}>
+                {index > 0 ? ", " : ""}
+                {[
+                  loc.locationType === "VENUE" ? loc.name : "TBA",
+                  loc.cityName,
+                  loc.stateName !== loc.cityName ? loc.stateName : null,
+                  loc.countryName !== loc.cityName ? loc.countryName : null,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            ))
+          : [
+              event.basic.eventLocation.locationType === "VENUE"
+                ? event.basic.eventLocation.name
+                : "TBA",
+              event.basic.eventLocation.cityName,
+              event.basic.eventLocation.stateName !==
+              event.basic.eventLocation.cityName
+                ? event.basic.eventLocation.stateName
+                : null,
+              event.basic.eventLocation.countryName !==
+              event.basic.eventLocation.cityName
+                ? event.basic.eventLocation.countryName
+                : null,
+            ]
+              .filter(Boolean)
+              .join(", ")}
       </span>
+    ) : Array.isArray(event.basic.eventLocation) ? (
+      event.basic.eventLocation.map((loc, index) => (
+        <span key={loc.id}>
+          {index > 0 ? ", " : ""}
+          {[
+            loc.locationType === "VENUE" ? loc.name : "TBA",
+            loc.cityName,
+            loc.stateName !== loc.cityName ? loc.stateName : null,
+            loc.countryName !== loc.cityName ? loc.countryName : null,
+          ]
+            .filter(Boolean)
+            .join(", ")}
+        </span>
+      ))
     ) : (
       [
-        event.basic.eventLocation?.locationType === "VENUE"
-          ? event.basic.eventLocation?.name
+        event.basic.eventLocation.locationType === "VENUE"
+          ? event.basic.eventLocation.name
           : "TBA",
-        event.basic.eventLocation?.cityName,
-        event.basic.eventLocation?.stateName !==
-        event.basic.eventLocation?.cityName
-          ? event.basic.eventLocation?.stateName
+        event.basic.eventLocation.cityName,
+        event.basic.eventLocation.stateName !==
+        event.basic.eventLocation.cityName
+          ? event.basic.eventLocation.stateName
           : null,
-        event.basic.eventLocation?.countryName !==
-        event.basic.eventLocation?.cityName
-          ? event.basic.eventLocation?.countryName
+        event.basic.eventLocation.countryName !==
+        event.basic.eventLocation.cityName
+          ? event.basic.eventLocation.countryName
           : null,
       ]
         .filter(Boolean)
@@ -1095,31 +1123,38 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  function formatAddress(eventLocation: any): string {
+  function formatAddress(
+    eventLocation: SingleEventLocation | SingleEventLocation[]
+  ): string {
     const addressParts: string[] = [];
-    if (Array.isArray(eventLocation?.city)) {
-      const cities = eventLocation.city.map((s: any) => s.name).join(", ");
-      addressParts.push(cities);
-    } else if (eventLocation?.city) {
-      addressParts.push(eventLocation.city.name);
-    }
 
-    if (Array.isArray(eventLocation?.state)) {
-      const states = eventLocation.state.map((s: any) => s.name).join(", ");
-      addressParts.push(states);
-    } else if (eventLocation?.state) {
-      addressParts.push(eventLocation.state.name);
+    if (Array.isArray(eventLocation)) {
+      const locations = eventLocation.map((loc) => {
+        const parts: string[] = [];
+        if (loc.cityName) parts.push(loc.cityName);
+        if (loc.stateName && loc.stateName !== loc.cityName)
+          parts.push(loc.stateName);
+        if (loc.countryName && loc.countryName !== loc.cityName)
+          parts.push(loc.countryName);
+        return parts.join(", ");
+      });
+      return locations.join("; ");
+    } else {
+      if (eventLocation?.cityName) addressParts.push(eventLocation.cityName);
+      if (
+        eventLocation?.stateName &&
+        eventLocation.stateName !== eventLocation.cityName
+      ) {
+        addressParts.push(eventLocation.stateName);
+      }
+      if (
+        eventLocation?.countryName &&
+        eventLocation.countryName !== eventLocation.cityName
+      ) {
+        addressParts.push(eventLocation.countryName);
+      }
+      return addressParts.join(", ");
     }
-
-    if (Array.isArray(eventLocation?.country)) {
-      const countries = eventLocation.country
-        .map((s: any) => s.name)
-        .join(", ");
-      addressParts.push(countries);
-    } else if (eventLocation?.country) {
-      addressParts.push(eventLocation.country.name);
-    }
-    return addressParts.join(", ");
   }
 
   const eventTypes = event.basic.eventTypes
@@ -1194,76 +1229,6 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </Badge>
                 ))}
               </div>
-              {/* <div className="flex flex-wrap gap-2 mt-2">
-                <Badge
-                  variant="outline"
-                  className="text-gray-600 capitalize rounded-sm"
-                  key="National"
-                >
-                  <span className="ml-1">Regional Holiday</span>
-                </Badge>
-              </div> */}
-            </div>
-          </div>
-          <div className="col-span-5 flex flex-col justify-between">
-            <div className="flex items-center justify-end gap-2">
-              {/* {event.basic.alerts?.map((alert) => (
-                <Badge
-                  key={alert.id}
-                  variant="outline"
-                  className={cn(
-                    "capitalize text-sm border-2",
-                    getAlertLevelBorderColor(alert.level)
-                  )}
-                >
-                  <span>{alertIcons[alert.type]}</span>
-                  <span className="ml-1 font-medium">
-                    {alert.name.toLowerCase()}
-                  </span>
-                </Badge>
-              ))} */}
-            </div>
-            <div className="flex items-center justify-end">
-              {/* {event.insights?.scores ? (
-                  <div className="flex items-center justify-end w-full">
-                    <div className="space-y-4">
-                      {event.insights?.scores && (
-                        <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                          <CircularProgress
-                            value={-39}
-                            label="Business Score"
-                          />
-                          <CircularProgress value={80} label="Social Score" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : ( */}
-              <div className="grid grid-row-2 items-end gap-4">
-                {/* {event.insights?.estimatedAttendance !== undefined && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Estimated Visitors
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {event.insights?.estimatedAttendance == "0"
-                            ? "--"
-                            : event.insights?.estimatedAttendance}
-                        </p>
-                      </div>
-                    )} */}
-                {/* {event.economicImpact !== undefined && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Economic Impact
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {formatEstimatedSpend(event.economicImpact)}
-                        </p>
-                      </div>
-                    )} */}
-              </div>
-              {/* )} */}
             </div>
           </div>
         </div>
