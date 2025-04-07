@@ -1,0 +1,96 @@
+preset name,preset type,preset description,input 1,input 2,Location,Filter Type,Category,combined input 1,Active Count,Past Count,Total Count,Server Status,error,Remark,Filter_Type,Template Location,Template Category
+Top Public Listed Companies in Arg,competitor,Events where Top Public Listed Companies in Argentina participate,Cresud Sociedad Anónima Comercial Inmobiliaria Financiera y Agropecuaria,https://www.cresud.com.ar,"India, Australia",Rank,Arts & Crafts,"YPF Sociedad Anónima,Grupo Financiero Galicia S.A.,Banco Macro S.A.,Pampa Energía S.A.,Transportadora de Gas del Sur S.A.,Ternium Argentina S.A.,Banco BBVA Argentina S.A.,Telecom Argentina S.A.,Aluar Aluminio Argentino S.A.I.C.,Central Puerto S.A.,Empresa Distribuidora y Comercializadora Norte Sociedad Anónima,Bolsas y Mercados Argentinos S.A.,Loma Negra Compañía Industrial Argentina Sociedad Anónima,Cablevisión Holding S.A.,Compañía de Transporte de Energía Eléctrica en Alta Tensión Transener S.A.,Grupo Supervielle S.A.,Holcim (Argentina) S.A.,Cresud Sociedad Anónima Comercial Inmobiliaria Financiera y Agropecuaria,Mirgor Sociedad Anónima Comercial Industrial Financiera Inmobiliaria y Agropecuaria,Banco de Valores S.A.,Transportadora de Gas del Norte S.A.,Laboratorios Richmond S.A.C.I.F.,YPF Sociedad Anónima,Grupo Financiero Galicia S.A.,Banco Macro S.A.,Pampa Energía S.A.,Transportadora de Gas del Sur S.A.,Telecom Argentina S.A.,Telecom Argentina S.A.,Banco BBVA Argentina S.A.,Central Puerto S.A.,Empresa Distribuidora y Comercializadora Norte Sociedad Anónima,Loma Negra Compañía Industrial Argentina Sociedad Anónima,IRSA Inversiones y Representaciones Sociedad Anónima,Cablevisión Holding S.A.,Grupo Supervielle S.A.,Sociedad Comercial del Plata S.A.,Cresud Sociedad Anónima Comercial Inmobiliaria Financiera y Agropecuaria,Bioceres Crop Solutions Corp.,Enel Generación Costanera S.A.,Sociedad Comercial del Plata S.A.,Banco BBVA Argentina S.A.,Cresud Sociedad Anónima Comercial Inmobiliaria Financiera y Agropecuaria,https://www.ypf.com,https://www.gfgsa.com,https://www.macro.com.ar,https://www.pampaenergia.com,https://www.tgs.com.ar,https://ar.ternium.com,https://www.bbva.com.ar,https://institucional.telecom.com.ar,https://aluar.com.ar,https://www.centralpuerto.com,https://www.edenor.com,https://www.byma.com.ar,https://www.lomanegra.com,https://www.cablevisionholding.com,https://www.transener.com.ar,https://www.gruposupervielle.com,https://www.holcim.com.ar,https://www.cresud.com.ar,https://www.mirgor.com.ar,https://valo.ar,https://www.tgn.com.ar,https://www.richmondlab.com,https://www.ypf.com,https://www.gfgsa.com,https://www.macro.com.ar,https://www.pampaenergia.com,https://www.tgs.com.ar,https://institucional.telecom.com.ar,https://institucional.telecom.com.ar,https://www.bbva.com.ar,https://www.centralpuerto.com,https://www.edenor.com,https://www.lomanegra.com,https://www.irsa.com.ar,https://www.cablevisionholding.com,https://www.gruposupervielle.com,https://www.scp.com.ar,https://www.cresud.com.ar,https://biocerescrops.com,https://www.enel.com.ar,https://www.scp.com.ar,https://www.bbva.com.ar,https://www.cresud.com.ar",0,2,2,200,,,"Category,Country,Rank","[
+  {
+    ""id"": ""dd718c3c-be27-5c3e-bd82-dc78a23e01e0"",
+    ""name"": ""United States"",
+    ""displayName"": ""United States"",
+    ""latitude"": 39.3812661305678,
+    ""longitude"": -97.9222112121185,
+    ""iso"": ""US"",
+    ""locationType"": ""COUNTRY""
+  },
+  {
+    ""id"": ""fe1af733-6e73-5831-ac47-aec3ae65e1c7"",
+    ""name"": ""United Kingdom"",
+    ""displayName"": ""United Kingdom"",
+    ""latitude"": 54.2379333607472,
+    ""longitude"": -2.36966957036279,
+    ""iso"": ""UK"",
+    ""locationType"": ""COUNTRY""
+  },
+  {
+    ""id"": ""111a4cbe-d293-50c3-9da2-38e284942331"",
+    ""name"": ""Sri Lanka"",
+    ""displayName"": ""Sri Lanka"",
+    ""latitude"": 7.60808521895433,
+    ""longitude"": 80.7047272491285,
+    ""iso"": ""LK"",
+    ""locationType"": ""COUNTRY""
+  },
+  {
+    ""id"": ""97b0def2-b46c-58a6-9c79-554968690243"",
+    ""name"": ""Australia"",
+    ""displayName"": ""Australia"",
+    ""latitude"": -25.7349684916223,
+    ""longitude"": 134.489562606981,
+    ""iso"": ""AU"",
+    ""locationType"": ""COUNTRY""
+  },
+  {
+    ""id"": ""226e11ef-32fc-5484-9843-7087fdfb413d"",
+    ""name"": ""India"",
+    ""displayName"": ""India"",
+    ""latitude"": 22.1991660760527,
+    ""longitude"": 78.476681027237,
+    ""iso"": ""IN"",
+    ""locationType"": ""COUNTRY""
+  }
+]","[
+  {
+    ""id"": ""350fda6c-6778-500e-ae97-aade11bba0e8"",
+    ""name"": ""Electric & Electronics"",
+    ""slug"": ""electronics-electricals""
+  },
+  {
+    ""id"": ""7cedb4fe-1034-5d7b-b78b-ce626910428c"",
+    ""name"": ""Environment & Waste"",
+    ""slug"": ""waste-management""
+  },
+  {
+    ""id"": ""1c4d2f34-e5c5-58bc-a751-333c6010744d"",
+    ""name"": ""Auto & Automotive"",
+    ""slug"": ""automotive""
+  },
+  {
+    ""id"": ""ec0f4cc4-a5ca-5d75-809a-c4e34b344647"",
+    ""name"": ""Arts & Crafts"",
+    ""slug"": ""arts-crafts""
+  },
+  {
+    ""id"": ""8003cefd-9faa-5df4-b596-ae371029b710"",
+    ""name"": ""Education & Training"",
+    ""slug"": ""education-training""
+  }
+]"
+Top Public Listed Companies in Aus,competitor,Events where Top Public Listed Companies in Australia participate,Insurance Australia Group Limited,https://www.iag.com.au,Australia,Rank,Arts & Crafts,"Commonwealth Bank of Australia,Commonwealth Bank of Australia,CSL Limited,Westpac Banking Corporation,National Australia Bank Limited,Westpac Banking Corporation,ANZ Group Holdings Limited,CSL Limited,Australia and New Zealand Banking Group Limited,Macquarie Group Limited,National Australia Bank Limited,Wesfarmers Limited,Westpac Banking Corporation,Goodman Group,ANZ Group Holdings Limited,Fortescue Metals Group Limited,Macquarie Group Limited,ANZ Group Holdings Limited,Wesfarmers Limited,Atlassian Corporation Class A Common Stock,Atlassian Corporation,Goodman Group,Woodside Energy Group Ltd,Yancoal Australia Ltd,Telstra Group Limited,Fortescue Metals Group Limited,Transurban Group,Woolworths Group Limited,Fortescue Metals Group Limited,Aristocrat Leisure Limited,WiseTech Global Limited,MMG Limited,Woodside Energy Group Ltd,Woodside Energy Group Ltd,Telstra Group Limited,REA Group Limited,Woolworths Group Limited,Brambles Limited,QBE Insurance Group Limited,Aristocrat Leisure Limited,Coles Group Limited,WiseTech Global Limited,Woodside Energy Group Ltd,Suncorp Group Limited,REA Group Limited,Northern Star Resources Limited,Pro Medicus Limited,Coronado Global Resources Inc.,Cochlear Limited,Scentre Group,Insurance Australia Group Limited,https://www.commbank.com.au,https://www.commbank.com.au,https://www.csl.com.au,https://www.westpac.com.au,https://www.nab.com.au,https://www.westpac.com.au,https://www.anz.com.au,https://www.csl.com.au,https://www.anz.com.au,https://www.macquarie.com.au,https://www.nab.com.au,https://www.wesfarmers.com.au,https://www.westpac.com.au,https://www.goodman.com,https://www.anz.com.au,https://www.fortescue.com,https://www.macquarie.com.au,https://www.anz.com.au,https://www.wesfarmers.com.au,https://www.atlassian.com,https://www.atlassian.com,https://www.goodman.com,https://www.woodside.com,https://www.yancoal.com.au,https://www.telstra.com.au,https://www.fortescue.com,https://www.transurban.com,https://www.woolworthsgroup.com.au,https://www.fortescue.com,https://www.aristocrat.com,https://www.wisetechglobal.com,https://www.mmg.com,https://www.woodside.com,https://www.woodside.com,https://www.telstra.com.au,https://www.rea-group.com,https://www.woolworthsgroup.com.au,https://www.brambles.com,https://www.qbe.com,https://www.aristocrat.com,https://www.colesgroup.com.au,https://www.wisetechglobal.com,https://www.woodside.com,https://www.suncorpgroup.com.au,https://www.rea-group.com,https://www.nsrltd.com,https://www.promed.com.au,https://coronadoglobal.com,https://www.cochlear.com,https://www.scentregroup.com,https://www.iag.com.au",52,107,159,200,,Considered only Top 50 entries,"Category,Country,Rank","[
+  {
+    ""id"": ""97b0def2-b46c-58a6-9c79-554968690243"",
+    ""name"": ""Australia"",
+    ""displayName"": ""Australia"",
+    ""latitude"": -25.7349684916223,
+    ""longitude"": 134.489562606981,
+    ""iso"": ""AU"",
+    ""locationType"": ""COUNTRY""
+  }
+]","[
+  {
+    ""id"": ""ec0f4cc4-a5ca-5d75-809a-c4e34b344647"",
+    ""name"": ""Arts & Crafts"",
+    ""slug"": ""arts-crafts""
+  },
+  {
+    ""id"": ""8003cefd-9faa-5df4-b596-ae371029b710"",
+    ""name"": ""Education & Training"",
+    ""slug"": ""education-training""
+  }
+]"

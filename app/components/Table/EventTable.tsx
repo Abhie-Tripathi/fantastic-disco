@@ -12,8 +12,10 @@ import ZeroState from "@/components/zerostate";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
-import { Show } from "@/types/events/dto/event-query.dto";
+import { useIntent } from "@/hooks/useIntent";
 import { useTrackerContext } from "@/context/tracker";
+import { useTrackerServices } from "@/services/trackerServices";
+import { Show } from "@/types/events/dto/event-query.dto";
 import { useFilterContext } from "@/context/filterContext";
 import BulkActionPopover from "./BulkActionPopover";
 import { useConfiguration } from "@/hooks/useConfiguration";
@@ -35,13 +37,17 @@ const EventTable = ({
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
+  const { createUserEventInterest, isLoading: isSubmitting } =
+  useIntent.createUserEventInterest();
+  const {removeBookmark}=useTrackerServices();
   const [isChecked,setIsChecked]=useState<boolean>(false);
   const [totalChecked,setTotalChecked] =useState<string[]>([]);
   const bulkOption=["Attend","Speak"]
   const { localFilters } = useFilterContext();
-  const { data } = useTrackerContext();
-  const [interest, setInterest] = useState();
+  const { data, setSavedEventCount, savedEventCount } = useTrackerContext();
+  const [interest, setInterest] = useState<any>();
   const [eventId, setEventId] = useState();
+  const [action,setAction] = useState();
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -86,7 +92,83 @@ const EventTable = ({
   // setFilter("show",showsData?.join(","));
   // }
   // console.log(data.filterValues.show);
-
+  console.log(eventType);
+  
+  const actions = [
+    ...interestConfiguration?.interest || [],
+    // ...([{ label: "Bookmark", status: "BOOKMARK" }])
+    ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
+  useEffect(() => {
+    if (actions.length > 0 && !action) {
+      setAction(actions[0]);
+    }
+  }, [actions]);
+  const bulkSubmit = async () => {
+    try {
+      if (eventType === "bookmarked") {
+  
+        const bookmarkPromises = totalChecked.map(id => {
+          console.log(id);
+          
+          const unBookmarkEvent = events.find(event => event.basic.id === id);
+          console.log(unBookmarkEvent);
+          
+          const response=removeBookmark(unBookmarkEvent?.interests?.bookmark?.interestId);
+          if (response?.interest && setInterest) {
+            setInterest({
+              [response.interest.toLowerCase()]: {
+                interestId: response.id,
+              },
+            });
+          }
+        });
+  
+        await Promise.all(bookmarkPromises);
+      } else {
+        const interestPromises = totalChecked.map(id =>
+          createUserEventInterest(
+            {
+              eventId: id,
+              interest: action?.status,
+              sourceModule: "TRACKER",
+              ...(trackerId && { sourceId: trackerId }),
+            },
+            {
+              onSuccess: (response: any) => {
+                if (response?.interest) {
+                  setInterest(prev => ({
+                    ...prev,
+                    [response.interest.toLowerCase()]: {
+                      interestId: response.id,
+                    },
+                  }));
+                }
+                if (response?.eventId && setEventId) {
+                  setEventId(response?.eventId);
+                }
+                setSavedEventCount(prev => prev + 1);
+              },
+              onError: (error) => {
+                console.error("Error while submitting interest:", error);
+              },
+            }
+          )
+        );
+  
+        await Promise.all(interestPromises);
+      }
+  
+      // toast({ title: "Success", description: "Done!", variant: "default" });
+    } catch (error) {
+      console.error("Error in bulk submission:", error);
+      // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
+    }
+  };
+  
+  
+  
+  
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
@@ -133,6 +215,8 @@ const EventTable = ({
         newEvents = newEvents.filter(
           (event: Event) => event.basic.id !== eventId
         );
+        console.log(newEvents);
+        
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
@@ -207,25 +291,22 @@ const EventTable = ({
         );
     } else return <ZeroState text="No events found" />;
   }
-  const actions = [
-    ...interestConfiguration?.interest || [],
-    ...([{ label: "Bookmark", status: "BOOKMARK" }])
-    // ...(!interests?.bookmark ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
-  ];
-
+  
+  
+  
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex items-center justify-between gap-4 pl-4 pb-2" style={{ height: showCheckBox ? "50px" : "auto" }}>
       <div className="flex items-center gap-4">
       {showCheckBox &&
-      <div>
+      <div className="flex gap-2">
       <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
       <div>Select events to perform action</div>
       </div>
       }
       {showCheckBox &&
       <div className="flex min-w-[130px]">
-      <BulkActionPopover options={actions}/>
+      <BulkActionPopover options={actions} action={action} setAction={setAction}/>
       </div>
       }
       </div>
@@ -235,6 +316,7 @@ const EventTable = ({
       type="submit"
       className="w-30 self-center"
       disabled={isLoading}
+      onClick={()=>bulkSubmit()}
       >
       Submit
       </Button>

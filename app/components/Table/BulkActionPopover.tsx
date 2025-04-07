@@ -33,6 +33,8 @@ interface AudienceDesAndDepSelectorProps {
   variant?: "accordion" | "popover";
   filterName?: string;
   options: any;
+  action: Options;
+  setAction: any;
 }
 interface Options{
   status?:string;
@@ -41,11 +43,13 @@ interface Options{
 export default function BulkActionPopover({
   variant = "popover",
   filterName,
+  action,
+  setAction,
   options
 }: AudienceDesAndDepSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [action,setAction] = useState(options[0]);
+  // const [action,setAction] = useState(options[0]);
 //   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
 //     useFilterContext();
 //     console.log(options);

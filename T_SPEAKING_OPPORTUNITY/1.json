@@ -1,0 +1,462 @@
+{
+  "totalCount": 2,
+  "data": [
+    {
+      "trackerName": "Top Public Listed Companies in Arg",
+      "content": "Events where Top Public Listed Companies in Argentina participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "2",
+      "filterValue": {
+        "country": [
+          {
+            "id": "dd718c3c-be27-5c3e-bd82-dc78a23e01e0",
+            "name": "United States",
+            "displayName": "United States",
+            "latitude": 39.3812661305678,
+            "longitude": -97.9222112121185,
+            "iso": "US",
+            "locationType": "COUNTRY"
+          },
+          {
+            "id": "fe1af733-6e73-5831-ac47-aec3ae65e1c7",
+            "name": "United Kingdom",
+            "displayName": "United Kingdom",
+            "latitude": 54.2379333607472,
+            "longitude": -2.36966957036279,
+            "iso": "UK",
+            "locationType": "COUNTRY"
+          },
+          {
+            "id": "111a4cbe-d293-50c3-9da2-38e284942331",
+            "name": "Sri Lanka",
+            "displayName": "Sri Lanka",
+            "latitude": 7.60808521895433,
+            "longitude": 80.7047272491285,
+            "iso": "LK",
+            "locationType": "COUNTRY"
+          },
+          {
+            "id": "97b0def2-b46c-58a6-9c79-554968690243",
+            "name": "Australia",
+            "displayName": "Australia",
+            "latitude": -25.7349684916223,
+            "longitude": 134.489562606981,
+            "iso": "AU",
+            "locationType": "COUNTRY"
+          },
+          {
+            "id": "226e11ef-32fc-5484-9843-7087fdfb413d",
+            "name": "India",
+            "displayName": "India",
+            "latitude": 22.1991660760527,
+            "longitude": 78.476681027237,
+            "iso": "IN",
+            "locationType": "COUNTRY"
+          }
+        ],
+        "category": [
+          {
+            "id": "350fda6c-6778-500e-ae97-aade11bba0e8",
+            "name": "Electric & Electronics",
+            "slug": "electronics-electricals"
+          },
+          {
+            "id": "7cedb4fe-1034-5d7b-b78b-ce626910428c",
+            "name": "Environment & Waste",
+            "slug": "waste-management"
+          },
+          {
+            "id": "1c4d2f34-e5c5-58bc-a751-333c6010744d",
+            "name": "Auto & Automotive",
+            "slug": "automotive"
+          },
+          {
+            "id": "ec0f4cc4-a5ca-5d75-809a-c4e34b344647",
+            "name": "Arts & Crafts",
+            "slug": "arts-crafts"
+          },
+          {
+            "id": "8003cefd-9faa-5df4-b596-ae371029b710",
+            "name": "Education & Training",
+            "slug": "education-training"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Ternium Argentina S.A."
+        ],
+        [
+          "Transportadora de Gas del Norte S.A."
+        ],
+        [
+          "https://www.gruposupervielle.com"
+        ],
+        [
+          "Bioceres Crop Solutions Corp."
+        ],
+        [
+          "https://aluar.com.ar"
+        ],
+        [
+          "Mirgor Sociedad An\u00f3nima Comercial Industrial Financiera Inmobiliaria y Agropecuaria"
+        ],
+        [
+          "https://www.gfgsa.com"
+        ],
+        [
+          "Bolsas y Mercados Argentinos S.A."
+        ],
+        [
+          "https://www.richmondlab.com"
+        ],
+        [
+          "https://www.holcim.com.ar"
+        ],
+        [
+          "Compa\u00f1\u00eda de Transporte de Energ\u00eda El\u00e9ctrica en Alta Tensi\u00f3n Transener S.A."
+        ],
+        [
+          "YPF Sociedad An\u00f3nima"
+        ],
+        [
+          "https://www.pampaenergia.com"
+        ],
+        [
+          "https://www.irsa.com.ar"
+        ],
+        [
+          "Transportadora de Gas del Sur S.A."
+        ],
+        [
+          "Grupo Financiero Galicia S.A."
+        ],
+        [
+          "Banco Macro S.A."
+        ],
+        [
+          "https://www.centralpuerto.com"
+        ],
+        [
+          "Pampa Energ\u00eda S.A."
+        ],
+        [
+          "https://www.lomanegra.com"
+        ],
+        [
+          "Aluar Aluminio Argentino S.A.I.C."
+        ],
+        [
+          "https://www.cresud.com.ar"
+        ],
+        [
+          "https://www.ypf.com"
+        ],
+        [
+          "https://www.byma.com.ar"
+        ],
+        [
+          "Telecom Argentina S.A."
+        ],
+        [
+          "https://ar.ternium.com"
+        ],
+        [
+          "https://valo.ar"
+        ],
+        [
+          "Cablevisi\u00f3n Holding S.A."
+        ],
+        [
+          "Empresa Distribuidora y Comercializadora Norte Sociedad An\u00f3nima"
+        ],
+        [
+          "Laboratorios Richmond S.A.C.I.F."
+        ],
+        [
+          "https://www.cablevisionholding.com"
+        ],
+        [
+          "https://www.transener.com.ar"
+        ],
+        [
+          "https://www.tgn.com.ar"
+        ],
+        [
+          "https://biocerescrops.com"
+        ],
+        [
+          "Holcim (Argentina) S.A."
+        ],
+        [
+          "Loma Negra Compa\u00f1\u00eda Industrial Argentina Sociedad An\u00f3nima"
+        ],
+        [
+          "https://www.macro.com.ar"
+        ],
+        [
+          "https://www.scp.com.ar"
+        ],
+        [
+          "https://institucional.telecom.com.ar"
+        ],
+        [
+          "Cresud Sociedad An\u00f3nima Comercial Inmobiliaria Financiera y Agropecuaria"
+        ],
+        [
+          "https://www.enel.com.ar"
+        ],
+        [
+          "https://www.mirgor.com.ar"
+        ],
+        [
+          "Sociedad Comercial del Plata S.A."
+        ],
+        [
+          "Banco de Valores S.A."
+        ],
+        [
+          "https://www.tgs.com.ar"
+        ],
+        [
+          "https://www.edenor.com"
+        ],
+        [
+          "Grupo Supervielle S.A."
+        ],
+        [
+          "Central Puerto S.A."
+        ],
+        [
+          "https://www.bbva.com.ar"
+        ],
+        [
+          "Banco BBVA Argentina S.A."
+        ],
+        [
+          "Enel Generaci\u00f3n Costanera S.A."
+        ],
+        [
+          "IRSA Inversiones y Representaciones Sociedad An\u00f3nima"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Aus",
+      "content": "Events where Top Public Listed Companies in Australia participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "159",
+      "filterValue": {
+        "country": [
+          {
+            "id": "97b0def2-b46c-58a6-9c79-554968690243",
+            "name": "Australia",
+            "displayName": "Australia",
+            "latitude": -25.7349684916223,
+            "longitude": 134.489562606981,
+            "iso": "AU",
+            "locationType": "COUNTRY"
+          }
+        ],
+        "category": [
+          {
+            "id": "ec0f4cc4-a5ca-5d75-809a-c4e34b344647",
+            "name": "Arts & Crafts",
+            "slug": "arts-crafts"
+          },
+          {
+            "id": "8003cefd-9faa-5df4-b596-ae371029b710",
+            "name": "Education & Training",
+            "slug": "education-training"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Commonwealth Bank of Australia"
+        ],
+        [
+          "QBE Insurance Group Limited"
+        ],
+        [
+          "https://coronadoglobal.com"
+        ],
+        [
+          "Westpac Banking Corporation"
+        ],
+        [
+          "MMG Limited"
+        ],
+        [
+          "Woolworths Group Limited"
+        ],
+        [
+          "Wesfarmers Limited"
+        ],
+        [
+          "https://www.wisetechglobal.com"
+        ],
+        [
+          "https://www.anz.com.au"
+        ],
+        [
+          "https://www.rea-group.com"
+        ],
+        [
+          "https://www.nab.com.au"
+        ],
+        [
+          "https://www.woodside.com"
+        ],
+        [
+          "https://www.brambles.com"
+        ],
+        [
+          "https://www.goodman.com"
+        ],
+        [
+          "https://www.qbe.com"
+        ],
+        [
+          "https://www.scentregroup.com"
+        ],
+        [
+          "https://www.iag.com.au"
+        ],
+        [
+          "Atlassian Corporation"
+        ],
+        [
+          "Coles Group Limited"
+        ],
+        [
+          "https://www.yancoal.com.au"
+        ],
+        [
+          "National Australia Bank Limited"
+        ],
+        [
+          "Brambles Limited"
+        ],
+        [
+          "Cochlear Limited"
+        ],
+        [
+          "https://www.nsrltd.com"
+        ],
+        [
+          "https://www.aristocrat.com"
+        ],
+        [
+          "Goodman Group"
+        ],
+        [
+          "https://www.suncorpgroup.com.au"
+        ],
+        [
+          "REA Group Limited"
+        ],
+        [
+          "https://www.mmg.com"
+        ],
+        [
+          "https://www.colesgroup.com.au"
+        ],
+        [
+          "Aristocrat Leisure Limited"
+        ],
+        [
+          "https://www.woolworthsgroup.com.au"
+        ],
+        [
+          "WiseTech Global Limited"
+        ],
+        [
+          "ANZ Group Holdings Limited"
+        ],
+        [
+          "Woodside Energy Group Ltd"
+        ],
+        [
+          "Telstra Group Limited"
+        ],
+        [
+          "https://www.commbank.com.au"
+        ],
+        [
+          "Atlassian Corporation Class A Common Stock"
+        ],
+        [
+          "Fortescue Metals Group Limited"
+        ],
+        [
+          "https://www.wesfarmers.com.au"
+        ],
+        [
+          "Scentre Group"
+        ],
+        [
+          "https://www.westpac.com.au"
+        ],
+        [
+          "https://www.fortescue.com"
+        ],
+        [
+          "https://www.transurban.com"
+        ],
+        [
+          "Transurban Group"
+        ],
+        [
+          "https://www.atlassian.com"
+        ],
+        [
+          "Yancoal Australia Ltd"
+        ],
+        [
+          "https://www.telstra.com.au"
+        ],
+        [
+          "Coronado Global Resources Inc."
+        ],
+        [
+          "Pro Medicus Limited"
+        ],
+        [
+          "Insurance Australia Group Limited"
+        ],
+        [
+          "https://www.promed.com.au"
+        ],
+        [
+          "https://www.cochlear.com"
+        ],
+        [
+          "CSL Limited"
+        ],
+        [
+          "Suncorp Group Limited"
+        ],
+        [
+          "https://www.macquarie.com.au"
+        ],
+        [
+          "https://www.csl.com.au"
+        ],
+        [
+          "Australia and New Zealand Banking Group Limited"
+        ],
+        [
+          "Macquarie Group Limited"
+        ],
+        [
+          "Northern Star Resources Limited"
+        ]
+      ]
+    }
+  ]
+}

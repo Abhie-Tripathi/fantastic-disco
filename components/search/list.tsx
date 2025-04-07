@@ -43,7 +43,8 @@ import { isEventeli } from "@/config";
 import { Button } from "../ui/button";
 import * as Flags from "country-flag-icons/react/3x2";
 import { groupedEventTypes } from "@/constants";
-
+import BulkActionPopover from "@/app/components/Table/BulkActionPopover";
+import { useConfiguration } from "@/hooks/useConfiguration";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -131,6 +132,12 @@ export default function EventAccordion({
   const [isChecked,setIsChecked]=useState<boolean>(false);
   const [totalChecked,setTotalChecked] =useState<string[]>([]);
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const [action,setAction] = useState();
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error: isConfigError,
+  } = useConfiguration.interest();
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -196,7 +203,26 @@ export default function EventAccordion({
       setUpdatedEvents(events);
     }
   }, [events]);
-
+  const handleCheckboxChange=(event: React.ChangeEvent<HTMLInputElement>)=>{
+    const isChecked=event.target.checked
+    setIsChecked(isChecked)
+    if(isChecked){
+      const resultId=events.map((event)=> event.basic.id)
+      setTotalChecked(resultId);
+    }else{
+      setTotalChecked([]);
+    }
+  }
+  const actions = [
+    ...interestConfiguration?.interest || [],
+    ...([{ label: "Bookmark", status: "BOOKMARK" }])
+    // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
+  useEffect(() => {
+    if (actions.length > 0 && !action) {
+      setAction(actions[0]);
+    }
+  }, [actions]);
   useEffect(() => {
     if (!events) return;
 
@@ -288,10 +314,43 @@ export default function EventAccordion({
   }
   return (
     <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between gap-4 pl-4 pb-2" style={{ height: showCheckBox ? "50px" : "auto" }}>
+      <div className="flex items-center gap-4">
+      {showCheckBox &&
+      <div className="flex gap-2">
+      <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
+      <div>Select events to perform action</div>
+      </div>
+      }
+      {showCheckBox &&
+      <div className="flex min-w-[130px]">
+      <BulkActionPopover options={actions} action={action} setAction={setAction}/>
+      </div>
+      }
+      </div>
+      <div>
+      {totalChecked.length>0 &&
+      <Button
+      type="submit"
+      className="w-30 self-center"
+      disabled={isLoading}
+      onClick={()=>bulkSubmit()}
+      >
+      Submit
+      </Button>
+      }
+      </div>
+      </div>
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              totalChecked={totalChecked}
+              isChecked={isChecked}
+              setIsChecked={setIsChecked}
+              setTotalChecked={setTotalChecked}
+              showCheckBox={showCheckBox}
+              itemsPerPage={itemsPerPage}
               global={view}
               trackerId={trackerId}
               view={query.eventType}
@@ -330,6 +389,12 @@ const EventListItem = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  showCheckBox,
+  totalChecked,
+  isChecked,
+  setIsChecked,
+  setTotalChecked,
+  itemsPerPage
 }: {
   trackerId?: string;
   view?: string;
@@ -340,6 +405,12 @@ const EventListItem = ({
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
   global?: string;
+  showCheckBox?:boolean;
+  totalChecked:string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>
+  isChecked:boolean;
+  setIsChecked:React.Dispatch<React.SetStateAction<boolean>>;
+  itemsPerPage:number;
 }) => {
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
@@ -425,9 +496,29 @@ const EventListItem = ({
     return <UnplannedCard event={event} />;
   }
   console.log(view);
-
+  const handleCheckboxChange = (event:React.ChangeEvent<HTMLInputElement>, id:string) => {
+    if (event.target.checked) {
+      console.log(totalChecked);
+      
+      if(totalChecked.length===itemsPerPage-1) setIsChecked(!isChecked)
+      setTotalChecked?.((prev) => [...prev, id]);
+    } else {
+      if(isChecked) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+    }
+  };
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
+      <div className="">
+      {showCheckBox && (
+        <div className="flex">
+        <input 
+          type="checkbox" 
+          checked={totalChecked.includes(event.basic.id)} 
+          onChange={(e) => handleCheckboxChange(e, event.basic.id)}
+        />
+        </div>
+      )}
       <Link href={`/internal/event/${event.basic.id}`} className="block">
         <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
@@ -1087,6 +1178,7 @@ const EventListItem = ({
           </div>
         </div>
       </Link>
+      </div>
     </div>
   );
 };
