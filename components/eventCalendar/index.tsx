@@ -346,6 +346,8 @@ export default function EventCalendar({
         />
       );
     }
+  
+    
     return (
       <Calendar
         localizer={localizer}
@@ -392,7 +394,7 @@ export default function EventCalendar({
       />
     );
   };
-
+  
   return (
     <>
       {shouldShowZeroState ? (
@@ -407,8 +409,8 @@ export default function EventCalendar({
             <ZeroState text={error?.message} />
           )}
         </div>
-      ) : source === "tracker" && eventsData?.count === 0 && activeVal === 0 ? (
-        active === "savedEvent" ? (
+      ) : source === "tracker" && activeVal === 0 ? (
+        active === "bookmarked" ? (
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}
