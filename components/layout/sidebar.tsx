@@ -95,11 +95,11 @@ const Sidebar = () => {
   const router = useRouter();
   const { user, signOut } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [storedUser, setStoredUser] = useState<any>(null);
 
-  const [storedUser, setStoredUser] = useState(() => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  });
+  useEffect(() => {
+    if (user) setStoredUser(user);
+  }, [user]);
 
   useEffect(() => {
     const handleStorageChange = () => {
