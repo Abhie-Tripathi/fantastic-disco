@@ -342,7 +342,7 @@ const EventTrends = () => {
 
   const handleViewChange = (view: "line" | "treemap" | "table") => {
     setActiveView(view);
-    if (view === "treemap") {
+    if (view === "treemap" && categories.length === 0) {
       const defaultCategories =
         "animals-pets,apparel-fashion,arts-crafts,automotive,baby-kids";
       setLocalFilter("categories", defaultCategories);
@@ -545,7 +545,7 @@ const EventTrends = () => {
                       <div className="text-primary">{template.icon}</div>
                       <h3 className="font-medium">{template.title}</h3>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground pl-9">
                       {template.description}
                     </p>
                   </div>
