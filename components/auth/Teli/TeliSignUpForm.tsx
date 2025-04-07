@@ -1,19 +1,25 @@
 "use client";
 
+import { LoadingPage } from "@/components/auth/loadingPage";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
 import { sessionKeys } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
+import { useToast } from "@/hooks/use-toast";
 import { SignUpDTO } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import IndustryCards from "./IndustryCards";
+import GoogleIcon from "/public/google.svg";
+import LinkedinIcon from "/public/linkedin.svg";
 
 const signUpSchema = z.object({
   email: z
@@ -29,7 +35,18 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
-  const { isLoading, signup, error, setError } = useAuthContext();
+  const {
+    isLoading,
+    signup,
+    error,
+    user,
+    setError,
+    updateIndustry,
+    isAuthenticating,
+    signInSSO,
+  } = useAuthContext();
+  const { data: session, status } = useSession();
+  const { toast } = useToast();
   const [industry, setIndustry] = useState("");
   const [subIndustry, setSubIndustry] = useState("");
   const selectedIndustry = industryData.find((item) => item.slug === industry);
@@ -46,6 +63,22 @@ export default function TeliSignUpForm() {
   } = useForm<FormData>({
     resolver: zodResolver(signUpSchema),
   });
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      signInSSO();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (user && user.isNewUser) {
+      setValue("email", user.email || "");
+      toast({
+        description: "Please select your industry",
+        variant: "default",
+      });
+    }
+  }, [user]);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -71,7 +104,11 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
-      await signup(signUpData);
+      if (user && user?.isNewUser && status === "authenticated") {
+        await updateIndustry(signUpData);
+      } else {
+        await signup(signUpData);
+      }
     } catch (error) {
       console.error("Signup error:", error);
     }
@@ -93,15 +130,42 @@ export default function TeliSignUpForm() {
     setValue("subIndustry", "");
   };
 
+  if (isAuthenticating) {
+    return <LoadingPage />;
+  }
+
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-1">
+    <div className="flex flex-col justify-center items-center w-full space-y-4">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
+        Create your account
+      </p>
+      {status === "unauthenticated" && (
+        <>
+          <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
+            <Button
+              onClick={() => signIn("google")}
+              variant={"outline"}
+              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+            >
+              <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+              <span className="mt-1">Google</span>
+            </Button>
+            <Button
+              onClick={() => signIn("linkedin")}
+              variant={"outline"}
+              className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+            >
+              <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+              <span className="mt-1">LinkedIn</span>
+            </Button>
+          </div>
+          <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+        </>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
       >
-        <p className="font-semibold text-lg leading-6 text-center">
-          Create your account
-        </p>
         <Controller
           name="email"
           control={control}
@@ -139,7 +203,7 @@ export default function TeliSignUpForm() {
           )}
         />
         {!hasSubIndustries && (
-          <p className="text-[var(--secondary-text-color)] text-center font-semibold">
+          <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
             Choose an Industry Relevant to You
           </p>
         )}
@@ -183,6 +247,7 @@ export default function TeliSignUpForm() {
       <div className="text-center py-2 text-sm">
         Already have an account?
         <Link
+          onClick={() => signOut({ callbackUrl: "/signin" })}
           href="/signin"
           className="text-[#6750a4] cursor-pointer font-medium"
         >

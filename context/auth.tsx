@@ -123,7 +123,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const token = searchParams.get("token");
 
-  const categories  = useMemo(() => {
+  const categories = useMemo(() => {
     if (typeof window === "undefined") return null;
     try {
       const sessionCategories = sessionStorage.getItem("categories");
@@ -382,7 +382,11 @@ export const AuthContextProvider = ({ children }: any) => {
       try {
         delete formData.email;
         await updateMyProfileData({ formData });
-        router.push(`/internal/search/events?${urlParams}`);
+        if (isEventeli) {
+          router.push(`/location`);
+        } else {
+          router.push(`/internal/search/events?${urlParams}`);
+        }
       } catch (error) {
         console.log("Error", error);
       }
