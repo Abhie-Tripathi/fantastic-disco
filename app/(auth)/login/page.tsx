@@ -1,11 +1,9 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useTrackerServices } from "@/services/trackerServices";
-import Loading from "@/app/components/UI/Loading";
-import { useAuthContext } from "@/context";
 import { LoadingPage } from "@/components/auth/loadingPage";
+import { useAuthContext } from "@/context";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
