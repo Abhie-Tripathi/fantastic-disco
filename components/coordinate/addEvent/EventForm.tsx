@@ -233,26 +233,17 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   };
 
   const sendMail = async() => {
-    const formData = new FormData();
-    formData.append("firstName", user?.firstname);
-    formData.append("lastName", user?.lastname);
-    formData.append("busEmail", user?.email);
-    formData.append("companyName", user?.accountId);
-    formData.append("jobTitle", user?.designation);
-    formData.append("phoneNumber", user?.phoneNumber);
 
     const description = {
       userDetail: user,
       eventDetail: mainEventState,
     }
 
-    formData.append("description", JSON.stringify(description));
-
     const formData1 = {
       firstName: user?.firstname,
       lastName: user?.lastname,
       busEmail: user?.email,
-      companyName: user?.accountId,
+      // companyName: user?.accountId,
       jobTitle: user?.designation,
       phoneNumber: user?.phoneNumber,
       description: JSON.stringify(description),
@@ -293,12 +284,12 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       ) : eventFormState === "similarEvents" ? (
         <>
           <div className="text-sm p-4 border rounded-sm border-[#FFDD8F] bg-[--warning-background-color]">
-            We've Found
+            We&apos;ve Found
             <span className="text-[#A35200] font-semibold">
               {" "}
               {similarEvents.length} Similar Events{" "}
             </span>
-            ! See if either matches the event you're trying to add.
+            ! See if either matches the event you&apos;re trying to add.
           </div>
 
           <SimilarEventCard

@@ -100,7 +100,7 @@ const BulkImport = ({
       firstName: user?.firstname,
       lastName: user?.lastname,
       busEmail: user?.email,
-      companyName: user?.accountId,
+      // companyName: user?.accountId,
       jobTitle: user?.designation,
       phoneNumber: user?.phoneNumber,
       description: JSON.stringify(filteredItems),
@@ -176,7 +176,7 @@ const BulkImport = ({
               </span>
             </div>
             <div className="text-sm text-[var(--secondary-text-color)]">
-              Here's What We Found for You! Choose from the events below and add
+              Here&apos;s What We Found for You! Choose from the events below and add
               them
             </div>
 
@@ -208,7 +208,7 @@ const BulkImport = ({
                 eventType: item.participation,
               }
               return (
-                <div className="flex gap-3 items-baseline" >
+                <div className="flex gap-3 items-baseline" key={index} >
                   <Checkbox
                     checked={selectedItems.includes(index)}
                     onCheckedChange={() => handleToggleItem(index)}
@@ -228,7 +228,7 @@ const BulkImport = ({
                 participationType: item.participation,
               }
               return (
-                <div className="flex gap-3 items-baseline" >
+                <div className="flex gap-3 items-baseline" key={index} >
                   <Checkbox
                     checked={selectedItems.includes(index)}
                     onCheckedChange={() => handleToggleItem(index)}

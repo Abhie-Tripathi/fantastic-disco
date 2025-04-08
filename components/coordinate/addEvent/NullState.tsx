@@ -20,7 +20,7 @@ const NullState = () => {
       <div className="flex flex-col gap-6 items-center my-8">
         <Image src={NullImage} alt="no events found" />
         <div className="text-[var(--tertiary-text-color)] text-sm font-semibold">
-          Couldn't fetch the Events
+          Couldn&apos;t fetch the Events
         </div>
       </div>
     </div>

@@ -108,7 +108,7 @@ const EventCard = (eventData: Props) => {
   useEffect(() => {
     if (interestConfiguration && eventData?.participationType) {
       console.log('ss1', eventData);
-      const ss = interestConfiguration.interest.find(item => item.label.toLowerCase() === eventData.participationType.toLowerCase());
+      const ss = interestConfiguration.interest.find(item => item.label.toLowerCase() === eventData?.participationType?.toLowerCase());
       console.log('ss', ss);
       if (ss)
         setSelectedAction(ss);

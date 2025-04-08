@@ -85,13 +85,13 @@ const UrlFetch = ({ url }: Props) => {
               </span>
             </div>
             <div className="text-sm text-[var(--secondary-text-color)]">
-              Here's What We Found for You! Choose from the events below and add
+              Here&apos;s What We Found for You! Choose from the events below and add
               them
             </div>
           </div>
 
-          {fetchedEvents.map((item: any) => (
-            <EventCard {...item} />
+          {fetchedEvents.map((item: any, index: number) => (
+            <EventCard {...item} key={index} />
           ))}
           {/* <SimilarEventCard {...eventData} /> */}
         </>
