@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTrackerServices } from "@/services/trackerServices";
 import Loading from "@/app/components/UI/Loading";
 import { useAuthContext } from "@/context";
+import { LoadingPage } from "@/components/auth/loadingPage";
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function Page() {
   const source = searchParams.get("source") || "";
   const token = searchParams.get("token") || "";
   const userId = Number(searchParams.get("userId") || "");
+  const redirectPath = searchParams.get("redirect") || "";
 
   useEffect(() => {
     const verify = async () => {
@@ -36,7 +38,7 @@ export default function Page() {
 
     if (source === "10times") {
       if (!source || !token || !userId) return;
-      signUpSSO10times(token, userId);
+      signUpSSO10times(token, userId, redirectPath);
     } else {
       if (!email || !otp || !target || !targetId) return;
       verify();
@@ -44,8 +46,6 @@ export default function Page() {
   }, [email, otp, target, targetId, router]);
 
   return (
-    <div>
-      <Loading />
-    </div>
+    <LoadingPage />
   );
 }

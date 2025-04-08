@@ -1,8 +1,8 @@
 "use client";
+import { LoadingPage } from "@/components/auth/loadingPage";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { baseUrl } from "@/constants";
 import { useAuthContext } from "@/context/auth";
 import { newCategories } from "@/data/categories";
 import { industryData, sessionKeys } from "@/data/onboarding";
@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { SignUpFormSchema } from "@/types/signup";
 import { GAEvent } from "@/utils/GAEvent";
-import { myFetch } from "@/utils/myFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -19,7 +18,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { LoadingPage } from "../loadingPage";
 import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
@@ -143,24 +141,6 @@ const GtmSignUpForm = () => {
       });
     }
   }, [user]);
-
-  const generateOtp = async () => {
-    const dataToSend = {
-      email: email,
-    };
-    const url = `${baseUrl}/auth/customer/verify/generate`;
-    const { data, error } = await myFetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
-    if (error) {
-      console.log(error);
-      return;
-    }
-  };
 
   const isCategoryMapped = industryData.find(
     (industryItem) => industryItem.slug === industry

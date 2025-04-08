@@ -53,7 +53,7 @@ type authContextType = {
   ) => void;
   signOut: () => void;
   signInSSO: () => Promise<any>;
-  signUpSSO10times: (token: string, userId: number) => Promise<any>;
+  signUpSSO10times: (token: string, userId: number, redirectPath: string) => Promise<any>;
   updateIndustry: (formData: any) => Promise<any>;
   generateOTP: (
     email: string,
@@ -126,9 +126,18 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const searchParams = useSearchParams();
 
-  const sessionCategories =
-    (sessionStorage && sessionStorage.getItem("categories")) || "";
-  const categories = sessionCategories && JSON.parse(sessionCategories);
+  const token = searchParams.get("token");
+
+  const categories = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const sessionCategories = sessionStorage.getItem("categories");
+      return sessionCategories ? JSON.parse(sessionCategories) : null;
+    } catch (error) {
+      console.log("Failed to parse sessionStorage categories", error);
+      return null;
+    }
+  }, []);
 
   const formatDateForFilter = (date: Date) => {
     return format(date, "yyyy-MM-dd");
@@ -374,7 +383,7 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [request, router]);
 
   const signUpSSO10times = useCallback(
-    async (token: string, userId: number) => {
+    async (token: string, userId: number, redirectPath: string) => {
       try {
         const formData = { token, userId };
 
@@ -399,7 +408,10 @@ export const AuthContextProvider = ({ children }: any) => {
               "walkthroughCompleted",
               JSON.stringify(["research"])
             );
-            router.push("/internal/search/events");
+            if (redirectPath)
+              router.push(redirectPath);
+            else
+              router.push("/internal/search/events");
           } else {
             localStorage.removeItem("walkthroughCompleted");
             router.push("/signup");
@@ -418,7 +430,11 @@ export const AuthContextProvider = ({ children }: any) => {
       try {
         delete formData.email;
         await updateMyProfileData({ formData });
-        router.push(`/internal/search/events?${urlParams}`);
+        if (isEventeli) {
+          router.push(`/location`);
+        } else {
+          router.push(`/internal/search/events?${urlParams}`);
+        }
       } catch (error) {
         console.log("Error", error);
       }
