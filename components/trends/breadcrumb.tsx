@@ -16,7 +16,7 @@ export function Breadcrumb({
   path,
 }: BreadcrumbProps) {
   return (
-    <div className="flex items-center gap-2 py-2">
+    <div className="flex items-center gap-2">
       {path.map((item, index) => (
         <div key={index} className="flex items-center">
           <Badge

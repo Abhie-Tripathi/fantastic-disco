@@ -181,7 +181,7 @@ const EventTable = ({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found" />;
+    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
   }
   console.log(events);
 

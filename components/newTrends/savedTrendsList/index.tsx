@@ -31,6 +31,7 @@ import {
   Trash,
   X,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "swiper/css";
@@ -249,16 +250,18 @@ const SavedTrendCard = ({
   };
   return (
     <li
-      className={`flex justify-between h-36 gap-4 pl-6 pr-1 py-3 border rounded-sm w-72 bg-white cursor-pointer marker ${
-        isActiveCard ? "border-primary" : "border-[var(--neutral-light-color)]"
-      } hover:border-primary ${
+      className={`flex justify-between h-36 gap-3 pl-4 pr-2 py-3 border rounded-lg w-72 bg-white cursor-pointer transition-all duration-200 ${
+        isActiveCard 
+          ? "border-primary shadow-md ring-1 ring-primary/20" 
+          : "border-[var(--neutral-light-color)] hover:shadow-sm hover:border-gray-300"
+      } ${
         activeCard !== id && editTrend === true
           ? "opacity-50 cursor-not-allowed pointer-events-none"
           : ""
       }`}
     >
       <div
-        className="flex flex-col gap-3"
+        className="flex flex-col gap-2 w-full"
         onClick={
           activeCard !== id && editTrend === true
             ? () => {}
@@ -266,30 +269,34 @@ const SavedTrendCard = ({
         }
       >
         <div className="flex justify-between items-center">
-          <p className="font-bold">{name}</p>
+          <p className="font-bold text-base text-gray-800 truncate">{name}</p>
         </div>
-        <div className="flex flex-col gap-3">
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
-            <MapPin width={14} height={14} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium w-40 truncate">
+        <div className="flex flex-col gap-2">
+          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+            <MapPin width={12} height={12} className="text-gray-500" />
+            <Badge variant="outline" className="bg-gray-50/50">
               {displayName}
-            </span>
-            {locationCount > 0 && <span>+{locationCount}</span>}
-          </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm">
-            <Calendar width={13} height={13} color="#000000" />
-            <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
-              {renderFormattedDates(startDate, endDate)}
-            </span>
-          </p>
-          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm ">
-            <BriefcaseBusiness width={13} height={13} color="#000000" />
-            {savedTrendEventTypes.length > 0 && (
-              <span className="rounded-full border-primary bg-white text-primary font-medium line-clamp-1">
-                {savedTrendEventTypes[0]}
-              </span>
+            </Badge>
+            {locationCount > 0 && (
+              <span className="text-gray-500">+{locationCount}</span>
             )}
-            {eventTypeCount > 0 && <span>+{eventTypeCount}</span>}
+          </p>
+          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+            <Calendar width={12} height={12} className="text-gray-500" />
+            <Badge variant="outline" className="bg-gray-50/50">
+              {renderFormattedDates(startDate, endDate)}
+            </Badge>
+          </p>
+          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+            <BriefcaseBusiness width={12} height={12} className="text-gray-500" />
+            {savedTrendEventTypes.length > 0 && (
+              <Badge variant="outline" className="bg-gray-50/50">
+                {savedTrendEventTypes[0]}
+              </Badge>
+            )}
+            {eventTypeCount > 0 && (
+              <span className="text-gray-500">+{eventTypeCount}</span>
+            )}
           </p>
         </div>
       </div>
@@ -297,35 +304,35 @@ const SavedTrendCard = ({
       <DropdownMenu onOpenChange={() => setOpen(!open)} open={open}>
         <DropdownMenuTrigger
           onClick={() => setOpen(!open)}
-          className="self-start"
+          className="self-start p-1 hover:bg-gray-100 rounded-full transition-colors"
         >
-          <EllipsisVerticalIcon width={15} height={15} />
+          <EllipsisVerticalIcon width={14} height={14} className="text-gray-500" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="p-2 z-50">
-          <div className="flex flex-col gap-2" id={"Savedtrendid"}>
+        <DropdownMenuContent className="p-2 z-50 min-w-[120px] shadow-md rounded-md border border-gray-200">
+          <div className="flex flex-col gap-1.5" id={"Savedtrendid"}>
             {activeCard === id && editTrend === true ? (
               <div
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 rounded-md transition-colors"
                 onClick={() => handleEditSavedTrend(data, "cancel")}
               >
-                <X width={14} height={14} />
-                <span className="text-sm">Cancel</span>
+                <X width={12} height={12} className="text-gray-600" />
+                <span className="text-xs text-gray-700">Cancel</span>
               </div>
             ) : (
               <div
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 rounded-md transition-colors"
                 onClick={() => handleEditSavedTrend(data, "edit")}
               >
-                <Edit width={14} height={14} />
-                <span className="text-sm">Edit</span>
+                <Edit width={12} height={12} className="text-gray-600" />
+                <span className="text-xs text-gray-700">Edit</span>
               </div>
             )}
             <div
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-red-50 rounded-md transition-colors"
               onClick={() => handleDeleteSavedTrend(id)}
             >
-              <Trash width={14} height={14} />
-              <span className="text-sm">Delete</span>
+              <Trash width={12} height={12} className="text-red-500" />
+              <span className="text-xs text-red-500">Delete</span>
             </div>
           </div>
         </DropdownMenuContent>
@@ -352,6 +359,7 @@ const SwiperCarousel = ({
       swiperRef.current.slideTo(initialSlideIndex, 200);
     }
   }, [initialSlideIndex]);
+
   return (
     <div className="relative">
       <Swiper
@@ -365,6 +373,8 @@ const SwiperCarousel = ({
         pagination={{
           clickable: true,
           el: ".custom-pagination",
+          bulletClass: "swiper-pagination-bullet",
+          bulletActiveClass: "swiper-pagination-bullet-active",
         }}
         navigation={{
           nextEl: ".custom-next-ranking",
@@ -381,12 +391,26 @@ const SwiperCarousel = ({
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="custom-prev-ranking flex justify-center items-center absolute -left-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 rounded-full w-7 h-7">
-        <ArrowLeftIcon className="w-4 h-4" />
+      <div className="custom-prev-ranking flex justify-center items-center absolute -left-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-white hover:bg-gray-100 rounded-full w-7 h-7 shadow-sm transition-colors">
+        <ArrowLeftIcon className="w-4 h-4 text-gray-600" />
       </div>
-      <div className="custom-next-ranking flex justify-center items-center absolute -right-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 rounded-full w-7 h-7">
-        <ArrowRightIcon className="w-4 h-4" />
+      <div className="custom-next-ranking flex justify-center items-center absolute -right-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-white hover:bg-gray-100 rounded-full w-7 h-7 shadow-sm transition-colors">
+        <ArrowRightIcon className="w-4 h-4 text-gray-600" />
       </div>
+      <style jsx global>{`
+        .swiper-pagination-bullet {
+          width: 6px;
+          height: 6px;
+          background: #d1d5db;
+          opacity: 1;
+          transition: all 0.2s ease;
+        }
+        .swiper-pagination-bullet-active {
+          background: var(--primary-color);
+          width: 16px;
+          border-radius: 3px;
+        }
+      `}</style>
     </div>
   );
 };
@@ -402,15 +426,12 @@ const SavedTrendsList = ({
     (trend) => trend.id === activeCard
   );
   return (
-    <div className="flex flex-col gap-4 w-full  px-6">
-      {/* <h1 className="font-medium">SAVED TRENDS</h1> */}
       <SwiperCarousel
         initialSlideIndex={initialSlideIndex}
         activeCard={activeCard}
         queryParams={queryParams}
         savedTrendsList={savedTrendsList}
       />
-    </div>
   );
 };
 export default SavedTrendsList;

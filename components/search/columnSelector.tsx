@@ -19,11 +19,13 @@ import { cn } from "@/lib/utils";
 type EventGroupType = "social" | "business";
 
 export default function ColumnsSelector({
-  view,
+  activeView,
+  setActiveView,
   selectedEventType,
   handleSelectChange,
 }: {
-  view: "line" | "treemap" | "table";
+  activeView: "line" | "treemap" | "table";
+  setActiveView: (view: "line" | "treemap" | "table") => void;
   selectedEventType: keyof Thresholds;
   handleSelectChange: (value: TEventColumnType) => void;
 }) {
@@ -46,7 +48,8 @@ export default function ColumnsSelector({
     setIsOpen(open);
   };
 
-  const columns = view === "treemap" ? treemapColumnsDropdown : columnsDropdown;
+  const columns =
+    activeView === "treemap" ? treemapColumnsDropdown : columnsDropdown;
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -78,7 +81,11 @@ export default function ColumnsSelector({
         <RadioGroup
           className="flex items-center"
           onValueChange={(value) => {
-            handleSelectChange(value as TEventColumnType);
+            if (activeView === "treemap" && value !== "eventCount") {
+              setActiveView("line");
+            } else {
+              handleSelectChange(value as TEventColumnType);
+            }
             setIsOpen(false);
           }}
         >
@@ -90,21 +97,18 @@ export default function ColumnsSelector({
               >
                 <RadioGroupItem
                   checked={selectedEventType === value}
-                  disabled={!enable}
                   value={value}
                   id={value}
                 />
                 <label
                   htmlFor={value}
-                  className={cn("text-sm font-medium leading-none", {
-                    "cursor-not-allowed opacity-50": !enable,
-                  })}
+                  className={cn("text-sm font-medium leading-none")}
                 >
                   {label}
                 </label>
                 {!enable && (
                   <p className="font-bold text-[#0062d1] text-[10px] bg-[#ebf5ff] p-1 rounded">
-                    Coming Soon
+                    Line Chart
                   </p>
                 )}
               </div>

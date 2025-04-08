@@ -51,6 +51,10 @@ import {
   Settings,
   FilterX,
   Download,
+  Building,
+  UserSearch,
+  Lock,
+  Info,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState, useRef } from "react";
@@ -66,20 +70,28 @@ import { ChartFilters } from "@/components/trendsChart/chart-filters";
 import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
 import TreemapView from "@/components/trends/treemap-view";
 import CategorySelector from "@/components/search/categorySelector";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ViewTemplates = [
-  {
-    id: "line",
-    title: "Line Chart",
-    description: "Track over time with interactive line graphs",
-    icon: <LineChart className="w-6 h-6" />,
-  },
   {
     id: "treemap",
     title: "Treemap",
     description: "Visualize hierarchical data with nested rectangles",
     icon: <LayoutGrid className="w-6 h-6" />,
   },
+  {
+    id: "line",
+    title: "Line Chart",
+    description: "Track over time with interactive line graphs",
+    icon: <LineChart className="w-6 h-6" />,
+  },
+
   {
     id: "table",
     title: "Table View",
@@ -134,7 +146,7 @@ const EventTrends = () => {
     useState<boolean>(false);
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const [activeView, setActiveView] = useState<"line" | "treemap" | "table">(
-    "line"
+    "treemap"
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches] = useState([
@@ -147,6 +159,7 @@ const EventTrends = () => {
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
   ]);
+  const [showSavedTrends, setShowSavedTrends] = useState(false);
   const categories = getLocalFilterValue("categories");
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
@@ -359,7 +372,7 @@ const EventTrends = () => {
       {/* Enhanced Filters Sidebar */}
       <div
         className={`relative transition-all duration-300 ${
-          isFiltersCollapsed ? "w-0" : "w-80"
+          isFiltersCollapsed ? "w-0" : "w-[370px]"
         }`}
       >
         <div
@@ -369,33 +382,72 @@ const EventTrends = () => {
         >
           <ScrollArea className="flex-1">
             <div className="space-y-4 p-4">
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-primary" />
-                    <h2 className="text-sm font-semibold">Filters</h2>
-                  </div>
+              <Tabs defaultValue="events" className="w-full">
+                <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+                  <TabsTrigger
+                    value="events"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Calendar1 className="w-4 h-4" />
+                    Events
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="companies"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                    disabled
+                  >
+                    <Lock className="w-4 h-4" />
+                    Companies
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="people"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                    disabled
+                  >
+                    <Lock className="w-4 h-4" />
+                    People
+                  </TabsTrigger>
+                </TabsList>
+                <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
+                  <TabsContent value="events" className="mt-4 space-y-4">
+                    <EventTypeSelector variant="popover" />
+                    <LocationSelector />
+                    <DateRangeSelector />
+                    {activeView === "treemap" && (
+                      <CategorySelector maxCategories={5} variant="accordion" />
+                    )}
+                    <ColumnsSelector
+                      activeView={activeView}
+                      setActiveView={setActiveView}
+                      selectedEventType={selectedEventType}
+                      handleSelectChange={handleSelectChange}
+                    />
+                    {activeView === "treemap" && (
+                      <ChartFilters
+                        type="visitor-flow"
+                        hierarchyLevels={hierarchyLevels}
+                        setHierarchyLevels={setHierarchyLevels}
+                      />
+                    )}
+                  </TabsContent>
+                  <TabsContent value="companies" className="mt-4">
+                    <div className="flex items-center justify-center h-40 text-muted-foreground">
+                      <div className="text-center">
+                        <Lock className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Company filters coming soon</p>
+                      </div>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="people" className="mt-4">
+                    <div className="flex items-center justify-center h-40 text-muted-foreground">
+                      <div className="text-center">
+                        <Lock className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">People filters coming soon</p>
+                      </div>
+                    </div>
+                  </TabsContent>
                 </div>
-              </div>
-              <Separator className="my-2" />
-              <EventTypeSelector variant="popover" />
-              <LocationSelector />
-              <DateRangeSelector />
-              {activeView === "treemap" && (
-                <CategorySelector maxCategories={5} variant="accordion" />
-              )}
-              <ColumnsSelector
-                view={activeView}
-                selectedEventType={selectedEventType}
-                handleSelectChange={handleSelectChange}
-              />
-              {activeView === "treemap" && (
-                <ChartFilters
-                  type="visitor-flow"
-                  hierarchyLevels={hierarchyLevels}
-                  setHierarchyLevels={setHierarchyLevels}
-                />
-              )}
+              </Tabs>
             </div>
           </ScrollArea>
 
@@ -468,20 +520,18 @@ const EventTrends = () => {
                 )}
               </Button>
 
-              {activeView !== "treemap" && (
-                <SaveTrend
-                  searchParams={searchParams}
-                  isLoading={isLoading}
-                  setShowNotificationForm={setShowNotificationForm}
-                />
-              )}
+              <SaveTrend
+                searchParams={searchParams}
+                isLoading={isLoading}
+                setShowNotificationForm={setShowNotificationForm}
+              />
             </div>
           </div>
         </div>
         {!isFiltersCollapsed && (
           <button
             onClick={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
-            className="group absolute -right-4 top-8 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+            className="group absolute -right-4 top-[52px] z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
           >
             <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
           </button>
@@ -511,20 +561,35 @@ const EventTrends = () => {
         <div className="px-6 py-4">
           <div className="mb-4">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-xl font-semibold mb-1">
-                  Trend Explorations
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Analyze and visualize event trends with different views
-                </p>
-              </div>
+              <h1 className="text-xl font-semibold mb-1">Trend Explorations</h1>
               <div className="flex items-center gap-2">
-                {/* <Button variant="outline" size="sm" className="text-primary">
-                  Template gallery
-                </Button> */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-primary"
+                  onClick={() => setShowSavedTrends(!showSavedTrends)}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {showSavedTrends ? "Hide Saved Trends" : "Show Saved Trends"}
+                </Button>
               </div>
             </div>
+
+            {savedTrendsList &&
+              savedTrendsList?.trackers.length > 0 &&
+              showSavedTrends && (
+                <div className="mb-4">
+                  <Card className="p-4">
+                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Save className="w-4 h-4" />
+                      Saved Trends
+                    </h3>
+                    <SavedTrendsList
+                      savedTrendsList={savedTrendsList?.trackers || []}
+                    />
+                  </Card>
+                </div>
+              )}
 
             {/* View Templates */}
             <div className="grid grid-cols-3 gap-4">
@@ -545,7 +610,7 @@ const EventTrends = () => {
                       <div className="text-primary">{template.icon}</div>
                       <h3 className="font-medium">{template.title}</h3>
                     </div>
-                    <p className="text-sm text-muted-foreground pl-9">
+                    <p className="text-sm text-muted-foreground">
                       {template.description}
                     </p>
                   </div>
@@ -555,21 +620,6 @@ const EventTrends = () => {
           </div>
 
           {/* Saved Trends List */}
-          {savedTrendsList &&
-            activeView !== "treemap" &&
-            savedTrendsList?.trackers.length > 0 && (
-              <div className="mb-4">
-                <Card className="p-4">
-                  <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                    <Save className="w-4 h-4" />
-                    Saved Trends
-                  </h3>
-                  <SavedTrendsList
-                    savedTrendsList={savedTrendsList?.trackers || []}
-                  />
-                </Card>
-              </div>
-            )}
 
           {/* Content Area */}
 
@@ -654,10 +704,7 @@ const EventTrends = () => {
           )}
 
           {activeView === "treemap" && (
-            <Card className="p-6 min-h-[600px]">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium">Hierarchical View</h2>
-              </div>
+            <Card className="p-4 min-h-[600px]">
               <TreemapView hierarchyLevels={hierarchyLevels} />
             </Card>
           )}

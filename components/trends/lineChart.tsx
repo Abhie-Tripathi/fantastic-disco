@@ -548,7 +548,7 @@ const LineChartComponent = ({
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
-                No events found
+                No events found. Try expanding your preferences by selecting more categories, products, or topics.
               </p>
             )}
           </ul>

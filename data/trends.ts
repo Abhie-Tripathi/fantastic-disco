@@ -41,21 +41,11 @@ export const columnsDropdown: ColumnDropdown[] = [
     tooltipDescription:
       " The number of attendees traveling to the event from outside the host country",
     enable: true,
-  },
-  {
-    label: "Economic Impact",
-    value: "economicImpact",
-    tooltipDescription:
-      "The estimated amount of money the event contributes to the local economy",
-    enable: false,
-  },
-  {
-    label: "Impact Score",
-    value: "impactScore",
-    tooltipDescription: "",
-    enable: false,
-  },
+  }
 ];
+
+
+
 
 export const treemapColumnsDropdown: ColumnDropdown[] = [
   {
@@ -82,19 +72,6 @@ export const treemapColumnsDropdown: ColumnDropdown[] = [
     value: "internationalEstimate",
     tooltipDescription:
       " The number of attendees traveling to the event from outside the host country",
-    enable: false,
-  },
-  {
-    label: "Economic Impact",
-    value: "economicImpact",
-    tooltipDescription:
-      "The estimated amount of money the event contributes to the local economy",
-    enable: false,
-  },
-  {
-    label: "Impact Score",
-    value: "impactScore",
-    tooltipDescription: "",
     enable: false,
   },
 ];
