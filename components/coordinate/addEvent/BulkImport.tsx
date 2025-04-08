@@ -1,19 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import LoadingSkeleton from "./LoadingSkeleton";
 import Image from "next/image";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import EventCard from "./EventCard";
 import SimilarEventCard from "./SimilarEventCard";
 // import NullState from "@/app/components/trackers/nullState";
-import NullImage from "@/public/addEventNullState.svg";
-import NullState from "./NullState";
+// import NullImage from "@/public/addEventNullState.svg";
+// import NullState from "./NullState";
 import { RefreshCw } from "lucide-react";
 import SampleTable from "./SampleTable";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCoordinateService } from "@/services/coordinateService";
-import { async } from "@firebase/util";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuthContext } from "@/context";
 
 interface Props {
   mappedHeaders: any;
@@ -34,25 +33,9 @@ const BulkImport = ({
 
   const [csvData2, setCsvData2] = useState(csvData);
   const coordinateService = useCoordinateService();
+  const { user } = useAuthContext();
 
-  const eventData = {
-    id: "1",
-    name: "Arab Health",
-    logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
-    organizer: "Informa Middle East & Africa",
-    startDate: "2019-01-28",
-    endDate: "2019-01-31",
-    venue: "Dubai International Convention & Exhibition Centre",
-    state: "Dubai",
-    city: "Dubai",
-    country: "UAE",
-    eventType: "Tradeshow",
-  };
-
-  // const [allMatchTrue, setAllMatchTrue] = useState<boolean>(false)
-
-  console.log('csvData2', csvData2);
-  
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
   const allMatchTrue = mappedHeaders.every(
     (item: any) => item.isMatch === true
@@ -61,7 +44,6 @@ const BulkImport = ({
   const hadleFetch = async() => {
     setLoadingState("loading");
 
-    // csvData[0]
     const updatedCsvData = csvData2;
 
     csvData.map(async (item, index) => {
@@ -69,22 +51,8 @@ const BulkImport = ({
       updatedCsvData[index].fetched = true;
       updatedCsvData[index].duplicateEvents = apiData.events.length > 0 ? apiData.events : [];
     })
-
-    console.log('updatedCsvData', updatedCsvData);
     
     setCsvData2(updatedCsvData);
-
-    // const apiData: any = await coordinateService.fetchSimilarEvents(csvData2[0]);
-
-    // console.log('apiData', apiData);
-    
-    // if (apiData.count > 0) {
-    //   setCsvData2(prevData => 
-    //     prevData.map((item, index) => 
-    //       index === 0 ? { ...item, fetched: true, duplicateEvents: apiData.events.length > 0 ? apiData.events : [] } : item
-    //     )
-    //   );
-    // }
 
     setTimeout(() => {
       setLoadingState("fetched");
@@ -101,9 +69,44 @@ const BulkImport = ({
   //   setAllMatchTrue(temp);
   // }, mappedHeaders);
 
-  const handleSelectAll = () => {
-    console.log('csvData2', csvData2);
+  const handleToggleItem = (index: number) => {
+    setSelectedItems((prevSelectedItems) => {
+      if (prevSelectedItems.includes(index)) {
+        return prevSelectedItems.filter(item => item !== index);
+      } else {
+        return [...prevSelectedItems, index];
+      }
+    });
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedItems.length === csvData2.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(csvData2.map((_, index) => index));
+    }
+  };
+
+  const handleAddEvents = async() => {
+
+    const filteredItems = selectedItems.map(index => {
+      const event_data = csvData2[index];
+      delete event_data.duplicateEvents;
+      delete event_data.fetched;
+      return event_data;
+    });
+
+    const formData1 = {
+      firstName: user?.firstname,
+      lastName: user?.lastname,
+      busEmail: user?.email,
+      companyName: user?.accountId,
+      jobTitle: user?.designation,
+      phoneNumber: user?.phoneNumber,
+      description: JSON.stringify(filteredItems),
+    }
     
+    const apiData: any = await coordinateService.addNewEvent(formData1);
   }
 
   return (
@@ -179,10 +182,13 @@ const BulkImport = ({
 
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center" >
-                <Checkbox />
-                Select Results
+                <Checkbox
+                  checked={selectedItems.length === csvData2.length}
+                  onCheckedChange={handleToggleSelectAll}
+                />
+                Select All
               </div>
-              <Button size="sm" onClick={handleSelectAll} >Add Events</Button>
+              <Button size="sm" onClick={handleAddEvents} >Add Events</Button>
             </div>
           </div>
 
@@ -191,7 +197,7 @@ const BulkImport = ({
           <SimilarEventCard eventData={eventData}  />
           <EventCard {...eventData} /> */}
 
-          {csvData2.map(item=>{
+          {csvData2.map((item, index)=>{
             if (item?.fetched && item.duplicateEvents.length > 0) {
               const e_data = {
                 name: item.name,
@@ -201,7 +207,15 @@ const BulkImport = ({
                 venue: item.address,
                 eventType: item.participation,
               }
-              return <SimilarEventCard eventData={e_data} duplicateEvents={item.duplicateEvents} />
+              return (
+                <div className="flex gap-3 items-baseline" >
+                  <Checkbox
+                    checked={selectedItems.includes(index)}
+                    onCheckedChange={() => handleToggleItem(index)}
+                  />
+                  <SimilarEventCard eventData={e_data} duplicateEvents={item.duplicateEvents} />
+                </div>
+              )
             } else if (item?.fetched && item.duplicateEvents.length === 0) {
               const e_data = {
                 id: '',
@@ -213,7 +227,15 @@ const BulkImport = ({
                 eventType: item.type,
                 participationType: item.participation,
               }
-              return <EventCard {...e_data} />
+              return (
+                <div className="flex gap-3 items-baseline" >
+                  <Checkbox
+                    checked={selectedItems.includes(index)}
+                    onCheckedChange={() => handleToggleItem(index)}
+                  />
+                  <EventCard {...e_data} />
+                </div>
+              )
             }
           })}
         </>
@@ -221,12 +243,7 @@ const BulkImport = ({
         <></>
       )}
 
-      {/* loading state */}
       {/* <LoadingSkeleton /> */}
-
-      {/* Fetched state */}
-
-      {/* null state */}
     </div>
   );
 };
