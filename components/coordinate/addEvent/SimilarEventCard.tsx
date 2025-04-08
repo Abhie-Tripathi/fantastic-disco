@@ -47,8 +47,8 @@ const SimilarEventCard = ({
     eventType: eventData.eventType,
   };
   return (
-    <>
-      <div className="rounded-sm border border-[#F87275] text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 bg-[var(--warning-background-color)] px-4 p-3 flex gap-3">
+    <div className="w-full">
+      <div className="rounded-sm border border-[#F87275] text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 bg-[var(--warning-background-color)] px-4 p-3 flex gap-3 mb-3">
         {event?.logoUrl && (
           <div className="w-14 h-14">
             <img
@@ -130,7 +130,7 @@ const SimilarEventCard = ({
           <EventCard {...eventData} /> */}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
