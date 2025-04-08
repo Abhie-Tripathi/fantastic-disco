@@ -133,7 +133,7 @@ const GtmSignUpForm = () => {
   }, [status, session]);
 
   useEffect(() => {
-    if (user && user.isNewUser) {
+    if (user && user.isNewUser && !isAuthenticating) {
       setValue("email", user.email || "");
       toast({
         description: "Please select your industry",

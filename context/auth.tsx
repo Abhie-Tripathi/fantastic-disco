@@ -359,31 +359,13 @@ export const AuthContextProvider = ({ children }: any) => {
           data: { accessToken: session.user.accessToken },
         }
       );
-      const newResult = {
-        user: {
-          id: "ec70bc5c-0b75-40d2-a46b-5435d75ec75d",
-          firstname: "Ashutosh",
-          lastname: "Singh",
-          email: "ashutosh@10times.com",
-          primaryLocation: null,
-          phoneNumber: "1234567890",
-          imageUrl: null,
-          industry: "Media_Marketing",
-          subIndustry: null,
-          category: "f6e9db7c-ae7a-5dab-b4ef-0f44ed9f5ac5",
-          designation: null,
-          department: null,
-          accountId: "ee24cd48-3274-4df2-bec3-c864fa2d13ae",
-          isNewUser: true,
-        },
-      };
-      if (newResult) {
-        if (newResult.user) {
-          window.localStorage.setItem("user", JSON.stringify(newResult.user));
-          setUser(newResult.user);
+      if (result) {
+        if (result.user) {
+          window.localStorage.setItem("user", JSON.stringify(result.user));
+          setUser(result.user);
         }
 
-        if (!newResult.user.isNewUser) {
+        if (!result.user.isNewUser) {
           localStorage.setItem(
             "walkthroughCompleted",
             JSON.stringify(["research"])
@@ -449,11 +431,20 @@ export const AuthContextProvider = ({ children }: any) => {
     async (formData: any) => {
       try {
         delete formData.email;
-        await updateMyProfileData({ formData });
+        const response = (await updateMyProfileData({ formData })) as {
+          user: UserResponse;
+        };
+        window.localStorage.setItem("user", JSON.stringify(response.user));
+        setUser(response.user);
+        const categories = sessionStorage.getItem("categories");
+        const modifiedParams = new URLSearchParams(urlParams);
+        if (categories) {
+          modifiedParams.set("categories", JSON.parse(categories));
+        }
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(`/internal/search/events?${urlParams}`);
+          router.push(`/internal/search/events?${modifiedParams.toString()}`);
         }
       } catch (error) {
         console.log("Error", error);
