@@ -104,7 +104,7 @@ const SimilarEventCard = ({
             <div className="flex gap-1 mb-1">
               <Image src={fetchIcon} height={18} width={18} alt="loading" />
               <span className="font-medium text-base">
-                Does this event match the one you're looking for?
+                Does this event match the one you&apos;re looking for?
               </span>
             </div>
           </div>
@@ -123,7 +123,7 @@ const SimilarEventCard = ({
               country: item.basic.eventLocation?.country?.name,
               eventType: item.basic?.primaryEventType,
             };
-            return <EventCard {...eventItem} />;
+            return <EventCard {...eventItem} key={eventItem.id} />;
           })}
 
           {/* <EventCard {...eventData} />

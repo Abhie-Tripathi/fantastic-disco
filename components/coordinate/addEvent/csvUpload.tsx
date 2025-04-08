@@ -50,7 +50,7 @@ const CsvUpload = () => {
             <tbody>
               {csvData.map((row, index) => (
                 <tr key={index}>
-                  {Object.values(row).map((value, i) => (
+                  {Object.values(row).map((value: any, i) => (
                     <td key={i}>{value}</td>
                   ))}
                 </tr>

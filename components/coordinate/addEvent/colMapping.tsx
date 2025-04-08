@@ -51,8 +51,9 @@ const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-muted/50">
-            {mappedHeaders.map((header: any) => (
+            {mappedHeaders.map((header: any, index: number) => (
               <TableHead
+                key={index}
                 className="p-4 px-6 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 border"
                 style={{ zIndex: 0 }}
               >
@@ -120,10 +121,10 @@ const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders
         </TableHeader>
 
         <TableBody>
-          {csvData.map((row: any) => (
-            <TableRow>
-              {colHeader.map((header) => (
-                <TableCell className="border">{row[header]}</TableCell>
+          {csvData.map((row: any, index: number) => (
+            <TableRow key={index}>
+              {colHeader.map((header, colIndex) => (
+                <TableCell className="border" key={colIndex} >{row[header]}</TableCell>
               ))}
             </TableRow>
           ))}

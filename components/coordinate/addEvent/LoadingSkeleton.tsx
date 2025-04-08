@@ -25,11 +25,11 @@ const LoadingSkeleton = () => {
         <div className="flex gap-1 mb-1">
           <Image src={fetchIcon} height={18} width={18} alt="loading" />
           <span className="font-medium text-base">
-            Hang in there ! We're fetching your events...
+            Hang in there ! We&apos;re fetching your events...
           </span>
         </div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          This won't take long! We're gathering your events and getting
+          This won&apos;t take long! We&apos;re gathering your events and getting
           everything ready for you
         </div>
       </div>
