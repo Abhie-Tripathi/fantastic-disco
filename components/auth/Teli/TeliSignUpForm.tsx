@@ -68,7 +68,7 @@ export default function TeliSignUpForm() {
     if (status === "authenticated") {
       signInSSO();
     }
-  }, [status]);
+  }, [status, session]);
 
   useEffect(() => {
     if (user && user.isNewUser) {
@@ -141,14 +141,14 @@ export default function TeliSignUpForm() {
       </p>
       {status === "unauthenticated" && (
         <>
-          <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
+          <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
             <Button
               onClick={() => signIn("google")}
               variant={"outline"}
               className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
               <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="mt-1">Google</span>
+              <span>Google</span>
             </Button>
             <Button
               onClick={() => signIn("linkedin")}
@@ -156,7 +156,7 @@ export default function TeliSignUpForm() {
               className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
             >
               <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
-              <span className="mt-1">LinkedIn</span>
+              <span>LinkedIn</span>
             </Button>
           </div>
           <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
@@ -170,7 +170,7 @@ export default function TeliSignUpForm() {
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
+            <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center border-b pb-6">
               <Input
                 className="rounded-sm bg-white ring-1
                 ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -232,7 +232,11 @@ export default function TeliSignUpForm() {
 
         <hr className="w-full sm:w-96 mt-6 self-center" />
 
-        <Button type="submit" className="w-80 self-center" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-40 sm:w-80 self-center"
+          disabled={isLoading}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

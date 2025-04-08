@@ -373,7 +373,9 @@ export const AuthContextProvider = ({ children }: any) => {
     } catch (err) {
       console.error("Sign in error:", err);
     } finally {
-      setIsAuthenticating(false);
+      setTimeout(() => {
+        setIsAuthenticating(false);
+      }, 2000);
     }
   }, [request, router]);
 

@@ -31,7 +31,7 @@ export default function SignInForm() {
     isAuthenticating,
     user,
   } = useAuthContext();
-  const { data, status } = useSession();
+  const { data: session, status } = useSession();
 
   const {
     control,
@@ -60,17 +60,12 @@ export default function SignInForm() {
       GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Empty");
     }
   }, [errors.email?.message]);
-  //   queryKey: ["signInSSO"],
-  //   queryFn: () => signInSSO,
-  //   enabled: status === "authenticated",
-  //   refetchOnWindowFocus: false,
-  // });
 
   useEffect(() => {
     if (status === "authenticated") {
       signInSSO();
     }
-  }, [status, data]);
+  }, [status, session]);
 
   if (isAuthenticating) {
     return <LoadingPage />;
@@ -81,14 +76,14 @@ export default function SignInForm() {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      <div className="flex gap-4 w-96 mx-auto mt-6 justify-center">
+      <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
           className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >
           <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
-          <span className="mt-1">Google</span>
+          <span>Google</span>
         </Button>
         <Button
           onClick={() => signIn("linkedin")}
@@ -96,7 +91,7 @@ export default function SignInForm() {
           className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
         >
           <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
-          <span className="mt-1">LinkedIn</span>
+          <span>LinkedIn</span>
         </Button>
       </div>
       <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
@@ -108,7 +103,7 @@ export default function SignInForm() {
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-96 max-w-3xl self-center">
+            <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center">
               <Input
                 className="rounded-sm bg-white ring-1
                ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -139,7 +134,7 @@ export default function SignInForm() {
         />
         <Button
           type="submit"
-          className="w-80 self-center"
+          className="w-40 sm:w-80 self-center"
           disabled={isLoading}
           onClick={() => clearErrors()}
         >
