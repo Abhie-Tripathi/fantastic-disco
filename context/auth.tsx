@@ -137,7 +137,7 @@ export const AuthContextProvider = ({ children }: any) => {
       console.log("Failed to parse sessionStorage categories", error);
       return null;
     }
-  }, []);
+  }, [user]);
 
   const formatDateForFilter = (date: Date) => {
     return format(date, "yyyy-MM-dd");
@@ -378,7 +378,9 @@ export const AuthContextProvider = ({ children }: any) => {
     } catch (err) {
       console.error("Sign in error:", err);
     } finally {
-      setIsAuthenticating(false);
+      setTimeout(() => {
+        setIsAuthenticating(false);
+      }, 2000);
     }
   }, [request, router]);
 
