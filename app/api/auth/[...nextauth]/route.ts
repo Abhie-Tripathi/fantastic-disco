@@ -56,7 +56,6 @@ async function refreshAccessToken(token) {
   }
 }
 const authOptions: NextAuthOptions = {
-  debug: true,
   session: {
     strategy: "jwt",
   },
