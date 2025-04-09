@@ -99,6 +99,7 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
+  const [activeCount,setActiveCount]=useState<number>(0);
   useEffect(() => {
     if (editTrue)
       setIsNewCall(true);
@@ -227,7 +228,7 @@ const Page = ({ params }: { params: any }) => {
     console.log(data);
     const CountValues = {
       geo : ['social','business','unattended'],
-      // gtm : ['active','new', 'past']
+      gtm : ['active','past', 'new']
     }
     // createQueryString();
     if (isEventeli) {
@@ -249,11 +250,13 @@ const Page = ({ params }: { params: any }) => {
     } else {
       const groupedEventsCount = data?.groupedEventsCount as Record<string, number> || {};
     
-      const transformedData = Object.entries(groupedEventsCount).map(([key, value]) => ({
-        type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: value || 0,
-        newCount: (key === "new" ? value : 0) || 0, 
-      }));
+      const transformedData =  CountValues.gtm.map((key)=>{
+        return {
+          type: key.charAt(0).toUpperCase() + key.slice(1),
+          totalCount :  data?.groupedEventsCount[key] || 0,
+          newCount : data?.groupedEventsCount[key]?.new || 0
+        }
+      })
     
       transformedData.push({
         type: "Bookmarked",
@@ -266,6 +269,12 @@ const Page = ({ params }: { params: any }) => {
     
     setLoading(true);
   }, [data, savedEventCount]);
+  useEffect(()=>{
+    const res = eventCount.find((count) => count.type.toLowerCase() === active);
+    
+    setActiveCount(res?.totalCount || 0);
+    
+  },[active, eventCount])
   // useEffect(()=>{
   //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
   // },[typeOfEvent])
@@ -446,19 +455,6 @@ const Page = ({ params }: { params: any }) => {
     
     trackerLoc=ids;
   }
-  
-const activeVal =
- active ===
-  "Active Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
-    : active ===
-      "New Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
-    : active ===
-      "Expired Events"
-    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
-    : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-  console.log(data);
   useEffect(() => {
     const handlePopState = (event: any) => {
         if (event.state && event.state.shareOpen) {
@@ -500,6 +496,7 @@ if (!share) {
   closeShareModal();
 }
 };
+console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -749,7 +746,7 @@ if (!share) {
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
-              {(Number(activeVal)===0 && active==="Saved Events")?
+              {(Number(activeCount)===0 && active==="bookmarked")?
               <div className="px-10 py-5">
                 <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
@@ -789,7 +786,7 @@ if (!share) {
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeVal}/>
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount}/>
             </Suspense>
           </div>
         )}

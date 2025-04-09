@@ -155,11 +155,6 @@ export default function MapComponent({
         : getFilterValue("locationIds").length === 0
         ? "defaultLoc"
         : getFilterValue("locationIds");
-    if (locationIds === "defaultLoc")
-      setViewport({
-        ...viewport,
-        zoom: 1,
-      });
 
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -346,6 +341,7 @@ export default function MapComponent({
         currentZoomGroup === "event" &&
         mapRef.current
       ) {
+        await new Promise((resolve) => setTimeout(resolve, 600));
         const map = mapRef.current.getMap();
         const center = map.getCenter();
         const bounds = map.getBounds();
@@ -489,7 +485,11 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (location?.type === "locationIds" && location.locationIds.length > 0) {
+      if (
+        location?.type === "locationIds" &&
+        location.locationIds.length > 0 &&
+        location.locationIds !== "defaultLoc"
+      ) {
         try {
           const details = await getLocationDetails(location.locationIds);
           if (
@@ -539,6 +539,17 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
+    if (location.locationIds == "defaultLoc") {
+
+      console.log("flying to default loc")
+      mapRef.current.flyTo({
+        center: [35.2433, 38.9637],
+        zoom: 0.8,
+        duration: 3000,
+        essential: true,
+      });
+    }
+
     if (location?.type === "geoCoordinates") {
       const { coordinates } = location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
@@ -550,7 +561,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (locationBBox) {
+    if (locationBBox && location.locationIds != "defaultLoc") {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -561,7 +572,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-  }, [location, mapRef.current, locationBBox]);
+  }, [location, mapRef.current, locationBBox, trackerId]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
@@ -742,7 +753,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {isEventeli && (
+                  {isEventeli && source !== "tracker" && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}

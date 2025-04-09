@@ -92,6 +92,7 @@ export function useDefaultFilters() {
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => {
     const recentSearchParams = {
+      eventIds: recentSearch.filterValues.eventIds?.join(",") ?? undefined,
       eventFormats:
         recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
       status: recentSearch.filterValues.status?.join(",") ?? undefined,
@@ -154,7 +155,8 @@ export function useDefaultFilters() {
 
     if (
       !recentSearch.filterValues.active_gte &&
-      !recentSearch.filterValues.active_lte
+      !recentSearch.filterValues.active_lte &&
+      !recentSearch.filterValues.eventIds
     ) {
       recentSearchParams.active_gte = startOfMonth(new Date()).toISOString();
       recentSearchParams.active_lte = endOfMonth(
@@ -354,6 +356,7 @@ export function useDefaultFilters() {
     }
     trendsParams.delete("viewBound");
     trendsParams.delete("show");
+    trendsParams.delete("eventIds");
     trendsParams.set("eventTypes", defaultTrendsParams.eventTypes.join(","));
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
@@ -434,6 +437,7 @@ export function useDefaultFilters() {
           recentSearch = recentSearchResponse.recentSearches[0];
         }
         const recentFilterParams = mapRecentSearchToParams(recentSearch);
+        console.log(recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });

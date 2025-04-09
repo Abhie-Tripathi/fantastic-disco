@@ -1009,6 +1009,14 @@ const Pages = () => {
     console.log(eventTypes);
     
     setLocalFilter("eventTypes",eventTypes.join(","))
+    if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
+      const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
+          .map((item) => item.slug)
+          .filter(Boolean);
+  
+      setLocalFilter("designations", slugs.join(","));
+  }
+  
     if(editData?.filterValues?.locationIds){
       const ids = Object?.keys(editData?.filterValues?.locationIds);
       setLocalFilter("locationIds", ids.join(","))
@@ -1192,14 +1200,14 @@ const [excludeKeyword, setExcludeKeyword] = useState<{ "Exclude Keywords": strin
 useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
-      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item.replace(/_/g, " ") }));
       setExcludeKeyword(updatedData);
   }
 }, [getLocalFilterValue("excludeKeywords")]);
 useEffect(()=>{
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
-      const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
+      const updatedData = keywordData.map(item => ({ "Include Keywords": item.replace(/_/g, " ") }));
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
@@ -1663,20 +1671,20 @@ return (
                   {!isEventeli && (
                   <EstimatedExhibitorsSelector/>
                   )}
-                  <EventAnalyticsSelector/>
-                  <EstimatedEconomicImpactSelector/>
+                 {isEventeli && <EventAnalyticsSelector/>}
+                  {isEventeli && <EstimatedEconomicImpactSelector/>}
                   <EventRankingSelector/>
                   </div>
                 </TabsContent>
-                <TabsContent value="audienceIntel">
+                {!isEventeli && <TabsContent value="audienceIntel">
                   <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
-                    <AudienceQualitySelector />
-                    <ExhibitorQualitySelector />
+                    {/* <AudienceQualitySelector />
+                    <ExhibitorQualitySelector /> */}
                     <AudienceZoneSelector/>
                     <AudienceProfileSelector/>
                     <AudienceSpreadSelector/>
                     </div>
-                </TabsContent>
+                </TabsContent>}
           </Tabs>
     </div>
   </Suspense>

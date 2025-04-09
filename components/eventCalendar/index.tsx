@@ -124,12 +124,12 @@ export default function EventCalendar({
       setShowEventList(false);
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
-      updatedParams.set("active_gte", moment(start).toISOString());
-      updatedParams.set("active_lte", moment(end).toISOString());
+      updatedParams.set("active_gte", moment(start).format("YYYY-MM-DD"));
+      updatedParams.set("active_lte", moment(end).format("YYYY-MM-DD"));
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerStartDate = `${moment(start).toISOString()}`;
-      const trackerEndDate = `${moment(end).toISOString()}`;
+      const trackerStartDate = `${moment(start).format("YYYY-MM-DD")}`;
+      const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
@@ -345,6 +345,8 @@ export default function EventCalendar({
         />
       );
     }
+  
+    
     return (
       <Calendar
         localizer={localizer}
@@ -391,7 +393,7 @@ export default function EventCalendar({
       />
     );
   };
-
+  
   return (
     <>
       {shouldShowZeroState ? (
@@ -406,8 +408,8 @@ export default function EventCalendar({
             <ZeroState text={error?.message} />
           )}
         </div>
-      ) : source === "tracker" && eventsData?.count === 0 && activeVal === 0 ? (
-        active === "savedEvent" ? (
+      ) : source === "tracker" && activeVal === 0 ? (
+        active === "bookmarked" ? (
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}
@@ -426,7 +428,7 @@ export default function EventCalendar({
           </div>
         )
       ) : (
-        <div className="flex custom-calendar">
+        <div className="flex custom-calendar overflow-y-scroll">
           <div
             className={`flex flex-col  ${
               showEventList ? "w-[calc(100%-345px)]" : "w-full"

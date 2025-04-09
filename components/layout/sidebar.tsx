@@ -21,15 +21,37 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness, Moon, Sun } from "lucide-react";
-import { usePathname } from "next/navigation";
+import {
+  BriefcaseBusiness,
+  Moon,
+  Sun,
+  UserSearch,
+  Settings,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context";
+import { useAuthContext } from "@/context/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { endOfMonth } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 function Coordinate() {
   return (
     <svg
@@ -70,8 +92,57 @@ const Sidebar = () => {
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const { user, signOut } = useAuthContext();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [storedUser, setStoredUser] = useState<any>(null);
 
-  // const iconProps = className="flex-shrink-0" color={theme === "light" ? "black" : "white"}
+  useEffect(() => {
+    if (user) setStoredUser(user);
+  }, [user]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const user = localStorage.getItem("user");
+      setStoredUser(user ? JSON.parse(user) : null);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const generateProfileName = () => {
+    if (storedUser) {
+      const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = storedUser?.lastname?.[0]?.toUpperCase() || "";
+      return `${firstNameInitial}${lastNameInitial}`;
+    }
+    return "";
+  };
+
+  const handleClick = () => {
+    if (pathname.startsWith("/internal")) {
+      router.push("/internal/settings/profile");
+    }
+    if (pathname.startsWith("/widget")) {
+      router.push("/widget/settings/profile");
+    }
+  };
+
+  const handleSettingsClick = () => {
+    if (pathname.startsWith("/internal")) {
+      router.push("/internal/settings/product");
+    }
+    if (pathname.startsWith("/widget")) {
+      router.push("/widget/settings/profile");
+    }
+  };
 
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
@@ -110,18 +181,6 @@ const Sidebar = () => {
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
     { name: "Events", href: "/widget/events", icon: <EventsIcon /> },
-  ];
-  const prospectLinks = [
-    {
-      name: "Search",
-      href: "/internal/prospect",
-      icon: MagnifyingGlass,
-    },
-    {
-      name: "Tracker",
-      href: "",
-      icon: LineChart,
-    },
   ];
 
   const handleMouseEnter = useCallback(() => {
@@ -242,56 +301,7 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal/prospect") ||
-          pathname.startsWith("/internal/company")
-            ? prospectLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive =
-                  pathname === link.href ||
-                  (link.name === "Tracker" &&
-                    pathname.startsWith("/internal/trackers"));
-                return (
-                  <li key={link.name}>
-                    <Link href={link.href} passHref legacyBehavior>
-                      <Button
-                        variant={isActive ? "secondary" : "ghost"}
-                        className={`w-full ${
-                          isHovered
-                            ? "justify-start px-3"
-                            : "justify-center px-0"
-                        } h-10 ${
-                          isActive
-                            ? "bg-primary text-white hover:bg-primary"
-                            : ""
-                        }`}
-                        asChild
-                      >
-                        <a
-                          className={
-                            link.name === "Tracker" ? "pointer-events-none" : ""
-                          }
-                        >
-                          <Icon
-                            color={theme == "dark" ? "#fff" : ""}
-                            className="flex-shrink-0"
-                          />
-                          {isHovered && (
-                            <>
-                              <span className="ml-2">{link.name}</span>
-                              {link.name === "Tracker" && (
-                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">
-                                  Coming soon
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </a>
-                      </Button>
-                    </Link>
-                  </li>
-                );
-              })
-            : pathname.startsWith("/internal")
+          {pathname.startsWith("/internal")
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
@@ -299,7 +309,7 @@ const Sidebar = () => {
                   (link.name === "Tracker" &&
                     pathname.startsWith("/internal/trackers")) ||
                   (link.name === "Search" &&
-                    pathname.startsWith("/internal/search/events"));
+                    pathname.startsWith("/internal/search"));
                 return (
                   <li key={link.name}>
                     <Link href={link.href} passHref legacyBehavior>
@@ -367,17 +377,85 @@ const Sidebar = () => {
               })}
         </ul>
         <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="profile" className="border-none">
+              <AccordionTrigger
+                className={`hover:no-underline  ${
+                  !isHovered ? "[&>svg]:hidden" : ""
+                } hover:bg-muted/50 rounded-md transition-colors py-0`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm">
+                    {generateProfileName()}
+                  </div>
+                  {isHovered && (
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-medium">
+                        {storedUser?.firstname} {storedUser?.lastname}
+                      </span>
+                      {/* <span className="text-xs text-muted-foreground">
+                        {storedUser?.email}
+                      </span> */}
+                    </div>
+                  )}
+                </div>
+              </AccordionTrigger>
+              {isHovered && (
+                <AccordionContent className="px-3">
+                  <div className="flex flex-col gap-1.5 py-1 mt-2">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
+                      onClick={() => handleClick()}
+                    >
+                      <UserSearch className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Profile</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-muted/50 rounded-md transition-colors"
+                      onClick={() => handleSettingsClick()}
+                    >
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Settings</span>
+                    </Button>
+                    <div className="h-px bg-border my-1" />
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 h-9 hover:bg-destructive/10 hover:text-destructive rounded-md transition-colors"
+                      onClick={() => signOut()}
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span className="text-sm">Logout</span>
+                    </Button>
+                  </div>
+                </AccordionContent>
+              )}
+            </AccordionItem>
+          </Accordion>
           {!isEventeli && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => toggleTheme()}
-              className="hover:bg-muted"
+              className={`w-full hover:bg-muted ${
+                isHovered ? "justify-start px-3" : "justify-center px-0"
+              }`}
             >
               {theme === "dark" ? (
-                <Sun className="h-5 w-5 transition-all" />
+                <>
+                  <Sun className="h-5 w-5 transition-all" />
+                  {isHovered && (
+                    <span className="ml-3.5 text-sm">Light Mode</span>
+                  )}
+                </>
               ) : (
-                <Moon className="h-5 w-5 transition-all" />
+                <>
+                  <Moon className="h-5 w-5 transition-all" />
+                  {isHovered && (
+                    <span className="ml-3.5 text-sm">Dark Mode</span>
+                  )}
+                </>
               )}
               <span className="sr-only">Toggle theme</span>
             </Button>

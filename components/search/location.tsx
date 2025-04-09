@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState, useEffect, use } from "react";
@@ -17,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
@@ -41,8 +42,9 @@ export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
   type?: string;
   isMandatory?: boolean;
+  filterName?: string;
 }
-export default function LocationSelector({ type, isMandatory }: LocationProps) {
+export default function LocationSelector({ type, isMandatory, filterName="locationIds"}: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
@@ -58,8 +60,8 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
     const geoCoordinate = localFilters?.viewBound
       ? JSON.parse(localFilters.viewBound)
       : null;
-    const locationIds = localFilters?.locationIds?.length
-      ? localFilters.locationIds.split(",")
+    const locationIds = localFilters?.[filterName as keyof Filters]?.length
+      ? localFilters[filterName as keyof Filters].split(",")
       : null;
 
     if (geoCoordinate) {
@@ -99,7 +101,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
 
   // Add new useEffect for trends page default location
   useEffect(() => {
-    if (pathName === "/internal" && !localFilters.locationIds) {
+    if (pathName === "/internal" && !localFilters.locationIds && !localFilters.viewBound) {
       replaceLocalFilter(
         "viewBound",
         "locationIds",
@@ -107,6 +109,11 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       );
     }
   }, [pathName]);
+
+  const labels: Record<string, string> = {
+    companyLocationIds: "Company Location",
+    eventLocationIds: "Event Location",
+  };
 
   // Add cleanup effect
   useEffect(() => {
@@ -126,6 +133,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       if (radiusUnit === "mi") {
         setRadiusUnit("km");
       }
+      console.log(selectedLocation)
       replaceLocalFilter(
         "locationIds",
         "viewBound",
@@ -149,12 +157,12 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
     ) {
       replaceLocalFilter(
         "viewBound",
-        "locationIds",
+        filterName,
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
       saveLastSearchedLocation(selectedLocation);
     } else {
-      deleteMultipleLocalFilters(["locationIds", "viewBound"]);
+      deleteMultipleLocalFilters([filterName, "viewBound"]);
       clearLastSearchedLocation();
     }
     setIsOpen(false);
@@ -187,7 +195,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
           aria-haspopup="true"
         >
           <div className="flex items-center truncate">
-            <span className="mr-2">Location</span>
+            <span className="mr-2">{labels[filterName as keyof typeof labels] || "Location"}</span>
             {selectedLocation && (
               <span className="truncate ml-1 text-xs text-primary font-medium">
                 {Array.isArray(selectedLocation) ? (
@@ -211,7 +219,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[512px] border rounded-md shadow-sm p-0">
+      <PopoverContent className="w-[392px] border rounded-md shadow-sm p-0" align="start">
         <div className="flex justify-between items-center p-4 py-2 border-b">
           <span className="font-medium">Location</span>
           <Button

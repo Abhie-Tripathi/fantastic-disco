@@ -135,7 +135,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue, trackerId } = useTrackerContext();
   const router=useRouter();
   const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
@@ -311,7 +311,7 @@ const Trackers = ({ searchParams }: Search) => {
       setLocations(ids);
       // setLocalFilter("locationIds", ids.join(","))
       // console.log(ids);
-    }
+    }else setLocations("");
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -366,7 +366,7 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
-  useEffect(()=>{
+  useEffect(()=>{ 
     if(isEventeli){
       if((singleTrackerData?.groupedEventsCount?.business?.total??0)>0) setActiveType("business");
       else setActiveType("social");
@@ -497,7 +497,7 @@ const Trackers = ({ searchParams }: Search) => {
       <Map
         isGlobal={true}
         source="tracker"
-      eventType={activeType}
+        eventType={activeType}
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
@@ -505,6 +505,7 @@ const Trackers = ({ searchParams }: Search) => {
       />
     )}
   </div>
+
 </Suspense>
 
     {/* )} */}
