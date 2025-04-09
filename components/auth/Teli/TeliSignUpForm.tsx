@@ -65,7 +65,10 @@ export default function TeliSignUpForm() {
     resolver: zodResolver(signUpSchema),
   });
 
-  const signUpFlow = (user && user?.isNewUser && (status === "authenticated" || userAuthenticated)) ? 'sso' : 'default';
+  const signUpFlow =
+    user && user?.isNewUser && (status === "authenticated" || userAuthenticated)
+      ? "sso"
+      : "default";
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -74,7 +77,7 @@ export default function TeliSignUpForm() {
   }, [status, session]);
 
   useEffect(() => {
-    if (user && user.isNewUser) {
+    if (user && user.isNewUser && !isAuthenticating) {
       setValue("email", user.email || "");
       toast({
         description: "Please select your industry",
@@ -107,7 +110,7 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
-      if (signUpFlow === 'sso') {
+      if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {
         await signup(signUpData);
@@ -139,7 +142,7 @@ export default function TeliSignUpForm() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
-      {signUpFlow === 'default' &&
+      {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
@@ -150,30 +153,40 @@ export default function TeliSignUpForm() {
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
-                  <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+                  <Image
+                    src={GoogleIcon}
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                  />
                   <span>Google</span>
                 </Button>
                 <Button
                   onClick={() => signIn("linkedin")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto aspect-square gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
-                  <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+                  <Image
+                    src={LinkedinIcon}
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                  />
                   <span>LinkedIn</span>
                 </Button>
               </div>
-              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
+                OR
+              </p>
             </>
           )}
-       </>
-      }
+        </>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
       >
-        {signUpFlow === 'default' &&
+        {signUpFlow === "default" && (
           <Controller
             name="email"
             control={control}
@@ -210,7 +223,7 @@ export default function TeliSignUpForm() {
               </div>
             )}
           />
-        }
+        )}
         {!hasSubIndustries && (
           <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
             Choose an Industry Relevant to You
@@ -251,47 +264,49 @@ export default function TeliSignUpForm() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing up...
             </>
+          ) : signUpFlow === "default" ? (
+            "Sign Up"
           ) : (
-            signUpFlow === 'default' ? "Sign Up" : "Submit"
+            "Submit"
           )}
         </Button>
       </form>
 
-      {signUpFlow === 'default' &&
-      <>
-        <div className="text-center py-2 text-sm">
-          Already have an account?
-          <Link
-            onClick={() => signOut({ callbackUrl: "/signin" })}
-            href="/signin"
-            className="text-[#6750a4] cursor-pointer font-medium"
-          >
-            {" "}
-            Log In
-          </Link>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="text-center text-[#808080] text-[12px]">
-            By signing up, you agree to our
+      {signUpFlow === "default" && (
+        <>
+          <div className="text-center py-2 text-sm">
+            Already have an account?
             <Link
-              target="_blank"
-              href={"https://10times.com/terms-of-service"}
-              className="text-[#6750a4] font-medium ml-1"
+              onClick={() => signOut({ callbackUrl: "/signin" })}
+              href="/signin"
+              className="text-[#6750a4] cursor-pointer font-medium"
             >
-              Terms{" "}
-            </Link>
-            and
-            <Link
-              target="_blank"
-              href={"https://10times.com/privacy-policy"}
-              className="text-[#6750a4] font-medium ml-1"
-            >
-              Privacy Policy
+              {" "}
+              Log In
             </Link>
           </div>
-        </div>
-      </>
-      }
+          <div className="flex items-center gap-2">
+            <div className="text-center text-[#808080] text-[12px]">
+              By signing up, you agree to our
+              <Link
+                target="_blank"
+                href={"https://10times.com/terms-of-service"}
+                className="text-[#6750a4] font-medium ml-1"
+              >
+                Terms{" "}
+              </Link>
+              and
+              <Link
+                target="_blank"
+                href={"https://10times.com/privacy-policy"}
+                className="text-[#6750a4] font-medium ml-1"
+              >
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

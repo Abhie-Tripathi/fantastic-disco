@@ -16,7 +16,6 @@ import {
 import { SettingsInterestData } from "@/types/onboarding";
 import { GAEvent } from "@/utils/GAEvent";
 import { getRestrictedUrl } from "@/utils/generateUrl";
-import { myFetch } from "@/utils/myFetch";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { signOut as signOutSSO } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -53,7 +52,11 @@ type authContextType = {
   ) => void;
   signOut: () => void;
   signInSSO: () => Promise<any>;
-  signUpSSO10times: (token: string, userId: number, redirectPath: string) => Promise<any>;
+  signUpSSO10times: (
+    token: string,
+    userId: number,
+    redirectPath: string
+  ) => Promise<any>;
   updateIndustry: (formData: any) => Promise<any>;
   generateOTP: (
     email: string,
@@ -356,7 +359,6 @@ export const AuthContextProvider = ({ children }: any) => {
           data: { accessToken: session.user.accessToken },
         }
       );
-
       if (result) {
         if (result.user) {
           window.localStorage.setItem("user", JSON.stringify(result.user));
@@ -410,10 +412,8 @@ export const AuthContextProvider = ({ children }: any) => {
               "walkthroughCompleted",
               JSON.stringify(["research"])
             );
-            if (redirectPath)
-              router.push(redirectPath);
-            else
-              router.push("/internal/search/events");
+            if (redirectPath) router.push(redirectPath);
+            else router.push("/internal/search/events");
           } else {
             localStorage.removeItem("walkthroughCompleted");
             router.push("/signup");
@@ -431,11 +431,20 @@ export const AuthContextProvider = ({ children }: any) => {
     async (formData: any) => {
       try {
         delete formData.email;
-        await updateMyProfileData({ formData });
+        const response = (await updateMyProfileData({ formData })) as {
+          user: UserResponse;
+        };
+        window.localStorage.setItem("user", JSON.stringify(response.user));
+        setUser(response.user);
+        const categories = sessionStorage.getItem("categories");
+        const modifiedParams = new URLSearchParams(urlParams);
+        if (categories) {
+          modifiedParams.set("categories", JSON.parse(categories));
+        }
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(`/internal/search/events?${urlParams}`);
+          router.push(`/internal/search/events?${modifiedParams.toString()}`);
         }
       } catch (error) {
         console.log("Error", error);
