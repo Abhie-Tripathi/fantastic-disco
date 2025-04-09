@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   if (process.env.IS_LOCAL) {
@@ -10,11 +10,23 @@ export function middleware(request: NextRequest) {
     ? `${process.env.NEXT_COOKIE_PREFIX}-token`
     : "dev-token";
   const cookie = request.cookies.get(key)?.value;
-  
+
+  const redirectParam = request.nextUrl.searchParams.get("redirect");
+
   if (!cookie) {
+    if (redirectParam) {
+      return NextResponse.redirect(
+        new URL(`/signin?redirect=${redirectParam}`, request.url)
+      );
+    }
     return NextResponse.redirect(new URL("/signin", request.url));
   } else {
     if (request.nextUrl.pathname == "/") {
+      if (redirectParam) {
+        return NextResponse.redirect(
+          new URL(`/internal/${redirectParam}`, request.url)
+        );
+      }
       return NextResponse.redirect(new URL("/internal", request.url));
     }
   }

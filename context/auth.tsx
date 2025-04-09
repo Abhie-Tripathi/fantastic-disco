@@ -352,6 +352,7 @@ export const AuthContextProvider = ({ children }: any) => {
       const origin = window.location.origin;
       const res = await fetch(`${origin}/api/auth/session`);
       const session = await res.json();
+      const redirectPath = sessionStorage.getItem("redirect");
       const result = await request<{ user: UserResponse }>(
         endpoints.auth.ssoSignIn(session.user.provider),
         {
@@ -371,7 +372,7 @@ export const AuthContextProvider = ({ children }: any) => {
             JSON.stringify(["research"])
           );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          router.push("/internal");
+          router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
         } else {
           localStorage.removeItem("walkthroughCompleted");
           router.push("/signup");
@@ -382,7 +383,7 @@ export const AuthContextProvider = ({ children }: any) => {
     } finally {
       setTimeout(() => {
         setIsAuthenticating(false);
-      }, 2000);
+      }, 2500);
     }
   }, [request, router]);
 
@@ -434,6 +435,7 @@ export const AuthContextProvider = ({ children }: any) => {
         const response = (await updateMyProfileData({ formData })) as {
           user: UserResponse;
         };
+        const redirectPath = sessionStorage.getItem("redirect");
         window.localStorage.setItem("user", JSON.stringify(response.user));
         setUser(response.user);
         const categories = sessionStorage.getItem("categories");
@@ -444,7 +446,11 @@ export const AuthContextProvider = ({ children }: any) => {
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(`/internal/search/events?${modifiedParams.toString()}`);
+          router.push(
+            redirectPath
+              ? `/internal/${redirectPath}`
+              : `/internal/search/events?${modifiedParams.toString()}`
+          );
         }
       } catch (error) {
         console.log("Error", error);
@@ -474,7 +480,7 @@ export const AuthContextProvider = ({ children }: any) => {
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
     const duplicateSessionKeys = sessionKeys.filter(
-      (key) => key !== "industry" && key !== "subIndustry"
+      (key) => key !== "industry" && key !== "subIndustry" && key !== "redirect"
     );
     if (isEventeli) {
       duplicateSessionKeys.forEach((key) => sessionStorage.removeItem(key));

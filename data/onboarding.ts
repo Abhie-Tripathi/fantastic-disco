@@ -1,11 +1,12 @@
+import { isEventeli } from "@/config";
 import { Industry, SettingResearchData } from "@/types/onboarding";
-import Media_Agency from "/public/authIcons/media_marketing.svg";
-import Research from "/public/authIcons/research_consultancy.svg";
-import IndustryPartners from "/public/authIcons/eventPlanners.svg";
 import EventParticipant from "/public/authIcons/enterprises.svg";
+import IndustryPartners from "/public/authIcons/eventPlanners.svg";
 import InfraAndTechnology from "/public/authIcons/infra_technology.svg";
-import Venue from "/public/authIcons/venue.svg";
+import Media_Agency from "/public/authIcons/media_marketing.svg";
 import Others from "/public/authIcons/others.svg";
+import Research from "/public/authIcons/research_consultancy.svg";
+import Venue from "/public/authIcons/venue.svg";
 
 export const settingResearchData: SettingResearchData[] = [
   { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
@@ -82,4 +83,18 @@ export const industryData: Industry[] = [
   },
 ];
 
-export const sessionKeys = ["flow", "categories", "subIndustry", "industry"];
+export const sessionKeys = [
+  "flow",
+  "categories",
+  "subIndustry",
+  "industry",
+  "redirect",
+];
+
+export const validPaths = [
+  "search/events",
+  "trends",
+  "trackers",
+  "coordinate",
+  !isEventeli && "outreach",
+];
