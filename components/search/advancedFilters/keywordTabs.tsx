@@ -68,7 +68,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
                 variant="secondary"
                 className="text-sm py-1 px-2"
               >
-                {keyword}
+                {keyword.replace(/_/g, " ")}
                 <button
                   onClick={() => handleRemoveKeyword(keyword, "include")}
                   className="ml-1 hover:text-destructive"
@@ -88,7 +88,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
                 variant="secondary"
                 className="text-sm py-1 px-2"
               >
-                {keyword}
+                {keyword.replace(/_/g, " ")}
                 <button
                   onClick={() => handleRemoveKeyword(keyword, "exclude")}
                   className="ml-1 hover:text-destructive"
