@@ -64,7 +64,7 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
       ? localFilters[filterName as keyof Filters].split(",")
       : null;
 
-    if (geoCoordinate) {
+    if (geoCoordinate && isEventeli) {
       const locationName = await getLocationName(
         geoCoordinate.coordinates.latitude,
         geoCoordinate.coordinates.longitude

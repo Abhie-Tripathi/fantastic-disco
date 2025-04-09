@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
+import { Star, Radio, TicketPercent, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event, SingleEventLocation } from "@/types/events/events";
@@ -452,7 +452,6 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-  console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -973,8 +972,8 @@ const EventListItem = ({
 
               <div className="flex items-start justify-end h-full">
                 {showValues.includes(Show.scores) &&
-                event.insights?.scores &&
-                (event.insights?.scores.inboundScore !== null ||
+                event.insights?.scores && (
+                  event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
                   <div className="flex justify-end gap-6 w-full">
                     <div className="flex flex-col gap-4">
@@ -1123,6 +1122,33 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    {
+      label: "India",
+      businessScore: 20,
+      socialScore: 20
+    },
+    {
+      label: "Global",
+      businessScore: 30,
+      socialScore: 25
+    },
+    {
+      label: "Regional",
+      businessScore: 15,
+      socialScore: 18
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
   function formatAddress(
     eventLocation: SingleEventLocation | SingleEventLocation[]
   ): string {
@@ -1188,7 +1214,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
       ></div>
       <div className="p-6">
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-7 flex flex-col justify-between gap-3">
+          <div className="col-span-10 flex flex-col justify-between gap-3">
             <h2 className="text-2xl font-semibold text-gray-900 ">
               {event.basic.name}
             </h2>
@@ -1227,6 +1253,36 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   >
                     <span className="ml-1">{eventType}</span>
                   </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="col-span-2">
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div className="flex transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                  {slides.map((slide, index) => (
+                    <div key={index} className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                      <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                        {slide.label}
+                      </p>
+                      <div className="grid grid-rows-2 gap-2">
+                        <CircularProgress value={slide.businessScore} label="Business Score" />
+                        <CircularProgress value={slide.socialScore} label="Social Score" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex justify-center gap-1 mt-2">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      currentSlide === index ? 'bg-primary w-4' : 'bg-gray-300'
+                    }`}
+                  />
                 ))}
               </div>
             </div>
