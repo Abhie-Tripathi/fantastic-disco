@@ -1197,14 +1197,14 @@ const [excludeKeyword, setExcludeKeyword] = useState<{ "Exclude Keywords": strin
 useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
-      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item.replace(/_/g, " ") }));
       setExcludeKeyword(updatedData);
   }
 }, [getLocalFilterValue("excludeKeywords")]);
 useEffect(()=>{
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
-      const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
+      const updatedData = keywordData.map(item => ({ "Include Keywords": item.replace(/_/g, " ") }));
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
