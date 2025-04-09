@@ -113,7 +113,7 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
     <>
       <div className="p-2 flex flex-wrap gap-2 max-h-[60px] overflow-auto">
         {selectedCountries.map((code) => {
-          const country = source==="preset"?countries.find((c) => c.iso === code):countries.find((c) => c.id === code);
+          const country = countries.find((c) => c.id === code);
           if (!country) return null;
           if (country.iso == "UK") country.iso = "GB";
           const Flag = Flags[country.iso as keyof typeof Flags];
@@ -159,10 +159,10 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
                   <div
                     key={country.id}
                     className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
-                    onClick={() => toggleCountry(source==="preset"?country.iso:country.id)}
+                    onClick={() => toggleCountry(country.id)}
                   >
                     <div className="w-5 h-5 border rounded flex items-center justify-center">
-                      {selectedCountries.includes(source==="preset"?country.iso : country.id) && (
+                      {selectedCountries.includes(country.id) && (
                         <Check className="h-4 w-4 text-purple-600" />
                       )}
                     </div>
