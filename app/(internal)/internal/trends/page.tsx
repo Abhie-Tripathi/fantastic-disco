@@ -108,6 +108,7 @@ const EventTrends = () => {
     setLocalFilter,
     getLocalFilterValue,
     deleteMultipleLocalFilters,
+    localFilters,
   } = useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
@@ -154,7 +155,6 @@ const EventTrends = () => {
     "High impact events",
     "Popular venues",
   ]);
-  const [filterCount, setFilterCount] = useState(0);
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
@@ -225,6 +225,13 @@ const EventTrends = () => {
     acc[startDateTime].holidays.push(name);
     return acc;
   }, {});
+
+  const filterCount = useMemo(() => {
+    const excludedFilters = ["active_gte", "active_lte"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
 
   const holidaysByDate =
     (groupedData &&
@@ -323,11 +330,6 @@ const EventTrends = () => {
     }
   }, [trendsData]);
 
-  useEffect(() => {
-    const count = searchParams.toString().split("&").length;
-    setFilterCount(count);
-  }, [searchParams]);
-
   const applyHandler = () => {
     const columnsValue = columnsDropdown
       .filter(
@@ -347,10 +349,6 @@ const EventTrends = () => {
 
   const handleSelectChange = (value: TEventColumnType) => {
     setSelectedEventType(value);
-  };
-
-  const handleClearFilters = () => {
-    applyFilters({ resetPage: true });
   };
 
   const handleViewChange = (view: "line" | "treemap" | "table") => {
@@ -459,7 +457,11 @@ const EventTrends = () => {
               <div className="flex items-center justify-between mb-2">
                 <Button
                   variant="ghost"
-                  onClick={handleClearFilters}
+                  onClick={() => {
+                    deleteMultipleLocalFilters(
+                      Object.keys(localFilters) as any[]
+                    );
+                  }}
                   disabled={filterCount === 0}
                   className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
                 >
@@ -574,30 +576,34 @@ const EventTrends = () => {
               </div>
             </div>
 
-            {savedTrendsList &&
-              savedTrendsList?.trackers.length > 0 &&
-              showSavedTrends && (
-                <div className="mb-4">
-                  <Card className="p-4">
-                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                      <Save className="w-5 h-5  " />
-                      Saved Trends
-                    </h3>
-                    {savedTrendsList?.trackers.length > 0 ? (
-                      <SavedTrendsList
-                        savedTrendsList={savedTrendsList?.trackers}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-40 text-muted-foreground">
-                        <div className="text-center">
-                          <Lock className="w-8 h-8 mx-auto mb-2" />
-                          <p className="text-sm">No saved trends found</p>
-                        </div>
+            {showSavedTrends && savedTrendsList && (
+              <div className="mb-4">
+                <Card className="p-4">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <Save className="w-5 h-5  " />
+                    Saved Trends
+                  </h3>
+                  {savedTrendsList?.trackers.length > 0 ? (
+                    <SavedTrendsList
+                      savedTrendsList={savedTrendsList?.trackers}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+                      <div className="text-center space-y-2">
+                        <Save className="w-10 h-10 mx-auto text-primary/50" />
+                        <p className="text-sm font-medium">
+                          No saved trends yet
+                        </p>
+                        <p className="text-xs text-muted-foreground/70">
+                          Save your favorite trend configurations to access them
+                          later
+                        </p>
                       </div>
-                    )}
-                  </Card>
-                </div>
-              )}
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
 
             {/* View Templates */}
             <div className="grid grid-cols-3 gap-4">
