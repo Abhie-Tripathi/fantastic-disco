@@ -46,30 +46,24 @@ interface SortOption {
 // ];
 
 interface SortDropdownProps {
-  sortOptions:SortOption[];
   compact?: boolean;
-  value?: string;
-  onSort?: (value: string) => void;
+  sortOptions:SortOption[];
   sortBy: SortOption;
   setSortBy: React.Dispatch<React.SetStateAction<SortOption>>;
 }
 
 const SortDropdown = ({
   compact = false,
-  value,
-  onSort,
   sortOptions,
   sortBy,
   setSortBy
 }: SortDropdownProps) => {
-  const { getFilterValue, setFilter } = useFilterState();
+  // const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
 
-  const sortParam = value || getFilterValue("sortBy") || "-eventCount";
-  const [sortField, setSortField] = useState(sortParam.replace("-", ""));
-  const [sortOrder, setSortOrder] = useState(
-    sortParam.startsWith("-") ? "desc" : "asc"
-  );
+  // const sortParam = value || getFilterValue("sortBy") || "-eventCount";
+  const [sortField, setSortField] = useState(sortOptions[0].value);
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortField);
@@ -77,30 +71,31 @@ const SortDropdown = ({
   };
 
   const handleApply = () => {
-    const sortValue = sortOrder === "desc" ? `${sortField}` : sortField;
-    if (onSort) {
-      onSort(sortValue);
-    } else {
-      setFilter("sortBy", sortValue);
-    }
+    const sortValue = (sortOrder === "desc" ? `${sortField}` : sortField)||"";
+    // if (onSort) {
+    //   onSort(sortValue);
+    // } else {
+      // setFilter("sortBy", sortValue);
+    // }
     setSortBy({ value: sortValue, label: sortOrder });
     setOpen(false);
   };
   console.log(sortOptions);
   
-  useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "-eventCount";
-    setSortField(newSortParam.replace("-", ""));
-    setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
-  }, [getFilterValue, value]);
+  // useEffect(() => {
+  //   const newSortParam = value || getFilterValue("sortBy") || "-eventCount";
+  //   setSortField(newSortParam.replace("-", ""));
+  //   setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
+  // }, [getFilterValue, value]);
 
   return (
+    
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {compact ? (
           <Button 
             variant="ghost" 
-            className="h-[100%] px-3 flex items-center gap-2"
+            className="px-3 flex items-center gap-2 h-[100%]"
           >
             {sortOrder === "asc" ? (
               <ArrowUp className="h-4 w-4" />
@@ -112,7 +107,7 @@ const SortDropdown = ({
             </span>
           </Button>
         ) : (
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2 h-full">
             <span className="flex items-center gap-1">
               {sortOrder === "asc" ? (
                 <ArrowUp className="h-4 w-4" />

@@ -11,12 +11,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from 'lucide-react';
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
-
-export default function CategorySelector() {
+interface CategorySelectorProp{
+  source?:String
+}
+export default function CategorySelector({source}:CategorySelectorProp) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
   const categories = morphedData.categories.options;
-  const selectedCategories = getLocalFilterValue("categories")
+  const selectedCategories = source==="preset"?getLocalFilterValue("presetCategory").split(",")
+  .filter(Boolean):getLocalFilterValue("categories")
     .split(",")
     .filter(Boolean);
   console.log(getLocalFilterValue("categories")
@@ -31,7 +34,10 @@ export default function CategorySelector() {
       const newCategories = selectedCategories.includes(categorySlug)
         ? selectedCategories.filter((slug) => slug !== categorySlug)
         : [...selectedCategories, categorySlug];
-      setLocalFilter("categories", newCategories.join(","));
+        if(source==="preset"){
+          setLocalFilter("presetCategory", newCategories.join(","))
+        }else
+          setLocalFilter("categories", newCategories.join(","));
     },
     [selectedCategories, setLocalFilter]
   );

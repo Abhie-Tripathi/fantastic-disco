@@ -16,22 +16,26 @@ import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
 interface AudienceSpreadProps {
-  source: string;
+  source?: string;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
-export default function Component() {
+export default function Component({source}:AudienceSpreadProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
-  const enabled = morphedData.audienceSpread.isEnabled
+  const enabled = morphedData?.audienceSpread?.isEnabled
   const { getCountries, getRegions, isLoading, error } = useMiscService();
 
   const selectedCountries = useMemo(() => 
-    getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || []
-  , [localFilters.audienceSpread]);
+    (source === "preset"
+      ? getLocalFilterValue("presetCountry")?.split(',').filter(Boolean)
+      : getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean)) || [],
+    [localFilters.audienceSpread, source, localFilters?.presetCountry]
+  );
+  
 
   const selectedRegions = useMemo(() => 
     localFilters.audienceSpreadRegions?.split(',').filter(Boolean) || []
@@ -63,10 +67,18 @@ export default function Component() {
   );
 
   const toggleCountry = (code: string) => {
+    console.log(selectedCountries);
+    
     const newCountries = selectedCountries.includes(code)
       ? selectedCountries.filter(c => c !== code)
       : [...selectedCountries, code];
+    console.log(newCountries);
     
+    if(source==="preset"){
+      setMultipleLocalFilters({
+        presetCountry: newCountries.join(',')
+      });
+    }else
     setMultipleLocalFilters({
       audienceSpread: newCountries.join(',')
     });
@@ -84,6 +96,11 @@ export default function Component() {
 
   const removeFilter = (code: string) => {
     if (selectedCountries.includes(code)) {
+      if(source==="preset"){
+        setMultipleLocalFilters({
+          presetCountry: selectedCountries.filter(c => c !== code).join(',')
+        });
+      }else
       setMultipleLocalFilters({
         audienceSpread: selectedCountries.filter(c => c !== code).join(',')
       });
@@ -116,7 +133,7 @@ export default function Component() {
           {!enabled && 
             <LockClosedSmall color="var(--secondary-text-color)" />
           }
-            <span className="mr-2">Audience Spread</span>
+            <span className="mr-2">{source==="preset"?"Location":"Audience Spread"}</span>
             {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedCountries.length + selectedRegions.length}
@@ -133,7 +150,7 @@ export default function Component() {
       <PopoverContent className="w-[300px] p-0 z-[120]" side="bottom">
         <div className="p-2 flex flex-wrap gap-2 max-h-[60px] overflow-auto">
           {selectedCountries.map((code) => {
-            const country = countries.find((c) => c.id === code);
+            const country = source==="preset"?countries.find((c) => c.iso === code):countries.find((c) => c.id === code);
             if (!country) return null;
             if (country.iso == "UK") country.iso = "GB";
             const Flag = Flags[country.iso as keyof typeof Flags];
@@ -278,10 +295,10 @@ export default function Component() {
                     <div
                       key={country.id}
                       className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
-                      onClick={() => toggleCountry(country.id)}
+                      onClick={() => toggleCountry(country.iso)}
                     >
                       <div className="w-5 h-5 border rounded flex items-center justify-center">
-                        {selectedCountries.includes(country.id) && (
+                        {selectedCountries.includes(source==="preset"?country.iso : country.id) && (
                           <Check className="h-4 w-4 text-purple-600" />
                         )}
                       </div>

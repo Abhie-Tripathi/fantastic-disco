@@ -65,7 +65,7 @@ export interface Tracker {
       country?: LocationObject[];  
       zone?: LocationObject[];
     } | string | undefined;
-    
+    country?:LocationObject[];
     includeKeywords?:string;
     excludeKeywords?:string;
     eventBrand?:string;
@@ -82,8 +82,16 @@ export interface Tracker {
     audienceSpread?: any;
     designation?: any;
 }
-
-
+export interface PresetData{
+  id:string;
+  name:string;
+  totalEvent: number;
+  data: any;
+  newEventCount: number;
+  description: string;
+  trackerType: string[];
+  filterValue?: FilterValue
+}
   export interface Toggle{
     rating?:boolean;
     exhibit?:boolean;

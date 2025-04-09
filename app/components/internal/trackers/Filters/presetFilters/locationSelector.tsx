@@ -15,19 +15,14 @@ interface CountryData {
   displayName: string;
 }
 interface LocationSelectorProps {
-  source: string;
   selectedLocation: string[];
   setSelectedLocation: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const LocationSelector = React.memo(function LocationSelector({
-  source,
   setSelectedLocation,
   selectedLocation = [],
 }: LocationSelectorProps) {
-  console.log("locationSelector called");
-  
-  const { getFilterValue, searchParams } = useFilterState();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleStatusToggle = (statusId: string) => {

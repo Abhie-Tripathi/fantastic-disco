@@ -1,0 +1,6704 @@
+{
+  "totalCount": 200,
+  "data": [
+    {
+      "trackerName": "Top Public Listed Companies in China in Software",
+      "content": "Events where Top Public Listed Companies in China in Software participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1079",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+            "name": "IT & Technology",
+            "slug": "technology"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Shenzhen Sunline Tech Co. Ltd."
+        ],
+        [
+          "https://divgi-tts.com"
+        ],
+        [
+          "Beijing Shiji Information Technology Co. Ltd."
+        ],
+        [
+          "https://www.paychex.com"
+        ],
+        [
+          "https://www.internationalpaper.com"
+        ],
+        [
+          "https://www.ushamartin.com"
+        ],
+        [
+          "https://www.gpmcorp.com.tw"
+        ],
+        [
+          "https://www.lh.co.th"
+        ],
+        [
+          "https://www.xjec.com"
+        ],
+        [
+          "https://www.qso.co.jp"
+        ],
+        [
+          "SenseTime Group Inc."
+        ],
+        [
+          "https://www.vsttractors.com"
+        ],
+        [
+          "Qi An Xin Technology Group Inc."
+        ],
+        [
+          "https://www.nippi-inc.co.jp"
+        ],
+        [
+          "https://www.mangalamcement.com"
+        ],
+        [
+          "Marketingforce Management Ltd"
+        ],
+        [
+          "https://www.marketaxess.com"
+        ],
+        [
+          "https://www.bhagirad.com"
+        ],
+        [
+          "Hundsun Technologies Inc."
+        ],
+        [
+          "Beijing Ultrapower Software Co. Ltd."
+        ],
+        [
+          "INESA Intelligent Tech Inc."
+        ],
+        [
+          "https://www.cnpccapital.cn"
+        ],
+        [
+          "Beijing Compass Technology Development Co. Ltd."
+        ],
+        [
+          "Shenzhen InfoGem Technologies Co. Ltd."
+        ],
+        [
+          "https://www.fit-foxconn.com"
+        ],
+        [
+          "Longshine Technology Group Co. Ltd."
+        ],
+        [
+          "https://www.cgnp.com.cn"
+        ],
+        [
+          "Aisino Corporation"
+        ],
+        [
+          "https://www.essilorluxottica.com"
+        ],
+        [
+          "Chengdu Information Technology of Chinese Academy of Sciences Co. Ltd"
+        ],
+        [
+          "https://www.orientcable.com"
+        ],
+        [
+          "Servyou Software Group Co. Ltd."
+        ],
+        [
+          "https://www.ramcoindltd.com"
+        ],
+        [
+          "https://www.excelind.co.in"
+        ],
+        [
+          "Beijing Sinnet Technology Co. Ltd"
+        ],
+        [
+          "DiDi Global Inc."
+        ],
+        [
+          "https://www.heranba.co.in"
+        ],
+        [
+          "Lakala Payment Co. Ltd."
+        ],
+        [
+          "https://twgf.crmsc.com.cn"
+        ],
+        [
+          "CETC Digital Technology Co. Ltd."
+        ],
+        [
+          "Geovis Technology Co. Ltd"
+        ],
+        [
+          "Newland Digital Technology Co. Ltd."
+        ],
+        [
+          "Hithink RoyalFlush Information Network Co. Ltd."
+        ],
+        [
+          "Zwsoft Co. Ltd."
+        ],
+        [
+          "https://www.ansys.com"
+        ],
+        [
+          "https://corpo.couche-tard.com"
+        ],
+        [
+          "NavInfo Co. Ltd."
+        ],
+        [
+          "Neusoft Corporation"
+        ],
+        [
+          "https://columbiaworks.jp"
+        ],
+        [
+          "https://www.shinobufoods.co.jp"
+        ],
+        [
+          "Jiangsu Hoperun Software Co. Ltd."
+        ],
+        [
+          "Guo Tai Epoint Software Co. Ltd."
+        ],
+        [
+          "Shanghai 2345 Network Holding Group Co. Ltd."
+        ],
+        [
+          "Lianlian DigiTech Co Ltd"
+        ],
+        [
+          "https://www.cre-jpn.com"
+        ],
+        [
+          "https://www.selanoil.com"
+        ],
+        [
+          "Beijing E-Hualu Information Technology Co. Ltd."
+        ],
+        [
+          "https://www.suntec-sec.jp"
+        ],
+        [
+          "Wangsu Science & Technology Co. Ltd."
+        ],
+        [
+          "https://www.vivendi.com"
+        ],
+        [
+          "iFLYTEK CO. LTD"
+        ],
+        [
+          "360 Security Technology Inc."
+        ],
+        [
+          "Shenzhen Kingdom Sci-Tech Co. Ltd"
+        ],
+        [
+          "https://www.stella.com.hk"
+        ],
+        [
+          "https://www.hubspot.com"
+        ],
+        [
+          "Shenzhen Goodix Technology Co. Ltd."
+        ],
+        [
+          "Thunder Software Technology Co. Ltd."
+        ],
+        [
+          "https://www.scentregroup.com"
+        ],
+        [
+          "Beijing Kingsoft Office Software Inc."
+        ],
+        [
+          "https://www.awsc.com.tw"
+        ],
+        [
+          "Fujian Boss Software Corp."
+        ],
+        [
+          "https://www.zmj.com"
+        ],
+        [
+          "https://www.ringerhut.co.jp"
+        ],
+        [
+          "https://www.weyerhaeuser.com"
+        ],
+        [
+          "Kingdee International Software Group Company Limited"
+        ],
+        [
+          "Venustech Group Inc."
+        ],
+        [
+          "https://www.take2games.com"
+        ],
+        [
+          "China National Software & Service Company Limited"
+        ],
+        [
+          "DHC Software Co. Ltd."
+        ],
+        [
+          "https://www.hygeia-group.com.cn"
+        ],
+        [
+          "https://www.ichiyoshi.co.jp"
+        ],
+        [
+          "https://www.xizangkuangye.cn"
+        ],
+        [
+          "Business-intelligence of Oriental Nations Corporation Ltd."
+        ],
+        [
+          "https://www.severstal.com"
+        ],
+        [
+          "https://origin.co.th"
+        ],
+        [
+          "Shenzhen Fortune Trend technology Co. Ltd."
+        ],
+        [
+          "https://www.chinaredstar.com"
+        ],
+        [
+          "https://www.by-health.com"
+        ],
+        [
+          "Hangzhou DPtech Technologies Co. Ltd."
+        ],
+        [
+          "https://www.jefferies.com"
+        ],
+        [
+          "https://www.bdms.co.th"
+        ],
+        [
+          "https://www.godo-steel.co.jp"
+        ],
+        [
+          "https://www.qbe.com"
+        ],
+        [
+          "Range iData Tech Group Company Limited"
+        ],
+        [
+          "China Transinfo Technology Co. Ltd"
+        ],
+        [
+          "https://www.lumaxworld.in/lumaxindustries"
+        ],
+        [
+          "https://www.autodesk.com"
+        ],
+        [
+          "Shanghai Baosight Software Co. Ltd."
+        ],
+        [
+          "Yonyou Network Technology Co. Ltd."
+        ],
+        [
+          "Sinosoft Co. Ltd"
+        ],
+        [
+          "Wondershare Technology Group Co. Ltd."
+        ],
+        [
+          "Glodon Company Limited"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Specialty Chemicals",
+      "content": "Events where Top Public Listed Companies in China in Specialty Chemicals participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "704",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "4df15939-8144-5507-ae87-cf491580699e",
+            "name": "Industrial Engineering",
+            "slug": "engineering"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Shenzhen Capchem Technology Co. Ltd."
+        ],
+        [
+          "Ningbo Shanshan Co. Ltd."
+        ],
+        [
+          "https://www.powerfinancial.com"
+        ],
+        [
+          "Zhejiang Longsheng Group Co. Ltd"
+        ],
+        [
+          "https://www.multiplan.com.br"
+        ],
+        [
+          "https://www.allis.com.tw"
+        ],
+        [
+          "https://www.azrieligroup.com"
+        ],
+        [
+          "https://www.atkinsrealis.com"
+        ],
+        [
+          "Hubei Feilihua Quartz Glass Co. Ltd."
+        ],
+        [
+          "Tibet GaoZheng Explosive Co. Ltd."
+        ],
+        [
+          "COFCO Biotechnology Co. Ltd."
+        ],
+        [
+          "Shandong Dongyue Organosilicon Materials Co. Ltd."
+        ],
+        [
+          "LB Group Co. Ltd."
+        ],
+        [
+          "https://www.apeloa.com"
+        ],
+        [
+          "Baoding Lucky Innovative Materials Co. Ltd"
+        ],
+        [
+          "https://www.enterpriseproducts.com"
+        ],
+        [
+          "https://www.kd.co.kr"
+        ],
+        [
+          "Bloomage BioTechnology Corporation Limited"
+        ],
+        [
+          "https://www.broadridge.com"
+        ],
+        [
+          "https://www.takano-net.co.jp"
+        ],
+        [
+          "Tangshan Sanyou Chemical Industries Co. Ltd"
+        ],
+        [
+          "Beijing Oriental Yuhong Waterproof Technology Co. Ltd."
+        ],
+        [
+          "Huabao Flavours & Fragrances Co. Ltd."
+        ],
+        [
+          "Yunnan Energy Investment Co. Ltd."
+        ],
+        [
+          "https://www.verisilicon.com"
+        ],
+        [
+          "Hubei Dinglong CO. Ltd."
+        ],
+        [
+          "https://www.dcb-group.com"
+        ],
+        [
+          "https://www.joban-kosan.com"
+        ],
+        [
+          "https://www.motechsolar.com"
+        ],
+        [
+          "https://www.kgieworld.co.th"
+        ],
+        [
+          "https://www.nuvama.com"
+        ],
+        [
+          "https://www.microchip.com"
+        ],
+        [
+          "https://www.st.com"
+        ],
+        [
+          "https://www.crystalgroup.com"
+        ],
+        [
+          "https://www.frasersproperty.co.th"
+        ],
+        [
+          "https://www.bookoffgroup.co.jp"
+        ],
+        [
+          "Jihua Group Corporation Limited"
+        ],
+        [
+          "Hengyi Petrochemical Co. Ltd."
+        ],
+        [
+          "https://www.vectorinc.co.jp"
+        ],
+        [
+          "Sichuan Yahua Industrial Group Co. Ltd."
+        ],
+        [
+          "https://www.gemdale.com"
+        ],
+        [
+          "Suzhou Jinhong Gas Co. Ltd."
+        ],
+        [
+          "Tianqi Lithium Corporation"
+        ],
+        [
+          "Wanhua Chemical Group Co. Ltd."
+        ],
+        [
+          "Deyun Holding Ltd."
+        ],
+        [
+          "Fufeng Group Limited"
+        ],
+        [
+          "Luxi Chemical Group Co. Ltd."
+        ],
+        [
+          "https://www.verandalearning.com"
+        ],
+        [
+          "Huafon Chemical Co. Ltd."
+        ],
+        [
+          "https://www.stlfasteners.com"
+        ],
+        [
+          "Shanghai Putailai New Energy Technology Co. Ltd."
+        ],
+        [
+          "https://pa.equatorialenergia.com.br"
+        ],
+        [
+          "https://cenertech.cnooc.com.cn"
+        ],
+        [
+          "https://investors.uhaul.com"
+        ],
+        [
+          "Novoray Corporation"
+        ],
+        [
+          "Crystal Clear Electronic Material Co. Ltd"
+        ],
+        [
+          "CNGR Advanced Material Co. Ltd."
+        ],
+        [
+          "https://www.fcht.com.tw"
+        ],
+        [
+          "Zibo Qixiang Tengda Chemical Co. Ltd"
+        ],
+        [
+          "China Resources Chemical Innovative Materials Co. Ltd."
+        ],
+        [
+          "https://www.hisaka.co.jp"
+        ],
+        [
+          "https://www.qianxin.com"
+        ],
+        [
+          "China Hainan Rubber Industry Group Co. Ltd."
+        ],
+        [
+          "https://www.veolia.com/fr"
+        ],
+        [
+          "https://www.netapp.com"
+        ],
+        [
+          "Guangzhou Tinci Materials Technology Co. Ltd."
+        ],
+        [
+          "https://www.swancor.com"
+        ],
+        [
+          "https://www.cosmofirst.com"
+        ],
+        [
+          "https://www.cbgm.co.jp"
+        ],
+        [
+          "Xinjiang Xuefeng Sci-Tech(Group)Co. Ltd"
+        ],
+        [
+          "Dalian BIO-CHEM Company Limited"
+        ],
+        [
+          "MeiHua Holdings Group Co. Ltd"
+        ],
+        [
+          "https://newhopedairy.cn"
+        ],
+        [
+          "Huaibei Mining Holdings Co. Ltd."
+        ],
+        [
+          "SKSHU Paint Co. Ltd."
+        ],
+        [
+          "Satellite Chemical Co. Ltd."
+        ],
+        [
+          "Jiangsu Pacific Quartz Co. Ltd"
+        ],
+        [
+          "Shenzhen RongDa Photosensitive Science & Technology Co. Ltd."
+        ],
+        [
+          "Anhui Jiangnan Chemical Industry Co. Ltd."
+        ],
+        [
+          "https://www.cosmoschem.com"
+        ],
+        [
+          "Transfar Zhilian Co. Ltd."
+        ],
+        [
+          "Xinxiang Richful Lube Additive Co. Ltd"
+        ],
+        [
+          "Fujian Kuncai Material Technology Co. Ltd."
+        ],
+        [
+          "Shandong Sinocera Functional Material Co. Ltd."
+        ],
+        [
+          "https://www.nkt.com"
+        ],
+        [
+          "https://www.morozoff.co.jp"
+        ],
+        [
+          "https://www2.gerdau.com"
+        ],
+        [
+          "Jiangsu Nata Opto-electronic Material Co. Ltd."
+        ],
+        [
+          "https://www.vaibhavjewellers.com"
+        ],
+        [
+          "https://www.czleili.com"
+        ],
+        [
+          "https://www.mizuho-fg.co.jp"
+        ],
+        [
+          "https://www.obic.co.jp"
+        ],
+        [
+          "China Minmetals Rare Earth Co. Ltd."
+        ],
+        [
+          "https://www.cubesmart.com"
+        ],
+        [
+          "Kingfa Sci. & Tech. Co. Ltd."
+        ],
+        [
+          "https://www.neurocrine.com"
+        ],
+        [
+          "https://www.rdc.com.tw"
+        ],
+        [
+          "Red Avenue New Materials Group Co. Ltd."
+        ],
+        [
+          "Guangdong Hongda Holdings Group Co. Ltd."
+        ],
+        [
+          "https://www.epack.co.id"
+        ],
+        [
+          "https://www.weigaogroup.com"
+        ],
+        [
+          "https://www.bausch.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Specialty Retail",
+      "content": "Events where Top Public Listed Companies in China in Specialty Retail participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "211",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "MINISO Group Holding Limited"
+        ],
+        [
+          "Shanghai Aiyingshi Co. Ltd"
+        ],
+        [
+          "BYBON Group Company Limited"
+        ],
+        [
+          "Kidsland International Holdings Limited"
+        ],
+        [
+          "Boqii Holding Limited"
+        ],
+        [
+          "https://www.telstra.com.au"
+        ],
+        [
+          "https://www.kaikan.co.jp"
+        ],
+        [
+          "https://www.higgstec.com"
+        ],
+        [
+          "NaaS Technology Inc."
+        ],
+        [
+          "https://www.sdgi.com.cn"
+        ],
+        [
+          "https://www.vis.com.tw"
+        ],
+        [
+          "Jiangsu Holly Corporation"
+        ],
+        [
+          "https://cyanconnode.com"
+        ],
+        [
+          "https://www.ab-science.com"
+        ],
+        [
+          "https://www.businesscoach.co.jp"
+        ],
+        [
+          "Beijing Jingkelong Company Limited"
+        ],
+        [
+          "Beijing Sanfo Outdoor Products Co. Ltd"
+        ],
+        [
+          "Shenzhen Pagoda Industrial (Group) Corporation Limited"
+        ],
+        [
+          "https://www.gorilla-technology.com"
+        ],
+        [
+          "Anhui Xinhua Media Co. Ltd."
+        ],
+        [
+          "https://www.sfkchl.com.hk"
+        ],
+        [
+          "Qidian International Co. Ltd."
+        ],
+        [
+          "Suning.com Co. Ltd."
+        ],
+        [
+          "MINISO Group Holding Ltd"
+        ],
+        [
+          "Precious Dragon Technology Holdings Limited"
+        ],
+        [
+          "https://www.workiva.com"
+        ],
+        [
+          "Beijing Digital Telecom Co. Ltd."
+        ],
+        [
+          "https://www.chinasofti.com"
+        ],
+        [
+          "https://www.apholdingshk.com"
+        ],
+        [
+          "Cang Bao Tian Xia International Art Trade Center Inc."
+        ],
+        [
+          "CXJ Group Co. Limited"
+        ],
+        [
+          "https://www.ommetals.com"
+        ],
+        [
+          "Lanbay Inc"
+        ],
+        [
+          "https://www.dfpcl.com"
+        ],
+        [
+          "https://www.quadravest.com/#!lifesplit-home/cuny"
+        ],
+        [
+          "China Tourism Group Duty Free Corporation Limited"
+        ],
+        [
+          "TL Natural Gas Holdings Limited"
+        ],
+        [
+          "https://www.tkte.com.tw"
+        ],
+        [
+          "https://www.sma.de"
+        ],
+        [
+          "https://www.vnm.com.tw"
+        ],
+        [
+          "Shenzhen Aisidi CO. LTD."
+        ],
+        [
+          "https://www.amatareit.com"
+        ],
+        [
+          "Aishida Co. Ltd"
+        ],
+        [
+          "Sino Gas Holdings Group Limited"
+        ],
+        [
+          "Hunan Heshun Petroleum Co. Ltd."
+        ],
+        [
+          "https://www.solekia.com"
+        ],
+        [
+          "https://www.ece.com.tw"
+        ],
+        [
+          "https://www.tamawood.com.au"
+        ],
+        [
+          "https://www.readingrdi.com"
+        ],
+        [
+          "https://www.airchina.com.cn"
+        ],
+        [
+          "https://www.fuseholding.com"
+        ],
+        [
+          "https://www.n-ms.co.jp"
+        ],
+        [
+          "Haining China Leather Market Co. Ltd"
+        ],
+        [
+          "Doctorglasses Chain Co. Ltd."
+        ],
+        [
+          "https://www.xander.com.tw"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Telecommunications",
+      "content": "Events where Top Public Listed Companies in China in Telecommunications participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "378",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "891d0abb-d06b-5208-b95b-839b7e3f0696",
+            "name": "Telecommunication",
+            "slug": "telecommunication"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.legrandgroup.com"
+        ],
+        [
+          "China Bester Group Telecom Co. Ltd."
+        ],
+        [
+          "https://tbhglobal.co.kr"
+        ],
+        [
+          "Wingtech Technology Co. Ltd"
+        ],
+        [
+          "China Telecom Corporation Limited"
+        ],
+        [
+          "https://www.cleanscience.co.in"
+        ],
+        [
+          "Gosuncn Technology Group Co. Ltd."
+        ],
+        [
+          "Anhui Tatfook Technology Co. Ltd"
+        ],
+        [
+          "https://www.kerry.com"
+        ],
+        [
+          "https://www.sutlejtextiles.com"
+        ],
+        [
+          "https://www.chalco.com.cn"
+        ],
+        [
+          "https://www.radiance.com.cn"
+        ],
+        [
+          "https://www.haseko.co.jp"
+        ],
+        [
+          "https://www.hulic-reit.co.jp"
+        ],
+        [
+          "Chengdu CORPRO Technology Co. Ltd."
+        ],
+        [
+          "https://www.fronteo.com"
+        ],
+        [
+          "https://www.wharfreic.com"
+        ],
+        [
+          "https://www.np3fastigheter.se"
+        ],
+        [
+          "https://www.sharkninja.com"
+        ],
+        [
+          "https://www.makita.co.jp"
+        ],
+        [
+          "https://www.remegen.com"
+        ],
+        [
+          "https://www.keisei.co.jp"
+        ],
+        [
+          "QuantumCTek Co. Ltd."
+        ],
+        [
+          "https://kritiindustries.com"
+        ],
+        [
+          "https://www.luminegroup.com"
+        ],
+        [
+          "https://bankmandiri.co.id"
+        ],
+        [
+          "Yealink Network Technology Co. Ltd."
+        ],
+        [
+          "China Zhenhua (Group) Science & Technology Co. Ltd"
+        ],
+        [
+          "https://www.bioarctic.se"
+        ],
+        [
+          "https://www.shinhangroup.com"
+        ],
+        [
+          "https://www.raqualia.co.jp"
+        ],
+        [
+          "https://www.flexlng.com"
+        ],
+        [
+          "https://www.wenergy.cn"
+        ],
+        [
+          "Sichuan Jiuzhou Electronic Co. Ltd."
+        ],
+        [
+          "https://www.crsc.cn"
+        ],
+        [
+          "CIG ShangHai Co. Ltd."
+        ],
+        [
+          "https://www.berkley.com"
+        ],
+        [
+          "https://www.kyokuto.com"
+        ],
+        [
+          "Sumavision Technologies Co. Ltd."
+        ],
+        [
+          "Quectel Wireless Solutions Co. Ltd."
+        ],
+        [
+          "https://www.1st-corp.com"
+        ],
+        [
+          "Addsino Co. Ltd."
+        ],
+        [
+          "Eoptolink Technology Inc. Ltd."
+        ],
+        [
+          "https://ir.jdl.com"
+        ],
+        [
+          "Besttone Holding Co. Ltd"
+        ],
+        [
+          "https://www.sandoz.com"
+        ],
+        [
+          "https://www.celcomdigi.com"
+        ],
+        [
+          "https://www.orthok.cn"
+        ],
+        [
+          "Suzhou TFC Optical Communication Co. Ltd."
+        ],
+        [
+          "China Communications Services Corporation Limited"
+        ],
+        [
+          "Advanced Fiber Resources (Zhuhai) Ltd."
+        ],
+        [
+          "T&S Communications Co. Ltd."
+        ],
+        [
+          "https://www.takatori-g.co.jp"
+        ],
+        [
+          "Cetc Potevio Science&Technology Co. Ltd."
+        ],
+        [
+          "https://www.xymaxreit.co.jp"
+        ],
+        [
+          "https://finecobank.com"
+        ],
+        [
+          "https://www.dynanonic.com"
+        ],
+        [
+          "China Tower Corporation Limited"
+        ],
+        [
+          "Guangzhou Haige Communications Group Incorporated Company"
+        ],
+        [
+          "https://www.jms.cc"
+        ],
+        [
+          "https://www.yzjship.com"
+        ],
+        [
+          "ZTE Corporation"
+        ],
+        [
+          "https://www.gzhtdq.com.cn"
+        ],
+        [
+          "Ruijie Networks Co. Ltd."
+        ],
+        [
+          "https://www.chinastock.com.cn"
+        ],
+        [
+          "Yangtze Optical Fibre And Cable Joint Stock Limited Company"
+        ],
+        [
+          "Sangfor Technologies Inc."
+        ],
+        [
+          "Runjian Co. Ltd."
+        ],
+        [
+          "Glarun Technology Co. Ltd"
+        ],
+        [
+          "https://www.hnthinker.com"
+        ],
+        [
+          "Linktel Technologies Co. Ltd."
+        ],
+        [
+          "https://www.ahnlab.com"
+        ],
+        [
+          "https://www.electrotherm.com"
+        ],
+        [
+          "EmbedWay Technologies (Shanghai) Corporation"
+        ],
+        [
+          "https://chonghong.com.tw"
+        ],
+        [
+          "Jushri Technologies INC."
+        ],
+        [
+          "Fujian Star-net Communication Co. LTD."
+        ],
+        [
+          "China Satellite Communications Co. Ltd."
+        ],
+        [
+          "China United Network Communications Limited"
+        ],
+        [
+          "Hengtong Optic-Electric Co. Ltd."
+        ],
+        [
+          "https://www.jsp.com"
+        ],
+        [
+          "Skyworth Digital Co. Ltd."
+        ],
+        [
+          "Fibocom Wireless Inc."
+        ],
+        [
+          "https://www.kingclean.com"
+        ],
+        [
+          "Hytera Communications Corporation Limited"
+        ],
+        [
+          "Foxconn Industrial Internet Co. Ltd."
+        ],
+        [
+          "https://www.bucid.com"
+        ],
+        [
+          "https://www.banpupower.com"
+        ],
+        [
+          "Datang Telecom Technology Co. Ltd."
+        ],
+        [
+          "Fiberhome Telecommunication Technologies Co. Ltd."
+        ],
+        [
+          "https://nslfoods.com"
+        ],
+        [
+          "https://www.bupa.com.sa"
+        ],
+        [
+          "AAC Technologies Holdings Inc."
+        ],
+        [
+          "Eastern Communications Co. Ltd."
+        ],
+        [
+          "https://www.juniper.net"
+        ],
+        [
+          "TianJin 712 Communication & Broadcasting Co. Ltd."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Transportation",
+      "content": "Events where Top Public Listed Companies in China in Transportation participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "945",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "482c81be-c5b1-5ed8-8306-0ec51cfda560",
+            "name": "Logistics & Transportation",
+            "slug": "logistics-transportation"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "TangShan Port Group Co. Ltd"
+        ],
+        [
+          "COSCO SHIPPING Specialized Carriers Co. Ltd."
+        ],
+        [
+          "https://www.dainichi-net.co.jp"
+        ],
+        [
+          "SHANGHAI JINJIANG SHIPPING (GP) CO"
+        ],
+        [
+          "Shanghai Foreign Service Holding Group CO. Ltd."
+        ],
+        [
+          "Zhejiang Tiantie Industry Co. Ltd."
+        ],
+        [
+          "https://www.hiramatsu.co.jp"
+        ],
+        [
+          "https://www.jindunfan.com"
+        ],
+        [
+          "CRRC Corporation Limited"
+        ],
+        [
+          "https://uegl.com.hk"
+        ],
+        [
+          "https://www.intouchcompany.com"
+        ],
+        [
+          "Tianjin Port Co. Ltd."
+        ],
+        [
+          "https://www.tronly.com"
+        ],
+        [
+          "Shanghai Jin Jiang Online Network Service Co. Ltd."
+        ],
+        [
+          "Fujian Highton Development"
+        ],
+        [
+          "https://www.wapo.co.id"
+        ],
+        [
+          "https://www.creades.se"
+        ],
+        [
+          "Hainan Strait Shipping Co. Ltd."
+        ],
+        [
+          "https://www.fenjiu.com.cn"
+        ],
+        [
+          "https://www.qbb.co.jp"
+        ],
+        [
+          "Liaoning Port Co. Ltd."
+        ],
+        [
+          "https://www.nsd.co.jp"
+        ],
+        [
+          "https://www.tourmalineoil.com"
+        ],
+        [
+          "COSCO SHIPPING Holdings Co. Ltd."
+        ],
+        [
+          "Beijing-Shanghai High-Speed Railway Co. Ltd."
+        ],
+        [
+          "Zhuzhou CRRC Times Electric Co. Ltd."
+        ],
+        [
+          "https://www.enricgroup.com"
+        ],
+        [
+          "https://www.lianovation.com.cn"
+        ],
+        [
+          "DEPPON LOGISTICS Co. LTD."
+        ],
+        [
+          "https://www.pixtrans.com"
+        ],
+        [
+          "https://pdsltd.com"
+        ],
+        [
+          "https://www.gwydgf.com"
+        ],
+        [
+          "Nanjing Kangni Mechanical & Electrical Co. Ltd"
+        ],
+        [
+          "https://global.brother/ja"
+        ],
+        [
+          "Guangshen Railway Company Limited"
+        ],
+        [
+          "Chongqing Port Co. Ltd."
+        ],
+        [
+          "Guangdong Great River Smarter Logistics Co. Ltd."
+        ],
+        [
+          "https://www.jiugang.com"
+        ],
+        [
+          "Shanghai International Port (Group) Co. Ltd."
+        ],
+        [
+          "Qingdao Port International Co. Ltd."
+        ],
+        [
+          "https://www.mercuries.com.tw"
+        ],
+        [
+          "China Merchants Port Group Co. Ltd."
+        ],
+        [
+          "https://www.seohee.co.kr"
+        ],
+        [
+          "https://technologies-group.co.jp"
+        ],
+        [
+          "https://www.lingangholding.com"
+        ],
+        [
+          "Hainan Haiqi Transportation Group Co. Ltd."
+        ],
+        [
+          "https://finance.hermes.com"
+        ],
+        [
+          "KTK Group Co. Ltd."
+        ],
+        [
+          "https://www.first-bank.co.jp"
+        ],
+        [
+          "https://www.sncl.com"
+        ],
+        [
+          "https://www.foxcorporation.com"
+        ],
+        [
+          "Beibu Gulf Port Co. Ltd."
+        ],
+        [
+          "Guangzhou Port Company Limited"
+        ],
+        [
+          "https://vakrangee.in"
+        ],
+        [
+          "https://www.vinci.com"
+        ],
+        [
+          "Guangxi Wuzhou Communications Co. Ltd."
+        ],
+        [
+          "Rizhao Port Co. Ltd."
+        ],
+        [
+          "Hengtong Logistics Co. Ltd."
+        ],
+        [
+          "https://www.ptmetrorealty.co.id"
+        ],
+        [
+          "https://www.webelsolar.com"
+        ],
+        [
+          "https://www.littelfuse.com"
+        ],
+        [
+          "https://www.reply.com/en/"
+        ],
+        [
+          "https://www.atul.co.in"
+        ],
+        [
+          "https://www.tdc.co.jp"
+        ],
+        [
+          "Ningbo Zhoushan Port Company Limited"
+        ],
+        [
+          "Ningxia Western Venture Industrial Co. Ltd."
+        ],
+        [
+          "https://www.zotye.com"
+        ],
+        [
+          "https://www.neoen.com"
+        ],
+        [
+          "https://www.hnjzt.com"
+        ],
+        [
+          "https://ghcltextiles.co.in"
+        ],
+        [
+          "https://www.temairazu.com"
+        ],
+        [
+          "https://www.tanaka-chem.co.jp"
+        ],
+        [
+          "ANE (Cayman) Inc."
+        ],
+        [
+          "Daqin Railway Co. Ltd."
+        ],
+        [
+          "Dazhong Transportation (Group) Co. Ltd."
+        ],
+        [
+          "https://www.tospolighting.com.cn"
+        ],
+        [
+          "https://www.cominix.jp"
+        ],
+        [
+          "China Railway Signal & Communication Corporation Limited"
+        ],
+        [
+          "https://www.es.csg.cn/"
+        ],
+        [
+          "China Railway Materials Company Limited"
+        ],
+        [
+          "China Railway Special Cargo Logistics Co. Ltd."
+        ],
+        [
+          "https://www.silinvestments.in"
+        ],
+        [
+          "https://www.ccnew.com"
+        ],
+        [
+          "https://www.thaitheparos.com"
+        ],
+        [
+          "Qinhuangdao Port Co. Ltd."
+        ],
+        [
+          "China Railway Tielong Container Logistics Co. Ltd"
+        ],
+        [
+          "https://www.informa.com"
+        ],
+        [
+          "https://www.oci.nl"
+        ],
+        [
+          "Shenzhen Yan Tian Port Holdings Co. Ltd."
+        ],
+        [
+          "https://www.do.sajo.co.kr"
+        ],
+        [
+          "https://www.secom.com.tw"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Travel",
+      "content": "Events where Top Public Listed Companies in China in Travel participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "42",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "56482620-c2c7-5df4-bf68-bb91e7a9b6ab",
+            "name": "Travel & Tourism",
+            "slug": "travel-tourism"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Xi'an Qujiang Cultural Tourism Co. Ltd."
+        ],
+        [
+          "https://www.nnnreit.com"
+        ],
+        [
+          "https://www.cr-capital.de"
+        ],
+        [
+          "https://www.givex.com"
+        ],
+        [
+          "Feiyang International Holdings Group Limited"
+        ],
+        [
+          "Lvji Technology Holdings Inc."
+        ],
+        [
+          "https://www.risesun.cn"
+        ],
+        [
+          "https://www.tongdahongtai.com"
+        ],
+        [
+          "Tu Yi Holding Company Limited"
+        ],
+        [
+          "Emei Shan Tourism Co. Ltd"
+        ],
+        [
+          "Wuhan Sante Cableway Group Co. Ltd."
+        ],
+        [
+          "https://www.avcit.com"
+        ],
+        [
+          "UTour Group Co. Ltd."
+        ],
+        [
+          "Anhui Jiuhuashan Tourism Development Co. Ltd."
+        ],
+        [
+          "https://www.bears.com.cn"
+        ],
+        [
+          "https://www.waida.co.jp"
+        ],
+        [
+          "Changbai Mountain Tourism Co. Ltd."
+        ],
+        [
+          "https://www.txnmenergy.com"
+        ],
+        [
+          "https://www.pbknc.com"
+        ],
+        [
+          "https://www.ircgroup.com.hk"
+        ],
+        [
+          "https://www.gecina.fr"
+        ],
+        [
+          "Tongcheng Travel Holdings Limited"
+        ],
+        [
+          "Caissa Tosun Development Co. Ltd."
+        ],
+        [
+          "https://www.nongfuspring.com"
+        ],
+        [
+          "Tuniu Corporation"
+        ],
+        [
+          "https://www.bailliegifford.com/en/uk/individual-investors/funds/monks-investment-trust/"
+        ],
+        [
+          "Tourism Urbanization"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in China in Utilities",
+      "content": "Events where Top Public Listed Companies in China in Utilities participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "587",
+      "filterValue": {
+        "country": [
+          {
+            "id": "24de91ad-3711-5584-b6b7-8abc21e6121f",
+            "name": "China",
+            "displayName": "China",
+            "locationType": "COUNTRY",
+            "latitude": "35.4867029846329",
+            "longitude": "101.901875103385",
+            "iso": "CN"
+          }
+        ],
+        "category": [
+          {
+            "id": "387d34b6-9b8a-58ab-b841-981a9534c2e6",
+            "name": "Power & Energy",
+            "slug": "power-energy"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Jiangxi Hongcheng Environment Co. Ltd."
+        ],
+        [
+          "https://www.acepillar.com.tw"
+        ],
+        [
+          "https://www.lithiadriveway.com"
+        ],
+        [
+          "Huaneng Power International Inc."
+        ],
+        [
+          "Chongqing Gas Group Corporation Ltd."
+        ],
+        [
+          "Inner Mongolia MengDian HuaNeng Thermal Power Corporation Limited"
+        ],
+        [
+          "Fujian Funeng Co. Ltd."
+        ],
+        [
+          "https://www.iff.com"
+        ],
+        [
+          "Chongqing Fuling Electric Power Industrial Co. Ltd."
+        ],
+        [
+          "https://www.sahapat.co.th"
+        ],
+        [
+          "Grandblue Environment Co. Ltd."
+        ],
+        [
+          "https://www.smith-nephew.com"
+        ],
+        [
+          "Foran Energy Group Co. Ltd."
+        ],
+        [
+          "Shenzhen Energy Group Co. Ltd."
+        ],
+        [
+          "https://www.klf-group.com"
+        ],
+        [
+          "https://www.susmed.co.jp"
+        ],
+        [
+          "https://www.kuramoto.co.jp"
+        ],
+        [
+          "Luenmei Quantum Co. Ltd"
+        ],
+        [
+          "https://www.andrewyule.com"
+        ],
+        [
+          "https://www.bjc.co.th"
+        ],
+        [
+          "https://satgroup.in"
+        ],
+        [
+          "Chengdu Xingrong Environment Co. Ltd."
+        ],
+        [
+          "https://www.inaba.co.jp"
+        ],
+        [
+          "Guangdong Baolihua New Energy Stock Co. Ltd."
+        ],
+        [
+          "SPIC Industry-Finance Holdings Co. Ltd."
+        ],
+        [
+          "https://www.mino-ceramic.co.jp"
+        ],
+        [
+          "https://www.sinoma-tianshan.cn"
+        ],
+        [
+          "Jiangxi Ganneng Co. Ltd."
+        ],
+        [
+          "Shanghai Dazhong Public Utilities(Group) Co. Ltd."
+        ],
+        [
+          "https://www.fluor.com"
+        ],
+        [
+          "https://www.questdiagnostics.com"
+        ],
+        [
+          "https://www.kone.com"
+        ],
+        [
+          "Jilin Electric Power Co. Ltd."
+        ],
+        [
+          "https://www.shenmao.com"
+        ],
+        [
+          "https://www.uchida.co.jp"
+        ],
+        [
+          "https://www.mmforgings.com"
+        ],
+        [
+          "China Suntien Green Energy Corporation Limited"
+        ],
+        [
+          "https://www.tokyorope.co.jp"
+        ],
+        [
+          "https://www.highwealth.com.tw"
+        ],
+        [
+          "https://www.cosl.com.cn"
+        ],
+        [
+          "Chongqing Water Group Co. Ltd."
+        ],
+        [
+          "Shenzhen Gas Corporation Ltd."
+        ],
+        [
+          "Huadian Energy Company Limited"
+        ],
+        [
+          "https://www.shivalikrasayan.com"
+        ],
+        [
+          "GCL Intelligent Energy Co. Ltd."
+        ],
+        [
+          "Sichuan Chuantou Energy Co. Ltd."
+        ],
+        [
+          "Zhejiang Zheneng Electric Power Co. Ltd."
+        ],
+        [
+          "https://www.gnagroup.com"
+        ],
+        [
+          "Harbin Hatou Investment Co. Ltd"
+        ],
+        [
+          "https://www.dohome.co.th"
+        ],
+        [
+          "https://www.kohsoku.com"
+        ],
+        [
+          "Shenergy Company Limited"
+        ],
+        [
+          "https://www.browave.com"
+        ],
+        [
+          "China Southern Power Grid Energy Efficiency & Clean Energy Co. Ltd."
+        ],
+        [
+          "Zhongshan Public Utilities Group Co. Ltd."
+        ],
+        [
+          "https://www.meijidenki.co.jp"
+        ],
+        [
+          "https://www.sprc.co.th"
+        ],
+        [
+          "https://www.tigermedgrp.com"
+        ],
+        [
+          "China National Nuclear Power Co. Ltd."
+        ],
+        [
+          "CGN Power Co. Ltd."
+        ],
+        [
+          "https://www.aeroflexindia.com"
+        ],
+        [
+          "https://www.noritzglobal.com"
+        ],
+        [
+          "https://www.thehitechgears.com"
+        ],
+        [
+          "https://www.chinacoalenergy.com"
+        ],
+        [
+          "https://www.peab.com"
+        ],
+        [
+          "Datang International Power Generation Co. Ltd."
+        ],
+        [
+          "https://freebit.com"
+        ],
+        [
+          "CHN Energy Changyuan Electric Power Co. Ltd."
+        ],
+        [
+          "https://www.bankbanten.co.id"
+        ],
+        [
+          "https://www.halma.com"
+        ],
+        [
+          "Henan Lantian Gas Co. Ltd."
+        ],
+        [
+          "https://www.airliquide.com"
+        ],
+        [
+          "https://www.rgare.com"
+        ],
+        [
+          "ENN Energy Holdings Limited"
+        ],
+        [
+          "https://m-upholdings.co.jp"
+        ],
+        [
+          "Beijing Jingneng Clean Energy Co. Limited"
+        ],
+        [
+          "https://www.sanden.co.jp"
+        ],
+        [
+          "https://www.vizionfocus.com"
+        ],
+        [
+          "Jointo Energy Investment Co. Ltd. Hebei"
+        ],
+        [
+          "Xinjiang Xintai Natural Gas Co. Ltd."
+        ],
+        [
+          "https://www.resmed.com"
+        ],
+        [
+          "https://www.loreal.com"
+        ],
+        [
+          "An Hui Wenergy Company Limited"
+        ],
+        [
+          "Huadian Power International Corporation Limited"
+        ],
+        [
+          "https://www.wakoushokuhin.co.jp"
+        ],
+        [
+          "https://www.porsche-se.com"
+        ],
+        [
+          "Yunnan Wenshan Electric Power Co. Ltd."
+        ],
+        [
+          "Beijing Jingneng Power Co. Ltd."
+        ],
+        [
+          "https://www.yitoa.com"
+        ],
+        [
+          "Chengdu Gas Group Corporation Ltd."
+        ],
+        [
+          "https://www.ocean-system.com"
+        ],
+        [
+          "https://global.canon"
+        ],
+        [
+          "Guizhou Gas Group Corporation Ltd."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Colombia",
+      "content": "Events where Top Public Listed Companies in Colombia participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "26",
+      "filterValue": {
+        "country": [
+          {
+            "id": "ce617904-f17d-5f09-aca5-8836f388f845",
+            "name": "Colombia",
+            "displayName": "Colombia, Las Tunas, Cuba",
+            "locationType": "CITY",
+            "latitude": "20.987000",
+            "longitude": "-77.419000",
+            "state": {
+              "id": "697d899f-e7c8-5cc0-b3c2-aa8e82b2b04b",
+              "name": "Las Tunas",
+              "latitude": "21.0605162",
+              "longitude": "-76.9182097"
+            },
+            "country": {
+              "id": "22fe08d4-ef59-5dd0-a540-2b91cc86de0e",
+              "name": "Cuba",
+              "latitude": "21.9468717021679",
+              "longitude": "-79.2366720528138",
+              "iso": "CU"
+            }
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          ""
+        ],
+        [
+          "Clever Leaves Holdings Inc."
+        ],
+        [
+          "https://mineros.com.co"
+        ],
+        [
+          "Almacenes \u00c3\u2030xito S.A."
+        ],
+        [
+          "Bakken Energy Corp."
+        ],
+        [
+          "Mineros S.A."
+        ],
+        [
+          "Banco Davivienda S.A."
+        ],
+        [
+          "Grupo Nutresa S. A."
+        ],
+        [
+          "https://cleverleaves.com"
+        ],
+        [
+          "https://www.davivienda.com"
+        ],
+        [
+          "GeoPark Limited"
+        ],
+        [
+          "Interconexi\u00c3\u00b3n El\u00c3\u00a9ctrica S.A. E.S.P."
+        ],
+        [
+          "https://www.gruponutresa.com"
+        ],
+        [
+          "https://www.grupobancolombia.com"
+        ],
+        [
+          "https://www.grupoaval.com"
+        ],
+        [
+          "Tecnoglass Inc."
+        ],
+        [
+          "Ecopetrol S.A."
+        ],
+        [
+          "Cementos Argos S.A."
+        ],
+        [
+          "Tower One Wireless Corp."
+        ],
+        [
+          "https://www.argos.co"
+        ],
+        [
+          "https://www.isa.co"
+        ],
+        [
+          "https://www.corficolombiana.com"
+        ],
+        [
+          "Grupo Aval Acciones y Valores S.A."
+        ],
+        [
+          "https://www.tecnoglass.com"
+        ],
+        [
+          "Bancolombia S.A."
+        ],
+        [
+          "https://www.gruposura.com"
+        ],
+        [
+          "Corporaci\u00c3\u00b3n Financiera Colombiana S.A."
+        ],
+        [
+          "https://toweronewireless.com"
+        ],
+        [
+          "https://www.ecopetrol.com.co"
+        ],
+        [
+          "Grupo de Inversiones Suramericana S.A."
+        ],
+        [
+          "https://www.geo-park.com"
+        ],
+        [
+          "Viratech Corp."
+        ],
+        [
+          "https://www.grupoexito.com.co"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Cyprus",
+      "content": "Events where Top Public Listed Companies in Cyprus participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "31",
+      "filterValue": {
+        "country": [
+          {
+            "id": "6ebc4558-fab5-5eb3-a70f-6081e9082b48",
+            "name": "Cyprus",
+            "displayName": "Cyprus",
+            "locationType": "COUNTRY",
+            "latitude": "35.0458816072997",
+            "longitude": "33.2217624140819",
+            "iso": "CY"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.standard-etc.com"
+        ],
+        [
+          "Castor Maritime Inc."
+        ],
+        [
+          "https://www.mirland-development.com"
+        ],
+        [
+          "Woodbrook Group Holdings Inc."
+        ],
+        [
+          "ADS Maritime Holding Plc"
+        ],
+        [
+          "https://www.rusagrogroup.ru"
+        ],
+        [
+          "https://www.asbis.com"
+        ],
+        [
+          "https://www.petrolia.eu"
+        ],
+        [
+          "Frontline Ltd."
+        ],
+        [
+          "https://www.sbexp.com"
+        ],
+        [
+          "https://www.castormaritime.com"
+        ],
+        [
+          "https://www.fireringplc.com"
+        ],
+        [
+          "https://www.dekelagrivision.com"
+        ],
+        [
+          "Petrolia SE"
+        ],
+        [
+          "SeaBird Exploration Plc"
+        ],
+        [
+          "https://www.etalongroup.com"
+        ],
+        [
+          "https://www.theon.com"
+        ],
+        [
+          "https://www.frontlineplc.cy"
+        ],
+        [
+          "Atalaya Mining Plc"
+        ],
+        [
+          "https://gdev.inc"
+        ],
+        [
+          "https://atalayamining.com"
+        ],
+        [
+          "https://www.gifainc.net"
+        ],
+        [
+          "Dekel Agri-Vision plc"
+        ],
+        [
+          "https://woodbrookgroup.com"
+        ],
+        [
+          "GDEV Inc."
+        ],
+        [
+          "QIWI plc"
+        ],
+        [
+          "https://www.kefi-minerals.com"
+        ],
+        [
+          "Etalon Group PLC"
+        ],
+        [
+          "https://www.bankofcyprus.com"
+        ],
+        [
+          "https://www.medipowergroup.com"
+        ],
+        [
+          "https://www.adsmh.com"
+        ],
+        [
+          "THEON INTERNATIONAL PLC"
+        ],
+        [
+          "https://www.torocorp.com"
+        ],
+        [
+          "Medipower (Overseas) Public Co. Limited"
+        ],
+        [
+          "Bank of Cyprus Holdings Public Limited Company"
+        ],
+        [
+          "S.D. Standard ETC Plc"
+        ],
+        [
+          "Nexters Inc."
+        ],
+        [
+          "ASBISc Enterprises Plc"
+        ],
+        [
+          "https://www.cairomezz.com.cy"
+        ],
+        [
+          "Toro Corp."
+        ],
+        [
+          "https://www.mlkfoods.cy"
+        ],
+        [
+          "Firering Strategic Minerals Plc"
+        ],
+        [
+          "Cairo Mezz PLC"
+        ],
+        [
+          "KEFI Gold and Copper Plc"
+        ],
+        [
+          "Milkiland Public Company Limited"
+        ],
+        [
+          "MIRLAND-M"
+        ],
+        [
+          "Ros Agro PLC"
+        ],
+        [
+          "https://qiwi.com"
+        ],
+        [
+          "GIFA Inc."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Czech Republic",
+      "content": "Events where Top Public Listed Companies in Czech Republic participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "52",
+      "filterValue": {
+        "country": [
+          {
+            "id": "a3557c59-3c94-5615-bb0b-57a6d580acce",
+            "name": "Czech Republic",
+            "displayName": "Czech Republic",
+            "locationType": "COUNTRY",
+            "latitude": "49.7428590048094",
+            "longitude": "15.3384118376873",
+            "iso": "CZ"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.pmi.com/markets/czech-republic/cs/overview"
+        ],
+        [
+          "https://www.karo-leather.com"
+        ],
+        [
+          "Kofola CeskoSlovensko a.s."
+        ],
+        [
+          ""
+        ],
+        [
+          "https://www.kofola.cz"
+        ],
+        [
+          "Colt CZ Group SE"
+        ],
+        [
+          "KARO INVEST a.s."
+        ],
+        [
+          "https://www.coltczgroup.com"
+        ],
+        [
+          "https://www.pilulka.cz"
+        ],
+        [
+          "CEZ a. s."
+        ],
+        [
+          "https://www.kb.cz"
+        ],
+        [
+          "Philip Morris CR a.s."
+        ],
+        [
+          "MONETA Money Bank a.s."
+        ],
+        [
+          "Komercn\u00c3\u00ad banka a.s."
+        ],
+        [
+          "https://www.cez.cz"
+        ],
+        [
+          "https://www.moneta.cz"
+        ],
+        [
+          "Pilulka L\u00c3\u00a9k\u00c3\u00a1rny a.s."
+        ],
+        [
+          "M&T 1997 a.s."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark",
+      "content": "Events where Top Public Listed Companies in Denmark participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "509",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.maersk.com"
+        ],
+        [
+          "H. Lundbeck A/S"
+        ],
+        [
+          "Zealand Pharma A/S"
+        ],
+        [
+          "https://www.almbrand.dk"
+        ],
+        [
+          "https://www.novonesis.com"
+        ],
+        [
+          "Rockwool A/S"
+        ],
+        [
+          "Royal Unibrew A/S"
+        ],
+        [
+          "https://www.bakkafrost.com"
+        ],
+        [
+          "https://danskebank.com"
+        ],
+        [
+          "https://www.coloplast.com"
+        ],
+        [
+          "Danske Bank A/S"
+        ],
+        [
+          "Novo Nordisk A/S"
+        ],
+        [
+          "Carlsberg A/S"
+        ],
+        [
+          "GN Store Nord A/S"
+        ],
+        [
+          "https://www.orsted.com"
+        ],
+        [
+          "https://www.tryg.com"
+        ],
+        [
+          "https://www.alk.net"
+        ],
+        [
+          "Cadeler A/S"
+        ],
+        [
+          "https://www.genmab.com"
+        ],
+        [
+          "https://www.landbobanken.dk"
+        ],
+        [
+          "Alm. Brand A/S"
+        ],
+        [
+          "A.P. M\u00c3\u00b8ller - M\u00c3\u00a6rsk A/S"
+        ],
+        [
+          "Topdanmark A/S"
+        ],
+        [
+          "NKT A/S"
+        ],
+        [
+          "https://www.nkt.com"
+        ],
+        [
+          "https://www.zealandpharma.com"
+        ],
+        [
+          "\u00c3\u02dcrsted A/S"
+        ],
+        [
+          "Pandora A/S"
+        ],
+        [
+          "https://www.carlsberggroup.com"
+        ],
+        [
+          "https://www.dsv.com"
+        ],
+        [
+          "https://www.ambu.com"
+        ],
+        [
+          "https://www.cph.dk"
+        ],
+        [
+          "Novozymes A/S"
+        ],
+        [
+          "https://www.flsmidth.com"
+        ],
+        [
+          "Tryg A/S"
+        ],
+        [
+          "https://www.netcompany.com"
+        ],
+        [
+          "Demant A/S"
+        ],
+        [
+          "DSV A/S"
+        ],
+        [
+          "https://www.bavarian-nordic.com"
+        ],
+        [
+          "https://www.vestas.com"
+        ],
+        [
+          "https://www.novonordisk.com"
+        ],
+        [
+          "https://www.royalunibrew.com"
+        ],
+        [
+          "Spar Nord Bank A/S"
+        ],
+        [
+          "https://www.lundbeck.com"
+        ],
+        [
+          "https://www.issworld.com"
+        ],
+        [
+          "https://www.demant.com"
+        ],
+        [
+          "https://www.jyskebank.dk"
+        ],
+        [
+          "https://www.sydbank.com"
+        ],
+        [
+          "https://www.sparnord.dk"
+        ],
+        [
+          "FLSmidth & Co. A/S"
+        ],
+        [
+          "Sydbank A/S"
+        ],
+        [
+          "Coloplast A/S"
+        ],
+        [
+          "K\u00c3\u00b8benhavns Lufthavne A/S"
+        ],
+        [
+          "https://www.pandoragroup.com"
+        ],
+        [
+          "https://www.rockwool.com/group"
+        ],
+        [
+          "Jyske Bank A/S"
+        ],
+        [
+          "Genmab A/S"
+        ],
+        [
+          "Ringkj\u00c3\u00b8bing Landbobank A/S"
+        ],
+        [
+          "Ambu A/S"
+        ],
+        [
+          "ALK-Abell\u00c3\u00b3 A/S"
+        ],
+        [
+          "Netcompany Group A/S"
+        ],
+        [
+          "Bavarian Nordic A/S"
+        ],
+        [
+          "https://www.topdanmark.com"
+        ],
+        [
+          "P/F Bakkafrost"
+        ],
+        [
+          "Vestas Wind Systems A/S"
+        ],
+        [
+          "https://www.gn.com"
+        ],
+        [
+          "ISS A/S"
+        ],
+        [
+          "https://www.cadeler.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Banking & Financial Services",
+      "content": "Events where Top Public Listed Companies in Denmark in Banking & Financial Services participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "96",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "ddb2bdad-a8c4-51aa-b99e-ef52374b7f73",
+            "name": "Banking & Finance",
+            "slug": "finance"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://slrinvestmentcorp.com"
+        ],
+        [
+          "https://www.sks.com.tw"
+        ],
+        [
+          "https://www.sld-inc.com"
+        ],
+        [
+          "https://www.invtitle.com"
+        ],
+        [
+          "Sparekassen Sj\u00c3\u00a6lland-Fyn A/S"
+        ],
+        [
+          "Kreditbanken A/S"
+        ],
+        [
+          "Danske Bank A/S"
+        ],
+        [
+          "https://www.kddl.com"
+        ],
+        [
+          "https://www.cox-online.co.jp"
+        ],
+        [
+          "https://www.nousouken.co.jp"
+        ],
+        [
+          "https://www.aris-mining.com"
+        ],
+        [
+          "https://www.do.com.my"
+        ],
+        [
+          "https://www.restaurantbrands.co.nz"
+        ],
+        [
+          "Investeringsselskabet Luxor A/S"
+        ],
+        [
+          "https://www.roiserv.com"
+        ],
+        [
+          "https://www.senseonics.com"
+        ],
+        [
+          "Vestjysk Bank A/S"
+        ],
+        [
+          "M\u00c3\u00b8ns Bank A/S"
+        ],
+        [
+          "Spar Nord Bank A/S"
+        ],
+        [
+          "https://www.halliburton.com"
+        ],
+        [
+          "P/F BankNordik"
+        ],
+        [
+          "Danske Andelskassers Bank A/S"
+        ],
+        [
+          "Sydbank A/S"
+        ],
+        [
+          "Djurslands Bank A/S"
+        ],
+        [
+          "https://www.nfil.in"
+        ],
+        [
+          "https://www.hitech-develop.com"
+        ],
+        [
+          "Jyske Bank A/S"
+        ],
+        [
+          "Lollands Bank A/S"
+        ],
+        [
+          "https://www.shehfung.com"
+        ],
+        [
+          "Skjern Bank A/S"
+        ],
+        [
+          "Ringkj\u00c3\u00b8bing Landbobank A/S"
+        ],
+        [
+          "https://www.ardentec.com"
+        ],
+        [
+          "https://www.dexinfuwu.com"
+        ],
+        [
+          "Nordfyns Bank A/S"
+        ],
+        [
+          "https://www.seraku.co.jp"
+        ],
+        [
+          "https://www.yuering.com"
+        ],
+        [
+          "https://www.ost.com.tw"
+        ],
+        [
+          "Hvidbjerg Bank A/S"
+        ],
+        [
+          "https://www.paccurrent.com"
+        ],
+        [
+          "L\u00c3\u00a5n & Spar Bank A/S"
+        ],
+        [
+          "Fynske Bank A/S"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Biotechnology & Pharmaceuticals",
+      "content": "Events where Top Public Listed Companies in Denmark in Biotechnology & Pharmaceuticals participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "338",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "b97d648f-b1c6-513b-b4cf-8d4c749e7fb7",
+            "name": "Medical & Pharma",
+            "slug": "medical-pharma"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.admtronics.com"
+        ],
+        [
+          "IO Biotech Inc."
+        ],
+        [
+          "https://www.aconnic.com"
+        ],
+        [
+          "Orphazyme A/S"
+        ],
+        [
+          "Zealand Pharma A/S"
+        ],
+        [
+          "https://www.epiccor.com"
+        ],
+        [
+          "Pharma Equity Group A/S"
+        ],
+        [
+          "https://www.smartgroup.com.au"
+        ],
+        [
+          "Novo Nordisk A/S"
+        ],
+        [
+          "https://dbp.co.th"
+        ],
+        [
+          "https://www.bms.com"
+        ],
+        [
+          "https://www.dawnprene.com"
+        ],
+        [
+          "https://www.strax.com"
+        ],
+        [
+          "2cureX AB (publ)"
+        ],
+        [
+          "https://agigreenpac.com"
+        ],
+        [
+          "https://www.moensbank.dk"
+        ],
+        [
+          "https://www.goenkadiamonds.com"
+        ],
+        [
+          "https://www.gam.com"
+        ],
+        [
+          "Gubra A/S"
+        ],
+        [
+          "https://www.uni-president.com.tw"
+        ],
+        [
+          "Ascendis Pharma A/S"
+        ],
+        [
+          "Galecto Inc."
+        ],
+        [
+          "Initiator Pharma A/S"
+        ],
+        [
+          "https://www.shinwa-wise.com"
+        ],
+        [
+          "Saniona AB (publ)"
+        ],
+        [
+          "https://www.emergentbiosolutions.com"
+        ],
+        [
+          "https://www.cnweiming.com"
+        ],
+        [
+          "https://www.novonordisk.com"
+        ],
+        [
+          "https://www.grandbrilliancegroup.com"
+        ],
+        [
+          "https://mdiasbranco.com.br"
+        ],
+        [
+          "https://www.medipal.co.jp"
+        ],
+        [
+          "https://www.crcement.com"
+        ],
+        [
+          "https://www.irasia.com/listco/hk/lajin"
+        ],
+        [
+          "https://www.tunasalfin.com"
+        ],
+        [
+          "Genmab A/S"
+        ],
+        [
+          "https://www.nantex.com.tw"
+        ],
+        [
+          "https://www.doximity.com"
+        ],
+        [
+          "FluoGuide A/S"
+        ],
+        [
+          "ALK-Abell\u00c3\u00b3 A/S"
+        ],
+        [
+          "https://www.sinogasholdings.com"
+        ],
+        [
+          "Bavarian Nordic A/S"
+        ],
+        [
+          "Evaxion Biotech A/S"
+        ],
+        [
+          "Scandion Oncology A/S"
+        ],
+        [
+          "BioPorto A/S"
+        ],
+        [
+          "https://www.bandainamco.co.jp"
+        ],
+        [
+          "https://veloxenergymaterials.com.au"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Construction & Building",
+      "content": "Events where Top Public Listed Companies in Denmark in Construction & Building participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "46",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "bc9570ef-7418-56b6-9664-6fc68f86fbf1",
+            "name": "Building & Construction",
+            "slug": "building-construction"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Cadeler A/S"
+        ],
+        [
+          "https://www.bgyfw.com"
+        ],
+        [
+          "https://www.amiorganics.com"
+        ],
+        [
+          "Per Aarsleff Holding A/S"
+        ],
+        [
+          "H+H International A/S"
+        ],
+        [
+          "https://www.mienergy.com.cn"
+        ],
+        [
+          "https://www.nihon-ma.co.jp"
+        ],
+        [
+          "https://www.steelcase.com"
+        ],
+        [
+          "Rockwool A/S"
+        ],
+        [
+          "MT H\u00c3\u00b8jgaard Holding A/S"
+        ],
+        [
+          "https://asiro.co.jp"
+        ],
+        [
+          "https://www.ispg.hk"
+        ],
+        [
+          "HusCompagniet A/S"
+        ],
+        [
+          "RIAS A/S"
+        ],
+        [
+          "https://www.tsudakoma.co.jp"
+        ],
+        [
+          "https://www.redwall.com.cn"
+        ],
+        [
+          "https://www.pgvt.cn"
+        ],
+        [
+          "WindowMaster International A/S"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Industrial Machinery",
+      "content": "Events where Top Public Listed Companies in Denmark in Industrial Machinery participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "39",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "4df15939-8144-5507-ae87-cf491580699e",
+            "name": "Industrial Engineering",
+            "slug": "engineering"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://modernmills.com.sa"
+        ],
+        [
+          "https://www.kanmonkai.co.jp"
+        ],
+        [
+          "https://seer-corp.com"
+        ],
+        [
+          "NTR Holding A/S"
+        ],
+        [
+          "https://www.viskase.com"
+        ],
+        [
+          "https://www.enquest.com"
+        ],
+        [
+          "https://www.dkkk.co.jp"
+        ],
+        [
+          "Vestas Wind Systems A/S"
+        ],
+        [
+          "https://www.linius.com"
+        ],
+        [
+          "https://www.lavrasgold.com"
+        ],
+        [
+          "Hydract A/S"
+        ],
+        [
+          "NKT A/S"
+        ],
+        [
+          "https://www.sobanco.com"
+        ],
+        [
+          "https://kaihan.jp"
+        ],
+        [
+          "https://www.t-robotics.net"
+        ],
+        [
+          "https://www.sankogosei.co.jp"
+        ],
+        [
+          "Brd. Klee A/S"
+        ],
+        [
+          "Glunz & Jensen Holding A/S"
+        ],
+        [
+          "Nilfisk Holding A/S"
+        ],
+        [
+          "FLSmidth & Co. A/S"
+        ],
+        [
+          "Roblon A/S"
+        ],
+        [
+          "https://kwantaieng.com"
+        ],
+        [
+          "LED iBond International A/S"
+        ],
+        [
+          "FOM Technologies A/S"
+        ],
+        [
+          "https://www.coteminas.com.br"
+        ],
+        [
+          "https://www.mitsubishisteel.co.jp"
+        ],
+        [
+          "https://www.duro.com.tw"
+        ],
+        [
+          "SKAKO A/S"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Medical Technology",
+      "content": "Events where Top Public Listed Companies in Denmark in Medical Technology participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "24",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "b97d648f-b1c6-513b-b4cf-8d4c749e7fb7",
+            "name": "Medical & Pharma",
+            "slug": "medical-pharma"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.sunseagroup.com"
+        ],
+        [
+          "https://www.beeksgroup.com"
+        ],
+        [
+          "https://www.ldjt.com.cn"
+        ],
+        [
+          "GN Store Nord A/S"
+        ],
+        [
+          "https://elevationoncology.com"
+        ],
+        [
+          "https://www.theil.com"
+        ],
+        [
+          "https://jna.co.jp"
+        ],
+        [
+          "https://www.ronglian.com"
+        ],
+        [
+          "ViroGates A/S"
+        ],
+        [
+          "Demant A/S"
+        ],
+        [
+          "ChemoMetec A/S"
+        ],
+        [
+          "https://www.qingdao-port.com"
+        ],
+        [
+          "https://www.intageholdings.co.jp"
+        ],
+        [
+          "Scandinavian Medical Solutions A/S"
+        ],
+        [
+          "Coloplast A/S"
+        ],
+        [
+          "https://www.tnb.com.my"
+        ],
+        [
+          "Ambu A/S"
+        ],
+        [
+          "https://www.kalpataruprojects.com"
+        ],
+        [
+          "https://www.jamco.co.jp"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Real Estate",
+      "content": "Events where Top Public Listed Companies in Denmark in Real Estate participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "82",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "bc9570ef-7418-56b6-9664-6fc68f86fbf1",
+            "name": "Building & Construction",
+            "slug": "building-construction"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.hk01682.com"
+        ],
+        [
+          "https://www.marstonspubs.co.uk"
+        ],
+        [
+          "Cemat A/S"
+        ],
+        [
+          "https://www.synthomer.com"
+        ],
+        [
+          "Copenhagen Capital A/S"
+        ],
+        [
+          "https://www.cayennetech.com.tw"
+        ],
+        [
+          "Movinn A/S"
+        ],
+        [
+          "https://www.heidelberg.com"
+        ],
+        [
+          "https://www.synlait.com"
+        ],
+        [
+          "https://satellos.com"
+        ],
+        [
+          "https://www.semlerscientific.com"
+        ],
+        [
+          "EgnsINVEST Ejendomme Tyskland A/S"
+        ],
+        [
+          "https://seacormarine.com"
+        ],
+        [
+          "https://www.bluenord.com"
+        ],
+        [
+          "Jeudan A/S"
+        ],
+        [
+          "Fast Ejendom Danmark A/S"
+        ],
+        [
+          "Agat Ejendomme A/S"
+        ],
+        [
+          "German High Street Properties A/S"
+        ],
+        [
+          "Park Street A/S"
+        ],
+        [
+          "Swiss Properties Invest A/S"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Denmark in Software",
+      "content": "Events where Top Public Listed Companies in Denmark in Software participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "27",
+      "filterValue": {
+        "country": [
+          {
+            "id": "eb333045-ffcb-5da4-a8c9-28ad49584981",
+            "name": "Denmark",
+            "displayName": "Denmark",
+            "locationType": "COUNTRY",
+            "latitude": "55.9633978748347",
+            "longitude": "10.0462968058278",
+            "iso": "DK"
+          }
+        ],
+        "category": [
+          {
+            "id": "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+            "name": "IT & Technology",
+            "slug": "technology"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Better Collective A/S"
+        ],
+        [
+          "Penneo A/S"
+        ],
+        [
+          "Loyal Solutions A/S"
+        ],
+        [
+          "cBrain A/S"
+        ],
+        [
+          "OrderYOYO A/S"
+        ],
+        [
+          "https://www.zignsec.com"
+        ],
+        [
+          "Nexcom A/S"
+        ],
+        [
+          "https://www.sichuanhongda.com"
+        ],
+        [
+          "https://www.firstottawa.com"
+        ],
+        [
+          "Shape Robotics A/S"
+        ],
+        [
+          "https://www.altoneuroscience.com"
+        ],
+        [
+          "Impero A/S"
+        ],
+        [
+          "https://www.apstar.com"
+        ],
+        [
+          "Konsolidator A/S"
+        ],
+        [
+          "https://www.vitura.fr"
+        ],
+        [
+          "https://digiasia.asia"
+        ],
+        [
+          "Agillic A/S"
+        ],
+        [
+          "RISMA Systems A/S"
+        ],
+        [
+          "Conferize A/S"
+        ],
+        [
+          "FastPassCorp A/S"
+        ],
+        [
+          "https://www.smb-t.com"
+        ],
+        [
+          "https://www.atlam.com"
+        ],
+        [
+          "https://www.proton-motor.com"
+        ],
+        [
+          "https://www.thb.bank/about-us/empire-bancshares-inc"
+        ],
+        [
+          "DecideAct A/S"
+        ],
+        [
+          "https://www.nanosonics.com.au"
+        ],
+        [
+          "https://www.superlon.com.my"
+        ],
+        [
+          "https://www.famoustech.com.hk"
+        ],
+        [
+          "Mapspeople A/S"
+        ],
+        [
+          "https://www.guzmanygomez.com.au"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Finland",
+      "content": "Events where Top Public Listed Companies in Finland participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "574",
+      "filterValue": {
+        "country": [
+          {
+            "id": "99d6524b-faf2-547f-81fa-2f06986ea21e",
+            "name": "Finland",
+            "displayName": "Finland",
+            "locationType": "COUNTRY",
+            "latitude": "62.7777539652943",
+            "longitude": "26.199539005192",
+            "iso": "FI"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Kemira Oyj"
+        ],
+        [
+          "https://www.neste.com"
+        ],
+        [
+          "Cargotec Corporation"
+        ],
+        [
+          "KONE Oyj"
+        ],
+        [
+          "https://www.wartsila.com"
+        ],
+        [
+          "https://www.qt.io"
+        ],
+        [
+          "Metso Outotec Oyj"
+        ],
+        [
+          "https://www.tietoevry.com"
+        ],
+        [
+          "Fortum Oyj"
+        ],
+        [
+          "https://www.fortum.com"
+        ],
+        [
+          "Nordea Bank Abp"
+        ],
+        [
+          "UPM-Kymmene Oyj"
+        ],
+        [
+          "https://www.orion.fi"
+        ],
+        [
+          "https://www.konecranes.com"
+        ],
+        [
+          "https://www.amersports.com"
+        ],
+        [
+          "https://www.storaenso.com"
+        ],
+        [
+          "https://www.huhtamaki.com"
+        ],
+        [
+          "https://www.upm.com"
+        ],
+        [
+          "Metso Oyj"
+        ],
+        [
+          "Stora Enso Oyj"
+        ],
+        [
+          "Qt Group Oyj"
+        ],
+        [
+          "https://www.sampo.com"
+        ],
+        [
+          "https://www.kone.com"
+        ],
+        [
+          "Nokia Oyj"
+        ],
+        [
+          "https://www.kemira.com"
+        ],
+        [
+          "https://www.metso.com/"
+        ],
+        [
+          "https://www.valmet.com"
+        ],
+        [
+          "Huhtam\u00c3\u00a4ki Oyj"
+        ],
+        [
+          "Kesko Oyj"
+        ],
+        [
+          "TietoEVRY Oyj"
+        ],
+        [
+          "https://elisa.com"
+        ],
+        [
+          "Sampo Oyj"
+        ],
+        [
+          "Neste Oyj"
+        ],
+        [
+          "Orion Oyj"
+        ],
+        [
+          "W\u00c3\u00a4rtsil\u00c3\u00a4 Oyj Abp"
+        ],
+        [
+          "Konecranes Plc"
+        ],
+        [
+          "https://www.nokia.com"
+        ],
+        [
+          "https://www.nordea.com"
+        ],
+        [
+          "Valmet Oyj"
+        ],
+        [
+          "https://www.cargotec.com"
+        ],
+        [
+          "Elisa Oyj"
+        ],
+        [
+          "https://www.kesko.fi"
+        ],
+        [
+          "Amer Sports Inc."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Finland in Construction & Building",
+      "content": "Events where Top Public Listed Companies in Finland in Construction & Building participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "39",
+      "filterValue": {
+        "country": [
+          {
+            "id": "99d6524b-faf2-547f-81fa-2f06986ea21e",
+            "name": "Finland",
+            "displayName": "Finland",
+            "locationType": "COUNTRY",
+            "latitude": "62.7777539652943",
+            "longitude": "26.199539005192",
+            "iso": "FI"
+          }
+        ],
+        "category": [
+          {
+            "id": "bc9570ef-7418-56b6-9664-6fc68f86fbf1",
+            "name": "Building & Construction",
+            "slug": "building-construction"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.sagerx.com"
+        ],
+        [
+          "Tulikivi Corporation"
+        ],
+        [
+          "https://www.saleeprinting.com"
+        ],
+        [
+          "https://www.sidneyresources.com"
+        ],
+        [
+          "Purmo Group Oyj"
+        ],
+        [
+          "Etteplan Oyj"
+        ],
+        [
+          "https://www.nephros.com"
+        ],
+        [
+          "SRV Yhti\u00c3\u00b6t Oyj"
+        ],
+        [
+          "Honkarakenne Oyj"
+        ],
+        [
+          "https://www.emgs.com"
+        ],
+        [
+          "https://www.virtra.com"
+        ],
+        [
+          "https://cglimited.com.au"
+        ],
+        [
+          "https://www.freelancer.com"
+        ],
+        [
+          "YIT Oyj"
+        ],
+        [
+          "Sitowise Group Oyj"
+        ],
+        [
+          "https://www.cirgroup.it"
+        ],
+        [
+          "https://www.edap-tms.com"
+        ],
+        [
+          "Consti Oyj"
+        ],
+        [
+          "Kreate Group Oyj"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Finland in Industrial Machinery",
+      "content": "Events where Top Public Listed Companies in Finland in Industrial Machinery participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "66",
+      "filterValue": {
+        "country": [
+          {
+            "id": "99d6524b-faf2-547f-81fa-2f06986ea21e",
+            "name": "Finland",
+            "displayName": "Finland",
+            "locationType": "COUNTRY",
+            "latitude": "62.7777539652943",
+            "longitude": "26.199539005192",
+            "iso": "FI"
+          }
+        ],
+        "category": [
+          {
+            "id": "4df15939-8144-5507-ae87-cf491580699e",
+            "name": "Industrial Engineering",
+            "slug": "engineering"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Kempower Oyj"
+        ],
+        [
+          "Reka Industrial Oyj"
+        ],
+        [
+          "Glaston Oyj Abp"
+        ],
+        [
+          "https://elekta.com"
+        ],
+        [
+          "https://www.olymvax.com"
+        ],
+        [
+          "KONE Oyj"
+        ],
+        [
+          "https://www.chemiphar.co.jp"
+        ],
+        [
+          "https://omegatherapeutics.com"
+        ],
+        [
+          "https://www.blooberteam.com"
+        ],
+        [
+          "https://www.kehua.com.cn"
+        ],
+        [
+          "https://www.tasmanresources.com.au"
+        ],
+        [
+          "https://www.upsales.com"
+        ],
+        [
+          "https://diadrom.se"
+        ],
+        [
+          "https://www.solitrondevices.com"
+        ],
+        [
+          "Tamtron Group Oyj"
+        ],
+        [
+          "https://www.eastwestbank.com"
+        ],
+        [
+          "Raute Oyj"
+        ],
+        [
+          "W\u00c3\u00a4rtsil\u00c3\u00a4 Oyj Abp"
+        ],
+        [
+          "Elecster Oyj"
+        ],
+        [
+          "https://www.pacificalliancebank.com"
+        ],
+        [
+          "Valmet Oyj"
+        ],
+        [
+          "https://property.picc.com"
+        ],
+        [
+          "Scanfil Oyj"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Finland in Software",
+      "content": "Events where Top Public Listed Companies in Finland in Software participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "17",
+      "filterValue": {
+        "country": [
+          {
+            "id": "99d6524b-faf2-547f-81fa-2f06986ea21e",
+            "name": "Finland",
+            "displayName": "Finland",
+            "locationType": "COUNTRY",
+            "latitude": "62.7777539652943",
+            "longitude": "26.199539005192",
+            "iso": "FI"
+          }
+        ],
+        "category": [
+          {
+            "id": "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+            "name": "IT & Technology",
+            "slug": "technology"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "QPR Software Oyj"
+        ],
+        [
+          "https://www.atende.pl"
+        ],
+        [
+          "https://www.marvelgold.com.au"
+        ],
+        [
+          "SSH Communications Security Oyj"
+        ],
+        [
+          "https://www.bioforceeclipse.com"
+        ],
+        [
+          "https://www.mynaric.com"
+        ],
+        [
+          "https://www.alicoinc.com"
+        ],
+        [
+          "Lemonsoft Oyj"
+        ],
+        [
+          "https://titomic.com"
+        ],
+        [
+          "https://freegoldventures.com"
+        ],
+        [
+          "Digitalist Group Plc"
+        ],
+        [
+          "https://colonialfed.com"
+        ],
+        [
+          "https://www.fleetwoodbank.com"
+        ],
+        [
+          "https://www.condorgold.com"
+        ],
+        [
+          "https://www.goldenocean.bm"
+        ],
+        [
+          "https://www.wetzel.com.br"
+        ],
+        [
+          "Qt Group Oyj"
+        ],
+        [
+          "https://www.renoworks.com"
+        ],
+        [
+          "WithSecure Oyj"
+        ],
+        [
+          "https://www.okwind.fr"
+        ],
+        [
+          "https://eledon.com"
+        ],
+        [
+          "Tecnotree Oyj"
+        ],
+        [
+          "Innofactor Oyj"
+        ],
+        [
+          "Heeros Oyj"
+        ],
+        [
+          "LeadDesk Oy"
+        ],
+        [
+          "Admicom Oyj"
+        ],
+        [
+          "Witted Megacorp Oyj"
+        ],
+        [
+          "Vincit Oyj"
+        ],
+        [
+          "https://www.tk.co.th"
+        ],
+        [
+          "F-Secure Oyj"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in Finland in Telecommunications",
+      "content": "Events where Top Public Listed Companies in Finland in Telecommunications participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "143",
+      "filterValue": {
+        "country": [
+          {
+            "id": "99d6524b-faf2-547f-81fa-2f06986ea21e",
+            "name": "Finland",
+            "displayName": "Finland",
+            "locationType": "COUNTRY",
+            "latitude": "62.7777539652943",
+            "longitude": "26.199539005192",
+            "iso": "FI"
+          }
+        ],
+        "category": [
+          {
+            "id": "891d0abb-d06b-5208-b95b-839b7e3f0696",
+            "name": "Telecommunication",
+            "slug": "telecommunication"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Teleste Corporation"
+        ],
+        [
+          "https://www.nokia.com"
+        ],
+        [
+          "https://josapar.com.br"
+        ],
+        [
+          "Nokia Oyj"
+        ],
+        [
+          "https://www.powersemi.cc"
+        ],
+        [
+          "https://www.citic.com"
+        ],
+        [
+          "https://www.skyworth.com"
+        ],
+        [
+          "https://www.rbi.com"
+        ],
+        [
+          "Elisa Oyj"
+        ],
+        [
+          "https://lynasrareearths.com"
+        ],
+        [
+          "https://www.dl-kg.com"
+        ],
+        [
+          "Bittium Oyj"
+        ],
+        [
+          "https://www.firstenergycorp.com"
+        ],
+        [
+          "https://www.netgem.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France",
+      "content": "Events where Top Public Listed Companies in France participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1312",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": []
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Safran SA"
+        ],
+        [
+          "L'Air Liquide S.A."
+        ],
+        [
+          "https://www.essilorluxottica.com"
+        ],
+        [
+          "https://group.bnpparibas"
+        ],
+        [
+          "Schneider Electric S.E."
+        ],
+        [
+          "https://www.totalenergies.com"
+        ],
+        [
+          "Vinci SA"
+        ],
+        [
+          "Herm\u00c3\u00a8s International Soci\u00c3\u00a9t\u00c3\u00a9 en commandite par actions"
+        ],
+        [
+          "Hermes International SA"
+        ],
+        [
+          "EssilorLuxottica Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.lvmh.com"
+        ],
+        [
+          "Compagnie de Saint-Gobain S.A."
+        ],
+        [
+          "Cr\u00c3\u00a9dit Agricole S.A."
+        ],
+        [
+          "https://www.safran-group.com"
+        ],
+        [
+          "Solocal Group S.A."
+        ],
+        [
+          "https://www.sanofi.com"
+        ],
+        [
+          "LVMH Mo\u00c3\u00abt Hennessy - Louis Vuitton Soci\u00c3\u00a9t\u00c3\u00a9 Europ\u00c3\u00a9enne"
+        ],
+        [
+          "https://www.saint-gobain.com"
+        ],
+        [
+          "https://www.vinci.com"
+        ],
+        [
+          "https://www.credit-agricole.com"
+        ],
+        [
+          "Danone S.A."
+        ],
+        [
+          "https://www.dior-finance.com"
+        ],
+        [
+          "https://www.loreal.com"
+        ],
+        [
+          "https://www.solocal.com"
+        ],
+        [
+          "TotalEnergies SE"
+        ],
+        [
+          "https://www.axa.com"
+        ],
+        [
+          "L'Or\u00c3\u00a9al S.A."
+        ],
+        [
+          "Sanofi"
+        ],
+        [
+          "https://www.3ds.com"
+        ],
+        [
+          "Christian Dior SE"
+        ],
+        [
+          "https://www.se.com"
+        ],
+        [
+          "BNP Paribas SA"
+        ],
+        [
+          "https://finance.hermes.com"
+        ],
+        [
+          "https://www.airliquide.com"
+        ],
+        [
+          "AXA SA"
+        ],
+        [
+          "Dassault Syst\u00c3\u00a8mes SE"
+        ],
+        [
+          "https://www.danone.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Aerospace & Defense",
+      "content": "Events where Top Public Listed Companies in France in Aerospace & Defense participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "190",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "3dc4b0f9-bc00-5862-8227-2f19a8569fd4",
+            "name": "Security & Defense",
+            "slug": "security"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Safran SA"
+        ],
+        [
+          "https://www.international-petroleum.com"
+        ],
+        [
+          ""
+        ],
+        [
+          "Dassault Aviation Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Lisi S.A."
+        ],
+        [
+          "Exail Technologies"
+        ],
+        [
+          "https://sansera.in"
+        ],
+        [
+          "https://www.nuburu.net"
+        ],
+        [
+          "https://www.mestek.com"
+        ],
+        [
+          "Verney-Carron S.A."
+        ],
+        [
+          "https://www.taiwansemi.com"
+        ],
+        [
+          "Groupe Gorg\u00c3\u00a9 SA"
+        ],
+        [
+          "https://www.yohohongkong.com"
+        ],
+        [
+          "https://www.fmbankva.com"
+        ],
+        [
+          "Sogeclair SA"
+        ],
+        [
+          "https://www.enphants.com"
+        ],
+        [
+          "Thales S.A."
+        ],
+        [
+          "https://www.pokarna.com"
+        ],
+        [
+          "https://www.starfinancial.com"
+        ],
+        [
+          "https://www.peakrareearths.com"
+        ],
+        [
+          "Delta Drone SA"
+        ],
+        [
+          "https://www.viciproperties.com"
+        ],
+        [
+          "Lat\u00c3\u00a9co\u00c3\u00a8re S.A."
+        ],
+        [
+          "https://www.boeing.com"
+        ],
+        [
+          "Figeac Aero Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Asset & Wealth Management",
+      "content": "Events where Top Public Listed Companies in France in Asset & Wealth Management participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "203",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "ddb2bdad-a8c4-51aa-b99e-ef52374b7f73",
+            "name": "Banking & Finance",
+            "slug": "finance"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.asosplc.com"
+        ],
+        [
+          "https://www.atricure.com"
+        ],
+        [
+          "ABC arbitrage SA"
+        ],
+        [
+          ""
+        ],
+        [
+          "Crypto Blockchain Industries"
+        ],
+        [
+          "Antin Infrastructure Partners S.A."
+        ],
+        [
+          "Compagnie du Cambodge"
+        ],
+        [
+          "Altamir SCA"
+        ],
+        [
+          "https://www.rasaco.co.jp"
+        ],
+        [
+          "IDI"
+        ],
+        [
+          "https://www.sbcap.com/silverbox-corp-iii"
+        ],
+        [
+          "Tikehau Capital"
+        ],
+        [
+          "Bourse Direct SA"
+        ],
+        [
+          "https://www.macnica.com/apac/galaxy/en"
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 des Chemins de Fer et Tramways du Var et du Gard"
+        ],
+        [
+          "https://www.standex.com"
+        ],
+        [
+          "https://www.mitsui-kinzoku.com"
+        ],
+        [
+          "https://www.nymtrust.com"
+        ],
+        [
+          "Amundi S.A."
+        ],
+        [
+          "https://daiken-iki.co.jp"
+        ],
+        [
+          "https://www.hometom.com.tw"
+        ],
+        [
+          "Compagnie des Tramways de Rouen"
+        ],
+        [
+          "Eurazeo SE"
+        ],
+        [
+          "https://www.abrdn.com"
+        ],
+        [
+          "https://www.topoint.tw"
+        ],
+        [
+          "Wendel"
+        ],
+        [
+          "Courbet Sa"
+        ],
+        [
+          "https://www.marex.com"
+        ],
+        [
+          "https://www.optimushealthcare.com"
+        ],
+        [
+          "Electricit\u00c3\u00a9 et Eaux de Madagascar Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.mihomes.com"
+        ],
+        [
+          "https://www.css-holdings.jp"
+        ],
+        [
+          "https://www.cpanel.co.th"
+        ],
+        [
+          "https://www.wangon.com"
+        ],
+        [
+          "https://www.starcobrands.com"
+        ],
+        [
+          "Compagnie Lebon"
+        ],
+        [
+          "https://www.chunlaiedu.com"
+        ],
+        [
+          "https://www.firstgroupplc.com"
+        ],
+        [
+          "Audacia Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://goldterracorp.com"
+        ],
+        [
+          "https://www.chinafxkj.com"
+        ],
+        [
+          "https://www.cibus.com"
+        ],
+        [
+          "Peugeot Invest Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "AMTD IDEA Group"
+        ],
+        [
+          "https://www.djerri.com.au"
+        ],
+        [
+          "VIEL & Cie soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://collectiveaudience.co"
+        ],
+        [
+          "Euroland Corporate Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Amundi"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Automotive",
+      "content": "Events where Top Public Listed Companies in France in Automotive participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "64",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "1c4d2f34-e5c5-58bc-a751-333c6010744d",
+            "name": "Auto & Automotive",
+            "slug": "automotive"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          ""
+        ],
+        [
+          "Groupe Parot SA"
+        ],
+        [
+          "https://www.ezgotech.com.cn"
+        ],
+        [
+          "https://www.artisanal-spirits.com"
+        ],
+        [
+          "AKWEL"
+        ],
+        [
+          "https://www.notionvtec.com"
+        ],
+        [
+          "ACTIA Group S.A."
+        ],
+        [
+          "Renault SA"
+        ],
+        [
+          "https://www.greentownchina.com"
+        ],
+        [
+          "https://www.ovhcloud.com"
+        ],
+        [
+          "Fountaine Pajot Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "OPMOBILITY"
+        ],
+        [
+          "https://www.globalbiochem.com"
+        ],
+        [
+          "https://www.ares.com.tw"
+        ],
+        [
+          "https://www.sinoer.com"
+        ],
+        [
+          "https://corp.bonjourhk.com"
+        ],
+        [
+          "https://www.wolwobiotech.com"
+        ],
+        [
+          "https://www.bluestem.com"
+        ],
+        [
+          "https://www.sleepcountry.ca"
+        ],
+        [
+          "https://www.biomarin.com"
+        ],
+        [
+          "Forvia SE"
+        ],
+        [
+          "Delfingen Industry S.A."
+        ],
+        [
+          "Aramis Group SAS"
+        ],
+        [
+          "https://www.abcoenergy.com"
+        ],
+        [
+          "https://www.sante.com.cn"
+        ],
+        [
+          "L Agence Automobiliere"
+        ],
+        [
+          "https://www.kader.com.hk"
+        ],
+        [
+          "Trigano S.A."
+        ],
+        [
+          "https://www.cassiusmining.com"
+        ],
+        [
+          "Burelle SA"
+        ],
+        [
+          "https://www.imaginelithium.com"
+        ],
+        [
+          "https://galectintherapeutics.com"
+        ],
+        [
+          "Ardoin ST Amand A"
+        ],
+        [
+          "https://vobile.com"
+        ],
+        [
+          "https://www.demco.co.th"
+        ],
+        [
+          "https://www.touchstoneexploration.com"
+        ],
+        [
+          "Gaussin SA"
+        ],
+        [
+          "SA Catana Group"
+        ],
+        [
+          "https://www.kimou.com.cn"
+        ],
+        [
+          "Faurecia S.E."
+        ],
+        [
+          "Plastiques du Val de Loire"
+        ],
+        [
+          "B\u00c3\u00a9n\u00c3\u00a9teau S.A."
+        ],
+        [
+          "Valeo SE"
+        ],
+        [
+          "Hopium SA"
+        ],
+        [
+          "https://www.quoruminformationsystems.com"
+        ],
+        [
+          "https://www.alarpharm.com"
+        ],
+        [
+          "Navya SA"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Banking & Financial Services",
+      "content": "Events where Top Public Listed Companies in France in Banking & Financial Services participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "130",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "ddb2bdad-a8c4-51aa-b99e-ef52374b7f73",
+            "name": "Banking & Finance",
+            "slug": "finance"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.aurora.co.th"
+        ],
+        [
+          "https://www.chiyodacorp.com"
+        ],
+        [
+          "https://www.bakkavor.com"
+        ],
+        [
+          "https://www.sunwoda.com"
+        ],
+        [
+          "https://www.necap.co.jp"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Nord de France Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "https://www.deutsche-euroshop.de"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel du Languedoc Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel de Normandie-Seine Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "https://www.wowfactor.co.th"
+        ],
+        [
+          "Cr\u00c3\u00a9dit Agricole S.A."
+        ],
+        [
+          "https://www.zhg.co.il"
+        ],
+        [
+          "https://www.bigcommerce.com"
+        ],
+        [
+          "Caisse r\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Loire Haute-Loire - Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "Caisse Regionale de Credit Agricole Mutuel Toulouse 31"
+        ],
+        [
+          "https://www.jcrpharm.co.jp"
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 G\u00c3\u00a9n\u00c3\u00a9rale Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.cryoportinc.com"
+        ],
+        [
+          "Caisse r\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Atlantique Vend\u00c3\u00a9e"
+        ],
+        [
+          "https://www.heinekenholding.com"
+        ],
+        [
+          "https://www.brockhaus-technologies.com/en"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel de Paris et d'Ile-de-France"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole du Morbihan"
+        ],
+        [
+          "https://www.ctsystem.com"
+        ],
+        [
+          "https://www.cavendish.com"
+        ],
+        [
+          "Groupe Carnivor Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.yuyu.co.kr"
+        ],
+        [
+          "Caisse r\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel d'Ille-et-Vilaine Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel de La Touraine et du Poitou Soci\u00c3\u00a9t\u00c3\u00a9 Coop\u00c3\u00a9rative"
+        ],
+        [
+          "https://www.bt.com"
+        ],
+        [
+          "https://www.lipum.se"
+        ],
+        [
+          "https://www.ranpak.com"
+        ],
+        [
+          "BNP Paribas SA"
+        ],
+        [
+          "https://www.agtslots.com"
+        ],
+        [
+          "https://beyond.com"
+        ],
+        [
+          "https://www.ubtrobot.com"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Sud Rh\u00c3\u00b4ne Alpes"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Brie Picardie Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ],
+        [
+          "Caisse R\u00c3\u00a9gionale de Cr\u00c3\u00a9dit Agricole Mutuel Alpes Provence Soci\u00c3\u00a9t\u00c3\u00a9 coop\u00c3\u00a9rative"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Biotechnology & Pharmaceuticals",
+      "content": "Events where Top Public Listed Companies in France in Biotechnology & Pharmaceuticals participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "162",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "b97d648f-b1c6-513b-b4cf-8d4c749e7fb7",
+            "name": "Medical & Pharma",
+            "slug": "medical-pharma"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.terramin.com.au"
+        ],
+        [
+          "GenSight Biologics S.A."
+        ],
+        [
+          "https://www.atipt.com"
+        ],
+        [
+          "genOway Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.noumi.com.au"
+        ],
+        [
+          "https://website.energyintinv.wisdomir.com"
+        ],
+        [
+          "Lumibird SA"
+        ],
+        [
+          "https://www.razor-labs.com"
+        ],
+        [
+          "https://www.tenpao.com"
+        ],
+        [
+          "https://www.sinogolf.com"
+        ],
+        [
+          "https://www.kingmaker-footwear.com"
+        ],
+        [
+          "DBV Technologies S.A."
+        ],
+        [
+          "https://www.lslps.co.uk"
+        ],
+        [
+          "https://www.sdi.com.au"
+        ],
+        [
+          "https://www.saratovenergo.ru"
+        ],
+        [
+          "https://www.totallyplc.com"
+        ],
+        [
+          "https://www.ynhb.com.my"
+        ],
+        [
+          "https://www.ctilogistics.com"
+        ],
+        [
+          "https://www.novoresources.com"
+        ],
+        [
+          "https://www.dynaresource.com"
+        ],
+        [
+          "https://www.monopartx.com"
+        ],
+        [
+          "Nicox S.A."
+        ],
+        [
+          "bioM\u00c3\u00a9rieux S.A."
+        ],
+        [
+          "https://www.renheng.com"
+        ],
+        [
+          "https://www.brookside-energy.com.au"
+        ],
+        [
+          "Nanobiotix S.A."
+        ],
+        [
+          "https://skkynet.com"
+        ],
+        [
+          "Transgene SA"
+        ],
+        [
+          "https://www.pgim.com/pgim-investments/investments-products/closed-end-funds/fund-profile/pgim-high-yield-bond-fund"
+        ],
+        [
+          "https://www.corline.se"
+        ],
+        [
+          "Eurofins-Cerep SA"
+        ],
+        [
+          "PHAXIAM Therapeutics S.A."
+        ],
+        [
+          "https://www.freseniusmedicalcare.com"
+        ],
+        [
+          "https://www.rivercitybank.com"
+        ],
+        [
+          "https://www.datacm.com"
+        ],
+        [
+          "Sensorion SA"
+        ],
+        [
+          "https://www.eqresources.com.au"
+        ],
+        [
+          "https://www.heritagebank.org"
+        ],
+        [
+          "ABIVAX Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Advicenne S.A."
+        ],
+        [
+          "https://bioxyne.com"
+        ],
+        [
+          "https://theandhrasugars.com"
+        ],
+        [
+          "https://www.kasetbrand.co.th"
+        ],
+        [
+          "Cellectis S.A."
+        ],
+        [
+          "https://mandalayresources.com"
+        ],
+        [
+          "https://www.casinotrac.com"
+        ],
+        [
+          "Aelis Farma SA"
+        ],
+        [
+          "https://www.enorama.se"
+        ],
+        [
+          "OSE Immunotherapeutics SA"
+        ],
+        [
+          "https://www.cryptoflowhk.com"
+        ],
+        [
+          "https://medicaldev.com"
+        ],
+        [
+          "https://www.babylonpumpandpower.com"
+        ],
+        [
+          "FERMENTALG"
+        ],
+        [
+          "https://www.tnbank.com"
+        ],
+        [
+          "Plant Advanced Technologies SA"
+        ],
+        [
+          "https://americanrealtyinvest.com"
+        ],
+        [
+          "https://www.landsea.hk"
+        ],
+        [
+          "NFL Biosciences SA"
+        ],
+        [
+          "https://www.cnfrh.com"
+        ],
+        [
+          "https://www.tiange.com"
+        ],
+        [
+          "https://greenfirst.ca"
+        ],
+        [
+          "Innate Pharma S.A."
+        ],
+        [
+          "Adocia SA"
+        ],
+        [
+          "https://www.kier.co.uk"
+        ],
+        [
+          "https://www.blackstone.com/the-firm/asset-management/registered-funds#c=blackstone-gso-senior-floating-rate-term-fund&t=Fact+Sheet"
+        ],
+        [
+          "Valerio Therapeutics Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Predilife S.A."
+        ],
+        [
+          "Valneva SE"
+        ],
+        [
+          "https://www.coolpointinnonism.com"
+        ],
+        [
+          "https://www.reconafrica.com"
+        ],
+        [
+          "ABIONYX Pharma SA"
+        ],
+        [
+          "MaaT Pharma SA"
+        ],
+        [
+          "MedinCell S.A."
+        ],
+        [
+          "Valbiotis SA"
+        ],
+        [
+          "Abivax SA American Depositary Shares"
+        ],
+        [
+          "Poxel S.A."
+        ],
+        [
+          "https://www.gca.com.hk"
+        ],
+        [
+          "https://www.qwamplify.com"
+        ],
+        [
+          "Inventiva S.A."
+        ],
+        [
+          "Genfit S.A."
+        ],
+        [
+          "https://www.blackrock.co.uk/intermediaries/products/investment-trust/blackrock-frontiers-investment-trust"
+        ],
+        [
+          "https://corporate.cppgroup.com"
+        ],
+        [
+          "https://filtronic.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Business Services",
+      "content": "Events where Top Public Listed Companies in France in Business Services participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "110",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "9778e936-2ccf-5c2b-a5ed-6cdefcd2deb2",
+            "name": "Business Services",
+            "slug": "business-consultancy"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.quantum-software.com"
+        ],
+        [
+          "https://www.zkoph.com"
+        ],
+        [
+          "https://www.freehillmining.com"
+        ],
+        [
+          "Societe De Conseil En Externalisation Et En Marketing Internet Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.evi-ind.com"
+        ],
+        [
+          "https://www.exro.com"
+        ],
+        [
+          "https://recyclico.com"
+        ],
+        [
+          "Pluxee N.V."
+        ],
+        [
+          "Umalis Group"
+        ],
+        [
+          "Grenobloise d'Electronique et d'Automatismes Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Touax SCA"
+        ],
+        [
+          "Teleperformance SE"
+        ],
+        [
+          "Catering International & Services Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Freelance.com SA"
+        ],
+        [
+          "https://www.koyou.co.jp"
+        ],
+        [
+          "DLSI"
+        ],
+        [
+          "https://www.brightstarresources.com.au"
+        ],
+        [
+          "https://www.wavelock-holdings.com"
+        ],
+        [
+          "https://www.bleecker.fr"
+        ],
+        [
+          "https://microba.com"
+        ],
+        [
+          "https://www.mbmr.com.my"
+        ],
+        [
+          "https://rechargemetals.com.au"
+        ],
+        [
+          "Trilogiq S.A."
+        ],
+        [
+          "https://www.comarch.com"
+        ],
+        [
+          "https://www.hiclearance.com.tw"
+        ],
+        [
+          "https://www.tensho-plastic.co.jp"
+        ],
+        [
+          "Fiducial Office Solutions"
+        ],
+        [
+          "Phone Web SA"
+        ],
+        [
+          "https://www.digvijaycement.com"
+        ],
+        [
+          "Alan Allman Associates"
+        ],
+        [
+          "https://www.sdigroup.com"
+        ],
+        [
+          "Ayvens"
+        ],
+        [
+          "https://ucore.com"
+        ],
+        [
+          "https://www.softimat.com"
+        ],
+        [
+          "Mare Nostrum Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Sodexo S.A."
+        ],
+        [
+          "Bureau Veritas SA"
+        ],
+        [
+          "https://www.suranasolar.com"
+        ],
+        [
+          "https://www.alamo-group.com"
+        ],
+        [
+          "https://www.sensortek.com.tw"
+        ],
+        [
+          "ID Logistics Group SA"
+        ],
+        [
+          "GL Events SA"
+        ],
+        [
+          "https://www.eggriculturefoods.com"
+        ],
+        [
+          "https://www.immersivetech.co"
+        ],
+        [
+          "https://www.nutranomics.com"
+        ],
+        [
+          "https://www.premierpower.com"
+        ],
+        [
+          "https://www.founding.com.tw"
+        ],
+        [
+          "https://www.avenira.com"
+        ],
+        [
+          "Groupe CRIT SA"
+        ],
+        [
+          "Ipsos SA"
+        ],
+        [
+          "Toosla Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Grande Armee Investissement SA"
+        ],
+        [
+          "Synergie SE"
+        ],
+        [
+          "https://www.mn25.ca"
+        ],
+        [
+          "https://www.kwungs.com"
+        ],
+        [
+          "Groupe MEDIA 6"
+        ],
+        [
+          "Elis SA"
+        ],
+        [
+          "https://www.abivax.com"
+        ],
+        [
+          "https://www.wdp.eu"
+        ],
+        [
+          "Mon Courtier Energie Groupe S.A."
+        ],
+        [
+          "https://www.fout.co.jp"
+        ],
+        [
+          "Exacompta Clairefontaine S.A."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Construction & Building",
+      "content": "Events where Top Public Listed Companies in France in Construction & Building participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "209",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "bc9570ef-7418-56b6-9664-6fc68f86fbf1",
+            "name": "Building & Construction",
+            "slug": "building-construction"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.unique-usa.com"
+        ],
+        [
+          "https://www.koss.com"
+        ],
+        [
+          ""
+        ],
+        [
+          "https://firstamericanuranium.com"
+        ],
+        [
+          "Imerys S.A."
+        ],
+        [
+          "https://dasco.kr"
+        ],
+        [
+          "https://bep.brookfield.com/bepc"
+        ],
+        [
+          "https://www.boydgaming.com"
+        ],
+        [
+          "Vinci SA"
+        ],
+        [
+          "https://www.excoresources.com"
+        ],
+        [
+          "Compagnie Industrielle et Financi\u00c3\u00a8re d'Entreprises SA"
+        ],
+        [
+          "Hydro-Exploitations Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.siriusxm.com"
+        ],
+        [
+          "Compagnie de Saint-Gobain S.A."
+        ],
+        [
+          "SPIE SA"
+        ],
+        [
+          "https://www.corteva.com"
+        ],
+        [
+          "Herige"
+        ],
+        [
+          "https://www.datadoghq.com"
+        ],
+        [
+          "https://www.uisco.com.tw"
+        ],
+        [
+          "https://www.xintec.com.tw"
+        ],
+        [
+          "Assystem S.A."
+        ],
+        [
+          "https://www.freund.co.jp"
+        ],
+        [
+          "https://mercurityfintech.com"
+        ],
+        [
+          "SAS AG3i"
+        ],
+        [
+          "https://www.haleon.com"
+        ],
+        [
+          "https://www.gakken.co.jp"
+        ],
+        [
+          "https://www.loboebike.com"
+        ],
+        [
+          "https://www.yangguangxinye.com"
+        ],
+        [
+          "https://www.taihing.com"
+        ],
+        [
+          "Bouygues SA"
+        ],
+        [
+          "https://investors.dominos.co.uk"
+        ],
+        [
+          "Hoffmann Green Cement Technologies Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Poujoulat SA"
+        ],
+        [
+          "https://www.bgbluesky.com"
+        ],
+        [
+          "Eiffage SA"
+        ],
+        [
+          "Hexaom S.A."
+        ],
+        [
+          "Tarkett S.A."
+        ],
+        [
+          "https://www.auraenergy.com.au"
+        ],
+        [
+          "https://am.jpmorgan.co.uk/investment-trusts/trusts/indian-jpm-it.aspx?isin=GB0003450359"
+        ],
+        [
+          "https://www.csc.com.tw"
+        ],
+        [
+          "Kaufman & Broad S.A."
+        ],
+        [
+          "https://www.tiamaes.com"
+        ],
+        [
+          "Soditech SA"
+        ],
+        [
+          "https://www.1957.com.hk"
+        ],
+        [
+          "Vicat S.A."
+        ],
+        [
+          "SergeFerrari Group SA"
+        ],
+        [
+          "https://jadegas.com.au"
+        ],
+        [
+          "Uniti S.A"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Consumer Goods",
+      "content": "Events where Top Public Listed Companies in France in Consumer Goods participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "444",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "7a23ef89-72c7-52d4-ab63-263ce971ac0c",
+            "name": "Home & Office",
+            "slug": "home-office"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          ""
+        ],
+        [
+          "Jacques Bogart S.A."
+        ],
+        [
+          "https://www.irr-x.com"
+        ],
+        [
+          "https://www.itoham-yonekyu-holdings.com"
+        ],
+        [
+          "Herm\u00c3\u00a8s International Soci\u00c3\u00a9t\u00c3\u00a9 en commandite par actions"
+        ],
+        [
+          "Hermes International SA"
+        ],
+        [
+          "https://www.schaeffler.com"
+        ],
+        [
+          "https://alkylamines.com"
+        ],
+        [
+          "https://www.goldenlakex.com"
+        ],
+        [
+          "https://www.sunwa.co.jp"
+        ],
+        [
+          "LVMH Mo\u00c3\u00abt Hennessy - Louis Vuitton Soci\u00c3\u00a9t\u00c3\u00a9 Europ\u00c3\u00a9enne"
+        ],
+        [
+          "https://www.alibabagroup.com"
+        ],
+        [
+          "Mastrad Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.bestechnic.com"
+        ],
+        [
+          "https://rosseti-sz.ru"
+        ],
+        [
+          "https://www.glsc.com.cn"
+        ],
+        [
+          "https://www.samyoung.co.kr"
+        ],
+        [
+          "https://www.jkcement.com"
+        ],
+        [
+          "https://www.alpsalpine.com"
+        ],
+        [
+          "https://www.medimagingcorp.com"
+        ],
+        [
+          "Fayenceries de Sarreguemines Digoin & Vitry-le-Francois Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Kering SA"
+        ],
+        [
+          "https://www.justsystems.com/jp/"
+        ],
+        [
+          "Galeo Concept SA"
+        ],
+        [
+          "S.T. Dupont S.A."
+        ],
+        [
+          "https://www.modec.com"
+        ],
+        [
+          "https://www.daeduck.com"
+        ],
+        [
+          "https://www.novatek.com.tw"
+        ],
+        [
+          "L'Or\u00c3\u00a9al S.A."
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 BIC SA"
+        ],
+        [
+          "Christian Dior SE"
+        ],
+        [
+          "https://generaleuropeanstrategicinvestments.com"
+        ],
+        [
+          "https://www.novartis.com"
+        ],
+        [
+          "https://www.hxb.com.cn"
+        ],
+        [
+          "https://www.kyogoku.co.jp"
+        ],
+        [
+          "https://www.karolinskadevelopment.com"
+        ],
+        [
+          "https://www.kestrelgold.com"
+        ],
+        [
+          "Interparfums SA"
+        ],
+        [
+          "Maison Clio Blue SA"
+        ],
+        [
+          "La Savonnerie De Nyons"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Electronics",
+      "content": "Events where Top Public Listed Companies in France in Electronics participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "17",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "350fda6c-6778-500e-ae97-aade11bba0e8",
+            "name": "Electric & Electronics",
+            "slug": "electronics-electricals"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://microsaltinc.com"
+        ],
+        [
+          "Egide S.A."
+        ],
+        [
+          "https://www.mmel.com.au"
+        ],
+        [
+          "Innelec Multim\u00c3\u00a9dia SA"
+        ],
+        [
+          "RocTool S.A."
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 Industrielle et Financi\u00c3\u00a8re de l'Artois"
+        ],
+        [
+          "Drone Volt SA"
+        ],
+        [
+          "https://www.huayimedia.com"
+        ],
+        [
+          "https://www.reachresources.com.au"
+        ],
+        [
+          "https://www.fortrancorp.com"
+        ],
+        [
+          "Largo SA"
+        ],
+        [
+          "Activium Group SAS"
+        ],
+        [
+          "Novatech Industries"
+        ],
+        [
+          "https://asepmedical.com"
+        ],
+        [
+          "https://www.ses.ai"
+        ],
+        [
+          "https://www.streammedia.co.jp"
+        ],
+        [
+          "https://www.valuecapital.co.il"
+        ],
+        [
+          "Metavisio"
+        ],
+        [
+          "Rexel S.A."
+        ],
+        [
+          "Ordissimo SA"
+        ],
+        [
+          "2CRSI S.A."
+        ],
+        [
+          "https://www.metalart.co.jp"
+        ],
+        [
+          "Logic Instrument S.A."
+        ],
+        [
+          "Groupe LDLC soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://delticenergy.com"
+        ],
+        [
+          "https://uscmcorp.com"
+        ],
+        [
+          "https://www.ffcb.com"
+        ],
+        [
+          "https://www.boltmetals.com"
+        ],
+        [
+          "MGI Digital Technology Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.troubadourresources.com"
+        ],
+        [
+          "https://www.boyaa.com.hk"
+        ],
+        [
+          "https://www.capitalestate.com.hk"
+        ],
+        [
+          "Cofidur S.A."
+        ],
+        [
+          "https://www.smartsand.com"
+        ],
+        [
+          "https://www.traditions.bank"
+        ],
+        [
+          "Prodways Group SA"
+        ],
+        [
+          "https://tajirigold.com"
+        ],
+        [
+          "https://trivarx.com"
+        ],
+        [
+          "https://www.spotlite360.com"
+        ],
+        [
+          "Icape Holding S.A."
+        ],
+        [
+          "Octopus Biosafety SA"
+        ],
+        [
+          "Guillemot Corporation S.A."
+        ],
+        [
+          "https://www.bjc.co.th"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Entertainment",
+      "content": "Events where Top Public Listed Companies in France in Entertainment participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "42",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "abbcbea6-dae3-5ad7-bcd5-7532176f1e4f",
+            "name": "Entertainment & Media",
+            "slug": "entertainment"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.gaintherapeutics.com"
+        ],
+        [
+          "Nacon S.A."
+        ],
+        [
+          "Xilam Animation"
+        ],
+        [
+          "https://www.amdocs.com"
+        ],
+        [
+          "EuropaCorp"
+        ],
+        [
+          "Vantiva S.A."
+        ],
+        [
+          "BANIJAY GROUP N.V."
+        ],
+        [
+          "https://hartshead-resources.com.au"
+        ],
+        [
+          "Eagle Football Group Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Believe S.A."
+        ],
+        [
+          "Atari SA"
+        ],
+        [
+          "Pullup Entertainment Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.simedarbyproperty.com"
+        ],
+        [
+          "https://www.gmbreweries.com"
+        ],
+        [
+          "https://avanttechnologies.com"
+        ],
+        [
+          "https://www.net-cents.com"
+        ],
+        [
+          "https://www.warehousereit.co.uk"
+        ],
+        [
+          "https://www.raiway.it"
+        ],
+        [
+          "Gaumont SA"
+        ],
+        [
+          "https://www.alphacognition.com"
+        ],
+        [
+          "https://itab.com"
+        ],
+        [
+          "Don't Nod Entertainment S.A."
+        ],
+        [
+          "https://www.ushine.com.tw"
+        ],
+        [
+          "https://www.agnc.com"
+        ],
+        [
+          "Bollor\u00c3\u00a9 SE"
+        ],
+        [
+          "https://www.turacogold.com.au"
+        ],
+        [
+          "Deezer S.A."
+        ],
+        [
+          "https://www.vorbio.com"
+        ],
+        [
+          "Ubisoft Entertainment SA"
+        ],
+        [
+          "https://www.standardlithium.com"
+        ],
+        [
+          "https://www.icade.fr"
+        ],
+        [
+          "https://www.chinarunhe.com"
+        ],
+        [
+          "https://asahi-net.co.jp"
+        ],
+        [
+          "Compagnie de l'Odet"
+        ],
+        [
+          "Olympique Lyonnais Groupe SA"
+        ],
+        [
+          "https://www.starholdingsco.com"
+        ],
+        [
+          "https://www.aurora-spine.com"
+        ],
+        [
+          "https://www.calliditas.se"
+        ],
+        [
+          "Vivendi SE"
+        ],
+        [
+          "https://www.terracomresources.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Environmental Solutions",
+      "content": "Events where Top Public Listed Companies in France in Environmental Solutions participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "16",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "7cedb4fe-1034-5d7b-b78b-ce626910428c",
+            "name": "Environment & Waste",
+            "slug": "waste-management"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Orege Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "https://www.new-amante.com"
+        ],
+        [
+          "UV Germi SA"
+        ],
+        [
+          "https://www.monro.com"
+        ],
+        [
+          "https://galantas.com"
+        ],
+        [
+          "https://www.synex.com"
+        ],
+        [
+          "https://www.opalfuels.com"
+        ],
+        [
+          "Derichebourg SA"
+        ],
+        [
+          "https://www.findex.co.jp"
+        ],
+        [
+          "https://www.emunl.com.au"
+        ],
+        [
+          "https://www.talanx.com"
+        ],
+        [
+          "Finaxo Environnement Societe Anonyme"
+        ],
+        [
+          "https://www.geminalabs.com"
+        ],
+        [
+          "Veolia Environnement S.A."
+        ],
+        [
+          "Aurea SA"
+        ],
+        [
+          "https://www.gratomic.ca"
+        ],
+        [
+          "https://www.jcm-hq.co.jp"
+        ],
+        [
+          "Ecoslops S.A."
+        ],
+        [
+          "https://www.watrust.com"
+        ],
+        [
+          "Groupe Pizzorno Environnement"
+        ],
+        [
+          "https://www.sponsorsone.com"
+        ],
+        [
+          "https://corporate.bowflex.com"
+        ],
+        [
+          "Osmosun S.A."
+        ],
+        [
+          "https://www.cardfactoryinvestors.com"
+        ],
+        [
+          "BIO-UV Group S.A."
+        ],
+        [
+          "Europlasma S.A."
+        ],
+        [
+          "S\u00c3\u00a9ch\u00c3\u00a9 Environnement SA"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Food & Beverage",
+      "content": "Events where Top Public Listed Companies in France in Food & Beverage participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "256",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "9d8d303c-8e46-53bf-8280-c954ca497c36",
+            "name": "Food & Beverages",
+            "slug": "food-beverage"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "L.D.C. S.A."
+        ],
+        [
+          "https://www.cn-tn.com"
+        ],
+        [
+          "https://www.reborncoffee.com"
+        ],
+        [
+          "https://www.nature-miracle.com"
+        ],
+        [
+          "https://www.nrr.co.uk"
+        ],
+        [
+          "https://www.tsodiloresources.com"
+        ],
+        [
+          "https://www.yanjan.com"
+        ],
+        [
+          "https://www.hess.com"
+        ],
+        [
+          "https://www.oldpoint.com"
+        ],
+        [
+          "https://www.chinyang.co.kr"
+        ],
+        [
+          "https://www.eminent.com"
+        ],
+        [
+          "https://www.xuyuanpack.com"
+        ],
+        [
+          "https://www.timahresources.com.au"
+        ],
+        [
+          "Unibel S.A."
+        ],
+        [
+          "https://www.narmadaagrobase.com"
+        ],
+        [
+          "https://www.mks.jp"
+        ],
+        [
+          "Bonduelle SCA"
+        ],
+        [
+          "https://www.hanglung.com"
+        ],
+        [
+          "AdVini S.A."
+        ],
+        [
+          "\u00c3\u00a9comiam SA"
+        ],
+        [
+          "Oeneo SA"
+        ],
+        [
+          "Marie Brizard Wine & Spirits SA"
+        ],
+        [
+          "https://www.coltene.com"
+        ],
+        [
+          "Vranken-Pommery Monopole Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Lanson-BCC"
+        ],
+        [
+          "https://www.laraexploration.com"
+        ],
+        [
+          "Pernod Ricard SA"
+        ],
+        [
+          "R\u00c3\u00a9my Cointreau SA"
+        ],
+        [
+          "Savencia SA"
+        ],
+        [
+          "Poulaillon SA"
+        ],
+        [
+          "https://www.atlanticlithium.com.au"
+        ],
+        [
+          "Danone S.A."
+        ],
+        [
+          "https://www.ventureminerals.com.au"
+        ],
+        [
+          "https://trinityexploration.com"
+        ],
+        [
+          "https://coreassetscorp.com"
+        ],
+        [
+          "https://www.cabalettabio.com"
+        ],
+        [
+          "Malteries Franco-Belges Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Fleury Michon SA"
+        ],
+        [
+          "https://www.closebrothers.com"
+        ],
+        [
+          "https://www.groupe-artea.fr"
+        ],
+        [
+          "Speed Rabbit Pizza SA"
+        ],
+        [
+          "https://www.600638.com"
+        ],
+        [
+          "https://www.tarkett.com"
+        ],
+        [
+          "https://www.minshangct.com"
+        ],
+        [
+          "FD"
+        ],
+        [
+          "https://www.galasports.com"
+        ],
+        [
+          "Saint Jean Groupe Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Algreen"
+        ],
+        [
+          "https://www.ku-hd.com"
+        ],
+        [
+          "https://www.randon.com.br/en"
+        ],
+        [
+          "PAULIC Meunerie SA"
+        ],
+        [
+          "Omer-Decugis & Cie SA"
+        ],
+        [
+          "Laurent-Perrier S.A."
+        ],
+        [
+          "Lombard & Medot SA"
+        ],
+        [
+          "https://modernfoods.ca"
+        ],
+        [
+          "https://www.keycoffee.co.jp"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Hospitality & Leisure",
+      "content": "Events where Top Public Listed Companies in France in Hospitality & Leisure participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "91",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "8ce0fae8-ae48-528f-bae1-668151f1109a",
+            "name": "Hospitality",
+            "slug": "hospitality"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.banggroup.com"
+        ],
+        [
+          "https://www.encorecapital.com"
+        ],
+        [
+          "Ab\u00c3\u00a9o SA"
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 Fran\u00c3\u00a7aise de Casinos Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 H\u00c3\u00b4teli\u00c3\u00a8re et Immobili\u00c3\u00a8re de Nice S.A."
+        ],
+        [
+          "Les H\u00c3\u00b4tels Baverez S.A."
+        ],
+        [
+          "Hotel Majestic Cannes"
+        ],
+        [
+          "https://www.septeni-holdings.co.jp"
+        ],
+        [
+          "https://www.ygmtrading.com"
+        ],
+        [
+          "https://www.norbentea.com"
+        ],
+        [
+          "https://www.aptar.com"
+        ],
+        [
+          "https://www.shuoaointernational.com"
+        ],
+        [
+          "Accor SA"
+        ],
+        [
+          "https://www.nationalwastemgmt.com"
+        ],
+        [
+          "Piscines Desjoyaux SA"
+        ],
+        [
+          "https://www.chinlinkint.com"
+        ],
+        [
+          "https://www.leg-wohnen.de/unternehmen"
+        ],
+        [
+          "https://mandalayresources.com"
+        ],
+        [
+          "Pierre et Vacances SA"
+        ],
+        [
+          "https://colorstarinternational.com"
+        ],
+        [
+          "https://www.johnsonelectric.com"
+        ],
+        [
+          "Compagnie Du Mont-Blanc"
+        ],
+        [
+          "https://www.clearvuepv.com"
+        ],
+        [
+          "Cybergun S.A."
+        ],
+        [
+          "Bernard Loiseau S.A."
+        ],
+        [
+          "https://www.abt-ag.com"
+        ],
+        [
+          "https://www.bimobject.com"
+        ],
+        [
+          "https://www.fadeco.com"
+        ],
+        [
+          "https://www.enwave.net"
+        ],
+        [
+          "La Fran\u00c3\u00a7aise des Jeux Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Groupe Partouche SA"
+        ],
+        [
+          "https://www.group.accor.com/en"
+        ],
+        [
+          "https://web.lzyy.cn"
+        ],
+        [
+          "Soci\u00c3\u00a9t\u00c3\u00a9 Fermi\u00c3\u00a8re du Casino Municipal de Cannes"
+        ],
+        [
+          "Hotelim Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Elior Group SA"
+        ],
+        [
+          "https://invesque.com"
+        ],
+        [
+          "Les H\u00c3\u00b4tels de Paris SA"
+        ],
+        [
+          "Compagnie des Alpes SA"
+        ],
+        [
+          "Lexibook - Linguistic Electronic System Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.aob.com"
+        ],
+        [
+          "https://www.junominerals.com.au"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Industrial Machinery",
+      "content": "Events where Top Public Listed Companies in France in Industrial Machinery participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "367",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "4df15939-8144-5507-ae87-cf491580699e",
+            "name": "Industrial Engineering",
+            "slug": "engineering"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "https://www.celyad.com"
+        ],
+        [
+          "DBT SA"
+        ],
+        [
+          "https://www.vasamed.com"
+        ],
+        [
+          "https://www.castellumus.com"
+        ],
+        [
+          "Schneider Electric S.E."
+        ],
+        [
+          "Cerinnov Group SA"
+        ],
+        [
+          "https://www.dianomi.com"
+        ],
+        [
+          "https://www.caa-resources.com"
+        ],
+        [
+          "McPhy Energy S.A."
+        ],
+        [
+          "Enertime SA"
+        ],
+        [
+          "G\u00c3\u00a9velot SA"
+        ],
+        [
+          "https://www.heliostarmetals.com"
+        ],
+        [
+          "https://www.yt-eco.com"
+        ],
+        [
+          "https://www.kintavar.com"
+        ],
+        [
+          "Arcure S.A."
+        ],
+        [
+          "i2S SA"
+        ],
+        [
+          "https://www.aeorema.com"
+        ],
+        [
+          "Nexans S.A."
+        ],
+        [
+          "G\u00c3\u00a9rard Perrier Industrie S.A."
+        ],
+        [
+          "https://www.outlooktherapeutics.com"
+        ],
+        [
+          "Waga Energy Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Legrand SA"
+        ],
+        [
+          "https://www.burnpurcement.com"
+        ],
+        [
+          "Balyo SA"
+        ],
+        [
+          "https://www.sritranggloves.com/en/home"
+        ],
+        [
+          "https://cmcmetals.ca"
+        ],
+        [
+          "https://www.sks.com.au"
+        ],
+        [
+          "https://www.evercel.com"
+        ],
+        [
+          "GROUPE SFPI SA"
+        ],
+        [
+          "https://www.ggi-sa.com"
+        ],
+        [
+          "MCPHY ENERGY"
+        ],
+        [
+          "https://www.kyoritsu-hd.co.jp"
+        ],
+        [
+          "Precia S.A."
+        ],
+        [
+          "NHOA S.A."
+        ],
+        [
+          "https://sreeleathers.com"
+        ],
+        [
+          "BOA Concept SAS"
+        ],
+        [
+          "Mersen S.A."
+        ],
+        [
+          "NSC Groupe SA"
+        ],
+        [
+          "https://www.komatsuwall.co.jp"
+        ],
+        [
+          "Hydraulique P.B Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.fortressbiotech.com"
+        ],
+        [
+          "https://www.asahiholdings.com"
+        ],
+        [
+          "https://www.cloudcoco.co.uk"
+        ],
+        [
+          "https://www.whlr.us"
+        ],
+        [
+          "STIF Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Forsee Power Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "Enogia SAS"
+        ],
+        [
+          "https://www.qyoumedia.com"
+        ],
+        [
+          "https://www.sangamo.com"
+        ],
+        [
+          "https://www.abtgold.com"
+        ],
+        [
+          "https://joufcem.com.sa"
+        ],
+        [
+          "https://www.izea.com"
+        ],
+        [
+          "EXOSENS PROM"
+        ],
+        [
+          "https://originagritech.com"
+        ],
+        [
+          "https://www.att.com"
+        ],
+        [
+          "https://www.mobicogroup.com"
+        ],
+        [
+          "Altheora SA"
+        ],
+        [
+          "Lucibel SA"
+        ],
+        [
+          "https://www.shochiku.co.jp"
+        ],
+        [
+          "Mersen SA"
+        ],
+        [
+          "https://mobiquitytechnologies.com"
+        ],
+        [
+          "https://www.saratogainvestmentcorp.com"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Information Technology (IT)",
+      "content": "Events where Top Public Listed Companies in France in Information Technology (IT) participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "23",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+            "name": "IT & Technology",
+            "slug": "technology"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "Capgemini SE"
+        ],
+        [
+          "HITECHPROS Soci\u00c3\u00a9t\u00c3\u00a9 anonyme"
+        ],
+        [
+          "https://www.oncolyticsbiotech.com"
+        ],
+        [
+          "https://www.autocorpgroup.com"
+        ],
+        [
+          "https://www.fengguang.com"
+        ],
+        [
+          "https://lakeshoresavings.com"
+        ],
+        [
+          "https://www.1stcapital.bank"
+        ],
+        [
+          "SQLI SA"
+        ],
+        [
+          "https://www.genmining.com"
+        ],
+        [
+          "https://www.metaepsi.com"
+        ],
+        [
+          "https://www.enliventherapeutics.com"
+        ],
+        [
+          "https://g6m.com.au"
+        ],
+        [
+          "Infotel SA"
+        ],
+        [
+          "https://www.sunhydrogen.com"
+        ],
+        [
+          "https://imetalresources.ca"
+        ],
+        [
+          "IT Link SA"
+        ],
+        [
+          "Keyrus S.A."
+        ],
+        [
+          "Wavestone SA"
+        ],
+        [
+          "Alten S.A."
+        ],
+        [
+          "Sopra Steria Group SA"
+        ],
+        [
+          "https://opawica.com"
+        ],
+        [
+          "https://northpeakresources.com"
+        ],
+        [
+          "https://www.taihei-ss.co.jp"
+        ],
+        [
+          "https://www.preferredbank.com"
+        ],
+        [
+          "https://www.tcw.com/Funds/Closed_End_Funds/TSI_Fund.aspx"
+        ],
+        [
+          "Atos SE"
+        ],
+        [
+          "https://xano.se"
+        ],
+        [
+          "Locasystem International SA"
+        ],
+        [
+          "Micropole S.A."
+        ],
+        [
+          "https://www.nkindustriesltd.com"
+        ],
+        [
+          "Cheops Technology France SA"
+        ],
+        [
+          "Union Technologies Informatique Group S.A."
+        ],
+        [
+          "https://www.kghm.com"
+        ],
+        [
+          "Neurones S.A."
+        ],
+        [
+          "https://www.sst-holding.com"
+        ],
+        [
+          "Aubay Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Maison Internationale de l'Informatique S.A.S."
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Public Listed Companies in France in Media & Advertising",
+      "content": "Events where Top Public Listed Companies in France in Media & Advertising participate",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "18",
+      "filterValue": {
+        "country": [
+          {
+            "id": "62c422fa-2b6b-592a-a6fa-fbd7c275e037",
+            "name": "France",
+            "displayName": "France",
+            "locationType": "COUNTRY",
+            "latitude": "47.8249046208979",
+            "longitude": "2.61878695312962",
+            "iso": "FR"
+          }
+        ],
+        "category": [
+          {
+            "id": "abbcbea6-dae3-5ad7-bcd5-7532176f1e4f",
+            "name": "Entertainment & Media",
+            "slug": "entertainment"
+          }
+        ]
+      },
+      "url": "T_COMPETITOR",
+      "data": [
+        [
+          "ADLPartner SA"
+        ],
+        [
+          "https://www.metagenomi.co"
+        ],
+        [
+          "Fill Up Media S.A."
+        ],
+        [
+          "https://www.enensys.com"
+        ],
+        [
+          "Hopening SA"
+        ],
+        [
+          "https://flexituff.com"
+        ],
+        [
+          "https://www.tuniu.com"
+        ],
+        [
+          "https://www.legend-strategy.com"
+        ],
+        [
+          "https://www.cadoux.com.au"
+        ],
+        [
+          "Hopscotch Global PR Group"
+        ],
+        [
+          "JCDecaux SE"
+        ],
+        [
+          "https://www.summitbanking.com"
+        ],
+        [
+          "Publicis Groupe S.A."
+        ],
+        [
+          "Solocal Group S.A."
+        ],
+        [
+          "Bilendi SA"
+        ],
+        [
+          "JCDecaux SA"
+        ],
+        [
+          "Reworld Media Soci\u00c3\u00a9t\u00c3\u00a9 Anonyme"
+        ],
+        [
+          "Acheter-Louer.Fr SA"
+        ],
+        [
+          "https://askbrake.com"
+        ],
+        [
+          "https://dmgblockchain.com"
+        ],
+        [
+          "https://www.lithiumcorporation.com"
+        ],
+        [
+          "Nextedia S.A."
+        ],
+        [
+          "Obiz Concept SAS"
+        ],
+        [
+          "Sirius Media"
+        ],
+        [
+          "Klarsen"
+        ],
+        [
+          "https://voycare.com"
+        ],
+        [
+          "1000mercis"
+        ],
+        [
+          "https://panthermetals.com"
+        ],
+        [
+          "https://www.voltpower.com.au"
+        ],
+        [
+          "https://www.jubilantindustries.com"
+        ],
+        [
+          "https://www.nexeonmedsystems.com"
+        ],
+        [
+          "https://www.autoaxle.com"
+        ],
+        [
+          "Prismaflex International S.A."
+        ],
+        [
+          "Criteo S.A."
+        ],
+        [
+          "https://www.dariohealth.com"
+        ],
+        [
+          "Qwamplify"
+        ],
+        [
+          "https://www.cotta.co.jp"
+        ],
+        [
+          "https://www.shieldtherapeutics.com"
+        ],
+        [
+          "High Co. SA"
+        ],
+        [
+          "https://www.sinclairsindia.com"
+        ],
+        [
+          "https://www.greatamericanbancorp.com"
+        ]
+      ]
+    }
+  ]
+}

@@ -37,6 +37,7 @@ import Keywords from "/public/keywords.svg";
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
+import { PresetData } from '@/types/trackers';
 import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
 // import styles from "./search.module.css";
@@ -603,12 +604,17 @@ const Pages = () => {
   }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
-  const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
+  const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+    
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType==="T_BRAND_BUILDING") {
+      const getLocationIds = (presetItem?.filterValue?.country || [])
+      .map((loc) => loc.id).join(",");
+      const getCategoriesSlug = (presetItem?.filterValue?.category || []).map((cat:{slug:string}) => cat.slug).join(",");
+      setLocalFilter("categories",getCategoriesSlug)
+      setLocalFilter("locationIds",getLocationIds)
       const presetData: any = [];
-
       presetItem?.data.map((item: any) => {
         const temp: any = {};
         template?.inputAreas?.map((field: InputArea, index: number)=>(
@@ -705,13 +711,10 @@ const Pages = () => {
         } else if (value) {
           acc[mappedKey] = value;
         }
-    
         return acc;
       },
       {} as Record<string, any>
     );
-    
-    
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -898,7 +901,7 @@ const Pages = () => {
           return;
         }
         if (data) {  
-          router.replace("/internal/trackers");
+          // router.replace("/internal/trackers");
         }
       }catch(error){
         // console.log(error);

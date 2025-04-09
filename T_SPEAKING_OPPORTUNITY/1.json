@@ -1,0 +1,901 @@
+{
+  "totalCount": 4,
+  "data": [
+    {
+      "trackerName": "Top Voice in Education",
+      "content": "Empowering transformative learning strategies for the future of education.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "74",
+      "filterValue": {
+        "country": [],
+        "category": [
+          {
+            "id": "8003cefd-9faa-5df4-b596-ae371029b710",
+            "name": "Education & Training",
+            "slug": "education-training"
+          }
+        ]
+      },
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "data": [
+        [
+          "Sal Khan",
+          "Khan Academy"
+        ],
+        [
+          "Andreas Schleicher",
+          "OECD"
+        ],
+        [
+          "Linda Darling-Hammond",
+          "Learning Policy Institute"
+        ],
+        [
+          "Daphne Koller",
+          "insitro"
+        ],
+        [
+          "Anant Agarwal",
+          "edX"
+        ],
+        [
+          "Carol Dweck",
+          "Stanford University"
+        ],
+        [
+          "Sugata Mitra",
+          "Newcastle University"
+        ],
+        [
+          "Angela Duckworth",
+          "University of Pennsylvania"
+        ],
+        [
+          "Pasi Sahlberg",
+          "University of New South Wales"
+        ],
+        [
+          "Hadi Partovi",
+          "Code.org"
+        ],
+        [
+          "Wendy Kopp",
+          "Teach For All"
+        ],
+        [
+          "Diane Ravitch",
+          "New York University"
+        ],
+        [
+          "Michael Fullan",
+          "University of Toronto"
+        ],
+        [
+          "Esther Wojcicki",
+          "Palo Alto High School"
+        ],
+        [
+          "Tony Wagner",
+          "Learning Policy Institute"
+        ],
+        [
+          "Jo Boaler",
+          "Stanford University"
+        ],
+        [
+          "Geoffrey Canada",
+          "Harlem Children's Zone"
+        ],
+        [
+          "Eric Mazur",
+          "Harvard University"
+        ],
+        [
+          "John Hattie",
+          "University of Melbourne"
+        ],
+        [
+          "Arne Duncan",
+          "Emerson Collective"
+        ],
+        [
+          "Peter Senge",
+          "MIT Sloan School of Management"
+        ],
+        [
+          "Mitchel Resnick",
+          "MIT Media Lab"
+        ],
+        [
+          "Sir Anthony Seldon",
+          "University of Buckingham"
+        ],
+        [
+          "Ellen Moir",
+          "New Teacher Center"
+        ],
+        [
+          "Hirokazu Yoshikawa",
+          "New York University"
+        ],
+        [
+          "Kathy Hirsh-Pasek",
+          "Temple University"
+        ],
+        [
+          "Stephen Heppell",
+          "Heppell.net"
+        ],
+        [
+          "Randi Weingarten",
+          "American Federation of Teachers"
+        ],
+        [
+          "Sir Michael Barber",
+          "Delivery Associates"
+        ],
+        [
+          "Kiran Bir Sethi",
+          "Design for Change"
+        ],
+        [
+          "Ken Robinson",
+          "Independent"
+        ],
+        [
+          "Emily Pilloton",
+          "Girls Garage"
+        ],
+        [
+          "David Coleman",
+          "College Board"
+        ],
+        [
+          "Freeman Hrabowski III",
+          "University of Maryland Baltimore County"
+        ],
+        [
+          "LeVar Burton",
+          "Reading Rainbow"
+        ],
+        [
+          "Jal Mehta",
+          "Harvard Graduate School of Education"
+        ],
+        [
+          "Kaya Henderson",
+          "Reconstruction US"
+        ],
+        [
+          "Michael Horn",
+          "Clayton Christensen Institute"
+        ],
+        [
+          "Deborah Loewenberg Ball",
+          "University of Michigan"
+        ],
+        [
+          "Richard Culatta",
+          "ISTE (International Society for Technology in Education)"
+        ],
+        [
+          "Barbara Oakley",
+          "Oakland University"
+        ],
+        [
+          "Fernando Reimers",
+          "Harvard Graduate School of Education"
+        ],
+        [
+          "Vicky Colbert",
+          "Fundaci\u00f3n Escuela Nueva"
+        ],
+        [
+          "Charles Fadel",
+          "Center for Curriculum Redesign"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Alec Couros",
+          "University of Regina"
+        ],
+        [
+          "Katie Martin",
+          "Altitude Learning"
+        ],
+        [
+          "George Couros",
+          "Independent"
+        ],
+        [
+          "Neil Selwyn",
+          "Monash University"
+        ],
+        [
+          "Jay McTighe",
+          "Independent"
+        ],
+        [
+          "Heidi Hayes Jacobs",
+          "Curriculum Designers"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Voice in IT & Technology",
+      "content": "Driving innovation through cutting-edge tech solutions and digital advancements.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "46",
+      "filterValue": {
+        "country": [],
+        "category": [
+          {
+            "id": "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+            "name": "IT & Technology",
+            "slug": "technology"
+          }
+        ]
+      },
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "data": [
+        [
+          "Satya Nadella",
+          "Microsoft"
+        ],
+        [
+          "Tim Cook",
+          "Apple Inc."
+        ],
+        [
+          "Sundar Pichai",
+          "Alphabet Inc. (Google)"
+        ],
+        [
+          "Elon Musk",
+          "Tesla SpaceX Neuralink X Corp"
+        ],
+        [
+          "Mark Zuckerberg",
+          "Meta Platforms (Facebook)"
+        ],
+        [
+          "Jeff Bezos",
+          "Amazon"
+        ],
+        [
+          "Lisa Su",
+          "AMD (Advanced Micro Devices)"
+        ],
+        [
+          "Jensen Huang",
+          "NVIDIA Corporation"
+        ],
+        [
+          "Ginni Rometty",
+          "IBM"
+        ],
+        [
+          "Arvind Krishna",
+          "IBM"
+        ],
+        [
+          "Reed Hastings",
+          "Netflix"
+        ],
+        [
+          "Sheryl Sandberg",
+          "Meta Platforms (Facebook)"
+        ],
+        [
+          "Jack Dorsey",
+          "Block Inc. (formerly Square)"
+        ],
+        [
+          "Susan Wojcicki",
+          "YouTube"
+        ],
+        [
+          "Marc Benioff",
+          "Salesforce"
+        ],
+        [
+          "Daniel Ek",
+          "Spotify"
+        ],
+        [
+          "Safra Catz",
+          "Oracle Corporation"
+        ],
+        [
+          "Michael Dell",
+          "Dell Technologies"
+        ],
+        [
+          "Diane Greene",
+          "Google Cloud"
+        ],
+        [
+          "Andrew Ng",
+          "Landing AI"
+        ],
+        [
+          "Fei-Fei Li",
+          "Stanford University"
+        ],
+        [
+          "Kai-Fu Lee",
+          "Sinovation Ventures"
+        ],
+        [
+          "Bill Gates",
+          "Microsoft; Bill & Melinda Gates Foundation"
+        ],
+        [
+          "Linus Torvalds",
+          "Linux Kernel; Git"
+        ],
+        [
+          "Demis Hassabis",
+          "DeepMind (Alphabet Inc.)"
+        ],
+        [
+          "Gwynne Shotwell",
+          "SpaceX"
+        ],
+        [
+          "Werner Vogels",
+          "Amazon Web Services"
+        ],
+        [
+          "Jeff Dean",
+          "Google"
+        ],
+        [
+          "Vint Cerf",
+          "Google"
+        ],
+        [
+          "Tim Berners-Lee",
+          "World Wide Web Consortium (W3C)"
+        ],
+        [
+          "Susan Fowler",
+          "Editor-in-Chief at The New York Times Opinion"
+        ],
+        [
+          "Shantanu Narayen",
+          "Adobe Inc."
+        ],
+        [
+          "Drew Houston",
+          "Dropbox"
+        ],
+        [
+          "Brian Chesky",
+          "Airbnb"
+        ],
+        [
+          "Jayshree Ullal",
+          "Arista Networks"
+        ],
+        [
+          "Alexandra \"Sandy\" Carter",
+          "Amazon Web Services"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Steve Wozniak",
+          "Apple Inc."
+        ],
+        [
+          "Garry Kasparov",
+          "Avast"
+        ],
+        [
+          "Anne Wojcicki",
+          "23andMe"
+        ],
+        [
+          "Reid Hoffman",
+          "LinkedIn; Greylock Partners"
+        ],
+        [
+          "Jimmy Wales",
+          "Wikipedia"
+        ],
+        [
+          "Hadi Partovi",
+          "Code.org"
+        ],
+        [
+          "Melanie Perkins",
+          "Canva"
+        ],
+        [
+          "Vitalik Buterin",
+          "Ethereum"
+        ],
+        [
+          "Eric Yuan",
+          "Zoom Video Communications"
+        ],
+        [
+          "Brad Smith",
+          "Microsoft"
+        ],
+        [
+          "Martine Rothblatt",
+          "United Therapeutics"
+        ],
+        [
+          "Guido van Rossum",
+          "Microsoft"
+        ],
+        [
+          "Stewart Butterfield",
+          "Slack Technologies"
+        ],
+        [
+          "Jason Fried",
+          "Basecamp"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Voice in Electric & Electronics",
+      "content": "Revolutionizing industries with smart, efficient, and connected electronic solutions.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "25",
+      "filterValue": {
+        "country": [],
+        "category": [
+          {
+            "id": "350fda6c-6778-500e-ae97-aade11bba0e8",
+            "name": "Electric & Electronics",
+            "slug": "electronics-electricals"
+          }
+        ]
+      },
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "data": [
+        [
+          "Lisa Su",
+          "AMD (Advanced Micro Devices)"
+        ],
+        [
+          "Jensen Huang",
+          "NVIDIA Corporation"
+        ],
+        [
+          "Pat Gelsinger",
+          "Intel Corporation"
+        ],
+        [
+          "Satya Nadella",
+          "Microsoft"
+        ],
+        [
+          "Elon Musk",
+          "Tesla SpaceX Neuralink X Corp"
+        ],
+        [
+          "Tim Cook",
+          "Apple Inc."
+        ],
+        [
+          "Shantanu Narayen",
+          "Adobe Inc."
+        ],
+        [
+          "Ginni Rometty",
+          "IBM"
+        ],
+        [
+          "Reed Hastings",
+          "Netflix"
+        ],
+        [
+          "Lisa Jackson",
+          "Apple Inc."
+        ],
+        [
+          "Daniel Ek",
+          "Spotify"
+        ],
+        [
+          "Diane Bryant",
+          "NovaSignal"
+        ],
+        [
+          "Mary Barra",
+          "General Motors"
+        ],
+        [
+          "Sundar Pichai",
+          "Alphabet Inc. (Google)"
+        ],
+        [
+          "Andrew Ng",
+          "Landing AI"
+        ],
+        [
+          "Fei-Fei Li",
+          "Stanford University"
+        ],
+        [
+          "Jack Dorsey",
+          "Block Inc. (formerly Square)"
+        ],
+        [
+          "Guido van Rossum",
+          "Microsoft"
+        ],
+        [
+          "Ellen Kullman",
+          "Carbon"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Vint Cerf",
+          "Google"
+        ],
+        [
+          "Marc Benioff",
+          "Salesforce"
+        ],
+        [
+          "Padmasree Warrior",
+          "Fable"
+        ],
+        [
+          "Werner Vogels",
+          "Amazon Web Services"
+        ],
+        [
+          "Sebastian Thrun",
+          "Kitty Hawk Corporation"
+        ],
+        [
+          "Jeff Dean",
+          "Google"
+        ],
+        [
+          "Diane Greene",
+          "Google Cloud"
+        ],
+        [
+          "Demis Hassabis",
+          "DeepMind (Alphabet Inc.)"
+        ],
+        [
+          "Susan Wojcicki",
+          "YouTube"
+        ],
+        [
+          "Alex Kipman",
+          "Microsoft"
+        ],
+        [
+          "Gwynne Shotwell",
+          "SpaceX"
+        ],
+        [
+          "Brian Krzanich",
+          "CDK Global"
+        ],
+        [
+          "Steve Mollenkopf",
+          "Qualcomm"
+        ],
+        [
+          "Rajeev Suri",
+          "Inmarsat"
+        ],
+        [
+          "Hans Vestberg",
+          "Verizon Communications"
+        ],
+        [
+          "Cathy Hackl",
+          "Futures Intelligence Group"
+        ],
+        [
+          "Scott Guthrie",
+          "Microsoft"
+        ],
+        [
+          "Ajay Bhatt",
+          "Intel Corporation"
+        ],
+        [
+          "Jim Anderson",
+          "Lattice Semiconductor"
+        ],
+        [
+          "Eugenia Kuyda",
+          "Replika"
+        ],
+        [
+          "Anne Richards",
+          "Fidelity International"
+        ],
+        [
+          "Dr. Tom Leighton",
+          "Akamai Technologies"
+        ],
+        [
+          "Parisa Tabriz",
+          "Google Chrome"
+        ],
+        [
+          "Gaurav Sharma",
+          "Energy Nest"
+        ],
+        [
+          "Herman Eul",
+          "Various Tech Companies"
+        ],
+        [
+          "Sarah Friar",
+          "Nextdoor"
+        ],
+        [
+          "Alexandra \"Sandy\" Carter",
+          "Amazon Web Services"
+        ],
+        [
+          "Mustafa Suleyman",
+          "DeepMind; Inflection AI"
+        ],
+        [
+          "Bob Swan",
+          "Intel Corporation"
+        ],
+        [
+          "Aicha Evans",
+          "Zoox (an Amazon subsidiary)"
+        ],
+        [
+          "James Dyson",
+          "Dyson Ltd"
+        ]
+      ]
+    },
+    {
+      "trackerName": "Top Voice in Pharma",
+      "content": "Innovating healthcare with breakthrough solutions for better wellness and care.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "14",
+      "filterValue": {
+        "country": [],
+        "category": [
+          {
+            "id": "b97d648f-b1c6-513b-b4cf-8d4c749e7fb7",
+            "name": "Medical & Pharma",
+            "slug": "medical-pharma"
+          }
+        ]
+      },
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "data": [
+        [
+          "Albert Bourla",
+          "Pfizer"
+        ],
+        [
+          "St\u00e9phane Bancel",
+          "Moderna"
+        ],
+        [
+          "Emma Walmsley",
+          "GlaxoSmithKline (GSK)"
+        ],
+        [
+          "Pascal Soriot",
+          "AstraZeneca"
+        ],
+        [
+          "Vas Narasimhan",
+          "Novartis"
+        ],
+        [
+          "Severin Schwan",
+          "Roche"
+        ],
+        [
+          "Robert M. Davis",
+          "Merck & Co."
+        ],
+        [
+          "Kenneth C. Frazier",
+          "Merck & Co."
+        ],
+        [
+          "Joaquin Duato",
+          "Johnson & Johnson"
+        ],
+        [
+          "Giovanni Caforio",
+          "Bristol Myers Squibb"
+        ],
+        [
+          "Paul Hudson",
+          "Sanofi"
+        ],
+        [
+          "Michel Vounatsos",
+          "Biogen"
+        ],
+        [
+          "Alex Gorsky",
+          "Johnson & Johnson"
+        ],
+        [
+          "Richard A. Gonzalez",
+          "AbbVie"
+        ],
+        [
+          "Deborah Dunsire",
+          "Lundbeck"
+        ],
+        [
+          "Leonard Schleifer",
+          "Regeneron Pharmaceuticals"
+        ],
+        [
+          "Albert Baehny",
+          "Lonza Group"
+        ],
+        [
+          "Paul Perreault",
+          "CSL Limited"
+        ],
+        [
+          "Brent Saunders",
+          "Vesper Healthcare"
+        ],
+        [
+          "K\u00e5re Schultz",
+          "Teva Pharmaceutical"
+        ],
+        [
+          "John C. Lechleiter",
+          "Eli Lilly and Company"
+        ],
+        [
+          "Michel Pairet",
+          "Boehringer Ingelheim"
+        ],
+        [
+          "Hal Barron",
+          "GSK"
+        ],
+        [
+          "Frans van Houten",
+          "Royal Philips"
+        ],
+        [
+          "Stefan Oschmann",
+          "Merck KGaA"
+        ],
+        [
+          "Daniel O\u2019Day",
+          "Gilead Sciences"
+        ],
+        [
+          "David Ricks",
+          "Eli Lilly and Company"
+        ],
+        [
+          "Werner Baumann",
+          "Bayer AG"
+        ],
+        [
+          "Mene Pangalos",
+          "AstraZeneca"
+        ],
+        [
+          "Roger Perlmutter",
+          "Merck Research Laboratories"
+        ],
+        [
+          "Thomas B. Cueni",
+          "IFPMA"
+        ],
+        [
+          "Christophe Weber",
+          "Takeda Pharmaceutical"
+        ],
+        [
+          "Paul Stoffels",
+          "Galapagos NV"
+        ],
+        [
+          "John Reed",
+          "Sanofi"
+        ],
+        [
+          "Leif Johansson",
+          "AstraZeneca"
+        ],
+        [
+          "Christi Shaw",
+          "Kite Pharma (Gilead Company)"
+        ],
+        [
+          "Peter Piot",
+          "London School of Hygiene & Tropical Medicine"
+        ],
+        [
+          "Dame Sally Davies",
+          "UK Government"
+        ],
+        [
+          "Jeremy Farrar",
+          "Wellcome Trust"
+        ],
+        [
+          "Peter Slavin",
+          "Massachusetts General Hospital"
+        ],
+        [
+          "Franz Humer",
+          "Roche"
+        ],
+        [
+          "Stephen Ubl",
+          "PhRMA"
+        ],
+        [
+          "Ian Read",
+          "Pfizer"
+        ],
+        [
+          "David Epstein",
+          "Novartis"
+        ],
+        [
+          "George Yancopoulos",
+          "Regeneron Pharmaceuticals"
+        ],
+        [
+          "Rachel King",
+          "GlycoMimetics"
+        ],
+        [
+          "John Maraganore",
+          "Alnylam Pharmaceuticals"
+        ],
+        [
+          "Ted Love",
+          "Global Blood Therapeutics"
+        ],
+        [
+          "Bahija Jallal",
+          "Immunocore"
+        ],
+        [
+          "Jennifer Doudna",
+          "UC Berkeley"
+        ],
+        [
+          "Emmanuel Hanon",
+          "GSK"
+        ]
+      ]
+    }
+  ]
+}
