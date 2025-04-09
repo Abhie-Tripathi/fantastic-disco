@@ -45,7 +45,7 @@ export function useDefaultFilters() {
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
     ).toISOString(), // Ending date of current month going on.
     eventTypes: allowedEventTypes, // Event Types according to the platform.
-    categories: "animals-pets,apparel-fashion,arts-crafts,automotive,baby-kids",
+    categories: "technology,medical-pharma",
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({

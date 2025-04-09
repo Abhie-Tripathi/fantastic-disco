@@ -37,9 +37,8 @@ type HierarchyLevel = {
 const HIERARCHY_OPTIONS = [
   { id: "location", label: "Location" },
   { id: "category", label: "Category" },
-  { id: "maturity", label: "Maturity Level" },
-  { id: "time", label: "Time Period" },
-  // Add more hierarchy options as needed
+  // { id: "maturity", label: "Maturity Level" },
+  // { id: "time", label: "Time Period" },
 ] as const;
 
 interface ChartFiltersProps {

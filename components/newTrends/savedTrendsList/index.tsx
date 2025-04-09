@@ -269,7 +269,7 @@ const SavedTrendCard = ({
         }
       >
         <div className="flex justify-between items-center">
-          <p className="font-bold text-base text-gray-800 truncate">{name}</p>
+          <p className="font-medium text-base truncate">{name}</p>
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">

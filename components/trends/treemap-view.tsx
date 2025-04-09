@@ -76,7 +76,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       }
     }
 
-    return "city";
+    return "country";
   };
 
   const buildQueryParams = (category?: string, groupBy?: boolean) => {
