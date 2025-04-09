@@ -10,8 +10,6 @@ import { MagnifyingGlass } from "geist-icons";
 import Loading from "@/app/components/UI/Loading";
 import { PresetJsonData } from "@/types/coordinateEventType";
 import { PresetData } from '@/types/trackers';
-import LocationSelector from "./presetFilters/locationSelector";
-// import CategorySelector from "./presetFilters/categorySelector";
 import CategorySelector from "@/components/search/categorySelector";
 import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
@@ -54,14 +52,12 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     getLocalFilterValue("presetCategory")?.split(',').filter(Boolean) || [],
     [localFilters.presetCategory]
   );
-  console.log(getLocalFilterValue("presetCountry"));
   
   // Fetch data function with pagination
   const fetchPresetJson = useCallback(async () => {
     if (!hasMore || isLoading) return;
   
     setIsLoading(true);
-    console.log(page);
     
     try {
       const data = {
@@ -115,8 +111,6 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       (entries) => {
         const firstEntry = entries[0];
         if (firstEntry.isIntersecting && !isLoading) {
-          console.log(page);
-          
           setPage((prevPage) => prevPage + 1);
         }
       },
@@ -159,7 +153,6 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       }
     };
   }, [inputValue]);
-  console.log(sortBy);
   
   return (
     <div>
@@ -265,7 +258,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
           </div>
           {(!isLoading && presetTemplateData.length ===0) && (
             <div className="text-center py-4 text-gray-500">
-              We couldn't find any template matching your filter criteria at the moment.
+              We couldn&rsquo;t find any template matching your filter criteria at the moment.
             </div>
           )}
       </div>

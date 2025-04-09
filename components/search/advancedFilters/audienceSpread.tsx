@@ -64,12 +64,10 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
   );
 
   const toggleCountry = (code: string) => {
-    console.log(selectedCountries);
     
     const newCountries = selectedCountries.includes(code)
       ? selectedCountries.filter(c => c !== code)
       : [...selectedCountries, code];
-    console.log(newCountries);
     
     if(source==="preset"){
       setMultipleLocalFilters({
@@ -161,7 +159,7 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
                   <div
                     key={country.id}
                     className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
-                    onClick={() => toggleCountry(country.iso)}
+                    onClick={() => toggleCountry(source==="preset"?country.iso:country.id)}
                   >
                     <div className="w-5 h-5 border rounded flex items-center justify-center">
                       {selectedCountries.includes(source==="preset"?country.iso : country.id) && (
