@@ -42,87 +42,182 @@ const data = isEventeli ?
     }
   ]:
   [
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Competitor,
-      url: "T_COMPETITOR",
-      trackerName: "Competitor",
-      content:
-        "Track your competitor experts, influencers and where they might be participating in events",
-    },
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Keywords,
-      url:"T_PRODUCT_KEYWORDS",
-      trackerName: "Product and Topics",
-      content:
-        "List all the events which belongs to given industry or associated with keywords.",
-    },
-    {
-      type: "template",
-      domain: "Networking & Outreach",
-      img: Speaking,
-      url: "T_SPEAKING_OPPORTUNITY",
-      trackerName: "Speaking Opportunity",
-      content:
-        "Input team members and their details to keep track of the events with speaking opportunities.",
-    },
-    {
-      type: "template",
-      domain: "Networking & Outreach",
-      img: PeopleFinder,
-      url: "T_PEOPLE_FINDER",
-      trackerName: "People Finder",
-      content:
-        "Track experts, influencers and where they might be participating in various events",
-    },
-    {
-      type: "template",
-      domain: "Talent Acquisition",
-      img: People,
-      trackerName: "Recruitment",
-      url: "T_RECRUITMENT",
-      content:
-        "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
-    },
-    {
-      type: "template",
-      domain: "Audience Analysis",
-      img: Audience,
-      url:"T_AUDIENCE_DEPT_PROFILE",
-      trackerName: "Audience Dept. & Profiles",
-      content:
-        "Track events for the specific organizational departments or audience profiles",
-    },
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Customer,
-      url:"T_CUSTOMER_ICP",
-      trackerName: "Customer ICP",
-      content:
-        "Input ideal customer profile details like company, location or websites to track their interests",
-    },
-    {
-      type: "template",
-      domain: "Brand & Cause Management",
-      img: SocialCause,
-      trackerName: "Social Cause",
-      url:"T_SOCIAL_CAUSE",
-      content:
-        "Track social cause events that interests audience to be socially active and enhance their reach",
-    },
-    {
-      type: "template",
-      img: Brand,
-      domain: "Brand & Cause Management",
-      trackerName: "Brand Building",
-      url:"T_BRAND_BUILDING",
-      content:
-        "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
-    },
+    [
+      {
+          heading: "Companies",
+          subHeading: "From networking to results – Capture, track, and convert prospects seamlessly",
+          templates:[
+            {
+                type: "template",
+                domain: "Market Research",
+                img: Competitor,
+                url: "T_COMPETITOR",
+                trackerName: "Competitor",
+                content:
+                  "Track your competitor experts, influencers and where they might be participating in events",
+              },
+              {
+                  type: "template",
+                  domain: "Market Research",
+                  img: Customer,
+                  url:"T_CUSTOMER_ICP",
+                  trackerName: "Customer ICP",
+                  content:
+                    "Input ideal customer profile details like company, location or websites to track their interests",
+                },
+
+          ]
+      },
+      {
+          heading: "People",
+          subHeading: "Effortlessly track and stay updated on where your people are.",
+          templates:[
+            {
+                type: "template",
+                domain: "Market Research",
+                img: Competitor,
+                url: "T_COMPETITOR",
+                trackerName: "Competitor",
+                content:
+                  "Track your competitor experts, influencers and where they might be participating in events",
+              },
+              {
+                  type: "template",
+                  domain: "Networking & Outreach",
+                  img: PeopleFinder,
+                  url: "T_PEOPLE_FINDER",
+                  trackerName: "People Finder",
+                  content:
+                    "Track experts, influencers and where they might be participating in various events",
+                },
+                {
+                    type: "template",
+                    domain: "Networking & Outreach",
+                    img: Speaking,
+                    url: "T_SPEAKING_OPPORTUNITY",
+                    trackerName: "Speaking Opportunity",
+                    content:
+                      "Input team members and their details to keep track of the events with speaking opportunities.",
+                  },
+                
+          ]
+      },
+      {
+        heading: "Purpose",
+        subHeading: "Track your purpose, maximize impact and make every event count.",
+        templates:[
+          {
+              type: "template",
+              domain: "Market Research",
+              img: Competitor,
+              url: "T_COMPETITOR",
+              trackerName: "Competitor",
+              content:
+                "Track your competitor experts, influencers and where they might be participating in events",
+            },
+            {
+                type: "template",
+                domain: "Networking & Outreach",
+                img: PeopleFinder,
+                url: "T_PEOPLE_FINDER",
+                trackerName: "People Finder",
+                content:
+                  "Track experts, influencers and where they might be participating in various events",
+              },
+              {
+                  type: "template",
+                  domain: "Networking & Outreach",
+                  img: Speaking,
+                  url: "T_SPEAKING_OPPORTUNITY",
+                  trackerName: "Speaking Opportunity",
+                  content:
+                    "Input team members and their details to keep track of the events with speaking opportunities.",
+                },
+              
+        ]
+    }
+    ]
+    // {
+    //   type: "template",
+    //   domain: "Market Research",
+    //   img: Competitor,
+    //   url: "T_COMPETITOR",
+    //   trackerName: "Competitor",
+    //   content:
+    //     "Track your competitor experts, influencers and where they might be participating in events",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Market Research",
+    //   img: Keywords,
+    //   url:"T_PRODUCT_KEYWORDS",
+    //   trackerName: "Product and Topics",
+    //   content:
+    //     "List all the events which belongs to given industry or associated with keywords.",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Networking & Outreach",
+    //   img: Speaking,
+    //   url: "T_SPEAKING_OPPORTUNITY",
+    //   trackerName: "Speaking Opportunity",
+    //   content:
+    //     "Input team members and their details to keep track of the events with speaking opportunities.",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Networking & Outreach",
+    //   img: PeopleFinder,
+    //   url: "T_PEOPLE_FINDER",
+    //   trackerName: "People Finder",
+    //   content:
+    //     "Track experts, influencers and where they might be participating in various events",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Talent Acquisition",
+    //   img: People,
+    //   trackerName: "Recruitment",
+    //   url: "T_RECRUITMENT",
+    //   content:
+    //     "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Audience Analysis",
+    //   img: Audience,
+    //   url:"T_AUDIENCE_DEPT_PROFILE",
+    //   trackerName: "Audience Dept. & Profiles",
+    //   content:
+    //     "Track events for the specific organizational departments or audience profiles",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Market Research",
+    //   img: Customer,
+    //   url:"T_CUSTOMER_ICP",
+    //   trackerName: "Customer ICP",
+    //   content:
+    //     "Input ideal customer profile details like company, location or websites to track their interests",
+    // },
+    // {
+    //   type: "template",
+    //   domain: "Brand & Cause Management",
+    //   img: SocialCause,
+    //   trackerName: "Social Cause",
+    //   url:"T_SOCIAL_CAUSE",
+    //   content:
+    //     "Track social cause events that interests audience to be socially active and enhance their reach",
+    // },
+    // {
+    //   type: "template",
+    //   img: Brand,
+    //   domain: "Brand & Cause Management",
+    //   trackerName: "Brand Building",
+    //   url:"T_BRAND_BUILDING",
+    //   content:
+    //     "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
+    // },
   ];
 
   export default data;
