@@ -96,7 +96,7 @@ function SortableItem({
       </div>
 
       <Select value={level.value} onValueChange={onValueChange}>
-        <SelectTrigger className="flex-1 bg-background">
+        <SelectTrigger className="flex-1 bg-background pointer-events-none">
           <SelectValue placeholder="Select level" />
         </SelectTrigger>
         <SelectContent>
