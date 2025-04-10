@@ -141,15 +141,15 @@ export default function TeliSignUpForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4">
+    <div className="flex flex-col justify-center items-center my-5 w-full space-y-4">
       {signUpFlow === "default" && (
         <>
-          <p className="font-semibold text-lg leading-6 text-center mb-5">
+          <p className="font-semibold text-lg leading-6 text-center">
             Create your account
           </p>
           {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+              <div className="flex gap-4 w-full sm:w-96 mx-auto justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
@@ -176,7 +176,7 @@ export default function TeliSignUpForm() {
                 </Button>
               </div>
               <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
-                OR
+                Or
               </p>
             </>
           )}

@@ -293,9 +293,9 @@ const Profile = () => {
               >
                 <div className="flex sm:flex-row items-center gap-4">
                   <Avatar className="h-20 w-20 text-3xl">
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-primary">
                       {profilePicture === null ? (
-                        <span>
+                        <span className="text-white">
                           {profileData.firstname[0]}
                           {profileData.lastname &&
                           profileData.lastname.trim() !== ""
