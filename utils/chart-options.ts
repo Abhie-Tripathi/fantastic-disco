@@ -1,26 +1,10 @@
 import type { EChartsOption } from "echarts";
-import * as echarts from 'echarts';
-import { registerMap } from 'echarts';
-
-
-
-const maturityLevels = [
-  { name: "New", baseValue: 0.25 },
-  { name: "Growing", baseValue: 0.35 },
-  { name: "Established", baseValue: 0.25 },
-  { name: "Flagship", baseValue: 0.15 },
-];
-
-
-
-// Register the world map data
 
 export type HierarchyLevel = {
   id: string;
   label: string;
   value: string;
 };
-
 
 interface TreeNode {
   name: string;
@@ -50,136 +34,119 @@ type CategoryData = {
 
 type ApiData = LocationData | CategoryData;
 
-function isLocationData(item: ApiData | undefined | null): item is LocationData {
-  return item !== undefined && item !== null && 'name' in item && 'id' in item && 'latitude' in item && 'longitude' in item;
+function isLocationData(
+  item: ApiData | undefined | null
+): item is LocationData {
+  return (
+    item !== undefined &&
+    item !== null &&
+    "name" in item &&
+    "id" in item &&
+    "latitude" in item &&
+    "longitude" in item
+  );
 }
 
-function isCategoryData(item: ApiData | undefined | null): item is CategoryData {
-  return item !== undefined && item !== null && 'category' in item;
+function isCategoryData(
+  item: ApiData | undefined | null
+): item is CategoryData {
+  return item !== undefined && item !== null && "category" in item;
 }
 
-function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: ApiData[]): TreeNode[] {
-  console.log("Generating hierarchical data with:", { hierarchyLevels, apiData });
-
+function generateHierarchicalData(
+  hierarchyLevels: HierarchyLevel[],
+  apiData?: ApiData[]
+): TreeNode[] {
   if (!apiData || apiData.length === 0) return [];
 
-  // Check if we're dealing with category-first data
-  const isCategoryFirst = hierarchyLevels[0]?.value === "category" &&
-    isCategoryData(apiData[0]);
-
-  console.log("isCategoryFirst", isCategoryFirst);
-
-  console.log("hierarchyLevels", hierarchyLevels);
+  const isCategoryFirst =
+    hierarchyLevels[0]?.value === "category" && isCategoryData(apiData[0]);
 
   if (hierarchyLevels.length === 0) {
-    const result = apiData.map(item => {
-      if (isCategoryFirst && isCategoryData(item)) {
-        const node: TreeNode = {
-          name: item.category,
-          value: item.count,
-          rawData: {
-            category: item.category
-          }
-        };
-        return node;
-      } else if (isLocationData(item)) {
-        const node: TreeNode = {
-          name: item.name,
-          value: item.count,
-          rawData: {
-            location: item.name,
-            category: null,
-            id: item.id,
-          }
-        };
-        return node;
-      }
-      return null;
-    }).filter((item): item is TreeNode => item !== null);
-    console.log("No hierarchy levels, returning:", result);
+    const result = apiData
+      .map((item) => {
+        if (isCategoryFirst && isCategoryData(item)) {
+          const node: TreeNode = {
+            name: item.category,
+            value: item.count,
+            rawData: {
+              category: item.category,
+            },
+          };
+          return node;
+        } else if (isLocationData(item)) {
+          const node: TreeNode = {
+            name: item.name,
+            value: item.count,
+            rawData: {
+              location: item.name,
+              category: null,
+              id: item.id,
+            },
+          };
+          return node;
+        }
+        return null;
+      })
+      .filter((item): item is TreeNode => item !== null);
     return result;
   }
 
   const level = hierarchyLevels[0];
-  console.log("Processing level:", { level });
 
   switch (level.value) {
     case "category": {
       if (isCategoryFirst) {
-        // For category-first hierarchy, we'll use the actual category data from API
-        const categoryResult = apiData
-          .filter(isCategoryData)
-          .map(item => ({
-            name: item.category,
-            value: item.count,
+        const categoryResult = apiData.filter(isCategoryData).map((item) => ({
+          name: item.category,
+          value: item.count,
+          rawData: {
+            category: item.category,
+          },
+          children: item.children?.map((child) => ({
+            name: child.name,
+            value: child.count,
             rawData: {
-              category: item.category
+              location: child.name,
+              category: item.category,
+              id: child.id,
             },
-            children: item.children?.map(child => ({
-              name: child.name,
-              value: child.count,
-              rawData: {
-                location: child.name,
-                category: item.category,
-                id: child.id
-              }
-            }))
-          }));
-        console.log("Category level result:", categoryResult);
+          })),
+        }));
         return categoryResult;
       }
     }
 
     case "location": {
       if (isCategoryData(apiData[0])) {
-        const categoryResult = apiData
-          .filter(isCategoryData)
-          .map(item => ({
-            name: item.category,
-            value: item.count,
-            rawData: {
-              category: item.category
-            },
-            children: item.children?.map(child => ({
-              name: child.name,
-              value: child.count,
-              rawData: {
-                location: child.name,
-                category: item.category,
-                id: child.id
-              }
-            }))
-          }));
-        return categoryResult;
-      }
-      // For location level, we'll use the location data directly
-      const locationResult = apiData
-        .filter(isLocationData)
-        .map(item => ({
-          name: item.name,
+        const categoryResult = apiData.filter(isCategoryData).map((item) => ({
+          name: item.category,
           value: item.count,
           rawData: {
-            location: item.name,
-            category: null,
-            id: item.id,
-          }
+            category: item.category,
+          },
+          children: item.children?.map((child) => ({
+            name: child.name,
+            value: child.count,
+            rawData: {
+              location: child.name,
+              category: item.category,
+              id: child.id,
+            },
+          })),
         }));
-      console.log("Location level result:", locationResult);
-      return locationResult;
-    }
-
-    case "maturity": {
-      // For maturity level, we'll distribute the total value across maturity levels
-      const totalValue = apiData.reduce((sum, item) => sum + (isLocationData(item) ? item.count : 0), 0);
-      const maturityResult = maturityLevels.map(maturity => ({
-        name: maturity.name,
-        value: Math.floor(totalValue * maturity.baseValue),
+        return categoryResult;
+      }
+      const locationResult = apiData.filter(isLocationData).map((item) => ({
+        name: item.name,
+        value: item.count,
         rawData: {
-          maturity: maturity.name
-        }
+          location: item.name,
+          category: null,
+          id: item.id,
+        },
       }));
-      console.log("Maturity level result:", maturityResult);
-      return maturityResult;
+      return locationResult;
     }
 
     default:
@@ -187,8 +154,11 @@ function generateHierarchicalData(hierarchyLevels: HierarchyLevel[], apiData?: A
   }
 }
 
-export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] = [], apiData?: ApiData[]): EChartsOption {
-
+export function getChartOptions(
+  type: string,
+  hierarchyLevels: HierarchyLevel[] = [],
+  apiData?: ApiData[]
+): EChartsOption {
   const options: Record<string, EChartsOption> = {
     "geographic-events": {
       title: {
@@ -303,7 +273,7 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
           return `${params.name}<br/>${value.toLocaleString()} (${percent}%)`;
         },
       },
-      
+
       series: [
         {
           height: "100%",
@@ -313,7 +283,7 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
           visibleMin: 100,
           data: generateHierarchicalData(hierarchyLevels, apiData),
           leafDepth: 1,
-          drillDownIcon: '▶',
+          drillDownIcon: "▶",
           levels: [
             {
               itemStyle: {
@@ -339,10 +309,10 @@ export function getChartOptions(type: string, hierarchyLevels: HierarchyLevel[] 
               },
               emphasis: {
                 itemStyle: {
-                  borderColor: '#fff'
-                }
+                  borderColor: "#fff",
+                },
               },
-            }
+            },
           ],
           label: {
             show: true,
