@@ -81,7 +81,7 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3 h-[45dvh]">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3 h-auto">
       <p className="font-semibold text-lg leading-6 text-center mb-0">
         Login to your account
       </p>
