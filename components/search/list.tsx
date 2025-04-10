@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useIntent } from "@/hooks/useIntent";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event } from "@/types/events/events";
@@ -115,6 +117,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 };
 
 interface EventListProps {
+  eventType?:string;
   trackerId?: string;
   source?: string;
   view?: string;
@@ -123,6 +126,7 @@ interface EventListProps {
 
 export default function EventAccordion({
   source,
+  eventType,
   trackerId,
   view,
   showCheckBox,
@@ -138,6 +142,9 @@ export default function EventAccordion({
     isLoading: isConfigLoading,
     error: isConfigError,
   } = useConfiguration.interest();
+  const { createUserEventInterest, isLoading: isSubmitting } =
+  useIntent.createUserEventInterest();
+  const {removeBookmark}=useTrackerServices();
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -184,6 +191,69 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
+  const bulkSubmit = async () => {
+    console.log("bulk action called");
+    
+    try {
+      if (eventType === "bookmarked") {
+  
+        const bookmarkPromises = totalChecked.map(id => {
+          console.log(id);
+          
+          const unBookmarkEvent = events.find(event => event.basic.id === id);
+          console.log(unBookmarkEvent);
+          
+          const response=removeBookmark(unBookmarkEvent?.interests?.bookmark?.interestId);
+          if (response?.interest && setInterest) {
+            setInterest({
+              [response.interest.toLowerCase()]: {
+                interestId: response.id,
+              },
+            });
+          }
+        });
+  
+        await Promise.all(bookmarkPromises);
+      } else {
+        const interestPromises = totalChecked.map(id =>
+          createUserEventInterest(
+            {
+              eventId: id,
+              interest: action?.status,
+              sourceModule: "TRACKER",
+              ...(trackerId && { sourceId: trackerId }),
+            },
+            {
+              onSuccess: (response: any) => {
+                if (response?.interest) {
+                  setInterest(prev => ({
+                    ...prev,
+                    [response.interest.toLowerCase()]: {
+                      interestId: response.id,
+                    },
+                  }));
+                }
+                if (response?.eventId && setEventId) {
+                  setEventId(response?.eventId);
+                }
+                setSavedEventCount(prev => prev + 1);
+              },
+              onError: (error) => {
+                console.error("Error while submitting interest:", error);
+              },
+            }
+          )
+        );
+  
+        await Promise.all(interestPromises);
+      }
+  
+      // toast({ title: "Success", description: "Done!", variant: "default" });
+    } catch (error) {
+      console.error("Error in bulk submission:", error);
+      // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
+    }
+  };
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
@@ -510,8 +580,9 @@ const EventListItem = ({
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <div className="">
+      <Link href={`/internal/event/${event.basic.id}`} className="flex">
       {showCheckBox && (
-        <div className="flex">
+        <div className="flex pl-4">
         <input 
           type="checkbox" 
           checked={totalChecked.includes(event.basic.id)} 
@@ -519,8 +590,8 @@ const EventListItem = ({
         />
         </div>
       )}
-      <Link href={`/internal/event/${event.basic.id}`} className="block">
-        <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
+      <div className="block w-full">
+        <div className={`absolute ${showCheckBox ? 'left-4' : 'left-0'} top-6 h-auto w-[140px] flex items-start justify-center`}>
           {event.basic.logoUrl ? (
             <img
               src={event.basic.logoUrl}
@@ -1176,6 +1247,7 @@ const EventListItem = ({
               </div>
             </div>
           </div>
+        </div>
         </div>
       </Link>
       </div>

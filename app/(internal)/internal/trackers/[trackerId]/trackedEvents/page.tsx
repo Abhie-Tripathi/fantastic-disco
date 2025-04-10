@@ -747,7 +747,7 @@ if (!share) {
     ) : ( */}
       <>
         {/* <Alerts /> */}
-        <List source="tracker" trackerId={params.trackerId} showCheckBox={showCheckBox}/>
+        <List source="tracker" trackerId={params.trackerId} showCheckBox={showCheckBox} eventType={active || ""}/>
       </>
     {/* )} */}
   </div>
