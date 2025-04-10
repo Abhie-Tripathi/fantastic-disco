@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
-import { sessionKeys } from "@/data/onboarding";
+import { sessionKeys, validPaths } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
 import { useToast } from "@/hooks/use-toast";
 import { SignUpDTO } from "@/types";
@@ -14,6 +14,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -35,6 +36,9 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams && validPaths.includes(redirectParams) ? redirectParams: null;
   const {
     isLoading,
     signup,
@@ -86,6 +90,10 @@ export default function TeliSignUpForm() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
+
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
 
@@ -110,6 +118,7 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
+      redirectParams && sessionStorage.setItem("redirect", redirectParams);
       if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {
