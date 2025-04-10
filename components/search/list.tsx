@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event, SingleEventLocation } from "@/types/events/events";
+import { Event, HolidayEventLocation } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
@@ -1165,7 +1165,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
   };
 
   function formatAddress(
-    eventLocation: SingleEventLocation | SingleEventLocation[]
+    eventLocation: HolidayEventLocation | HolidayEventLocation[]
   ): string {
     const addressParts: string[] = [];
 

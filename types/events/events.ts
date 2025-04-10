@@ -126,46 +126,24 @@ const BasicEventSchema = z.object({
       slug: z.string(),
     })
   ),
-  eventLocation: z.union([
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      cityId: z.string().nullable(),
-      cityName: z.string().nullable(),
-      stateId: z.string().nullable(),
-      stateName: z.string().nullable(),
-      countryId: z.string().nullable(),
-      countryName: z.string().nullable(),
-      latitude: z.string().nullable(),
-      longitude: z.string().nullable(),
-      address: z.string().nullable(),
-      displayName: z.string().nullable(),
-      businessScore: z.number().optional(),
-      socialScore: z.number().optional(),
-      reason: z.string().optional(),
-      locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
-    }),
-    z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        cityId: z.string().nullable(),
-        cityName: z.string().nullable(),
-        stateId: z.string().nullable(),
-        stateName: z.string().nullable(),
-        countryId: z.string().nullable(),
-        countryName: z.string().nullable(),
-        latitude: z.string().nullable(),
-        longitude: z.string().nullable(),
-        address: z.string().nullable(),
-        displayName: z.string().nullable(),
-        businessScore: z.number().optional(),
-        socialScore: z.number().optional(),
-        reason: z.string().optional(),
-        locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
-      })
-    ),
-  ]),
+  eventLocation: z.object({
+    id: z.string(),
+    name: z.string(),
+    cityId: z.string().nullable(),
+    cityName: z.string().nullable(),
+    stateId: z.string().nullable(),
+    stateName: z.string().nullable(),
+    countryId: z.string().nullable(),
+    countryName: z.string().nullable(),
+    latitude: z.string().nullable(),
+    longitude: z.string().nullable(),
+    address: z.string().nullable(),
+    displayName: z.string().nullable(),
+    businessScore: z.number().optional(),
+    socialScore: z.number().optional(),
+    reason: z.string().optional(),
+    locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
+  }),
   organizer: z
     .object({
       id: z.string(),
@@ -290,7 +268,7 @@ export type TTabs = "overview" | "insights" | "audience";
 export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
 
-export interface SingleEventLocation {
+export interface HolidayEventLocation {
   id: string;
   name: string;
   cityId: string | null;
@@ -308,5 +286,4 @@ export interface SingleEventLocation {
   reason?: string;
   locationType: "VENUE" | "CITY" | "STATE" | "COUNTRY";
 }
-
-export type EventLocation = SingleEventLocation | SingleEventLocation[];
+[];
