@@ -347,6 +347,11 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [request, router]);
 
   const signInSSO = useCallback(async () => {
+    const isNewUser = JSON.parse(sessionStorage.getItem("newUser") || "false");
+
+    if (isNewUser) {
+      return;
+    }
     setIsAuthenticating(true);
     try {
       const origin = window.location.origin;
@@ -364,7 +369,6 @@ export const AuthContextProvider = ({ children }: any) => {
           window.localStorage.setItem("user", JSON.stringify(result.user));
           setUser(result.user);
         }
-
         if (!result.user.isNewUser) {
           localStorage.setItem(
             "walkthroughCompleted",
@@ -373,6 +377,7 @@ export const AuthContextProvider = ({ children }: any) => {
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           router.push("/internal");
         } else {
+          sessionStorage.setItem("newUser", JSON.stringify(true));
           localStorage.removeItem("walkthroughCompleted");
           router.push("/signup");
         }
