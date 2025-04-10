@@ -93,6 +93,9 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
     if (activeLte) {
       params.append("active_lte", activeLte);
     }
+    if (!category && categories.length > 0) {
+      params.append("categories", categories.join(","));
+    }
 
     if (category) {
       params.append("categories", category);
@@ -153,6 +156,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
               const queryParams = buildQueryParams(category);
               if (!queryParams) return null;
               const response = await getEventsCount({
+                eventTypes: eventTypes,
                 locationIds: locationId,
                 active_gte: activeGte,
                 active_lte: activeLte,
@@ -183,6 +187,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
                 active_gte: activeGte,
                 active_lte: activeLte,
                 categories: category,
+                eventTypes: eventTypes,
               });
               if (!response) return null;
 

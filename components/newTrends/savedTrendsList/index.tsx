@@ -217,14 +217,10 @@ const SavedTrendCard = ({
             .join(","),
         }),
       ...(locationIds && Object.keys(locationIds).length > 0
-        ? {
-            locationIds: Object.keys(locationIds)
-              .map((location) => location)
-              .join(","),
-          }
+        ? { locationIds: Object.keys(locationIds).join(",") }
         : viewBound
         ? { viewBound: JSON.stringify(viewBound) }
-        : {}),
+        : { locationIds: "" }),
       ...(id && { activeCard: id }),
     });
     applyFilters();
@@ -251,8 +247,8 @@ const SavedTrendCard = ({
   return (
     <li
       className={`flex justify-between h-36 gap-3 pl-4 pr-2 py-3 border rounded-lg w-72 bg-white cursor-pointer transition-all duration-200 ${
-        isActiveCard 
-          ? "border-primary shadow-md ring-1 ring-primary/20" 
+        isActiveCard
+          ? "border-primary shadow-md ring-1 ring-primary/20"
           : "border-[var(--neutral-light-color)] hover:shadow-sm hover:border-gray-300"
       } ${
         activeCard !== id && editTrend === true
@@ -272,32 +268,40 @@ const SavedTrendCard = ({
           <p className="font-medium text-base truncate">{name}</p>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
-            <MapPin width={12} height={12} className="text-gray-500" />
-            <Badge variant="outline" className="bg-gray-50/50">
-              {displayName}
-            </Badge>
-            {locationCount > 0 && (
-              <span className="text-gray-500">+{locationCount}</span>
-            )}
-          </p>
+          {displayName && (
+            <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+              <MapPin width={12} height={12} className="text-gray-500" />
+              <Badge variant="outline" className="bg-gray-50/50">
+                {displayName}
+              </Badge>
+              {locationCount > 0 && (
+                <span className="text-gray-500">+{locationCount}</span>
+              )}
+            </p>
+          )}
           <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
             <Calendar width={12} height={12} className="text-gray-500" />
             <Badge variant="outline" className="bg-gray-50/50">
               {renderFormattedDates(startDate, endDate)}
             </Badge>
           </p>
-          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
-            <BriefcaseBusiness width={12} height={12} className="text-gray-500" />
-            {savedTrendEventTypes.length > 0 && (
-              <Badge variant="outline" className="bg-gray-50/50">
-                {savedTrendEventTypes[0]}
-              </Badge>
-            )}
-            {eventTypeCount > 0 && (
-              <span className="text-gray-500">+{eventTypeCount}</span>
-            )}
-          </p>
+          {savedTrendEventTypes.length > 0 && (
+            <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+              <BriefcaseBusiness
+                width={12}
+                height={12}
+                className="text-gray-500"
+              />
+              {savedTrendEventTypes.length > 0 && (
+                <Badge variant="outline" className="bg-gray-50/50">
+                  {savedTrendEventTypes[0]}
+                </Badge>
+              )}
+              {eventTypeCount > 0 && (
+                <span className="text-gray-500">+{eventTypeCount}</span>
+              )}
+            </p>
+          )}
         </div>
       </div>
 
@@ -306,7 +310,11 @@ const SavedTrendCard = ({
           onClick={() => setOpen(!open)}
           className="self-start p-1 hover:bg-gray-100 rounded-full transition-colors"
         >
-          <EllipsisVerticalIcon width={14} height={14} className="text-gray-500" />
+          <EllipsisVerticalIcon
+            width={14}
+            height={14}
+            className="text-gray-500"
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="p-2 z-50 min-w-[120px] shadow-md rounded-md border border-gray-200">
           <div className="flex flex-col gap-1.5" id={"Savedtrendid"}>
@@ -426,12 +434,12 @@ const SavedTrendsList = ({
     (trend) => trend.id === activeCard
   );
   return (
-      <SwiperCarousel
-        initialSlideIndex={initialSlideIndex}
-        activeCard={activeCard}
-        queryParams={queryParams}
-        savedTrendsList={savedTrendsList}
-      />
+    <SwiperCarousel
+      initialSlideIndex={initialSlideIndex}
+      activeCard={activeCard}
+      queryParams={queryParams}
+      savedTrendsList={savedTrendsList}
+    />
   );
 };
 export default SavedTrendsList;

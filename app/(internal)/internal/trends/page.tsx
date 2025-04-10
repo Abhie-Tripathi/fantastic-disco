@@ -149,12 +149,6 @@ const EventTrends = () => {
   const [activeView, setActiveView] = useState<"line" | "treemap" | "table">(
     "treemap"
   );
-  const [searchQuery, setSearchQuery] = useState("");
-  const [recentSearches] = useState([
-    "Last 30 days events",
-    "High impact events",
-    "Popular venues",
-  ]);
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },

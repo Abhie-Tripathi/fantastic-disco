@@ -266,12 +266,15 @@ export const useEventsService = () => {
   };
 
   const getEventCountByCity = async (params: string) => {
-    return api.request<Array<{ count: number; id: string; name: string; latitude: string; longitude: string }>>(
+    const response = await api.request<Array<{ count: number; id: string; name: string; latitude: string; longitude: string }>>(
       `${endpoints.event.events}/count?${params}`,
       {
         method: "GET",
       }
     );
+    return response?.filter(item => item.name.toLowerCase() !== "online");
+
+
   };
 
   return {
