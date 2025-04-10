@@ -42,7 +42,7 @@ const data = isEventeli ?
     }
   ]:
   [
-    [
+    
       {
           heading: "Companies",
           subHeading: "From networking to results – Capture, track, and convert prospects seamlessly",
@@ -133,10 +133,9 @@ const data = isEventeli ?
                   content:
                     "Input team members and their details to keep track of the events with speaking opportunities.",
                 },
-              
-        ]
-    }
-    ]
+              ]  
+      }
+]
     // {
     //   type: "template",
     //   domain: "Market Research",
@@ -218,6 +217,5 @@ const data = isEventeli ?
     //   content:
     //     "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
     // },
-  ];
 
   export default data;
