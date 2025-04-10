@@ -1324,7 +1324,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               </div>
             </div>
 
-            <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
+            {/* <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
               <div className="max-w-[94px] h-full">
                 <div className="relative">
                   <div className="overflow-hidden">
@@ -1371,7 +1371,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </Link>

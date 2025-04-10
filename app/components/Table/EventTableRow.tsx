@@ -299,21 +299,35 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
         <div>
           {event.basic.primaryEventType === "holiday"
-            ? "-"
+            ? Array.isArray(event.basic.eventLocation)
+              ? event.basic.eventLocation.map(loc => loc.name).join(", ")
+              : event.basic.eventLocation?.name || "-"
             : event.basic.format === "online"
             ? "Online"
-            : event.basic.eventLocation?.locationType == "VENUE"
+            : Array.isArray(event.basic.eventLocation)
+            ? "-"
+            : event.basic.eventLocation?.locationType === "VENUE"
             ? event.basic.eventLocation.name
             : "TBA"}
         </div>
       </TableCell>
 
       {/* City Column */}
-      <TableCell>{displayValue(event.basic.eventLocation?.cityName)}</TableCell>
+      <TableCell>
+        {event.basic.primaryEventType === "holiday"
+          ? Array.isArray(event.basic.eventLocation)
+            ? event.basic.eventLocation.map(loc => loc.cityName).filter(Boolean).join(", ")
+            : displayValue(event.basic.eventLocation?.cityName)
+          : displayValue(Array.isArray(event.basic.eventLocation) ? "-" : event.basic.eventLocation?.cityName)}
+      </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.countryName)}
+        {event.basic.primaryEventType === "holiday"
+          ? Array.isArray(event.basic.eventLocation)
+            ? event.basic.eventLocation.map(loc => loc.countryName).filter(Boolean).join(", ")
+            : displayValue(event.basic.eventLocation?.countryName)
+          : displayValue(Array.isArray(event.basic.eventLocation) ? "-" : event.basic.eventLocation?.countryName)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}

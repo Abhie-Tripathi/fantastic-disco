@@ -183,7 +183,6 @@ const EventTable = ({
         );
     } else return <ZeroState text="No events found" />;
   }
-  console.log(events);
 
   return (
     <div className="w-full flex flex-col h-full">
