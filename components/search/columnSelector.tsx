@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterContext } from "@/context/filterContext";
 import { useSearchParams } from "next/navigation";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { columnsDropdown } from "@/data/trends";
+import { columnsDropdown, treemapColumnsDropdown } from "@/data/trends";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { TEventColumnType, Thresholds } from "@/types";
 import { cn } from "@/lib/utils";
@@ -19,9 +19,13 @@ import { cn } from "@/lib/utils";
 type EventGroupType = "social" | "business";
 
 export default function ColumnsSelector({
+  activeView,
+  setActiveView,
   selectedEventType,
   handleSelectChange,
 }: {
+  activeView: "line" | "treemap" | "table";
+  setActiveView: (view: "line" | "treemap" | "table") => void;
   selectedEventType: keyof Thresholds;
   handleSelectChange: (value: TEventColumnType) => void;
 }) {
@@ -43,6 +47,9 @@ export default function ColumnsSelector({
     }
     setIsOpen(open);
   };
+
+  const columns =
+    activeView === "treemap" ? treemapColumnsDropdown : columnsDropdown;
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -74,33 +81,34 @@ export default function ColumnsSelector({
         <RadioGroup
           className="flex items-center"
           onValueChange={(value) => {
-            handleSelectChange(value as TEventColumnType);
+            if (activeView === "treemap" && value !== "eventCount") {
+              setActiveView("line");
+            } else {
+              handleSelectChange(value as TEventColumnType);
+            }
             setIsOpen(false);
           }}
         >
           <div className="space-y-3 p-2">
-            {columnsDropdown.map(({ label, value, enable }) => (
+            {columns.map(({ label, value, enable }) => (
               <div
                 key={value}
                 className="flex items-center space-x-2 cursor-pointer"
               >
                 <RadioGroupItem
                   checked={selectedEventType === value}
-                  disabled={!enable}
                   value={value}
                   id={value}
                 />
                 <label
                   htmlFor={value}
-                  className={cn("text-sm font-medium leading-none", {
-                    "cursor-not-allowed opacity-50": !enable,
-                  })}
+                  className={cn("text-sm font-medium leading-none")}
                 >
                   {label}
                 </label>
                 {!enable && (
                   <p className="font-bold text-[#0062d1] text-[10px] bg-[#ebf5ff] p-1 rounded">
-                    Coming Soon
+                    Line Chart
                   </p>
                 )}
               </div>
