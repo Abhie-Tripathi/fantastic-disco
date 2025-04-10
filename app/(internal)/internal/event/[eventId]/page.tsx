@@ -26,7 +26,12 @@ import { isEventeli } from "@/config";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
-import { Event, EventPOCDetails, TTabs } from "@/types/events";
+import {
+  Event,
+  EventPOCDetails,
+  SingleEventLocation,
+  TTabs,
+} from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -265,8 +270,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isPostponed = status === "postponed";
 
   const venueName =
-    eventLocation?.locationType === "VENUE" ? eventLocation?.name : null;
-  const venueAddress = [eventLocation?.cityName, eventLocation?.countryName]
+    (eventLocation as SingleEventLocation)?.locationType === "VENUE"
+      ? (eventLocation as SingleEventLocation)?.name
+      : null;
+  const venueAddress = [
+    (eventLocation as SingleEventLocation)?.cityName,
+    (eventLocation as SingleEventLocation)?.countryName,
+  ]
     .filter(Boolean)
     .join(", ");
 
@@ -509,12 +519,14 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <p className="text-[var(--primary-text-color)] font-semibold text-sm">
                   <span>{venueName}</span>
 
-                  {showAddress && eventLocation && eventLocation.address && (
-                    <span>
-                      {", "}
-                      {eventLocation?.address || ""}
-                    </span>
-                  )}
+                  {showAddress &&
+                    eventLocation &&
+                    (eventLocation as SingleEventLocation)?.address && (
+                      <span>
+                        {", "}
+                        {(eventLocation as SingleEventLocation)?.address || ""}
+                      </span>
+                    )}
                 </p>
               ) : (
                 <TooltipProvider>

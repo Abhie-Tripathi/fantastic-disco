@@ -202,7 +202,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
       )}
 
       {alertEventsForDay && alertEventsForDay.map((alert) => (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} key={alert.basic.id}>
           <PopoverTrigger
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

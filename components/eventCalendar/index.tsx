@@ -322,6 +322,9 @@ export default function EventCalendar({
     }
   };
 
+
+  console.log("processedEvents", processedEvents)
+
   if (
     isEventeli &&
     !searchParams.get("viewBound") &&
