@@ -81,7 +81,7 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-5 w-full space-y-4 h-[45dvh]">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3 h-[45dvh]">
       <p className="font-semibold text-lg leading-6 text-center mb-0">
         Login to your account
       </p>
@@ -106,7 +106,7 @@ export default function SignInForm() {
       <p className="text-sm text-[var(--tertiary-text-color)]">Or</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-5 w-full"
       >
         <Controller
           name="email"

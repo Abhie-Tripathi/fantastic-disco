@@ -38,7 +38,10 @@ type FormData = z.infer<typeof signUpSchema>;
 export default function TeliSignUpForm() {
   const params = useSearchParams();
   const redirectParams = params.get("redirect");
-  const redirectPath = redirectParams && validPaths.includes(redirectParams) ? redirectParams: null;
+  const redirectPath =
+    redirectParams && validPaths.includes(redirectParams)
+      ? redirectParams
+      : null;
   const {
     isLoading,
     signup,
@@ -88,7 +91,7 @@ export default function TeliSignUpForm() {
         variant: "default",
       });
     }
-  }, [user]);
+  }, [user, isAuthenticating]);
 
   useEffect(() => {
     if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
@@ -150,7 +153,7 @@ export default function TeliSignUpForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-5 w-full space-y-4">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3">
       {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center">
@@ -193,7 +196,7 @@ export default function TeliSignUpForm() {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-5 w-full"
       >
         {signUpFlow === "default" && (
           <Controller
@@ -283,7 +286,7 @@ export default function TeliSignUpForm() {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center py-2 text-sm">
+          <div className="text-center text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}

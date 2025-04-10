@@ -211,7 +211,7 @@ const GtmSignUpForm = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-5 w-full space-y-4">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3">
       {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center">
@@ -254,7 +254,7 @@ const GtmSignUpForm = () => {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full mt-4"
+        className="flex flex-col space-y-5 w-full mt-4"
       >
         {signUpFlow === "default" && (
           <Controller
@@ -348,7 +348,7 @@ const GtmSignUpForm = () => {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center py-2 text-sm">
+          <div className="text-center text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}
