@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Star, Radio, TicketPercent, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Star,
+  Radio,
+  TicketPercent,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event, SingleEventLocation } from "@/types/events/events";
@@ -972,8 +979,8 @@ const EventListItem = ({
 
               <div className="flex items-start justify-end h-full">
                 {showValues.includes(Show.scores) &&
-                event.insights?.scores && (
-                  event.insights?.scores.inboundScore !== null ||
+                event.insights?.scores &&
+                (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
                   <div className="flex justify-end gap-6 w-full">
                     <div className="flex flex-col gap-4">
@@ -1127,19 +1134,27 @@ const UnplannedCard = ({ event }: { event: Event }) => {
     {
       label: "India",
       businessScore: 20,
-      socialScore: 20
+      socialScore: 20,
     },
     {
       label: "Global",
       businessScore: 30,
-      socialScore: 25
+      socialScore: 25,
     },
     {
       label: "Regional",
       businessScore: 15,
-      socialScore: 18
-    }
+      socialScore: 18,
+    },
   ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [slides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -1261,15 +1276,24 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                           variant="secondary"
                           className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
                           style={{
-                            color: eventTypeColors[event.basic.primaryEventType || ""],
+                            color:
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
                             backgroundColor: lightenColor(
-                              eventTypeColors[event.basic.primaryEventType || ""],
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
                               0.9
                             ),
                           }}
                         >
                           <span>
-                            {eventTypeIcons[event.basic.primaryEventType || "festivals"]}
+                            {
+                              eventTypeIcons[
+                                event.basic.primaryEventType || "festivals"
+                              ]
+                            }
                           </span>
                           <span>{event.basic.primaryEventType}</span>
                         </Badge>
@@ -1300,19 +1324,33 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               </div>
             </div>
 
-            <div className="col-span-5 flex flex-col gap-2 justify-between">
-              <div className="flex items-start justify-end h-full">
+            <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
+              <div className="max-w-[94px] h-full">
                 <div className="relative">
                   <div className="overflow-hidden">
-                    <div className="flex transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                    <div
+                      className="flex transition-transform duration-300 ease-in-out"
+                      style={{
+                        transform: `translateX(-${currentSlide * 100}%)`,
+                      }}
+                    >
                       {slides.map((slide, index) => (
-                        <div key={index} className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                        <div
+                          key={index}
+                          className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
+                        >
                           <p className="text-xs text-gray-600 font-medium text-center mb-1">
                             {slide.label}
                           </p>
                           <div className="grid grid-rows-2 gap-2">
-                            <CircularProgress value={slide.businessScore} label="Business Score" />
-                            <CircularProgress value={slide.socialScore} label="Social Score" />
+                            <CircularProgress
+                              value={slide.businessScore}
+                              label="Business"
+                            />
+                            <CircularProgress
+                              value={slide.socialScore}
+                              label="Social"
+                            />
                           </div>
                         </div>
                       ))}
@@ -1324,7 +1362,9 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         key={index}
                         onClick={() => setCurrentSlide(index)}
                         className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          currentSlide === index ? 'bg-primary w-4' : 'bg-gray-300'
+                          currentSlide === index
+                            ? "bg-primary w-4"
+                            : "bg-gray-300"
                         }`}
                       />
                     ))}
