@@ -98,6 +98,7 @@ export default function CategorySelector({
     
     const columnCount = 3;
     const allCategories = [
+      source!=="preset" &&
       { id: "all", name: "Select All", slug: "all", isEnabled: true },
       ...categories,
     ];

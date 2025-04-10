@@ -1,0 +1,460 @@
+{
+  "totalCount": 60,
+  "data": [
+    {
+      "trackerName": "Dealmakers",
+      "content": "Drive strategic partnerships & M&A opportunities for transformative business growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "758",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "partnership development",
+          "business deals",
+          "M&A",
+          "strategic growth alliances",
+          "merger",
+          "acquisition",
+          "hostile takeover"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Skills Marketplace",
+      "content": "Connect talent with opportunities through innovative recruitment & skill development",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "6123",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "talent",
+          "skills",
+          "career growth",
+          "recruitment",
+          "job matching",
+          "freelance talent"
+        ],
+        "excludeKeywords": [
+          "automated work"
+        ]
+      }
+    },
+    {
+      "trackerName": "Strategic Outsiders",
+      "content": "Leverage external expertise & consulting insights for business transformation",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "3354",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "external consulting",
+          "third party analysis",
+          "advisory boards",
+          "external strategies",
+          "consultancy",
+          "audit"
+        ],
+        "excludeKeywords": [
+          "in-house expertise"
+        ]
+      }
+    },
+    {
+      "trackerName": "Business Savvy",
+      "content": "Develop critical business acumen & decision-making skills for enterprise success",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "3505",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "negotiation skills",
+          "business acumen",
+          "entrepreneurship",
+          "critical thinking",
+          "decision making"
+        ],
+        "excludeKeywords": [
+          "administrative focus"
+        ]
+      }
+    },
+    {
+      "trackerName": "Intrapreneurs Insight",
+      "content": "Foster internal innovation & employee-led initiatives for organizational growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "46",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "internal entrepreneurs",
+          "corporate innovation",
+          "employee led projects",
+          "intrapreneurship",
+          "internal startup"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Pitch Perfect",
+      "content": "Master investor presentations & fundraising strategies for startup success",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "134",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "investor pitches",
+          "presentation skills",
+          "pitching strategies",
+          "startup presentations",
+          "fundraising pitch"
+        ],
+        "excludeKeywords": [
+          "informal discussion"
+        ]
+      }
+    },
+    {
+      "trackerName": "Legacy Leaders",
+      "content": "Build lasting business value & succession planning for generational continuity",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "775",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "long term planning",
+          "succession",
+          "heritage",
+          "generational continuity",
+          "legacy business planning"
+        ],
+        "excludeKeywords": [
+          "short-term goals"
+        ]
+      }
+    },
+    {
+      "trackerName": "Investor Match",
+      "content": "Connect startups with ideal investors through strategic funding partnerships",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "2127",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "funding",
+          "investors",
+          "venture capital",
+          "angel funding",
+          "investor startup matchmaking"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Freelancer Focus",
+      "content": "Empower independent professionals & gig economy workers for sustainable success",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "151",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "gig economy",
+          "freelance business",
+          "solopreneurs",
+          "remote work",
+          "self employed"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Procurement Pioneers",
+      "content": "Optimize sourcing strategies & supply chain management for business efficiency",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "2360",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "procurement",
+          "purchasing",
+          "vendor management",
+          "sourcing strategies",
+          "supply chain optimization"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Crisis Navigators",
+      "content": "Develop resilient strategies & emergency responses for business continuity",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1846",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "crisis response",
+          "emergency planning",
+          "resilience",
+          "risk assessment",
+          "unexpected challenges"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Turnaround Titans",
+      "content": "Transform struggling businesses through strategic restructuring & revitalization",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1817",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "business turnaround",
+          "restructuring",
+          "turnaround strategies",
+          "recovery",
+          "revitalization"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "First Responders",
+      "content": "Enable rapid crisis intervention & adaptive management strategies for business",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "213",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "quick response",
+          "emergency management",
+          "rapid adaptation",
+          "early crisis intervention"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Retention Roundtable",
+      "content": "Build customer loyalty & engagement through innovative retention strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "86",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "client retention",
+          "customer loyalty",
+          "after sales",
+          "membership programs",
+          "engagement follow up"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Patent Pursuers",
+      "content": "Protect innovations & intellectual property through strategic patent management",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1055",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "intellectual property",
+          "patent protection",
+          "R&D",
+          "innovation ownership",
+          "trademarks"
+        ],
+        "excludeKeywords": [
+          "open source"
+        ]
+      }
+    },
+    {
+      "trackerName": "Grassroots Growth",
+      "content": "Build community-driven business expansion & organic growth strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "17",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "organic growth",
+          "grassroots expansion",
+          "community outreach",
+          "non scaled growth",
+          "local efforts"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Interactive Insights",
+      "content": "Generate actionable insights through engaging sessions & collaborative learning",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "335",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "interactive session",
+          "deep dive",
+          "polling",
+          "participatory insights",
+          "active engagement"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Pivot Points",
+      "content": "Navigate business transitions & market shifts through adaptive strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "70",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "business pivot",
+          "major transition",
+          "adaptive strategy",
+          "market shift",
+          "repositioning"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Negotiation Nexus",
+      "content": "Master deal-making & strategic negotiations for business success",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "424",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "business negotiation",
+          "bargaining",
+          "deal tactics",
+          "buyer seller discussion",
+          "mediation"
+        ],
+        "excludeKeywords": []
+      }
+    },
+    {
+      "trackerName": "Mentor Match",
+      "content": "Connect mentors & mentees for impactful professional development & growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1114",
+      "filterValue": {
+        "country": [],
+        "category": []
+      },
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": {
+        "includeKeywords": [
+          "mentorship",
+          "mentor mentee",
+          "coaching",
+          "career advice",
+          "skill sharing"
+        ],
+        "excludeKeywords": []
+      }
+    }
+  ]
+}

@@ -354,6 +354,7 @@ const templates = [
       {
         img: Name,
         type: "text",
+        apiValue: "userName",
         placeholder: "Speaker's Name",
         required:true,
         example: "Mark Zuckerberg",
@@ -361,6 +362,7 @@ const templates = [
       {
         img: Company,
         type: "text",
+        apiValue: "userOrgWebsite",
         placeholder: "Company Name",
         required:true,
         example: "Facebook",
@@ -603,19 +605,35 @@ const Pages = () => {
     }
   }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
-
+  function transformedData(data: Record<string, any[]>, val: string[]) {
+    if (!val.length || !data[val[0]]) return []; // Handle empty cases
+  
+    const result = data[val[0]].map((_, index) => 
+      val.map(key => data[key]?.[index]) // Optional chaining for safety
+    );
+  
+    return result;
+  }
   const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
-    
+    let finalResult;
     setHideSuggestion(false);
-    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
+    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
+    
+    // presetItem[]
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType==="T_BRAND_BUILDING") {
+      if(trackerType === 'T_COMPETITOR'){
+        finalResult=transformedData(presetItem.data,["organizations"])
+      }
+      if(trackerType === 'T_SPEAKING_OPPORTUNITY'){
+        finalResult=transformedData(presetItem.data,["userName", "userOrgWebsite"])
+      }
       const getLocationIds = (presetItem?.filterValue?.country || [])
       .map((loc) => loc.id).join(",");
       const getCategoriesSlug = (presetItem?.filterValue?.category || []).map((cat:{slug:string}) => cat.slug).join(",");
       setLocalFilter("categories",getCategoriesSlug)
       setLocalFilter("locationIds",getLocationIds)
-      const presetData: any = [];
-      presetItem?.data.map((item: any) => {
+      const presetData: any = [];      
+      finalResult?.map((item: any) => {
         const temp: any = {};
         template?.inputAreas?.map((field: InputArea, index: number)=>(
           temp[field.placeholder] = item[index]
@@ -628,8 +646,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setLocalFilter("includeKeywords",presetItem?.data?.[0]?.join(","));
-      setLocalFilter("excludeKeywords",presetItem?.data?.[1]?.join(","))
+      setLocalFilter("includeKeywords",presetItem?.data?.includeKeywords?.join(","));
+      setLocalFilter("excludeKeywords",presetItem?.data?.excludeKeywords?.join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -901,7 +919,7 @@ const Pages = () => {
           return;
         }
         if (data) {  
-          // router.replace("/internal/trackers");
+          router.replace("/internal/trackers");
         }
       }catch(error){
         // console.log(error);

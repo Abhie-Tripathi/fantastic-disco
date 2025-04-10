@@ -164,30 +164,22 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       </div>
       
       <div className="flex justify-center items-center gap-2 mt-6 mx-auto w-[95%]">
-        <div className="w-[50%]">
+        <div className="w-[100%]">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none w-full bg-transparent"
-              placeholder="Enter Pre-sets name"
+              placeholder="Search by Pre-sets name, Country or Category"
             />
           </div>
         </div>
-        <div className="w-[20%]">
+        {/* <div className="w-[20%]">
         <AudienceSpreadSelector source="preset"/>
-          {/* <LocationSelector 
-            setSelectedLocation={setSelectedLocation} 
-            selectedLocation={selectedLocation}
-          /> */}
         </div>
         <div className="w-[20%]">
           <CategorySelector source="preset"/>
-          {/* <CategorySelector 
-            selectedCategory={selectedCategory} 
-            setSelectedCategory={setSelectedCategory}
-          /> */}
         </div>
         <div className="h-[42px]">
           <SortDropdown 
@@ -195,7 +187,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
             sortBy={sortBy} 
             setSortBy={setSortBy}
           />
-        </div>
+        </div> */}
       </div>
 
       <div
@@ -258,7 +250,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
           </div>
           {(!isLoading && presetTemplateData.length ===0) && (
             <div className="text-center py-4 text-gray-500">
-              We couldn&rsquo;t find any template matching your filter criteria at the moment.
+              We couldn&rsquo;t find any preset matching your filter criteria at the moment.
             </div>
           )}
       </div>
