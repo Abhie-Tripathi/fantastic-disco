@@ -148,7 +148,7 @@ console.log(intelScoreData);
           </div>:
           <div className={`flex flex-col gap-6 pl-6 pr-6`}>
             <div className="flex justify-between">
-              <div>
+              <div className="flex flex-col gap-2">
                 <div className="text-xl font-medium">Brand Brief Builder </div>
                 <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
               </div>
