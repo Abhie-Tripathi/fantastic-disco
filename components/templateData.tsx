@@ -65,7 +65,15 @@ const data = isEventeli ?
                   content:
                     "Input ideal customer profile details like company, location or websites to track their interests",
                 },
-
+                {
+                  type: "template",
+                  domain: "Market Research",
+                  img: Customer,
+                  url:"T_CUSTOMER_ICP",
+                  trackerName: "Customer ICP",
+                  content:
+                    "Input ideal customer profile details like company, location or websites to track their interests",
+                },
           ]
       },
       {

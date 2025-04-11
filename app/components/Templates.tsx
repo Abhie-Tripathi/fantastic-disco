@@ -8,7 +8,7 @@ import Back from "/public/back.svg";
 import { isEventeli } from "@/config";
 const Templates =({isData, hideTemplates})=>{
     return(
-        <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
+        <div  style={{padding:"16px 14px",width:"100%", overflowY:"auto"}}>
         {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
       {isData && 
           <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
@@ -69,22 +69,36 @@ const Templates =({isData, hideTemplates})=>{
               </Link>
             </div>
           </div>:
-          <div>
+          <div className={`flex flex-col gap-6 pl-6 pr-6`}>
+            <div className="flex justify-between">
+              <div className="pl-6">
+                <div className="text-xl font-medium">Brand Brief Builder </div>
+                <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
+              </div>
+              <div className="w-[248px] h-40 border border-[var(--border-color)]">
+                xyz
+              </div>
+            </div>
+            <hr className="my-4 border-t border-gray-300"/>
             {data.map((item, index)=>(
               <div>
-                <div>
-                <div>
+                <div className="flex">
+                <div className="flex flex-col w-[30%] pr-6">
+                <div className="text-2xl">
                 {item.heading}
+                </div>
+                <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>
                 {item.subHeading}
                 </div>
-                <div>
+                </div>
+                <div className={`flex gap-2 w-[70%] p-5 ${item.heading==="Companies" ? 'bg-[#F3F1FB]' : item.heading==="People"? 'bg-[#EEEEFB]':'bg-[#FAF3FA]'}`} style={{ borderRadius: '0.5px' }}>
                   {
                     item.templates.map((template, index)=>(
                       <Link
                       href={`/internal/trackers/create?type=${template?.url}`}
                       key={index}
                     >
-                      <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
+                      <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px] bg-[var(--accent-foreground)]">
                         <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                           <div className={styles.account}>
                             <Image src={template.img} alt="people" width={31} height={31} />
