@@ -15,9 +15,9 @@ export default function Page() {
   const otp = searchParams.get("otp") || "";
   const target = searchParams.get("target") || "";
   const targetId = searchParams.get("targetId") || "";
-  const source = searchParams.get("source") || "";
-  const token = searchParams.get("token") || "";
-  const userId = Number(searchParams.get("userId") || "");
+  const source = searchParams.get("utm_source") || "";
+  const token = searchParams.get("hash") || "";
+  const userId = Number(searchParams.get("uid") || "");
   const redirectPath = searchParams.get("redirect") || "";
 
   useEffect(() => {
