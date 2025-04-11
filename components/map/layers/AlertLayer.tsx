@@ -1,5 +1,5 @@
 import { Layer, Source } from "react-map-gl";
-import { AlertPolygonResponse } from "@/types/events/alert";
+import { AlertPolygonResponse } from "@/types/events";
 import { useEffect, useState, useMemo } from "react";
 import { useEventsService } from "@/services/eventsService";
 import type { MapRef } from "react-map-gl";

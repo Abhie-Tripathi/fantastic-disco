@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, X, Star } from "lucide-react";
+import { AlertTriangle, Loader2, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -87,20 +87,59 @@ export default function EventList({
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : [
-            event.basic.eventLocation?.locationType === "VENUE"
-              ? event.basic.eventLocation?.name
+    const address = event.basic.eventLocation ? (
+      event.basic.format === "online" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" /> Online
+        </span>
+      ) : event.basic.format === "hybrid" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" />
+          <span>Hybrid&nbsp;-&nbsp;</span>
+          {[
+            event.basic.eventLocation.locationType === "VENUE"
+              ? event.basic.eventLocation.name
               : "TBA",
+            event.basic.eventLocation.locationType !== "VENUE"
+              ? event.basic.eventLocation.name
+              : null,
             event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.stateName,
-            event.basic.eventLocation?.countryName,
+            event.basic.eventLocation?.stateName !==
+            event.basic.eventLocation?.cityName
+              ? event.basic.eventLocation?.stateName
+              : null,
+            event.basic.eventLocation?.countryName !==
+            event.basic.eventLocation?.cityName
+              ? event.basic.eventLocation?.countryName
+              : null,
           ]
             .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
+            .join(", ")}
+        </span>
+      ) : (
+        [
+          event.basic.eventLocation.locationType === "VENUE"
+            ? event.basic.eventLocation.name
+            : "TBA",
+          event.basic.eventLocation.locationType !== "VENUE"
+            ? event.basic.eventLocation.name
+            : null,
+          event.basic.eventLocation?.cityName,
+          event.basic.eventLocation?.stateName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.stateName
+            : null,
+          event.basic.eventLocation?.countryName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.countryName
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      )
+    ) : (
+      "Venue to be announced"
+    );
 
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">

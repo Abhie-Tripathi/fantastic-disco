@@ -286,4 +286,3 @@ export interface HolidayEventLocation {
   reason?: string;
   locationType: "VENUE" | "CITY" | "STATE" | "COUNTRY";
 }
-[];

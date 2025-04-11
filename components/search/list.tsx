@@ -353,64 +353,42 @@ const EventListItem = ({
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
-        {Array.isArray(event.basic.eventLocation)
-          ? event.basic.eventLocation.map((loc, index) => (
-              <span key={loc.id}>
-                {index > 0 ? ", " : ""}
-                {[
-                  loc.locationType === "VENUE" ? loc.name : "TBA",
-                  loc.cityName,
-                  loc.stateName !== loc.cityName ? loc.stateName : null,
-                  loc.countryName !== loc.cityName ? loc.countryName : null,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-              </span>
-            ))
-          : [
-              event.basic.eventLocation.locationType === "VENUE"
-                ? event.basic.eventLocation.name
-                : "TBA",
-              event.basic.eventLocation.cityName,
-              event.basic.eventLocation.stateName !==
-              event.basic.eventLocation.cityName
-                ? event.basic.eventLocation.stateName
-                : null,
-              event.basic.eventLocation.countryName !==
-              event.basic.eventLocation.cityName
-                ? event.basic.eventLocation.countryName
-                : null,
-            ]
-              .filter(Boolean)
-              .join(", ")}
+        {[
+          event.basic.eventLocation.locationType === "VENUE"
+            ? event.basic.eventLocation.name
+            : "TBA",
+          event.basic.eventLocation.locationType !== "VENUE"
+            ? event.basic.eventLocation.name
+            : null,
+          event.basic.eventLocation?.cityName,
+          event.basic.eventLocation?.stateName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.stateName
+            : null,
+          event.basic.eventLocation?.countryName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.countryName
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")}
       </span>
-    ) : Array.isArray(event.basic.eventLocation) ? (
-      event.basic.eventLocation.map((loc, index) => (
-        <span key={loc.id}>
-          {index > 0 ? ", " : ""}
-          {[
-            loc.locationType === "VENUE" ? loc.name : "TBA",
-            loc.cityName,
-            loc.stateName !== loc.cityName ? loc.stateName : null,
-            loc.countryName !== loc.cityName ? loc.countryName : null,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        </span>
-      ))
     ) : (
       [
         event.basic.eventLocation.locationType === "VENUE"
           ? event.basic.eventLocation.name
           : "TBA",
-        event.basic.eventLocation.cityName,
-        event.basic.eventLocation.stateName !==
-        event.basic.eventLocation.cityName
-          ? event.basic.eventLocation.stateName
+        event.basic.eventLocation.locationType !== "VENUE"
+          ? event.basic.eventLocation.name
           : null,
-        event.basic.eventLocation.countryName !==
-        event.basic.eventLocation.cityName
-          ? event.basic.eventLocation.countryName
+        event.basic.eventLocation?.cityName,
+        event.basic.eventLocation?.stateName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.stateName
+          : null,
+        event.basic.eventLocation?.countryName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.countryName
           : null,
       ]
         .filter(Boolean)
@@ -1129,73 +1107,54 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    {
-      label: "India",
-      businessScore: 20,
-      socialScore: 20,
-    },
-    {
-      label: "Global",
-      businessScore: 30,
-      socialScore: 25,
-    },
-    {
-      label: "Regional",
-      businessScore: 15,
-      socialScore: 18,
-    },
-  ];
+  // const [currentSlide, setCurrentSlide] = useState(0);
+  // const slides = [
+  //   {
+  //     label: "India",
+  //     businessScore: 20,
+  //     socialScore: 20,
+  //   },
+  //   {
+  //     label: "Global",
+  //     businessScore: 30,
+  //     socialScore: 25,
+  //   },
+  //   {
+  //     label: "Regional",
+  //     businessScore: 15,
+  //     socialScore: 18,
+  //   },
+  // ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 3000); // Change slide every 3 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
+  //   }, 3000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [slides.length]);
+  //   return () => clearInterval(interval);
+  // }, [slides.length]);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  // const nextSlide = () => {
+  //   setCurrentSlide((prev) => (prev + 1) % slides.length);
+  // };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  // const prevSlide = () => {
+  //   setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  // };
 
-  function formatAddress(
-    eventLocation: HolidayEventLocation | HolidayEventLocation[]
-  ): string {
+  function formatAddress(eventLocation: HolidayEventLocation[]): string {
     const addressParts: string[] = [];
 
     if (Array.isArray(eventLocation)) {
       const locations = eventLocation.map((loc) => {
         const parts: string[] = [];
-        if (loc.cityName) parts.push(loc.cityName);
-        if (loc.stateName && loc.stateName !== loc.cityName)
-          parts.push(loc.stateName);
-        if (loc.countryName && loc.countryName !== loc.cityName)
-          parts.push(loc.countryName);
+        if (loc.displayName) parts.push(loc.displayName);
+
         return parts.join(", ");
       });
       return locations.join("; ");
-    } else {
-      if (eventLocation?.cityName) addressParts.push(eventLocation.cityName);
-      if (
-        eventLocation?.stateName &&
-        eventLocation.stateName !== eventLocation.cityName
-      ) {
-        addressParts.push(eventLocation.stateName);
-      }
-      if (
-        eventLocation?.countryName &&
-        eventLocation.countryName !== eventLocation.cityName
-      ) {
-        addressParts.push(eventLocation.countryName);
-      }
-      return addressParts.join(", ");
     }
+    return addressParts.join(", ");
   }
 
   const eventTypes = event.basic.eventTypes
@@ -1208,7 +1167,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
-      <Link href={`/internal/event/${event.basic.id}`} className="block">
+      <div className="block">
         <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
             <img
@@ -1258,7 +1217,10 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               <h2 className="text-2xl font-semibold">{event.basic.name}</h2>
               <div>
                 <p className="text-sm capitalize">
-                  {formatAddress(event.basic.eventLocation)}
+                  {formatAddress(
+                    event.basic
+                      .eventLocation as unknown as HolidayEventLocation[]
+                  )}
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
                   {formattedDateRange(
@@ -1374,7 +1336,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
             </div> */}
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };

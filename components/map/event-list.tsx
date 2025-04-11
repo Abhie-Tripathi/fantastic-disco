@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, Focus, X, Star } from "lucide-react";
+import { AlertTriangle, Loader2, Focus, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event } from "@/types/events";
+import { Event, HolidayEventLocation } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -54,22 +54,59 @@ const EventCard = memo(
       }
     }, [mapRef]);
 
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : Array.isArray(event.basic.eventLocation)
-        ? event.basic.eventLocation[0]?.name || "TBA"
-        : [
+    const address = event.basic.eventLocation ? (
+      event.basic.format === "online" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" /> Online
+        </span>
+      ) : event.basic.format === "hybrid" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" />
+          <span>Hybrid&nbsp;-&nbsp;</span>
+          {[
             event.basic.eventLocation.locationType === "VENUE"
               ? event.basic.eventLocation.name
               : "TBA",
-            event.basic.eventLocation.cityName,
-            event.basic.eventLocation.stateName,
-            event.basic.eventLocation.countryName,
+            event.basic.eventLocation.locationType !== "VENUE"
+              ? event.basic.eventLocation.name
+              : null,
+            event.basic.eventLocation?.cityName,
+            event.basic.eventLocation?.stateName !==
+            event.basic.eventLocation?.cityName
+              ? event.basic.eventLocation?.stateName
+              : null,
+            event.basic.eventLocation?.countryName !==
+            event.basic.eventLocation?.cityName
+              ? event.basic.eventLocation?.countryName
+              : null,
           ]
             .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
+            .join(", ")}
+        </span>
+      ) : (
+        [
+          event.basic.eventLocation.locationType === "VENUE"
+            ? event.basic.eventLocation.name
+            : "TBA",
+          event.basic.eventLocation.locationType !== "VENUE"
+            ? event.basic.eventLocation.name
+            : null,
+          event.basic.eventLocation?.cityName,
+          event.basic.eventLocation?.stateName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.stateName
+            : null,
+          event.basic.eventLocation?.countryName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.countryName
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      )
+    ) : (
+      "Venue to be announced"
+    );
 
     const handleZoomToLocation = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -241,22 +278,20 @@ const UnplannedCard = memo(
     onHover: () => void;
     onLeave: () => void;
   }) => {
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : Array.isArray(event.basic.eventLocation)
-        ? event.basic.eventLocation[0]?.name || "TBA"
-        : [
-            event.basic.eventLocation.locationType === "VENUE"
-              ? event.basic.eventLocation.name
-              : "TBA",
-            event.basic.eventLocation.cityName,
-            event.basic.eventLocation.stateName,
-            event.basic.eventLocation.countryName,
-          ]
-            .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
+    function formatAddress(eventLocation: HolidayEventLocation[]): string {
+      const addressParts: string[] = [];
+
+      if (Array.isArray(eventLocation)) {
+        const locations = eventLocation.map((loc) => {
+          const parts: string[] = [];
+          if (loc.displayName) parts.push(loc.displayName);
+
+          return parts.join(", ");
+        });
+        return locations.join("; ");
+      }
+      return addressParts.join(", ");
+    }
 
     return (
       <Link href={`/internal/event/${event.basic.id}`}>
@@ -343,7 +378,12 @@ const UnplannedCard = memo(
                     {event.basic.name}
                   </h3>
                 </div>
-                <div className="text-xs text-gray-600 mb-1">{address}</div>
+                <div className="text-xs text-gray-600 mb-1">
+                  {formatAddress(
+                    event.basic
+                      .eventLocation as unknown as HolidayEventLocation[]
+                  )}
+                </div>
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,

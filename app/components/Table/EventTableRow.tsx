@@ -89,7 +89,7 @@ function getOrdinalSuffix(number: number): string {
 }
 
 function formatExhibitorCount(value: string | number | null): string {
-  if (value === null || value === undefined) return "-";
+  if (value === "0-0" || value === null || value === undefined) return "-";
 
   const stringValue = String(value);
   const values = stringValue.split("-");
@@ -300,7 +300,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         <div>
           {event.basic.primaryEventType === "holiday"
             ? Array.isArray(event.basic.eventLocation)
-              ? event.basic.eventLocation.map(loc => loc.name).join(", ")
+              ? event.basic.eventLocation.map((loc) => loc.name).join(", ")
               : event.basic.eventLocation?.name || "-"
             : event.basic.format === "online"
             ? "Online"
@@ -316,18 +316,32 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       <TableCell>
         {event.basic.primaryEventType === "holiday"
           ? Array.isArray(event.basic.eventLocation)
-            ? event.basic.eventLocation.map(loc => loc.cityName).filter(Boolean).join(", ")
+            ? event.basic.eventLocation
+                .map((loc) => loc.cityName)
+                .filter(Boolean)
+                .join(", ")
             : displayValue(event.basic.eventLocation?.cityName)
-          : displayValue(Array.isArray(event.basic.eventLocation) ? "-" : event.basic.eventLocation?.cityName)}
+          : displayValue(
+              Array.isArray(event.basic.eventLocation)
+                ? "-"
+                : event.basic.eventLocation?.cityName
+            )}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
         {event.basic.primaryEventType === "holiday"
           ? Array.isArray(event.basic.eventLocation)
-            ? event.basic.eventLocation.map(loc => loc.countryName).filter(Boolean).join(", ")
+            ? event.basic.eventLocation
+                .map((loc) => loc.countryName)
+                .filter(Boolean)
+                .join(", ")
             : displayValue(event.basic.eventLocation?.countryName)
-          : displayValue(Array.isArray(event.basic.eventLocation) ? "-" : event.basic.eventLocation?.countryName)}
+          : displayValue(
+              Array.isArray(event.basic.eventLocation)
+                ? "-"
+                : event.basic.eventLocation?.countryName
+            )}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
