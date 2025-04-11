@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
 import { newCategories } from "@/data/categories";
-import { industryData, sessionKeys, validPaths } from "@/data/onboarding";
+import { industryData, sessionKeys } from "@/data/onboarding";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { SignUpFormSchema } from "@/types/signup";
@@ -28,11 +28,6 @@ type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
   const params = useSearchParams();
-  const redirectParams = params.get("redirect");
-  const redirectPath =
-    redirectParams && validPaths.includes(redirectParams)
-      ? redirectParams
-      : null;
   const {
     signup,
     error,
@@ -91,7 +86,6 @@ const GtmSignUpForm = () => {
       sessionStorage.setItem("industry", signUpDTOData.industry);
     }
     sessionStorage.setItem("flow", "signUp");
-    redirectParams && sessionStorage.setItem("redirect", redirectParams);
 
     try {
       if (signUpFlow === "sso") {
@@ -103,10 +97,6 @@ const GtmSignUpForm = () => {
       console.error("Signup error:", error);
     }
   };
-
-  useEffect(() => {
-    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
-  }, [redirectPath]);
 
   useEffect(() => {
     const isMappedCategory = industryData.find(

@@ -357,7 +357,6 @@ export const AuthContextProvider = ({ children }: any) => {
       const origin = window.location.origin;
       const res = await fetch(`${origin}/api/auth/session`);
       const session = await res.json();
-      const redirectPath = sessionStorage.getItem("redirect");
       const result = await request<{ user: UserResponse }>(
         endpoints.auth.ssoSignIn(session.user.provider),
         {
@@ -376,7 +375,7 @@ export const AuthContextProvider = ({ children }: any) => {
             JSON.stringify(["research"])
           );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
+          router.push("/internal");
         } else {
           sessionStorage.setItem("newUser", JSON.stringify(true));
           localStorage.removeItem("walkthroughCompleted");
@@ -440,7 +439,6 @@ export const AuthContextProvider = ({ children }: any) => {
         const response = (await updateMyProfileData({ formData })) as {
           user: UserResponse;
         };
-        const redirectPath = sessionStorage.getItem("redirect");
         window.localStorage.setItem("user", JSON.stringify(response.user));
         setUser(response.user);
         const categories = sessionStorage.getItem("categories");
@@ -451,11 +449,7 @@ export const AuthContextProvider = ({ children }: any) => {
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(
-            redirectPath
-              ? `/internal/${redirectPath}`
-              : `/internal/search/events?${modifiedParams.toString()}`
-          );
+          router.push(`/internal/search/events?${modifiedParams.toString()}`);
         }
       } catch (error) {
         console.log("Error", error);

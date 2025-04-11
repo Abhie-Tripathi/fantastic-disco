@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
-import { sessionKeys, validPaths } from "@/data/onboarding";
+import { sessionKeys } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
 import { useToast } from "@/hooks/use-toast";
 import { SignUpDTO } from "@/types";
@@ -37,11 +37,6 @@ type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
   const params = useSearchParams();
-  const redirectParams = params.get("redirect");
-  const redirectPath =
-    redirectParams && validPaths.includes(redirectParams)
-      ? redirectParams
-      : null;
   const {
     isLoading,
     signup,
@@ -93,10 +88,6 @@ export default function TeliSignUpForm() {
     }
   }, [user, isAuthenticating]);
 
-  useEffect(() => {
-    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
-  }, [redirectPath]);
-
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
 
@@ -121,7 +112,6 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
-      redirectParams && sessionStorage.setItem("redirect", redirectParams);
       if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {

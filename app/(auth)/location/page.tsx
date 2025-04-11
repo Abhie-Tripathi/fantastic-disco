@@ -115,7 +115,6 @@ const LocationForm = () => {
     useLocationService();
 
   const [searchParams, setSearchParams] = useState<string>();
-  const redirectPath = sessionStorage.getItem("redirect");
 
   const defaultLocation: LocationItem = {
     id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
@@ -173,11 +172,7 @@ const LocationForm = () => {
   const saveLocationMutation = useMutation({
     mutationFn: (values: any) => createTracker(values),
     onSuccess: () => {
-      router.push(
-        redirectPath
-          ? `/internal/${redirectPath}`
-          : `internal/search/events?${searchParams}`
-      );
+      router.push(`internal/search/events?${searchParams}`);
       queryClient.invalidateQueries({ queryKey: ["locations"] });
     },
     onError: (error: any) => {
