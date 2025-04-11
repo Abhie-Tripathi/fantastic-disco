@@ -48,7 +48,9 @@ export function AlertItem({
           {alertIcons[alert.basic.type]}
         </span>
       </div>
-      <p className="text-sm">{alert.basic.name || `New ${alert.basic.type} alert`}</p>
+      <p className="text-sm">
+        {alert.basic.name || `New ${alert.basic.type} alert`}
+      </p>
       <time className="text-xs text-muted-foreground">
         {formattedDateRange(alert.basic.startDate, alert.basic.endDate)}
       </time>
@@ -68,6 +70,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.set("eventTypes", "alert");
   filteredParams.set("view", "list");
+  filteredParams.set("limit", "50");
 
   if (filteredParams.get("viewBound")) {
     const viewBound = JSON.parse(
@@ -94,28 +97,18 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   } = useQuery<AlertResponse, Error>({
     queryKey: ["alerts", filteredParams.toString()],
     queryFn: async () => {
-      const response = await eventService.getEventsWithSearchParams(filteredParams.toString());
+      const response = await eventService.getEventsWithSearchParams(
+        filteredParams.toString()
+      );
       return response as AlertResponse;
     },
     refetchOnWindowFocus: false,
   });
 
-  const {
-    data: alertCounts,
-  } = useQuery<AlertCount, Error>({
-    queryKey: ["alertCounts"],
-    queryFn: async () => {
-      const response = await eventService.getEventsCount({
-        eventTypes: "alert",
-        groupBy: "eventType",
-      });
-      return response as unknown as AlertCount;
-    },
-    refetchOnWindowFocus: false,
-  });
-
   const selectedAlertData = useMemo(() => {
-    return alerts?.events.find((alert: Alert) => alert.basic.id === selectedAlert);
+    return alerts?.events.find(
+      (alert: Alert) => alert.basic.id === selectedAlert
+    );
   }, [alerts, selectedAlert]);
 
   if (error || !alerts?.events?.length) return null;

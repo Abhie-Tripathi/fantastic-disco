@@ -45,7 +45,10 @@ export default function Alerts() {
         })) as unknown as AlertCount;
 
         if (alertCounts?.count) {
-          setAlertCounts(alertCounts.count);
+          setAlertCounts(Object.entries(alertCounts.count).map(([alertType, count]) => ({
+            alertType,
+            count: count as number
+          })));
         }
       } finally {
         setIsLoadingCounts(false);
