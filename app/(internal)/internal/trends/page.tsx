@@ -55,6 +55,9 @@ import {
   UserSearch,
   Lock,
   Info,
+  X,
+  RotateCcw,
+  PenLine,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState, useRef } from "react";
@@ -77,6 +80,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import TemplatesModal, { TemplateType } from "@/app/components/trends/templates-modal";
+import { ActiveTemplateBadge } from "@/app/components/trends/active-template-badge";
+import { TemplateHistory } from "@/app/components/trends/template-history";
 
 const ViewTemplates = [
   {
@@ -154,7 +160,20 @@ const EventTrends = () => {
     { id: "category", label: "Category", value: "category" },
   ]);
   const [showSavedTrends, setShowSavedTrends] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(null);
+  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
+  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
   const categories = getLocalFilterValue("categories");
+  type FilterKey = 'location' | 'eventTypes' | 'dateRange' | 'categories';
+  
+  const [visibleFilters, setVisibleFilters] = useState<Record<FilterKey, boolean>>({
+    location: true,
+    eventTypes: true,
+    dateRange: true,
+    categories: true
+  });
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -354,6 +373,85 @@ const EventTrends = () => {
     }
   };
 
+  const handleTemplateSelect = (template: TemplateType) => {
+    // Set visualization type
+    handleViewChange(template.visualization as "line" | "treemap" | "table");
+    
+    // Update visible filters - ensure all properties are set
+    const newVisibleFilters: Record<FilterKey, boolean> = {
+      location: template.visibleFilters.location ?? true,
+      eventTypes: template.visibleFilters.eventTypes ?? true,
+      dateRange: template.visibleFilters.dateRange ?? true,
+      categories: template.visibleFilters.categories ?? true
+    };
+    setVisibleFilters(newVisibleFilters);
+    
+    // Set active template and update history
+    setActiveTemplate(template);
+    setTemplateHistory((prev) => {
+      const filtered = prev.filter((t) => t.id !== template.id);
+      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
+    });
+    setHasModifiedFilters(false);
+    
+    // Close modal and templates view
+    setShowTemplatesModal(false);
+    setShowTemplates(false);
+    
+    // Apply filters
+    applyFilters({ resetPage: true });
+  };
+
+  const handleTemplateRemove = () => {
+    setActiveTemplate(null);
+    // Reset visible filters to show all
+    const defaultFilters: Record<FilterKey, boolean> = {
+      location: true,
+      eventTypes: true,
+      dateRange: true,
+      categories: true
+    };
+    setVisibleFilters(defaultFilters);
+    applyFilters({ resetPage: true });
+    setHasModifiedFilters(false);
+  };
+
+  const handleTemplateReapply = () => {
+    if (!activeTemplate) return;
+    
+    // Reapply template filters
+    Object.entries(activeTemplate.filters).forEach(([key, value]) => {
+      setLocalFilter(key as any, value);
+    });
+    setHasModifiedFilters(false);
+    applyFilters({ resetPage: true });
+  };
+
+  // Track filter changes
+  useEffect(() => {
+    if (!activeTemplate) return;
+    
+    // Track filter changes by comparing current filter values with template's visible filters
+    const hasChanged = Object.entries(visibleFilters).some(
+      ([key, isVisible]) => {
+        if (!isVisible) return false;
+        // Only check filters that are visible and supported by the context
+        switch (key) {
+          case 'location':
+          case 'eventTypes':
+          case 'dateRange':
+          case 'categories':
+            const currentValue = getLocalFilterValue(key);
+            return currentValue !== undefined && currentValue.length > 0;
+          default:
+            return false;
+        }
+      }
+    );
+    
+    setHasModifiedFilters(hasChanged);
+  }, [localFilters, activeTemplate, visibleFilters]);
+
   return (
     <div
       className={`flex h-[calc(100vh-60px)] ${
@@ -401,10 +499,10 @@ const EventTrends = () => {
                 </TabsList>
                 <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
                   <TabsContent value="events" className="mt-4 space-y-4">
-                    <EventTypeSelector variant="popover" />
-                    <LocationSelector />
-                    <DateRangeSelector />
-                    {activeView === "treemap" && (
+                    {visibleFilters.eventTypes && <EventTypeSelector variant="popover" />}
+                    {visibleFilters.location && <LocationSelector />}
+                    {visibleFilters.dateRange && <DateRangeSelector />}
+                    {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
                     <ColumnsSelector
@@ -556,41 +654,99 @@ const EventTrends = () => {
         <div className="px-6 py-4">
           <div className="mb-4">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-xl font-semibold mb-1">Trend Explorations</h1>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-primary"
-                  onClick={() => setShowSavedTrends(!showSavedTrends)}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {showSavedTrends ? "Hide Saved Trends" : "Show Saved Trends"}
-                </Button>
-              </div>
+              <h1 className="text-xl font-semibold">
+                {showTemplates ? "Trend Templates" : "Trend Explorations"}
+              </h1>
+              {!showTemplates && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-primary"
+                    onClick={() => setShowSavedTrends(!showSavedTrends)}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {showSavedTrends ? "Hide Saved Trends" : "Show Saved Trends"}
+                  </Button>
+                  {!activeTemplate && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-primary"
+                      onClick={() => setShowTemplatesModal(true)}
+                    >
+                      <LayoutGrid className="w-4 h-4 mr-2" />
+                      Browse Templates
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
 
-            {showSavedTrends && savedTrendsList && (
-              <div className="mb-4">
+            {!showTemplates && activeTemplate && (
+              <div className="relative">
+                <div className="flex items-center justify-between bg-card border shadow-sm rounded-lg p-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                      {activeTemplate.icon}
+                    </div>
+                    <div>
+                      <div className="font-medium mb-0.5">{activeTemplate.title}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {activeTemplate.description}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {hasModifiedFilters && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-primary border-primary/20"
+                        onClick={handleTemplateReapply}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-1.5" />
+                        Reset to Default
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-primary border-primary/20"
+                      onClick={() => setShowTemplatesModal(true)}
+                    >
+                      <PenLine className="w-4 h-4 mr-1.5" />
+                      Change Template
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-destructive"
+                      onClick={handleTemplateRemove}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showSavedTrends && !showTemplates && savedTrendsList && (
+              <div className="mt-6">
                 <Card className="p-4">
                   <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                    <Save className="w-5 h-5  " />
+                    <Save className="w-5 h-5" />
                     Saved Trends
                   </h3>
                   {savedTrendsList?.trackers.length > 0 ? (
-                    <SavedTrendsList
-                      savedTrendsList={savedTrendsList?.trackers}
-                    />
+                    <SavedTrendsList savedTrendsList={savedTrendsList?.trackers} />
                   ) : (
                     <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
                       <div className="text-center space-y-2">
                         <Save className="w-10 h-10 mx-auto text-primary/50" />
-                        <p className="text-sm font-medium">
-                          No saved trends yet
-                        </p>
+                        <p className="text-sm font-medium">No saved trends yet</p>
                         <p className="text-xs text-muted-foreground/70">
-                          Save your favorite trend configurations to access them
-                          later
+                          Save your favorite trend configurations to access them later
                         </p>
                       </div>
                     </div>
@@ -598,9 +754,38 @@ const EventTrends = () => {
                 </Card>
               </div>
             )}
+          </div>
 
-            {/* View Templates */}
-            <div className="grid grid-cols-3 gap-4">
+          {/* View Templates */}
+          {showTemplates ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {ViewTemplates.map((template) => (
+                <Card
+                  key={template.id}
+                  className="p-6 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md"
+                  onClick={() => {
+                    handleViewChange(template.id as "line" | "treemap" | "table");
+                    setShowTemplates(false);
+                  }}
+                >
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                        {template.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-lg">{template.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {template.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4 mb-4">
               {ViewTemplates.map((template) => (
                 <Card
                   key={template.id}
@@ -634,99 +819,107 @@ const EventTrends = () => {
                 </Card>
               ))}
             </div>
-          </div>
-
-          {/* Saved Trends List */}
-
-          {/* Content Area */}
-
-          {(activeView === "line" || activeView === "table") && (
-            <div>
-              {isLoading ? (
-                <Loading />
-              ) : error ? (
-                <div className={styles.zeroState_container}>
-                  <Image
-                    src={ZeroStateIcon}
-                    alt="zerostate"
-                    width={150}
-                    height={150}
-                  />
-                  <div>
-                    Explore global trends across event types over the past
-                    decade.
-                  </div>
-                </div>
-              ) : graphData && graphData.length > 0 ? (
-                <>
-                  {activeView === "line" && (
-                    <Card className="p-6 relative">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-medium absolute top-6 left-6">
-                          Trend Analysis
-                        </h2>
-                      </div>
-                      <div className={styles.predictedAttendence_container}>
-                        <LineChartComponent
-                          predictedData={graphData}
-                          selectedEventType={selectedEventType}
-                          holidayByDates={holidaysByDate}
-                          threshold={
-                            (eventTrendsData &&
-                              eventTrendsData.thresholds[selectedEventType]) ??
-                            0
-                          }
-                          showLegend
-                        />
-                      </div>
-                    </Card>
-                  )}
-
-                  {activeView === "table" && (
-                    <Card className="p-6">
-                      <TestPeriodicAnalytics
-                        isSmartInsightsEnabled={isSmartInsightsEnabled}
-                        smartInsightState={smartInsightState}
-                        setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
-                        setSmartInsightState={setSmartInsightState}
-                        data={
-                          tableData && tableData.length > 0 ? tableData : []
-                        }
-                        tableColumns={tableColumns || []}
-                        holidayByDates={holidaysByDate}
-                      />
-                    </Card>
-                  )}
-                </>
-              ) : (
-                <div className={styles.zeroState_container}>
-                  <Image
-                    src={ZeroStateDataIcon}
-                    alt="zerostateData"
-                    width={150}
-                    height={150}
-                  />
-                  <p>No Events Found</p>
-                  <Text
-                    variant="noMargin"
-                    color="secondary"
-                    className="w-80 text-center"
-                  >
-                    Try selecting a different date range or broaden the location
-                    to view events.
-                  </Text>
-                </div>
-              )}
-            </div>
           )}
 
-          {activeView === "treemap" && (
-            <Card className="p-4 min-h-[600px]">
-              <TreemapView hierarchyLevels={hierarchyLevels} />
-            </Card>
+          {/* Content Area */}
+          {!showTemplates && (
+            <>
+              {(activeView === "line" || activeView === "table") && (
+                <div>
+                  {isLoading ? (
+                    <Loading />
+                  ) : error ? (
+                    <div className={styles.zeroState_container}>
+                      <Image
+                        src={ZeroStateIcon}
+                        alt="zerostate"
+                        width={150}
+                        height={150}
+                      />
+                      <div>
+                        Explore global trends across event types over the past
+                        decade.
+                      </div>
+                    </div>
+                  ) : graphData && graphData.length > 0 ? (
+                    <>
+                      {activeView === "line" && (
+                        <Card className="p-6 relative">
+                          <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-medium absolute top-6 left-6">
+                              Trend Analysis
+                            </h2>
+                          </div>
+                          <div className={styles.predictedAttendence_container}>
+                            <LineChartComponent
+                              predictedData={graphData}
+                              selectedEventType={selectedEventType}
+                              holidayByDates={holidaysByDate}
+                              threshold={
+                                (eventTrendsData &&
+                                  eventTrendsData.thresholds[selectedEventType]) ??
+                                0
+                              }
+                              showLegend
+                            />
+                          </div>
+                        </Card>
+                      )}
+
+                      {activeView === "table" && (
+                        <Card className="p-6">
+                          <TestPeriodicAnalytics
+                            isSmartInsightsEnabled={isSmartInsightsEnabled}
+                            smartInsightState={smartInsightState}
+                            setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
+                            setSmartInsightState={setSmartInsightState}
+                            data={
+                              tableData && tableData.length > 0 ? tableData : []
+                            }
+                            tableColumns={tableColumns || []}
+                            holidayByDates={holidaysByDate}
+                          />
+                        </Card>
+                      )}
+                    </>
+                  ) : (
+                    <div className={styles.zeroState_container}>
+                      <Image
+                        src={ZeroStateDataIcon}
+                        alt="zerostateData"
+                        width={150}
+                        height={150}
+                      />
+                      <p>No Events Found</p>
+                      <Text
+                        variant="noMargin"
+                        color="secondary"
+                        className="w-80 text-center"
+                      >
+                        Try selecting a different date range or broaden the location
+                        to view events.
+                      </Text>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeView === "treemap" && (
+                <Card className="p-4 min-h-[600px]">
+                  <TreemapView hierarchyLevels={hierarchyLevels} />
+                </Card>
+              )}
+            </>
           )}
         </div>
       </div>
+
+      <TemplatesModal
+        open={showTemplatesModal}
+        onOpenChange={setShowTemplatesModal}
+        onSelectTemplate={handleTemplateSelect}
+        activeTemplate={activeTemplate}
+      />
     </div>
   );
 };

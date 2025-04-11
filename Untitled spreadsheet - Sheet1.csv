@@ -1,0 +1,25 @@
+Usecase,Focus,Version,Datapoint,Product,Visualization,Comment (Explainer text),note,Redirect,Drill Down,,API Status,"If data not available: show message, change filter"
+Inbound Traffic,event,v1,estimated attendence (inbound) (audience zone),TELI,tree / table,Track where people come from to a geography,"no line gragh, as time period is fixed. Give option to compare",Event Research,"One country or city has to be selected. If country is selected > show other countries
+Clicking on one country > drill down to top city from that country","Mandartory - one country/city has to be selected
+
+Switch - geo vs. category",?,
+Outbound Traffic,event,v1,estimated attendence (outbound) (audience zone),TELI,tree / table,Track where people go-to from a geography (percent),"no line gragh, as time period is fixed. Give option to compare",Event Research,"One country or city has to be selected. If country is selected > show other countries
+Clicking on one country > drill down to top city from that country","Mandartory - one country/city has to be selected
+
+Switch - geo vs. category",?,
+Event Category Share,event,v1,by attendence share vs count of events share,,tree / table,Percent share of events by category in a geography,"no line gragh, as time period is fixed. Give option to compare",Event Research,"If global selected by default, show category percent. 
+- fitler change to specific country
+- drill down > if cateory clicked = show country spread (switching)",Mandatory - category,\,
+Event Country Share,,,,,,,,,,Mandatory - country,,
+Event MindShare - Category,event,v1,predicted attendence (instead of count of events),,tree / table,Percent of mindshare of an event in the category,"estimated audience / total audience (global vs. in a specific country)
+no line gragh, as time period is fixed. Give option to compare",Event Research,"If global selected by default, show category percent. 
+- fitler change to specific country
+- drill down > if cateory clicked = show country spread (switching)",,,
+Event MindShare - Country,,v1,predicted attendence (instead of count of events),,,,,,,,,
+Event Participation - category,event,v1,Estimated Exhibitors,GTM,tree/ table,Categories with highest participation by companies ,"no line gragh, as time period is fixed. Give option to compare",Event Research,"By default show categories with maximum exhibitor participation (estimated or mapped)
+- switch from category to country (exhibitor country mapped) ",,,
+Event Participation - Country,,,Estimated Exhibitors,,,,,,,,,
+Economic Impact of Events (geography),event,v1,"instead of count or attendence, add up Economic impact $",TELI,,Total Impact by country/geography,"no line gragh, as time period is fixed. Give option to compare",Event Research,"By default display country with percent
+Drill down > selecting country, show category spread",,,
+Economic Impact of Events (category),event,v1,Economic impact $,GTM,tree/ table,Idenitfy and compare event impact on a geograhy,"no line gragh, as time period is fixed. Give option to compare",Event Research,"By default display category with percent
+Drill down > selecting country, show country spread",,,
