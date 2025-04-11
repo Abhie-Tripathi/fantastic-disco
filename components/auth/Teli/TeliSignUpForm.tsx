@@ -36,7 +36,6 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
-  const params = useSearchParams();
   const {
     isLoading,
     signup,

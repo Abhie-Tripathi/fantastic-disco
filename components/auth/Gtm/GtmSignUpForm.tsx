@@ -15,7 +15,6 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -27,7 +26,6 @@ import LinkedinIcon from "/public/linkedin.svg";
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
-  const params = useSearchParams();
   const {
     signup,
     error,
@@ -40,7 +38,6 @@ const GtmSignUpForm = () => {
   } = useAuthContext();
 
   const { getFilterValue, deleteFilter } = useFilterState();
-  const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
   const { toast } = useToast();
   const [categories, setCategories] = useState<string[]>([]);
@@ -150,13 +147,6 @@ const GtmSignUpForm = () => {
   const isCategoryMapped = industryData.find(
     (industryItem) => industryItem.slug === industry
   )?.subCategory;
-
-  const obj = {
-    email: email,
-    industry: industry,
-    categories: categories,
-    path: "signup",
-  };
 
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);

@@ -11,7 +11,6 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -21,17 +20,8 @@ import LinkedinIcon from "/public/linkedin.svg";
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
-  const params = useSearchParams();
-  const router = useRouter();
-  const {
-    signin,
-    error,
-    isLoading,
-    setError,
-    signInSSO,
-    isAuthenticating,
-    user,
-  } = useAuthContext();
+  const { signin, error, isLoading, setError, signInSSO, isAuthenticating } =
+    useAuthContext();
   const { data: session, status } = useSession();
 
   const {

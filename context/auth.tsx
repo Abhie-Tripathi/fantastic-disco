@@ -127,10 +127,6 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
 
-  const searchParams = useSearchParams();
-
-  const token = searchParams.get("token");
-
   const categories = useMemo(() => {
     if (typeof window === "undefined") return null;
     try {
