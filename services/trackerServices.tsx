@@ -60,6 +60,11 @@ export const useTrackerServices = () => {
         }
       ); 
     }
+  const getTrackerCount =()=>{
+    return api.request(
+      `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
+    )
+  }
     const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
@@ -338,6 +343,7 @@ export const useTrackerServices = () => {
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
     return {
+      getTrackerCount,
       removeBookmark,
       createTracker,
       globalSavedEvents,

@@ -70,9 +70,9 @@ const data = isEventeli ?
                   domain: "Market Research",
                   img: Customer,
                   url:"T_CUSTOMER_ICP",
-                  trackerName: "Customer ICP",
+                  trackerName: "Customer",
                   content:
-                    "Input ideal customer profile details like company, location or websites to track their interests",
+                    "Discover events with highest customer matching effortlessly",
                 },
           ]
       },
@@ -80,15 +80,6 @@ const data = isEventeli ?
           heading: "People",
           subHeading: "Effortlessly track and stay updated on where your people are.",
           templates:[
-            {
-                type: "template",
-                domain: "Market Research",
-                img: Competitor,
-                url: "T_COMPETITOR",
-                trackerName: "Competitor",
-                content:
-                  "Track your competitor experts, influencers and where they might be participating in events",
-              },
               {
                   type: "template",
                   domain: "Networking & Outreach",
@@ -107,6 +98,15 @@ const data = isEventeli ?
                     content:
                       "Input team members and their details to keep track of the events with speaking opportunities.",
                   },
+                  {
+                    type: "template",
+                    domain: "Market Research",
+                    img: Competitor,
+                    url: "T_COMPETITOR",
+                    trackerName: "Competitor",
+                    content:
+                      "Track your competitor experts, influencers and where they might be participating in events",
+                  }
                 
           ]
       },
@@ -117,11 +117,11 @@ const data = isEventeli ?
           {
               type: "template",
               domain: "Market Research",
-              img: Competitor,
-              url: "T_COMPETITOR",
-              trackerName: "Competitor",
+              img: Keywords,
+              url:"T_PRODUCT_KEYWORDS",
+              trackerName: "Product and Topics",
               content:
-                "Track your competitor experts, influencers and where they might be participating in events",
+                "List all the events which belongs to given industry or associated with keywords.",
             },
             {
                 type: "template",
