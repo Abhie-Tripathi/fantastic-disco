@@ -34,6 +34,7 @@ export type TemplateType = {
     eventTypes?: boolean;
     dateRange?: boolean;
     categories?: boolean;
+    metrics?: boolean;
   };
   category: "traffic" | "share" | "impact" | "participation";
   version?: string;
@@ -51,7 +52,8 @@ const templates: TemplateType[] = [
       location: true,
       eventTypes: true,
       dateRange: true,
-      categories: false
+      categories: true,
+      metrics: false
     },
     category: "traffic",
   },
@@ -65,7 +67,8 @@ const templates: TemplateType[] = [
       location: true,
       eventTypes: true,
       dateRange: true,
-      categories: true
+      categories: true,
+      metrics: false
     },
     category: "traffic",
   },
@@ -81,7 +84,8 @@ const templates: TemplateType[] = [
       location: true,
       categories: true,
       dateRange: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "share",
   },
@@ -95,7 +99,8 @@ const templates: TemplateType[] = [
       location: true,
       dateRange: true,
       categories: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "share",
     version: "coming soon",
@@ -112,7 +117,8 @@ const templates: TemplateType[] = [
       categories: true,
       location: true,
       dateRange: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "share",
     version: "coming soon",
@@ -127,7 +133,8 @@ const templates: TemplateType[] = [
       location: true,
       dateRange: true,
       categories: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "share",
     version: "coming soon",
@@ -144,7 +151,8 @@ const templates: TemplateType[] = [
       categories: true,
       location: true,
       dateRange: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "participation",
     version: "coming soon",
@@ -159,7 +167,8 @@ const templates: TemplateType[] = [
       location: true,
       dateRange: true,
       categories: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "participation",
     version: "coming soon",
@@ -176,7 +185,8 @@ const templates: TemplateType[] = [
       location: true,
       dateRange: true,
       categories: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: false
     },
     category: "impact",
     version: "coming soon",
@@ -191,7 +201,8 @@ const templates: TemplateType[] = [
       categories: true,
       location: true,
       dateRange: true,
-      eventTypes: true
+      eventTypes: true,
+      metrics: true
     },
     category: "impact",
     version: "coming soon",

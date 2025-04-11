@@ -96,8 +96,8 @@ const ViewTemplates = [
     title: "Line Chart",
     description: "Track over time with interactive line graphs",
     icon: <LineChart className="w-6 h-6" />,
+    disabledFor: ["inbound-traffic"],
   },
-
   {
     id: "table",
     title: "Table View",
@@ -166,13 +166,14 @@ const EventTrends = () => {
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
   const categories = getLocalFilterValue("categories");
-  type FilterKey = 'location' | 'eventTypes' | 'dateRange' | 'categories';
+  type FilterKey = 'location' | 'eventTypes' | 'dateRange' | 'categories' | 'metrics';
   
   const [visibleFilters, setVisibleFilters] = useState<Record<FilterKey, boolean>>({
     location: true,
     eventTypes: true,
     dateRange: true,
-    categories: true
+    categories: true,
+    metrics: true
   });
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
@@ -382,7 +383,8 @@ const EventTrends = () => {
       location: template.visibleFilters.location ?? true,
       eventTypes: template.visibleFilters.eventTypes ?? true,
       dateRange: template.visibleFilters.dateRange ?? true,
-      categories: template.visibleFilters.categories ?? true
+      categories: template.visibleFilters.categories ?? true,
+      metrics: template.visibleFilters.metrics ?? true
     };
     setVisibleFilters(newVisibleFilters);
     
@@ -409,7 +411,8 @@ const EventTrends = () => {
       location: true,
       eventTypes: true,
       dateRange: true,
-      categories: true
+      categories: true,
+      metrics: true
     };
     setVisibleFilters(defaultFilters);
     applyFilters({ resetPage: true });
@@ -441,6 +444,7 @@ const EventTrends = () => {
           case 'eventTypes':
           case 'dateRange':
           case 'categories':
+          case 'metrics':
             const currentValue = getLocalFilterValue(key);
             return currentValue !== undefined && currentValue.length > 0;
           default:
@@ -505,12 +509,12 @@ const EventTrends = () => {
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
-                    <ColumnsSelector
+                    {visibleFilters.metrics && <ColumnsSelector
                       activeView={activeView}
                       setActiveView={setActiveView}
                       selectedEventType={selectedEventType}
                       handleSelectChange={handleSelectChange}
-                    />
+                    />}
                     {activeView === "treemap" && (
                       <ChartFilters
                         type="visitor-flow"
@@ -786,38 +790,47 @@ const EventTrends = () => {
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-4 mb-4">
-              {ViewTemplates.map((template) => (
-                <Card
-                  key={template.id}
-                  className={`p-4 cursor-pointer hover:border-primary/50 transition-colors ${
-                    activeView === template.id ? "border-primary" : ""
-                  }`}
-                  onClick={() =>
-                    handleViewChange(
-                      template.id as "line" | "treemap" | "table"
-                    )
-                  }
-                >
-                  <div className="flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="text-primary">{template.icon}</div>
-                        <h3 className="font-medium">{template.title}</h3>
+              {ViewTemplates.map((template) => {
+                const isDisabled = template.disabledFor?.includes(activeTemplate?.id || '');
+                return (
+                  <Card
+                    key={template.id}
+                    className={`p-4 cursor-pointer transition-colors ${
+                      activeView === template.id ? "border-primary" : ""
+                    } ${isDisabled ? "opacity-50 cursor-not-allowed" : "hover:border-primary/50"}`}
+                    onClick={() => {
+                      if (!isDisabled) {
+                        handleViewChange(
+                          template.id as "line" | "treemap" | "table"
+                        )
+                      }
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`${isDisabled ? "text-muted-foreground" : "text-primary"}`}>{template.icon}</div>
+                          <h3 className={`font-medium ${isDisabled ? "text-muted-foreground" : ""}`}>{template.title}</h3>
+                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              {isDisabled ? (
+                                <Info className="w-4 h-4 text-muted-foreground" />
+                              ) : (
+                                <Info className="w-4 h-4 text-muted-foreground hover:text-primary" />
+                              )}
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{isDisabled ? "This view is not available for the current template" : template.description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="w-4 h-4 text-muted-foreground hover:text-primary" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{template.description}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           )}
 
