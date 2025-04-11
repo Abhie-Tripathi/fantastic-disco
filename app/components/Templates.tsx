@@ -6,6 +6,7 @@ import data from '@/components/templateData'
 import Template from "/public/template.svg";
 import Back from "/public/back.svg";
 import { isEventeli } from "@/config";
+import IntelScore from '@/components/intelScore';
 const Templates =({isData, hideTemplates})=>{
     return(
         <div  style={{padding:"16px 14px",width:"100%", overflowY:"auto"}}>
@@ -76,7 +77,7 @@ const Templates =({isData, hideTemplates})=>{
                 <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
               </div>
               <div className="w-[248px] h-40 border border-[var(--border-color)]">
-                xyz
+               <IntelScore/>
               </div>
             </div>
             <hr className="my-4 border-t border-gray-300"/>
