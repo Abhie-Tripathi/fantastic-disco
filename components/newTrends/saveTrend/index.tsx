@@ -21,6 +21,7 @@ import {
   ViewBound,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Save } from "lucide-react";
 import Error from "next/error";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import {
@@ -106,12 +107,9 @@ const SaveTrendModal = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button
-          disabled={isLoading}
-          variant="outline"
-          className="flex-1 py-5 border-primary text-primary font-semibold"
-        >
-          Save
+        <Button variant="outline" className="w-full h-10" disabled={isLoading}>
+          <Save className="w-4 h-4 mr-2" />
+          Save Trend
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
