@@ -201,6 +201,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     name: organizerName,
   } = organizer || {};
 
+  const { coorganizers } = eventCoOrganizerDetails;
+
   const filteredScores =
     scores &&
     Object.fromEntries(
@@ -663,28 +665,26 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   Organization information will appear here
                 </p>
               )}
-              {eventCoOrganizerDetails &&
-                eventCoOrganizerDetails.length > 0 && (
-                  <div className="flex items-center gap-2 border-t-[1px] p-2">
-                    <p className="text-sm font-medium text-[var(--secondary-text-color)]">
-                      Co-organizer
-                    </p>
-                    <span
-                      className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
-                      py-[1px] px-2 rounded-full"
-                    >
-                      {eventCoOrganizerDetails.length > 0 &&
-                      eventCoOrganizerDetails.length < 9
-                        ? `0${eventCoOrganizerDetails.length}`
-                        : eventCoOrganizerDetails.length}
-                    </span>
-                  </div>
-                )}
-              {eventCoOrganizerDetails.length > 0 &&
-                eventCoOrganizerDetails.map((coOrganizer: any) => (
+              {coorganizers && coorganizers.length > 0 && (
+                <div className="flex items-center gap-2 border-t-[1px] p-2">
+                  <p className="text-sm font-medium text-[var(--secondary-text-color)]">
+                    Co-organizer
+                  </p>
+                  <span
+                    className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
+                    p-2  py-[1px] px-2 rounded-full"
+                  >
+                    {coorganizers.length > 0 && coorganizers.length < 9
+                      ? `0${coorganizers.length}`
+                      : coorganizers.length}
+                  </span>
+                </div>
+              )}
+              {coorganizers.length > 0 &&
+                coorganizers.map((coOrganizer: any) => (
                   <div
                     key={coOrganizer.id}
-                    className="flex gap-4 pb-1 items-center"
+                    className="flex gap-4 px-2 pt-1 items-center"
                   >
                     {coOrganizer.logo ? (
                       <img
