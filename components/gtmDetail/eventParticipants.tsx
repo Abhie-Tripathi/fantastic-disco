@@ -34,21 +34,27 @@ const ListCard = ({
 }: {
   participant: EventParticipantsDetails;
 }) => {
+  const { details, logo, name, type } = participant;
   return (
     <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-20">
       <div className="flex flex-row justify-between">
         <div className="flex gap-4">
-          <img
-            src={
-              participant.logo ||
-              `https://img.10times.com/userimages/${
-                participant.name.match(/[a-zA-Z]/)?.[0]?.toLowerCase() ||
-                "default"
-              }.jpg`
-            }
-            alt="Logo"
-            className="aspect-square rounded-sm w-12 h-12"
-          />
+          {logo ? (
+            <img
+              src={logo}
+              alt="Logo"
+              className="aspect-square rounded-sm w-12 h-12"
+            />
+          ) : (
+            <div
+              className="w-12 h-12 aspect-square rounded-md bg-[#5055A3]/10 border
+             border-[#5055A3]/20 flex items-center justify-center"
+            >
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+              </span>
+            </div>
+          )}
           <div className="flex flex-col justify-between">
             <p className="text-sm line-clamp-2 text-[var(--primary-text-color)] mb-1">
               {participant.name || ""}
@@ -157,8 +163,8 @@ export const EventParticipants = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
-  // eventSponsorData,
-}: {
+}: // eventSponsorData,
+{
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];

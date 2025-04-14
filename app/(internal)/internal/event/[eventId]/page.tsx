@@ -343,7 +343,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   return (
     <div className="p-6">
-      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+      <aside
+        className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] 
+      pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]"
+      >
         {showBackToSearch && (
           <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
             <ArrowLeft width="14px" height="14px" color="#6750A4" />
@@ -369,7 +372,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </div> */}
         <div className="flex mt-3 gap-4 items-start flex-col lg:flex-row">
           {!website && !eventLogoUrl ? (
-            <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
+            <div
+              className="h-24 px-10 rounded-md bg-[#5055A3]/10 border
+             border-[#5055A3]/20 flex items-center justify-center"
+            >
               <span className="text-[#5055A3] text-2xl font-semibold">
                 {name.replace(/[+*-/"'"]/g, "").charAt(0)}
               </span>
@@ -392,7 +398,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                           <TooltipTrigger asChild>
                             <Badge
                               variant={"outline"}
-                              className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer"
+                              className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm
+                             w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D]
+                           dark:border-[#0D3868] cursor-pointer"
                             >
                               {type.name}
                             </Badge>
@@ -457,7 +465,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         <div className="flex gap-2 items-center my-4">
           {startDateTime && (
-            <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+            <div
+              className="border border-[#ebebeb] dark:border-[var(--border-color)]
+             rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+            >
               <span className="text-[#666666] text-md font-bold">
                 <CalendarDays width={20} height={20} />
               </span>
@@ -492,7 +503,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(eventLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span
+              className="border border-[#ebebeb] dark:border-[var(--border-color)]
+             text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square"
+            >
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
@@ -561,7 +575,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {website && (
           <div className="flex gap-2 items-center my-4">
-            <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+            <div
+              className="border border-[#ebebeb] dark:border-[var(--border-color)]
+              rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+            >
               <span className="text-[#666666] text-md font-bold">
                 <Globe width={20} height={20} />
               </span>
@@ -592,7 +609,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </div>
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
+          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent
+          border border-[var(--neutral-light-color)] rounded-sm mb-4"
           collapsible
         >
           <AccordionItem value="item-1">
@@ -609,27 +627,33 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <AccordionContent className="h-fit">
               {organizer ? (
                 <div className="flex gap-4 p-2 mb-1">
-                  <img
-                    src={
-                      organizerLogoUrl
-                        ? organizerLogoUrl
-                        : `https://img.10times.com/userimages/${name
-                            .charAt(0)
-                            .toLowerCase()}.jpg`
-                    }
-                    className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
-                    alt="Organizer Logo"
-                  />
+                  {organizerLogoUrl ? (
+                    <img
+                      src={organizerLogoUrl}
+                      className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                      alt="Organizer Logo"
+                    />
+                  ) : (
+                    <div
+                      className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                     border-[#5055A3]/20 flex items-center justify-center"
+                    >
+                      {organizerName && (
+                        <span className="text-[#5055A3] text-lg font-semibold">
+                          {organizerName.replace(/[+*-/"'"]/g, "").charAt(0)}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   <div className="flex flex-col">
-                    <Text fontWeight="medium" size="normal">
-                      {organizerName}
-                    </Text>
+                    <p className="font-medium text-sm">{organizerName}</p>
                     {organizerAddress && (
                       <div className="flex gap-2 items-center">
                         <Location color="#666666" width="14px" height="14px" />
-                        <Text color="secondary" variant="noMargin">
+                        <p className="text-sm text-[var(--secondary-text-color)]">
                           {organizerAddress}
-                        </Text>
+                        </p>
                       </div>
                     )}
                   </div>
@@ -642,10 +666,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {eventCoOrganizerDetails &&
                 eventCoOrganizerDetails.length > 0 && (
                   <div className="flex items-center gap-2 border-t-[1px] p-2">
-                    <Text fontWeight="medium" color="secondary">
+                    <p className="text-sm font-medium text-[var(--secondary-text-color)]">
                       Co-organizer
-                    </Text>
-                    <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                    </p>
+                    <span
+                      className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
+                      py-[1px] px-2 rounded-full"
+                    >
                       {eventCoOrganizerDetails.length > 0 &&
                       eventCoOrganizerDetails.length < 9
                         ? `0${eventCoOrganizerDetails.length}`
@@ -659,20 +686,27 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     key={coOrganizer.id}
                     className="flex gap-4 pb-1 items-center"
                   >
-                    <img
-                      src={
-                        coOrganizer.logo !== null
-                          ? coOrganizer.logo
-                          : `https://img.10times.com/userimages/${coOrganizer.name
-                              .charAt(0)
-                              .toLowerCase()}.jpg`
-                      }
-                      className="rounded-lg bg-[var(--primary-foreground)] w-8 h-8 aspect-square"
-                      alt="Organizer Logo"
-                    />
-                    <Text fontWeight="medium" size="normal">
-                      {coOrganizer.name}
-                    </Text>
+                    {coOrganizer.logo ? (
+                      <img
+                        src={coOrganizer.logo}
+                        className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-8 h-8"
+                        alt="Co-organizer Logo"
+                      />
+                    ) : (
+                      <div
+                        className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                      border-[#5055A3]/20 flex items-center justify-center"
+                      >
+                        {coOrganizer.name && (
+                          <span className="text-[#5055A3] text-lg font-semibold">
+                            {coOrganizer.name
+                              .replace(/[+*-/"'"]/g, "")
+                              .charAt(0)}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <p className="text-sm font-medium">{coOrganizer.name}</p>
                   </div>
                 ))}
             </AccordionContent>
@@ -680,7 +714,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </Accordion>
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
+          className="bg-[#FAFAFA] dark:border-[var(--border-color)] 
+          dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
           collapsible
         >
           <AccordionItem value="item-2">
@@ -691,7 +726,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     <p className="flex gap-3 items-center">
                       Event POC
                       {eventPOCDetails.length > 0 && (
-                        <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
+                        <span
+                          className="text-[12px] bg-[var(--primary-color)] text-white
+                        dark:text-[#131313] py-[1px] px-2 rounded-full"
+                        >
                           {/* {eventPOCDetails.filter((poc) => poc !== null)
                             .length > 0 &&
                           eventPOCDetails.filter((poc) => poc !== null).length <
@@ -740,17 +778,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     } = poc;
                     return (
                       <div key={id} className="flex flex-row gap-3 p-2">
-                        <img
-                          src={
-                            profilePicture
-                              ? profilePicture
-                              : `https://img.10times.com/userimages/${
-                                  name || "".charAt(0).toLowerCase()
-                                }.jpg`
-                          }
-                          alt="POC Logo"
-                          className="rounded-lg shadow-md h-10 w-10"
-                        />
+                        {profilePicture ? (
+                          <img
+                            src={profilePicture}
+                            className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                            alt="Organizer Logo"
+                          />
+                        ) : (
+                          <div
+                            className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                     border-[#5055A3]/20 flex items-center justify-center"
+                          >
+                            {name && (
+                              <span className="text-[#5055A3] text-lg font-semibold">
+                                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                              </span>
+                            )}
+                          </div>
+                        )}
                         <div className="flex flex-col gap-2 flex-1 flex-wrap">
                           {name && (
                             <Text fontWeight="medium" variant="noMargin">
@@ -808,7 +853,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   onClick={() =>
                     router.push(`/internal/event/${params.eventId}?view=pocs`)
                   }
-                  className="p-2 pb-0 w-fit cursor-pointer text-primary font-medium hover:underline hover:underline-offset-2"
+                  className="p-2 pb-0 w-fit cursor-pointer text-primary font-medium 
+                  hover:underline hover:underline-offset-2"
                 >
                   View All ({eventPOCDetails.length})
                 </p>
@@ -852,7 +898,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
         ) : (
           <>
-            <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full">
+            <ul
+              className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white 
+            dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full"
+            >
               <div className="flex gap-12">
                 {tabs
                   .filter((tab) => tab.isVisible)
