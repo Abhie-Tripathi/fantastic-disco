@@ -126,7 +126,7 @@ export default function PieChartComponent({
             fontWeight="bold"
           >
             {( source === "Prospect" || source=== "People" || source === "Purpose")
-              ? `+ ${intelScore.find((item)=>item.name==source)?.value}` ?? 0
+              ? `+ ${intelScore.find((item)=>item.name==source)?.value}`
               : intelScore.reduce((sum, item) => sum + item.value, 0)}
           </text>
         </PieChart>
