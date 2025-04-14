@@ -152,7 +152,7 @@ const Profile = () => {
       // Prepare form data
       const formData = new FormData();
 
-      formData.append("firstname", splitName[0]);
+      formData.append("firstname", splitName[0] || "");
       if (splitName[1]) {
         formData.append("lastname", splitName.slice(1).join(" "));
       } else {
@@ -231,9 +231,9 @@ const Profile = () => {
     }
     const splitName = name.split(" ");
     const formData = new FormData();
-    formData.append("firstname", splitName[0]);
-    formData.append("lastname", splitName[1]);
-    formData.append("phoneNumber", mobileNo);
+    formData.append("firstname", splitName[0] || "");
+    formData.append("lastname", splitName[1] || "");
+    formData.append("phoneNumber", mobileNo || "");
     // formData.append("designation", role);
     // formData.append("department", dept);
     formData.append("removePicture", "true");
