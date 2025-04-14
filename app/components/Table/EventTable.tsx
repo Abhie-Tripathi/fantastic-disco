@@ -139,7 +139,6 @@ const EventTable = ({
     });
   }, [eventId, interest]);
 
-  console.log(events); // Now it will print correctly
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -181,9 +180,8 @@ const EventTable = ({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found" />;
+    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
   }
-  console.log(events);
 
   return (
     <div className="w-full flex flex-col h-full">

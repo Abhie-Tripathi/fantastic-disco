@@ -46,7 +46,7 @@ const gtmroutes: Record<string, string> = {
   search: "Research",
   trackers: "Trackers",
   outreach: "Outreach",
-  trends: "Event Trends",
+  trends: "Trends",
   settings: "Settings",
 };
 const geniroutes: Record<string, string> = {

@@ -27,6 +27,8 @@ export interface UserResponse {
   designation: string | null;
   department: string | null;
   companyId?: string;
+  accountId?: string;
+  isNewUser?: boolean;
   userLocation?: UserLocation;
 }
 
