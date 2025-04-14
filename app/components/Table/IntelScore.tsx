@@ -1,20 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer, Tooltip } from "recharts";
-
-// Sample Data with Fixed Fill Colors
-const data = [
-  { name: "Total", value: 0, fill: "#646BDC" },
-  // { name: "People", value: 40, fill: "#646BDC" },
-  // { name: "Purpose", value: 20, fill: "#E99CD4" },
-  // { name: "Prospect", value: 40, fill: "#9B86D4" },
-];
 interface IntelValue{
   name:string;
   value:number;
   fill:string;
 }
-// const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-
 // Function to render the active shape (hover effect)
 const renderActiveShape = (props: any) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -71,15 +61,7 @@ export default function PieChartComponent({
   intelScore: IntelValue[];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  // console.log(intelScore);
   const totalValue = intelScore.reduce((sum, item) => sum + item.value, 0);
-  // const intelScore = [
-  //   {
-  //     name: "Total",
-  //     value: 40,
-  //     fill: "#646BDC",
-  //   }
-  // ];
   const onPieEnter = useCallback((_: unknown, index: number) => {
     setActiveIndex(index);
   }, []);

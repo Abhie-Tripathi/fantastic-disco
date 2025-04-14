@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
-
-export default function Slider({ width, color }) {
+interface SliderProps{
+    width:number;
+    color:string;
+}
+export default function Slider({ width, color }: SliderProps) {
   const [temp, setTemp] = useState(0);
   
   useEffect(() => {
-    setTimeout(() => {
-      setTemp(width);
-    }, 1000);
+    const timeout = setTimeout(() => {
+        setTemp(width);
+      }, 1000);
+    return () => clearTimeout(timeout);
   }, [width]);
-  const calculateTranslation = (value) => {
+  const calculateTranslation = (value: number) => {
     const maxValue = 30; 
     const percentage = Math.min((value / maxValue) * 100, 100);
     return percentage - 100; 
   };
 
   return (
-    <div className="h-5 rounded-[6px] bg-[#E6E6E6] overflow-hidden w-full relative">
+    <div className="h-3 rounded-[3px] bg-[#E6E6E6] overflow-hidden w-full relative">
       <div
         style={{ 
           transform: `translateX(${calculateTranslation(temp)}%)`,

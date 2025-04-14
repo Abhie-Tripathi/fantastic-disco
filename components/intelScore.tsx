@@ -27,30 +27,30 @@ const renderActiveShape = (props: any) => {
 };
 
 // Custom Tooltip
-const CustomTooltip = ({ active, payload, coordinate }: any) => {
-  if (!active || !payload || !payload.length) return null;
+// const CustomTooltip = ({ active, payload, coordinate }: any) => {
+//   if (!active || !payload || !payload.length) return null;
 
-  return (
-    <div
-      className="bg-gray-800 text-gray-100"
-      style={{
-        width: "90px",
-        zIndex: 999,
-        fontSize: "10px",
-        position: "sticky",
-        left: coordinate.x - 40,
-        top: coordinate.y - 50,
-        padding: "2px",
-        borderRadius: "4px",
-        textAlign: "center",
-        pointerEvents: "none",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
-      }}
-    >
-      Relevance Score
-    </div>
-  );
-};
+//   return (
+//     <div
+//       className="bg-gray-800 text-gray-100"
+//       style={{
+//         width: "90px",
+//         zIndex: 999,
+//         fontSize: "10px",
+//         position: "sticky",
+//         left: coordinate.x - 40,
+//         top: coordinate.y - 50,
+//         padding: "2px",
+//         borderRadius: "4px",
+//         textAlign: "center",
+//         pointerEvents: "none",
+//         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
+//       }}
+//     >
+//       Relevance Score
+//     </div>
+//   );
+// };
 
 export default function PieChartComponent({
   width = "100px",
@@ -64,25 +64,22 @@ export default function PieChartComponent({
   intelScore: IntelValue[];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  
   const chartData =
-    source === "individualScore"
-      ? [
-          {
-            name: "Used",
-            value: intelScore[0]?.value || 0,
-            fill: intelScore[0]?.fill || "#646BDC",
-          },
-          {
-            name: "Remaining",
-            value: 100 - (intelScore[0]?.value || 0),
-            fill: "#E6E6E6", // grey remainder
-          },
-        ]
-      : intelScore;
+   ( source === "Prospect" || source=== "People" || source === "Purpose")
+      ? intelScore.map((item) => ({
+        ...item,
+        value: 30, 
+        fill: item?.name !== source ? "#E6E6E6" : item.fill, 
+      }))
+      : intelScore.map((item) => ({
+        ...item,
+        value: 30, 
+        fill: item.value === 0 ? "#E6E6E6" : item.fill, 
+      }));
 
   const totalValue =
-    source === "individualScore"
+  (source === "Prospect" || source=== "People" || source === "Purpose")
       ? 100
       : intelScore.reduce((sum, item) => sum + item.value, 0);
 
@@ -101,6 +98,8 @@ export default function PieChartComponent({
               data={chartData}
               cx="50%"
               cy="50%"
+              startAngle={90}
+              endAngle={-270} 
               innerRadius="80%"
               outerRadius="100%"
               dataKey="value"
@@ -116,18 +115,18 @@ export default function PieChartComponent({
               strokeWidth={2}
             />
           )}
-          <Tooltip content={<CustomTooltip />} />
+          {/* <Tooltip content={<CustomTooltip />} /> */}
           <text
             x="50%"
             y="50%"
             dy={5}
             textAnchor="middle"
-            fill="#333"
+            fill="var(--primary-text-color)"
             fontSize="14px"
             fontWeight="bold"
           >
-            {source === "individualScore"
-              ? intelScore[0]?.value ?? 0
+            {( source === "Prospect" || source=== "People" || source === "Purpose")
+              ? `+ ${intelScore.find((item)=>item.name==source)?.value}` ?? 0
               : intelScore.reduce((sum, item) => sum + item.value, 0)}
           </text>
         </PieChart>

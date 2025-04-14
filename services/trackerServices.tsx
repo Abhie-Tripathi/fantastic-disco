@@ -1,7 +1,7 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
@@ -60,7 +60,7 @@ export const useTrackerServices = () => {
         }
       ); 
     }
-  const getTrackerCount =()=>{
+  const getTrackerCount =():Promise<{ count: TrackerTypeProp[] } | undefined>=>{
     return api.request(
       `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
     )
