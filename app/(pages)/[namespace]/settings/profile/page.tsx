@@ -1,28 +1,14 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-} from "@/components/ui/select";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, Upload } from "lucide-react";
-import SendInvite from "@/components/ui/SendInvite";
-import { useAuthContext, useTheme } from "@/context";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { showToast } from "@/utils/showToast";
+import { useAuthContext } from "@/context";
 import { useProfileServices } from "@/services/profileService";
+import { showToast } from "@/utils/showToast";
+import { Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 interface Profile {
   firstname: string;
   lastname: string;
@@ -310,7 +296,7 @@ const Profile = () => {
                       width={"76"}
                       height={"76"}
                     />
-                    <AvatarFallback className="bg-primary">
+                    <AvatarFallback className="bg-primary text-white">
                       {generateProfileName()}
                     </AvatarFallback>
                     <input
