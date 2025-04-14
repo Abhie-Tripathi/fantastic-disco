@@ -88,8 +88,8 @@ export default function PieChartComponent({
             <circle
             cx="50%"
             cy="50%"
-            innerRadius="80%"
-            outerRadius="100%"
+            // innerRadius="80%"
+            // outerRadius="100%"
               stroke="#E0E0E0"
               fill="none"
               strokeWidth={2}

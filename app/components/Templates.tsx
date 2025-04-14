@@ -145,7 +145,7 @@ const EventeliView = useMemo(() => (
                   </div>
                 </div>
               </Link>):(
-                <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
+                <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" key={ind}>
                 <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                   <div className={styles.account}>
                     <Image src={item.img} alt="people" width={31} height={31} />
@@ -207,7 +207,7 @@ const StandardView = useMemo(() => (
                </div>
                <div className="w-[100%] flex gap-1">
                 {intelScoreData.map((item, index) => (
-                  <div className="w-[33%] flex flex-col gap-1 bg-[var(--background-secondary-color)]">
+                  <div className="w-[33%] flex flex-col gap-1 bg-[var(--background-secondary-color)]" key={index}>
                   <div className="pl-2">+{item.value}%</div>
                   <div className="pl-2 text-xs" style={{color:`${item.fill}`}}>{item.name}</div>
                     <Slider key={index} width={item.value} color={item.fill}/>
@@ -295,7 +295,7 @@ const StandardView = useMemo(() => (
                     </div>
                     </Link>):(
                      
-                      <div className="p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px] bg-[var(--primary-foreground)] justify-center relative">
+                      <div className="p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px] bg-[var(--primary-foreground)] justify-center relative" key={index}>
                       <div className="w-full flex items-center min-h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                       {renderCount(template?.url)}
                         
@@ -368,4 +368,5 @@ const StandardView = useMemo(() => (
         </div>
     )
 })
+Templates.displayName = "Templates";
 export default Templates;
