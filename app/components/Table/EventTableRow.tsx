@@ -322,8 +322,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 .join(", ")
             : displayValue(event.basic.eventLocation?.cityName)
           : displayValue(
-              Array.isArray(event.basic.eventLocation)
-                ? "-"
+              event.basic.eventLocation?.locationType === "CITY"
+                ? event.basic.eventLocation.name
                 : event.basic.eventLocation?.cityName
             )}
       </TableCell>

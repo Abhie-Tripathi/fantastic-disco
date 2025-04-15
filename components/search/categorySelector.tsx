@@ -23,12 +23,14 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
   filterName?: string;
   disabled?: boolean;
+  maxCategories?: number;
 }
 
 export default function CategorySelector({
   variant = "popover",
   filterName,
   disabled,
+  maxCategories,
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
@@ -58,25 +60,34 @@ export default function CategorySelector({
         ? selectedCategories.filter((slug) => slug !== categorySlug)
         : [...selectedCategories, categorySlug];
       
+      if (maxCategories && !selectedCategories.includes(categorySlug) && newCategories.length > maxCategories) {
+        return;
+      }
+      
       const filterValue = newCategories.length > 0 ? newCategories.join(",") : "";
       setLocalFilter(filterName as keyof Filters || "categories", filterValue);
     },
-    [selectedCategories, setLocalFilter, filterName]
+    [selectedCategories, setLocalFilter, filterName, maxCategories]
   );
 
   const handleSelectAll = useCallback(
     (isSelected: boolean) => {
+      const enabledCategories = categories.filter((cat: any) => cat.isEnabled);
+      if (maxCategories && isSelected && enabledCategories.length > maxCategories) {
+        return;
+      }
+      
       setLocalFilter(
         filterName as keyof Filters || "categories",
         isSelected
-          ? categories
-              .filter((cat: any) => cat.isEnabled)
+          ? enabledCategories
+              .slice(0, maxCategories || enabledCategories.length)
               .map((cat: any) => cat.slug)
               .join(",")
           : ""
       );
     },
-    [setLocalFilter, categories, filterName]
+    [setLocalFilter, categories, filterName, maxCategories]
   );
 
   const isAllSelected = useMemo(
@@ -92,7 +103,7 @@ export default function CategorySelector({
     
     const columnCount = 3;
     const allCategories = [
-      { id: "all", name: "Select All", slug: "all", isEnabled: true },
+      ...(maxCategories ? [] : [{ id: "all", name: "Select All", slug: "all", isEnabled: true }]),
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
@@ -129,14 +140,16 @@ export default function CategorySelector({
                     disabled={
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all") ||
-                      disabled
+                      disabled ||
+                      (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
                     }
                   />
                   <label
                     htmlFor={`${category.slug}-${variant}`}
                     className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
                       (category.slug === "all" && isAnyDisabled) ||
-                      (!category.isEnabled && category.slug !== "all")
+                      (!category.isEnabled && category.slug !== "all") ||
+                      (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
                         ? "opacity-50"
                         : ""
                     }`}
@@ -147,6 +160,11 @@ export default function CategorySelector({
               ))}
           </div>
         ))}
+        {maxCategories && selectedCategories.length >= maxCategories && (
+          <div className="col-span-3 text-sm text-muted-foreground mt-4">
+            Maximum of {maxCategories} categories can be selected
+          </div>
+        )}
       </div>
     );
   }, [
@@ -158,6 +176,7 @@ export default function CategorySelector({
     isAnyDisabled,
     variant,
     disabled,
+    maxCategories,
   ]);
 
   const triggerContent = (

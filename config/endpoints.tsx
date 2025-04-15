@@ -13,6 +13,7 @@ export const endpoints = {
     me: `${BASE_URL}/me`,
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
+    ssoSignIn: (provider: string) => `${BASE_URL}/auth/${provider}/sso`,
     verifyOTP: `${BASE_URL}/auth/verify-otp`,
     logout: `${BASE_URL}/me/sign-out`,
   },
@@ -72,7 +73,7 @@ export const endpoints = {
     saveEvent: `${BASE_URL}/tracker/saved-events`,
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
-    verifyAccess: `${BASE_URL}/auth/verify-access`
+    verifyAccess: `${BASE_URL}/auth/verify-access`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,
