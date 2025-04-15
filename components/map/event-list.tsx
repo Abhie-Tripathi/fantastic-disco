@@ -485,9 +485,12 @@ function EventList({
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 20));
 
-    if (showEventType == "unAttended") params.set("eventTypes", "holiday");
+    if (showEventType == "unAttended") {
+      params.set("eventTypes", "holiday");
+      params.delete("viewBound");
+    }
 
-    if (mapCenter && mapRadius) {
+    if (mapCenter && mapRadius && showEventType != "unAttended") {
       const viewBound = {
         boundType: "point",
         coordinates: {
