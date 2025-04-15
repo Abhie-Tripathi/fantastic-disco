@@ -108,92 +108,103 @@ const renderCount = useCallback((url:string) => {
     <div className={`badge_info text-[12px] absolute right-4`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px" }}>{count} in Use</div>
   ) : null;
 }, [result]);
-const EventeliView = isEventeli?useMemo(() => (
-  <div className={`${styles.container}`}>
-            {(data as TemplateItem[]).map((item: any, ind: number) => (
-              item.isEnabled?
-             ( <Link
-                href={`/internal/trackers/create?type=${item?.url}`}
-                key={ind}
-              >
-                <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
-                  <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
-                    <div className={styles.account}>
-                      <Image src={item.img} alt="people" width={31} height={31} />
+const EventeliView = useMemo(() => {
+  if (!isEventeli) return null;
+
+  return (
+    <div className={`${styles.container}`}>
+      {(data as TemplateItem[]).map((item: any, ind: number) =>
+        item.isEnabled ? (
+          <Link
+            href={`/internal/trackers/create?type=${item?.url}`}
+            key={ind}
+          >
+            <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
+              <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
+                <div className={styles.account}>
+                  <Image src={item.img} alt="people" width={31} height={31} />
+                </div>
+                <div>
+                  <Image src={Template} alt="template" />
+                </div>
+              </div>
+              <div className="w-full h-[60%] flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  {item?.domain && (
+                    <div
+                      className="badge_primary"
+                      style={{
+                        fontSize: "var(--font-size-label)",
+                        padding: "6px",
+                      }}
+                    >
+                      {item?.domain}
                     </div>
-                    <div>
-                      <Image src={Template} alt="template" />
-                    </div>
-                  </div>
-                  <div className="w-full h-[60%] flex flex-col gap-2">
-                    <div className="flex justify-between items-center">
-                    {item?.domain &&
-                      <div
+                  )}
+                </div>
+                <div className="text-[16px] font-bold text-[var(--primary-color)]">
+                  {item?.trackerName}
+                </div>
+                <div className="font-medium text-[var(--tertiary-text-color)]">
+                  {item?.content}
+                </div>
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <div
+            className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]"
+            key={ind}
+          >
+            <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
+              <div className={styles.account}>
+                <Image src={item.img} alt="people" width={31} height={31} />
+              </div>
+              <div>
+                <Image src={Template} alt="template" />
+              </div>
+            </div>
+            <div className="w-full h-[60%] flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                {item?.domain && (
+                  <div
                     className="badge_primary"
-                    style={{fontSize:"var(--font-size-label)", padding:"6px"}}
+                    style={{
+                      fontSize: "var(--font-size-label)",
+                      padding: "6px",
+                    }}
                   >
                     {item?.domain}
                   </div>
-                    }
-                    </div>
-                    <div className="text-[16px] font-bold text-[var(--primary-color)]">
-                      {item?.trackerName}
-                    </div>
-                    <div className="font-medium text-[var(--tertiary-text-color)]">
-                      {item?.content}
-                    </div>
-                  </div>
-                </div>
-              </Link>):(
-                <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" key={ind}>
-                <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
-                  <div className={styles.account}>
-                    <Image src={item.img} alt="people" width={31} height={31} />
-                  </div>
-                  <div>
-                    <Image src={Template} alt="template" />
-                  </div>
-                </div>
-                <div className="w-full h-[60%] flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                  {item?.domain &&
-                    <div
-                  className="badge_primary"
-                  style={{fontSize:"var(--font-size-label)", padding:"6px"}}
-                >
-                  {item?.domain}
-                </div>
-                  }
-                  </div>
-                  <div className="text-[16px] font-bold text-[var(--primary-color)]">
-                    {item?.trackerName}
-                  </div>
-                  <div className="font-medium text-[var(--tertiary-text-color)]">
-                    {item?.content}
-                  </div>
-                </div>
+                )}
               </div>
-              )
-            ))}
-            <div className={styles.innerContainerOne}>
-              <Image src={Add} alt="add" />
-              <Link
-                href="/internal/trackers/create?type=T_CUSTOM"
-                className={styles.createUrl}
-              >
-                <Button
-                  // onClick={() => modalOpen()}
-                  className="text-white"
-                >
-                  Create Custom
-                </Button>
-              </Link>
+              <div className="text-[16px] font-bold text-[var(--primary-color)]">
+                {item?.trackerName}
+              </div>
+              <div className="font-medium text-[var(--tertiary-text-color)]">
+                {item?.content}
+              </div>
             </div>
           </div>
-),[data]):null;
+        )
+      )}
+      <div className={styles.innerContainerOne}>
+        <Image src={Add} alt="add" />
+        <Link
+          href="/internal/trackers/create?type=T_CUSTOM"
+          className={styles.createUrl}
+        >
+          <Button className="text-white">Create Custom</Button>
+        </Link>
+      </div>
+    </div>
+  );
+}, [isEventeli, data]);
 
 
-const StandardView = !isEventeli ? useMemo(() => (
+const StandardView = useMemo(() => {
+if(isEventeli) return null;
+return(
 <div className={`flex flex-col gap-6 pl-6 pr-6`}>
             <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
               <div className="flex flex-col gap-2">
@@ -225,7 +236,7 @@ const StandardView = !isEventeli ? useMemo(() => (
                 <div className="flex flex-col sm:w-[25%] sm:pr-6 pr-0 gap-2 w-[100%]">
                 <div className="text-2xl flex gap-2 items-center justify-between">
                 <div className="flex gap-2 items-center">
-                {item.heading==="Companies" &&
+                {item.heading==="Prospect" &&
                 <Building2 />
                 }
                 {item.heading==="People" && 
@@ -236,7 +247,7 @@ const StandardView = !isEventeli ? useMemo(() => (
                 }
                 {item.heading}
                 </div>
-                {(item.heading==="Companies" && intelScoreData[0].value>0) &&
+                {(item.heading==="Prospect" && intelScoreData[0].value>0) &&
                 <IntelScore intelScore={intelScoreData} width="70px" height="70px" source="Prospect"/>
                 }
                 {(item.heading==="People" && intelScoreData[1].value>0) && 
@@ -347,7 +358,8 @@ const StandardView = !isEventeli ? useMemo(() => (
             </div>
             </div>
           </div>
-),[data, intelScoreData, IntelScore]): null;
+)
+},[data, intelScoreData, IntelScore, isEventeli]);
 // console.log({countData?.find(item => item.type === "T_PRODUCT_KEYWORDS")?.count ?? 0});
 
     return(

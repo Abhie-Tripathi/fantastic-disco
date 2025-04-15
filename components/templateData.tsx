@@ -49,7 +49,7 @@ const data: TemplateData = isEventeli ?
   [
     
       {
-          heading: "Companies",
+          heading: "Prospect",
           subHeading: "From networking to results – Capture, track, and convert prospects seamlessly",
           templates:[
             {
