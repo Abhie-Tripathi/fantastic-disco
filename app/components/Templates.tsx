@@ -105,7 +105,7 @@ const result = useCallback((type:string) => {
 const renderCount = useCallback((url:string) => {
   const count = result(url);
   return count > 0 ? (
-    <div className={`badge_info text-[12px] absolute right-4`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px" }}>{count} in Use</div>
+    <div className={`badge_info text-[12px]`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px" }}>{count} in Use</div>
   ) : null;
 }, [result]);
 const EventeliView = useMemo(() => {
@@ -271,7 +271,6 @@ return(
                     >
                       <div className="p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px] bg-[var(--primary-foreground)] justify-center relative">
                       <div className="w-full flex items-center min-h-[45%] rounded-md bg-[var(--tabs-background-color)]">
-                      {renderCount(template?.url)}
                         
                         <div className={styles.account}>
                           <Image src={template.img} alt="people" width={31} height={31} />
@@ -292,6 +291,7 @@ return(
                         {template?.domain}
                       </div>
                         }
+                        {renderCount(template?.url)}
                          {!template.isEnabled && <div className={`badge_info text-[12px] absolute right-4`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px"}}>Coming Soon</div>}
                         </div>
                         <div className="flex justify-between items-center">

@@ -54,7 +54,7 @@ const data: TemplateData = isEventeli ?
           templates:[
             {
                 type: "template",
-                domain: "Sales",
+                domain: "Market Research",
                 img: Competitor,
                 isEnabled: true,
                 url: "T_COMPETITOR",
@@ -64,7 +64,7 @@ const data: TemplateData = isEventeli ?
               },
               {
                   type: "template",
-                  domain: "Sales",
+                  domain: "Market Research",
                   img: Customer,
                   url:"T_CUSTOMER_ICP",
                   isEnabled: true,
@@ -74,7 +74,7 @@ const data: TemplateData = isEventeli ?
                 },
                 {
                   type: "template",
-                  domain: "Sales",
+                  domain: "Market Research",
                   img: Customer,
                   isEnabled: false,
                   url:"",
@@ -90,7 +90,7 @@ const data: TemplateData = isEventeli ?
           templates:[
               {
                   type: "template",
-                  domain: "Marketing / Strategy",
+                  domain: "Networking & Outreach",
                   img: PeopleFinder,
                   isEnabled: true,
                   url: "T_PEOPLE_FINDER",
@@ -100,7 +100,7 @@ const data: TemplateData = isEventeli ?
                 },
                 {
                     type: "template",
-                    domain: "Marketing / Strategy",
+                    domain: "Networking & Outreach",
                     img: Speaking,
                     isEnabled: true,
                     url: "T_SPEAKING_OPPORTUNITY",
@@ -110,7 +110,7 @@ const data: TemplateData = isEventeli ?
                   },
                   {
                     type: "template",
-                    domain: "Sales",
+                    domain: "Audience Analysis",
                     img: Competitor,
                     isEnabled: false,
                     url: "",
@@ -127,7 +127,7 @@ const data: TemplateData = isEventeli ?
         templates:[
           {
               type: "template",
-              domain: "Marketing / Strategy",
+              domain: "Market Research",
               img: Keywords,
               isEnabled: true,
               url:"T_PRODUCT_KEYWORDS",
@@ -137,7 +137,7 @@ const data: TemplateData = isEventeli ?
             },
             {
                 type: "template",
-                domain: "Event",
+                domain: "Market Research",
                 isEnabled: false,
                 img: PeopleFinder,
                 url: "",
@@ -147,7 +147,7 @@ const data: TemplateData = isEventeli ?
               },
               {
                   type: "template",
-                  domain: "Event",
+                  domain: "Market Research",
                   isEnabled: false,
                   img: Speaking,
                   url: "",
