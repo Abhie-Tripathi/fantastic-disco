@@ -108,7 +108,7 @@ const renderCount = useCallback((url:string) => {
     <div className={`badge_info text-[12px] absolute right-4`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px" }}>{count} in Use</div>
   ) : null;
 }, [result]);
-const EventeliView = useMemo(() => (
+const EventeliView = isEventeli?useMemo(() => (
   <div className={`${styles.container}`}>
             {(data as TemplateItem[]).map((item: any, ind: number) => (
               item.isEnabled?
@@ -190,10 +190,10 @@ const EventeliView = useMemo(() => (
               </Link>
             </div>
           </div>
-),[data])
+),[data]):null;
 
 
-const StandardView = useMemo(() => (
+const StandardView = !isEventeli ? useMemo(() => (
 <div className={`flex flex-col gap-6 pl-6 pr-6`}>
             <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
               <div className="flex flex-col gap-2">
@@ -347,12 +347,12 @@ const StandardView = useMemo(() => (
             </div>
             </div>
           </div>
-),[data, intelScoreData, IntelScore])
+),[data, intelScoreData, IntelScore]): null;
 // console.log({countData?.find(item => item.type === "T_PRODUCT_KEYWORDS")?.count ?? 0});
 
     return(
         <div  style={{padding:"16px 14px",width:"100%", overflowY:"auto"}}>
-        {/* {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>} */}
+        {(!isData && isEventeli) && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
       {isData && 
           <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center ml-6"
       style={{ color: "var(--primary-color)" }} onClick={()=>hideTemplates(true)}>
