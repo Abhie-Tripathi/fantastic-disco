@@ -54,7 +54,7 @@ const Research = ({ theme }: Props) => {
             const view_bound = JSON.parse(viewBound);
             const value = { lat: view_bound?.coordinates?.latitude, long: view_bound?.coordinates?.longitude }
             setLatLang(value);
-            setLocationName(view_bound.properties.name);
+            setLocationName(view_bound?.properties?.name);
         }
         
     }, [localFilters.locationIds, localFilters.viewBound])
