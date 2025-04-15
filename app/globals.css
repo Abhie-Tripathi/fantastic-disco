@@ -292,6 +292,9 @@
   --disabled-btn-color: #c9c9c966;
   --card-backgroud: #ffffff;
   --card-backgroud: #ffffff;
+  --people-background:#EEEEFB;
+  --company-background:#F3F1FB;
+  --purpose-background: #FAF3FA;
 }
 
 .card {
@@ -345,6 +348,9 @@ body[data-theme="dark"] {
     rgba(103, 80, 164, 0.4) 100%
   );
   --warning-text-color: #ff990a;
+  --people-background:#26295E;
+  --company-background:#31294E;
+  --purpose-background:  #482F42;
 }
 
 /* :root {
