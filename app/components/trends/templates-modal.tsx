@@ -58,7 +58,7 @@ const templates: TemplateType[] = [
       categories: true,
       dateRange: true,
       eventTypes: true,
-      metrics: false,
+      metrics: true,
     },
     category: "share",
   },
@@ -77,7 +77,7 @@ const templates: TemplateType[] = [
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false,
+      metrics: true,
     },
     category: "share",
   },
@@ -94,7 +94,7 @@ const templates: TemplateType[] = [
       location: true,
       dateRange: true,
       eventTypes: true,
-      metrics: false,
+      metrics: true,
     },
     category: "share",
     version: "coming soon",
@@ -110,7 +110,7 @@ const templates: TemplateType[] = [
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false,
+      metrics: true,
     },
     category: "share",
     version: "coming soon",
@@ -128,7 +128,7 @@ const templates: TemplateType[] = [
       eventTypes: true,
       dateRange: true,
       categories: true,
-      metrics: false,
+      metrics: true,
     },
     category: "traffic",
     version: "coming soon",
@@ -144,7 +144,7 @@ const templates: TemplateType[] = [
       eventTypes: true,
       dateRange: true,
       categories: true,
-      metrics: false,
+      metrics: true,
     },
     category: "traffic",
     version: "coming soon",
@@ -223,14 +223,12 @@ type TemplatesModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectTemplate: (template: TemplateType) => void;
-  activeTemplate?: TemplateType | null;
 };
 
 const TemplatesModal = ({
   open,
   onOpenChange,
   onSelectTemplate,
-  activeTemplate,
 }: TemplatesModalProps) => {
   const categories = [
     {
@@ -264,12 +262,10 @@ const TemplatesModal = ({
       <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0">
         <DialogHeader className="px-6 pt-6">
           <DialogTitle className="tracking-normal">
-            {activeTemplate ? "Change Template" : "Trend Analysis Templates"}
+            Trend Analysis Templates
           </DialogTitle>
           <DialogDescription>
-            {activeTemplate
-              ? "Select a new template to replace the current one"
-              : "Choose a template to quickly analyze specific event trends"}
+            Choose a template to quickly analyze specific event trends
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[calc(90vh-120px)] px-6 pb-6">
@@ -293,10 +289,6 @@ const TemplatesModal = ({
                           template.version
                             ? "opacity-70 cursor-not-allowed"
                             : "cursor-pointer hover:shadow-md hover:border-primary/50"
-                        } ${
-                          activeTemplate?.id === template.id
-                            ? "border-primary bg-primary/5"
-                            : ""
                         }`}
                         onClick={() =>
                           !template.version && onSelectTemplate(template)
@@ -304,42 +296,27 @@ const TemplatesModal = ({
                       >
                         <div className="flex flex-col h-full justify-between">
                           <div className="flex items-start gap-4">
-                            <div
-                              className={`p-2 rounded-lg ${
-                                activeTemplate?.id === template.id
-                                  ? "bg-primary text-white"
-                                  : "bg-primary/10 text-primary"
-                              }`}
-                            >
+                            <div className="p-2 rounded-lg bg-primary/10 text-primary">
                               {template.icon}
                             </div>
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
-                                <h4 className="font-medium">
-                                  {template.title}
-                                </h4>
-                                {activeTemplate?.id === template.id && (
-                                  <Badge variant="default" className="text-xs">
-                                    Active
-                                  </Badge>
-                                )}
+                                <h4 className="font-medium">{template.title}</h4>
                               </div>
                               <p className="text-sm text-muted-foreground">
                                 {template.description}
                               </p>
                               {template.visualization && (
                                 <div className="flex gap-1 flex-wrap">
-                                  {template.visualization.map(
-                                    (visualization) => (
-                                      <Badge
-                                        key={visualization}
-                                        variant="secondary"
-                                        className="text-xs capitalize"
-                                      >
-                                        {visualization}
-                                      </Badge>
-                                    )
-                                  )}
+                                  {template.visualization.map((visualization) => (
+                                    <Badge
+                                      key={visualization}
+                                      variant="secondary"
+                                      className="text-xs capitalize"
+                                    >
+                                      {visualization}
+                                    </Badge>
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -361,7 +338,7 @@ const TemplatesModal = ({
                                   onSelectTemplate(template);
                                 }}
                               >
-                                Select Template
+                                Select
                               </Button>
                             )}
                           </div>

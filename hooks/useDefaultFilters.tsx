@@ -20,7 +20,6 @@ export function useDefaultFilters() {
   const { setMultipleLocalFilters } = useFilterContext();
   const pathName = usePathname();
   const router = useRouter();
-  const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
   const allowedEventTypes = isEventeli
     ? [...EVENT_TYPE_GROUPS.Social, ...EVENT_TYPE_GROUPS.Business]
@@ -427,6 +426,7 @@ export function useDefaultFilters() {
       const recentSearchResponse = await eventService.getRecentSearch();
       if (
         recentSearchResponse &&
+        recentSearchResponse.recentSearches.length &&
         recentSearchResponse.recentSearches[0].filterValues
       ) {
         const params = new URLSearchParams(searchParams.toString());

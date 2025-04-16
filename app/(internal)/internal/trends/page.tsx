@@ -80,9 +80,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import TemplatesModal, { TemplateType } from "@/app/components/trends/templates-modal";
-import { ActiveTemplateBadge } from "@/app/components/trends/active-template-badge";
-import { TemplateHistory } from "@/app/components/trends/template-history";
+import TemplatesModal, {
+  TemplateType,
+} from "@/app/components/trends/templates-modal";
 
 const ViewTemplates = [
   {
@@ -162,18 +162,27 @@ const EventTrends = () => {
   const [showSavedTrends, setShowSavedTrends] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showTemplatesModal, setShowTemplatesModal] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(null);
+  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
+    null
+  );
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
   const categories = getLocalFilterValue("categories");
-  type FilterKey = 'location' | 'eventTypes' | 'dateRange' | 'categories' | 'metrics';
-  
-  const [visibleFilters, setVisibleFilters] = useState<Record<FilterKey, boolean>>({
+  type FilterKey =
+    | "location"
+    | "eventTypes"
+    | "dateRange"
+    | "categories"
+    | "metrics";
+
+  const [visibleFilters, setVisibleFilters] = useState<
+    Record<FilterKey, boolean>
+  >({
     location: true,
     eventTypes: true,
     dateRange: true,
     categories: true,
-    metrics: true
+    metrics: true,
   });
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
@@ -380,16 +389,19 @@ const EventTrends = () => {
 
   const handleTemplateSelect = (template: TemplateType) => {
     // Set visualization type - use first available visualization
-    const defaultView = template.visualization[0] as "line" | "treemap" | "table";
+    const defaultView = template.visualization[0] as
+      | "line"
+      | "treemap"
+      | "table";
     handleViewChange(defaultView);
-    
+
     // Update visible filters - ensure all properties are set
     const newVisibleFilters: Record<FilterKey, boolean> = {
       location: template.visibleFilters.location ?? true,
       eventTypes: template.visibleFilters.eventTypes ?? true,
       dateRange: template.visibleFilters.dateRange ?? true,
       categories: template.visibleFilters.categories ?? true,
-      metrics: template.visibleFilters.metrics ?? true
+      metrics: template.visibleFilters.metrics ?? true,
     };
     setVisibleFilters(newVisibleFilters);
 
@@ -403,7 +415,7 @@ const EventTrends = () => {
         { id: "category", label: "Category", value: "category" },
       ]);
     }
-    
+
     // Set active template and update history
     setActiveTemplate(template);
     setTemplateHistory((prev) => {
@@ -411,11 +423,11 @@ const EventTrends = () => {
       return [template, ...filtered].slice(0, 10); // Keep last 10 templates
     });
     setHasModifiedFilters(false);
-    
+
     // Close modal and templates view
     setShowTemplatesModal(false);
     setShowTemplates(false);
-    
+
     // Apply filters
     applyFilters({ resetPage: true });
   };
@@ -428,18 +440,17 @@ const EventTrends = () => {
       eventTypes: true,
       dateRange: true,
       categories: true,
-      metrics: true
+      metrics: true,
     };
     setVisibleFilters(defaultFilters);
     applyFilters({ resetPage: true });
     setHasModifiedFilters(false);
   };
 
-
   // Track filter changes
   useEffect(() => {
     if (!activeTemplate) return;
-    
+
     // Track filter changes by comparing current filter values with template's visible filters
     const hasChanged = Object.entries(visibleFilters).some(
       ([key, isVisible]) => {
@@ -447,13 +458,13 @@ const EventTrends = () => {
         // Only check filters that are visible
         const filterKey = key as keyof typeof visibleFilters;
         if (!activeTemplate.visibleFilters[filterKey]) return false;
-        
+
         // Check if the filter has a value
         const currentValue = getLocalFilterValue(filterKey as keyof Filters);
         return currentValue && currentValue.length > 0;
       }
     );
-    
+
     setHasModifiedFilters(hasChanged);
   }, [localFilters, activeTemplate, visibleFilters]);
 
@@ -504,18 +515,22 @@ const EventTrends = () => {
                 </TabsList>
                 <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
                   <TabsContent value="events" className="mt-4 space-y-4">
-                    {visibleFilters.eventTypes && <EventTypeSelector variant="popover" />}
+                    {visibleFilters.eventTypes && (
+                      <EventTypeSelector variant="popover" />
+                    )}
                     {visibleFilters.location && <LocationSelector />}
                     {visibleFilters.dateRange && <DateRangeSelector />}
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
-                    {visibleFilters.metrics && <ColumnsSelector
-                      activeView={activeView}
-                      setActiveView={setActiveView}
-                      selectedEventType={selectedEventType}
-                      handleSelectChange={handleSelectChange}
-                    />}
+                    {visibleFilters.metrics && (
+                      <ColumnsSelector
+                        activeView={activeView}
+                        setActiveView={setActiveView}
+                        selectedEventType={selectedEventType}
+                        handleSelectChange={handleSelectChange}
+                      />
+                    )}
                     {activeView === "treemap" && (
                       <ChartFilters
                         type="visitor-flow"
@@ -671,24 +686,25 @@ const EventTrends = () => {
                     onClick={() => setShowSavedTrends(!showSavedTrends)}
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    {showSavedTrends ? "Hide Saved Trends" : "Show Saved Trends"}
+                    {showSavedTrends
+                      ? "Hide Saved Trends"
+                      : "Show Saved Trends"}
                   </Button>
-                  {!activeTemplate && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-primary"
-                      onClick={() => setShowTemplatesModal(true)}
-                    >
-                      <LayoutGrid className="w-4 h-4 mr-2" />
-                      Browse Templates
-                    </Button>
-                  )}
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-primary"
+                    onClick={() => setShowTemplatesModal(true)}
+                  >
+                    <LayoutGrid className="w-4 h-4 mr-2" />
+                    Browse Templates
+                  </Button>
                 </div>
               )}
             </div>
 
-            {!showTemplates && activeTemplate && (
+            {/* {!showTemplates && activeTemplate && (
               <div className="relative">
                 <div className="flex items-center justify-between bg-card border shadow-sm rounded-lg p-2">
                   <div className="flex items-center gap-3">
@@ -696,7 +712,9 @@ const EventTrends = () => {
                       {activeTemplate.icon}
                     </div>
                     <div>
-                      <div className="font-medium mb-0.5">{activeTemplate.title}</div>
+                      <div className="font-medium mb-0.5">
+                        {activeTemplate.title}
+                      </div>
                       <div className="text-sm text-muted-foreground">
                         {activeTemplate.description}
                       </div>
@@ -723,7 +741,7 @@ const EventTrends = () => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
             {showSavedTrends && !showTemplates && savedTrendsList && (
               <div className="mt-6">
@@ -733,14 +751,19 @@ const EventTrends = () => {
                     Saved Trends
                   </h3>
                   {savedTrendsList?.trackers.length > 0 ? (
-                    <SavedTrendsList savedTrendsList={savedTrendsList?.trackers} />
+                    <SavedTrendsList
+                      savedTrendsList={savedTrendsList?.trackers}
+                    />
                   ) : (
                     <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
                       <div className="text-center space-y-2">
                         <Save className="w-10 h-10 mx-auto text-primary/50" />
-                        <p className="text-sm font-medium">No saved trends yet</p>
+                        <p className="text-sm font-medium">
+                          No saved trends yet
+                        </p>
                         <p className="text-xs text-muted-foreground/70">
-                          Save your favorite trend configurations to access them later
+                          Save your favorite trend configurations to access them
+                          later
                         </p>
                       </div>
                     </div>
@@ -758,7 +781,9 @@ const EventTrends = () => {
                   key={template.id}
                   className="p-6 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md"
                   onClick={() => {
-                    handleViewChange(template.id as "line" | "treemap" | "table");
+                    handleViewChange(
+                      template.id as "line" | "treemap" | "table"
+                    );
                     setShowTemplates(false);
                   }}
                 >
@@ -768,7 +793,9 @@ const EventTrends = () => {
                         {template.icon}
                       </div>
                       <div>
-                        <h3 className="font-medium text-lg">{template.title}</h3>
+                        <h3 className="font-medium text-lg">
+                          {template.title}
+                        </h3>
                         <p className="text-sm text-muted-foreground">
                           {template.description}
                         </p>
@@ -781,42 +808,33 @@ const EventTrends = () => {
           ) : (
             <div className="grid grid-cols-3 gap-4 mb-4">
               {ViewTemplates.map((template) => {
-                const isDisabled = activeTemplate && !activeTemplate.visualization.includes(template.id);
                 return (
                   <Card
                     key={template.id}
                     className={`p-4 cursor-pointer transition-colors ${
                       activeView === template.id ? "border-primary" : ""
-                    } ${isDisabled ? "opacity-50 cursor-not-allowed" : "hover:border-primary/50"}`}
+                    } `}
                     onClick={() => {
-                      if (!isDisabled) {
-                        handleViewChange(template.id as "line" | "treemap" | "table");
-                      }
+                      handleViewChange(
+                        template.id as "line" | "treemap" | "table"
+                      );
                     }}
                   >
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`${isDisabled ? "text-muted-foreground" : "text-primary"}`}>
-                            {template.icon}
-                          </div>
-                          <h3 className={`font-medium ${isDisabled ? "text-muted-foreground" : ""}`}>
-                            {template.title}
-                          </h3>
+                          <div className="text-primary">{template.icon}</div>
+                          <h3 className={`font-medium`}>{template.title}</h3>
                         </div>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className={`w-4 h-4 ${
-                                isDisabled ? "text-muted-foreground" : "text-muted-foreground hover:text-primary"
-                              }`} />
+                              <Info
+                                className={`w-4 h-4 text-muted-foreground hover:text-primary`}
+                              />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>
-                                {isDisabled
-                                  ? "This visualization is not available for the current template"
-                                  : template.description}
-                              </p>
+                              <p>{template.description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -864,7 +882,9 @@ const EventTrends = () => {
                               holidayByDates={holidaysByDate}
                               threshold={
                                 (eventTrendsData &&
-                                  eventTrendsData.thresholds[selectedEventType]) ??
+                                  eventTrendsData.thresholds[
+                                    selectedEventType
+                                  ]) ??
                                 0
                               }
                               showLegend
@@ -878,7 +898,9 @@ const EventTrends = () => {
                           <TestPeriodicAnalytics
                             isSmartInsightsEnabled={isSmartInsightsEnabled}
                             smartInsightState={smartInsightState}
-                            setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
+                            setIsSmartInsightsEnabled={
+                              setIsSmartInsightsEnabled
+                            }
                             setSmartInsightState={setSmartInsightState}
                             data={
                               tableData && tableData.length > 0 ? tableData : []
@@ -903,8 +925,8 @@ const EventTrends = () => {
                         color="secondary"
                         className="w-80 text-center"
                       >
-                        Try selecting a different date range or broaden the location
-                        to view events.
+                        Try selecting a different date range or broaden the
+                        location to view events.
                       </Text>
                     </div>
                   )}
@@ -925,7 +947,6 @@ const EventTrends = () => {
         open={showTemplatesModal}
         onOpenChange={setShowTemplatesModal}
         onSelectTemplate={handleTemplateSelect}
-        activeTemplate={activeTemplate}
       />
     </div>
   );
