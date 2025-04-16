@@ -187,6 +187,7 @@ const EventTrends = () => {
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
+    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 
