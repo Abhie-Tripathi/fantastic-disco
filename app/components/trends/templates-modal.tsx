@@ -235,7 +235,7 @@ const TemplatesModal = ({
   const categories = [
     {
       id: "share",
-      name: "Share Analysis",
+      name: "Market Share Analysis",
       description: "Compare event distribution and mindshare",
       icon: <LayoutGrid className="w-4 h-4" />,
     },
