@@ -48,14 +48,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
     setSelectedCategory(null);
     setDataHistory([]);
     setCurrentPath([]);
-  }, [
-    hierarchyLevels,
-    locationId,
-    activeGte,
-    activeLte,
-    categories,
-    eventTypes,
-  ]);
+  }, [hierarchyLevels, locationId]);
 
   const { data: locationDetails } = useQuery({
     queryKey: ["locationDetails", locationId],
