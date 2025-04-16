@@ -28,7 +28,8 @@ export type TemplateType = {
   title: string;
   description: string;
   icon: JSX.Element;
-  visualization: "treemap" | "line" | "table";
+  visualization: string[];
+  hierarchy?: { id: string; label: string; value: string }[];
   visibleFilters: {
     location?: boolean;
     eventTypes?: boolean;
@@ -41,51 +42,23 @@ export type TemplateType = {
 };
 
 const templates: TemplateType[] = [
-  // Traffic Analysis Templates
-  {
-    id: "inbound-traffic",
-    title: "Inbound Traffic Analysis",
-    description: "Track where people come from to a specific geography",
-    icon: <ArrowLeftRight className="w-6 h-6" />,
-    visualization: "treemap",
-    visibleFilters: {
-      location: true,
-      eventTypes: true,
-      dateRange: true,
-      categories: true,
-      metrics: false
-    },
-    category: "traffic",
-  },
-  {
-    id: "outbound-traffic",
-    title: "Outbound Traffic Analysis",
-    description: "Track where people go from a specific geography",
-    icon: <ArrowLeftRight className="w-6 h-6" />,
-    visualization: "treemap",
-    visibleFilters: {
-      location: true,
-      eventTypes: true,
-      dateRange: true,
-      categories: true,
-      metrics: false
-    },
-    category: "traffic",
-  },
-
   // Share Analysis Templates
   {
     id: "category-share",
     title: "Event Category Share",
     description: "Analyze event distribution across categories in a geography",
     icon: <LayoutGrid className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
+    hierarchy: [
+      { id: "category", label: "Category", value: "category" },
+      { id: "location", label: "Location", value: "location" },
+    ],
     visibleFilters: {
       location: true,
       categories: true,
       dateRange: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "share",
   },
@@ -94,16 +67,19 @@ const templates: TemplateType[] = [
     title: "Event Country Share",
     description: "Compare event distribution across countries",
     icon: <Globe className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
+    hierarchy: [
+      { id: "location", label: "Location", value: "location" },
+      { id: "category", label: "Category", value: "category" },
+    ],
     visibleFilters: {
       location: true,
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "share",
-    version: "coming soon",
   },
 
   // Mindshare Templates
@@ -112,13 +88,13 @@ const templates: TemplateType[] = [
     title: "Category Mindshare",
     description: "Analyze event mindshare by category",
     icon: <TrendingUp className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       categories: true,
       location: true,
       dateRange: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "share",
     version: "coming soon",
@@ -128,15 +104,49 @@ const templates: TemplateType[] = [
     title: "Country Mindshare",
     description: "Compare event mindshare across countries",
     icon: <Globe className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       location: true,
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "share",
+    version: "coming soon",
+  },
+
+  // Traffic Analysis Templates
+  {
+    id: "inbound-traffic",
+    title: "Inbound Traffic Analysis",
+    description: "Track where people come from to a specific geography",
+    icon: <ArrowLeftRight className="w-6 h-6" />,
+    visualization: ["treemap"],
+    visibleFilters: {
+      location: true,
+      eventTypes: true,
+      dateRange: true,
+      categories: true,
+      metrics: false,
+    },
+    category: "traffic",
+    version: "coming soon",
+  },
+  {
+    id: "outbound-traffic",
+    title: "Outbound Traffic Analysis",
+    description: "Track where people go from a specific geography",
+    icon: <ArrowLeftRight className="w-6 h-6" />,
+    visualization: ["treemap"],
+    visibleFilters: {
+      location: true,
+      eventTypes: true,
+      dateRange: true,
+      categories: true,
+      metrics: false,
+    },
+    category: "traffic",
     version: "coming soon",
   },
 
@@ -146,13 +156,13 @@ const templates: TemplateType[] = [
     title: "Category Participation",
     description: "Analyze exhibitor participation by category",
     icon: <Users className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       categories: true,
       location: true,
       dateRange: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "participation",
     version: "coming soon",
@@ -162,13 +172,13 @@ const templates: TemplateType[] = [
     title: "Country Participation",
     description: "Compare exhibitor participation across countries",
     icon: <Building className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       location: true,
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "participation",
     version: "coming soon",
@@ -180,13 +190,13 @@ const templates: TemplateType[] = [
     title: "Geographic Economic Impact",
     description: "Analyze economic impact across geographies",
     icon: <DollarSign className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       location: true,
       dateRange: true,
       categories: true,
       eventTypes: true,
-      metrics: false
+      metrics: false,
     },
     category: "impact",
     version: "coming soon",
@@ -196,13 +206,13 @@ const templates: TemplateType[] = [
     title: "Category Economic Impact",
     description: "Compare economic impact across event categories",
     icon: <BarChart3 className="w-6 h-6" />,
-    visualization: "treemap",
+    visualization: ["treemap"],
     visibleFilters: {
       categories: true,
       location: true,
       dateRange: true,
       eventTypes: true,
-      metrics: true
+      metrics: true,
     },
     category: "impact",
     version: "coming soon",
@@ -224,16 +234,16 @@ const TemplatesModal = ({
 }: TemplatesModalProps) => {
   const categories = [
     {
-      id: "traffic",
-      name: "Traffic Analysis",
-      description: "Analyze event attendance flows",
-      icon: <ArrowLeftRight className="w-4 h-4" />,
-    },
-    {
       id: "share",
       name: "Share Analysis",
       description: "Compare event distribution and mindshare",
       icon: <LayoutGrid className="w-4 h-4" />,
+    },
+    {
+      id: "traffic",
+      name: "Traffic Analysis",
+      description: "Analyze event attendance flows",
+      icon: <ArrowLeftRight className="w-4 h-4" />,
     },
     {
       id: "participation",
@@ -257,8 +267,8 @@ const TemplatesModal = ({
             {activeTemplate ? "Change Template" : "Trend Analysis Templates"}
           </DialogTitle>
           <DialogDescription>
-            {activeTemplate 
-              ? "Select a new template to replace the current one" 
+            {activeTemplate
+              ? "Select a new template to replace the current one"
               : "Choose a template to quickly analyze specific event trends"}
           </DialogDescription>
         </DialogHeader>
@@ -279,47 +289,80 @@ const TemplatesModal = ({
                     .map((template) => (
                       <Card
                         key={template.id}
-                        className={`p-4 cursor-pointer transition-all hover:shadow-md ${
+                        className={`p-4 transition-all ${
+                          template.version
+                            ? "opacity-70 cursor-not-allowed"
+                            : "cursor-pointer hover:shadow-md hover:border-primary/50"
+                        } ${
                           activeTemplate?.id === template.id
                             ? "border-primary bg-primary/5"
-                            : "hover:border-primary/50"
+                            : ""
                         }`}
-                        onClick={() => onSelectTemplate(template)}
+                        onClick={() =>
+                          !template.version && onSelectTemplate(template)
+                        }
                       >
-                        <div className="flex items-start gap-4">
-                          <div className={`p-2 rounded-lg ${
-                            activeTemplate?.id === template.id
-                              ? "bg-primary text-white"
-                              : "bg-primary/10 text-primary"
-                          }`}>
-                            {template.icon}
-                          </div>
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium">{template.title}</h4>
-                              {template.version && (
-                                <Badge variant="outline" className="text-xs capitalize text-nowrap">
-                                  {template.version}
-                                </Badge>
-                              )}
-                              {activeTemplate?.id === template.id && (
-                                <Badge variant="default" className="text-xs">
-                                  Active
-                                </Badge>
+                        <div className="flex flex-col h-full justify-between">
+                          <div className="flex items-start gap-4">
+                            <div
+                              className={`p-2 rounded-lg ${
+                                activeTemplate?.id === template.id
+                                  ? "bg-primary text-white"
+                                  : "bg-primary/10 text-primary"
+                              }`}
+                            >
+                              {template.icon}
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-medium">
+                                  {template.title}
+                                </h4>
+                                {activeTemplate?.id === template.id && (
+                                  <Badge variant="default" className="text-xs">
+                                    Active
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {template.description}
+                              </p>
+                              {template.visualization && (
+                                <div className="flex gap-1 flex-wrap">
+                                  {template.visualization.map(
+                                    (visualization) => (
+                                      <Badge
+                                        key={visualization}
+                                        variant="secondary"
+                                        className="text-xs capitalize"
+                                      >
+                                        {visualization}
+                                      </Badge>
+                                    )
+                                  )}
+                                </div>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                              {template.description}
-                            </p>
-                            {template.visualization && (
-                              <div className="flex gap-1 flex-wrap">
-                                <Badge
-                                  variant="secondary"
-                                  className="text-xs capitalize"
-                                >
-                                  {template.visualization}
-                                </Badge>
-                              </div>
+                          </div>
+                          <div className="flex justify-end items-center">
+                            {template.version ? (
+                              <Badge
+                                variant="outline"
+                                className="text-xs capitalize text-nowrap"
+                              >
+                                {template.version}
+                              </Badge>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSelectTemplate(template);
+                                }}
+                              >
+                                Select Template
+                              </Button>
                             )}
                           </div>
                         </div>

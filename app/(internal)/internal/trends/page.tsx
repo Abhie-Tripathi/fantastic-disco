@@ -11,7 +11,7 @@ import LineChartComponent from "@/components/trends/lineChart";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/ui/Loading";
 import { isEventeli } from "@/config";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
@@ -366,6 +366,9 @@ const EventTrends = () => {
   };
 
   const handleViewChange = (view: "line" | "treemap" | "table") => {
+    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
+      return; // Don't change view if not supported by template
+    }
     setActiveView(view);
     if (view === "treemap" && categories.length === 0) {
       const defaultCategories = "technology,medical-pharma";
@@ -375,8 +378,9 @@ const EventTrends = () => {
   };
 
   const handleTemplateSelect = (template: TemplateType) => {
-    // Set visualization type
-    handleViewChange(template.visualization as "line" | "treemap" | "table");
+    // Set visualization type - use first available visualization
+    const defaultView = template.visualization[0] as "line" | "treemap" | "table";
+    handleViewChange(defaultView);
     
     // Update visible filters - ensure all properties are set
     const newVisibleFilters: Record<FilterKey, boolean> = {
@@ -387,6 +391,17 @@ const EventTrends = () => {
       metrics: template.visibleFilters.metrics ?? true
     };
     setVisibleFilters(newVisibleFilters);
+
+    // Set hierarchy levels if provided in template
+    if (template.hierarchy) {
+      setHierarchyLevels(template.hierarchy);
+    } else {
+      // Set default hierarchy levels
+      setHierarchyLevels([
+        { id: "location", label: "Location", value: "location" },
+        { id: "category", label: "Category", value: "category" },
+      ]);
+    }
     
     // Set active template and update history
     setActiveTemplate(template);
@@ -419,16 +434,6 @@ const EventTrends = () => {
     setHasModifiedFilters(false);
   };
 
-  const handleTemplateReapply = () => {
-    if (!activeTemplate) return;
-    
-    // Reapply template filters
-    Object.entries(activeTemplate.filters).forEach(([key, value]) => {
-      setLocalFilter(key as any, value);
-    });
-    setHasModifiedFilters(false);
-    applyFilters({ resetPage: true });
-  };
 
   // Track filter changes
   useEffect(() => {
@@ -438,18 +443,13 @@ const EventTrends = () => {
     const hasChanged = Object.entries(visibleFilters).some(
       ([key, isVisible]) => {
         if (!isVisible) return false;
-        // Only check filters that are visible and supported by the context
-        switch (key) {
-          case 'location':
-          case 'eventTypes':
-          case 'dateRange':
-          case 'categories':
-          case 'metrics':
-            const currentValue = getLocalFilterValue(key);
-            return currentValue !== undefined && currentValue.length > 0;
-          default:
-            return false;
-        }
+        // Only check filters that are visible
+        const filterKey = key as keyof typeof visibleFilters;
+        if (!activeTemplate.visibleFilters[filterKey]) return false;
+        
+        // Check if the filter has a value
+        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
+        return currentValue && currentValue.length > 0;
       }
     );
     
@@ -702,17 +702,6 @@ const EventTrends = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {hasModifiedFilters && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-primary border-primary/20"
-                        onClick={handleTemplateReapply}
-                      >
-                        <RotateCcw className="w-4 h-4 mr-1.5" />
-                        Reset to Default
-                      </Button>
-                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -791,7 +780,7 @@ const EventTrends = () => {
           ) : (
             <div className="grid grid-cols-3 gap-4 mb-4">
               {ViewTemplates.map((template) => {
-                const isDisabled = template.disabledFor?.includes(activeTemplate?.id || '');
+                const isDisabled = activeTemplate && !activeTemplate.visualization.includes(template.id);
                 return (
                   <Card
                     key={template.id}
@@ -800,29 +789,33 @@ const EventTrends = () => {
                     } ${isDisabled ? "opacity-50 cursor-not-allowed" : "hover:border-primary/50"}`}
                     onClick={() => {
                       if (!isDisabled) {
-                        handleViewChange(
-                          template.id as "line" | "treemap" | "table"
-                        )
+                        handleViewChange(template.id as "line" | "treemap" | "table");
                       }
                     }}
                   >
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`${isDisabled ? "text-muted-foreground" : "text-primary"}`}>{template.icon}</div>
-                          <h3 className={`font-medium ${isDisabled ? "text-muted-foreground" : ""}`}>{template.title}</h3>
+                          <div className={`${isDisabled ? "text-muted-foreground" : "text-primary"}`}>
+                            {template.icon}
+                          </div>
+                          <h3 className={`font-medium ${isDisabled ? "text-muted-foreground" : ""}`}>
+                            {template.title}
+                          </h3>
                         </div>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
-                              {isDisabled ? (
-                                <Info className="w-4 h-4 text-muted-foreground" />
-                              ) : (
-                                <Info className="w-4 h-4 text-muted-foreground hover:text-primary" />
-                              )}
+                              <Info className={`w-4 h-4 ${
+                                isDisabled ? "text-muted-foreground" : "text-muted-foreground hover:text-primary"
+                              }`} />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{isDisabled ? "This view is not available for the current template" : template.description}</p>
+                              <p>
+                                {isDisabled
+                                  ? "This visualization is not available for the current template"
+                                  : template.description}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
