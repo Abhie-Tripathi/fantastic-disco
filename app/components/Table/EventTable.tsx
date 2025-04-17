@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -31,7 +32,8 @@ const EventTable = ({
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
   const { localFilters } = useFilterContext();
-  const { data } = useTrackerContext();
+  const router = useRouter();
+  const { data, setIsNewCall, editTrue, setEditTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
@@ -53,7 +55,8 @@ const EventTable = ({
   const mapping = {
     rating: "rating",
     maturity: "maturity",
-    branded: "branded,series",
+    branded: "branded",
+    series:"series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -93,12 +96,17 @@ const EventTable = ({
       limit: itemsPerPage.toString(),
     });
   };
+  // useEffect(()=>{
+  //   if(editTrue){
+  //     // setIsNewCall(true);
+  //     window.location.reload();
+  //     } 
+  // },[editTrue])
   useEffect(() => {
     if (events?.length > 0) {
       setUpdatedEvents(events);
     }
   }, [events]);
-
   useEffect(() => {
     if (!events) return;
 
@@ -146,7 +154,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading) {
+  if (isLoading || editTrue) {
     return <Loading className="h-24 text-primary" />;
   }
 

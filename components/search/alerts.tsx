@@ -143,8 +143,8 @@ export default function Alerts() {
                           "flex h-8 w-8 items-center justify-center rounded-md border-2"
                         }
                       >
-                        {alertIcons[alert.type] ||
-                          (alert.type.toLowerCase() === "warning" ? (
+                        {alertIcons[alert?.type] ||
+                          (alert?.type?.toLowerCase() === "warning" ? (
                             <AlertTriangle className="h-4 w-4 text-primary" />
                           ) : (
                             <Info className="h-4 w-4 text-primary" />

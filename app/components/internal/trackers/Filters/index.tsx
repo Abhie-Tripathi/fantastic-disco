@@ -1619,8 +1619,7 @@ return (
             <div className="flex justify-center my-6">
             <div className="flex justify-center">
                 <TabsList  className={cn(
-              "w-[570px] grid grid-cols-3 h-auto",
-              isEventeli ? "grid-cols-2 w-[386px]" : ""
+              "w-[570px] grid grid-cols-3 h-auto"
             )}>
                   <TabsTrigger value="advancedDetails" className="text-base">
                               Advanced Details
@@ -1638,7 +1637,7 @@ return (
                 ""
               )} */}
                   </TabsTrigger>
-                  {!isEventeli && (
+                  {/* {!isEventeli && ( */}
                   <TabsTrigger value="audienceIntel" className=" text-base">
                   Audience Intel
                   {/* {audienceInterFiltersCount ? (
@@ -1647,7 +1646,7 @@ return (
                   ""
                    )} */}
                   </TabsTrigger>
-                  )}
+                  {/* )} */}
                 </TabsList>
             </div>
             </div>
@@ -1673,15 +1672,17 @@ return (
                   <EventRankingSelector/>
                   </div>
                 </TabsContent>
-                {!isEventeli && <TabsContent value="audienceIntel">
+                {/* {!isEventeli && */}
+                 <TabsContent value="audienceIntel">
                   <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
                     {/* <AudienceQualitySelector />
                     <ExhibitorQualitySelector /> */}
-                    <AudienceZoneSelector/>
+                    {!isEventeli &&<AudienceZoneSelector/>}
                     <AudienceProfileSelector/>
                     <AudienceSpreadSelector/>
                     </div>
-                </TabsContent>}
+                </TabsContent>
+                {/* } */}
           </Tabs>
     </div>
   </Suspense>
