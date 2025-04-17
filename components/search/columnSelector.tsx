@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, CircleSlash } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -8,28 +8,19 @@ import {
 } from "@/components/ui/popover";
 import { columnsDropdown, treemapColumnsDropdown } from "@/data/trends";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Thresholds } from "@/types";
 import { cn } from "@/lib/utils";
+import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 
-export default function ColumnsSelector({
-  activeView,
-}: {
-  activeView: "line" | "treemap" | "table";
-}) {
-  const { setFilter, getFilterValue, setMultipleFilters } = useFilterState();
-  const metric = getFilterValue("columns");
+export default function ColumnsSelector() {
+  const { setLocalFilter, getLocalFilterValue, setMultipleLocalFilters } =
+    useFilterContext();
+  const { getFilterValue } = useFilterState();
+  const activeView = getFilterValue("view");
+  const metric = getLocalFilterValue("columns");
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // const applyHandler = () => {
-  //   setFilter("columns", selectedItems.join(","));
-  //   setIsOpen(false);
-  // };
-
   const onOpenChange = (open: boolean) => {
-    // if (!open) {
-    //   applyHandler();
-    // }
     setIsOpen(open);
   };
 
@@ -66,9 +57,9 @@ export default function ColumnsSelector({
           className="flex items-center"
           onValueChange={(value) => {
             if (activeView === "treemap" && value !== "eventCount") {
-              setMultipleFilters({ columns: value, view: "line" });
+              setMultipleLocalFilters({ columns: value, view: "line" });
             } else {
-              setFilter("columns", value);
+              setLocalFilter("columns", value);
             }
             setIsOpen(false);
           }}

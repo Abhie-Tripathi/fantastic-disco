@@ -39,10 +39,14 @@ export function useDefaultFilters() {
     },
     active_gte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
-    ).toISOString(), // Starting date of current month going on.
+    )
+      .toISOString()
+      .split("T")[0], // Starting date of current month going on.
     active_lte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
-    ).toISOString(), // Ending date of current month going on.
+    )
+      .toISOString()
+      .split("T")[0], // Ending date of current month going on.
     eventTypes: allowedEventTypes, // Event Types according to the platform.
     categories: "technology,medical-pharma",
   };
@@ -439,7 +443,6 @@ export function useDefaultFilters() {
           recentSearch = recentSearchResponse.recentSearches[0];
         }
         const recentFilterParams = mapRecentSearchToParams(recentSearch);
-        console.log(recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
@@ -463,9 +466,31 @@ export function useDefaultFilters() {
           // Set local filters using the context
           setMultipleLocalFilters(recentFilterParams);
         }
+        return;
       }
     } catch (error) {
       console.error("Error setting initial filters:", error);
+    }
+
+    const defaultSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (pathName.split("/").includes("trends")) {
+      defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
+      defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
+      defaultSearchParams.set("locationIds", defaultTrendsParams.locationIds);
+      defaultSearchParams.set("categories", defaultTrendsParams.categories);
+      defaultSearchParams.set("columns", "eventCount");
+      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    if (pathName.split("/").includes("search")) {
+      defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
+      defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
+      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
+        scroll: false,
+      });
     }
   };
 

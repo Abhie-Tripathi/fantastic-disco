@@ -144,18 +144,18 @@ const EventTrends = () => {
   const [graphData, setGraphData] = useState<any>();
   const [tableData, setTableData] = useState<TableData[] | []>();
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
-  const { getEventsWithSearchParams, getEventCountByCity, getEventsCount } =
-    useEventsService();
-  const { setFilter, getFilterValue } = useFilterState();
-  const [showNotificationForm, setShowNotificationForm] =
-    useState<boolean>(false);
+  const { getEventsWithSearchParams } = useEventsService();
+  const { getFilterValue } = useFilterState();
+  const [setShowNotificationForm] = useState<boolean>(false);
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const metric = getFilterValue("columns") as
     | "eventCount"
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
-  const activeView = getFilterValue("view") as "line" | "treemap" | "table";
+  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
+    ? (getFilterValue("view") as "line" | "treemap" | "table")
+    : "treemap";
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
@@ -513,9 +513,7 @@ const EventTrends = () => {
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
-                    {visibleFilters.metrics && (
-                      <ColumnsSelector activeView={activeView} />
-                    )}
+                    {visibleFilters.metrics && <ColumnsSelector />}
                     {activeView === "treemap" && (
                       <ChartFilters
                         type="visitor-flow"
