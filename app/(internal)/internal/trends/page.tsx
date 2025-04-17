@@ -83,6 +83,7 @@ import {
 import TemplatesModal, {
   TemplateType,
 } from "@/app/components/trends/templates-modal";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const ViewTemplates = [
   {
@@ -113,6 +114,7 @@ const EventTrends = () => {
     applyFilters,
     setLocalFilter,
     getLocalFilterValue,
+    setMultipleLocalFilters,
     deleteMultipleLocalFilters,
     localFilters,
   } = useFilterContext();
@@ -144,17 +146,16 @@ const EventTrends = () => {
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
   const { getEventsWithSearchParams, getEventCountByCity, getEventsCount } =
     useEventsService();
-  const [selectedEventType, setSelectedEventType] = useState<TEventColumnType>(
-    () => {
-      return columnsData[0] as TEventColumnType;
-    }
-  );
+  const { setFilter, getFilterValue } = useFilterState();
   const [showNotificationForm, setShowNotificationForm] =
     useState<boolean>(false);
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
-  const [activeView, setActiveView] = useState<"line" | "treemap" | "table">(
-    "treemap"
-  );
+  const metric = getFilterValue("columns") as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate";
+  const activeView = getFilterValue("view") as "line" | "treemap" | "table";
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
@@ -266,9 +267,6 @@ const EventTrends = () => {
   useEffect(() => {
     if (trendsData !== undefined) {
       setEventTrendsData(trendsData);
-      setSelectedEventType(() => {
-        return columnsData[0] as TEventColumnType;
-      });
     }
   }, [trendsData]);
 
@@ -277,10 +275,6 @@ const EventTrends = () => {
 
     if (!skip) {
       setIsSmartInsightsEnabled(false);
-
-      setSelectedEventType(() => {
-        return columnsData[0] as TEventColumnType;
-      });
 
       setSmartInsightState((prev) => {
         const updatedState = columnsData.reduce((acc, key) => {
@@ -329,10 +323,7 @@ const EventTrends = () => {
         columns
       );
 
-      const graphData = morphToGraphData(
-        eventTrendsData.groupedData,
-        selectedEventType
-      );
+      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
 
       const tableData = morphToTrendsTableData(
         eventTrendsData.thresholds,
@@ -346,7 +337,7 @@ const EventTrends = () => {
       setTableData(smartInsightsData);
       setTableColumns(tableColumns);
     }
-  }, [eventTrendsData, selectedEventType]);
+  }, [eventTrendsData, metric]);
 
   useEffect(() => {
     if (trendsData === undefined) {
@@ -371,20 +362,19 @@ const EventTrends = () => {
     applyFilters({ resetPage: true });
   };
 
-  const handleSelectChange = (value: TEventColumnType) => {
-    setSelectedEventType(value);
-  };
-
   const handleViewChange = (view: "line" | "treemap" | "table") => {
     if (activeTemplate && !activeTemplate.visualization.includes(view)) {
       return; // Don't change view if not supported by template
     }
-    setActiveView(view);
-    if (view === "treemap" && categories.length === 0) {
-      const defaultCategories = "technology,medical-pharma";
-      setLocalFilter("categories", defaultCategories);
-      applyFilters({ resetPage: true });
+    if (view === "treemap") {
+      if (categories.length === 0) {
+        const defaultCategories = "technology,medical-pharma";
+        setMultipleLocalFilters({ categories: defaultCategories, view: view });
+      }
+      setMultipleLocalFilters({ columns: "eventCount", view: view });
     }
+    setLocalFilter("view", view);
+    applyFilters({ resetPage: true });
   };
 
   const handleTemplateSelect = (template: TemplateType) => {
@@ -524,12 +514,7 @@ const EventTrends = () => {
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
                     {visibleFilters.metrics && (
-                      <ColumnsSelector
-                        activeView={activeView}
-                        setActiveView={setActiveView}
-                        selectedEventType={selectedEventType}
-                        handleSelectChange={handleSelectChange}
-                      />
+                      <ColumnsSelector activeView={activeView} />
                     )}
                     {activeView === "treemap" && (
                       <ChartFilters
@@ -878,13 +863,11 @@ const EventTrends = () => {
                           <div className={styles.predictedAttendence_container}>
                             <LineChartComponent
                               predictedData={graphData}
-                              selectedEventType={selectedEventType}
+                              selectedEventType={metric}
                               holidayByDates={holidaysByDate}
                               threshold={
                                 (eventTrendsData &&
-                                  eventTrendsData.thresholds[
-                                    selectedEventType
-                                  ]) ??
+                                  eventTrendsData.thresholds[metric]) ??
                                 0
                               }
                               showLegend

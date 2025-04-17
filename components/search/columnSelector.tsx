@@ -1,50 +1,35 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, CircleSlash } from "lucide-react";
-import { useCallback, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useFilterContext } from "@/context/filterContext";
-import { useSearchParams } from "next/navigation";
-import { CheckedState } from "@radix-ui/react-checkbox";
 import { columnsDropdown, treemapColumnsDropdown } from "@/data/trends";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { TEventColumnType, Thresholds } from "@/types";
+import { Thresholds } from "@/types";
 import { cn } from "@/lib/utils";
-
-type EventGroupType = "social" | "business";
+import { useFilterState } from "@/hooks/useFilterState";
 
 export default function ColumnsSelector({
   activeView,
-  setActiveView,
-  selectedEventType,
-  handleSelectChange,
 }: {
   activeView: "line" | "treemap" | "table";
-  setActiveView: (view: "line" | "treemap" | "table") => void;
-  selectedEventType: keyof Thresholds;
-  handleSelectChange: (value: TEventColumnType) => void;
 }) {
-  const searchParams = useSearchParams();
-  const columnsParams = searchParams.get("columns");
-  const columnsData = (columnsParams && columnsParams.split(",")) || [];
-  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const { setFilter, getFilterValue, setMultipleFilters } = useFilterState();
+  const metric = getFilterValue("columns");
   const [isOpen, setIsOpen] = React.useState(false);
-  const { setLocalFilter } = useFilterContext();
 
-  const applyHandler = () => {
-    setLocalFilter("columns", selectedItems.join(","));
-    setIsOpen(false);
-  };
+  // const applyHandler = () => {
+  //   setFilter("columns", selectedItems.join(","));
+  //   setIsOpen(false);
+  // };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      applyHandler();
-    }
+    // if (!open) {
+    //   applyHandler();
+    // }
     setIsOpen(open);
   };
 
@@ -64,10 +49,9 @@ export default function ColumnsSelector({
           <div className="flex items-center truncate">
             <span className="mr-2">Metric</span>
             <span className="truncate text-xs text-primary">
-              {selectedEventType &&
-                columnsDropdown.find(
-                  (column) => column.value === selectedEventType
-                )?.label}
+              {metric &&
+                columnsDropdown.find((column) => column.value === metric)
+                  ?.label}
             </span>
           </div>
           <ChevronDown
@@ -82,9 +66,9 @@ export default function ColumnsSelector({
           className="flex items-center"
           onValueChange={(value) => {
             if (activeView === "treemap" && value !== "eventCount") {
-              setActiveView("line");
+              setMultipleFilters({ columns: value, view: "line" });
             } else {
-              handleSelectChange(value as TEventColumnType);
+              setFilter("columns", value);
             }
             setIsOpen(false);
           }}
@@ -96,7 +80,7 @@ export default function ColumnsSelector({
                 className="flex items-center space-x-2 cursor-pointer"
               >
                 <RadioGroupItem
-                  checked={selectedEventType === value}
+                  checked={metric === value}
                   value={value}
                   id={value}
                 />
