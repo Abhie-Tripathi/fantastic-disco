@@ -269,7 +269,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const venueAddress = [
     eventLocation?.locationType !== "VENUE" ? eventLocation?.name : null,
     eventLocation?.cityName,
-    eventLocation?.stateName,
     eventLocation?.countryName,
   ]
     .filter(Boolean)
@@ -541,7 +540,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   </Tooltip>
                 </TooltipProvider>
               )}
-              {venueAddress !== "Online" && (
+              {typeOfEvent !== "online" && (
                 <p className="text-[var(--secondary-text-color)] text-sm">
                   {venueAddress}
                 </p>
