@@ -36,18 +36,19 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
   >([]);
 
   // Reset state when hierarchy levels change
-  useEffect(() => {
-    setCurrentLevel(0);
-    setSelectedCategory(null);
-    setDataHistory([]);
-    setCurrentPath([]);
-  }, [hierarchyLevels]);
 
   const locationId = getFilterValue("locationIds");
   const activeGte = getFilterValue("active_gte");
   const activeLte = getFilterValue("active_lte");
   const categories = getFilterValue("categories").split(",");
   const eventTypes = getFilterValue("eventTypes");
+
+  useEffect(() => {
+    setCurrentLevel(0);
+    setSelectedCategory(null);
+    setDataHistory([]);
+    setCurrentPath([]);
+  }, [hierarchyLevels, locationId]);
 
   const { data: locationDetails } = useQuery({
     queryKey: ["locationDetails", locationId],

@@ -8,7 +8,7 @@ export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { signUpSSO10times } = useAuthContext();
-  const { verifyAccess } = useTrackerServices(); 
+  const { verifyAccess } = useTrackerServices();
 
   // Get query params safely
   const email = searchParams.get("email") || "";
@@ -31,19 +31,19 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Verification failed:", error);
+        router.push("https://whr.ai/gtm");
       }
     };
 
     if (source === "10times") {
-      if (!source || !token || !userId) return;
-      signUpSSO10times(token, userId, redirectPath);
+      if (!source || !token || !userId) router.push("https://whr.ai/gtm");
+      else signUpSSO10times(token, userId, redirectPath);
     } else {
-      if (!email || !otp || !target || !targetId) return;
-      verify();
+      if (!email || !otp || !target || !targetId)
+        router.push("https://whr.ai/gtm");
+      else verify();
     }
   }, [email, otp, target, targetId, router]);
 
-  return (
-    <LoadingPage />
-  );
+  return <LoadingPage />;
 }
