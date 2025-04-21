@@ -31,17 +31,17 @@ const EventTable = ({
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
   const { localFilters } = useFilterContext();
-  const { data } = useTrackerContext();
+  const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
   console.log(trackerId);
-  let events, totalEvents, isLoading, error;
+  let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
       query,
       trackerId,
       view
@@ -53,7 +53,8 @@ const EventTable = ({
   const mapping = {
     rating: "rating",
     maturity: "maturity",
-    branded: "branded,series",
+    branded: "branded",
+    series:"series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -98,7 +99,7 @@ const EventTable = ({
       setUpdatedEvents(events);
     }
   }, [events]);
-
+  
   useEffect(() => {
     if (!events) return;
 
@@ -146,7 +147,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Loading className="h-24 text-primary" />;
   }
 
