@@ -26,7 +26,12 @@ import { isEventeli } from "@/config";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
-import { Event, EventPOCDetails, TTabs } from "@/types/events";
+import {
+  Event,
+  EventCoOrganizerDetail,
+  EventPOCDetails,
+  TTabs,
+} from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -681,7 +686,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </div>
               )}
               {coorganizers.length > 0 &&
-                coorganizers.map((coOrganizer: any) => (
+                coorganizers.map((coOrganizer: EventCoOrganizerDetail) => (
                   <div
                     key={coOrganizer.id}
                     className="flex gap-4 px-2 pt-1 items-center"
