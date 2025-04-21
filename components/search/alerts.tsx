@@ -58,8 +58,6 @@ export default function Alerts() {
     fetchAlertCounts();
   }, [searchParams]);
 
-  console.log(alertCounts);
-
   useEffect(() => {
     const fetchAlerts = async () => {
       setIsLoading(true);

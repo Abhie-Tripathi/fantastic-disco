@@ -139,9 +139,6 @@ const BasicEventSchema = z.object({
     longitude: z.string().nullable(),
     address: z.string().nullable(),
     displayName: z.string().nullable(),
-    businessScore: z.number().optional(),
-    socialScore: z.number().optional(),
-    reason: z.string().optional(),
     locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
   }),
   organizer: z
