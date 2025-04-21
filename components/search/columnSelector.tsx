@@ -60,13 +60,10 @@ export default function ColumnsSelector() {
               (activeView === "treemap" || activeView == "") &&
               value !== "eventCount"
             ) {
-              console.log("hii i am here");
               setMultipleLocalFilters({ columns: value, view: "line" });
             } else {
-              console.log("hii i am here 2");
               setLocalFilter("columns", value);
             }
-            console.log("hii i am here 3");
             setIsOpen(false);
           }}
         >

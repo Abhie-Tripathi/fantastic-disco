@@ -194,7 +194,6 @@ const EventTrends = () => {
       groupBy: "date",
       dateView: "day",
     });
-    console.log(searchParams.toString());
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
