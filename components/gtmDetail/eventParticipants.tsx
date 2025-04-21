@@ -34,7 +34,7 @@ const ListCard = ({
 }: {
   participant: EventParticipantsDetails;
 }) => {
-  const { details, logo, name, type } = participant;
+  const { logo, name } = participant;
   return (
     <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-20">
       <div className="flex flex-row justify-between">
@@ -51,7 +51,7 @@ const ListCard = ({
              border-[#5055A3]/20 flex items-center justify-center"
             >
               <span className="text-[#5055A3] text-2xl font-semibold">
-                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                {name?.replace(/[+*-/"'"]/g, "").charAt(0)}
               </span>
             </div>
           )}

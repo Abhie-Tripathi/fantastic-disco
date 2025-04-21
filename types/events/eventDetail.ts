@@ -122,11 +122,11 @@ export interface EventSponsorDetails {
 }
 
 export interface EventParticipantsDetails {
-  id: string;
-  name: string;
-  logo: string;
-  details: string;
-  type: "exhibitor" | "speaker" | "sponsor";
+  id: string | undefined | null;
+  name: string | undefined | null;
+  logo: string | undefined | null;
+  details: string | undefined | null;
+  type: "exhibitor" | "speaker" | "sponsor" | undefined | null;
 }
 
 export interface EventRankingLocation {
