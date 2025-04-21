@@ -105,7 +105,7 @@ export default function CreateTrackerDialog({
         top: localFilters.top,
         designations: localFilters.designations,
         audienceSpread: localFilters.audienceSpread,
-        ...(showsData.length > 0 && { shows: showsData.join(",") }),
+        ...(showsData.length > 0 && { show: showsData.join(",") }),
       },
       type: "T_CUSTOM",
     };
