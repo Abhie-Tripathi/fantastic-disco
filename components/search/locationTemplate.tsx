@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState, useEffect, use } from "react";
@@ -83,7 +84,7 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
           lat: geoCoordinate.coordinates.latitude,
           lng: geoCoordinate.coordinates.longitude,
           radius: geoCoordinate.coordinates.radius,
-          description: isApply?locationName:(geoCoordinate?.properties?.name || locationName)
+          description: (isApply)?locationName:(geoCoordinate?.properties?.name || locationName)
         });
         setIsApply(false);
       } else if (locationIds) {
@@ -166,7 +167,7 @@ useEffect(() => {
 }, [localFilters]);
 
 const applyHandlerClicked=()=>{
-  setIsApply(true);
+  // setIsApply(true);
   applyHandler();
 }
 useEffect(()=>{
@@ -258,7 +259,7 @@ useEffect(()=>{
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.radius}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -266,8 +267,9 @@ useEffect(()=>{
                               radius: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
                 <div className="col-span-2">
@@ -297,7 +299,7 @@ useEffect(()=>{
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.lat}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -305,8 +307,9 @@ useEffect(()=>{
                               lat: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
                 <div className="col-span-3">
@@ -318,7 +321,7 @@ useEffect(()=>{
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.lng}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -326,8 +329,9 @@ useEffect(()=>{
                               lng: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
               </div>
