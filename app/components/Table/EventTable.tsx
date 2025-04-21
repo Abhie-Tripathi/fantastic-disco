@@ -38,10 +38,10 @@ const EventTable = ({
   query.view = "list";
   delete query.show;
   console.log(trackerId);
-  let events, totalEvents, isLoading, error;
+  let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
       query,
       trackerId,
       view
@@ -99,6 +99,7 @@ const EventTable = ({
       setUpdatedEvents(events);
     }
   }, [events]);
+  
   useEffect(() => {
     if (!events) return;
 
@@ -146,7 +147,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading || editTrue) {
+  if (isLoading || isFetching) {
     return <Loading className="h-24 text-primary" />;
   }
 
