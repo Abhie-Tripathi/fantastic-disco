@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -32,8 +31,7 @@ const EventTable = ({
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
   const { localFilters } = useFilterContext();
-  const router = useRouter();
-  const { data, setIsNewCall, editTrue, setEditTrue } = useTrackerContext();
+  const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
@@ -96,12 +94,6 @@ const EventTable = ({
       limit: itemsPerPage.toString(),
     });
   };
-  // useEffect(()=>{
-  //   if(editTrue){
-  //     // setIsNewCall(true);
-  //     window.location.reload();
-  //     } 
-  // },[editTrue])
   useEffect(() => {
     if (events?.length > 0) {
       setUpdatedEvents(events);

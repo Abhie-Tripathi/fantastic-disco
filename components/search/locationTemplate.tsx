@@ -45,11 +45,10 @@ export interface LocationProps {
   filterName?: string;
 }
 export default function LocationSelector({ type, isMandatory, filterName="locationIds" }: LocationProps) {
-  console.log(filterName);
   
   const pathName = usePathname();
   const { localFilters, setLocalFilter } = useFilterContext();
-  const [isApply,setIsApply]=useState(true);
+  const [isApply,setIsApply]=useState(false);
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
@@ -62,11 +61,12 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
-    const fetchUrlLocation = async () => {
+    const fetchUrlLocation = async () => {  
+      console.log("isApply", isApply);
+      
       const geoCoordinate = localFilters?.viewBound
         ? JSON.parse(localFilters.viewBound)
         : null;
-        console.log(geoCoordinate);
       const locationIds = localFilters?.[filterName as keyof Filters]?.length
         ? localFilters[filterName as keyof Filters].split(",")
         : null;
@@ -104,7 +104,6 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
       }
     };
     const applyHandler = () => {
-      console.log(selectedLocation);
       if (selectedLocation && !Array.isArray(selectedLocation)) {
         const geoLocation = selectedLocation as GeoLocation;
         const radiusInKm =
@@ -147,32 +146,15 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
       }
       setIsOpen(false);
     };
-//  useEffect(()=>{
-//   console.log(selectedLocation);
-//   if (selectedLocation && (Array.isArray(selectedLocation) || typeof selectedLocation === "object"))
-//   applyHandler();
-// //   if (selectedLocation && Array.isArray(selectedLocation)){
-// //     console.log(selectedLocation);
-// //     setLocalFilter(
-// //       "locationIds",
-// //       (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
-// //     )
-// //     }
-//  },[selectedLocation])
-console.log(selectedLocation);
 useEffect(() => {
-  console.log(localFilters);
-  
   fetchUrlLocation();
 }, [localFilters]);
 
 const applyHandlerClicked=()=>{
-  // setIsApply(true);
   applyHandler();
 }
 useEffect(()=>{
   if(applyHandlerCalled){
-    // setLocalFilter("viewBound",)
     applyHandler();
     setApplyHandlerCalled(false);
   }

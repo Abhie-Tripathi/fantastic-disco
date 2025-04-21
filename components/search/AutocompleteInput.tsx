@@ -43,7 +43,7 @@ interface AutocompleteInputProps {
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   multiple?: boolean;
   value?: Location[] | Location | null;
-  setApplyHandlerCalled?:any;
+  setApplyHandlerCalled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function AutocompleteInput({

@@ -139,7 +139,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-console.log(show);
 
   return (
     <TableRow key={event.basic.id}>
