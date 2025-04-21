@@ -324,19 +324,8 @@ export function useDefaultFilters() {
 
     paramsToDelete.forEach((param) => trendsParams.delete(param));
 
-    // Set columns by filtering out specific values.
-    trendsParams.set(
-      "columns",
-      columnsDropdown
-        .filter(
-          (column) =>
-            column.value !== "impactScore" && column.value !== "economicImpact"
-        )
-        .map((column) => column.value)
-        .join(",")
-    );
+    trendsParams.set("columns", "eventCount");
 
-    // Set fixed and filtered parameters.
     trendsParams.set("show", "alerts,scores,economicImpact");
     if (filteredEventTypes && filteredEventTypes.length > 0) {
       trendsParams.set("eventTypes", filteredEventTypes.join(","));

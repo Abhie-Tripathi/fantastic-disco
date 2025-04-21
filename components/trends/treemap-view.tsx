@@ -6,7 +6,6 @@ import { useFilterContext } from "@/context/filterContext";
 import { useQuery } from "@tanstack/react-query";
 import { useLocationService } from "@/services/locationService";
 import { useFilterState } from "@/hooks/useFilterState";
-import { Loader2 } from "lucide-react";
 import Loading from "../ui/Loading";
 import { Breadcrumb } from "./breadcrumb";
 
@@ -129,6 +128,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
     data: eventCountData,
     refetch: refetchEventCount,
     isLoading,
+    error,
   } = useQuery({
     queryKey: [
       "eventCount",
@@ -361,6 +361,33 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
     }
   }, [hierarchyLevels, eventCountData, currentLevel]);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[500px]">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+
+  if (eventCountData && (eventCountData as any).count === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>
+          No events found. Try expanding your preferences by selecting more
+          categories, products, or topics.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full space-y-4">
       {currentPath.length > 0 && currentLevel > 0 && (
@@ -370,11 +397,6 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
           onLevelClick={handleBreadcrumbClick}
           path={currentPath}
         />
-      )}
-      {isLoading && (
-        <div className="flex items-center justify-center min-h-28">
-          <Loading />
-        </div>
       )}
       <div ref={chartRef} className="w-full" />
     </div>

@@ -151,11 +151,9 @@ const SaveTrendModal = ({
 const SaveTrend = ({
   searchParams,
   isLoading,
-  setShowNotificationForm,
 }: {
   searchParams: ReadonlyURLSearchParams;
   isLoading: boolean;
-  setShowNotificationForm: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { toast } = useToast();
   const { getLastSearchedLocation } = sessionService();

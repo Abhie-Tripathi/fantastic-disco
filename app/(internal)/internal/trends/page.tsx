@@ -168,6 +168,7 @@ const EventTrends = () => {
   );
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
+  const [showCategoryWarning, setShowCategoryWarning] = useState(false);
   const categories = getLocalFilterValue("categories");
   type FilterKey =
     | "location"
@@ -208,48 +209,15 @@ const EventTrends = () => {
     return updatedSearchParams.toString();
   }, [searchParams]);
 
-  const {
-    data: trendsData,
-    error,
-    isLoading,
-  } = useQuery<EventTrendsResponse | undefined>({
-    queryKey: ["trends", apiParams.toString()],
-    queryFn: () => getEventTrends(apiParams.toString()),
-    enabled: !!apiParams.toString(),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const { data: holdiayData } = useQuery({
-    queryKey: ["holiday", updatedParams],
-    queryFn: async () => await getEventsWithSearchParams(updatedParams),
-    enabled: isEventeli && hasHoliday,
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
-    queryKey: ["getSavedTrends"],
-    queryFn: async () => {
-      const result = await getSavedTrends();
-      if (!result) throw new Error("Failed to fetch saved trends");
-      return result;
-    },
-  });
-
-  const groupedData = (holdiayData as EventResponse)?.events.reduce<
-    Record<string, TableGroupedHoliday>
-  >((acc, { basic }) => {
-    const { startDateTime, name } = basic;
-    if (!acc[startDateTime]) {
-      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
-    }
-    acc[startDateTime].count++;
-    acc[startDateTime].holidays.push(name);
-    return acc;
-  }, {});
+  const { data: savedTrendsList, isLoading: isLoading } =
+    useQuery<GetSaveTrendData>({
+      queryKey: ["getSavedTrends"],
+      queryFn: async () => {
+        const result = await getSavedTrends();
+        if (!result) throw new Error("Failed to fetch saved trends");
+        return result;
+      },
+    });
 
   const filterCount = useMemo(() => {
     const excludedFilters = ["active_gte", "active_lte"];
@@ -257,18 +225,6 @@ const EventTrends = () => {
       (key) => !excludedFilters.includes(key)
     ).length;
   }, [localFilters]);
-
-  const holidaysByDate =
-    (groupedData &&
-      Object.values(groupedData).length > 0 &&
-      Object.values(groupedData)) ||
-    [];
-
-  useEffect(() => {
-    if (trendsData !== undefined) {
-      setEventTrendsData(trendsData);
-    }
-  }, [trendsData]);
 
   useEffect(() => {
     const skip = searchParams.get("skip");
@@ -285,7 +241,7 @@ const EventTrends = () => {
         return updatedState;
       });
     }
-  }, [trendsData, searchParams]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (Object.keys(smartInsightState).length > 0) {
@@ -339,23 +295,8 @@ const EventTrends = () => {
     }
   }, [eventTrendsData, metric]);
 
-  useEffect(() => {
-    if (trendsData === undefined) {
-      setGraphData(undefined);
-    }
-  }, [trendsData]);
-
   const applyHandler = () => {
-    const columnsValue = columnsDropdown
-      .filter(
-        (dropdown) =>
-          dropdown.value !== "impactScore" &&
-          dropdown.value !== "economicImpact"
-      )
-      .map((filteredValue) => filteredValue.value)
-      .join(",");
     if (getLocalFilterValue("eventTypes").length > 0) {
-      setLocalFilter("columns", columnsValue);
       setLocalFilter("status", "active,cancelled,postponed");
       setLocalFilter("show", "alerts,scores,economicImpact");
     }
@@ -457,6 +398,23 @@ const EventTrends = () => {
 
     setHasModifiedFilters(hasChanged);
   }, [localFilters, activeTemplate, visibleFilters]);
+
+  // Add delay for showing category warning
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    if (activeView === "treemap" && categories.length === 0) {
+      timeoutId = setTimeout(() => {
+        setShowCategoryWarning(true);
+      }, 1000); // 1 second delay
+    } else {
+      setShowCategoryWarning(false);
+    }
+    
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeView, categories]);
 
   return (
     <div
@@ -567,7 +525,7 @@ const EventTrends = () => {
                   {filterCount} filters applied
                 </span>
               </div>
-              {activeView === "treemap" && categories.length === 0 && (
+              {activeView === "treemap" && categories.length === 0 && showCategoryWarning && (
                 <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
                   <div className="flex-shrink-0">
                     <svg
@@ -601,26 +559,12 @@ const EventTrends = () => {
               <Button
                 onClick={applyHandler}
                 className="w-full h-10"
-                disabled={
-                  isLoading ||
-                  (activeView === "treemap" && categories.length === 0)
-                }
+                disabled={activeView === "treemap" && categories.length === 0}
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Applying...
-                  </>
-                ) : (
-                  "Apply Filters"
-                )}
+                Apply Filters
               </Button>
 
-              <SaveTrend
-                searchParams={searchParams}
-                isLoading={isLoading}
-                setShowNotificationForm={setShowNotificationForm}
-              />
+              <SaveTrend searchParams={searchParams} isLoading={isLoading} />
             </div>
           </div>
         </div>
@@ -834,83 +778,26 @@ const EventTrends = () => {
             <>
               {(activeView === "line" || activeView === "table") && (
                 <div>
-                  {isLoading ? (
-                    <Loading />
-                  ) : error ? (
-                    <div className={styles.zeroState_container}>
-                      <Image
-                        src={ZeroStateIcon}
-                        alt="zerostate"
-                        width={150}
-                        height={150}
-                      />
-                      <div>
-                        Explore global trends across event types over the past
-                        decade.
-                      </div>
-                    </div>
-                  ) : graphData && graphData.length > 0 ? (
-                    <>
-                      {activeView === "line" && (
-                        <Card className="p-6 relative">
-                          <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-medium absolute top-6 left-6">
-                              Trend Analysis
-                            </h2>
-                          </div>
-                          <div className={styles.predictedAttendence_container}>
-                            <LineChartComponent
-                              predictedData={graphData}
-                              selectedEventType={metric}
-                              holidayByDates={holidaysByDate}
-                              threshold={
-                                (eventTrendsData &&
-                                  eventTrendsData.thresholds[metric]) ??
-                                0
-                              }
-                              showLegend
-                            />
-                          </div>
-                        </Card>
-                      )}
+                  <>
+                    {activeView === "line" && (
+                      <Card className="p-6 relative">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-lg font-medium absolute top-6 left-6">
+                            Trend Analysis
+                          </h2>
+                        </div>
+                        <div className={styles.predictedAttendence_container}>
+                          <LineChartComponent showLegend />
+                        </div>
+                      </Card>
+                    )}
 
-                      {activeView === "table" && (
-                        <Card className="p-6">
-                          <TestPeriodicAnalytics
-                            isSmartInsightsEnabled={isSmartInsightsEnabled}
-                            smartInsightState={smartInsightState}
-                            setIsSmartInsightsEnabled={
-                              setIsSmartInsightsEnabled
-                            }
-                            setSmartInsightState={setSmartInsightState}
-                            data={
-                              tableData && tableData.length > 0 ? tableData : []
-                            }
-                            tableColumns={tableColumns || []}
-                            holidayByDates={holidaysByDate}
-                          />
-                        </Card>
-                      )}
-                    </>
-                  ) : (
-                    <div className={styles.zeroState_container}>
-                      <Image
-                        src={ZeroStateDataIcon}
-                        alt="zerostateData"
-                        width={150}
-                        height={150}
-                      />
-                      <p>No Events Found</p>
-                      <Text
-                        variant="noMargin"
-                        color="secondary"
-                        className="w-80 text-center"
-                      >
-                        Try selecting a different date range or broaden the
-                        location to view events.
-                      </Text>
-                    </div>
-                  )}
+                    {activeView === "table" && (
+                      <Card className="p-6">
+                        <TestPeriodicAnalytics />
+                      </Card>
+                    )}
+                  </>
                 </div>
               )}
 

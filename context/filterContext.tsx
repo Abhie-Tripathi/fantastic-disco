@@ -382,6 +382,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+
+  console.log(localFilters);
   const contextValue = useMemo(
     () => ({
       localFilters,

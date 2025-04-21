@@ -56,11 +56,17 @@ export default function ColumnsSelector() {
         <RadioGroup
           className="flex items-center"
           onValueChange={(value) => {
-            if (activeView === "treemap" && value !== "eventCount") {
+            if (
+              (activeView === "treemap" || activeView == "") &&
+              value !== "eventCount"
+            ) {
+              console.log("hii i am here");
               setMultipleLocalFilters({ columns: value, view: "line" });
             } else {
+              console.log("hii i am here 2");
               setLocalFilter("columns", value);
             }
+            console.log("hii i am here 3");
             setIsOpen(false);
           }}
         >
