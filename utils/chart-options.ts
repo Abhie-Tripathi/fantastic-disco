@@ -278,7 +278,7 @@ export function getChartOptions(
         {
           height: "100%",
           width: "100%",
-          name: "Distribution",
+          name: "Default View",
           type: "treemap",
           visibleMin: 100,
           data: generateHierarchicalData(hierarchyLevels, apiData),
