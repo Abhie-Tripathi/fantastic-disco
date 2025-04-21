@@ -62,7 +62,6 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
     const fetchUrlLocation = async () => {  
-      console.log("isApply", isApply);
       
       const geoCoordinate = localFilters?.viewBound
         ? JSON.parse(localFilters.viewBound)
