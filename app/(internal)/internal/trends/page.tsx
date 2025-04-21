@@ -189,25 +189,6 @@ const EventTrends = () => {
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
-  const apiParams = useMemo(() => {
-    const params = new URLSearchParams({
-      groupBy: "date",
-      dateView: "day",
-    });
-    searchParams.forEach((value, key) => {
-      params.append(key, value);
-    });
-    params.delete("categories");
-    return params.toString();
-  }, [stringParams]);
-
-  const updatedParams = useMemo(() => {
-    const updatedSearchParams = new URLSearchParams(searchParams.toString());
-    updatedSearchParams.set("eventTypes", "holiday");
-    updatedSearchParams.delete("skip");
-    return updatedSearchParams.toString();
-  }, [searchParams]);
-
   const { data: savedTrendsList, isLoading: isLoading } =
     useQuery<GetSaveTrendData>({
       queryKey: ["getSavedTrends"],
