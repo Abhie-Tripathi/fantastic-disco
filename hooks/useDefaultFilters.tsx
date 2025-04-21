@@ -20,7 +20,6 @@ export function useDefaultFilters() {
   const { setMultipleLocalFilters } = useFilterContext();
   const pathName = usePathname();
   const router = useRouter();
-  const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
   const allowedEventTypes = isEventeli
     ? [...EVENT_TYPE_GROUPS.Social, ...EVENT_TYPE_GROUPS.Business]
@@ -45,6 +44,7 @@ export function useDefaultFilters() {
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
     ).toISOString(), // Ending date of current month going on.
     eventTypes: allowedEventTypes, // Event Types according to the platform.
+    categories: "technology,medical-pharma",
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
@@ -361,6 +361,7 @@ export function useDefaultFilters() {
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
     trendsParams.set("locationIds", defaultTrendsParams.locationIds);
+    trendsParams.set("categories", defaultTrendsParams.categories);
 
     return trendsParams;
   };
@@ -425,6 +426,7 @@ export function useDefaultFilters() {
       const recentSearchResponse = await eventService.getRecentSearch();
       if (
         recentSearchResponse &&
+        recentSearchResponse.recentSearches.length &&
         recentSearchResponse.recentSearches[0].filterValues
       ) {
         const params = new URLSearchParams(searchParams.toString());

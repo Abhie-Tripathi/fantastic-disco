@@ -1,23 +1,26 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { LoadingPage } from "@/components/auth/loadingPage";
+import { useAuthContext } from "@/context";
 import { useTrackerServices } from "@/services/trackerServices";
-import Loading from "@/app/components/UI/Loading";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { verifyAccess } = useTrackerServices(); 
+  const { signUpSSO10times } = useAuthContext();
+  const { verifyAccess } = useTrackerServices();
 
   // Get query params safely
   const email = searchParams.get("email") || "";
   const otp = searchParams.get("otp") || "";
   const target = searchParams.get("target") || "";
   const targetId = searchParams.get("targetId") || "";
+  const source = searchParams.get("utm_source") || "";
+  const token = searchParams.get("hash") || "";
+  const userId = Number(searchParams.get("uid") || "");
+  const redirectPath = searchParams.get("redirect") || "";
 
   useEffect(() => {
-    if (!email || !otp || !target || !targetId) return;
-
     const verify = async () => {
       try {
         const formData = { email, otp, target, targetId };
@@ -28,11 +31,19 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Verification failed:", error);
+        router.push("https://whr.ai/gtm");
       }
     };
 
-    verify();
-  }, [email, otp, target, targetId, router]); 
+    if (source === "10times") {
+      if (!source || !token || !userId) router.push("https://whr.ai/gtm");
+      else signUpSSO10times(token, userId, redirectPath);
+    } else {
+      if (!email || !otp || !target || !targetId)
+        router.push("https://whr.ai/gtm");
+      else verify();
+    }
+  }, [email, otp, target, targetId, router]);
 
-  return <div><Loading/></div>;
+  return <LoadingPage />;
 }
