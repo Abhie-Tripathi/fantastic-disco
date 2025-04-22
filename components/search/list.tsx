@@ -287,7 +287,10 @@ export default function EventAccordion({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
+    } else
+      return (
+        <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
+      );
   }
   return (
     <div className="flex flex-col h-full">
@@ -361,10 +364,7 @@ const EventListItem = ({
             ? event.basic.eventLocation.name
             : null,
           event.basic.eventLocation?.cityName,
-          event.basic.eventLocation?.stateName !==
-          event.basic.eventLocation?.cityName
-            ? event.basic.eventLocation?.stateName
-            : null,
+          event.basic.eventLocation?.stateName,
           event.basic.eventLocation?.countryName !==
           event.basic.eventLocation?.cityName
             ? event.basic.eventLocation?.countryName
@@ -382,10 +382,7 @@ const EventListItem = ({
           ? event.basic.eventLocation.name
           : null,
         event.basic.eventLocation?.cityName,
-        event.basic.eventLocation?.stateName !==
-        event.basic.eventLocation?.cityName
-          ? event.basic.eventLocation?.stateName
-          : null,
+        event.basic.eventLocation?.stateName,
         event.basic.eventLocation?.countryName !==
         event.basic.eventLocation?.cityName
           ? event.basic.eventLocation?.countryName
