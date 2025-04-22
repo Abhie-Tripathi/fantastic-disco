@@ -1,4 +1,5 @@
 "use client";
+import { TemplateType } from "@/app/components/trends/templates-modal";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -6,16 +7,35 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
+import { NewColumn } from "@/data/trendsTableColHead";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
+import { useTrendsService } from "@/services/trendsService";
 import { TableGroupedHoliday } from "@/types";
-import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
+import { EventResponse } from "@/types/events";
+import {
+  EventTrendsResponse,
+  GetSaveTrendData,
+  TableData,
+} from "@/types/trends/trends";
+import { HierarchyLevel } from "@/utils/chart-options";
+import {
+  generateDatesArray,
+  generateTrendsTableColumnHeaders,
+  morphToGraphData,
+  morphToSmartInsightsData,
+  morphToTrendsTableData,
+  toMidnightISOString,
+} from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Loading from "../ui/Loading";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
@@ -36,9 +56,6 @@ import Text from "../new-ui/Text";
 import Disable from "/public/disable.svg";
 
 interface IProps {
-  predictedData: any;
-  selectedEventType: string;
-  threshold: number;
   showLegend: boolean;
   holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
@@ -48,26 +65,336 @@ interface IProps {
 type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
-  predictedData,
-  selectedEventType,
-  threshold,
   showLegend,
   holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
-  const searchParams = useSearchParams();
-  const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
+
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const thresholdArea = [
-    threshold * 1.5, // 5% above threshold
-    threshold * 0.5, // 5% below threshold
-  ];
 
   const [dragging, setDragging] = useState(false);
   const [linePosition, setLinePosition] = useState(300); // Initial Y position of the line
+  const { searchParams } = useDefaultFilters();
+
+  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const {
+    applyFilters,
+    setLocalFilter,
+    getLocalFilterValue,
+    setMultipleLocalFilters,
+    deleteMultipleLocalFilters,
+    localFilters,
+  } = useFilterContext();
+  const columns = searchParams.get("columns");
+  const eventTypes = searchParams.get("eventTypes");
+  const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
+  const hasHoliday =
+    eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
+  const columnsData = (columns && columns.split(",")) || [];
+  const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
+    useState<boolean>(false);
+  const [smartInsightState, setSmartInsightState] = useState<{
+    [key: string]: boolean;
+  }>(
+    columnsData.length > 0
+      ? columnsData.reduce((acc, key) => {
+          acc[key] = false;
+          return acc;
+        }, {} as { [key: string]: boolean })
+      : {}
+  );
+  const [eventTrendsData, setEventTrendsData] = useState<
+    EventTrendsResponse | undefined
+  >();
+  const [predictedData, setPredictedData] = useState<any>();
+  const [tableData, setTableData] = useState<TableData[] | []>();
+  const [tableColumns, setTableColumns] = useState<NewColumn[]>();
+  const { getEventsWithSearchParams } = useEventsService();
+  const { getFilterValue } = useFilterState();
+  const metric = getFilterValue("columns") as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate";
+  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
+    ? (getFilterValue("view") as "line" | "treemap" | "table")
+    : "treemap";
+  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
+    { id: "location", label: "Location", value: "location" },
+    { id: "category", label: "Category", value: "category" },
+  ]);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
+    null
+  );
+  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
+  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
+  const categories = getLocalFilterValue("categories");
+  type FilterKey =
+    | "location"
+    | "eventTypes"
+    | "dateRange"
+    | "categories"
+    | "metrics";
+
+  const [visibleFilters, setVisibleFilters] = useState<
+    Record<FilterKey, boolean>
+  >({
+    location: true,
+    eventTypes: true,
+    dateRange: true,
+    categories: true,
+    metrics: true,
+  });
+
+  const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
+
+  const apiParams = useMemo(() => {
+    const params = new URLSearchParams({
+      groupBy: "date",
+      dateView: "day",
+    });
+    searchParams.forEach((value, key) => {
+      params.append(key, value);
+    });
+    params.delete("categories");
+    return params.toString();
+  }, [stringParams]);
+
+  const updatedParams = useMemo(() => {
+    const updatedSearchParams = new URLSearchParams(searchParams.toString());
+    updatedSearchParams.set("eventTypes", "holiday");
+    updatedSearchParams.delete("skip");
+    return updatedSearchParams.toString();
+  }, [searchParams]);
+
+  const {
+    data: trendsData,
+    error,
+    isLoading,
+  } = useQuery<EventTrendsResponse | undefined>({
+    queryKey: ["trends", apiParams.toString()],
+    queryFn: () => getEventTrends(apiParams.toString()),
+    enabled: !!apiParams.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const { data: holdiayData } = useQuery({
+    queryKey: ["holiday", updatedParams],
+    queryFn: async () => await getEventsWithSearchParams(updatedParams),
+    enabled: isEventeli && hasHoliday,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const groupedData = (holdiayData as EventResponse)?.events.reduce<
+    Record<string, TableGroupedHoliday>
+  >((acc, { basic }) => {
+    const { startDateTime, name } = basic;
+    if (!acc[startDateTime]) {
+      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
+    }
+    acc[startDateTime].count++;
+    acc[startDateTime].holidays.push(name);
+    return acc;
+  }, {});
+
+  const filterCount = useMemo(() => {
+    const excludedFilters = ["active_gte", "active_lte"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
+  const holidaysByDate =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
+
+  useEffect(() => {
+    if (trendsData !== undefined) {
+      setEventTrendsData(trendsData);
+    }
+  }, [trendsData]);
+
+  useEffect(() => {
+    const skip = searchParams.get("skip");
+
+    if (!skip) {
+      setIsSmartInsightsEnabled(false);
+
+      setSmartInsightState((prev) => {
+        const updatedState = columnsData.reduce((acc, key) => {
+          acc[key] = false;
+          return acc;
+        }, {} as { [key: string]: boolean });
+
+        return updatedState;
+      });
+    }
+  }, [trendsData, searchParams]);
+
+  useEffect(() => {
+    if (Object.keys(smartInsightState).length > 0) {
+      const allFalse = Object.values(smartInsightState).every(
+        (value) => value === false
+      );
+      const allTrue = Object.values(smartInsightState).every(
+        (value) => value === true
+      );
+      if (allFalse) {
+        setIsSmartInsightsEnabled(false);
+      }
+      if (allTrue) {
+        setIsSmartInsightsEnabled(true);
+      }
+    }
+  }, [smartInsightState]);
+
+  useEffect(() => {
+    setSmartInsightState((prevState) => {
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = isSmartInsightsEnabled;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      return newState;
+    });
+  }, [isSmartInsightsEnabled]);
+
+  useEffect(() => {
+    const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
+    const columns = searchParams.get("columns")?.split(",") || [];
+    if (eventTrendsData && eventTrendsData.groupedData) {
+      const tableColumns = generateTrendsTableColumnHeaders(
+        eventTypes,
+        columns
+      );
+
+      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+
+      const tableData = morphToTrendsTableData(
+        eventTrendsData.thresholds,
+        eventTrendsData.groupedData,
+        eventTypes
+      );
+
+      const smartInsightsData = morphToSmartInsightsData(tableData);
+
+      setPredictedData(graphData);
+      setTableData(smartInsightsData);
+      setTableColumns(tableColumns);
+    }
+  }, [eventTrendsData, metric]);
+
+  useEffect(() => {
+    if (trendsData === undefined) {
+      setPredictedData(undefined);
+    }
+  }, [trendsData]);
+
+  const handleViewChange = (view: "line" | "treemap" | "table") => {
+    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
+      return; // Don't change view if not supported by template
+    }
+    if (view === "treemap") {
+      if (categories.length === 0) {
+        const defaultCategories = "technology,medical-pharma";
+        setMultipleLocalFilters({ categories: defaultCategories, view: view });
+      }
+      setMultipleLocalFilters({ columns: "eventCount", view: view });
+    }
+    setLocalFilter("view", view);
+    applyFilters({ resetPage: true });
+  };
+
+  const handleTemplateSelect = (template: TemplateType) => {
+    // Set visualization type - use first available visualization
+    const defaultView = template.visualization[0] as
+      | "line"
+      | "treemap"
+      | "table";
+    handleViewChange(defaultView);
+
+    // Update visible filters - ensure all properties are set
+    const newVisibleFilters: Record<FilterKey, boolean> = {
+      location: template.visibleFilters.location ?? true,
+      eventTypes: template.visibleFilters.eventTypes ?? true,
+      dateRange: template.visibleFilters.dateRange ?? true,
+      categories: template.visibleFilters.categories ?? true,
+      metrics: template.visibleFilters.metrics ?? true,
+    };
+    setVisibleFilters(newVisibleFilters);
+
+    // Set hierarchy levels if provided in template
+    if (template.hierarchy) {
+      setHierarchyLevels(template.hierarchy);
+    } else {
+      // Set default hierarchy levels
+      setHierarchyLevels([
+        { id: "location", label: "Location", value: "location" },
+        { id: "category", label: "Category", value: "category" },
+      ]);
+    }
+
+    // Set active template and update history
+    setActiveTemplate(template);
+    setTemplateHistory((prev) => {
+      const filtered = prev.filter((t) => t.id !== template.id);
+      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
+    });
+    setHasModifiedFilters(false);
+
+    // Close modal and templates view
+    setShowTemplatesModal(false);
+    setShowTemplates(false);
+
+    // Apply filters
+    applyFilters({ resetPage: true });
+  };
+
+  const handleTemplateRemove = () => {
+    setActiveTemplate(null);
+    // Reset visible filters to show all
+    const defaultFilters: Record<FilterKey, boolean> = {
+      location: true,
+      eventTypes: true,
+      dateRange: true,
+      categories: true,
+      metrics: true,
+    };
+    setVisibleFilters(defaultFilters);
+    applyFilters({ resetPage: true });
+    setHasModifiedFilters(false);
+  };
+
+  // Track filter changes
+  useEffect(() => {
+    if (!activeTemplate) return;
+
+    // Track filter changes by comparing current filter values with template's visible filters
+    const hasChanged = Object.entries(visibleFilters).some(
+      ([key, isVisible]) => {
+        if (!isVisible) return false;
+        // Only check filters that are visible
+        const filterKey = key as keyof typeof visibleFilters;
+        if (!activeTemplate.visibleFilters[filterKey]) return false;
+
+        // Check if the filter has a value
+        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
+        return currentValue && currentValue.length > 0;
+      }
+    );
+
+    setHasModifiedFilters(hasChanged);
+  }, [localFilters, activeTemplate, visibleFilters]);
 
   // Handle drag start
   const handleDragStart = (e: any) => {
@@ -330,12 +657,7 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: eventData, refetch } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
@@ -343,6 +665,13 @@ const LineChartComponent = ({
     gcTime: 0,
     staleTime: 0,
   });
+
+  const threshold =
+    (eventTrendsData && eventTrendsData.thresholds[metric]) ?? 0;
+  const thresholdArea = [
+    threshold * 1.5, // 5% above threshold
+    threshold * 0.5, // 5% below threshold
+  ];
 
   function generateDateIntervals(startDate: any, endDate: any) {
     const start = new Date(startDate);
@@ -414,7 +743,7 @@ const LineChartComponent = ({
   };
 
   const graphData =
-    predictedData.length > 0
+    predictedData && predictedData.length > 0
       ? predictedData.map((data: any) => ({
           ...data,
         }))
@@ -429,8 +758,7 @@ const LineChartComponent = ({
         }));
 
   const label =
-    columnsDropdown.find((column) => column.value === selectedEventType)
-      ?.label ?? "";
+    columnsDropdown.find((column) => column.value === metric)?.label ?? "";
 
   const CustomToolTip = ({
     active,
@@ -497,9 +825,8 @@ const LineChartComponent = ({
         <div className="px-4 py-2 border-b">
           <p className="font-semibold text-[var(--primary-color)]">{total}</p>
           <Text size="normal" color="secondary" fontWeight="regular">
-            {columnsDropdown.find(
-              (column) => column.value === selectedEventType
-            )?.label ?? ""}
+            {columnsDropdown.find((column) => column.value === metric)?.label ??
+              ""}
           </Text>
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
@@ -548,7 +875,8 @@ const LineChartComponent = ({
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
-                No events found. Try expanding your preferences by selecting more categories, products, or topics.
+                No events found. Try expanding your preferences by selecting
+                more categories, products, or topics.
               </p>
             )}
           </ul>
@@ -605,6 +933,33 @@ const LineChartComponent = ({
       </div>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[500px]">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+
+  if (eventData && (eventData as any).events.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>
+          No events found. Try expanding your preferences by selecting more
+          categories, products, or topics.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div ref={chartRef}>
