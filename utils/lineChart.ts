@@ -76,8 +76,8 @@ export function morphToGraphData(
   return Object.entries(groupedData).map(([date, groupData]) => ({
     date,
     total: groupData[selectedEventType]?.total,
-    social: groupData[selectedEventType]?.byEventTypeGroup?.Social ?? 0,
-    business: groupData[selectedEventType]?.byEventTypeGroup?.Business ?? 0,
+    social: groupData[selectedEventType]?.byEventTypeGroup?.social ?? 0,
+    business: groupData[selectedEventType]?.byEventTypeGroup?.business ?? 0,
   }));
 }
 

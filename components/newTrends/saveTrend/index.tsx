@@ -151,11 +151,9 @@ const SaveTrendModal = ({
 const SaveTrend = ({
   searchParams,
   isLoading,
-  setShowNotificationForm,
 }: {
   searchParams: ReadonlyURLSearchParams;
   isLoading: boolean;
-  setShowNotificationForm: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { toast } = useToast();
   const { getLastSearchedLocation } = sessionService();
@@ -193,8 +191,8 @@ const SaveTrend = ({
   const saveTrendMutation = useMutation({
     mutationFn: async (data: CreateSaveTrendData) => {
       const response = await setSaveTrend(data);
-      setLocalFilter("activeCard", (response as { id: string }).id);
-      applyFilters();
+      // setLocalFilter("activeCard", (response as { id: string }).id);
+      // applyFilters();
     },
     onSuccess: () => {
       toast({
@@ -225,6 +223,7 @@ const SaveTrend = ({
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
+    const categories = params.get("categories");
     const viewBound: ViewBound = geoCoordinate
       ? JSON.parse(geoCoordinate)
       : undefined;
@@ -238,6 +237,7 @@ const SaveTrend = ({
       ...BaseFilterValue,
       eventTypes: eventTypes || "",
       columns: columns || "",
+      ...(categories ? { categories } : {}),
       ...(locationIds ? { locationIds } : geoCoordinate ? { viewBound } : {}),
     };
     const data: CreateSaveTrendData = {

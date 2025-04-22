@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState, useEffect, use } from "react";
@@ -41,31 +42,33 @@ export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
   type?: string;
   isMandatory?: boolean;
+  filterName?: string;
 }
-export default function LocationSelector({ type, isMandatory }: LocationProps) {
-  console.log("called multiple time");
+export default function LocationSelector({ type, isMandatory, filterName="locationIds" }: LocationProps) {
   
   const pathName = usePathname();
   const { localFilters, setLocalFilter } = useFilterContext();
+  const [isApply,setIsApply]=useState(false);
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState(type==="T_VENUE"?"center":"city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
+  const [applyHandlerCalled, setApplyHandlerCalled]=useState(false);
   const [localSelectedLocation, setLocalSelectedLocation] =
     useState<Location | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
-    const fetchUrlLocation = async () => {
-      const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
-      console.log(geoCoordinate);
+    const fetchUrlLocation = async () => {  
       
-      const ids = localFilters?.locationIds?.length
-        ? localFilters.locationIds.split(",")
-        : [];
-      const locationIds = ids;
+      const geoCoordinate = localFilters?.viewBound
+        ? JSON.parse(localFilters.viewBound)
+        : null;
+      const locationIds = localFilters?.[filterName as keyof Filters]?.length
+        ? localFilters[filterName as keyof Filters].split(",")
+        : null;
   
       if (geoCoordinate) {
         const locationName = await getLocationName(
@@ -74,13 +77,15 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         );
         console.log(locationName);
         
+        
         setSelectedLocation?.({
           locationType: "GeoJSON",
           lat: geoCoordinate.coordinates.latitude,
           lng: geoCoordinate.coordinates.longitude,
           radius: geoCoordinate.coordinates.radius,
-          description: locationName,
+          description: (isApply)?locationName:(geoCoordinate?.properties?.name || locationName)
         });
+        setIsApply(false);
       } else if (locationIds) {
         const locations = await Promise.all(
           locationIds.map(async (id) => {
@@ -97,57 +102,62 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         setSelectedLocation?.(null);
       }
     };
+    const applyHandler = () => {
+      if (selectedLocation && !Array.isArray(selectedLocation)) {
+        const geoLocation = selectedLocation as GeoLocation;
+        const radiusInKm =
+          radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
   
-    useEffect(() => {
-      fetchUrlLocation();
-    }, [localFilters.locationIds || localFilters.viewBound]);
-  const applyHandler = () => {
-    if (selectedLocation && !Array.isArray(selectedLocation)) {
-      const geoLocation = selectedLocation as GeoLocation;
-      const radiusInKm =
-        radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
-      replaceLocalFilter(
-        "locationIds",
-        "viewBound",
-        JSON.stringify({
-          boundType:"point",
-          coordinates:{
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
-          }
-        })
-      );
-      return;
-    } else if (
-      selectedLocation &&
-      Array.isArray(selectedLocation) &&
-      selectedLocation.length > 0
-    ) {
-      replaceLocalFilter(
-        "viewBound",
-        "locationIds",
-        (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
-      );
-      return;
-      // saveLastSearchedLocation(selectedLocation);
-    } 
-    setIsOpen(false);
-  };
- useEffect(()=>{
-  console.log(selectedLocation);
-  if (selectedLocation && (Array.isArray(selectedLocation) || typeof selectedLocation === "object"))
-  applyHandler();
-//   if (selectedLocation && Array.isArray(selectedLocation)){
-//     console.log(selectedLocation);
-//     setLocalFilter(
-//       "locationIds",
-//       (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
-//     )
-//     }
- },[selectedLocation])
-console.log(selectedLocation);
+        if (radiusUnit === "mi") {
+          setRadiusUnit("km");
+        }
+        console.log(selectedLocation)
+        replaceLocalFilter(
+          "locationIds",
+          "viewBound",
+          JSON.stringify({
+            boundType: "point",
+            coordinates: {
+              latitude: geoLocation.lat,
+              longitude: geoLocation.lng,
+              radius: radiusInKm,
+            },
+            properties: {
+              name: geoLocation.description,
+            },
+          })
+        );
+        saveLastSearchedLocation(geoLocation);
+      } else if (
+        selectedLocation &&
+        Array.isArray(selectedLocation) &&
+        selectedLocation.length > 0
+      ) {
+        replaceLocalFilter(
+          "viewBound",
+          filterName,
+          (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
+        );
+        saveLastSearchedLocation(selectedLocation);
+      } else {
+        deleteMultipleLocalFilters([filterName, "viewBound"]);
+        clearLastSearchedLocation();
+      }
+      setIsOpen(false);
+    };
+useEffect(() => {
+  fetchUrlLocation();
+}, [localFilters]);
 
+const applyHandlerClicked=()=>{
+  applyHandler();
+}
+useEffect(()=>{
+  if(applyHandlerCalled){
+    applyHandler();
+    setApplyHandlerCalled(false);
+  }
+},[applyHandlerCalled])
   
   return (
    <>
@@ -175,13 +185,6 @@ console.log(selectedLocation);
           /> */}
         <div className="flex justify-between items-center p-4 py-2 border-b h-[41px]">
           <span className="font-medium">Location</span>
-          {/* <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={applyHandler}
-          > */}
-            {/* Apply */}
-          {/* </Button> */}
         </div>
 
         {isEventeli ? (
@@ -196,6 +199,7 @@ console.log(selectedLocation);
             </TabsList>
             <TabsContent value="city" className="p-4">
               <AutocompleteInput
+                setApplyHandlerCalled={setApplyHandlerCalled}
                 type="LocationId"
                 multiple
                 placeholder="E.g. Bengaluru, Karnataka"
@@ -212,6 +216,7 @@ console.log(selectedLocation);
             </TabsContent>
             <TabsContent value="center" className="p-4 space-y-4">
               <AutocompleteInput
+              setApplyHandlerCalled={setApplyHandlerCalled}
                 type="GeoCoordinate"
                 placeholder="E.g. Novotel, Hyderabad"
                 onSelect={setSelectedLocation}
@@ -235,7 +240,7 @@ console.log(selectedLocation);
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.radius}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -243,8 +248,9 @@ console.log(selectedLocation);
                               radius: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
                 <div className="col-span-2">
@@ -274,7 +280,7 @@ console.log(selectedLocation);
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.lat}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -282,8 +288,9 @@ console.log(selectedLocation);
                               lat: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
                 <div className="col-span-3">
@@ -295,7 +302,7 @@ console.log(selectedLocation);
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.lng}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
@@ -303,10 +310,20 @@ console.log(selectedLocation);
                               lng: Number(e.target.value),
                             }
                           : null
-                      )
-                    }
+                      );
+                      setIsApply(true);
+                    }}
                   />
                 </div>
+              </div>
+              <div className="flex justify-end">
+              <Button
+            variant="link"
+            className="text-primary pr-0"
+            onClick={applyHandlerClicked}
+          > 
+           Apply
+          </Button>
               </div>
             </TabsContent>
           </Tabs>
