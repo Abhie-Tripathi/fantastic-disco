@@ -55,8 +55,13 @@ export function BookMarkEvent({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const actions = interestConfiguration?.interest || [];
-
+  // const actions = interestConfiguration?.interest || [];
+  const actions = [
+    ...(interestConfiguration?.interest || []),
+    ...(!interests?.bookmark
+      ? [{ label: "Bookmark", status: "BOOKMARK" }]
+      : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
   const handleSubmit = () => {
     if (selectedAction) {
       createUserEventInterest(
