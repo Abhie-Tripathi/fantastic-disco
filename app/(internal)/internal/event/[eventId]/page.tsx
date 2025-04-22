@@ -716,7 +716,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         >
           {coorganizers &&
             coorganizers.length > 0 &&
-            coorganizers.map((coorganizer: EventCoOrganizerDetails) => {
+            coorganizers.map((coorganizer: EventCoOrganizerDetail) => {
               const { id, city, country, name, logo } = coorganizer;
               return (
                 <div className="flex flex-col" key={id}>
