@@ -29,7 +29,7 @@ import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
 import {
   Event,
-  EventCoOrganizerDetails,
+  EventCoOrganizerDetail,
   EventPOCDetails,
   TTabs,
 } from "@/types/events";
