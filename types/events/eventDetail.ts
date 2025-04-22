@@ -50,6 +50,14 @@ export interface EventPOCDetails {
   phoneNumber: string | null;
   profilePicture: string | null;
 }
+export interface EventCoOrganizerDetail {
+  id: number | null;
+  name: string | undefined | null;
+  logo: string | undefined | null;
+  city: string | undefined | null;
+  country: string | undefined | null;
+  website: string | undefined | null;
+}
 
 export interface EventCoOrganizerDetail {
   id: number | null;
