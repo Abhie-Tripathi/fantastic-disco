@@ -8,7 +8,7 @@ export interface EventEditionDetailResponse {
 }
 
 export interface EventCoOrganizerDetailResponse {
-  coorganizers: [];
+  coorganizers: EventCoOrganizerDetails[] | [];
 }
 
 export interface EventExhibitorDetailsResponse {
@@ -49,6 +49,14 @@ export interface EventPOCDetails {
   state: number | null;
   phoneNumber: string | null;
   profilePicture: string | null;
+}
+export interface EventCoOrganizerDetails {
+  id: number;
+  name: string | null;
+  logo: string | null;
+  city: string | null;
+  country: string | null;
+  website: string | null;
 }
 
 export interface OverallRankingsDetail {

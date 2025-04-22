@@ -118,7 +118,9 @@ export function BookMarkEvent({
         <Button
           variant="outline"
           size="icon"
-          className="w-full hover:bg-transparent hover:text-primary border border-[#6750A4] rounded-md text-[#6750A4] flex justify-center gap-1 items-center"
+          className="w-full hover:bg-transparent hover:text-primary
+          border border-[#6750A4] rounded-md text-[#6750A4] flex 
+          justify-center gap-1 items-center mt-4"
         >
           {isSaved ? (
             <BookmarkCheck className="w-4 h-4 text-primary" />
