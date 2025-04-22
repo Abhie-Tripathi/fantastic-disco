@@ -422,7 +422,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm")
+        router.push("https://whr.ai/gtm");
       }
     },
     [request, router]
@@ -475,7 +475,7 @@ export const AuthContextProvider = ({ children }: any) => {
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
     const duplicateSessionKeys = sessionKeys.filter(
-      (key) => key !== "industry" && key !== "subIndustry" && key !== "redirect"
+      (key) => key !== "industry" && key !== "subIndustry"
     );
     if (isEventeli) {
       duplicateSessionKeys.forEach((key) => sessionStorage.removeItem(key));
