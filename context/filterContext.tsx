@@ -195,11 +195,15 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       if (
         pathname === "/internal/search/events" &&
         !params.active_gte &&
-        !params.active_lte
-        && !params.eventIds
+        !params.active_lte &&
+        !params.eventIds
       ) {
-        params.active_gte = startOfMonth(new Date()).toISOString().split('T')[0];
-        params.active_lte = endOfMonth(addMonths(new Date(), 3)).toISOString().split('T')[0];
+        params.active_gte = startOfMonth(new Date())
+          .toISOString()
+          .split("T")[0];
+        params.active_lte = endOfMonth(addMonths(new Date(), 3))
+          .toISOString()
+          .split("T")[0];
       }
 
       setLocalFilters(filterEmptyValues(params));
@@ -282,10 +286,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const clearLocalFilters = useCallback(() => {
     const params = new URLSearchParams();
 
-    params.set("active_gte", startOfMonth(new Date()).toISOString().split('T')[0]);
+    params.set(
+      "active_gte",
+      startOfMonth(new Date()).toISOString().split("T")[0]
+    );
     params.set(
       "active_lte",
-      endOfMonth(addMonths(new Date(), 3)).toISOString().split('T')[0]
+      endOfMonth(addMonths(new Date(), 3)).toISOString().split("T")[0]
     );
 
     // Preserve view if it exists
@@ -368,7 +375,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  
+
   const replaceLocalFilter = useCallback(
     (oldKey: keyof Filters, newKey: keyof Filters, newValue: string) => {
       setLocalFilters((prev) => {
@@ -382,6 +389,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+
   const contextValue = useMemo(
     () => ({
       localFilters,

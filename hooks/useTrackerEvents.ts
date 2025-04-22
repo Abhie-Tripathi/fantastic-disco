@@ -25,6 +25,7 @@ export const useTrackerEvents = {
     return {
       events: EventQuery?.data?.events || [],
       totalEvents: EventQuery?.data?.count || 0,
+      isFetching: EventQuery.isFetching,
       isLoading: EventQuery.isLoading,
       error: EventQuery.error,
     };

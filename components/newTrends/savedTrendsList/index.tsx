@@ -194,6 +194,7 @@ const SavedTrendCard = ({
       active_lte,
       columns,
       eventTypes,
+      categories,
       locationIds,
       viewBound,
     } = filterValues;
@@ -216,6 +217,11 @@ const SavedTrendCard = ({
             .map((eventType) => eventType.slug)
             .join(","),
         }),
+      ...(categories && {
+        categories: Object.keys(categories)
+          .map((category) => categories[category].slug)
+          .join(","),
+      }),
       ...(locationIds && Object.keys(locationIds).length > 0
         ? { locationIds: Object.keys(locationIds).join(",") }
         : viewBound
@@ -246,10 +252,10 @@ const SavedTrendCard = ({
   };
   return (
     <li
-      className={`flex justify-between h-36 gap-3 pl-4 pr-2 py-3 border rounded-lg w-72 bg-white cursor-pointer transition-all duration-200 ${
+      className={`flex justify-between h-36 gap-3 pl-4 pr-2 py-3 border rounded-lg w-72 bg-background cursor-pointer transition-all duration-200 ${
         isActiveCard
           ? "border-primary shadow-md ring-1 ring-primary/20"
-          : "border-[var(--neutral-light-color)] hover:shadow-sm hover:border-gray-300"
+          : "border-[var(--neutral-light-color)] dark:border-gray-700 hover:shadow-sm hover:border-gray-300 dark:hover:border-gray-600"
       } ${
         activeCard !== id && editTrend === true
           ? "opacity-50 cursor-not-allowed pointer-events-none"
@@ -265,40 +271,63 @@ const SavedTrendCard = ({
         }
       >
         <div className="flex justify-between items-center">
-          <p className="font-medium text-base truncate">{name}</p>
+          <p className="font-medium text-base truncate text-foreground">
+            {name}
+          </p>
         </div>
         <div className="flex flex-col gap-2">
           {displayName && (
-            <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
-              <MapPin width={12} height={12} className="text-gray-500" />
-              <Badge variant="outline" className="bg-gray-50/50">
+            <p className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5 font-medium text-xs">
+              <MapPin
+                width={12}
+                height={12}
+                className="text-gray-500 dark:text-gray-400"
+              />
+              <Badge
+                variant="outline"
+                className="bg-gray-50/50 dark:bg-gray-800/50"
+              >
                 {displayName}
               </Badge>
               {locationCount > 0 && (
-                <span className="text-gray-500">+{locationCount}</span>
+                <span className="text-gray-500 dark:text-gray-400">
+                  +{locationCount}
+                </span>
               )}
             </p>
           )}
-          <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
-            <Calendar width={12} height={12} className="text-gray-500" />
-            <Badge variant="outline" className="bg-gray-50/50">
+          <p className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5 font-medium text-xs">
+            <Calendar
+              width={12}
+              height={12}
+              className="text-gray-500 dark:text-gray-400"
+            />
+            <Badge
+              variant="outline"
+              className="bg-gray-50/50 dark:bg-gray-800/50"
+            >
               {renderFormattedDates(startDate, endDate)}
             </Badge>
           </p>
           {savedTrendEventTypes.length > 0 && (
-            <p className="text-gray-600 flex items-center gap-1.5 font-medium text-xs">
+            <p className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5 font-medium text-xs">
               <BriefcaseBusiness
                 width={12}
                 height={12}
-                className="text-gray-500"
+                className="text-gray-500 dark:text-gray-400"
               />
               {savedTrendEventTypes.length > 0 && (
-                <Badge variant="outline" className="bg-gray-50/50">
+                <Badge
+                  variant="outline"
+                  className="bg-gray-50/50 dark:bg-gray-800/50"
+                >
                   {savedTrendEventTypes[0]}
                 </Badge>
               )}
               {eventTypeCount > 0 && (
-                <span className="text-gray-500">+{eventTypeCount}</span>
+                <span className="text-gray-500 dark:text-gray-400">
+                  +{eventTypeCount}
+                </span>
               )}
             </p>
           )}
@@ -308,35 +337,47 @@ const SavedTrendCard = ({
       <DropdownMenu onOpenChange={() => setOpen(!open)} open={open}>
         <DropdownMenuTrigger
           onClick={() => setOpen(!open)}
-          className="self-start p-1 hover:bg-gray-100 rounded-full transition-colors"
+          className="self-start p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
         >
           <EllipsisVerticalIcon
             width={14}
             height={14}
-            className="text-gray-500"
+            className="text-gray-500 dark:text-gray-400"
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="p-2 z-50 min-w-[120px] shadow-md rounded-md border border-gray-200">
+        <DropdownMenuContent className="p-2 z-50 min-w-[120px] shadow-md rounded-md border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col gap-1.5" id={"Savedtrendid"}>
             {activeCard === id && editTrend === true ? (
               <div
-                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 rounded-md transition-colors"
+                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
                 onClick={() => handleEditSavedTrend(data, "cancel")}
               >
-                <X width={12} height={12} className="text-gray-600" />
-                <span className="text-xs text-gray-700">Cancel</span>
+                <X
+                  width={12}
+                  height={12}
+                  className="text-gray-600 dark:text-gray-300"
+                />
+                <span className="text-xs text-gray-700 dark:text-gray-300">
+                  Cancel
+                </span>
               </div>
             ) : (
               <div
-                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 rounded-md transition-colors"
+                className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
                 onClick={() => handleEditSavedTrend(data, "edit")}
               >
-                <Edit width={12} height={12} className="text-gray-600" />
-                <span className="text-xs text-gray-700">Edit</span>
+                <Edit
+                  width={12}
+                  height={12}
+                  className="text-gray-600 dark:text-gray-300"
+                />
+                <span className="text-xs text-gray-700 dark:text-gray-300">
+                  Edit
+                </span>
               </div>
             )}
             <div
-              className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-red-50 rounded-md transition-colors"
+              className="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
               onClick={() => handleDeleteSavedTrend(id)}
             >
               <Trash width={12} height={12} className="text-red-500" />
