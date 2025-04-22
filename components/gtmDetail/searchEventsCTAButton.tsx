@@ -43,7 +43,7 @@ const SearchEventsCTAButton = ({
         : null;
 
     const locationIds =
-      (format === "in_person" || format === "hybrid") && eventLocation
+      (format === "offline" || format === "hybrid") && eventLocation
         ? eventLocation?.countryId ||
           eventLocation?.stateId ||
           eventLocation?.cityId ||
