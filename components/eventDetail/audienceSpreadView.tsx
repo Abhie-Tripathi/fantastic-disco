@@ -113,9 +113,9 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
       ? Object.entries(audienceSpread)
           .filter(
             ([_, value]) =>
-              value.name.toLowerCase() !== "Online" &&
-              value.name.toLowerCase() !== "Hybrid" &&
-              value.name.toLowerCase() !== "Offline"
+              value.name.toLowerCase() !== "online" &&
+              value.name.toLowerCase() !== "hybrid" &&
+              value.name.toLowerCase() !== "offline"
           )
           .map(([_, value]) => ({
             name: getCountryName(value.iso),
@@ -271,9 +271,9 @@ export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
         Object.entries(audienceSpread)
           .filter(
             ([_, value]) =>
-              value.name.toLowerCase() !== "Online" &&
-              value.name.toLowerCase() !== "Hybrid" &&
-              value.name.toLowerCase() !== "Offline"
+              value.name.toLowerCase() !== "online" &&
+              value.name.toLowerCase() !== "hybrid" &&
+              value.name.toLowerCase() !== "offline"
           )
           .map(([key, value], index) => {
             if (value.iso == "UK") value.iso = "GB";
