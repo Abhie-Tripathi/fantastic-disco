@@ -34,6 +34,7 @@ export default function MultiSelectSearchBar() {
   const searchBarRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const { getEvents, isLoading } = useEventsService();
+  const isDashboard = pathName == "/internal";
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -42,7 +43,6 @@ export default function MultiSelectSearchBar() {
       );
       try {
         const events = await Promise.all(eventPromises);
-        console.log(events);
         setSelectedItems(events as unknown as Event[]);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -50,7 +50,7 @@ export default function MultiSelectSearchBar() {
     };
 
     const eventIdsString = getLocalFilterValue("eventIds");
-    if (eventIdsString) {
+    if (!isDashboard && eventIdsString) {
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
@@ -168,8 +168,6 @@ export default function MultiSelectSearchBar() {
       }
     };
   }, []);
-
-  const isDashboard = pathName == "/internal";
 
   return (
     <form onSubmit={handleSearchSubmit} className="w-full">

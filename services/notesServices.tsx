@@ -17,7 +17,7 @@ export const useNotesServices =() =>{
       )
     }
 
-      const saveNotes=(formData:any, replyId:string | null): Promise<{data: Comment }| undefined>=>{
+      const saveNotes=(formData:any, replyId:string | null): Promise<Comment | undefined>=>{
         return api.request(
           `${endpoints.tracker.saveNotes}`,
           {

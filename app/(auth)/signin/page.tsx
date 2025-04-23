@@ -81,11 +81,11 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[45dvh]">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+      {/* <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
@@ -103,7 +103,7 @@ export default function SignInForm() {
           <span>LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"

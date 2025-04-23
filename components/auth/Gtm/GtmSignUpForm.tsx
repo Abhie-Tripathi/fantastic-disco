@@ -217,7 +217,7 @@ const GtmSignUpForm = () => {
           <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {status === "unauthenticated" && (
+          {/* {status === "unauthenticated" && (
             <>
               <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
@@ -249,7 +249,7 @@ const GtmSignUpForm = () => {
                 OR
               </p>
             </>
-          )}
+          )} */}
         </>
       )}
       <form
