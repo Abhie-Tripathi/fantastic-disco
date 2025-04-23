@@ -90,7 +90,6 @@ interface Props {
 // };
 
 function getFlagComponent(iso: string) {
-  console.log(getUpdatedCountryISOCode(iso));
   const FlagComponent = Flags[iso as keyof typeof Flags];
   return FlagComponent ? (
     <FlagComponent className="w-8 h-8" />
@@ -114,9 +113,9 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
       ? Object.entries(audienceSpread)
           .filter(
             ([_, value]) =>
-              value.name !== "Online" &&
-              value.name !== "Hybrid" &&
-              value.name !== "Offline"
+              value.name.toLowerCase() !== "Online" &&
+              value.name.toLowerCase() !== "Hybrid" &&
+              value.name.toLowerCase() !== "Offline"
           )
           .map(([_, value]) => ({
             name: getCountryName(value.iso),
@@ -272,9 +271,9 @@ export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
         Object.entries(audienceSpread)
           .filter(
             ([_, value]) =>
-              value.name !== "Online" &&
-              value.name !== "Hybrid" &&
-              value.name !== "Offline"
+              value.name.toLowerCase() !== "Online" &&
+              value.name.toLowerCase() !== "Hybrid" &&
+              value.name.toLowerCase() !== "Offline"
           )
           .map(([key, value], index) => {
             if (value.iso == "UK") value.iso = "GB";
