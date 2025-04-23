@@ -112,4 +112,58 @@
   .table td {
     font-size: 14px; /* Reduce font size for smaller screens */
   }
+
+  .analytics_header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .analytics_header_title {
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .table_container {
+    margin: 15px 0 0 0;
+  }
+
+  .table_head_row > th {
+    padding: 15px 10px;
+  }
+
+  .table_body > tr > td {
+    padding: 15px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table th,
+  .table td {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+
+  .analytics_header_title {
+    font-size: 12px;
+  }
+
+  .analytics_value_stats {
+    width: 2rem;
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+
+  .table_container {
+    margin: 10px 0 0 0;
+  }
+
+  .table_head_row > th {
+    padding: 10px 5px;
+  }
+
+  .table_body > tr > td {
+    padding: 10px 5px;
+  }
 }

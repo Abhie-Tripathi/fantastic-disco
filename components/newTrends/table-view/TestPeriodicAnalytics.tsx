@@ -625,6 +625,23 @@ const TestPeriodicAnalytics = () => {
   };
 
   const { theme } = useTheme();
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  // Add useEffect to detect window size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (isLoading) {
     return (
@@ -655,15 +672,14 @@ const TestPeriodicAnalytics = () => {
 
   return (
     <>
-      <div className={styles.analytics_header}>
+      <div className={`${styles.analytics_header} ${isMobileView ? 'flex-col gap-3' : ''}`}>
         <div className={styles.analytics_header_title}>
-          {`FOR THE SELECTED TIME PERIODS (${renderFormattedDates(
-            startDate,
-            endDate
-          )})`}
+          {isMobileView 
+            ? `${renderFormattedDates(startDate, endDate)}`
+            : `FOR THE SELECTED TIME PERIODS (${renderFormattedDates(startDate, endDate)})`
+          }
         </div>
         <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
-          {/* <Image src={SmartInsights} width={18} height={18} alt={""} /> */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -687,9 +703,9 @@ const TestPeriodicAnalytics = () => {
           ></Switch>
         </div>
       </div>
-      <div className={styles.table_container}>
-        <div className="w-full">
-          <Table className="border border-[var(--neutral-light-color) w-[98%] mx-auto relative">
+      <div className={`${styles.table_container}`}>
+        <div className="w-full overflow-x-auto">
+          <Table className={`border border-[var(--neutral-light-color) ${isMobileView ? 'w-full' : 'w-[98%]'} mx-auto relative`}>
             <TableHeader>
               <TableRow>
                 {tableColumns &&
@@ -1273,9 +1289,9 @@ const TestPeriodicAnalytics = () => {
             </TableBody>
           </Table>
           {totalPages > 1 && (
-            <div className="mt-4 sticky bottom-0 bg-background py-4">
+            <div className={`mt-4 sticky bottom-0 bg-background py-4 ${isMobileView ? 'overflow-x-auto' : ''}`}>
               <Pagination>
-                <PaginationContent className="flex-wrap justify-center">
+                <PaginationContent className={`flex-wrap justify-center ${isMobileView ? 'text-sm gap-1' : ''}`}>
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
@@ -1289,7 +1305,53 @@ const TestPeriodicAnalytics = () => {
                       }
                     />
                   </PaginationItem>
-                  {renderPaginationItems()}
+                  {isMobileView ? (
+                    <>
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(1)}
+                          isActive={1 === currentPage}
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                      {currentPage > 3 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+                      {currentPage > 1 && currentPage < totalPages && (
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#"
+                            onClick={() => handlePageChange(currentPage)}
+                            isActive={true}
+                          >
+                            {currentPage}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )}
+                      {currentPage < totalPages - 2 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+                      {totalPages > 1 && (
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#"
+                            onClick={() => handlePageChange(totalPages)}
+                            isActive={totalPages === currentPage}
+                          >
+                            {totalPages}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )}
+                    </>
+                  ) : (
+                    renderPaginationItems()
+                  )}
                   <PaginationItem>
                     <PaginationNext
                       href="#"
