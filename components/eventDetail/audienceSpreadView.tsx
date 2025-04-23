@@ -89,6 +89,18 @@ interface Props {
 //   );
 // };
 
+function getFlagComponent(iso: string) {
+  console.log(getUpdatedCountryISOCode(iso));
+  const FlagComponent = Flags[iso as keyof typeof Flags];
+  return FlagComponent ? (
+    <FlagComponent className="w-8 h-8" />
+  ) : (
+    <div className="text-sm text-blue-600 bg-card w-8 h-6 border text-center">
+      ?
+    </div>
+  );
+}
+
 export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
   const chartRef = useRef(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
@@ -99,16 +111,23 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
     chartInstance.current = chart;
 
     const data = audienceSpread
-      ? Object.entries(audienceSpread).map(([_, value]) => ({
-          name: getCountryName(value.iso),
-          value: value.percentage,
-          iso: getUpdatedCountryISOCode(value.iso),
-          itemStyle: {
-            borderColor: "#6750a4",
-            borderWidth: 0.6,
-            opacity: 1,
-          },
-        }))
+      ? Object.entries(audienceSpread)
+          .filter(
+            ([_, value]) =>
+              value.name !== "Online" &&
+              value.name !== "Hybrid" &&
+              value.name !== "Offline"
+          )
+          .map(([_, value]) => ({
+            name: getCountryName(value.iso),
+            value: value.percentage,
+            iso: getUpdatedCountryISOCode(value.iso),
+            itemStyle: {
+              borderColor: "#6750a4",
+              borderWidth: 0.6,
+              opacity: 1,
+            },
+          }))
       : [];
 
     const maxPercentage = Math.max(...data.map((d) => d.value));
@@ -250,32 +269,38 @@ export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
       } scrollbar `}
     >
       {audienceSpread && Object.keys(audienceSpread).length > 0 ? (
-        Object.entries(audienceSpread).map(([key, value], index) => {
-          if (value.iso == "UK") value.iso = "GB";
-          const Flag = Flags[value.iso as keyof typeof Flags];
-          return (
-            <li
-              className={`flex items-center justify-between p-3 ${
-                (index + 1) % 2 !== 0
-                  ? "bg-[#FAFAFA] dark:bg-[#171717] border border-[#F2F2F2] rounded-md dark:border-[#1A1A1A]"
-                  : ""
-              }`}
-              key={key}
-            >
-              <div className="flex items-center gap-4">
-                <Flag className="w-8 h-8" />{" "}
-                <Text color="primary" variant="noMargin" size="large">
-                  {value.name}
-                </Text>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
-                  {value.percentage}%
-                </span>
-              </div>
-            </li>
-          );
-        })
+        Object.entries(audienceSpread)
+          .filter(
+            ([_, value]) =>
+              value.name !== "Online" &&
+              value.name !== "Hybrid" &&
+              value.name !== "Offline"
+          )
+          .map(([key, value], index) => {
+            if (value.iso == "UK") value.iso = "GB";
+            return (
+              <li
+                className={`flex items-center justify-between p-3 ${
+                  (index + 1) % 2 !== 0
+                    ? "bg-[#FAFAFA] dark:bg-[#171717] border border-[#F2F2F2] rounded-md dark:border-[#1A1A1A]"
+                    : ""
+                }`}
+                key={key}
+              >
+                <div className="flex items-center gap-4">
+                  {getFlagComponent(value.iso)}{" "}
+                  <Text color="primary" variant="noMargin" size="large">
+                    {value.name}
+                  </Text>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
+                    {value.percentage}%
+                  </span>
+                </div>
+              </li>
+            );
+          })
       ) : (
         <span className="text-[#666666] text-sm flex items-center gap-2">
           <CircleSlash width={15} height={15} />
