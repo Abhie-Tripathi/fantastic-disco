@@ -56,7 +56,7 @@ export const alertIcons: Record<string, JSX.Element> = {
 };
 
 export const getAlertLevelBorderColor = (level: string) => {
-  switch (level.toLowerCase()) {
+  switch (level?.toLowerCase()) {
     case "green":
       return "border-[#398E4A]";
     case "orange":

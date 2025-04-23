@@ -95,11 +95,20 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   };
   useEffect(() => {
     
-    const eventLocation =
-      Object.values(item?.filterValues?.locationIds || {}).map((location: any) => {
-        return location?.displayName;
-      });
-    setLocations(eventLocation);
+    const eventLocation = Object.values(item?.filterValues?.locationIds || {}).map(
+      (location: any) => location?.displayName
+    );
+    
+    const zoneLocation = item?.filterValues?.viewBound?.properties?.name;
+    console.log(zoneLocation);
+    
+    // Build the final array before updating the state
+    const updatedLocations = zoneLocation
+      ? [...eventLocation, zoneLocation]
+      : eventLocation;
+    
+    setLocations(updatedLocations);
+    
     const CountValues = {
       geo : ['social','business','unattended'],
       gtm : ['active','past', 'new']
@@ -160,7 +169,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   console.log(eventsCount);
   
   return (
-    <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
+    <div className="card cursor-pointer h-[160px]" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
@@ -181,7 +190,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
           {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
           <div  className={`${
             locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations && locations[0]}</div>
+            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<40 &&locations[0]}
+            {locations?.length > 0 && locations[0].length>40 &&`${locations[0].substring(0,40)}...`} </div>
           {locations?.length > 1 &&  (
             <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}

@@ -101,7 +101,7 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
 
   // Add new useEffect for trends page default location
   useEffect(() => {
-    if (pathName === "/internal" && !localFilters.locationIds && !localFilters.viewBound) {
+    if (pathName === "/internal" && !localFilters.locationIds) {
       replaceLocalFilter(
         "viewBound",
         "locationIds",

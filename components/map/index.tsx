@@ -406,29 +406,29 @@ export default function MapComponent({
     setViewport(viewState);
   }, []);
 
-  const eventCountsGeoJSON = React.useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: eventCountsQuery.data
-        ? eventCountsQuery.data.map((count: EventCount) => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(count.longitude),
-                parseFloat(count.latitude),
-              ],
-            },
-            properties: {
-              count: count.count,
-              id: count.cityId,
-              name: count.name,
-              type: currentZoomGroup, // "country" or "city"
-            },
-          }))
-        : [],
-    };
-  }, [eventCountsQuery.data, currentZoomGroup, location]);
+  // const eventCountsGeoJSON = React.useMemo(() => {
+  //   return {
+  //     type: "FeatureCollection",
+  //     features: eventCountsQuery.data
+  //       ? eventCountsQuery?.data?.map((count: EventCount) => ({
+  //           type: "Feature",
+  //           geometry: {
+  //             type: "Point",
+  //             coordinates: [
+  //               parseFloat(count.longitude),
+  //               parseFloat(count.latitude),
+  //             ],
+  //           },
+  //           properties: {
+  //             count: count.count,
+  //             id: count.cityId,
+  //             name: count.name,
+  //             type: currentZoomGroup, // "country" or "city"
+  //           },
+  //         }))
+  //       : [],
+  //   };
+  // }, [eventCountsQuery.data, currentZoomGroup, location]);
 
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
