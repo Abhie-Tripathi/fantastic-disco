@@ -209,11 +209,10 @@ const TestPeriodicAnalytics = () => {
       groupBy: "date",
       dateView: "day",
     });
-    
+
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
-    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 

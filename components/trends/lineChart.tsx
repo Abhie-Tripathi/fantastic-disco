@@ -57,7 +57,6 @@ import Disable from "/public/disable.svg";
 
 interface IProps {
   showLegend: boolean;
-  holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
   showThresholdLines?: boolean;
 }
@@ -66,7 +65,6 @@ type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
   showLegend,
-  holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
@@ -79,7 +77,7 @@ const LineChartComponent = ({
   const [linePosition, setLinePosition] = useState(300); // Initial Y position of the line
   const { searchParams } = useDefaultFilters();
 
-  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const { getEventTrends } = useTrendsService();
   const {
     applyFilters,
     setLocalFilter,
@@ -161,7 +159,6 @@ const LineChartComponent = ({
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
-    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 
@@ -169,6 +166,8 @@ const LineChartComponent = ({
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     updatedSearchParams.set("eventTypes", "holiday");
     updatedSearchParams.delete("skip");
+    updatedSearchParams.delete("view");
+    updatedSearchParams.delete("categories");
     return updatedSearchParams.toString();
   }, [searchParams]);
 
@@ -213,7 +212,7 @@ const LineChartComponent = ({
     ).length;
   }, [localFilters]);
 
-  const holidaysByDate =
+  const holidayByDates =
     (groupedData &&
       Object.values(groupedData).length > 0 &&
       Object.values(groupedData)) ||
