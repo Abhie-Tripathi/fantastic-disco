@@ -395,7 +395,9 @@ const EventTrends = () => {
   }, [activeView, categories]);
 
   const handleShare = () => {
-    const url = window.location.href;
+    const currentUrl = window.location.href;
+    const url = currentUrl.replace('/internal/', 'redirect=');
+
     navigator.clipboard.writeText(url);
     toast({
       title: "URL Copied",
