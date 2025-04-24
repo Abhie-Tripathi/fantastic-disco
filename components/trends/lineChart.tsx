@@ -657,7 +657,7 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
-  const { data: eventData, refetch } = useQuery({
+  const { data: eventData, isLoading: isTooltipLoading } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
@@ -798,7 +798,7 @@ const LineChartComponent = ({
     }
 
     return (
-      <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
+      <div className="border-none shadow-lg bg-background w-72 z-10">
         <div className="px-4 py-2 flex text-lg font-medium border-b">
           {format(date, "d MMM yyyy")}
         </div>
@@ -814,7 +814,7 @@ const LineChartComponent = ({
                   matchingHoliday.holidays.length > 1
                     ? "list-decimal"
                     : "list-none"
-                } list-inside text-sm text-gray-600`}
+                } list-inside text-sm text-gray-600 dark:text-gray-300`}
               >
                 {matchingHoliday.holidays.map((holidayName, index) => (
                   <li key={index}>{holidayName}</li>
@@ -851,7 +851,7 @@ const LineChartComponent = ({
         <div className="px-4 py-2">
           <p className="text-sm font-medium">TOP EVENTS</p>
           <ul className="flex flex-col gap-2 mt-4">
-            {isLoading ? (
+            {isTooltipLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
             ) : eventData && (eventData as any).events.length > 0 ? (
               (eventData as any).events
@@ -866,14 +866,14 @@ const LineChartComponent = ({
                           {index + 1}.
                         </span>
                       </div>
-                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                      <p className="text-[#79747E] dark:text-gray-300 text-[12px] truncate whitespace-nowrap">
                         {name}
                       </p>
                     </li>
                   );
                 })
             ) : (
-              <p className="text-[#666666] text-sm flex items-center gap-2">
+              <p className="text-[#666666] dark:text-gray-300 text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
                 No events found. Try expanding your preferences by selecting
                 more categories, products, or topics.
@@ -886,7 +886,7 @@ const LineChartComponent = ({
           className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
         >
           VIEW ALL
-          <ArrowUpRight height={18} width={18} stroke="#6750a4" />
+          <ArrowUpRight height={18} width={18} stroke="currentColor" />
         </Link>
       </div>
     );
