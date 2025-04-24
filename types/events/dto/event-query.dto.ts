@@ -146,6 +146,7 @@ export enum EventFormat {
   online,
   hybrid,
   offline,
+  in_person
 }
 
 export enum EntryType {
