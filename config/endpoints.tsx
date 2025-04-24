@@ -13,6 +13,7 @@ export const endpoints = {
     me: `${BASE_URL}/me`,
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
+    ssoSignIn: (provider: string) => `${BASE_URL}/auth/${provider}/sso`,
     verifyOTP: `${BASE_URL}/auth/verify-otp`,
     logout: `${BASE_URL}/me/sign-out`,
   },

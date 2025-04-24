@@ -21,6 +21,7 @@ import {
   ViewBound,
 } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Save } from "lucide-react";
 import Error from "next/error";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import {
@@ -106,12 +107,9 @@ const SaveTrendModal = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button
-          disabled={isLoading}
-          variant="outline"
-          className="flex-1 py-5 border-primary text-primary font-semibold"
-        >
-          Save
+        <Button variant="outline" className="w-full h-10" disabled={isLoading}>
+          <Save className="w-4 h-4 mr-2" />
+          Save Trend
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -153,11 +151,9 @@ const SaveTrendModal = ({
 const SaveTrend = ({
   searchParams,
   isLoading,
-  setShowNotificationForm,
 }: {
   searchParams: ReadonlyURLSearchParams;
   isLoading: boolean;
-  setShowNotificationForm: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { toast } = useToast();
   const { getLastSearchedLocation } = sessionService();
@@ -195,8 +191,8 @@ const SaveTrend = ({
   const saveTrendMutation = useMutation({
     mutationFn: async (data: CreateSaveTrendData) => {
       const response = await setSaveTrend(data);
-      setLocalFilter("activeCard", (response as { id: string }).id);
-      applyFilters();
+      // setLocalFilter("activeCard", (response as { id: string }).id);
+      // applyFilters();
     },
     onSuccess: () => {
       toast({
@@ -227,6 +223,7 @@ const SaveTrend = ({
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
+    const categories = params.get("categories");
     const viewBound: ViewBound = geoCoordinate
       ? JSON.parse(geoCoordinate)
       : undefined;
@@ -240,6 +237,7 @@ const SaveTrend = ({
       ...BaseFilterValue,
       eventTypes: eventTypes || "",
       columns: columns || "",
+      ...(categories ? { categories } : {}),
       ...(locationIds ? { locationIds } : geoCoordinate ? { viewBound } : {}),
     };
     const data: CreateSaveTrendData = {

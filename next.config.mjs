@@ -21,6 +21,7 @@ const config = {
           'api.dev.gtm.whr.ai',
           'im.gifbt.com',
           'gtmdev-api.whr.ai',
+          'geodev-api.whr.ai',
         ],
   },
   experimental: {

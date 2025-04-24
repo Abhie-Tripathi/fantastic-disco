@@ -128,6 +128,13 @@ export interface GetFilterValue extends BaseFilterValue {
   eventTypes: EventTypes;
   locationIds?: LocationIds;
   viewBound?: string;
+  categories?: {
+    [key: string]: {
+      id: string;
+      slug: string;
+      name: string;
+    };
+  };
 }
 
 export interface TrackerData {

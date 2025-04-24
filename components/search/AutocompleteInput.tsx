@@ -43,6 +43,7 @@ interface AutocompleteInputProps {
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   multiple?: boolean;
   value?: Location[] | Location | null;
+  setApplyHandlerCalled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function AutocompleteInput({
@@ -54,6 +55,7 @@ export default function AutocompleteInput({
   setIsOpen,
   multiple = false,
   value,
+  setApplyHandlerCalled
 }: AutocompleteInputProps) {
   const { getCoordinates } = useLocationService();
   const [open, setOpen] = useState(false);
@@ -117,6 +119,7 @@ export default function AutocompleteInput({
           radius: 5,
         });
       }
+      setApplyHandlerCalled?.(true);
     },
     [multiple, type, getCoordinates, onSelect, selectedLocations]
   );

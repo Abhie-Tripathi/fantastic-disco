@@ -270,6 +270,10 @@ const Page = ({ params }: { params: any }) => {
     setLoading(true);
   }, [data, savedEventCount]);
   useEffect(()=>{
+    if(editTrue) setLoading(false);
+    else setLoading(true);
+  },[editTrue])
+  useEffect(()=>{
     const res = eventCount.find((count) => count.type.toLowerCase() === active);
     
     setActiveCount(res?.totalCount || 0);

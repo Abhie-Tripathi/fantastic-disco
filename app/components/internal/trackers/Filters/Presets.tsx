@@ -163,7 +163,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
         </span>
       </div>
       
-      <div className="flex justify-center items-center gap-2 mt-6 mx-auto w-[95%]">
+      <div className="flex justify-center items-center gap-2 mt-4 mx-auto w-[95%]">
         <div className="w-[100%]">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />

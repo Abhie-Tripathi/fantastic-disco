@@ -736,14 +736,14 @@ export const AddComment = ({
             onKeyDown={handleKeyDown1}
           />
           <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
-          <button style={{ display: "flex", background:"transparent" }}  className={`relative cursor-pointer h-[25px] w-[25px] ${styles.attachIconContainer}`} data-name="Add File">
+          {/* <button style={{ display: "flex", background:"transparent" }}  className={`relative cursor-pointer h-[25px] w-[25px] ${styles.attachIconContainer}`} data-name="Add File">
           <Image
             className={`${styles.attachIcon} ${iconClass}`}
             onClick={pdfSelect}
             src={Drive}
             alt="drive"
           />
-          </button>
+          </button> */}
           <button style={{ display: "flex", background:"transparent" }}  className={`relative cursor-pointer h-[25px] w-[25px] ${styles.attachIconContainer}`} data-name="Send" type="submit">
             <Image src={Send} alt="send" className={iconClass} />
           </button>

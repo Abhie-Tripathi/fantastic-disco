@@ -136,3 +136,22 @@ export interface PresetData{
       name:string;
       type:string
     }
+    export interface TemplateItem {
+      type: string;
+      domain: string;
+      img: string;
+      url: string;
+      trackerName: string;
+      content: string;
+      isEnabled: boolean;
+    }
+    
+    export interface StandardTemplateGroup {
+      heading: string;
+      subHeading: string;
+      templates: TemplateItem[];
+    }
+    export interface TrackerTypeProp{
+      type:string;
+      count:number;
+    }
