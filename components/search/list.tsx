@@ -132,7 +132,7 @@ export default function EventAccordion({
   view,
 }: EventListProps) {
   const searchParams = useSearchParams();
-  const { data: trackerData } = useTrackerContext();
+  const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
@@ -166,7 +166,8 @@ export default function EventAccordion({
   const mapping = {
     rating: "rating",
     maturity: "maturity",
-    branded: "branded,series",
+    branded: "branded",
+    series: "series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",

@@ -1,30 +1,40 @@
 "use client";
-import Text from "@/components/new-ui/Text";
+import TemplatesModal, {
+  TemplateType,
+} from "@/app/components/trends/templates-modal";
 import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
+import CategorySelector from "@/components/search/categorySelector";
 import ColumnsSelector from "@/components/search/columnSelector";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventTypeSelector from "@/components/search/eventType";
 import LocationSelector from "@/components/search/location";
 import LineChartComponent from "@/components/trends/lineChart";
+import TreemapView from "@/components/trends/treemap-view";
+import { ChartFilters } from "@/components/trendsChart/chart-filters";
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/ui/Loading";
-import { isEventeli } from "@/config";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Filters, useFilterContext } from "@/context/filterContext";
-import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { useTrendsService } from "@/services/trendsService";
-import { EventResponse } from "@/types/events";
 import {
   EventTrendsResponse,
   GetSaveTrendData,
   TableData,
-  TableGroupedHoliday,
-  TEventColumnType,
 } from "@/types/trends/trends";
+import { HierarchyLevel } from "@/utils/chart-options";
 import {
   generateTrendsTableColumnHeaders,
   morphToGraphData,
@@ -33,56 +43,19 @@ import {
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Loader2,
+  Calendar1,
   ChevronLeft,
-  ChevronRight,
+  Filter,
+  FilterX,
+  Info,
   LayoutGrid,
   LineChart,
-  Table,
-  Filter,
-  Calendar1,
-  MapPin,
-  BarChart3,
-  Plus,
-  ChevronDown,
-  Search,
-  Save,
-  History,
-  Settings,
-  FilterX,
-  Download,
-  Building,
-  UserSearch,
   Lock,
-  Info,
-  X,
-  RotateCcw,
-  PenLine,
+  Save,
+  Table,
 } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
-import ZeroStateIcon from "/public/zero_state.svg";
-import ZeroStateDataIcon from "/public/zero_state_data.svg";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ChartFilters } from "@/components/trendsChart/chart-filters";
-import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
-import TreemapView from "@/components/trends/treemap-view";
-import CategorySelector from "@/components/search/categorySelector";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import TemplatesModal, {
-  TemplateType,
-} from "@/app/components/trends/templates-modal";
 
 const ViewTemplates = [
   {
@@ -108,11 +81,12 @@ const ViewTemplates = [
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
-  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const { getSavedTrends } = useTrendsService();
   const {
     applyFilters,
     setLocalFilter,
     getLocalFilterValue,
+    setMultipleLocalFilters,
     deleteMultipleLocalFilters,
     localFilters,
   } = useFilterContext();
@@ -142,19 +116,18 @@ const EventTrends = () => {
   const [graphData, setGraphData] = useState<any>();
   const [tableData, setTableData] = useState<TableData[] | []>();
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
-  const { getEventsWithSearchParams, getEventCountByCity, getEventsCount } =
-    useEventsService();
-  const [selectedEventType, setSelectedEventType] = useState<TEventColumnType>(
-    () => {
-      return columnsData[0] as TEventColumnType;
-    }
-  );
-  const [showNotificationForm, setShowNotificationForm] =
-    useState<boolean>(false);
+  const { getEventsWithSearchParams } = useEventsService();
+  const { getFilterValue } = useFilterState();
+  const [setShowNotificationForm] = useState<boolean>(false);
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
-  const [activeView, setActiveView] = useState<"line" | "treemap" | "table">(
-    "treemap"
-  );
+  const metric = getFilterValue("columns") as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate";
+  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
+    ? (getFilterValue("view") as "line" | "treemap" | "table")
+    : "treemap";
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
@@ -167,6 +140,7 @@ const EventTrends = () => {
   );
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
+  const [showCategoryWarning, setShowCategoryWarning] = useState(false);
   const categories = getLocalFilterValue("categories");
   type FilterKey =
     | "location"
@@ -187,68 +161,15 @@ const EventTrends = () => {
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
-  const apiParams = useMemo(() => {
-    const params = new URLSearchParams({
-      groupBy: "date",
-      dateView: "day",
+  const { data: savedTrendsList, isLoading: isLoading } =
+    useQuery<GetSaveTrendData>({
+      queryKey: ["getSavedTrends"],
+      queryFn: async () => {
+        const result = await getSavedTrends();
+        if (!result) throw new Error("Failed to fetch saved trends");
+        return result;
+      },
     });
-    console.log(searchParams.toString());
-    searchParams.forEach((value, key) => {
-      params.append(key, value);
-    });
-    params.delete("categories");
-    return params.toString();
-  }, [stringParams]);
-
-  const updatedParams = useMemo(() => {
-    const updatedSearchParams = new URLSearchParams(searchParams.toString());
-    updatedSearchParams.set("eventTypes", "holiday");
-    updatedSearchParams.delete("skip");
-    return updatedSearchParams.toString();
-  }, [searchParams]);
-
-  const {
-    data: trendsData,
-    error,
-    isLoading,
-  } = useQuery<EventTrendsResponse | undefined>({
-    queryKey: ["trends", apiParams.toString()],
-    queryFn: () => getEventTrends(apiParams.toString()),
-    enabled: !!apiParams.toString(),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const { data: holdiayData } = useQuery({
-    queryKey: ["holiday", updatedParams],
-    queryFn: async () => await getEventsWithSearchParams(updatedParams),
-    enabled: isEventeli && hasHoliday,
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
-    queryKey: ["getSavedTrends"],
-    queryFn: async () => {
-      const result = await getSavedTrends();
-      if (!result) throw new Error("Failed to fetch saved trends");
-      return result;
-    },
-  });
-
-  const groupedData = (holdiayData as EventResponse)?.events.reduce<
-    Record<string, TableGroupedHoliday>
-  >((acc, { basic }) => {
-    const { startDateTime, name } = basic;
-    if (!acc[startDateTime]) {
-      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
-    }
-    acc[startDateTime].count++;
-    acc[startDateTime].holidays.push(name);
-    return acc;
-  }, {});
 
   const filterCount = useMemo(() => {
     const excludedFilters = ["active_gte", "active_lte"];
@@ -257,30 +178,11 @@ const EventTrends = () => {
     ).length;
   }, [localFilters]);
 
-  const holidaysByDate =
-    (groupedData &&
-      Object.values(groupedData).length > 0 &&
-      Object.values(groupedData)) ||
-    [];
-
-  useEffect(() => {
-    if (trendsData !== undefined) {
-      setEventTrendsData(trendsData);
-      setSelectedEventType(() => {
-        return columnsData[0] as TEventColumnType;
-      });
-    }
-  }, [trendsData]);
-
   useEffect(() => {
     const skip = searchParams.get("skip");
 
     if (!skip) {
       setIsSmartInsightsEnabled(false);
-
-      setSelectedEventType(() => {
-        return columnsData[0] as TEventColumnType;
-      });
 
       setSmartInsightState((prev) => {
         const updatedState = columnsData.reduce((acc, key) => {
@@ -291,7 +193,7 @@ const EventTrends = () => {
         return updatedState;
       });
     }
-  }, [trendsData, searchParams]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (Object.keys(smartInsightState).length > 0) {
@@ -329,10 +231,7 @@ const EventTrends = () => {
         columns
       );
 
-      const graphData = morphToGraphData(
-        eventTrendsData.groupedData,
-        selectedEventType
-      );
+      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
 
       const tableData = morphToTrendsTableData(
         eventTrendsData.thresholds,
@@ -346,45 +245,29 @@ const EventTrends = () => {
       setTableData(smartInsightsData);
       setTableColumns(tableColumns);
     }
-  }, [eventTrendsData, selectedEventType]);
-
-  useEffect(() => {
-    if (trendsData === undefined) {
-      setGraphData(undefined);
-    }
-  }, [trendsData]);
+  }, [eventTrendsData, metric]);
 
   const applyHandler = () => {
-    const columnsValue = columnsDropdown
-      .filter(
-        (dropdown) =>
-          dropdown.value !== "impactScore" &&
-          dropdown.value !== "economicImpact"
-      )
-      .map((filteredValue) => filteredValue.value)
-      .join(",");
     if (getLocalFilterValue("eventTypes").length > 0) {
-      setLocalFilter("columns", columnsValue);
       setLocalFilter("status", "active,cancelled,postponed");
       setLocalFilter("show", "alerts,scores,economicImpact");
     }
     applyFilters({ resetPage: true });
   };
 
-  const handleSelectChange = (value: TEventColumnType) => {
-    setSelectedEventType(value);
-  };
-
   const handleViewChange = (view: "line" | "treemap" | "table") => {
     if (activeTemplate && !activeTemplate.visualization.includes(view)) {
       return; // Don't change view if not supported by template
     }
-    setActiveView(view);
-    if (view === "treemap" && categories.length === 0) {
-      const defaultCategories = "technology,medical-pharma";
-      setLocalFilter("categories", defaultCategories);
-      applyFilters({ resetPage: true });
+    if (view === "treemap") {
+      if (categories.length === 0) {
+        const defaultCategories = "technology,medical-pharma";
+        setMultipleLocalFilters({ categories: defaultCategories, view: view });
+      }
+      setMultipleLocalFilters({ columns: "eventCount", view: view });
     }
+    setLocalFilter("view", view);
+    applyFilters({ resetPage: true });
   };
 
   const handleTemplateSelect = (template: TemplateType) => {
@@ -468,6 +351,23 @@ const EventTrends = () => {
     setHasModifiedFilters(hasChanged);
   }, [localFilters, activeTemplate, visibleFilters]);
 
+  // Add delay for showing category warning
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (activeView === "treemap" && categories.length === 0) {
+      timeoutId = setTimeout(() => {
+        setShowCategoryWarning(true);
+      }, 1000); // 1 second delay
+    } else {
+      setShowCategoryWarning(false);
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeView, categories]);
+
   return (
     <div
       className={`flex h-[calc(100vh-60px)] ${
@@ -523,14 +423,7 @@ const EventTrends = () => {
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
                     )}
-                    {visibleFilters.metrics && (
-                      <ColumnsSelector
-                        activeView={activeView}
-                        setActiveView={setActiveView}
-                        selectedEventType={selectedEventType}
-                        handleSelectChange={handleSelectChange}
-                      />
-                    )}
+                    {visibleFilters.metrics && <ColumnsSelector />}
                     {activeView === "treemap" && (
                       <ChartFilters
                         type="visitor-flow"
@@ -584,60 +477,48 @@ const EventTrends = () => {
                   {filterCount} filters applied
                 </span>
               </div>
-              {activeView === "treemap" && categories.length === 0 && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
-                  <div className="flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-destructive"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="8" x2="12" y2="12" />
-                      <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
+              {activeView === "treemap" &&
+                categories.length === 0 &&
+                showCategoryWarning && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
+                    <div className="flex-shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-destructive"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-destructive">
+                        Category Required
+                      </p>
+                      <p className="text-xs text-destructive/80">
+                        Please select at least one category to view the treemap
+                        visualization
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-destructive">
-                      Category Required
-                    </p>
-                    <p className="text-xs text-destructive/80">
-                      Please select at least one category to view the treemap
-                      visualization
-                    </p>
-                  </div>
-                </div>
-              )}
+                )}
               <Button
                 onClick={applyHandler}
                 className="w-full h-10"
-                disabled={
-                  isLoading ||
-                  (activeView === "treemap" && categories.length === 0)
-                }
+                disabled={activeView === "treemap" && categories.length === 0}
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Applying...
-                  </>
-                ) : (
-                  "Apply Filters"
-                )}
+                Apply Filters
               </Button>
 
-              <SaveTrend
-                searchParams={searchParams}
-                isLoading={isLoading}
-                setShowNotificationForm={setShowNotificationForm}
-              />
+              <SaveTrend searchParams={searchParams} isLoading={isLoading} />
             </div>
           </div>
         </div>
@@ -851,85 +732,26 @@ const EventTrends = () => {
             <>
               {(activeView === "line" || activeView === "table") && (
                 <div>
-                  {isLoading ? (
-                    <Loading />
-                  ) : error ? (
-                    <div className={styles.zeroState_container}>
-                      <Image
-                        src={ZeroStateIcon}
-                        alt="zerostate"
-                        width={150}
-                        height={150}
-                      />
-                      <div>
-                        Explore global trends across event types over the past
-                        decade.
-                      </div>
-                    </div>
-                  ) : graphData && graphData.length > 0 ? (
-                    <>
-                      {activeView === "line" && (
-                        <Card className="p-6 relative">
-                          <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-medium absolute top-6 left-6">
-                              Trend Analysis
-                            </h2>
-                          </div>
-                          <div className={styles.predictedAttendence_container}>
-                            <LineChartComponent
-                              predictedData={graphData}
-                              selectedEventType={selectedEventType}
-                              holidayByDates={holidaysByDate}
-                              threshold={
-                                (eventTrendsData &&
-                                  eventTrendsData.thresholds[
-                                    selectedEventType
-                                  ]) ??
-                                0
-                              }
-                              showLegend
-                            />
-                          </div>
-                        </Card>
-                      )}
+                  <>
+                    {activeView === "line" && (
+                      <Card className="p-6 relative">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-lg font-medium absolute top-6 left-6">
+                            Trend Analysis
+                          </h2>
+                        </div>
+                        <div className={styles.predictedAttendence_container}>
+                          <LineChartComponent showLegend />
+                        </div>
+                      </Card>
+                    )}
 
-                      {activeView === "table" && (
-                        <Card className="p-6">
-                          <TestPeriodicAnalytics
-                            isSmartInsightsEnabled={isSmartInsightsEnabled}
-                            smartInsightState={smartInsightState}
-                            setIsSmartInsightsEnabled={
-                              setIsSmartInsightsEnabled
-                            }
-                            setSmartInsightState={setSmartInsightState}
-                            data={
-                              tableData && tableData.length > 0 ? tableData : []
-                            }
-                            tableColumns={tableColumns || []}
-                            holidayByDates={holidaysByDate}
-                          />
-                        </Card>
-                      )}
-                    </>
-                  ) : (
-                    <div className={styles.zeroState_container}>
-                      <Image
-                        src={ZeroStateDataIcon}
-                        alt="zerostateData"
-                        width={150}
-                        height={150}
-                      />
-                      <p>No Events Found</p>
-                      <Text
-                        variant="noMargin"
-                        color="secondary"
-                        className="w-80 text-center"
-                      >
-                        Try selecting a different date range or broaden the
-                        location to view events.
-                      </Text>
-                    </div>
-                  )}
+                    {activeView === "table" && (
+                      <Card className="p-6">
+                        <TestPeriodicAnalytics />
+                      </Card>
+                    )}
+                  </>
                 </div>
               )}
 

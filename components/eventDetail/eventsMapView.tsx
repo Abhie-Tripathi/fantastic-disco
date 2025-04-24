@@ -138,20 +138,18 @@ const EventsMapView: React.FC<MapProps> = ({
           }}
         >
           <div key={event.id}>
-            {eventsData &&
-              eventsData.events.length > 0 &&
-              eventsData.events
-                .filter((event) => event.basic.id !== eventId)
+            {events.length &&
+              events
+                .filter((event) => event.id !== eventId)
                 .map((event) => {
-                  const { id, eventLocation, primaryEventType } = event.basic;
-                  const latitude = eventLocation?.latitude;
-                  const longitude = eventLocation?.longitude;
                   return (
                     <Marker
-                      key={id}
-                      onClick={() => handleMarkerClick(id)}
-                      longitude={longitude ? parseFloat(longitude) : 0}
-                      latitude={latitude ? parseFloat(latitude) : 0}
+                      key={event.id}
+                      onClick={() => handleMarkerClick(event.id)}
+                      longitude={
+                        event.longitude ? parseFloat(event.longitude) : 0
+                      }
+                      latitude={event.latitude ? parseFloat(event.latitude) : 0}
                       anchor="bottom"
                     >
                       <div className="marker">
