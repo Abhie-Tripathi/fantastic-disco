@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
 import { Filters, useFilterContext } from "@/context/filterContext";
+import { useTheme } from "@/context/theme";
 import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
@@ -623,6 +624,8 @@ const TestPeriodicAnalytics = () => {
     router.push(`${url}?${queryString}`);
   };
 
+  const { theme } = useTheme();
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
@@ -704,7 +707,7 @@ const TestPeriodicAnalytics = () => {
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
                         style={{ width: 1000 }}
-                        className={`text-center bg-[rgb(250,250,250)] text-[#171717] border border-[var(--neutral-light-color)] relative ${
+                        className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
                           trends.slug === "date" ? "sticky left-0 z-30" : ""
                         }`}
                       >
@@ -730,7 +733,7 @@ const TestPeriodicAnalytics = () => {
                               </Tooltip>
                             </TooltipProvider>
                             <Select>
-                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-white p-0 border-2 rounded-sm border-[#EBEBEBBB]"></SelectTrigger>
+                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
                                 <SelectGroup className="flex flex-col gap-4 p-4">
                                   <div className="flex gap-4 items-center">
@@ -741,12 +744,12 @@ const TestPeriodicAnalytics = () => {
                                           trends.slug &&
                                         sortingColumnOrder.order === "asc"
                                           ? "border-[#6750A4]"
-                                          : "border-[#EBEBEBBB]"
+                                          : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
                                       <ArrowUpNarrowWide
-                                        color="#7D7D7D"
-                                        className="cursor-pointer w-5"
+                                        color="currentColor"
+                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -761,12 +764,12 @@ const TestPeriodicAnalytics = () => {
                                           trends.slug &&
                                         sortingColumnOrder.order === "desc"
                                           ? "border-[#6750A4]"
-                                          : "border-[#EBEBEBBB]"
+                                          : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
                                       <ArrowDownWideNarrow
-                                        color="#7D7D7D"
-                                        className="cursor-pointer w-5"
+                                        color="currentColor"
+                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -812,11 +815,11 @@ const TestPeriodicAnalytics = () => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
-                                  className="absolute z-20 top-2 -right-3 bg-white"
+                                  className="absolute z-20 top-2 -right-3 bg-background"
                                   onClick={() => toggleOpenState(trends.slug)}
                                 >
                                   <Image
-                                    className="p-1 z-30 shadow-lg flex items-center justify-center rounded-md border border-[#EBEBEB] aspect-auto"
+                                    className="p-1 z-30 shadow-lg flex items-center justify-center rounded-md border border-[var(--neutral-light-color)] aspect-auto"
                                     src={
                                       openState[trends.slug ?? ""]
                                         ? CollapseIcon
@@ -857,7 +860,7 @@ const TestPeriodicAnalytics = () => {
                             .map((cell) => (
                               <TableHead
                                 key={cell.subColumnName}
-                                className={`bg-[rgb(250,250,250)] text-[#171717] w-40 text-center border border-[var(--neutral-light-color)] ${
+                                className={`bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)] ${
                                   cell.slug === "value" ? "py-2" : ""
                                 }`}
                               >
@@ -910,13 +913,13 @@ const TestPeriodicAnalytics = () => {
                         ) : !isOpenState && !isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
-                            className="bg-[rgb(250,250,250)] text-[#171717] w-40 text-center border border-[var(--neutral-light-color)]"
+                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)]"
                           ></TableHead>
                         ) : !isOpenState && isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
                             style={{ width: 1000 }}
-                            className="bg-[rgb(250,250,250)] text-[#171717] text-center p-0"
+                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] text-center p-0"
                           >
                             <div className="grid grid-cols-1 w-full h-full">
                               {trends.subHeading
@@ -1004,7 +1007,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-white`}
+                                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-background`}
                                 >
                                   {isEventeli ? (
                                     isHoliday ? (
@@ -1094,7 +1097,7 @@ const TestPeriodicAnalytics = () => {
                                       className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]`}
                                     >
                                       <div
-                                        className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-[#000]
+                                        className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]
                                 ${
                                   subCol.slug === "avg" &&
                                   isSmartInsightEnabledForColumn
@@ -1152,7 +1155,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[#000] ${
+                                  className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] ${
                                     isSmartInsightEnabledForColumn
                                       ? `${cellData["thresholdHighlightCol"]} ${
                                           cellData["maxCol"] ===
@@ -1173,7 +1176,7 @@ const TestPeriodicAnalytics = () => {
                                   className={`w-[1000px] h-[52px] p-0 ${
                                     cellData["maxCol"] === cellData["value"]
                                       ? "border-2 border-[var(--negative-color)]"
-                                      : "border-[#EBEBEB]"
+                                      : "border-[var(--neutral-light-color)]"
                                   }`}
                                 >
                                   <div className="grid grid-cols-1 w-full h-full">
@@ -1185,7 +1188,7 @@ const TestPeriodicAnalytics = () => {
                                         return (
                                           <div
                                             key={subCol.slug}
-                                            className={`h-full text-center gap-2 justify-center font-semibold text-[#000] flex items-center ${
+                                            className={`h-full text-center gap-2 justify-center font-semibold text-[var(--primary-text-color)] flex items-center ${
                                               subCol.slug === "avg" &&
                                               isSmartInsightEnabledForColumn &&
                                               "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
@@ -1241,7 +1244,7 @@ const TestPeriodicAnalytics = () => {
                                       className="p-0 h-[52px] w-32 border border-[var(--neutral-light-color)]"
                                     >
                                       <div
-                                        className={`flex text-center items-center justify-center w-full h-full font-semibold text-[#000]`}
+                                        className={`flex text-center items-center justify-center w-full h-full font-semibold text-[var(--primary-text-color)]`}
                                       >
                                         {
                                           cellData[
@@ -1257,7 +1260,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className="text-center font-semibold border border-[var(--neutral-light-color)] text-[#0000]"
+                                  className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
                                 >
                                   0
                                 </TableCell>
@@ -1270,7 +1273,7 @@ const TestPeriodicAnalytics = () => {
             </TableBody>
           </Table>
           {totalPages > 1 && (
-            <div className="mt-4 sticky bottom-0 bg-white py-4">
+            <div className="mt-4 sticky bottom-0 bg-background py-4">
               <Pagination>
                 <PaginationContent className="flex-wrap justify-center">
                   <PaginationItem>
