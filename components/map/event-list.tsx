@@ -288,7 +288,7 @@ const UnplannedCard = memo(
     }
 
     return (
-      <Link href={`/internal/event/${event.basic.id}`}>
+      <div>
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
           <CardContent className="p-3">
             <div className="flex items-start gap-3">
@@ -388,7 +388,7 @@ const UnplannedCard = memo(
             </div>
           </CardContent>
         </Card>
-      </Link>
+      </div>
     );
   }
 );
