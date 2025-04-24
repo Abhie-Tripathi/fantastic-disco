@@ -62,14 +62,13 @@ import {
   ArrowDown,
   ArrowDownWideNarrow,
   ArrowUp,
-  ArrowUpNarrowWide,
+  ArrowUpNarrowWide as ArrowUpWide,
   Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/components/ui/Loading";
 import { useEffect, useMemo, useState } from "react";
-import styles from "./TableAnalytics.module.css";
 import CollapseIcon from "/public/collapse.svg";
 import HolidayIcon from "/public/eventType/holiday.svg";
 import ExpandIcon from "/public/expandColumn.svg";
@@ -210,7 +209,7 @@ const TestPeriodicAnalytics = () => {
       groupBy: "date",
       dateView: "day",
     });
-    
+
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
@@ -632,15 +631,15 @@ const TestPeriodicAnalytics = () => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
-    
+
     // Set initial value
     handleResize();
-    
+
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (isLoading) {
@@ -672,40 +671,56 @@ const TestPeriodicAnalytics = () => {
 
   return (
     <>
-      <div className={`${styles.analytics_header} ${isMobileView ? 'flex-col gap-3' : ''}`}>
-        <div className={styles.analytics_header_title}>
-          {isMobileView 
-            ? `${renderFormattedDates(startDate, endDate)}`
-            : `FOR THE SELECTED TIME PERIODS (${renderFormattedDates(startDate, endDate)})`
-          }
+      <div
+        className={`flex ${isMobileView ? "flex-col gap-3" : "justify-between items-center"} py-4`}
+      >
+        <div className="font-medium text-base">
+          FOR THE SELECTED TIME PERIODS ({renderFormattedDates(startDate, endDate)})
         </div>
-        <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
+        <div className="flex gap-2 items-center px-3 py-3 border border-gray-200 rounded-sm">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex gap-2 cursor-pointer">
-                  <Image src={SmartInsights} width={18} height={18} alt={""} />
-                  <p className="text-primary m-0 font-normal">Smart Insights</p>
+                <div className="flex gap-2 cursor-pointer items-center">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={SmartInsights}
+                      width={18}
+                      height={18}
+                      alt={""}
+                      className="w-[18px] h-[18px]"
+                    />
+                    <p className="text-primary m-0 font-normal text-sm sm:text-base">
+                      Smart Insights
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isSmartInsightsEnabled}
+                    onCheckedChange={() =>
+                      setIsSmartInsightsEnabled((prev) => !prev)
+                    }
+                    disabled={Object.keys(smartInsightState).length === 0}
+                    className="mt-1 sm:mt-0"
+                  />
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="w-64 tooltip-content-styles ">
-                <p className="font-medium text-[var(--secondary-text-color)]">
+              <TooltipContent className="w-64 sm:w-72 p-2 bg-white shadow-md rounded-md border border-gray-200">
+                <p className="font-medium text-gray-700 text-sm sm:text-base">
                   Identifies trends and patterns by comparing data to averages,
                   making key insights easy to spot.
                 </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Switch
-            checked={isSmartInsightsEnabled}
-            onCheckedChange={() => setIsSmartInsightsEnabled((prev) => !prev)}
-            disabled={Object.keys(smartInsightState).length === 0}
-          ></Switch>
         </div>
       </div>
-      <div className={`${styles.table_container}`}>
+      <div className="mt-6 overflow-x-auto">
         <div className="w-full overflow-x-auto">
-          <Table className={`border border-[var(--neutral-light-color) ${isMobileView ? 'w-full' : 'w-[98%]'} mx-auto relative`}>
+          <Table
+            className={`border border-[var(--neutral-light-color)] ${
+              isMobileView ? "w-full" : "w-[98%]"
+            } mx-auto relative`}
+          >
             <TableHeader>
               <TableRow>
                 {tableColumns &&
@@ -723,7 +738,7 @@ const TestPeriodicAnalytics = () => {
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
                         style={{ width: 1000 }}
-                        className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
+                        className={`text-center bg-gray-50 text-gray-800 border border-gray-200 relative ${
                           trends.slug === "date" ? "sticky left-0 z-30" : ""
                         }`}
                       >
@@ -740,8 +755,8 @@ const TestPeriodicAnalytics = () => {
                                     {trends.columnName.toUpperCase()}
                                   </span>
                                 </TooltipTrigger>
-                                <TooltipContent className="w-64 tooltip-content-styles ">
-                                  <p className="font-medium text-left text-[var(--secondary-text-color)]">
+                                <TooltipContent className="w-64 p-2 bg-white shadow-md rounded-md border border-gray-200">
+                                  <p className="font-medium text-left text-gray-700">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
                                   </p>
@@ -763,7 +778,7 @@ const TestPeriodicAnalytics = () => {
                                           : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
-                                      <ArrowUpNarrowWide
+                                      <ArrowUpWide
                                         color="currentColor"
                                         className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
@@ -847,8 +862,8 @@ const TestPeriodicAnalytics = () => {
                                   />
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="w-44 tooltip-content-styles ">
-                                <p className="font-medium text-[var(--secondary-text-color)]">
+                              <TooltipContent className="w-44 p-2 bg-white shadow-md rounded-md border border-gray-200">
+                                <p className="font-medium text-gray-700">
                                   Click on it to see event type wise split
                                 </p>
                               </TooltipContent>
@@ -876,16 +891,14 @@ const TestPeriodicAnalytics = () => {
                             .map((cell) => (
                               <TableHead
                                 key={cell.subColumnName}
-                                className={`bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)] ${
+                                className={`bg-gray-50 text-gray-800 w-40 text-center border border-gray-200 ${
                                   cell.slug === "value" ? "py-2" : ""
                                 }`}
                               >
                                 <div
                                   className={`flex items-center w-20 mx-auto font-${
                                     cell.fontWeight ?? "normal"
-                                  } justify-center text-[var(${
-                                    cell.color
-                                  })] gap-2`}
+                                  } justify-center text-gray-800 gap-2`}
                                 >
                                   {cell.icon && (
                                     <Image
@@ -929,13 +942,13 @@ const TestPeriodicAnalytics = () => {
                         ) : !isOpenState && !isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
-                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)]"
+                            className="bg-gray-50 text-gray-800 w-40 text-center border border-gray-200"
                           ></TableHead>
                         ) : !isOpenState && isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
                             style={{ width: 1000 }}
-                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] text-center p-0"
+                            className="bg-gray-50 text-gray-800 text-center p-0"
                           >
                             <div className="grid grid-cols-1 w-full h-full">
                               {trends.subHeading
@@ -944,13 +957,11 @@ const TestPeriodicAnalytics = () => {
                                   <div
                                     key={cell.subColumnName}
                                     className={`flex items-center justify-center text-center
-                    border-x border-[var(--neutral-light-color)]
-                    font-${cell.fontWeight ?? "normal"} text-[var(${
-                                      cell.color
-                                    })] gap-2`}
+                    border-x border-gray-200
+                    font-${cell.fontWeight ?? "normal"} text-gray-800 gap-2`}
                                   >
                                     <p
-                                      className="text-center truncate max-w-[80px] relative group text-[var(--negative-color)] font-medium"
+                                      className="text-center truncate max-w-[80px] relative group text-red-600 font-medium"
                                       style={{
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
@@ -961,7 +972,7 @@ const TestPeriodicAnalytics = () => {
                                       {cell.subColumnName.toUpperCase()} {":"}
                                     </p>
 
-                                    <p className="text-[var(--negative-color)] font-medium">
+                                    <p className="text-red-600 font-medium">
                                       {tableData &&
                                         tableData.length > 0 &&
                                         safelyAccessTableData(
@@ -1023,7 +1034,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-background`}
+                                  className={`text-center font-semibold text-purple-700 flex items-center justify-center w-full sticky left-0 z-30 bg-white`}
                                 >
                                   {isEventeli ? (
                                     isHoliday ? (
@@ -1110,14 +1121,11 @@ const TestPeriodicAnalytics = () => {
                                     <TableCell
                                       key={subCol.slug}
                                       width={100}
-                                      className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]`}
-                                    >
-                                      <div
-                                        className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]
+                                      className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-gray-800
                                 ${
                                   subCol.slug === "avg" &&
                                   isSmartInsightEnabledForColumn
-                                    ? "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
+                                    ? "bg-red-50 text-pink-600"
                                     : ""
                                 }
                                 ${
@@ -1127,35 +1135,39 @@ const TestPeriodicAnalytics = () => {
                                   subCol.slug !== "value" &&
                                   cellData["maxRow"] ===
                                     cellData[subCol.slug as keyof EventTypeData]
-                                    ? cellData["thresholdHighlightRow"]
+                                    ? "bg-blue-50 text-blue-600"
                                     : ""
                                 }
                                 ${
                                   isSmartInsightEnabledForColumn &&
                                   subCol.slug === "value"
-                                    ? cellData["thresholdHighlightCol"]
+                                    ? "bg-green-50 text-green-600"
                                     : ""
                                 }
                                   ${
                                     isSmartInsightEnabledForColumn &&
                                     subCol.slug === "value" &&
                                     cellData["maxCol"] === cellData["value"]
-                                      ? "border-2 border-[var(--negative-color)]"
+                                      ? "border-2 border-red-500"
                                       : ""
                                   }`}
-                                      >
-                                        {
-                                          cellData[
-                                            subCol.slug as keyof EventTypeData
-                                          ]
-                                        }
-                                        {cellData["thresholdHighlightCol"] ===
-                                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                                    >
+                                      {
+                                        cellData[
+                                          subCol.slug as keyof EventTypeData
+                                        ]
+                                      }
+                                      {cellData["thresholdHighlightCol"] ===
+                                        "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
                                           subCol.slug === "value" && (
-                                            <ArrowUp width={15} height={15} />
+                                            <ArrowUpWide
+                                              width={15}
+                                              height={15}
+                                              color="currentColor"
+                                            />
                                           )}
-                                        {cellData["thresholdHighlightCol"] ===
-                                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                                      {cellData["thresholdHighlightCol"] ===
+                                        "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
                                           subCol.slug === "value" && (
                                             <ArrowDown
                                               width={15}
@@ -1163,7 +1175,6 @@ const TestPeriodicAnalytics = () => {
                                               color="#E1313A"
                                             />
                                           )}
-                                      </div>
                                     </TableCell>
                                   ))
                               ) : !isSmartInsightEnabledForColumn &&
@@ -1227,9 +1238,10 @@ const TestPeriodicAnalytics = () => {
                                             ] ===
                                               "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
                                               subCol.slug === "value" && (
-                                                <ArrowUp
+                                                <ArrowUpWide
                                                   width={15}
                                                   height={15}
+                                                  color="currentColor"
                                                 />
                                               )}
                                             {cellData[
@@ -1288,88 +1300,94 @@ const TestPeriodicAnalytics = () => {
                   })}
             </TableBody>
           </Table>
-          {totalPages > 1 && (
-            <div className={`mt-4 sticky bottom-0 bg-background py-4 ${isMobileView ? 'overflow-x-auto' : ''}`}>
-              <Pagination>
-                <PaginationContent className={`flex-wrap justify-center ${isMobileView ? 'text-sm gap-1' : ''}`}>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                  {isMobileView ? (
-                    <>
+        </div>
+        {totalPages > 1 && (
+          <div
+            className={`mt-4 sticky bottom-0 bg-background py-4 ${
+              isMobileView ? "overflow-x-auto" : ""
+            }`}
+          >
+            <Pagination>
+              <PaginationContent
+                className={`flex-wrap justify-center ${
+                  isMobileView ? "text-sm gap-1" : ""
+                }`}
+              >
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
+                </PaginationItem>
+                {isMobileView ? (
+                  <>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#"
+                        onClick={() => handlePageChange(1)}
+                        isActive={1 === currentPage}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    {currentPage > 3 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {currentPage > 1 && currentPage < totalPages && (
                       <PaginationItem>
                         <PaginationLink
                           href="#"
-                          onClick={() => handlePageChange(1)}
-                          isActive={1 === currentPage}
+                          onClick={() => handlePageChange(currentPage)}
+                          isActive={true}
                         >
-                          1
+                          {currentPage}
                         </PaginationLink>
                       </PaginationItem>
-                      {currentPage > 3 && (
-                        <PaginationItem>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      )}
-                      {currentPage > 1 && currentPage < totalPages && (
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#"
-                            onClick={() => handlePageChange(currentPage)}
-                            isActive={true}
-                          >
-                            {currentPage}
-                          </PaginationLink>
-                        </PaginationItem>
-                      )}
-                      {currentPage < totalPages - 2 && (
-                        <PaginationItem>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      )}
-                      {totalPages > 1 && (
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#"
-                            onClick={() => handlePageChange(totalPages)}
-                            isActive={totalPages === currentPage}
-                          >
-                            {totalPages}
-                          </PaginationLink>
-                        </PaginationItem>
-                      )}
-                    </>
-                  ) : (
-                    renderPaginationItems()
-                  )}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-        </div>
+                    )}
+                    {currentPage < totalPages - 2 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {totalPages > 1 && (
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(totalPages)}
+                          isActive={totalPages === currentPage}
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+                  </>
+                ) : (
+                  renderPaginationItems()
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </>
   );

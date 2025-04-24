@@ -52,11 +52,13 @@ import {
   LineChart,
   Lock,
   Save,
+  Share2,
   Table,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
+import { useToast } from "@/hooks/use-toast";
 
 const ViewTemplates = [
   {
@@ -83,6 +85,7 @@ const ViewTemplates = [
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getSavedTrends } = useTrendsService();
+  const { toast } = useToast();
   const {
     applyFilters,
     setLocalFilter,
@@ -190,15 +193,15 @@ const EventTrends = () => {
         setIsFiltersCollapsed(true);
       }
     };
-    
+
     // Set initial value
     handleResize();
-    
+
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -391,9 +394,19 @@ const EventTrends = () => {
     };
   }, [activeView, categories]);
 
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "URL Copied",
+      description: "Link copied to clipboard",
+      duration: 2000,
+    });
+  };
+
   return (
     <div
-      className={`${isMobileView ? 'relative' : 'flex h-[calc(100vh-60px)]'} ${
+      className={`${isMobileView ? "relative" : "flex h-[calc(100vh-60px)]"} ${
         !isMobileView && isFiltersCollapsed ? "pl-6" : "pl-0"
       }`}
     >
@@ -403,16 +416,16 @@ const EventTrends = () => {
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Filters</h2>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setIsFiltersCollapsed(true)}
                 className="text-muted-foreground"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            
+
             <ScrollArea className="h-[calc(100vh-200px)]">
               <div className="space-y-4">
                 <Tabs defaultValue="events" className="w-full">
@@ -448,9 +461,13 @@ const EventTrends = () => {
                       )}
                       {visibleFilters.location && <LocationSelector />}
                       {visibleFilters.dateRange && <DateRangeSelector />}
-                      {activeView === "treemap" && visibleFilters.categories && (
-                        <CategorySelector maxCategories={5} variant="accordion" />
-                      )}
+                      {activeView === "treemap" &&
+                        visibleFilters.categories && (
+                          <CategorySelector
+                            maxCategories={5}
+                            variant="accordion"
+                          />
+                        )}
                       {visibleFilters.metrics && <ColumnsSelector />}
                       {activeView === "treemap" && (
                         <ChartFilters
@@ -605,9 +622,13 @@ const EventTrends = () => {
                       )}
                       {visibleFilters.location && <LocationSelector />}
                       {visibleFilters.dateRange && <DateRangeSelector />}
-                      {activeView === "treemap" && visibleFilters.categories && (
-                        <CategorySelector maxCategories={5} variant="accordion" />
-                      )}
+                      {activeView === "treemap" &&
+                        visibleFilters.categories && (
+                          <CategorySelector
+                            maxCategories={5}
+                            variant="accordion"
+                          />
+                        )}
                       {visibleFilters.metrics && <ColumnsSelector />}
                       {activeView === "treemap" && (
                         <ChartFilters
@@ -689,8 +710,8 @@ const EventTrends = () => {
                           Category Required
                         </p>
                         <p className="text-xs text-destructive/80">
-                          Please select at least one category to view the treemap
-                          visualization
+                          Please select at least one category to view the
+                          treemap visualization
                         </p>
                       </div>
                     </div>
@@ -737,30 +758,45 @@ const EventTrends = () => {
 
       {/* Main Content */}
       <div
-        className={`${isMobileView ? 'w-full' : 'flex-1 overflow-auto'} ${isFiltersCollapsed && !isMobileView ? "pl-6" : ""}`}
+        className={`${isMobileView ? "w-full" : "flex-1 overflow-auto"} ${
+          isFiltersCollapsed && !isMobileView ? "pl-6" : ""
+        }`}
       >
         {/* Mobile Filter Button - Always visible at the top on mobile */}
         {isMobileView && (
-          <div className="sticky top-0 z-40 bg-background p-2 border-b mb-2">
+          <div className="sticky top-0 z-40 bg-background p-3 border-b mb-2">
             <Button
               variant="outline"
-              size="sm"
-              className="text-primary w-full flex items-center justify-center"
+              size="default"
+              className="w-full bg-muted/30 border border-border hover:bg-muted flex items-center justify-center h-10"
               onClick={() => setIsFiltersCollapsed(false)}
             >
-              <Filter className="w-4 h-4 mr-2" />
-              Open Filters {filterCount > 0 && `(${filterCount})`}
+              <Filter className="w-4 h-4 mr-2 text-primary" />
+              <span>Filter Results</span>
+              {filterCount > 0 && (
+                <span className="ml-2 bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5 font-medium">
+                  {filterCount}
+                </span>
+              )}
             </Button>
           </div>
         )}
-        
-        <div className={`${isMobileView ? 'px-2 py-2' : 'px-6 py-4'}`}>
+
+        <div className={`${isMobileView ? "px-2 py-2" : "px-6 py-4"}`}>
           <div className="mb-4">
-            <div className={`flex ${isMobileView ? 'flex-col gap-2' : 'items-center justify-between'} mb-4`}>
+            <div
+              className={`flex ${
+                isMobileView ? "flex-col gap-2" : "items-center justify-between"
+              } mb-4`}
+            >
               <h1 className="text-xl font-semibold">
                 {showTemplates ? "Trend Templates" : "Trend Explorations"}
               </h1>
-              <div className={`flex ${isMobileView ? 'flex-wrap justify-between' : ''} items-center gap-2`}>
+              <div
+                className={`flex ${
+                  isMobileView ? "flex-wrap justify-between" : ""
+                } items-center gap-2`}
+              >
                 {!showTemplates && (
                   <>
                     <Button
@@ -784,6 +820,24 @@ const EventTrends = () => {
                       <LayoutGrid className="w-4 h-4 mr-2" />
                       Browse Templates
                     </Button>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-primary"
+                            onClick={handleShare}
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy URL to clipboard</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </>
                 )}
               </div>
@@ -852,7 +906,11 @@ const EventTrends = () => {
               ))}
             </div>
           ) : (
-            <div className={`grid ${isMobileView ? 'grid-cols-1 gap-2' : 'grid-cols-3 gap-4'} mb-4`}>
+            <div
+              className={`grid ${
+                isMobileView ? "grid-cols-1 gap-2" : "grid-cols-3 gap-4"
+              } mb-4`}
+            >
               {ViewTemplates.map((template) => {
                 return (
                   <Card
@@ -899,21 +957,43 @@ const EventTrends = () => {
                 <div>
                   <>
                     {activeView === "line" && (
-                      <Card className="p-6 relative">
+                      <Card
+                        className={`${
+                          isMobileView ? "p-2 pb-4" : "p-6"
+                        } relative`}
+                      >
                         <div className="flex items-center justify-between mb-4">
-                          <h2 className={`text-lg font-medium ${isMobileView ? '' : 'absolute top-6 left-6'}`}>
+                          <h2
+                            className={`text-lg font-medium ${
+                              isMobileView
+                                ? "px-2 py-1"
+                                : "absolute top-6 left-6"
+                            }`}
+                          >
                             Trend Analysis
                           </h2>
                         </div>
-                        <div className={`${styles.predictedAttendence_container} overflow-x-auto`}>
+                        <div
+                          className={`${styles.predictedAttendence_container} ${
+                            isMobileView ? "h-[350px]" : ""
+                          } overflow-x-auto`}
+                        >
                           <LineChartComponent showLegend />
                         </div>
                       </Card>
                     )}
 
                     {activeView === "table" && (
-                      <Card className={`${isMobileView ? 'p-2' : 'p-6'}`}>
-                        <div className="overflow-x-auto">
+                      <Card
+                        className={`${
+                          isMobileView ? "p-0 overflow-hidden" : "p-6"
+                        }`}
+                      >
+                        <div
+                          className={`overflow-x-auto ${
+                            isMobileView ? "max-w-[100vw] pb-4" : ""
+                          }`}
+                        >
                           <TestPeriodicAnalytics />
                         </div>
                       </Card>
@@ -923,7 +1003,11 @@ const EventTrends = () => {
               )}
 
               {activeView === "treemap" && (
-                <Card className={`${isMobileView ? 'p-2 min-h-[400px]' : 'p-4 min-h-[600px]'}`}>
+                <Card
+                  className={`${
+                    isMobileView ? "p-2 min-h-[400px]" : "p-4 min-h-[600px]"
+                  }`}
+                >
                   <TreemapView hierarchyLevels={hierarchyLevels} />
                 </Card>
               )}
