@@ -55,7 +55,7 @@ export default function AutocompleteInput({
   setIsOpen,
   multiple = false,
   value,
-  setApplyHandlerCalled
+  setApplyHandlerCalled,
 }: AutocompleteInputProps) {
   const { getCoordinates } = useLocationService();
   const [open, setOpen] = useState(false);
@@ -156,23 +156,25 @@ export default function AutocompleteInput({
             {multiple && selectedLocations.length > 0 ? (
               selectedLocations.map((location) => (
                 <Badge key={location.id} variant="secondary">
-                  {location.description}
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleRemove(location);
-                      }
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onClick={() => handleRemove(location)}
-                  >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  <div className="flex items-center max-w-full">
+                    <span className="truncate max-w-[200px]">{location.description}</span>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="ml-1 flex-shrink-0 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRemove(location);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleRemove(location)}
+                    >
+                      <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    </div>
                   </div>
                 </Badge>
               ))
@@ -199,32 +201,42 @@ export default function AutocompleteInput({
                 <span className="ml-2">Searching...</span>
               </div>
             ) : isError ? (
-              "Error fetching locations."
+              <div className="text-center p-2">
+                No matching locations found.
+              </div>
+            ) : inputValue.trim() === "" ? (
+              <div className="text-center p-2">
+                Start typing to search for locations.
+              </div>
             ) : (
-              "No locations found."
+              <></>
             )}
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {predictions?.map((prediction: any) => {
-                const city = prediction.name;
-                const placeId = prediction.id;
-                const state = prediction.state?.name;
-                const country = prediction.country?.name;
-                return (
-                  <CommandItem
-                    key={placeId}
-                    onSelect={() => handleSelect(prediction)}
-                    className="flex flex-col items-start"
-                  >
-                    <span className="font-medium">{city}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {state && `${state}, `}
-                      {country}
-                    </span>
-                  </CommandItem>
-                );
-              })}
+              {predictions
+                ?.filter((prediction: any) => 
+                  !selectedLocations.some(location => location.id === prediction.id)
+                )
+                .map((prediction: any) => {
+                  const city = prediction.name;
+                  const placeId = prediction.id;
+                  const state = prediction.state?.name;
+                  const country = prediction.country?.name;
+                  return (
+                    <CommandItem
+                      key={placeId}
+                      onSelect={() => handleSelect(prediction)}
+                      className="flex flex-col items-start"
+                    >
+                      <span className="font-medium">{city}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {state && `${state}, `}
+                        {country}
+                      </span>
+                    </CommandItem>
+                  );
+                })}
             </CommandList>
           </CommandGroup>
         </Command>
