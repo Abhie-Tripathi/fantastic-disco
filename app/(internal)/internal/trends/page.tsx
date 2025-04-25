@@ -770,15 +770,26 @@ const EventTrends = () => {
             <Button
               variant="outline"
               size="default"
-              className="w-full bg-muted/30 border border-border hover:bg-muted flex items-center justify-center h-10"
+              className={`w-full flex items-center justify-between h-12 rounded-lg transition-all duration-200 ${
+                filterCount > 0 
+                  ? "bg-primary/5 border-primary/30 hover:bg-primary/10" 
+                  : "bg-muted/30 border-border hover:bg-muted"
+              }`}
               onClick={() => setIsFiltersCollapsed(false)}
             >
-              <Filter className="w-4 h-4 mr-2 text-primary" />
-              <span>Filter Results</span>
-              {filterCount > 0 && (
-                <span className="ml-2 bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5 font-medium">
-                  {filterCount}
+              <div className="flex items-center">
+                <Filter className={`w-4 h-4 mr-2 ${filterCount > 0 ? "text-primary" : "text-muted-foreground"}`} />
+                <span className={`font-medium ${filterCount > 0 ? "text-primary" : "text-foreground"}`}>
+                  {filterCount > 0 ? `${filterCount} Active Filter${filterCount > 1 ? 's' : ''}` : "Filter Results"}
                 </span>
+              </div>
+              {filterCount > 0 && (
+                <div className="flex items-center">
+                  <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1 font-medium">
+                    {filterCount}
+                  </span>
+                  <ChevronLeft className="w-4 h-4 ml-2 text-primary rotate-180" />
+                </div>
               )}
             </Button>
           </div>
@@ -796,7 +807,7 @@ const EventTrends = () => {
               </h1>
               <div
                 className={`flex ${
-                  isMobileView ? "flex-wrap justify-between" : ""
+                  isMobileView ? "justify-between" : ""
                 } items-center gap-2`}
               >
                 {!showTemplates && (
