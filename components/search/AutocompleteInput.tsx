@@ -205,6 +205,11 @@ export default function AutocompleteInput({
               </div>
             ) : isError ? (
               "Error fetching locations."
+            ) : inputValue.trim() === "" ? (
+              <div className="flex items-center justify-center p-4 text-muted-foreground">
+                <Search className="h-4 w-4 mr-2 opacity-50" />
+                <span>Type to search locations...</span>
+              </div>
             ) : (
               "No locations found."
             )}
