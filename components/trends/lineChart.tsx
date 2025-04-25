@@ -43,6 +43,8 @@ import {
   CartesianGrid,
   Legend,
   LegendProps,
+  Line,
+  LineChart,
   ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
@@ -74,9 +76,6 @@ const LineChartComponent = ({
 
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
-
-  const [dragging, setDragging] = useState(false);
-  const [linePosition, setLinePosition] = useState(300); // Initial Y position of the line
   const { searchParams } = useDefaultFilters();
 
   const { getEventTrends, getSavedTrends } = useTrendsService();
@@ -85,8 +84,6 @@ const LineChartComponent = ({
     setLocalFilter,
     getLocalFilterValue,
     setMultipleLocalFilters,
-    deleteMultipleLocalFilters,
-    localFilters,
   } = useFilterContext();
   const columns = searchParams.get("columns");
   const eventTypes = searchParams.get("eventTypes");
@@ -94,24 +91,11 @@ const LineChartComponent = ({
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
   const columnsData = (columns && columns.split(",")) || [];
-  const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
-    useState<boolean>(false);
-  const [smartInsightState, setSmartInsightState] = useState<{
-    [key: string]: boolean;
-  }>(
-    columnsData.length > 0
-      ? columnsData.reduce((acc, key) => {
-          acc[key] = false;
-          return acc;
-        }, {} as { [key: string]: boolean })
-      : {}
-  );
   const [eventTrendsData, setEventTrendsData] = useState<
     EventTrendsResponse | undefined
   >();
   const [predictedData, setPredictedData] = useState<any>();
-  const [tableData, setTableData] = useState<TableData[] | []>();
-  const [tableColumns, setTableColumns] = useState<NewColumn[]>();
+
   const { getEventsWithSearchParams } = useEventsService();
   const { getFilterValue } = useFilterState();
   const metric = getFilterValue("columns") as
@@ -119,20 +103,7 @@ const LineChartComponent = ({
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
-  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
-    ? (getFilterValue("view") as "line" | "treemap" | "table")
-    : "treemap";
-  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
-    { id: "location", label: "Location", value: "location" },
-    { id: "category", label: "Category", value: "category" },
-  ]);
-  const [showTemplates, setShowTemplates] = useState(false);
-  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
-    null
-  );
-  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
-  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
+
   const categories = getLocalFilterValue("categories");
   type FilterKey =
     | "location"
@@ -140,16 +111,6 @@ const LineChartComponent = ({
     | "dateRange"
     | "categories"
     | "metrics";
-
-  const [visibleFilters, setVisibleFilters] = useState<
-    Record<FilterKey, boolean>
-  >({
-    location: true,
-    eventTypes: true,
-    dateRange: true,
-    categories: true,
-    metrics: true,
-  });
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -164,6 +125,24 @@ const LineChartComponent = ({
     params.delete("categories");
     return params.toString();
   }, [stringParams]);
+
+  const previousYearParams = useMemo(() => {
+    const currentParams = new URLSearchParams(apiParams);
+    const activeGte = currentParams.get('active_gte');
+    const activeLte = currentParams.get('active_lte');
+    
+    if (activeGte && activeLte) {
+      const prevYearGte = new Date(activeGte);
+      const prevYearLte = new Date(activeLte);
+      prevYearGte.setFullYear(prevYearGte.getFullYear() - 1);
+      prevYearLte.setFullYear(prevYearLte.getFullYear() - 1);
+      
+      currentParams.set('active_gte', prevYearGte.toISOString().split('T')[0]);
+      currentParams.set('active_lte', prevYearLte.toISOString().split('T')[0]);
+    }
+    
+    return currentParams.toString();
+  }, [apiParams]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -180,6 +159,19 @@ const LineChartComponent = ({
     queryKey: ["trends", apiParams.toString()],
     queryFn: () => getEventTrends(apiParams.toString()),
     enabled: !!apiParams.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const {
+    data: previousYearData,
+    error: previousYearError,
+    isLoading: previousYearLoading,
+  } = useQuery<EventTrendsResponse | undefined>({
+    queryKey: ["trends-previous-year", previousYearParams],
+    queryFn: () => getEventTrends(previousYearParams),
+    enabled: !!previousYearParams,
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -206,68 +198,11 @@ const LineChartComponent = ({
     return acc;
   }, {});
 
-  const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  }, [localFilters]);
-
-  const holidaysByDate =
-    (groupedData &&
-      Object.values(groupedData).length > 0 &&
-      Object.values(groupedData)) ||
-    [];
-
   useEffect(() => {
     if (trendsData !== undefined) {
       setEventTrendsData(trendsData);
     }
   }, [trendsData]);
-
-  useEffect(() => {
-    const skip = searchParams.get("skip");
-
-    if (!skip) {
-      setIsSmartInsightsEnabled(false);
-
-      setSmartInsightState((prev) => {
-        const updatedState = columnsData.reduce((acc, key) => {
-          acc[key] = false;
-          return acc;
-        }, {} as { [key: string]: boolean });
-
-        return updatedState;
-      });
-    }
-  }, [trendsData, searchParams]);
-
-  useEffect(() => {
-    if (Object.keys(smartInsightState).length > 0) {
-      const allFalse = Object.values(smartInsightState).every(
-        (value) => value === false
-      );
-      const allTrue = Object.values(smartInsightState).every(
-        (value) => value === true
-      );
-      if (allFalse) {
-        setIsSmartInsightsEnabled(false);
-      }
-      if (allTrue) {
-        setIsSmartInsightsEnabled(true);
-      }
-    }
-  }, [smartInsightState]);
-
-  useEffect(() => {
-    setSmartInsightState((prevState) => {
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = isSmartInsightsEnabled;
-        return acc;
-      }, {} as { [key: string]: boolean });
-      return newState;
-    });
-  }, [isSmartInsightsEnabled]);
 
   useEffect(() => {
     const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
@@ -279,154 +214,39 @@ const LineChartComponent = ({
       );
 
       const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+      const previousYearGraphData = previousYearData ? 
+        morphToGraphData(previousYearData.groupedData, metric)
+          .map(item => ({
+            ...item,
+            previousYearTotal: item.total,
+            total: undefined
+          })) : [];
 
-      const tableData = morphToTrendsTableData(
-        eventTrendsData.thresholds,
-        eventTrendsData.groupedData,
-        eventTypes
-      );
+      // Combine current and previous year data
+      const combinedData = graphData.map(currentItem => {
+        const currentDate = new Date(currentItem.date);
+        const previousYearDate = new Date(currentItem.date);
+        previousYearDate.setFullYear(previousYearDate.getFullYear() - 1);
+        
+        const previousYearItem = previousYearGraphData.find(
+          prevItem => new Date(prevItem.date).getTime() === previousYearDate.getTime()
+        );
 
-      const smartInsightsData = morphToSmartInsightsData(tableData);
+        return {
+          ...currentItem,
+          previousYearTotal: previousYearItem?.previousYearTotal
+        };
+      });
 
-      setPredictedData(graphData);
-      setTableData(smartInsightsData);
-      setTableColumns(tableColumns);
+      setPredictedData(combinedData);
     }
-  }, [eventTrendsData, metric]);
+  }, [eventTrendsData, previousYearData, metric]);
 
   useEffect(() => {
     if (trendsData === undefined) {
       setPredictedData(undefined);
     }
   }, [trendsData]);
-
-  const handleViewChange = (view: "line" | "treemap" | "table") => {
-    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
-      return; // Don't change view if not supported by template
-    }
-    if (view === "treemap") {
-      if (categories.length === 0) {
-        const defaultCategories = "technology,medical-pharma";
-        setMultipleLocalFilters({ categories: defaultCategories, view: view });
-      }
-      setMultipleLocalFilters({ columns: "eventCount", view: view });
-    }
-    setLocalFilter("view", view);
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateSelect = (template: TemplateType) => {
-    // Set visualization type - use first available visualization
-    const defaultView = template.visualization[0] as
-      | "line"
-      | "treemap"
-      | "table";
-    handleViewChange(defaultView);
-
-    // Update visible filters - ensure all properties are set
-    const newVisibleFilters: Record<FilterKey, boolean> = {
-      location: template.visibleFilters.location ?? true,
-      eventTypes: template.visibleFilters.eventTypes ?? true,
-      dateRange: template.visibleFilters.dateRange ?? true,
-      categories: template.visibleFilters.categories ?? true,
-      metrics: template.visibleFilters.metrics ?? true,
-    };
-    setVisibleFilters(newVisibleFilters);
-
-    // Set hierarchy levels if provided in template
-    if (template.hierarchy) {
-      setHierarchyLevels(template.hierarchy);
-    } else {
-      // Set default hierarchy levels
-      setHierarchyLevels([
-        { id: "location", label: "Location", value: "location" },
-        { id: "category", label: "Category", value: "category" },
-      ]);
-    }
-
-    // Set active template and update history
-    setActiveTemplate(template);
-    setTemplateHistory((prev) => {
-      const filtered = prev.filter((t) => t.id !== template.id);
-      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
-    });
-    setHasModifiedFilters(false);
-
-    // Close modal and templates view
-    setShowTemplatesModal(false);
-    setShowTemplates(false);
-
-    // Apply filters
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateRemove = () => {
-    setActiveTemplate(null);
-    // Reset visible filters to show all
-    const defaultFilters: Record<FilterKey, boolean> = {
-      location: true,
-      eventTypes: true,
-      dateRange: true,
-      categories: true,
-      metrics: true,
-    };
-    setVisibleFilters(defaultFilters);
-    applyFilters({ resetPage: true });
-    setHasModifiedFilters(false);
-  };
-
-  // Track filter changes
-  useEffect(() => {
-    if (!activeTemplate) return;
-
-    // Track filter changes by comparing current filter values with template's visible filters
-    const hasChanged = Object.entries(visibleFilters).some(
-      ([key, isVisible]) => {
-        if (!isVisible) return false;
-        // Only check filters that are visible
-        const filterKey = key as keyof typeof visibleFilters;
-        if (!activeTemplate.visibleFilters[filterKey]) return false;
-
-        // Check if the filter has a value
-        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
-        return currentValue && currentValue.length > 0;
-      }
-    );
-
-    setHasModifiedFilters(hasChanged);
-  }, [localFilters, activeTemplate, visibleFilters]);
-
-  // Handle drag start
-  const handleDragStart = (e: any) => {
-    setDragging(true);
-  };
-
-  // Handle drag move
-  const handleDrag = (e: any) => {
-    if (dragging) {
-      const chartHeight = e.currentTarget.getBoundingClientRect().height;
-      const mouseY = e.clientY - e.currentTarget.getBoundingClientRect().top;
-
-      // Calculate the new value based on the chart height
-      const newValue = Math.max(
-        0,
-        Math.min((1 - mouseY / chartHeight) * 500, 500)
-      ); // Adjust min/max values as per your data
-      setLinePosition(newValue);
-    }
-  };
-
-  // Handle drag end
-  const handleDragEnd = () => {
-    setDragging(false);
-  };
-
-  // const tickFormatter = (value: any) => {
-  //   if (value >= 1000) {
-  //     return Math.round(value / 1000) + "k";
-  //   }
-  //   return String(Math.round(value));
-  // };
 
   const tickFormatter = (value: any) => {
     if (value >= 1e9) {
@@ -657,7 +477,7 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
-  const { data: eventData, refetch } = useQuery({
+  const { data: eventData } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
@@ -772,7 +592,7 @@ const LineChartComponent = ({
       return null;
     }
     const showEventTypesValueByMetric = [];
-    const { date, total, social, business } = payload && payload[0].payload;
+    const { date, total, previousYearTotal, social, business } = payload && payload[0].payload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
     const hasSocial = eventTypes
@@ -823,11 +643,22 @@ const LineChartComponent = ({
             </div>
           )}
         <div className="px-4 py-2 border-b">
-          <p className="font-semibold text-[var(--primary-color)]">{total}</p>
-          <Text size="normal" color="secondary" fontWeight="regular">
-            {columnsDropdown.find((column) => column.value === metric)?.label ??
-              ""}
-          </Text>
+          <div className="flex flex-col gap-2">
+            <div>
+              <p className="font-semibold text-[#6750a4]">{total}</p>
+              <Text size="normal" color="secondary" fontWeight="regular">
+                Current Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
+              </Text>
+            </div>
+            {previousYearTotal && (
+              <div>
+                <p className="font-semibold text-[#FF990A]">{previousYearTotal}</p>
+                <Text size="normal" color="secondary" fontWeight="regular">
+                  Previous Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
+                </Text>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
           {showEventTypesValueByMetric.map((eventTypesValues) => (
@@ -964,7 +795,7 @@ const LineChartComponent = ({
   return (
     <div ref={chartRef}>
       <ResponsiveContainer width="100%" height={420}>
-        <AreaChart
+        <LineChart
           data={graphData}
           margin={{
             left: 10,
@@ -1033,87 +864,73 @@ const LineChartComponent = ({
             />
           )}
           {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={thresholdArea[0]}
-              stroke="#398E4A"
-              strokeDasharray="12 12"
-              label={{
-                position: "insideBottomRight",
-                className: "text-[#398E4A]",
-                // value: "UPPER THRESHOLD",
-                style: {
-                  fill: "#398E4A",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: -8,
-              }}
-            />
+            <>
+              <ReferenceLine
+                y={thresholdArea[0]}
+                stroke="#398E4A"
+                strokeDasharray="12 12"
+                label={{
+                  position: "insideBottomRight",
+                  className: "text-[#398E4A]",
+                  style: {
+                    fill: "#398E4A",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: -8,
+                }}
+              />
+              <ReferenceLine
+                y={threshold}
+                stroke="#DF2670"
+                label={{
+                  position: "insideTopRight",
+                  className: "text-[#DF2670]",
+                  style: {
+                    fill: "#DF2670",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: 0,
+                }}
+              />
+              <ReferenceLine
+                y={thresholdArea[1]}
+                stroke="#FF990A"
+                strokeDasharray="12 12"
+                label={{
+                  position: "insideTopRight",
+                  className: "text-[#FF990A]",
+                  style: {
+                    fill: "#FF990A",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: 8,
+                }}
+              />
+            </>
           )}
-
-          {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={threshold}
-              stroke="#DF2670"
-              label={{
-                position: "insideTopRight",
-                className: "text-[#DF2670]",
-                // value: "AVERAGE",
-                style: {
-                  fill: "#DF2670",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: 0,
-              }}
-            />
-          )}
-          {/* <svg
-            x="800" // Adjust X position
-            y={400 - linePosition - 1} // Adjust Y position based on line
-            onMouseDown={handleDragStart}
-            onMouseMove={handleDrag}
-            onMouseUp={handleDragEnd}
-          >
-            <circle
-              cx="10"
-              cy="10"
-              r="8"
-              fill="steelblue"
-              stroke="white"
-              strokeWidth="2"
-              cursor="pointer"
-              z={200}
-            />
-          </svg> */}
-          {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={thresholdArea[1]}
-              stroke="#FF990A"
-              strokeDasharray="12 12"
-              label={{
-                position: "insideTopRight",
-                className: "text-[#FF990A]",
-                // value: "LOWER THRESHOLD",
-                style: {
-                  fill: "#FF990A",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: 8,
-              }}
-            />
-          )}
-          <Area
+          <Line
             type="linear"
             dataKey="total"
+            name="Current Year"
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
-            fillOpacity={0.2}
             connectNulls={true}
-            fill="#8884d8"
             dot={<CustomDot />}
+          />
+          <Line
+            type="linear"
+            dataKey="previousYearTotal"
+            name="Previous Year"
+            stroke="#FF990A"
+            strokeWidth={2}
+            strokeOpacity={1}
+            connectNulls={true}
+            strokeDasharray="5 5"
+            dot={false}
           />
           {showLegend && (
             <Legend
@@ -1121,29 +938,42 @@ const LineChartComponent = ({
               payload={
                 [
                   {
-                    value: "Upper Threshold",
-                    type: "circle",
-                    id: "upper_threshold",
-                    color: "#398E4A",
-                    tooltipDescription:
-                      "Represents the maximum boundary relative to the average value for this trend.",
+                    value: "Current Year",
+                    type: "line",
+                    id: "current_year",
+                    color: "#6750a4",
+                    tooltipDescription: "Data for the current selected period",
                   },
                   {
-                    value: "Average",
-                    type: "circle",
-                    id: "average",
-                    color: "#DF2670",
-                    tooltipDescription:
-                      "The unique average value for the trend based on the selected location.",
-                  },
-                  {
-                    value: "Lower Threshold",
-                    type: "circle",
-                    id: "lower_threshold",
+                    value: "Previous Year",
+                    type: "line",
+                    id: "previous_year",
                     color: "#FF990A",
-                    tooltipDescription:
-                      "Represents the minimum boundary relative to the average value for this trend.",
+                    tooltipDescription: "Data for the same period in the previous year",
                   },
+                  ...(showThresholdLines ? [
+                    {
+                      value: "Upper Threshold",
+                      type: "circle",
+                      id: "upper_threshold",
+                      color: "#398E4A",
+                      tooltipDescription: "Represents the maximum boundary relative to the average value for this trend.",
+                    },
+                    {
+                      value: "Average",
+                      type: "circle",
+                      id: "average",
+                      color: "#DF2670",
+                      tooltipDescription: "The unique average value for the trend based on the selected location.",
+                    },
+                    {
+                      value: "Lower Threshold",
+                      type: "circle",
+                      id: "lower_threshold",
+                      color: "#FF990A",
+                      tooltipDescription: "Represents the minimum boundary relative to the average value for this trend.",
+                    }
+                  ] : []) 
                 ] as CustomPayload
               }
               wrapperStyle={{
@@ -1155,7 +985,7 @@ const LineChartComponent = ({
               }}
             />
           )}
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
