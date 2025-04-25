@@ -99,8 +99,9 @@ export default function AutocompleteInput({
         if (
           selectedLocations.some((location) => location.id === newLocation.id)
         ) {
-          updatedLocations = [newLocation];
-        } else updatedLocations = [...selectedLocations, newLocation];
+          return;
+        }
+        updatedLocations = [...selectedLocations, newLocation];
         setSelectedLocations(updatedLocations);
         setInputValue("");
         onSelect(updatedLocations);
@@ -215,9 +216,6 @@ export default function AutocompleteInput({
           <CommandGroup>
             <CommandList>
               {predictions
-                ?.filter((prediction: any) => 
-                  !selectedLocations.some(location => location.id === prediction.id)
-                )
                 .map((prediction: any) => {
                   const city = prediction.name;
                   const placeId = prediction.id;
