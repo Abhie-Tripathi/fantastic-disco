@@ -30,6 +30,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import { PaginationComponent } from "../pagination";
 
 const EventCard = memo(
   ({
@@ -86,12 +87,12 @@ const EventCard = memo(
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
           <CardContent className="p-3">
             <div className="flex items-start gap-3">
-            {event.basic.logoUrl ? (
+              {event.basic.logoUrl ? (
                 <img
-                    src={event.basic.logoUrl}
-                    alt={`${event.basic.name} logo`}
-                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
-                  />
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
               ) : event.basic.website ? (
                 <div className="w-12 h-12 relative">
                   <img
@@ -300,7 +301,7 @@ function EventList({
   onEventLeave,
   searchParam,
 }: {
-  eventType?:string;
+  eventType?: string;
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
@@ -333,18 +334,19 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius = Math.max(
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([ne.lng, center.lat]),  // East point
-          { units: "kilometers" }
-        ),
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([center.lng, ne.lat]),  // North point
-          { units: "kilometers" }
-        )
-      ) * Math.sqrt(2);
+      const radius =
+        Math.max(
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([ne.lng, center.lat]), // East point
+            { units: "kilometers" }
+          ),
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([center.lng, ne.lat]), // North point
+            { units: "kilometers" }
+          )
+        ) * Math.sqrt(2);
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);
@@ -385,7 +387,8 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      if (params.get("locationIds")) params.set("viewBound", JSON.stringify(viewBound));
+      if (params.get("locationIds"))
+        params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 
@@ -393,7 +396,13 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryKey: [
+      "events",
+      filteredParams.toString(),
+      currentPage,
+      sortBy,
+      eventType,
+    ],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
@@ -405,7 +414,7 @@ function EventList({
           )
         : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -521,12 +530,17 @@ function EventList({
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <p className="text-lg font-semibold text-destructive">
+            {error && (
+              <p className="text-sm font-semibold text-destructive px-2">
+                {error.message}
+              </p>
+            )}
+            {/* <p className="text-lg font-semibold text-destructive">
               Failed to load events
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Please try again later
-            </p>
+            </p> */}
           </div>
         </div>
       );
@@ -593,6 +607,17 @@ function EventList({
             );
           })}
           {events.length > 0 && (
+            <PaginationComponent
+              showEntriesCount={false}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={20}
+              count={10}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={() => {}}
+            />
+          )}
+          {/* {events.length > 0 && (
             <Pagination>
               <PaginationContent className="flex-wrap">
                 <PaginationItem>
@@ -622,7 +647,7 @@ function EventList({
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          )}
+          )} */}
         </ScrollArea>
       </>
     );
