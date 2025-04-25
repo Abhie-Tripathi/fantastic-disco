@@ -87,6 +87,7 @@ const LineChartComponent = ({
   } = useFilterContext();
   const columns = searchParams.get("columns");
   const eventTypes = searchParams.get("eventTypes");
+  const compare = searchParams.get("compare")
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
@@ -219,7 +220,11 @@ const LineChartComponent = ({
           .map(item => ({
             ...item,
             previousYearTotal: item.total,
-            total: undefined
+            previousYearSocial: item.social,
+            previousYearBusiness: item.business,
+            total: undefined,
+            social: undefined,
+            business: undefined
           })) : [];
 
       // Combine current and previous year data
@@ -234,7 +239,9 @@ const LineChartComponent = ({
 
         return {
           ...currentItem,
-          previousYearTotal: previousYearItem?.previousYearTotal
+          previousYearTotal: previousYearItem?.previousYearTotal,
+          previousYearSocial: previousYearItem?.previousYearSocial,
+          previousYearBusiness: previousYearItem?.previousYearBusiness
         };
       });
 
@@ -454,11 +461,40 @@ const LineChartComponent = ({
     return searchEventParams.toString();
   };
 
+  const generatePreviousYearParams = (date: string): string => {
+    const prevYearDate = new Date(date);
+    prevYearDate.setFullYear(prevYearDate.getFullYear() - 1);
+    const searchEventParams = new URLSearchParams({
+      status: "active,cancelled,postponed",
+      sortBy: "-visitors",
+      active_gte: format(prevYearDate, "yyyy-MM-dd"),
+      active_lte: format(prevYearDate, "yyyy-MM-dd"),
+    });
+
+    const locationIds = searchParams.get("locationIds");
+    const geoCoordinates = searchParams.get("viewBound");
+    
+    if (locationIds) {
+      searchEventParams.set("locationIds", locationIds);
+    }
+    if (geoCoordinates) {
+      searchEventParams.set("geoCoordinates", geoCoordinates);
+    }
+    if (eventTypes && eventTypes.length > 0) {
+      searchEventParams.set("eventTypes", eventTypes);
+    }
+    return searchEventParams.toString();
+  };
+
+  const [previousYearLink, setPreviousYearLink] = useState("");
+
   const handleChartClick = (e: CategoricalChartState) => {
     if (e.activeLabel) {
       const utcDate = new Date(e.activeLabel).toISOString();
       const link = setRedirectionLinkOnDate(utcDate);
+      const prevYearLink = generatePreviousYearParams(e.activeLabel);
       setLink(link);
+      setPreviousYearLink(prevYearLink);
       if (e.activePayload && e.activePayload.length > 0) {
         const { payload } = e.activePayload[0];
         setTooltipData(payload);
@@ -481,6 +517,15 @@ const LineChartComponent = ({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const { data: previousYearEventData } = useQuery({
+    queryKey: ["previous-year-events", previousYearLink],
+    queryFn: () => eventService.getEventsWithSearchParams(previousYearLink),
+    enabled: !!previousYearLink,
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -585,16 +630,23 @@ const LineChartComponent = ({
     payload,
     label,
   }: TooltipProps<number, string>) => {
-    if (payload && payload.length === 0) {
-      return;
-    }
-    if (!isTooltipVisible) {
+    if (!payload || !Array.isArray(payload) || payload.length === 0 || !isTooltipVisible) {
       return null;
     }
-    const showEventTypesValueByMetric = [];
-    const { date, total, previousYearTotal, social, business } = payload && payload[0].payload;
+
+    const tooltipPayload = payload[0]?.payload;
+    if (!tooltipPayload) {
+      return null;
+    }
+
+    const { date, total, previousYearTotal } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+
+    // Get previous year date for comparison
+    const prevYearDate = new Date(date);
+    prevYearDate.setFullYear(prevYearDate.getFullYear() - 1);
+
     const hasSocial = eventTypes
       ?.split(",")
       .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
@@ -602,25 +654,45 @@ const LineChartComponent = ({
       ?.split(",")
       .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
 
-    if (hasSocial) {
-      showEventTypesValueByMetric.push({
+    // Current year event types
+    const currentYearEventTypes = [];
+    if (hasSocial && tooltipPayload.social !== undefined) {
+      currentYearEventTypes.push({
         text: "Social",
         bg: "--social-color",
-        value: social,
+        value: tooltipPayload.social,
       });
     }
-    if (hasBusiness) {
-      showEventTypesValueByMetric.push({
+    if (hasBusiness && tooltipPayload.business !== undefined) {
+      currentYearEventTypes.push({
         text: "Business",
         bg: "--business-color",
-        value: business,
+        value: tooltipPayload.business,
+      });
+    }
+
+    // Previous year event types
+    const previousYearEventTypes = [];
+    if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
+      previousYearEventTypes.push({
+        text: "Social",
+        bg: "--social-color",
+        value: tooltipPayload.previousYearSocial,
+      });
+    }
+    if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
+      previousYearEventTypes.push({
+        text: "Business",
+        bg: "--business-color",
+        value: tooltipPayload.previousYearBusiness,
       });
     }
 
     return (
-      <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
-        <div className="px-4 py-2 flex text-lg font-medium border-b">
-          {format(date, "d MMM yyyy")}
+      <div className="border-none shadow-lg bg-[#ffffff] w-[600px] z-10">
+        <div className="px-4 py-2 flex text-lg font-medium border-b justify-between">
+          <span>{format(date, "d MMM yyyy")}</span>
+          <span>{format(prevYearDate, "d MMM yyyy")}</span>
         </div>
         {isEventeli &&
           matchingHoliday &&
@@ -642,83 +714,158 @@ const LineChartComponent = ({
               </ul>
             </div>
           )}
-        <div className="px-4 py-2 border-b">
-          <div className="flex flex-col gap-2">
-            <div>
-              <p className="font-semibold text-[#6750a4]">{total}</p>
-              <Text size="normal" color="secondary" fontWeight="regular">
-                Current Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
-              </Text>
-            </div>
-            {previousYearTotal && (
-              <div>
-                <p className="font-semibold text-[#FF990A]">{previousYearTotal}</p>
-                <Text size="normal" color="secondary" fontWeight="regular">
-                  Previous Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
-                </Text>
+        <div className="grid grid-cols-2">
+          {/* Current Year Section */}
+          <div className="border-r">
+            <div className="px-4 py-2 border-b">
+              <div className="flex flex-col gap-2">
+                <div>
+                  <p className="font-semibold text-[#6750a4]">{total}</p>
+                  <Text size="normal" color="secondary" fontWeight="regular">
+                    Current Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
+                  </Text>
+                </div>
               </div>
-            )}
+            </div>
+            <div className="flex flex-col px-4 py-2 gap-2 border-b">
+              {currentYearEventTypes.map((eventTypesValues) => (
+                <div key={eventTypesValues.text} className="flex justify-between">
+                  <div className="flex gap-2">
+                    <div
+                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                    ></div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.text} Events
+                    </p>
+                  </div>
+                  <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
+                    {eventTypesValues.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-2">
+              <p className="text-sm font-medium">TOP EVENTS</p>
+              <ul className="flex flex-col gap-2 mt-4">
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                ) : eventData && (eventData as any).events.length > 0 ? (
+                  (eventData as any).events
+                    .slice(0, 4)
+                    .map((event: any, index: number) => {
+                      const { basic } = event || {};
+                      const { name, id } = basic || {};
+                      return (
+                        <li key={id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <span className="text-[12px] font-semibold">
+                              {index + 1}.
+                            </span>
+                          </div>
+                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                            {name}
+                          </p>
+                        </li>
+                      );
+                    })
+                ) : (
+                  <p className="text-[#666666] text-sm flex items-center gap-2">
+                    <Image src={Disable} alt="Disable" width={15} height={15} />
+                    No events found.
+                  </p>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Previous Year Section */}
+          <div>
+            <div className="px-4 py-2 border-b">
+              <div className="flex flex-col gap-2">
+                <div>
+                  <p className="font-semibold text-[#FF990A]">{previousYearTotal}</p>
+                  <Text size="normal" color="secondary" fontWeight="regular">
+                    Previous Year {columnsDropdown.find((column) => column.value === metric)?.label ?? ""}
+                  </Text>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col px-4 py-2 gap-2 border-b">
+              {previousYearEventTypes.map((eventTypesValues) => (
+                <div key={eventTypesValues.text} className="flex justify-between">
+                  <div className="flex gap-2">
+                    <div
+                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                    ></div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.text} Events
+                    </p>
+                  </div>
+                  <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
+                    {eventTypesValues.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-2">
+              <p className="text-sm font-medium">TOP EVENTS (Previous Year)</p>
+              <ul className="flex flex-col gap-2 mt-4">
+                {previousYearEventData && (previousYearEventData as any).events.length > 0 ? (
+                  (previousYearEventData as any).events
+                    .slice(0, 4)
+                    .map((event: any, index: number) => {
+                      const { basic } = event || {};
+                      const { name, id } = basic || {};
+                      return (
+                        <li key={id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <span className="text-[12px] font-semibold">
+                              {index + 1}.
+                            </span>
+                          </div>
+                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                            {name}
+                          </p>
+                        </li>
+                      );
+                    })
+                ) : (
+                  <p className="text-[#666666] text-sm flex items-center gap-2">
+                    <Image src={Disable} alt="Disable" width={15} height={15} />
+                    No historical events found
+                  </p>
+                )}
+              </ul>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col px-4 py-2 gap-2 border-b">
-          {showEventTypesValueByMetric.map((eventTypesValues) => (
-            <div key={eventTypesValues.text} className="flex justify-between">
-              <div className="flex gap-2">
-                <div
-                  className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
-                ></div>
-                <p
-                  className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                >
-                  {eventTypesValues.text} Events
-                </p>
-              </div>
-              <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
-                {eventTypesValues.value}
-              </p>
+        <div className="grid grid-cols-2">
+          <Link
+            href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
+            className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer border-r"
+          >
+            VIEW ALL CURRENT EVENTS
+            <ArrowUpRight height={18} width={18} stroke="#6750a4" />
+          </Link>
+          {previousYearEventData && (previousYearEventData as any).events.length > 0 ? (
+            <Link
+              href={`/internal/search/events?${previousYearLink}`}
+              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#FF990A] cursor-pointer"
+            >
+              VIEW ALL PREVIOUS YEAR EVENTS
+              <ArrowUpRight height={18} width={18} stroke="#FF990A" />
+            </Link>
+          ) : (
+            <div className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#FF990A]">
+              NO PREVIOUS YEAR DATA
+              <ArrowUpRight height={18} width={18} stroke="#FF990A" />
             </div>
-          ))}
+          )}
         </div>
-        <div className="px-4 py-2">
-          <p className="text-sm font-medium">TOP EVENTS</p>
-          <ul className="flex flex-col gap-2 mt-4">
-            {isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
-            ) : eventData && (eventData as any).events.length > 0 ? (
-              (eventData as any).events
-                .slice(0, 4)
-                .map((event: any, index: number) => {
-                  const { basic } = event || {};
-                  const { name, id } = basic || {};
-                  return (
-                    <li key={id} className="flex gap-4">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[12px] font-semibold">
-                          {index + 1}.
-                        </span>
-                      </div>
-                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                        {name}
-                      </p>
-                    </li>
-                  );
-                })
-            ) : (
-              <p className="text-[#666666] text-sm flex items-center gap-2">
-                <Image src={Disable} alt="Disable" width={15} height={15} />
-                No events found. Try expanding your preferences by selecting
-                more categories, products, or topics.
-              </p>
-            )}
-          </ul>
-        </div>
-        <Link
-          href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
-          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
-        >
-          VIEW ALL
-          <ArrowUpRight height={18} width={18} stroke="#6750a4" />
-        </Link>
       </div>
     );
   };
@@ -929,7 +1076,7 @@ const LineChartComponent = ({
             strokeWidth={2}
             strokeOpacity={1}
             connectNulls={true}
-            strokeDasharray="5 5"
+            // strokeDasharray="5 5"
             dot={false}
           />
           {showLegend && (

@@ -64,67 +64,70 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
           <span className="font-medium">Dates</span>
         </div>
       )}
-      <div className="flex space-x-4 rounded-md p-4">
-        <ScrollArea className="h-[300px] w-[150px]">
-          <div className="space-y-2 flex flex-col justify-between pr-4">
-            {filterPresets.map((preset) => (
-              <Button
-                key={preset.value}
-                onClick={() => handlePresetChange(preset.value)}
-                variant="outline"
-                className={cn(
-                  "w-full font-normal",
-                  selectedPreset === preset.value && "bg-[#F2F2F2]"
-                )}
-              >
-                {preset.label}
-              </Button>
-            ))}
-          </div>
-        </ScrollArea>
-        <div className="border-l" />
-        <div>
-          <Calendar
-            mode="range"
-            selected={dateRange}
-            onSelect={(range, selectedDay) => handleDateSelect(selectedDay)}
-            month={calendarDate}
-            onMonthChange={setCalendarDate}
-            numberOfMonths={1}
-          />
-        </div>
-      </div>
-      {enableCompareOptions && (
-        <div className="space-y-4 p-4 py-2 pt-0">
-          <div className="flex items-center space-x-2">
-            <h3 className="text-sm font-medium">Compare with Past data</h3>
-            <Switch
-              checked={compareEnabled}
-              onCheckedChange={setCompareEnabled}
-            />
-            {/* <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
-              Coming Soon
-            </span> */}
-          </div>
-          {compareEnabled && (
-            <div className="space-y-2 flex flex-col">
-              {comparisonOptions.map((option) => (
+      <ScrollArea className={cn("max-h-[400px]", compareEnabled && "h-[400px]")}>
+        <div className="flex space-x-4 rounded-md p-4">
+          <ScrollArea className="h-[300px] w-[150px]">
+            <div className="space-y-2 flex flex-col justify-between pr-4">
+              {filterPresets.map((preset) => (
                 <Button
-                  key={option.id}
-                  onClick={() => setFilter("compare", option.id)}
-                  variant="ghost"
+                  key={preset.value}
+                  onClick={() => handlePresetChange(preset.value)}
+                  variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal",
-                    selectedComparison === option.id && "bg-[#F2F2F2]"
+                    "w-full font-normal",
+                    selectedPreset === preset.value && "bg-[#F2F2F2]"
                   )}
                 >
-                  {option.label}
+                  {preset.label}
                 </Button>
               ))}
             </div>
-          )}
+          </ScrollArea>
+          <div className="border-l" />
+          <div>
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={(range, selectedDay) => handleDateSelect(selectedDay)}
+              month={calendarDate}
+              onMonthChange={setCalendarDate}
+              numberOfMonths={1}
+            />
+          </div>
         </div>
-      )}
+        {enableCompareOptions && (
+          <div className="border-t pt-4 px-4 pb-4">
+            <div
+              className={`flex items-center justify-between ${
+                compareEnabled ? "mb-3" : "mb-0"
+              }`}
+            >
+              <h3 className="text-sm font-medium">Compare with Past data</h3>
+              <Switch
+                checked={compareEnabled}
+                onCheckedChange={setCompareEnabled}
+              />
+            </div>
+            {compareEnabled && (
+              <div className="space-y-2 flex flex-col">
+                {comparisonOptions.map((option) => (
+                  <Button
+                    key={option.id}
+                    onClick={() => setFilter("compare", option.id)}
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start text-left font-normal py-2",
+                      selectedComparison === option.id && "bg-[#F2F2F2]"
+                    )}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </ScrollArea>
     </div>
   );
 };
