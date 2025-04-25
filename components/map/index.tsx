@@ -500,7 +500,6 @@ export default function MapComponent({
 
             if (details.formattedLocations.length === 1) {
               const location = details.formattedLocations[0];
-              console.log(location);
               bboxLocation = [
                 location.name,
                 location.city?.name,
@@ -548,7 +547,6 @@ export default function MapComponent({
   useEffect(() => {
     if (!mapRef.current) return;
     if (location.locationIds == "defaultLoc") {
-      console.log("flying to default loc");
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
