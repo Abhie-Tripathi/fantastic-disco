@@ -611,7 +611,7 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = searchParams.get("viewBound");
+    const viewBound = searchParams.get("viewBound");
     const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
@@ -625,8 +625,8 @@ const LineChartComponent = ({
     if (locationIds) {
       searchEventParams.set("locationIds", locationIds);
     }
-    if (geoCoordinates) {
-      searchEventParams.set("geoCoordinates", geoCoordinates);
+    if (viewBound) {
+      searchEventParams.set("viewBound", viewBound);
     }
     if (eventTypes && eventTypes.length > 0) {
       searchEventParams.set("eventTypes", eventTypes);

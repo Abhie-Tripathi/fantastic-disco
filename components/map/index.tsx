@@ -499,9 +499,16 @@ export default function MapComponent({
             let bboxLocation = null;
 
             if (details.formattedLocations.length === 1) {
-              bboxLocation =
-                details.formattedLocations[0].displayName ||
-                details.formattedLocations[0].name;
+              const location = details.formattedLocations[0];
+              console.log(location);
+              bboxLocation = [
+                location.name,
+                location.city?.name,
+                location.state?.name,
+                location.country?.iso,
+              ]
+                .filter(Boolean)
+                .join(",");
             } else {
               const locations = details.formattedLocations;
 
@@ -522,8 +529,9 @@ export default function MapComponent({
               }
             }
 
+            const locationType = details.formattedLocations[0].locationType;
             if (bboxLocation) {
-              const bbox = await getLocationBBox(bboxLocation);
+              const bbox = await getLocationBBox(bboxLocation, locationType);
               setLocationBBox(bbox);
             } else {
               setLocationBBox(null);
@@ -540,8 +548,7 @@ export default function MapComponent({
   useEffect(() => {
     if (!mapRef.current) return;
     if (location.locationIds == "defaultLoc") {
-
-      console.log("flying to default loc")
+      console.log("flying to default loc");
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
