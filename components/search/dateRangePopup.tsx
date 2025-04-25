@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePathname } from "next/navigation";
+import { useFilterState } from "@/hooks/useFilterState";
 interface DateRangePopupProps {
   type?: string;
   presets: { value: string; label: string }[];
@@ -17,10 +18,20 @@ interface DateRangePopupProps {
   enableCompareOptions: boolean;
   compareEnabled: boolean;
   setCompareEnabled: (enabled: boolean) => void;
-  comparisonOptions: string[];
-  setSelectedComparison: (option: string) => void;
-  selectedComparison: string;
 }
+
+const comparisonOptions = [
+  {
+    id: "preceding_period_match_dow",
+    label: "Preceding Period (match day of the week)",
+  },
+  {
+    id: "same_period_ly_match_dow",
+    label: "Same period last year (match day of the week)",
+  },
+  { id: "preceding_period", label: "Preceding Period" },
+  { id: "same_period_ly", label: "Same Period Last year" },
+];
 
 const DateRangePopup: React.FC<DateRangePopupProps> = ({
   presets,
@@ -33,13 +44,12 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   enableCompareOptions,
   compareEnabled,
   setCompareEnabled,
-  comparisonOptions,
-  setSelectedComparison,
-  selectedComparison,
   type,
 }) => {
   const url = usePathname();
-  
+  const { getFilterValue, setFilter } = useFilterState();
+  const selectedComparison = getFilterValue("compare");
+
   // Filter out 'past' and 'upcoming' presets when the URL is '/internal/trends'
   const filterPresets =
     url === "/internal/trends"
@@ -86,30 +96,29 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
       </div>
       {enableCompareOptions && (
         <div className="space-y-4 p-4 py-2 pt-0">
-          {/* <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium">Compare with Past data</h3>
             <Switch
-              disabled
               checked={compareEnabled}
               onCheckedChange={setCompareEnabled}
             />
-            <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
+            {/* <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
               Coming Soon
-            </span>
-          </div> */}
+            </span> */}
+          </div>
           {compareEnabled && (
             <div className="space-y-2 flex flex-col">
               {comparisonOptions.map((option) => (
                 <Button
-                  key={option}
-                  onClick={() => setSelectedComparison(option)}
+                  key={option.id}
+                  onClick={() => setFilter("compare", option.id)}
                   variant="ghost"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    selectedComparison === option && "bg-[#F2F2F2]"
+                    selectedComparison === option.id && "bg-[#F2F2F2]"
                   )}
                 >
-                  {option}
+                  {option.label}
                 </Button>
               ))}
             </div>

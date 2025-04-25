@@ -40,13 +40,6 @@ const presets = [
   { label: "Custom", value: "custom" },
 ];
 
-const comparisonOptions = [
-  "Preceding Period (match day of the week)",
-  "Same period last year (match day of the week)",
-  "Preceding Period",
-  "Same Period Last year",
-];
-
 const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
   if (!from && !to) return "";
   if (from && !to) return "Upcoming";
@@ -67,7 +60,7 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 };
 
 const formatDateForFilter = (date: Date) => {
-  return format(date, 'yyyy-MM-dd');
+  return format(date, "yyyy-MM-dd");
 };
 
 // interface DateRangeProps {
@@ -105,11 +98,7 @@ export default function DateRangeSelector({
     deleteMultipleLocalFilters,
     applyFilters,
   } = useFilterContext();
-  const { getFilterValue } = useFilterState();
-  const [selectedComparison, setSelectedComparison] = React.useState(
-    comparisonOptions[0]
-  );
-  const enableCompareOptions = pathName === "/trends";
+  const enableCompareOptions = pathName === "/internal/trends";
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
@@ -322,9 +311,6 @@ export default function DateRangeSelector({
           enableCompareOptions={true}
           compareEnabled={compareEnabled}
           setCompareEnabled={setCompareEnabled}
-          comparisonOptions={comparisonOptions}
-          setSelectedComparison={setSelectedComparison}
-          selectedComparison={selectedComparison}
         />
       ) : (
         <PopoverContent className="w-auto p-0" align="start">
@@ -336,12 +322,9 @@ export default function DateRangeSelector({
             handleDateSelect={handleDateSelect}
             calendarDate={calendarDate}
             setCalendarDate={setCalendarDate}
-            enableCompareOptions={false}
-            compareEnabled={false}
+            enableCompareOptions={enableCompareOptions}
+            compareEnabled={compareEnabled}
             setCompareEnabled={setCompareEnabled}
-            comparisonOptions={comparisonOptions}
-            setSelectedComparison={setSelectedComparison}
-            selectedComparison={selectedComparison}
           />
         </PopoverContent>
       )}
