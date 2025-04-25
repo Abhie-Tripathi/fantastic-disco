@@ -158,7 +158,9 @@ export default function AutocompleteInput({
               selectedLocations.map((location) => (
                 <Badge key={location.id} variant="secondary">
                   <div className="flex items-center max-w-full">
-                    <span className="truncate max-w-[200px]">{location.description}</span>
+                    <span className="truncate max-w-[200px]">
+                      {location.description}
+                    </span>
                     <div
                       role="button"
                       tabIndex={0}
@@ -202,39 +204,32 @@ export default function AutocompleteInput({
                 <span className="ml-2">Searching...</span>
               </div>
             ) : isError ? (
-              <div className="text-center p-2">
-                No matching locations found.
-              </div>
-            ) : inputValue.trim() === "" ? (
-              <div className="text-center p-2">
-                Start typing to search for locations.
-              </div>
+              "Error fetching locations."
             ) : (
-              <></>
+              "No locations found."
             )}
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {predictions
-                .map((prediction: any) => {
-                  const city = prediction.name;
-                  const placeId = prediction.id;
-                  const state = prediction.state?.name;
-                  const country = prediction.country?.name;
-                  return (
-                    <CommandItem
-                      key={placeId}
-                      onSelect={() => handleSelect(prediction)}
-                      className="flex flex-col items-start"
-                    >
-                      <span className="font-medium">{city}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {state && `${state}, `}
-                        {country}
-                      </span>
-                    </CommandItem>
-                  );
-                })}
+              {predictions.map((prediction: any) => {
+                const city = prediction.name;
+                const placeId = prediction.id;
+                const state = prediction.state?.name;
+                const country = prediction.country?.name;
+                return (
+                  <CommandItem
+                    key={placeId}
+                    onSelect={() => handleSelect(prediction)}
+                    className="flex flex-col items-start"
+                  >
+                    <span className="font-medium">{city}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {state && `${state}, `}
+                      {country}
+                    </span>
+                  </CommandItem>
+                );
+              })}
             </CommandList>
           </CommandGroup>
         </Command>
