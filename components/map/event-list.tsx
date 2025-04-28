@@ -372,7 +372,8 @@ function EventList({
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
-    params.set("skip", String((currentPage - 1) * 20));
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {
@@ -385,7 +386,8 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      if (!params.get("viewBound")) params.set("viewBound", JSON.stringify(viewBound));
+      if (!params.get("viewBound"))
+        params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 
