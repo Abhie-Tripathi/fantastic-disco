@@ -22,6 +22,8 @@ interface Props {
 
 const Presets = ({ template, handlePresetClick }: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
+  console.log(template.name);
+  
   const {getLocalFilterValue, localFilters}=useFilterContext();
   const { presetData } = useTrackerServices();
   const [inputValue, setInputValue] = useState<string>("");
@@ -175,9 +177,11 @@ const Presets = ({ template, handlePresetClick }: Props) => {
             />
           </div>
         </div>
+        {template.name === "T_COMPETITOR" &&
         <div className="w-[20%]">
         <AudienceSpreadSelector source="preset"/>
         </div>
+        }
         {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
