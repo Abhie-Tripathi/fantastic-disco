@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useTrackerContext } from "@/context/tracker";
 import { useToast } from "@/hooks/use-toast";
 import { useConfiguration } from "@/hooks/useConfiguration";
-import { eventsKeys } from "@/hooks/useEvents";
 import { useIntent } from "@/hooks/useIntent";
+import { useTrackerServices } from "@/services/trackerServices";
 import { Interest } from "@/types/events";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bookmark, BookmarkCheck, X } from "lucide-react";
@@ -30,9 +29,9 @@ export function BookMarkEvent({
   interests,
   trackerId,
 }: BookMarkEventProps) {
+  const { removeBookmark } = useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setSavedEventCount, savedEventCount } = useTrackerContext();
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -62,36 +61,56 @@ export function BookMarkEvent({
       ? [{ label: "Bookmark", status: "BOOKMARK" }]
       : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedAction) {
-      createUserEventInterest(
-        {
-          eventId,
-          interest: selectedAction,
-          sourceModule: trackerId ? "TRACKER" : "RESEARCH",
-          ...(trackerId && { sourceId: trackerId }),
-        },
-        {
-          onSuccess: () => {
+      if (selectedAction === "UN-BOOKMARK") {
+        await removeBookmark(interests?.bookmark?.interestId || "")
+          .then(() => {
             queryClient.invalidateQueries({ queryKey: ["eventDetailData"] });
-            setSavedEventCount(savedEventCount + 1);
             setIsOpen(false);
             toast({
               title: "Success",
               description: "Your interest has been recorded",
               variant: "default",
             });
-          },
-          onError: (error) => {
+          })
+          .catch((error) => {
+            setIsOpen(false);
             toast({
               title: "Error",
-              description: "Failed to record your interest. Please try again.",
+              description: error.message,
               variant: "destructive",
             });
-            setIsOpen(false);
+          });
+      } else {
+        createUserEventInterest(
+          {
+            eventId,
+            interest: selectedAction,
+            sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+            ...(trackerId && { sourceId: trackerId }),
           },
-        }
-      );
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ["eventDetailData"] });
+              setIsOpen(false);
+              toast({
+                title: "Success",
+                description: "Your interest has been recorded",
+                variant: "default",
+              });
+            },
+            onError: (error) => {
+              toast({
+                title: "Error",
+                description: error.message,
+                variant: "destructive",
+              });
+              setIsOpen(false);
+            },
+          }
+        );
+      }
     }
   };
 
