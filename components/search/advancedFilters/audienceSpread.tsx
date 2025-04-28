@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {data} from '@/data/countryData'
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check, X } from "lucide-react";
@@ -48,7 +49,9 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const countriesResponse = await getCountries();
+        const countriesResponse = source!=="preset"?await getCountries(): data;
+        console.log(countriesResponse);
+        
         setCountries((countriesResponse as any)?.formattedLocations || []);
         const regionsResponse = await getRegions();
         setRegions((regionsResponse as any)?.regions || []);

@@ -163,8 +163,8 @@ const Presets = ({ template, handlePresetClick }: Props) => {
         </span>
       </div>
       
-      <div className="flex justify-center items-center gap-2 mt-4 mx-auto w-[95%]">
-        <div className="w-[100%]">
+      <div className="flex gap-2 mt-4 mx-auto w-[95%]">
+        <div className="w-[50%]">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
@@ -175,10 +175,10 @@ const Presets = ({ template, handlePresetClick }: Props) => {
             />
           </div>
         </div>
-        {/* <div className="w-[20%]">
+        <div className="w-[20%]">
         <AudienceSpreadSelector source="preset"/>
         </div>
-        <div className="w-[20%]">
+        {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
         <div className="h-[42px]">
@@ -191,7 +191,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       </div>
 
       <div
-        className="max-h-[calc(100vh-260px)] overflow-y-auto mt-6"
+        className="h-[calc(100vh-260px)] overflow-y-auto mt-6"
         ref={containerRef}
       >
         <div className={styles.presetContainer}>
