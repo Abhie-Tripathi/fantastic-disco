@@ -93,7 +93,7 @@ export default function MapComponent({
   eventType,
 }: MapProps) {
   const mapRef = useRef<MapRef>(null);
-  const { getLocalFilterValue, searchParams } = useFilterContext();
+  const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -140,7 +140,7 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const isHolidaySelected = getLocalFilterValue("eventTypes")
+  const isHolidaySelected = getFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
@@ -372,7 +372,7 @@ export default function MapComponent({
               JSON.stringify(viewBound)
             );
 
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
               "locationIds"
             )}`;
 
