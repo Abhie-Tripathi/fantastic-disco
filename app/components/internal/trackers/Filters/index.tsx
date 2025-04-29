@@ -368,6 +368,22 @@ const templates = [
     isUploadEnable: true,
   },
   {
+    name: "T_EVENT_PARTICIPATIONS",
+    templateName: "Event Participation",
+    type: "enabled",
+    description: "Input team members and their details to keep track of the events with speaking opportunities",
+    inputAreas: [
+      {
+        img: Url,
+        type: "text",
+        placeholder: "Event Name",
+        required:true,
+        example: "facebook.com",
+      }
+    ],
+    isUploadEnable: true,
+  },
+  {
     name: "T_SOCIAL_CAUSE",
     templateName: "Social Cause",
     type: "disabled",
@@ -451,7 +467,7 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
-
+  const [eventSuggestion, setEventSuggestion] = useState([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -495,6 +511,23 @@ const Pages = () => {
     setWebsites(urls);
     setOrg(orgNames);
     }
+    else if (type === "T_EVENT_PARTICIPATIONS") {
+      console.log(customData);
+    
+      const lastEntry = customData.length > 0 ? Object.values(customData[0])[0] : "";
+    
+      // if (typeof lastEntry === 'string' && lastEntry.trim() !== '') {
+      //   setEventSuggestion(prev => {
+      //     const alreadyExists = prev.find(entry => entry === lastEntry);
+          
+      //     if (alreadyExists) {
+      //       return prev; 
+      //     }
+      //     return [...prev, lastEntry]; 
+      //   });
+      // }
+    }
+    
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
         const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
@@ -1063,7 +1096,7 @@ const Pages = () => {
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && type!=="T_EVENT_PARTICIPATIONS") {
       addNew();
     }
   }
@@ -1151,7 +1184,28 @@ useEffect(()=>{
 },[inputValues])
 const [selected,setSelected]=useState(false);
 const addCompany = (id:number,val: any) => {
+  console.log(eventSuggestion,id);
+  
+  if (type === "T_EVENT_PARTICIPATIONS") {
+    setEventSuggestion(prev => {
+      const alreadyExists = prev.find(entry => entry === id);
+      console.log("already exist",alreadyExists);
+      
+      if (alreadyExists) {
+        setInputValues({});
+        return prev;
+      } else {
+        setInputValues(prevValues => ({
+          ...prevValues,
+          [0]: val
+        }));
+        return [...prev, id];
+      }
+    });
+  }
+  
   setSelected(true);
+  if(type!=="T_EVENT_PARTICIPATIONS"){
   if(!Array.isArray(val)){
   setInputValues(prevValues => ({
     ...prevValues,
@@ -1161,6 +1215,9 @@ const addCompany = (id:number,val: any) => {
     setInputValues(val);
   }
 }
+}
+console.log(inputValues);
+
 useEffect(()=>{
   if(selected) {
     addNew();
@@ -1229,6 +1286,7 @@ const deleteTracker = async () => {
     router.replace(`/internal/trackers`);
   }
 }
+console.log(eventSuggestion);
 
 return (
   <>
@@ -1305,7 +1363,7 @@ return (
       />
     </div>
     <TeliTemplates type={type} isMandatory={isMandatory}/>
-    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
+    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS" || type==="T_EVENT_PARTICIPATIONS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
@@ -1332,7 +1390,7 @@ return (
             <></>
         }
         </div>
-        {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
+        {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS" || type==="T_EVENT_PARTICIPATIONS") &&
                 <div>
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
@@ -1368,8 +1426,8 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATIONS") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':type==="T_EVENT_PARTICIPATIONS"?'events':'suggestions/companies'} type={type}/>
         }
                         </div>
 

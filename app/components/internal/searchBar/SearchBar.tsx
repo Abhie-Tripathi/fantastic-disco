@@ -38,7 +38,11 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        let url; 
+        // if(type==="T_EVENT_PARTICIPATIONS"){
+        //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        // }else 
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -60,7 +64,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               else if(type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"){
                 
                 setEventSuggestion(data.companies);
-              }else
+              }else if(type === "T_EVENT_PARTICIPATIONS"){
+                setEventSuggestion(data.events)
+              }
+              else
               setEventSuggestion(data.events); 
             } else {
               console.error('Fetch error:', error); 
@@ -124,8 +131,18 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       ? getDomain(item.website) 
                       : item.name
                 }));
-                  
-                } else {
+                } else if (type === "T_EVENT_PARTICIPATIONS") {
+                  updatedData = eventSuggestion.map((item) => {
+                    return {
+                      key: item.basic.id,
+                      eventLocation:item.basic.eventLocation.cityName,
+                      eventCountry:item.basic.eventLocation.countryName,
+                      name: item.basic.name || '',
+                      tableEntry: item.basic.name
+                    };
+                  });
+                }
+                else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
@@ -160,6 +177,18 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       ? item.country
       : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
   </span>
+  <div>
+  <span>
+  {item.eventLocation
+                      ? item.eventLocation === item.eventCountry
+                        ? item.eventCountry
+                        : `${item.eventLocation}, ${item.eventCountry}`
+                      : ""}
+  </span>
+  <span>
+
+  </span>
+  </div>
 </div>
         </div>
       ))
