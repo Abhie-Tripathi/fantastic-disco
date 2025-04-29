@@ -62,6 +62,7 @@ import {
   ArrowDown,
   ArrowDownWideNarrow,
   ArrowUp,
+  ArrowUpNarrowWide,
   ArrowUpNarrowWide as ArrowUpWide,
   Loader2,
 } from "lucide-react";
@@ -672,10 +673,13 @@ const TestPeriodicAnalytics = () => {
   return (
     <>
       <div
-        className={`flex ${isMobileView ? "flex-col gap-3" : "justify-between items-center"} py-4`}
+        className={`flex ${
+          isMobileView ? "flex-col gap-3" : "justify-between items-center"
+        } py-4`}
       >
         <div className="font-medium text-base">
-          FOR THE SELECTED TIME PERIODS ({renderFormattedDates(startDate, endDate)})
+          FOR THE SELECTED TIME PERIODS (
+          {renderFormattedDates(startDate, endDate)})
         </div>
         <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
           <TooltipProvider>
@@ -704,8 +708,8 @@ const TestPeriodicAnalytics = () => {
                   />
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="w-64 sm:w-72 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
-                <p className="font-medium text-[var(--primary-text-color)] text-sm sm:text-base">
+              <TooltipContent className="w-64 tooltip-content-styles ">
+                <p className="font-medium text-[var(--secondary-text-color)]">
                   Identifies trends and patterns by comparing data to averages,
                   making key insights easy to spot.
                 </p>
@@ -756,7 +760,7 @@ const TestPeriodicAnalytics = () => {
                                   </span>
                                 </TooltipTrigger>
                                 <TooltipContent className="w-64 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
-                                  <p className="font-medium text-left text-[var(--primary-text-color)]">
+                                  <p className="font-medium text-left text-[var(--secondary-text-color)]">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
                                   </p>
@@ -764,7 +768,7 @@ const TestPeriodicAnalytics = () => {
                               </Tooltip>
                             </TooltipProvider>
                             <Select>
-                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-[var(--background-color)] p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
+                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
                                 <SelectGroup className="flex flex-col gap-4 p-4">
                                   <div className="flex gap-4 items-center">
@@ -798,7 +802,7 @@ const TestPeriodicAnalytics = () => {
                                           : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
-                                      <ArrowDownWideNarrow
+                                      <ArrowUpNarrowWide
                                         color="currentColor"
                                         className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
@@ -862,8 +866,8 @@ const TestPeriodicAnalytics = () => {
                                   />
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="w-44 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
-                                <p className="font-medium text-[var(--primary-text-color)]">
+                              <TooltipContent className="w-44 tooltip-content-styles ">
+                                <p className="font-medium text-[var(--secondary-text-color)]">
                                   Click on it to see event type wise split
                                 </p>
                               </TooltipContent>
@@ -919,7 +923,7 @@ const TestPeriodicAnalytics = () => {
                                   >
                                     {cell.subColumnName.toUpperCase()}
                                   </p>
-                                  <div className="absolute left-0 bottom-full mb-1 hidden group-hover:block p-2 bg-[var(--tooltip-background)] text-[var(--tooltip-text)] text-sm rounded-lg whitespace-nowrap">
+                                  <div className="absolute left-0 bottom-full mb-1 hidden group-hover:block p-2 bg-gray-700 text-white text-sm rounded-lg whitespace-nowrap">
                                     {cell.subColumnName}
                                   </div>
                                 </div>
@@ -958,7 +962,9 @@ const TestPeriodicAnalytics = () => {
                                     key={cell.subColumnName}
                                     className={`flex items-center justify-center text-center
                     border-x border-[var(--neutral-light-color)]
-                    font-${cell.fontWeight ?? "normal"} text-[var(--primary-text-color)] gap-2`}
+                    font-${
+                      cell.fontWeight ?? "normal"
+                    } text-[var(--primary-text-color)] gap-2`}
                                   >
                                     <p
                                       className="text-center truncate max-w-[80px] relative group text-[var(--negative-color)] font-medium"
@@ -1034,7 +1040,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className={`text-center font-semibold text-[var(--primary-color)] flex items-center justify-center w-full sticky left-0 z-30 bg-[var(--background-color)]`}
+                                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-background`}
                                 >
                                   {isEventeli ? (
                                     isHoliday ? (

@@ -13,8 +13,8 @@
 }
 
 .analytics_value_stats {
-  background-color: var(--primary-color);
-  color: var(--text-on-primary);
+  background-color: #6750a4;
+  color: white;
   padding: 4px 10px;
   width: 2.5rem;
   font-size: 14px;
@@ -47,17 +47,17 @@
 }
 
 .table td:first-child {
-  border-right: 1px solid var(--neutral-light-color);
+  border-right: 1px solid #ddd;
   text-align: left;
 }
 
 .table th:first-child {
-  border-right: 1px solid var(--neutral-light-color);
+  border-right: 1px solid #ddd;
 }
 
 .table_head_row {
-  color: var(--secondary-text-color);
-  border-bottom: 1px solid var(--neutral-light-color);
+  color: #696b83;
+  border-bottom: 1px solid #ececf9;
 }
 
 .table_head_row > th {
@@ -66,7 +66,7 @@
 }
 
 .table_body > tr {
-  border-bottom: 1px solid var(--neutral-light-color);
+  border-bottom: 1px solid #ececf9;
 }
 
 .table_body > tr > td {
@@ -74,7 +74,7 @@
 }
 
 .eventDate {
-  color: var(--primary-color);
+  color: #6750a4;
   font-weight: 500;
 }
 
@@ -82,7 +82,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  color: var(--primary-color);
+  color: #6750a4;
   font-weight: 500;
 }
 
@@ -105,81 +105,11 @@
 
 .analytics_header_title {
   font-weight: 500;
-  color: var(--primary-text-color);
-}
-
-/* Dark theme specific styles */
-:global(.dark) .analytics_header_title {
-  color: var(--primary-text-color);
-}
-
-:global(.dark) .table_head_row {
-  color: var(--secondary-text-color);
-}
-
-:global(.dark) .table_body > tr {
-  border-bottom: 1px solid var(--neutral-light-color);
-}
-
-:global(.dark) .table td:first-child,
-:global(.dark) .table th:first-child {
-  border-right: 1px solid var(--neutral-light-color);
 }
 
 @media (max-width: 768px) {
   .table th,
   .table td {
-    padding: 10px;
-  }
-
-  .analytics_header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .analytics_header_title {
-    font-size: 14px;
-  }
-
-  .table_container {
-    margin: 15px 0 0 0;
-  }
-
-  .table_head_row > th {
-    padding: 10px;
-  }
-
-  .table_body > tr > td {
-    padding: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .table th,
-  .table td {
-    padding: 8px;
-    font-size: 12px;
-  }
-
-  .analytics_header_title {
-    font-size: 12px;
-  }
-
-  .analytics_value_stats {
-    width: 2rem;
-    font-size: 12px;
-  }
-
-  .table_container {
-    margin: 10px 0 0 0;
-  }
-
-  .table_head_row > th {
-    padding: 8px;
-  }
-
-  .table_body > tr > td {
-    padding: 8px;
+    font-size: 14px; /* Reduce font size for smaller screens */
   }
 }
