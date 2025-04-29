@@ -236,7 +236,6 @@ export default function EventAccordion({
           return event;
         });
       }
-      console.log(newEvents);
 
       return newEvents;
     });
@@ -358,14 +357,13 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation.locationType === "VENUE"
+          event.basic.eventLocation.locationType.toLowerCase() === "venue"
             ? event.basic.eventLocation.name
             : "TBA",
-          event.basic.eventLocation.locationType !== "VENUE"
+          event.basic.eventLocation.locationType.toLowerCase() !== "venue"
             ? event.basic.eventLocation.name
             : null,
           event.basic.eventLocation?.cityName,
-          event.basic.eventLocation?.stateName,
           event.basic.eventLocation?.countryName !==
           event.basic.eventLocation?.cityName
             ? event.basic.eventLocation?.countryName
@@ -376,14 +374,13 @@ const EventListItem = ({
       </span>
     ) : (
       [
-        event.basic.eventLocation.locationType === "VENUE"
+        event.basic.eventLocation.locationType.toLowerCase() === "venue"
           ? event.basic.eventLocation.name
           : "TBA",
-        event.basic.eventLocation.locationType !== "VENUE"
+        event.basic.eventLocation.locationType.toLowerCase() !== "venue"
           ? event.basic.eventLocation.name
           : null,
         event.basic.eventLocation?.cityName,
-        event.basic.eventLocation?.stateName,
         event.basic.eventLocation?.countryName !==
         event.basic.eventLocation?.cityName
           ? event.basic.eventLocation?.countryName

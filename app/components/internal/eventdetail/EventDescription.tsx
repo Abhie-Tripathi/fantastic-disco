@@ -25,6 +25,44 @@ const formatDate = (dateString: string | null): string => {
   };
   return date.toLocaleDateString("en-GB", options);
 };
+
+const formatLocation = (location: Event["basic"]["eventLocation"]): string => {
+  if (!location) return "";
+
+  const { name, cityName, countryName, locationType } = location;
+
+  if (!name && !cityName && !countryName) return "";
+
+  const type = locationType?.toLowerCase() || "";
+
+  if (type === "city") {
+    if (countryName) return `${name || cityName}, ${countryName}`;
+    return name || cityName || "";
+  }
+
+  if (type === "country") {
+    return countryName || "";
+  }
+
+  if (type === "state") {
+    if (countryName) return `${name}, ${countryName}`;
+    return name || "";
+  }
+
+  if (type === "venue") {
+    if (cityName && countryName) return `${name}, ${cityName}, ${countryName}`;
+    if (cityName) return `${name}, ${cityName}`;
+    if (countryName) return `${name}, ${countryName}`;
+    return name || "";
+  }
+
+  if (cityName && countryName) return `${cityName}, ${countryName}`;
+  if (cityName) return cityName;
+  if (countryName) return countryName;
+
+  return name || "";
+};
+
 interface DetailsProps {
   description: string;
   open: boolean;
@@ -110,15 +148,7 @@ const EventDescription = ({
                 style={{ display: "flex" }}
               />
               <div className={styles.location}>
-                {eventDetail.eventLocation?.cityName &&
-                eventDetail.eventLocation?.countryName
-                  ? eventDetail.eventLocation.cityName !==
-                    eventDetail.eventLocation?.countryName
-                    ? eventDetail.eventLocation.cityName +
-                      ", " +
-                      eventDetail.eventLocation?.countryName
-                    : eventDetail.eventLocation.countryName
-                  : eventDetail.eventLocation.countryName}
+                {formatLocation(eventDetail.eventLocation)}
               </div>
             </div>
             {/* <div className={styles.locationContainer_direction}>

@@ -104,7 +104,6 @@ export default function EventList({
               ? event.basic.eventLocation.name
               : null,
             event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.stateName,
             event.basic.eventLocation?.countryName !==
             event.basic.eventLocation?.cityName
               ? event.basic.eventLocation?.countryName
@@ -122,7 +121,6 @@ export default function EventList({
             ? event.basic.eventLocation.name
             : null,
           event.basic.eventLocation?.cityName,
-          event.basic.eventLocation?.stateName,
           event.basic.eventLocation?.countryName !==
           event.basic.eventLocation?.cityName
             ? event.basic.eventLocation?.countryName

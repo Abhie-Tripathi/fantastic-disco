@@ -55,7 +55,6 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
               ? event.basic.eventLocation?.name
               : "TBA",
             event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.stateName,
             event.basic.eventLocation?.countryName,
           ]
             .filter(Boolean)
