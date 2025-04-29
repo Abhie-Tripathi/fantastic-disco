@@ -63,7 +63,6 @@ import {
   ArrowDownWideNarrow,
   ArrowUp,
   ArrowUpNarrowWide,
-  ArrowUpNarrowWide as ArrowUpWide,
   Loader2,
 } from "lucide-react";
 import Image from "next/image";
@@ -759,7 +758,7 @@ const TestPeriodicAnalytics = () => {
                                     {trends.columnName.toUpperCase()}
                                   </span>
                                 </TooltipTrigger>
-                                <TooltipContent className="w-64 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
+                                <TooltipContent className="w-64 tooltip-content-styles">
                                   <p className="font-medium text-left text-[var(--secondary-text-color)]">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
@@ -782,7 +781,7 @@ const TestPeriodicAnalytics = () => {
                                           : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
-                                      <ArrowUpWide
+                                      <ArrowUpNarrowWide
                                         color="currentColor"
                                         className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
@@ -802,7 +801,7 @@ const TestPeriodicAnalytics = () => {
                                           : "border-[var(--neutral-light-color)]"
                                       }flex items-center w-6 h-6 border-2 rounded-sm`}
                                     >
-                                      <ArrowUpNarrowWide
+                                      <ArrowDownWideNarrow
                                         color="currentColor"
                                         className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
@@ -850,7 +849,7 @@ const TestPeriodicAnalytics = () => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
-                                  className="absolute z-20 top-2 -right-3 bg-[var(--background-color)]"
+                                  className="absolute z-20 top-2 -right-3 bg-background"
                                   onClick={() => toggleOpenState(trends.slug)}
                                 >
                                   <Image
@@ -1064,7 +1063,7 @@ const TestPeriodicAnalytics = () => {
                                           </TooltipTrigger>
                                           <TooltipContent
                                             asChild
-                                            className="w-fit p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]"
+                                            className="w-fit tooltip-content-styles"
                                             side="right"
                                           >
                                             <ul
@@ -1308,7 +1307,7 @@ const TestPeriodicAnalytics = () => {
         </div>
         {totalPages > 1 && (
           <div
-            className={`mt-4 sticky bottom-0 bg-[var(--background-color)] py-4 ${
+            className={`mt-4 sticky bottom-0 bg-background py-4 ${
               isMobileView ? "overflow-x-auto" : ""
             }`}
           >
