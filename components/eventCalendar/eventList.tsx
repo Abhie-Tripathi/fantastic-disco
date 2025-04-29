@@ -28,6 +28,8 @@ import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import { isEventeli } from "@/config";
+import { formatLocationParts } from "@/utils/locationFormat";
+
 export default function EventList({
   eventDate,
   onClose,
@@ -96,38 +98,10 @@ export default function EventList({
         <span className="flex items-center">
           <Radio className="w-4 h-4 mr-1" />
           <span>Hybrid&nbsp;-&nbsp;</span>
-          {[
-            event.basic.eventLocation.locationType === "VENUE"
-              ? event.basic.eventLocation.name
-              : "TBA",
-            event.basic.eventLocation.locationType !== "VENUE"
-              ? event.basic.eventLocation.name
-              : null,
-            event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.countryName !==
-            event.basic.eventLocation?.cityName
-              ? event.basic.eventLocation?.countryName
-              : null,
-          ]
-            .filter(Boolean)
-            .join(", ")}
+          {formatLocationParts(event.basic.eventLocation)}
         </span>
       ) : (
-        [
-          event.basic.eventLocation.locationType === "VENUE"
-            ? event.basic.eventLocation.name
-            : "TBA",
-          event.basic.eventLocation.locationType !== "VENUE"
-            ? event.basic.eventLocation.name
-            : null,
-          event.basic.eventLocation?.cityName,
-          event.basic.eventLocation?.countryName !==
-          event.basic.eventLocation?.cityName
-            ? event.basic.eventLocation?.countryName
-            : null,
-        ]
-          .filter(Boolean)
-          .join(", ")
+        formatLocationParts(event.basic.eventLocation)
       )
     ) : (
       "Venue to be announced"

@@ -265,9 +265,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isPostponed = status === "postponed";
 
   const venueName =
-    eventLocation?.locationType === "VENUE" ? eventLocation?.name : null;
+    eventLocation?.locationType.toLowerCase() === "venue" ? eventLocation?.name : null;
   const venueAddress = [
-    eventLocation?.locationType !== "VENUE" ? eventLocation?.name : null,
+    eventLocation?.locationType.toLowerCase() !== "venue" ? eventLocation?.name : null,
     eventLocation?.cityName,
     eventLocation?.countryName,
   ]

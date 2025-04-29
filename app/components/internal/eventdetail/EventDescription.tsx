@@ -14,6 +14,7 @@ import { formatEventDates } from "@/utils/dateFormat";
 import { Calendar, Location } from "geist-icons";
 import { GAEvent } from "@/utils/GAEvent";
 import { Event } from "@/types/events";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 const formatDate = (dateString: string | null): string => {
   if (!dateString) return "";
@@ -141,7 +142,7 @@ const EventDescription = ({
                 style={{ display: "flex" }}
               />
               <div className={styles.location}>
-                {formatLocation(eventDetail.eventLocation)}
+                {formatLocationParts(eventDetail.eventLocation, true)}
               </div>
             </div>
             {/* <div className={styles.locationContainer_direction}>
