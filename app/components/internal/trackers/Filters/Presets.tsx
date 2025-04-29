@@ -155,7 +155,14 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       }
     };
   }, [inputValue]);
-  
+  const formatCount = (count: number) => {
+    if (count >= 1000) {
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+      return `${Math.floor(value)}k`;
+    }
+    return count;
+  };
   return (
     <div>
       <div className="flex justify-center gap-2 items-center font-semibold">
@@ -231,7 +238,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
                 </div>
                 {item?.totalEvent && item.totalEvent > 0 && (
                   <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md">
-                    {item.totalEvent} events
+                    {formatCount(item.totalEvent)} events
                   </div>
                 )}
               </div>

@@ -1226,7 +1226,6 @@ const Pages = () => {
       setIncludeKeyword(updatedData);
     }
   }, [getLocalFilterValue("includeKeywords")])
-  console.log(type);
   const [del, setDel] = useState(false);
   const closeShareModal = () => {
     setDel(false);
