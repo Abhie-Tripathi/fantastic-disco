@@ -1613,7 +1613,7 @@ return (
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setEventSuggestion} eventSuggestion={eventSuggestion}/>
   ) : (
     <div className={styles.emptyTableData}>
       <Image

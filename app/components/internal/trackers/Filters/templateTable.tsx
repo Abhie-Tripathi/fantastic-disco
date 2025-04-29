@@ -2,14 +2,17 @@ import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import styles from "./templatetable.style.module.css";
 import { useState } from "react";
 import { Trash } from "geist-icons";
+import { formatEventDates } from "@/utils/dateFormat";
 
 interface Props {
+  eventSuggestion?: any;
+  setEventSuggestion?:any;
   customData: any[];
   handleCustomData: (data: any) => void;
   presetName?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => { 
+const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion }: Props) => { 
   
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
@@ -29,6 +32,8 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
     const filteredData = customData.filter(
       (item, index) => !selectedIdArray.includes(index)
     );
+    const filteredEventSuggestion = eventSuggestion.filter((item: any, i: number) => !selectedIdArray.includes(eventSuggestion.length-i-1));
+    setEventSuggestion(filteredEventSuggestion);
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };
@@ -39,6 +44,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
   };
   const deleteSingleEntry = (index: number) => {
     const filteredData = customData.filter((_, i) => i !== index);
+    setEventSuggestion(eventSuggestion.filter((item: any, i: number) => i !== eventSuggestion.length-index-1));
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };
@@ -122,10 +128,13 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                   return (
                     <td key={entryKey} className={styles.dataColoumn}>
                       <div>
-                        <div>{parts[0]}</div>
+                        <div>
+                          {parts[0]}
+                          <span className='text-[var(--secondary-text-color)]' style={{fontSize:"12px"}}>{(parts[3] && parts[4]) && formatEventDates(parts[3], parts[4]).split(",")[1]}</span>
+                        </div>
                         {parts.length > 1 && (
-                          <div>
-                            <span>
+                          <div className='text-[var(--secondary-text-color)]'>
+                            <span className='text-sm'>
                               {parts[1] && parts[2]
                                 ? parts[1] === parts[2]
                                   ? parts[2]
