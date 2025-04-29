@@ -819,7 +819,7 @@ const EventTrends = () => {
               </h1>
               <div
                 className={`flex ${
-                  isMobileView ? "justify-between" : ""
+                  isMobileView ? "justify-start" : ""
                 } items-center gap-2`}
               >
                 {!showTemplates && (
