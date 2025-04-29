@@ -20,13 +20,14 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 
 interface SortOption {
   value: string;
   label: string;
 }
 
-const sortOptions: SortOption[] = [
+const gtmSortOptions: SortOption[] = [
   { value: "score", label: "Popularity" },
   { value: "title", label: "Title" },
   { value: "start", label: "Start Date" },
@@ -35,12 +36,21 @@ const sortOptions: SortOption[] = [
   { value: "updated", label: "Last Updated" },
   { value: "visitors", label: "Estimated Visitors" },
   { value: "exhibitors", label: "Estimated Exhibitors" },
-  // { value: "duration", label: "Duration" },
-  // { value: "impactScore", label: "Impact Score" },
+  { value: "distance", label: "Distance" },
+  { value: "status", label: "Status" },
+];
+
+const geoSortOptions: SortOption[] = [
+  { value: "score", label: "Popularity" },
+  { value: "title", label: "Title" },
+  { value: "start", label: "Start Date" },
+  { value: "end", label: "End Date" },
+  { value: "added", label: "Newly Added" },
+  { value: "updated", label: "Last Updated" },
+  { value: "visitors", label: "Estimated Visitors" },
+  { value: "exhibitors", label: "Estimated Exhibitors" },
   { value: "inboundScore", label: "Inbound Score" },
   { value: "internationalScore", label: "International Score" },
-  // { value: "inboundEstimate", label: "Inbound Estimate" },
-  // { value: "internationalEstimate", label: "International Estimate" },
   { value: "distance", label: "Distance" },
   { value: "status", label: "Status" },
 ];
@@ -64,6 +74,8 @@ const SortDropdown = ({
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
   );
+
+  const sortOptions = isEventeli ? geoSortOptions : gtmSortOptions;
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortField);
@@ -90,10 +102,10 @@ const SortDropdown = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {compact ? (
-          <Button 
-            variant="ghost" 
-            size="xs" 
-            className="h-[100%] px-3 flex items-center gap-2"
+          <Button
+            variant="ghost"
+            size="xs"
+            className="h-8 px-3 flex items-center gap-2"
           >
             {sortOrder === "asc" ? (
               <ArrowUp className="h-4 w-4" />
@@ -101,7 +113,8 @@ const SortDropdown = ({
               <ArrowDown className="h-4 w-4" />
             )}
             <span className="text-sm">
-              {sortOptions.find(option => option.value === sortField)?.label || 'Sort'}
+              {sortOptions.find((option) => option.value === sortField)
+                ?.label || "Sort"}
             </span>
           </Button>
         ) : (
