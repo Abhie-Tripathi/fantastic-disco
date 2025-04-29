@@ -44,7 +44,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         // }else 
-        url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&{type==="T_EVENT_PARTICIPATIONS"?"limit=10":"limit=5"}&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -176,6 +176,12 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
           <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 
+  {type==="T_EVENT_PARTICIPATIONS" &&
+  <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>
+  {item.eventStartDate && item.eventEndDate &&
+    formatEventDates(item.eventStartDate, item.eventEndDate).split(",")[1]}
+  </span>
+  }
   <span className={styles.subHeading}>
     {item.city === item.country
       ? item.country
@@ -188,11 +194,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                         ? item.eventCountry
                         : `${item.eventLocation}, ${item.eventCountry}`
                       : ""}
-  </span>
-  <span className='text-[var(--secondary-text-color)]'>
-  {item.eventStartDate &&
-                      item.eventEndDate &&
-                      formatEventDates(item.eventStartDate, item.eventEndDate)}
   </span>
   </div>
 </div>

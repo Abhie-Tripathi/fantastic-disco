@@ -115,25 +115,29 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                         checked={selectedIdArray.includes(index)}
                       />
                     </td>
-                    {Object.entries(item).map(([entryKey, value]) => (
-                      <td key={entryKey} className={styles.dataColoumn}>
-                        const parts = (value as string).split(',');
-                    return (
-                    <div>
-                    <div>{parts[0]}</div>
-                    <div>
-                    <span>
-              {parts[1]
-                ? parts[1] === parts[2]
-                  ? parts[2]
-                  : `${parts[2]}, ${parts[1]}`
-                : ""}
-                    </span>
-          </div>
-        </div>
-      );
-                      </td>
-                    ))}
+                    {Object.entries(item).map(([entryKey, value]) => {
+                  const stringValue = String(value);
+                  const parts = stringValue.split(',');
+                  
+                  return (
+                    <td key={entryKey} className={styles.dataColoumn}>
+                      <div>
+                        <div>{parts[0]}</div>
+                        {parts.length > 1 && (
+                          <div>
+                            <span>
+                              {parts[1] && parts[2]
+                                ? parts[1] === parts[2]
+                                  ? parts[2]
+                                  : `${parts[1]}, ${parts[2]}`
+                                : parts[1] || parts[2] || ""}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  );
+                })}
                     <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
                     <Trash />
                     </td>
