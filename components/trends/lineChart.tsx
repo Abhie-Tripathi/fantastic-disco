@@ -855,7 +855,7 @@ const LineChartComponent = ({
     }
 
     return (
-      <div className={`border-none shadow-lg bg-[#ffffff] ${isMobileView ? 'w-[calc(100vw-40px)] max-w-xs' : 'w-72'} z-10`}>
+      <div className={`border-none shadow-lg bg-background ${isMobileView ? 'w-[calc(100vw-40px)] max-w-xs' : 'w-72'} z-10`}>
         <div className="px-4 py-2 flex text-lg font-medium border-b">
           {format(date, "d MMM yyyy")}
         </div>

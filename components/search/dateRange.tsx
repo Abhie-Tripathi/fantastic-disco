@@ -109,7 +109,7 @@ export default function DateRangeSelector({
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
-  const enableCompareOptions = pathName === "/internal/trends";
+  const enableCompareOptions = pathName === "/trends";
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
