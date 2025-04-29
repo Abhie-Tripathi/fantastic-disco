@@ -95,9 +95,9 @@ export default function EventList({
           <Radio className="w-4 h-4 mr-1" /> Online
         </span>
       ) : event.basic.format === "hybrid" ? (
-        <span className="flex items-center">
-          <Radio className="w-4 h-4 mr-1" />
-          <span>Hybrid&nbsp;-&nbsp;</span>
+        <span>
+          <Radio className="w-4 h-4 mr-1 inline-block" />
+          Hybrid&nbsp;-&nbsp;
           {formatLocationParts(event.basic.eventLocation)}
         </span>
       ) : (
