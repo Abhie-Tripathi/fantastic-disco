@@ -395,25 +395,27 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: [
-      "events",
-      filteredParams.toString(),
-      currentPage,
-      sortBy,
-      eventType,
-    ],
-    queryFn: () =>
-      source === "tracker"
-        ? getTrackerMapEvents(
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryFn: async () => {
+      if (source === "tracker") {
+        if (mapCenter && mapRadius) {
+          return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }&sortBy=${sortBy}`
-          )
-        : eventService.getEventsWithSearchParams(filteredParams.toString()),
+          );
+        } else {
+          return [];
+        }
+      } else {
+        return eventService.getEventsWithSearchParams(filteredParams.toString());
+      }
+    },
   });
-
+  
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
