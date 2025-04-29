@@ -396,7 +396,7 @@ const EventTrends = () => {
 
   const handleShare = () => {
     const currentUrl = window.location.href;
-    const url = currentUrl.replace('/internal/', 'redirect=');
+    const url = currentUrl.replace("/internal/", "redirect=");
 
     navigator.clipboard.writeText(url);
     toast({
@@ -741,7 +741,7 @@ const EventTrends = () => {
           )}
 
           {isFiltersCollapsed && (
-            <div className="fixed left-[81px] top-[90px] z-30">
+            <div className="fixed left-[16px] lg:left-[81px] top-[90px] z-30">
               <button
                 onClick={() => setIsFiltersCollapsed(false)}
                 className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -771,16 +771,28 @@ const EventTrends = () => {
               variant="outline"
               size="default"
               className={`w-full flex items-center justify-between h-12 rounded-lg transition-all duration-200 ${
-                filterCount > 0 
-                  ? "bg-primary/5 border-primary/30 hover:bg-primary/10" 
+                filterCount > 0
+                  ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
                   : "bg-muted/30 border-border hover:bg-muted"
               }`}
               onClick={() => setIsFiltersCollapsed(false)}
             >
               <div className="flex items-center">
-                <Filter className={`w-4 h-4 mr-2 ${filterCount > 0 ? "text-primary" : "text-muted-foreground"}`} />
-                <span className={`font-medium ${filterCount > 0 ? "text-primary" : "text-foreground"}`}>
-                  {filterCount > 0 ? `${filterCount} Active Filter${filterCount > 1 ? 's' : ''}` : "Filter Results"}
+                <Filter
+                  className={`w-4 h-4 mr-2 ${
+                    filterCount > 0 ? "text-primary" : "text-muted-foreground"
+                  }`}
+                />
+                <span
+                  className={`font-medium ${
+                    filterCount > 0 ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  {filterCount > 0
+                    ? `${filterCount} Active Filter${
+                        filterCount > 1 ? "s" : ""
+                      }`
+                    : "Filter Results"}
                 </span>
               </div>
               {filterCount > 0 && (
@@ -834,7 +846,7 @@ const EventTrends = () => {
                       Browse Templates
                     </Button>
 
-                    <TooltipProvider>
+                    {/* <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -850,7 +862,7 @@ const EventTrends = () => {
                           <p>Copy URL to clipboard</p>
                         </TooltipContent>
                       </Tooltip>
-                    </TooltipProvider>
+                    </TooltipProvider> */}
                   </>
                 )}
               </div>
