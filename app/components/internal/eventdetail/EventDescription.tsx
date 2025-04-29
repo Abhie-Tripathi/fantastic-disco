@@ -49,13 +49,6 @@ const formatLocation = (location: Event["basic"]["eventLocation"]): string => {
     return name || "";
   }
 
-  if (type === "venue") {
-    if (cityName && countryName) return `${name}, ${cityName}, ${countryName}`;
-    if (cityName) return `${name}, ${cityName}`;
-    if (countryName) return `${name}, ${countryName}`;
-    return name || "";
-  }
-
   if (cityName && countryName) return `${cityName}, ${countryName}`;
   if (cityName) return cityName;
   if (countryName) return countryName;
