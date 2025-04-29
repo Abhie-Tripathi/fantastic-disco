@@ -13,8 +13,8 @@
 }
 
 .analytics_value_stats {
-  background-color: #6750a4;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
   padding: 4px 10px;
   width: 2.5rem;
   font-size: 14px;
@@ -47,17 +47,17 @@
 }
 
 .table td:first-child {
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--neutral-light-color);
   text-align: left;
 }
 
 .table th:first-child {
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--neutral-light-color);
 }
 
 .table_head_row {
-  color: #696b83;
-  border-bottom: 1px solid #ececf9;
+  color: var(--secondary-text-color);
+  border-bottom: 1px solid var(--neutral-light-color);
 }
 
 .table_head_row > th {
@@ -66,7 +66,7 @@
 }
 
 .table_body > tr {
-  border-bottom: 1px solid #ececf9;
+  border-bottom: 1px solid var(--neutral-light-color);
 }
 
 .table_body > tr > td {
@@ -74,7 +74,7 @@
 }
 
 .eventDate {
-  color: #6750a4;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -82,7 +82,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  color: #6750a4;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -105,24 +105,41 @@
 
 .analytics_header_title {
   font-weight: 500;
+  color: var(--primary-text-color);
+}
+
+/* Dark theme specific styles */
+:global(.dark) .analytics_header_title {
+  color: var(--primary-text-color);
+}
+
+:global(.dark) .table_head_row {
+  color: var(--secondary-text-color);
+}
+
+:global(.dark) .table_body > tr {
+  border-bottom: 1px solid var(--neutral-light-color);
+}
+
+:global(.dark) .table td:first-child,
+:global(.dark) .table th:first-child {
+  border-right: 1px solid var(--neutral-light-color);
 }
 
 @media (max-width: 768px) {
   .table th,
   .table td {
-    font-size: 14px; /* Reduce font size for smaller screens */
+    padding: 10px;
   }
 
   .analytics_header {
     flex-direction: column;
-    gap: 10px;
     align-items: flex-start;
+    gap: 10px;
   }
 
   .analytics_header_title {
     font-size: 14px;
-    text-align: center;
-    width: 100%;
   }
 
   .table_container {
@@ -130,19 +147,19 @@
   }
 
   .table_head_row > th {
-    padding: 15px 10px;
+    padding: 10px;
   }
 
   .table_body > tr > td {
-    padding: 15px 10px;
+    padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .table th,
   .table td {
+    padding: 8px;
     font-size: 12px;
-    padding: 8px 4px;
   }
 
   .analytics_header_title {
@@ -152,7 +169,6 @@
   .analytics_value_stats {
     width: 2rem;
     font-size: 12px;
-    padding: 3px 6px;
   }
 
   .table_container {
@@ -160,10 +176,10 @@
   }
 
   .table_head_row > th {
-    padding: 10px 5px;
+    padding: 8px;
   }
 
   .table_body > tr > td {
-    padding: 10px 5px;
+    padding: 8px;
   }
 }

@@ -677,7 +677,7 @@ const TestPeriodicAnalytics = () => {
         <div className="font-medium text-base">
           FOR THE SELECTED TIME PERIODS ({renderFormattedDates(startDate, endDate)})
         </div>
-        <div className="flex gap-2 items-center px-3 py-3 border border-gray-200 rounded-sm">
+        <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -704,8 +704,8 @@ const TestPeriodicAnalytics = () => {
                   />
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="w-64 sm:w-72 p-2 bg-white shadow-md rounded-md border border-gray-200">
-                <p className="font-medium text-gray-700 text-sm sm:text-base">
+              <TooltipContent className="w-64 sm:w-72 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
+                <p className="font-medium text-[var(--primary-text-color)] text-sm sm:text-base">
                   Identifies trends and patterns by comparing data to averages,
                   making key insights easy to spot.
                 </p>
@@ -738,7 +738,7 @@ const TestPeriodicAnalytics = () => {
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
                         style={{ width: 1000 }}
-                        className={`text-center bg-gray-50 text-gray-800 border border-gray-200 relative ${
+                        className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
                           trends.slug === "date" ? "sticky left-0 z-30" : ""
                         }`}
                       >
@@ -755,8 +755,8 @@ const TestPeriodicAnalytics = () => {
                                     {trends.columnName.toUpperCase()}
                                   </span>
                                 </TooltipTrigger>
-                                <TooltipContent className="w-64 p-2 bg-white shadow-md rounded-md border border-gray-200">
-                                  <p className="font-medium text-left text-gray-700">
+                                <TooltipContent className="w-64 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
+                                  <p className="font-medium text-left text-[var(--primary-text-color)]">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
                                   </p>
@@ -764,7 +764,7 @@ const TestPeriodicAnalytics = () => {
                               </Tooltip>
                             </TooltipProvider>
                             <Select>
-                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
+                              <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-[var(--background-color)] p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
                                 <SelectGroup className="flex flex-col gap-4 p-4">
                                   <div className="flex gap-4 items-center">
@@ -846,7 +846,7 @@ const TestPeriodicAnalytics = () => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
-                                  className="absolute z-20 top-2 -right-3 bg-background"
+                                  className="absolute z-20 top-2 -right-3 bg-[var(--background-color)]"
                                   onClick={() => toggleOpenState(trends.slug)}
                                 >
                                   <Image
@@ -862,8 +862,8 @@ const TestPeriodicAnalytics = () => {
                                   />
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="w-44 p-2 bg-white shadow-md rounded-md border border-gray-200">
-                                <p className="font-medium text-gray-700">
+                              <TooltipContent className="w-44 p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]">
+                                <p className="font-medium text-[var(--primary-text-color)]">
                                   Click on it to see event type wise split
                                 </p>
                               </TooltipContent>
@@ -891,14 +891,14 @@ const TestPeriodicAnalytics = () => {
                             .map((cell) => (
                               <TableHead
                                 key={cell.subColumnName}
-                                className={`bg-gray-50 text-gray-800 w-40 text-center border border-gray-200 ${
+                                className={`bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)] ${
                                   cell.slug === "value" ? "py-2" : ""
                                 }`}
                               >
                                 <div
                                   className={`flex items-center w-20 mx-auto font-${
                                     cell.fontWeight ?? "normal"
-                                  } justify-center text-gray-800 gap-2`}
+                                  } justify-center text-[var(--primary-text-color)] gap-2`}
                                 >
                                   {cell.icon && (
                                     <Image
@@ -919,7 +919,7 @@ const TestPeriodicAnalytics = () => {
                                   >
                                     {cell.subColumnName.toUpperCase()}
                                   </p>
-                                  <div className="absolute left-0 bottom-full mb-1 hidden group-hover:block p-2 bg-gray-700 text-white text-sm rounded-lg whitespace-nowrap">
+                                  <div className="absolute left-0 bottom-full mb-1 hidden group-hover:block p-2 bg-[var(--tooltip-background)] text-[var(--tooltip-text)] text-sm rounded-lg whitespace-nowrap">
                                     {cell.subColumnName}
                                   </div>
                                 </div>
@@ -942,13 +942,13 @@ const TestPeriodicAnalytics = () => {
                         ) : !isOpenState && !isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
-                            className="bg-gray-50 text-gray-800 w-40 text-center border border-gray-200"
+                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] w-40 text-center border border-[var(--neutral-light-color)]"
                           ></TableHead>
                         ) : !isOpenState && isSmartInsightEnabledForColumn ? (
                           <TableHead
                             key={trends.slug}
                             style={{ width: 1000 }}
-                            className="bg-gray-50 text-gray-800 text-center p-0"
+                            className="bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] text-center p-0"
                           >
                             <div className="grid grid-cols-1 w-full h-full">
                               {trends.subHeading
@@ -957,11 +957,11 @@ const TestPeriodicAnalytics = () => {
                                   <div
                                     key={cell.subColumnName}
                                     className={`flex items-center justify-center text-center
-                    border-x border-gray-200
-                    font-${cell.fontWeight ?? "normal"} text-gray-800 gap-2`}
+                    border-x border-[var(--neutral-light-color)]
+                    font-${cell.fontWeight ?? "normal"} text-[var(--primary-text-color)] gap-2`}
                                   >
                                     <p
-                                      className="text-center truncate max-w-[80px] relative group text-red-600 font-medium"
+                                      className="text-center truncate max-w-[80px] relative group text-[var(--negative-color)] font-medium"
                                       style={{
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
@@ -972,7 +972,7 @@ const TestPeriodicAnalytics = () => {
                                       {cell.subColumnName.toUpperCase()} {":"}
                                     </p>
 
-                                    <p className="text-red-600 font-medium">
+                                    <p className="text-[var(--negative-color)] font-medium">
                                       {tableData &&
                                         tableData.length > 0 &&
                                         safelyAccessTableData(
@@ -1034,7 +1034,7 @@ const TestPeriodicAnalytics = () => {
                                 <TableCell
                                   key={key}
                                   width={100}
-                                  className={`text-center font-semibold text-purple-700 flex items-center justify-center w-full sticky left-0 z-30 bg-white`}
+                                  className={`text-center font-semibold text-[var(--primary-color)] flex items-center justify-center w-full sticky left-0 z-30 bg-[var(--background-color)]`}
                                 >
                                   {isEventeli ? (
                                     isHoliday ? (
@@ -1058,7 +1058,7 @@ const TestPeriodicAnalytics = () => {
                                           </TooltipTrigger>
                                           <TooltipContent
                                             asChild
-                                            className="w-fit tooltip-content-styles"
+                                            className="w-fit p-2 bg-[var(--background-color)] shadow-md rounded-md border border-[var(--neutral-light-color)]"
                                             side="right"
                                           >
                                             <ul
@@ -1121,11 +1121,14 @@ const TestPeriodicAnalytics = () => {
                                     <TableCell
                                       key={subCol.slug}
                                       width={100}
-                                      className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-gray-800
+                                      className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]`}
+                                    >
+                                      <div
+                                        className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]
                                 ${
                                   subCol.slug === "avg" &&
                                   isSmartInsightEnabledForColumn
-                                    ? "bg-red-50 text-pink-600"
+                                    ? "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
                                     : ""
                                 }
                                 ${
@@ -1135,39 +1138,35 @@ const TestPeriodicAnalytics = () => {
                                   subCol.slug !== "value" &&
                                   cellData["maxRow"] ===
                                     cellData[subCol.slug as keyof EventTypeData]
-                                    ? "bg-blue-50 text-blue-600"
+                                    ? cellData["thresholdHighlightRow"]
                                     : ""
                                 }
                                 ${
                                   isSmartInsightEnabledForColumn &&
                                   subCol.slug === "value"
-                                    ? "bg-green-50 text-green-600"
+                                    ? cellData["thresholdHighlightCol"]
                                     : ""
                                 }
                                   ${
                                     isSmartInsightEnabledForColumn &&
                                     subCol.slug === "value" &&
                                     cellData["maxCol"] === cellData["value"]
-                                      ? "border-2 border-red-500"
+                                      ? "border-2 border-[var(--negative-color)]"
                                       : ""
                                   }`}
-                                    >
-                                      {
-                                        cellData[
-                                          subCol.slug as keyof EventTypeData
-                                        ]
-                                      }
-                                      {cellData["thresholdHighlightCol"] ===
-                                        "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                                      >
+                                        {
+                                          cellData[
+                                            subCol.slug as keyof EventTypeData
+                                          ]
+                                        }
+                                        {cellData["thresholdHighlightCol"] ===
+                                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
                                           subCol.slug === "value" && (
-                                            <ArrowUpWide
-                                              width={15}
-                                              height={15}
-                                              color="currentColor"
-                                            />
+                                            <ArrowUp width={15} height={15} />
                                           )}
-                                      {cellData["thresholdHighlightCol"] ===
-                                        "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                                        {cellData["thresholdHighlightCol"] ===
+                                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
                                           subCol.slug === "value" && (
                                             <ArrowDown
                                               width={15}
@@ -1175,6 +1174,7 @@ const TestPeriodicAnalytics = () => {
                                               color="#E1313A"
                                             />
                                           )}
+                                      </div>
                                     </TableCell>
                                   ))
                               ) : !isSmartInsightEnabledForColumn &&
@@ -1238,10 +1238,9 @@ const TestPeriodicAnalytics = () => {
                                             ] ===
                                               "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
                                               subCol.slug === "value" && (
-                                                <ArrowUpWide
+                                                <ArrowUp
                                                   width={15}
                                                   height={15}
-                                                  color="currentColor"
                                                 />
                                               )}
                                             {cellData[
@@ -1303,7 +1302,7 @@ const TestPeriodicAnalytics = () => {
         </div>
         {totalPages > 1 && (
           <div
-            className={`mt-4 sticky bottom-0 bg-background py-4 ${
+            className={`mt-4 sticky bottom-0 bg-[var(--background-color)] py-4 ${
               isMobileView ? "overflow-x-auto" : ""
             }`}
           >
