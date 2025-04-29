@@ -4,6 +4,8 @@ import React,{useState, useEffect, useRef} from 'react'
 import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
+import { formatEventDates } from "@/utils/dateFormat";
+import { Calendar, Location } from "geist-icons";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
 interface EventSuggestionItem {
@@ -138,7 +140,9 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       eventLocation:item.basic.eventLocation.cityName,
                       eventCountry:item.basic.eventLocation.countryName,
                       name: item.basic.name || '',
-                      tableEntry: item.basic.name
+                      tableEntry: `${item.basic.name}, ${item.basic.eventLocation.cityName}, ${item.basic.eventLocation.countryName}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
+                      eventStartDate: item.basic.startDateTime,
+                      eventEndDate: item.basic.endDateTime
                     };
                   });
                 }
@@ -177,16 +181,18 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       ? item.country
       : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
   </span>
-  <div>
-  <span>
+  <div className='flex gap-2 text-sm'>
+  <span className='text-[var(--secondary-text-color)]'>
   {item.eventLocation
                       ? item.eventLocation === item.eventCountry
                         ? item.eventCountry
                         : `${item.eventLocation}, ${item.eventCountry}`
                       : ""}
   </span>
-  <span>
-
+  <span className='text-[var(--secondary-text-color)]'>
+  {item.eventStartDate &&
+                      item.eventEndDate &&
+                      formatEventDates(item.eventStartDate, item.eventEndDate)}
   </span>
   </div>
 </div>

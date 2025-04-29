@@ -117,7 +117,21 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                     </td>
                     {Object.entries(item).map(([entryKey, value]) => (
                       <td key={entryKey} className={styles.dataColoumn}>
-                        {value as string}
+                        const parts = (value as string).split(',');
+                    return (
+                    <div>
+                    <div>{parts[0]}</div>
+                    <div>
+                    <span>
+              {parts[1]
+                ? parts[1] === parts[2]
+                  ? parts[2]
+                  : `${parts[2]}, ${parts[1]}`
+                : ""}
+                    </span>
+          </div>
+        </div>
+      );
                       </td>
                     ))}
                     <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
