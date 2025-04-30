@@ -33,7 +33,6 @@ const EventCard = (eventData: Props) => {
     isLoading: isConfigLoading,
     error,
   } = useConfiguration.interest();
-  console.log("interestConfiguration", interestConfiguration);
 
   const [selectedAction, setSelectedAction] = useState<InterestConfiguration>({
     status: "",
@@ -62,12 +61,11 @@ const EventCard = (eventData: Props) => {
     useIntent.createUserEventInterest();
 
   const handleReject = (eventId: string) => {
-    console.log("handleReject", eventId);
     setEventRejected(true);
   };
 
   const handleSelect = (eventId: string, action: string) => {
-    console.log("handleSelect", eventId, action, selectedAction);
+    // console.log("handleSelect", eventId, action, selectedAction);
 
     if (selectedAction.status === "") {
       toast({
@@ -107,9 +105,7 @@ const EventCard = (eventData: Props) => {
 
   useEffect(() => {
     if (interestConfiguration && eventData?.participationType) {
-      console.log('ss1', eventData);
       const ss = interestConfiguration.interest.find(item => item.label.toLowerCase() === eventData?.participationType?.toLowerCase());
-      console.log('ss', ss);
       if (ss)
         setSelectedAction(ss);
     }

@@ -4,7 +4,7 @@ import YourEventCard from "./YourEventCard";
 import styles from "./internal.style.module.css";
 import TimelineItem from "@/app/components/employee/listView/TimelineItem";
 import CloseIcon from "/public/internal/cross.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { enquiryType, eventDataType } from "../../../types/coordinateEventType";
 import Loading from "../UI/Loading";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
@@ -36,6 +36,8 @@ const Internal = ({
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
+
+  const { user } = useAuthContext();
 
   let prevDate: any = null;
   const { theme } = useTheme();
@@ -293,7 +295,9 @@ const Internal = ({
               <UpvoteSelector />
             </div>
 
-            <AddEventModal />
+              { user?.accountId && ["aace9785-9427-4fdd-88c2-2340d30e909c", "ee24cd48-3274-4df2-bec3-c864fa2d13ae"].includes(user.accountId) &&
+                <AddEventModal />
+              }
           </div>
 
           <div className={styles.timelineContainer}>

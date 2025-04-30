@@ -4,7 +4,7 @@ import LoadingSkeleton from "./LoadingSkeleton";
 import Image from "next/image";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import EventCard from "./EventCard";
-import SimilarEventCard from "./SimilarEventCard";
+// import SimilarEventCard from "./SimilarEventCard";
 // import NullState from "@/app/components/trackers/nullState";
 import NullImage from "@/public/addEventNullState.svg";
 import NullState from "./NullState";

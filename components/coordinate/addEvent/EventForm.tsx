@@ -22,14 +22,22 @@ import LoadingSkeleton from "./LoadingSkeleton";
 import { useAuthContext } from "@/context";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
-import EventType from "./eventType";
+// import EventType from "./eventType";
 import ParticipationMode from "./participationMode";
 import { Button } from "@/components/ui/button";
 import DateTimeContainer from "./DateTimeContainer";
-import LocationContainer from "./LocationContainer";
+// import LocationContainer from "./LocationContainer";
+import EventType from "@/app/components/TemplateViewsNew/AddEventForm/Details/eventtypeinmaineventform/EventType";
+import InterestSelectContainer from "./InterestSelectContainer";
+import LocationContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer";
 
 interface Props {
-  eventFormState: "default" | "similarEvents" | "editEvents" | "fetching" | "validating";
+  eventFormState:
+    | "default"
+    | "similarEvents"
+    | "editEvents"
+    | "fetching"
+    | "validating";
   setEventFormState: any;
   resetForm: any;
 }
@@ -111,8 +119,8 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     participationMessage: "",
     banner: { placeHolder: Placeholder, file: null },
     venue: "",
-    latitude: Number(''),
-    longitude: Number(''),
+    latitude: Number(""),
+    longitude: Number(""),
     hashtags: [],
     query: "",
     isEventNameEmpty: false,
@@ -151,32 +159,34 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   const handleCollapseForm = () => {};
 
   const checkFormValidation = (callback: any) => {
-
     if (!mainEventState.eventName || mainEventState.eventName === "") {
-      handleChange('isEventNameEmpty', true);
+      handleChange("isEventNameEmpty", true);
       // handleChange('isEventFormatEmpty', true);
     } else {
-      handleChange('isEventNameEmpty', false);
+      handleChange("isEventNameEmpty", false);
     }
 
     if (!mainEventState.participationType) {
-      handleChange('isEventParticipationEmpty', true);
+      handleChange("isEventParticipationEmpty", true);
     } else {
-      handleChange('isEventParticipationEmpty', false);
+      handleChange("isEventParticipationEmpty", false);
     }
 
     if (!mainEventState.event_type) {
-      handleChange('isEventTypeEmpty', true)
+      handleChange("isEventTypeEmpty", true);
     } else {
-      handleChange('isEventTypeEmpty', false)
+      handleChange("isEventTypeEmpty", false);
     }
 
-    if ((!mainEventState.query && !mainEventState.latitude) || !mainEventState.longitude) {
-      handleChange('isEventFormatEmpty', true);
+    if (
+      (!mainEventState.query && !mainEventState.latitude) ||
+      !mainEventState.longitude
+    ) {
+      handleChange("isEventFormatEmpty", true);
     } else {
-        handleChange('isEventFormatEmpty', false);
+      handleChange("isEventFormatEmpty", false);
     }
-    
+
     if (
       !mainEventState.eventName.trim() ||
       !mainEventState.eventFormat ||
@@ -187,26 +197,49 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       !mainEventState.participationType ||
       // !eventState.participationMessage ||
       // Check location fields only for "In-person" or "Hybrid" events
-      ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
-          (!mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
+      ((mainEventState.eventFormat === "In-person" ||
+        mainEventState.eventFormat === "Hybrid" ||
+        mainEventState.eventFormat === "OFFLINE") &&
+        (!mainEventState.countryName ||
+          !mainEventState.timeZone ||
+          !mainEventState.latitude ||
+          !mainEventState.longitude))
     ) {
-        toast({
-          title: "Please fill in all the required fields",
-          variant: "destructive",
-        });
-        setEventFormState("default");
-        return; // Exit the function if any field is missing
+      toast({
+        title: "Please fill in all the required fields",
+        variant: "destructive",
+      });
+      setEventFormState("default");
+      return; // Exit the function if any field is missing
     }
 
     callback();
-  }
+  };
 
-  const handleSave = () => {}
+  const handleInputChange = (value: string) => {
+    console.log("value typed : ", value);
+    const specialCharRegex = /[@#$%^&*"|<>]/g;
+    handleChange("isEventNameEmpty", false);
+    // setIsEventNameEmpty(false)
+    if (specialCharRegex.test(value)) {
+      toast({
+        title: "Please check, input should not contain any special character",
+        variant: "destructive",
+      });
+    } else {
+      handleChange("eventName", value);
+      // setEventName(value);
+      if (value.trim() === "") {
+        handleChange("isEventNameEmpty", true);
+        // setIsEventNameEmpty(true);
+      }
+    }
+  };
 
+  const handleSave = () => {};
 
   const handleSaveClick = async () => {
-
-    setEventFormState("fetching");    
+    setEventFormState("fetching");
 
     const e_data = {
       name: mainEventState.eventName,
@@ -240,12 +273,11 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     }
   };
 
-  const sendMail = async() => {
-
+  const sendMail = async () => {
     const description = {
       userDetail: user,
       eventDetail: mainEventState,
-    }
+    };
 
     const formData1 = {
       firstName: user?.firstname,
@@ -255,7 +287,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       jobTitle: user?.designation,
       phoneNumber: user?.phoneNumber,
       description: JSON.stringify(description),
-    }
+    };
 
     /*
       const response = await fetch("http://stg-board.10times.com/enquiry/submit", {
@@ -269,15 +301,13 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
 
     const apiData: any = await coordinateService.addNewEvent(formData1);
 
-    console.log('apiData', apiData);
-
     if (apiData.success) {
       toast({
         title: "Request has been submitted!",
         variant: "default",
       });
     }
-  }
+  };
 
   useEffect(() => {
     if (eventFormState === "validating") {
@@ -326,103 +356,117 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   // );
 
   return (
-    <div className="grid grid-cols-4 gap-4 border rounded-lg p-4 px-6 h-full">
-      {/* <EventType formTheme={formTheme} prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /> */}
-      {/* <div className="col-span-4 flex justify-between items-center">
-        <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-          Event Type
-        </span>
-        <div className="flex gap-4">
-        {["Tradeshow", "Conference", "Workshop"].map((type) => (
-          <label key={type} className="flex items-center gap-2 text-sm">
-            <input
-              type="radio"
-              name="eventType"
-              value={type}
-              // checked={selectedEventType === type}
-              // onChange={handleOptionChange}
-              // className={styles.radio}
-              checked={true}
-            />
-            {type}
-          </label>
-        ))}
-        </div>
-      </div> */}
+    <div className="p-3 flex flex-col gap-4">
+      {eventFormState === "fetching" ? (
+        <LoadingSkeleton />
+      ) : eventFormState === "similarEvents" ? (
+        <>
+          <div className="text-sm p-4 border rounded-sm border-[#FFDD8F] bg-[--warning-background-color]">
+            We&apos;ve Found
+            <span className="text-[#A35200] font-semibold">
+              {" "}
+              {similarEvents.length} Similar Events{" "}
+            </span>
+            ! See if either matches the event you&apos;re trying to add.
+          </div>
 
-      <div className="col-span-4">
-        <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-          Choose Your Mode of Participation
-        </span>
-        <div className="">
-          <ParticipationMode />
-        </div>
-      </div>
-
-      <div className="col-span-1">
-        <Image
-          src={Placeholder}
-          alt="Poster"
-          className="w-52 object-contain border rounded-md shadow-sm"
-        />
-      </div>
-      <div className="grid gap-4 col-span-3">
-        <div className="flex justify-between items-center">
-          <textarea
-            className="hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full"
-            maxLength={80}
-            placeholder="Event Name"
+          <SimilarEventCard
+            eventData={eventData}
+            duplicateEvents={similarEvents}
+            showSimlarCard={true}
           />
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-            Choose Your Event Type
-          </span>
-          <div className="">
-            <EventType />
+        </>
+      ) : (
+        <div className="grid grid-cols-4 gap-5 border rounded-lg p-4 px-6 h-full py-6 pb-[200px]">
+          <div className="col-span-4">
+            <EventType
+              formTheme="light"
+              prefilledEvent={mainEventState}
+              mainEventType={mainEventState.event_type}
+              handleChange={handleChange}
+            />
+            {mainEventState.isEventTypeEmpty && (
+              <p className="text-destructive text-xs mt-1">
+                Please select any event type
+              </p>
+            )}
           </div>
-        </div>
 
-        <div className="flex justify-between items-center">
-          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-            Choose Your Mode of Participation
-          </span> */}
-          <div className="">
-            <ParticipationMode />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center">
-          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-            Select Event Date
-          </span> */}
-          <div className="w-full bg-accent rounded-md">
-            <DateTimeContainer
+          <div className="col-span-4">
+            <InterestSelectContainer
               formTheme="light"
               handleChange={handleChange}
-              formState={formState}
+              formState={mainEventState}
+              heading="Choose Your Interest"
+              type="main"
+              size="large"
             />
+            {mainEventState.isEventParticipationEmpty && (
+              <p className="text-destructive text-xs mt-1">
+                Please select your interest
+              </p>
+            )}
           </div>
-        </div>
 
-        <div className="flex justify-between items-center">
-          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-            Add Event Location
-          </span> */}
-          <div className="w-full bg-accent rounded-md">
-            <LocationContainer
-              formTheme="light"
-              handleChange={handleChange}
-              formState={formState}
+          {/* <div className="col-span-1">
+            <Image
+              src={Placeholder}
+              alt="Poster"
+              className="w-52 object-contain border rounded-md shadow-sm"
             />
+          </div> */}
+          <div className="grid gap-4 col-span-4">
+            <div className="">
+              <textarea
+                className={`hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full ${
+                  mainEventState.isEventNameEmpty
+                    ? "bg-[var(--danger-background-color)] hover:bg-[var(--danger-background-color)]"
+                    : ""
+                }`}
+                maxLength={80}
+                placeholder="Event Name"
+                onChange={(e) => handleInputChange(e.target.value)}
+                value={mainEventState.eventName}
+              />
+              {mainEventState.isEventNameEmpty && (
+                <p className="text-destructive text-xs mt-1">
+                  {mainEventState.errorMessage}
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="w-full bg-accent rounded-md">
+                <DateTimeContainer
+                  formTheme="light"
+                  handleChange={handleChange}
+                  formState={mainEventState}
+                />
+              </div>
+            </div>
+
+            <div className="">
+              <div className="w-full bg-accent rounded-md">
+                <LocationContainer
+                  formTheme="light"
+                  handleChange={handleChange}
+                  formState={mainEventState}
+                />
+              </div>
+              {mainEventState.isEventFormatEmpty && (
+                <p className="text-destructive text-xs mt-1">
+                  Event location is required
+                </p>
+              )}
+            </div>
           </div>
+          {/* <div className="flex justify-end col-span-4">
+            <Button size="sm" onClick={handleSave}>
+              Save and Add Event
+            </Button>
+          </div> */}
         </div>
-      </div>
-      <div className="flex justify-end col-span-4">
-        <Button size="sm" onClick={handleSave}>
-          Save and Add Event
-        </Button>
-      </div>
+      )}
     </div>
   );
 };

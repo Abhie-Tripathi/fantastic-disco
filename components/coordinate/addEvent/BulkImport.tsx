@@ -106,7 +106,7 @@ const BulkImport = ({
       description: JSON.stringify(filteredItems),
     }
     
-    const apiData: any = await coordinateService.addNewEvent(formData1);
+    // const apiData: any = await coordinateService.addNewEvent(formData1);
   }
 
   return (
@@ -188,7 +188,7 @@ const BulkImport = ({
                 />
                 Select All
               </div>
-              <Button size="sm" onClick={handleAddEvents} >Add Events</Button>
+              {/* <Button size="sm" onClick={handleAddEvents} >Add Events</Button> */}
             </div>
           </div>
 
