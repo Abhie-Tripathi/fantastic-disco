@@ -373,8 +373,8 @@ function EventList({
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
-    params.set("skip", String((currentPage - 1) * 20));
-
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {
@@ -387,7 +387,7 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      if (params.get("locationIds"))
+      if (!params.get("viewBound"))
         params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
@@ -396,25 +396,27 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: [
-      "events",
-      filteredParams.toString(),
-      currentPage,
-      sortBy,
-      eventType,
-    ],
-    queryFn: () =>
-      source === "tracker"
-        ? getTrackerMapEvents(
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryFn: async () => {
+      if (source === "tracker") {
+        if (mapCenter && mapRadius) {
+          return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }&sortBy=${sortBy}`
-          )
-        : eventService.getEventsWithSearchParams(filteredParams.toString()),
+          );
+        } else {
+          return [];
+        }
+      } else {
+        return eventService.getEventsWithSearchParams(filteredParams.toString());
+      }
+    },
   });
-
+  
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

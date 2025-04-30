@@ -1,6 +1,9 @@
 "use client";
 
 import SortDropdown from "@/components/search/sortDropdown";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +16,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { isEventeli } from "@/config";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -25,8 +27,6 @@ import { formattedDateRange } from "@/utils/date";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Loader2, Star, X } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { PaginationComponent } from "../pagination";
 export default function EventList({
   eventDate,
@@ -49,12 +49,22 @@ export default function EventList({
   const { getCalendarViewEvents } = useTrackerServices();
   const active = getFilterValue("eventType");
 
-  const filteredParams = new URLSearchParams(searchParams.toString());
-  filteredParams.delete("view");
-  filteredParams.set("offset", String((currentPage - 1) * 20));
-  filteredParams.set("active_lte", eventDate.toISOString());
-  filteredParams.set("active_gte", eventDate.toISOString());
-  filteredParams.set("sortBy", sortBy);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [eventDate.toISOString(), sortBy]);
+
+  const filteredParams = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("view");
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
+    params.set("active_lte", eventDate.toISOString());
+    params.set("active_gte", eventDate.toISOString());
+    params.set("sortBy", sortBy);
+
+    return params;
+  }, [eventDate.toISOString(), sortBy, currentPage, searchParams]);
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>

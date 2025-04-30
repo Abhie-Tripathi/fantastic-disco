@@ -716,7 +716,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
 
-    if (!getFilterValue("locationIds")) {
+    if (!(getFilterValue("locationIds") || getFilterValue("viewBound"))) {
       toast({
         title: "Please select location",
         variant: "destructive",
