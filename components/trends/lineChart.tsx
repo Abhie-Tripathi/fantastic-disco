@@ -1,5 +1,4 @@
 "use client";
-import { TemplateType } from "@/app/components/trends/templates-modal";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -7,9 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
-import { Filters, useFilterContext } from "@/context/filterContext";
 import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
-import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
@@ -17,29 +14,21 @@ import { useTrendsService } from "@/services/trendsService";
 import { TableGroupedHoliday } from "@/types";
 import { EventResponse } from "@/types/events";
 import {
-  EventTrendsResponse,
-  GetSaveTrendData,
-  TableData,
+  EventTrendsResponse
 } from "@/types/trends/trends";
-import { HierarchyLevel } from "@/utils/chart-options";
 import {
   generateDatesArray,
   generateTrendsTableColumnHeaders,
   morphToGraphData,
-  morphToSmartInsightsData,
-  morphToTrendsTableData,
-  toMidnightISOString,
+  toMidnightISOString
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Loading from "../ui/Loading";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Area,
-  AreaChart,
   CartesianGrid,
   Legend,
   LegendProps,
@@ -51,10 +40,10 @@ import {
   Tooltip,
   TooltipProps,
   XAxis,
-  YAxis,
+  YAxis
 } from "recharts";
 import { CategoricalChartState } from "recharts/types/chart/types";
-import Text from "../new-ui/Text";
+import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 
 interface IProps {
@@ -77,21 +66,14 @@ const LineChartComponent = ({
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
   const { searchParams } = useDefaultFilters();
-
-  const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    setLocalFilter,
-    getLocalFilterValue,
-    setMultipleLocalFilters,
-  } = useFilterContext();
+  const { getEventTrends } = useTrendsService();
+  const compareFrom = searchParams.get("compare_from");
+  const compareTo = searchParams.get("compare_to");
   const columns = searchParams.get("columns");
   const eventTypes = searchParams.get("eventTypes");
-  const compare = searchParams.get("compare");
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
-  const columnsData = (columns && columns.split(",")) || [];
   const [eventTrendsData, setEventTrendsData] = useState<
     EventTrendsResponse | undefined
   >();
@@ -104,14 +86,6 @@ const LineChartComponent = ({
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
-
-  const categories = getLocalFilterValue("categories");
-  type FilterKey =
-    | "location"
-    | "eventTypes"
-    | "dateRange"
-    | "categories"
-    | "metrics";
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -129,8 +103,6 @@ const LineChartComponent = ({
 
   const previousYearParams = useMemo(() => {
     const currentParams = new URLSearchParams(apiParams);
-    const compareFrom = getLocalFilterValue("compare_from");
-    const compareTo = getLocalFilterValue("compare_to");
 
     if (compareFrom && compareTo) {
       currentParams.set("active_gte", compareFrom);
@@ -138,7 +110,7 @@ const LineChartComponent = ({
       return currentParams.toString();
     }
     return "";
-  }, [apiParams, getLocalFilterValue]);
+  }, [apiParams, compareFrom, compareTo]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -167,10 +139,7 @@ const LineChartComponent = ({
   } = useQuery<EventTrendsResponse | undefined>({
     queryKey: ["trends-previous-year", previousYearParams],
     queryFn: () => getEventTrends(previousYearParams),
-    enabled:
-      !!previousYearParams &&
-      !!getLocalFilterValue("compare_from") &&
-      !!getLocalFilterValue("compare_to"),
+    enabled: !!previousYearParams && !!compareFrom && !!compareTo,
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -219,9 +188,6 @@ const LineChartComponent = ({
 
       // Combine current and previous year data with proper date alignment
       const combinedData = graphData.map((currentItem, index) => {
-        const compareFrom = getLocalFilterValue("compare_from");
-        const compareTo = getLocalFilterValue("compare_to");
-
         if (!compareFrom || !compareTo) {
           return currentItem;
         }
@@ -279,7 +245,8 @@ const LineChartComponent = ({
     previousYearData,
     metric,
     searchParams,
-    getLocalFilterValue,
+    compareFrom,
+    compareTo,
   ]);
 
   useEffect(() => {
@@ -500,9 +467,6 @@ const LineChartComponent = ({
       sortBy: "-visitors",
     });
 
-    const compareFrom = getLocalFilterValue("compare_from");
-    const compareTo = getLocalFilterValue("compare_to");
-
     if (compareFrom && compareTo) {
       // Calculate the relative position of the date within the main date range
       const mainStartDate = new Date(searchParams.get("active_gte") || "");
@@ -707,8 +671,6 @@ const LineChartComponent = ({
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
 
     // Calculate comparison date based on relative position
-    const compareFrom = getLocalFilterValue("compare_from");
-    const compareTo = getLocalFilterValue("compare_to");
     let comparisonDate = new Date(date);
 
     if (compareFrom && compareTo) {
@@ -777,7 +739,9 @@ const LineChartComponent = ({
       <div className="border-none shadow-lg bg-[#ffffff] w-[600px] z-10">
         <div className="px-4 py-2 flex text-lg font-medium border-b justify-between">
           <span>{format(new Date(date), "d MMM yyyy")}</span>
-          <span className="text-[#4B9EF4]">{format(comparisonDate, "d MMM yyyy")}</span>
+          <span className="text-[#4B9EF4]">
+            {format(comparisonDate, "d MMM yyyy")}
+          </span>
         </div>
         {isEventeli &&
           matchingHoliday &&
@@ -955,21 +919,13 @@ const LineChartComponent = ({
             VIEW ALL
             <ArrowUpRight height={18} width={18} stroke="#6750a4" />
           </Link>
-          {previousYearEventData &&
-          (previousYearEventData as any).events.length > 0 ? (
-            <Link
-              href={`/internal/search/events?${previousYearLink}`}
-              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
-            >
-              VIEW ALL
-              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
-            </Link>
-          ) : (
-            <div className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4]">
-              NO COMPARISON DATA
-              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
-            </div>
-          )}
+          <Link
+            href={`/internal/search/events?${previousYearLink}`}
+            className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+          >
+            VIEW ALL
+            <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
+          </Link>
         </div>
       </div>
     );
@@ -980,13 +936,15 @@ const LineChartComponent = ({
     const comparisonLabel = "Comparison Period";
 
     // Separate year entries from threshold entries
-    const yearEntries = payload?.filter(entry => 
-      entry.id === "current_year" || entry.id === "previous_year"
-    ) || [];
-    
-    const thresholdEntries = payload?.filter(entry => 
-      entry.id !== "current_year" && entry.id !== "previous_year"
-    ) || [];
+    const yearEntries =
+      payload?.filter(
+        (entry) => entry.id === "current_year" || entry.id === "previous_year"
+      ) || [];
+
+    const thresholdEntries =
+      payload?.filter(
+        (entry) => entry.id !== "current_year" && entry.id !== "previous_year"
+      ) || [];
 
     return (
       <div className="flex flex-col items-end gap-4">
@@ -1013,7 +971,7 @@ const LineChartComponent = ({
                       <span
                         className={`cursor-pointer text-sm font-medium`}
                         style={{
-                          color: entry.color
+                          color: entry.color,
                         }}
                       >
                         {entry.value}
@@ -1038,12 +996,16 @@ const LineChartComponent = ({
               key={`threshold-item-${index}`}
               className="flex items-center gap-2"
             >
-              {entry.id === "upper_threshold" || entry.id === "lower_threshold" ? (
-                <div className="w-4 h-0 border-t-2" style={{
-                  borderColor: entry.color,
-                  borderStyle: 'dashed',
-                  borderWidth: '2px'
-                }}></div>
+              {entry.id === "upper_threshold" ||
+              entry.id === "lower_threshold" ? (
+                <div
+                  className="w-4 h-0 border-t-2"
+                  style={{
+                    borderColor: entry.color,
+                    borderStyle: "dashed",
+                    borderWidth: "2px",
+                  }}
+                ></div>
               ) : (
                 <div
                   className={`w-2 h-2 rounded-full`}
@@ -1058,7 +1020,7 @@ const LineChartComponent = ({
                     <span
                       className={`cursor-pointer text-sm font-medium`}
                       style={{
-                        color: entry.color
+                        color: entry.color,
                       }}
                     >
                       {entry.value}
@@ -1234,19 +1196,18 @@ const LineChartComponent = ({
             connectNulls={true}
             dot={<CustomDot />}
           />
-          {getLocalFilterValue("compare_from") &&
-            getLocalFilterValue("compare_to") && (
-              <Line
-                type="linear"
-                dataKey="previousYearTotal"
-                name="Comparison Period"
-                stroke="#4B9EF4"
-                strokeWidth={2}
-                strokeOpacity={1}
-                connectNulls={true}
-                dot={false}
-              />
-            )}
+          {compareFrom && compareTo && (
+            <Line
+              type="linear"
+              dataKey="previousYearTotal"
+              name="Comparison Period"
+              stroke="#4B9EF4"
+              strokeWidth={2}
+              strokeOpacity={1}
+              connectNulls={true}
+              dot={false}
+            />
+          )}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
@@ -1264,8 +1225,7 @@ const LineChartComponent = ({
                     type: "line",
                     id: "previous_year",
                     color: "#4B9EF4",
-                    tooltipDescription:
-                      "Data for the comparison period",
+                    tooltipDescription: "Data for the comparison period",
                   },
                   ...(showThresholdLines
                     ? [
@@ -1276,7 +1236,7 @@ const LineChartComponent = ({
                           color: "#398E4A",
                           tooltipDescription:
                             "Represents the maximum boundary relative to the average value for this trend.",
-                          strokeDasharray: "12 12"
+                          strokeDasharray: "12 12",
                         },
                         {
                           value: "Average",
@@ -1293,7 +1253,7 @@ const LineChartComponent = ({
                           color: "#FF990A",
                           tooltipDescription:
                             "Represents the minimum boundary relative to the average value for this trend.",
-                          strokeDasharray: "12 12"
+                          strokeDasharray: "12 12",
                         },
                       ]
                     : []),
