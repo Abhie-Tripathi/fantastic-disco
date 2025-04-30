@@ -1,16 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-// import styles from "@/app/components/internal/trackers/Filters/templatetable.style.module.css";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "geist-icons";
-import { Checkbox } from "@/components/ui/checkbox";
-import eventData from "@/public/data/prospect/userEventData.json";
-import { Event } from "@/types/events";
-// import { formatEventDates } from "@/utils/dateFormat";
-import { formattedDateRange } from "@/utils/date";
-import { Radio } from "lucide-react";
-// import CsvUpload from "./csvUpload";
 import Papa from "papaparse";
 import EventForm from "./EventForm";
 import Modal from "./modal";
@@ -104,7 +95,6 @@ export default function AddEventModal() {
 
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFileChange11");
 
     const file = event.target.files?.[0];
     if (!file) {
@@ -139,8 +129,6 @@ export default function AddEventModal() {
               header.fieldName.toLowerCase() === item.toLowerCase()
           );
         });
-
-        // console.log('tempHeader2', tempHeader2);
 
         setMappedHeaders(tempHeader2);
         setSelectedView("bulkImport");
