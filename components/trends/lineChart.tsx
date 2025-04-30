@@ -129,75 +129,16 @@ const LineChartComponent = ({
 
   const previousYearParams = useMemo(() => {
     const currentParams = new URLSearchParams(apiParams);
-    const activeGte = currentParams.get("active_gte");
-    const activeLte = currentParams.get("active_lte");
-    const compareOption = searchParams.get("compare");
+    const compareFrom = getLocalFilterValue("compare_from");
+    const compareTo = getLocalFilterValue("compare_to");
 
-    if (activeGte && activeLte) {
-      const startDate = new Date(activeGte);
-      const endDate = new Date(activeLte);
-
-      let prevStartDate = new Date(startDate);
-      let prevEndDate = new Date(endDate);
-
-      // Handle different comparison options
-      if (compareOption === "same_period_ly") {
-        // Same period last year - simply subtract one year
-        prevStartDate.setFullYear(startDate.getFullYear() - 1);
-        prevEndDate.setFullYear(endDate.getFullYear() - 1);
-      } else if (compareOption === "preceding_period") {
-        // Preceding period - use the same duration but before the start date
-        const duration = endDate.getTime() - startDate.getTime();
-        prevEndDate = new Date(startDate);
-        prevStartDate = new Date(startDate.getTime() - duration);
-      } else if (compareOption === "same_period_ly_match_dow") {
-        // Same period last year matching day of week
-        prevStartDate.setFullYear(startDate.getFullYear() - 1);
-        prevEndDate.setFullYear(endDate.getFullYear() - 1);
-
-        // Adjust to match day of week
-        const startDayOfWeek = startDate.getDay();
-        const endDayOfWeek = endDate.getDay();
-
-        // Adjust start date to match day of week
-        const startDayDiff = prevStartDate.getDay() - startDayOfWeek;
-        prevStartDate.setDate(prevStartDate.getDate() - startDayDiff);
-
-        // Adjust end date to match day of week
-        const endDayDiff = prevEndDate.getDay() - endDayOfWeek;
-        prevEndDate.setDate(prevEndDate.getDate() - endDayDiff);
-      } else if (compareOption === "preceding_period_match_dow") {
-        // Preceding period matching day of week
-        const duration = endDate.getTime() - startDate.getTime();
-        prevEndDate = new Date(startDate);
-        prevStartDate = new Date(startDate.getTime() - duration);
-
-        // Adjust to match day of week
-        const startDayOfWeek = startDate.getDay();
-        const endDayOfWeek = endDate.getDay();
-
-        // Adjust start date to match day of week
-        const startDayDiff = prevStartDate.getDay() - startDayOfWeek;
-        prevStartDate.setDate(prevStartDate.getDate() - startDayDiff);
-
-        // Adjust end date to match day of week
-        const endDayDiff = prevEndDate.getDay() - endDayOfWeek;
-        prevEndDate.setDate(prevEndDate.getDate() - endDayDiff);
-      } else {
-        // Default to same period last year if no option is selected
-        prevStartDate.setFullYear(startDate.getFullYear() - 1);
-        prevEndDate.setFullYear(endDate.getFullYear() - 1);
-      }
-
-      currentParams.set(
-        "active_gte",
-        prevStartDate.toISOString().split("T")[0]
-      );
-      currentParams.set("active_lte", prevEndDate.toISOString().split("T")[0]);
+    if (compareFrom && compareTo) {
+      currentParams.set("active_gte", compareFrom);
+      currentParams.set("active_lte", compareTo);
+      return currentParams.toString();
     }
-
-    return currentParams.toString();
-  }, [apiParams, searchParams]);
+    return "";
+  }, [apiParams, getLocalFilterValue]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -226,7 +167,10 @@ const LineChartComponent = ({
   } = useQuery<EventTrendsResponse | undefined>({
     queryKey: ["trends-previous-year", previousYearParams],
     queryFn: () => getEventTrends(previousYearParams),
-    enabled: !!previousYearParams,
+    enabled:
+      !!previousYearParams &&
+      !!getLocalFilterValue("compare_from") &&
+      !!getLocalFilterValue("compare_to"),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -270,41 +214,73 @@ const LineChartComponent = ({
 
       const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
       const previousYearGraphData = previousYearData
-        ? morphToGraphData(previousYearData.groupedData, metric).map(
-            (item) => ({
-              ...item,
-              previousYearTotal: item.total,
-              previousYearSocial: item.social,
-              previousYearBusiness: item.business,
-              total: undefined,
-              social: undefined,
-              business: undefined,
-            })
-          )
+        ? morphToGraphData(previousYearData.groupedData, metric)
         : [];
 
-      // Combine current and previous year data
-      const combinedData = graphData.map((currentItem) => {
-        const currentDate = new Date(currentItem.date);
-        const previousYearDate = new Date(currentItem.date);
-        previousYearDate.setFullYear(previousYearDate.getFullYear() - 1);
+      // Combine current and previous year data with proper date alignment
+      const combinedData = graphData.map((currentItem, index) => {
+        const compareFrom = getLocalFilterValue("compare_from");
+        const compareTo = getLocalFilterValue("compare_to");
 
-        const previousYearItem = previousYearGraphData.find(
-          (prevItem) =>
-            new Date(prevItem.date).getTime() === previousYearDate.getTime()
+        if (!compareFrom || !compareTo) {
+          return currentItem;
+        }
+
+        // Calculate the relative position (0 to 1) of the current date in the main range
+        const mainStartDate = new Date(searchParams.get("active_gte") || "");
+        const mainEndDate = new Date(searchParams.get("active_lte") || "");
+        const currentDate = new Date(currentItem.date);
+
+        const compareStartDate = new Date(compareFrom);
+        const compareEndDate = new Date(compareTo);
+
+        const mainRangePosition =
+          (currentDate.getTime() - mainStartDate.getTime()) /
+          (mainEndDate.getTime() - mainStartDate.getTime());
+
+        // Find the corresponding date in the comparison range
+        const targetCompareDate = new Date(
+          compareStartDate.getTime() +
+            mainRangePosition *
+              (compareEndDate.getTime() - compareStartDate.getTime())
         );
+
+        // Find the closest date in previousYearGraphData
+        const comparisonItem = previousYearGraphData.find((item) => {
+          const itemDate = new Date(item.date);
+          // Allow for a small tolerance (same day)
+          return (
+            Math.abs(itemDate.getTime() - targetCompareDate.getTime()) <
+            24 * 60 * 60 * 1000
+          );
+        });
+
+        if (comparisonItem) {
+          return {
+            ...currentItem,
+            previousYearTotal: comparisonItem.total,
+            previousYearSocial: comparisonItem.social,
+            previousYearBusiness: comparisonItem.business,
+          };
+        }
 
         return {
           ...currentItem,
-          previousYearTotal: previousYearItem?.previousYearTotal,
-          previousYearSocial: previousYearItem?.previousYearSocial,
-          previousYearBusiness: previousYearItem?.previousYearBusiness,
+          previousYearTotal: undefined,
+          previousYearSocial: undefined,
+          previousYearBusiness: undefined,
         };
       });
 
       setPredictedData(combinedData);
     }
-  }, [eventTrendsData, previousYearData, metric]);
+  }, [
+    eventTrendsData,
+    previousYearData,
+    metric,
+    searchParams,
+    getLocalFilterValue,
+  ]);
 
   useEffect(() => {
     if (trendsData === undefined) {
@@ -519,64 +495,38 @@ const LineChartComponent = ({
   };
 
   const generatePreviousYearParams = (date: string): string => {
-    const compareOption = searchParams.get("compare");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
       sortBy: "-visitors",
     });
 
-    const currentDate = new Date(date);
-    let prevDate = new Date(currentDate);
+    const compareFrom = getLocalFilterValue("compare_from");
+    const compareTo = getLocalFilterValue("compare_to");
 
-    // Handle different comparison options
-    if (
-      compareOption === "same_period_ly" ||
-      compareOption === "same_period_ly_match_dow"
-    ) {
-      // Same period last year
-      prevDate.setFullYear(currentDate.getFullYear() - 1);
+    if (compareFrom && compareTo) {
+      // Calculate the relative position of the date within the main date range
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const currentDate = new Date(date);
 
-      // For matching day of week, adjust to the same day of week
-      if (compareOption === "same_period_ly_match_dow") {
-        const dayOfWeek = currentDate.getDay();
-        const prevDayOfWeek = prevDate.getDay();
-        const dayDiff = prevDayOfWeek - dayOfWeek;
-        prevDate.setDate(prevDate.getDate() - dayDiff);
-      }
-    } else if (
-      compareOption === "preceding_period" ||
-      compareOption === "preceding_period_match_dow"
-    ) {
-      // For preceding period, we need to know the duration of the current selection
-      const activeGte = searchParams.get("active_gte");
-      const activeLte = searchParams.get("active_lte");
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
 
-      if (activeGte && activeLte) {
-        const startDate = new Date(activeGte);
-        const endDate = new Date(activeLte);
-        const duration = endDate.getTime() - startDate.getTime();
+      // Calculate the relative position (0 to 1) of the current date in the main range
+      const mainRangePosition =
+        (currentDate.getTime() - mainStartDate.getTime()) /
+        (mainEndDate.getTime() - mainStartDate.getTime());
 
-        // Calculate the previous date based on the duration
-        prevDate = new Date(currentDate.getTime() - duration);
+      // Use this position to find the corresponding date in the comparison range
+      const compareDate = new Date(
+        compareStartDate.getTime() +
+          mainRangePosition *
+            (compareEndDate.getTime() - compareStartDate.getTime())
+      );
 
-        // For matching day of week, adjust to the same day of week
-        if (compareOption === "preceding_period_match_dow") {
-          const dayOfWeek = currentDate.getDay();
-          const prevDayOfWeek = prevDate.getDay();
-          const dayDiff = prevDayOfWeek - dayOfWeek;
-          prevDate.setDate(prevDate.getDate() - dayDiff);
-        }
-      } else {
-        // If we don't have a date range, default to same day last year
-        prevDate.setFullYear(currentDate.getFullYear() - 1);
-      }
-    } else {
-      // Default to same day last year if no option is selected
-      prevDate.setFullYear(currentDate.getFullYear() - 1);
+      searchEventParams.set("active_gte", format(compareDate, "yyyy-MM-dd"));
+      searchEventParams.set("active_lte", format(compareDate, "yyyy-MM-dd"));
     }
-
-    searchEventParams.set("active_gte", format(prevDate, "yyyy-MM-dd"));
-    searchEventParams.set("active_lte", format(prevDate, "yyyy-MM-dd"));
 
     const locationIds = searchParams.get("locationIds");
     const geoCoordinates = searchParams.get("viewBound");
@@ -756,22 +706,30 @@ const LineChartComponent = ({
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
 
-    // Get previous year date for comparison
-    const prevYearDate = new Date(date);
-    prevYearDate.setFullYear(prevYearDate.getFullYear() - 1);
+    // Calculate comparison date based on relative position
+    const compareFrom = getLocalFilterValue("compare_from");
+    const compareTo = getLocalFilterValue("compare_to");
+    let comparisonDate = new Date(date);
 
-    // Get the comparison option label
-    const compareOption = searchParams.get("compare");
-    let comparisonLabel = "Previous Year";
+    if (compareFrom && compareTo) {
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const currentDate = new Date(date);
 
-    if (compareOption === "same_period_ly") {
-      comparisonLabel = "Same Period Last Year";
-    } else if (compareOption === "preceding_period") {
-      comparisonLabel = "Preceding Period";
-    } else if (compareOption === "same_period_ly_match_dow") {
-      comparisonLabel = "Same Period Last Year";
-    } else if (compareOption === "preceding_period_match_dow") {
-      comparisonLabel = "Preceding Period";
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
+
+      // Calculate the relative position (0 to 1) of the current date in the main range
+      const mainRangePosition =
+        (currentDate.getTime() - mainStartDate.getTime()) /
+        (mainEndDate.getTime() - mainStartDate.getTime());
+
+      // Find the corresponding date in the comparison range
+      comparisonDate = new Date(
+        compareStartDate.getTime() +
+          mainRangePosition *
+            (compareEndDate.getTime() - compareStartDate.getTime())
+      );
     }
 
     const hasSocial = eventTypes
@@ -818,8 +776,8 @@ const LineChartComponent = ({
     return (
       <div className="border-none shadow-lg bg-[#ffffff] w-[600px] z-10">
         <div className="px-4 py-2 flex text-lg font-medium border-b justify-between">
-          <span>{format(date, "d MMM yyyy")}</span>
-          <span>{format(prevYearDate, "d MMM yyyy")}</span>
+          <span>{format(new Date(date), "d MMM yyyy")}</span>
+          <span className="text-[#4B9EF4]">{format(comparisonDate, "d MMM yyyy")}</span>
         </div>
         {isEventeli &&
           matchingHoliday &&
@@ -848,11 +806,11 @@ const LineChartComponent = ({
               <div className="flex flex-col gap-2">
                 <div>
                   <p className="font-semibold text-[#6750a4]">{total}</p>
-                  <Text size="normal" color="secondary" fontWeight="regular">
+                  {/* <Text size="normal" color="secondary" fontWeight="regular">
                     Current Year{" "}
                     {columnsDropdown.find((column) => column.value === metric)
                       ?.label ?? ""}
-                  </Text>
+                  </Text> */}
                 </div>
               </div>
             </div>
@@ -914,19 +872,19 @@ const LineChartComponent = ({
             </div>
           </div>
 
-          {/* Previous Year Section */}
+          {/* Comparison Section */}
           <div>
             <div className="px-4 py-2 border-b">
               <div className="flex flex-col gap-2">
                 <div>
-                  <p className="font-semibold text-[#FF990A]">
+                  <p className="font-semibold text-[#4B9EF4]">
                     {previousYearTotal}
                   </p>
-                  <Text size="normal" color="secondary" fontWeight="regular">
-                    {comparisonLabel}{" "}
+                  {/* <Text size="normal" color="secondary" fontWeight="regular">
+                    Comparison Period{" "}
                     {columnsDropdown.find((column) => column.value === metric)
                       ?.label ?? ""}
-                  </Text>
+                  </Text> */}
                 </div>
               </div>
             </div>
@@ -955,9 +913,7 @@ const LineChartComponent = ({
               ))}
             </div>
             <div className="px-4 py-2">
-              <p className="text-sm font-medium">
-                TOP EVENTS ({comparisonLabel})
-              </p>
+              <p className="text-sm font-medium">TOP EVENTS</p>
               <ul className="flex flex-col gap-2 mt-4">
                 {isPreviouseventsLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
@@ -996,22 +952,22 @@ const LineChartComponent = ({
             href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
             className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer border-r"
           >
-            VIEW ALL CURRENT EVENTS
+            VIEW ALL
             <ArrowUpRight height={18} width={18} stroke="#6750a4" />
           </Link>
           {previousYearEventData &&
           (previousYearEventData as any).events.length > 0 ? (
             <Link
               href={`/internal/search/events?${previousYearLink}`}
-              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#FF990A] cursor-pointer"
+              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
             >
-              VIEW ALL {comparisonLabel.toUpperCase()} EVENTS
-              <ArrowUpRight height={18} width={18} stroke="#FF990A" />
+              VIEW ALL
+              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
             </Link>
           ) : (
-            <div className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#FF990A]">
-              NO {comparisonLabel.toUpperCase()} DATA
-              <ArrowUpRight height={18} width={18} stroke="#FF990A" />
+            <div className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4]">
+              NO COMPARISON DATA
+              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
             </div>
           )}
         </div>
@@ -1020,32 +976,29 @@ const LineChartComponent = ({
   };
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
-    // Get the comparison option label
-    const compareOption = searchParams.get("compare");
-    let comparisonLabel = "Previous Year";
+    // Get the comparison option label - we'll use a generic name regardless of the comparison type
+    const comparisonLabel = "Comparison Period";
 
-    if (compareOption === "same_period_ly") {
-      comparisonLabel = "Same Period Last Year";
-    } else if (compareOption === "preceding_period") {
-      comparisonLabel = "Preceding Period";
-    } else if (compareOption === "same_period_ly_match_dow") {
-      comparisonLabel = "Same Period Last Year (match day of week)";
-    } else if (compareOption === "preceding_period_match_dow") {
-      comparisonLabel = "Preceding Period (match day of week)";
-    }
+    // Separate year entries from threshold entries
+    const yearEntries = payload?.filter(entry => 
+      entry.id === "current_year" || entry.id === "previous_year"
+    ) || [];
+    
+    const thresholdEntries = payload?.filter(entry => 
+      entry.id !== "current_year" && entry.id !== "previous_year"
+    ) || [];
 
     return (
-      <div className="flex gap-5 items-center justify-end w-fit">
-        {payload &&
-          payload.map((entry, index) => {
-            // Update the label for the previous year entry
+      <div className="flex flex-col items-end gap-4">
+        {/* Year entries row */}
+        <div className="flex gap-5 items-center">
+          {yearEntries.map((entry, index) => {
             if (entry.id === "previous_year") {
               entry.value = comparisonLabel;
             }
-
             return (
               <div
-                key={`legend-item-${index}`}
+                key={`year-item-${index}`}
                 className="flex items-center gap-2"
               >
                 <div
@@ -1058,7 +1011,10 @@ const LineChartComponent = ({
                   <ShadcnTooltip>
                     <TooltipTrigger asChild>
                       <span
-                        className={`cursor-pointer text-sm font-medium ${`text-[${entry.color}]`}`}
+                        className={`cursor-pointer text-sm font-medium`}
+                        style={{
+                          color: entry.color
+                        }}
                       >
                         {entry.value}
                       </span>
@@ -1073,6 +1029,51 @@ const LineChartComponent = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Threshold entries row */}
+        <div className="flex gap-5 items-center">
+          {thresholdEntries.map((entry, index) => (
+            <div
+              key={`threshold-item-${index}`}
+              className="flex items-center gap-2"
+            >
+              {entry.id === "upper_threshold" || entry.id === "lower_threshold" ? (
+                <div className="w-4 h-0 border-t-2" style={{
+                  borderColor: entry.color,
+                  borderStyle: 'dashed',
+                  borderWidth: '2px'
+                }}></div>
+              ) : (
+                <div
+                  className={`w-2 h-2 rounded-full`}
+                  style={{
+                    backgroundColor: entry.color,
+                  }}
+                ></div>
+              )}
+              <TooltipProvider>
+                <ShadcnTooltip>
+                  <TooltipTrigger asChild>
+                    <span
+                      className={`cursor-pointer text-sm font-medium`}
+                      style={{
+                        color: entry.color
+                      }}
+                    >
+                      {entry.value}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="w-60 tooltip-content-styles">
+                    <p className="font-medium text-[var(--secondary-text-color)]">
+                      {entry.tooltipDescription}
+                    </p>
+                  </TooltipContent>
+                </ShadcnTooltip>
+              </TooltipProvider>
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -1233,27 +1234,19 @@ const LineChartComponent = ({
             connectNulls={true}
             dot={<CustomDot />}
           />
-          {compare && <Line
-            type="linear"
-            dataKey="previousYearTotal"
-            name={
-              searchParams.get("compare") === "same_period_ly"
-                ? "Same Period Last Year"
-                : searchParams.get("compare") === "preceding_period"
-                ? "Preceding Period"
-                : searchParams.get("compare") === "same_period_ly_match_dow"
-                ? "Same Period Last Year (match day of week)"
-                : searchParams.get("compare") === "preceding_period_match_dow"
-                ? "Preceding Period (match day of week)"
-                : "Previous Year"
-            }
-            stroke="#FF990A"
-            strokeWidth={2}
-            strokeOpacity={1}
-            connectNulls={true}
-            // strokeDasharray="5 5"
-            dot={false}
-          />}
+          {getLocalFilterValue("compare_from") &&
+            getLocalFilterValue("compare_to") && (
+              <Line
+                type="linear"
+                dataKey="previousYearTotal"
+                name="Comparison Period"
+                stroke="#4B9EF4"
+                strokeWidth={2}
+                strokeOpacity={1}
+                connectNulls={true}
+                dot={false}
+              />
+            )}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
@@ -1267,22 +1260,23 @@ const LineChartComponent = ({
                     tooltipDescription: "Data for the current selected period",
                   },
                   {
-                    value: "Previous Year",
+                    value: "Comparison Period",
                     type: "line",
                     id: "previous_year",
-                    color: "#FF990A",
+                    color: "#4B9EF4",
                     tooltipDescription:
-                      "Data for the same period in the previous year",
+                      "Data for the comparison period",
                   },
                   ...(showThresholdLines
                     ? [
                         {
                           value: "Upper Threshold",
-                          type: "circle",
+                          type: "line",
                           id: "upper_threshold",
                           color: "#398E4A",
                           tooltipDescription:
                             "Represents the maximum boundary relative to the average value for this trend.",
+                          strokeDasharray: "12 12"
                         },
                         {
                           value: "Average",
@@ -1294,11 +1288,12 @@ const LineChartComponent = ({
                         },
                         {
                           value: "Lower Threshold",
-                          type: "circle",
+                          type: "line",
                           id: "lower_threshold",
                           color: "#FF990A",
                           tooltipDescription:
                             "Represents the minimum boundary relative to the average value for this trend.",
+                          strokeDasharray: "12 12"
                         },
                       ]
                     : []),

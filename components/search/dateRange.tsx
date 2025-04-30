@@ -98,6 +98,7 @@ export default function DateRangeSelector({
     deleteMultipleLocalFilters,
     applyFilters,
   } = useFilterContext();
+  const { getFilterValue } = useFilterState();
   const enableCompareOptions = pathName === "/internal/trends";
 
   const active_gte = getLocalFilterValue("active_gte");
@@ -284,11 +285,24 @@ export default function DateRangeSelector({
           >
             <div className="flex items-center truncate">
               <span className="mr-2">Dates</span>
-              {(dateRange.from || dateRange.to) && (
-                <span className="text-xs text-primary truncate">
-                  {formatDateRange(dateRange.from, dateRange.to)}
-                </span>
-              )}
+              <div className="text-xs truncate text-primary font-medium">
+                {(dateRange.from || dateRange.to) && (
+                  <span className="text-primary">
+                    {formatDateRange(dateRange.from, dateRange.to)}
+                  </span>
+                )}
+                {getLocalFilterValue("compare_from") && getLocalFilterValue("compare_to") && (
+                  <>
+                    <span className="mx-1 text-muted-foreground">vs</span>
+                    <span className="text-muted-foreground">
+                      {formatDateRange(
+                        new Date(getLocalFilterValue("compare_from")),
+                        new Date(getLocalFilterValue("compare_to"))
+                      )}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
             <ChevronDown
               className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -308,9 +322,7 @@ export default function DateRangeSelector({
           handleDateSelect={handleDateSelect}
           calendarDate={calendarDate}
           setCalendarDate={setCalendarDate}
-          enableCompareOptions={true}
-          compareEnabled={compareEnabled}
-          setCompareEnabled={setCompareEnabled}
+          enableCompareOptions={false}
         />
       ) : (
         <PopoverContent className="w-auto p-0" align="start">
@@ -323,8 +335,6 @@ export default function DateRangeSelector({
             calendarDate={calendarDate}
             setCalendarDate={setCalendarDate}
             enableCompareOptions={enableCompareOptions}
-            compareEnabled={compareEnabled}
-            setCompareEnabled={setCompareEnabled}
           />
         </PopoverContent>
       )}

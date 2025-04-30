@@ -5,33 +5,44 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePathname } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { format, addDays, subDays, subYears, startOfWeek, endOfWeek } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Label } from "../ui/label";
 import { useFilterState } from "@/hooks/useFilterState";
+import { Separator } from "@/components/ui/separator";
+import { useFilterContext } from "@/context/filterContext";
+
 interface DateRangePopupProps {
   type?: string;
   presets: { value: string; label: string }[];
   handlePresetChange: (value: string) => void;
   selectedPreset: string;
-  dateRange: any;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
   handleDateSelect: (selectedDay: Date) => void;
   calendarDate: Date;
   setCalendarDate: (date: Date) => void;
   enableCompareOptions: boolean;
-  compareEnabled: boolean;
-  setCompareEnabled: (enabled: boolean) => void;
 }
 
 const comparisonOptions = [
   {
     id: "preceding_period_match_dow",
-    label: "Preceding Period (match day of the week)",
+    label: "Preceding period (match day of week)",
   },
   {
     id: "same_period_ly_match_dow",
-    label: "Same period last year (match day of the week)",
+    label: "Same period last year (match day of week)",
   },
-  { id: "preceding_period", label: "Preceding Period" },
-  { id: "same_period_ly", label: "Same Period Last year" },
-];
+  { id: "preceding_period", label: "Preceding period" },
+  { id: "same_period_ly", label: "Same period last year" },
+  { id: "custom", label: "Custom" },
+] as const;
+
+type ComparisonType = typeof comparisonOptions[number]['id'] | '';
 
 const DateRangePopup: React.FC<DateRangePopupProps> = ({
   presets,
@@ -42,13 +53,67 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   calendarDate,
   setCalendarDate,
   enableCompareOptions,
-  compareEnabled,
-  setCompareEnabled,
   type,
 }) => {
   const url = usePathname();
-  const { getFilterValue, setFilter } = useFilterState();
-  const selectedComparison = getFilterValue("compare");
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const compareFrom = getLocalFilterValue("compare_from");
+  const compareTo = getLocalFilterValue("compare_to");
+  const [comparisonType, setComparisonType] = React.useState<ComparisonType>("");
+
+  const calculateComparisonDates = (
+    from: Date | undefined,
+    to: Date | undefined,
+    type: ComparisonType
+  ) => {
+    if (!from || !to) return { from: undefined, to: undefined };
+
+    const duration = to.getTime() - from.getTime();
+
+    switch (type) {
+      case "preceding_period_match_dow":
+        // Move back by the duration plus 1 day to match day of week
+        const precedingFrom = new Date(from.getTime() - duration - 86400000);
+        const precedingTo = new Date(from.getTime() - 86400000);
+        return { from: precedingFrom, to: precedingTo };
+
+      case "same_period_ly_match_dow":
+        // Same dates but one year before
+        return {
+          from: subYears(from, 1),
+          to: subYears(to, 1),
+        };
+
+      case "preceding_period":
+        // Simply move back by the duration
+        return {
+          from: new Date(from.getTime() - duration),
+          to: subDays(from, 1),
+        };
+
+      case "same_period_ly":
+        // Exactly one year before
+        return {
+          from: subYears(from, 1),
+          to: subYears(to, 1),
+        };
+
+      case "custom":
+        // Use the manually set comparison dates
+        return {
+          from: compareFrom ? new Date(compareFrom) : undefined,
+          to: compareTo ? new Date(compareTo) : undefined,
+        };
+
+      default:
+        return { from: undefined, to: undefined };
+    }
+  };
+
+  const compareRange = React.useMemo(
+    () => calculateComparisonDates(dateRange.from, dateRange.to, comparisonType),
+    [dateRange.from, dateRange.to, comparisonType, compareFrom, compareTo]
+  );
 
   // Filter out 'past' and 'upcoming' presets when the URL is '/internal/trends'
   const filterPresets =
@@ -57,34 +122,203 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
           (preset) => preset.value !== "past" && preset.value !== "upcoming"
         )
       : presets;
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    if (!isNaN(date.getTime())) {
+      handleDateSelect(date);
+    }
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    if (!isNaN(date.getTime())) {
+      handleDateSelect(date);
+    }
+  };
+
+  const handleCompareChange = (checked: boolean) => {
+    if (!checked) {
+      setComparisonType("");
+      setLocalFilter("compare_from", "");
+      setLocalFilter("compare_to", "");
+    } else {
+      setComparisonType("preceding_period_match_dow");
+      if (dateRange.from && dateRange.to) {
+        const { from, to } = calculateComparisonDates(
+          dateRange.from,
+          dateRange.to,
+          "preceding_period_match_dow"
+        );
+        if (from && to) {
+          setLocalFilter("compare_from", format(from, "yyyy-MM-dd"));
+          setLocalFilter("compare_to", format(to, "yyyy-MM-dd"));
+        }
+      }
+    }
+  };
+
+  const handleComparisonTypeChange = (type: ComparisonType) => {
+    setComparisonType(type);
+    if (dateRange.from && dateRange.to) {
+      const { from, to } = calculateComparisonDates(dateRange.from, dateRange.to, type);
+      if (from && to) {
+        setLocalFilter("compare_from", format(from, "yyyy-MM-dd"));
+        setLocalFilter("compare_to", format(to, "yyyy-MM-dd"));
+      }
+    }
+  };
+
+  const handleCompareStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    if (!isNaN(date.getTime())) {
+      setLocalFilter("compare_from", format(date, "yyyy-MM-dd"));
+    }
+  };
+
+  const handleCompareEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    if (!isNaN(date.getTime())) {
+      setLocalFilter("compare_to", format(date, "yyyy-MM-dd"));
+    }
+  };
+
   return (
-    <div className="flex flex-col border rounded-md">
+    <div className="flex flex-col border rounded-md bg-white shadow-sm">
       {type === "T_LOCATION_DATE" && (
         <div className="flex justify-between items-center p-4 py-2 border-b">
           <span className="font-medium">Dates</span>
         </div>
       )}
-      <ScrollArea className={cn("max-h-[400px]", compareEnabled && "h-[400px]")}>
-        <div className="flex space-x-4 rounded-md p-4">
-          <ScrollArea className="h-[300px] w-[150px]">
-            <div className="space-y-2 flex flex-col justify-between pr-4">
+      <div className="flex p-4">
+        <div className="w-[220px]">
+          <div className="h-[var(-radix-popover-content-available-height)] overflow-y-scroll pr-4">
+            <div className="space-y-0.5">
               {filterPresets.map((preset) => (
                 <Button
                   key={preset.value}
                   onClick={() => handlePresetChange(preset.value)}
-                  variant="outline"
+                  variant="ghost"
                   className={cn(
-                    "w-full font-normal",
-                    selectedPreset === preset.value && "bg-[#F2F2F2]"
+                    "w-full justify-start font-normal text-sm transition-colors hover:bg-gray-100",
+                    selectedPreset === preset.value &&
+                      "bg-blue-50 text-blue-600 hover:bg-blue-50"
                   )}
                 >
                   {preset.label}
                 </Button>
               ))}
+
+              {enableCompareOptions && (
+                <>
+                  <Separator className="my-3" />
+                  <div className="flex items-center justify-between px-3 py-2 rounded-md bg-gray-50">
+                    <span className="text-sm">Compare</span>
+                    <Switch
+                      checked={!!comparisonType}
+                      onCheckedChange={handleCompareChange}
+                    />
+                  </div>
+                  {comparisonType && (
+                    <div className="space-y-0.5 mt-2">
+                      {comparisonOptions.map((option) => (
+                        <Button
+                          key={option.id}
+                          onClick={() => handleComparisonTypeChange(option.id)}
+                          variant="ghost"
+                          className={cn(
+                            "w-full justify-start text-left font-normal text-sm transition-colors text-wrap hover:bg-gray-100",
+                            comparisonType === option.id &&
+                              "bg-blue-50 text-blue-600 hover:bg-blue-50"
+                          )}
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          </ScrollArea>
-          <div className="border-l" />
-          <div>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="space-y-2">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex flex-col">
+                  <Label className="text-xs mb-1.5 text-muted-foreground font-medium">
+                    Start date
+                  </Label>
+                  <Input
+                    type="date"
+                    value={
+                      dateRange.from ? format(dateRange.from, "yyyy-MM-dd") : ""
+                    }
+                    onChange={handleStartDateChange}
+                    className="w-[140px] pr-8"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <Label className="text-xs mb-1.5 text-muted-foreground font-medium">
+                    End date
+                  </Label>
+                  <Input
+                    type="date"
+                    value={
+                      dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : ""
+                    }
+                    onChange={handleEndDateChange}
+                    className="w-[140px] pr-8"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {!!comparisonType && (
+              <div>
+                <Label className="text-sm font-medium mb-2 block">
+                  Compare
+                </Label>
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col">
+                    <Label className="text-xs mb-1.5 text-muted-foreground font-medium">
+                      Start date
+                    </Label>
+                    <Input
+                      type="date"
+                      value={
+                        compareRange.from
+                          ? format(compareRange.from, "yyyy-MM-dd")
+                          : ""
+                      }
+                      onChange={handleCompareStartDateChange}
+                      className="w-[140px] pr-8"
+                      disabled={comparisonType !== "custom"}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <Label className="text-xs mb-1.5 text-muted-foreground font-medium">
+                      End date
+                    </Label>
+                    <Input
+                      type="date"
+                      value={
+                        compareRange.to
+                          ? format(compareRange.to, "yyyy-MM-dd")
+                          : ""
+                      }
+                      onChange={handleCompareEndDateChange}
+                      className="w-[140px] pr-8"
+                      disabled={comparisonType !== "custom"}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-2">
             <Calendar
               mode="range"
               selected={dateRange}
@@ -92,42 +326,11 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
               month={calendarDate}
               onMonthChange={setCalendarDate}
               numberOfMonths={1}
+              className="rounded-md border"
             />
           </div>
         </div>
-        {enableCompareOptions && (
-          <div className="border-t pt-4 px-4 pb-4">
-            <div
-              className={`flex items-center justify-between ${
-                compareEnabled ? "mb-3" : "mb-0"
-              }`}
-            >
-              <h3 className="text-sm font-medium">Compare with Past data</h3>
-              <Switch
-                checked={compareEnabled}
-                onCheckedChange={setCompareEnabled}
-              />
-            </div>
-            {compareEnabled && (
-              <div className="space-y-2 flex flex-col">
-                {comparisonOptions.map((option) => (
-                  <Button
-                    key={option.id}
-                    onClick={() => setFilter("compare", option.id)}
-                    variant="ghost"
-                    className={cn(
-                      "w-full justify-start text-left font-normal py-2",
-                      selectedComparison === option.id && "bg-[#F2F2F2]"
-                    )}
-                  >
-                    {option.label}
-                  </Button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </ScrollArea>
+      </div>
     </div>
   );
 };
