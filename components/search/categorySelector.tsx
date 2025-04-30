@@ -20,6 +20,7 @@ import {
 import { convertISOToOriginalFormat } from "@/utils/date";
 
 interface FlexibleComponentProps {
+  source?:string;
   variant?: "accordion" | "popover";
   filterName?: string;
   disabled?: boolean;
@@ -31,11 +32,13 @@ export default function CategorySelector({
   filterName,
   disabled,
   maxCategories,
+  source,
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const categories = morphedData?.categories?.options || [];
-  const selectedCategories = (getLocalFilterValue(filterName as keyof Filters || "categories")
+  const selectedCategories = source==="preset"?getLocalFilterValue("presetCategory").split(",")
+  .filter(Boolean):(getLocalFilterValue(filterName as keyof Filters || "categories")
     ?.split(",")
     ?.filter(Boolean)) || [];
   const [isOpen, setIsOpen] = useState(false);
@@ -65,6 +68,9 @@ export default function CategorySelector({
       }
       
       const filterValue = newCategories.length > 0 ? newCategories.join(",") : "";
+      if(source==="preset"){
+        setLocalFilter("presetCategory", newCategories.join(","))
+      }else
       setLocalFilter(filterName as keyof Filters || "categories", filterValue);
     },
     [selectedCategories, setLocalFilter, filterName, maxCategories]
@@ -103,7 +109,8 @@ export default function CategorySelector({
     
     const columnCount = 3;
     const allCategories = [
-      ...(maxCategories ? [] : [{ id: "all", name: "Select All", slug: "all", isEnabled: true }]),
+      source!=="preset" &&
+      { id: "all", name: "Select All", slug: "all", isEnabled: true },
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);

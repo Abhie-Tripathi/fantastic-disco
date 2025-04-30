@@ -189,7 +189,8 @@ export const useLocationService = () => {
   };
 
   const getLocationBBox = async (
-    locationName: string
+    locationName: string,
+    locationType?: string | undefined
   ): Promise<BBox | undefined> => {
     const normalizedName = locationName.toLowerCase().trim();
     if (
@@ -212,7 +213,7 @@ export const useLocationService = () => {
           params: {
             q: locationName,
             format: "json",
-            limit: 1,
+            limit: 10,
           },
         }
       );
@@ -221,7 +222,12 @@ export const useLocationService = () => {
         throw new Error("Location not found");
       }
 
-      const result = response.data[0];
+      const result = locationType
+        ? response.data.find(
+            (location) => location.addresstype === locationType.toLowerCase()
+          ) || response.data[0]
+        : response.data[0];
+
       if (result.boundingbox) {
         return [
           parseFloat(result.boundingbox[2]),
