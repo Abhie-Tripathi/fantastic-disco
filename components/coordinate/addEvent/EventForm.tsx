@@ -21,6 +21,12 @@ import { useCoordinateService } from "@/services/coordinateService";
 import LoadingSkeleton from "./LoadingSkeleton";
 import { useAuthContext } from "@/context";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
+import EventType from "./eventType";
+import ParticipationMode from "./participationMode";
+import { Button } from "@/components/ui/button";
+import DateTimeContainer from "./DateTimeContainer";
+import LocationContainer from "./LocationContainer";
 
 interface Props {
   eventFormState: "default" | "similarEvents" | "editEvents" | "fetching" | "validating";
@@ -195,6 +201,8 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     callback();
   }
 
+  const handleSave = () => {}
+
 
   const handleSaveClick = async () => {
 
@@ -277,114 +285,146 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     }
   }, [eventFormState]);
 
-  return (
-    <div className="p-3 flex flex-col gap-4">
-      {eventFormState === "fetching" ? (
-        <LoadingSkeleton />
-      ) : eventFormState === "similarEvents" ? (
-        <>
-          <div className="text-sm p-4 border rounded-sm border-[#FFDD8F] bg-[--warning-background-color]">
-            We&apos;ve Found
-            <span className="text-[#A35200] font-semibold">
-              {" "}
-              {similarEvents.length} Similar Events{" "}
-            </span>
-            ! See if either matches the event you&apos;re trying to add.
-          </div>
-
-          <SimilarEventCard
-            eventData={eventData}
-            duplicateEvents={similarEvents}
-            showSimlarCard={true}
-          />
-        </>
-      ) : (
-        <>
-          <Details
-            formTheme="light"
-            handleCollapseForm={handleCollapseForm}
-            formState={mainEventState}
-            handleChange={handleChange}
-            eventFont={"Arial"}
-            setLoadingState={setLoadingState}
-            fileInputRef={fileInputRef}
-            // prefilledEvent={initialFormState}
-            isApproved={isApproved}
-            setIsApproved={setIsApproved}
-          />
-        </>
-      )}
-    </div>
-  );
-
   // return (
-  //   <div className="grid grid-cols-4 gap-4 border rounded-lg p-4 px-6">
-  //     <div className="col-span-1">
-  //       <Image
-  //         src={placeHolder}
-  //         alt="Poster"
-  //         className="w-40 object-contain border rounded-md shadow-sm"
-  //       />
-  //     </div>
-  //     <div className="grid gap-4 col-span-3">
-  //       <div className="flex justify-between items-center">
-  //         <textarea
-  //           className="hover:bg-accent rounded-md p-3 outline-none resize-none text-2xl font-semibold w-full"
-  //           maxLength={80}
-  //           placeholder="Event Name"
+  //   <div className="p-3 flex flex-col gap-4">
+  //     {eventFormState === "fetching" ? (
+  //       <LoadingSkeleton />
+  //     ) : eventFormState === "similarEvents" ? (
+  //       <>
+  //         <div className="text-sm p-4 border rounded-sm border-[#FFDD8F] bg-[--warning-background-color]">
+  //           We&apos;ve Found
+  //           <span className="text-[#A35200] font-semibold">
+  //             {" "}
+  //             {similarEvents.length} Similar Events{" "}
+  //           </span>
+  //           ! See if either matches the event you&apos;re trying to add.
+  //         </div>
+
+  //         <SimilarEventCard
+  //           eventData={eventData}
+  //           duplicateEvents={similarEvents}
+  //           showSimlarCard={true}
   //         />
-  //       </div>
-  //       <div className="flex justify-between items-center">
-  //         {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-  //           Choose Your Event Type
-  //         </span> */}
-  //         <div className="">
-  //           <EventType />
-  //         </div>
-  //       </div>
-
-  //       <div className="flex justify-between items-center">
-  //         {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-  //           Choose Your Mode of Participation
-  //         </span> */}
-  //         <div className="">
-  //           <ParticipationMode />
-  //         </div>
-  //       </div>
-
-  //       <div className="flex justify-between items-center">
-  //         {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-  //           Select Event Date
-  //         </span> */}
-  //         <div className="">
-  //           <DateTimeContainer
-  //             formTheme="light"
-  //             handleChange={handleChange}
-  //             formState={formState}
-  //           />
-  //         </div>
-  //       </div>
-
-  //       <div className="flex justify-between items-center">
-  //         {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
-  //           Add Event Location
-  //         </span> */}
-  //         <div className="w-2/3">
-  //           <LocationContainer
-  //             formTheme="light"
-  //             handleChange={handleChange}
-  //             formState={formState}
-  //           />
-  //         </div>
-  //       </div>
-  //     </div>
-  //     <div className="flex justify-end col-span-4">
-  //       <Button size="sm" onClick={handleSave}>
-  //         Save and Add Event
-  //       </Button>
-  //     </div>
+  //       </>
+  //     ) : (
+  //       <>
+  //         <Details
+  //           formTheme="light"
+  //           handleCollapseForm={handleCollapseForm}
+  //           formState={mainEventState}
+  //           handleChange={handleChange}
+  //           eventFont={"Arial"}
+  //           setLoadingState={setLoadingState}
+  //           fileInputRef={fileInputRef}
+  //           // prefilledEvent={initialFormState}
+  //           isApproved={isApproved}
+  //           setIsApproved={setIsApproved}
+  //         />
+  //       </>
+  //     )}
   //   </div>
   // );
+
+  return (
+    <div className="grid grid-cols-4 gap-4 border rounded-lg p-4 px-6 h-full">
+      {/* <EventType formTheme={formTheme} prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /> */}
+      {/* <div className="col-span-4 flex justify-between items-center">
+        <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+          Event Type
+        </span>
+        <div className="flex gap-4">
+        {["Tradeshow", "Conference", "Workshop"].map((type) => (
+          <label key={type} className="flex items-center gap-2 text-sm">
+            <input
+              type="radio"
+              name="eventType"
+              value={type}
+              // checked={selectedEventType === type}
+              // onChange={handleOptionChange}
+              // className={styles.radio}
+              checked={true}
+            />
+            {type}
+          </label>
+        ))}
+        </div>
+      </div> */}
+
+      <div className="col-span-4">
+        <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+          Choose Your Mode of Participation
+        </span>
+        <div className="">
+          <ParticipationMode />
+        </div>
+      </div>
+
+      <div className="col-span-1">
+        <Image
+          src={Placeholder}
+          alt="Poster"
+          className="w-52 object-contain border rounded-md shadow-sm"
+        />
+      </div>
+      <div className="grid gap-4 col-span-3">
+        <div className="flex justify-between items-center">
+          <textarea
+            className="hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full"
+            maxLength={80}
+            placeholder="Event Name"
+          />
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+            Choose Your Event Type
+          </span>
+          <div className="">
+            <EventType />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center">
+          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+            Choose Your Mode of Participation
+          </span> */}
+          <div className="">
+            <ParticipationMode />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center">
+          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+            Select Event Date
+          </span> */}
+          <div className="w-full bg-accent rounded-md">
+            <DateTimeContainer
+              formTheme="light"
+              handleChange={handleChange}
+              formState={formState}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center">
+          {/* <span className="text-[var(--tertiary-text-color)] text-base font-medium">
+            Add Event Location
+          </span> */}
+          <div className="w-full bg-accent rounded-md">
+            <LocationContainer
+              formTheme="light"
+              handleChange={handleChange}
+              formState={formState}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-end col-span-4">
+        <Button size="sm" onClick={handleSave}>
+          Save and Add Event
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default EventForm;
