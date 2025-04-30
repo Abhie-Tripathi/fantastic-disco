@@ -1,30 +1,40 @@
 "use client";
-import Text from "@/components/new-ui/Text";
+import TemplatesModal, {
+  TemplateType,
+} from "@/app/components/trends/templates-modal";
 import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
+import CategorySelector from "@/components/search/categorySelector";
 import ColumnsSelector from "@/components/search/columnSelector";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventTypeSelector from "@/components/search/eventType";
 import LocationSelector from "@/components/search/location";
 import LineChartComponent from "@/components/trends/lineChart";
+import TreemapView from "@/components/trends/treemap-view";
+import { ChartFilters } from "@/components/trendsChart/chart-filters";
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/ui/Loading";
-import { isEventeli } from "@/config";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Filters, useFilterContext } from "@/context/filterContext";
-import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { useTrendsService } from "@/services/trendsService";
-import { EventResponse } from "@/types/events";
 import {
   EventTrendsResponse,
   GetSaveTrendData,
   TableData,
-  TableGroupedHoliday,
-  TEventColumnType,
 } from "@/types/trends/trends";
+import { HierarchyLevel } from "@/utils/chart-options";
 import {
   generateTrendsTableColumnHeaders,
   morphToGraphData,
@@ -33,57 +43,19 @@ import {
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Loader2,
+  Calendar1,
   ChevronLeft,
-  ChevronRight,
+  Filter,
+  FilterX,
+  Info,
   LayoutGrid,
   LineChart,
-  Table,
-  Filter,
-  Calendar1,
-  MapPin,
-  BarChart3,
-  Plus,
-  ChevronDown,
-  Search,
-  Save,
-  History,
-  Settings,
-  FilterX,
-  Download,
-  Building,
-  UserSearch,
   Lock,
-  Info,
-  X,
-  RotateCcw,
-  PenLine,
+  Save,
+  Table,
 } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
-import ZeroStateIcon from "/public/zero_state.svg";
-import ZeroStateDataIcon from "/public/zero_state_data.svg";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ChartFilters } from "@/components/trendsChart/chart-filters";
-import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
-import TreemapView from "@/components/trends/treemap-view";
-import CategorySelector from "@/components/search/categorySelector";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import TemplatesModal, {
-  TemplateType,
-} from "@/app/components/trends/templates-modal";
-import { useFilterState } from "@/hooks/useFilterState";
 
 const ViewTemplates = [
   {
@@ -109,7 +81,7 @@ const ViewTemplates = [
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
-  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const { getSavedTrends } = useTrendsService();
   const {
     applyFilters,
     setLocalFilter,
@@ -382,7 +354,7 @@ const EventTrends = () => {
   // Add delay for showing category warning
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    
+
     if (activeView === "treemap" && categories.length === 0) {
       timeoutId = setTimeout(() => {
         setShowCategoryWarning(true);
@@ -390,7 +362,7 @@ const EventTrends = () => {
     } else {
       setShowCategoryWarning(false);
     }
-    
+
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
@@ -413,7 +385,7 @@ const EventTrends = () => {
             isFiltersCollapsed ? "" : "border-r"
           }`}
         >
-          <ScrollArea className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             <div className="space-y-4 p-4">
               <Tabs defaultValue="events" className="w-full">
                 <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
@@ -446,7 +418,11 @@ const EventTrends = () => {
                     {visibleFilters.eventTypes && (
                       <EventTypeSelector variant="popover" />
                     )}
-                    {visibleFilters.location && <LocationSelector />}
+                    {visibleFilters.location && (
+                      <LocationSelector
+                        disableCenterPoint={activeView === "treemap"}
+                      />
+                    )}
                     {visibleFilters.dateRange && <DateRangeSelector />}
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
@@ -479,7 +455,7 @@ const EventTrends = () => {
                 </div>
               </Tabs>
             </div>
-          </ScrollArea>
+          </div>
 
           <div
             className={`w-full bg-background z-10 transition-all duration-300 ${
@@ -505,37 +481,39 @@ const EventTrends = () => {
                   {filterCount} filters applied
                 </span>
               </div>
-              {activeView === "treemap" && categories.length === 0 && showCategoryWarning && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
-                  <div className="flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-destructive"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="8" x2="12" y2="12" />
-                      <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
+              {activeView === "treemap" &&
+                categories.length === 0 &&
+                showCategoryWarning && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
+                    <div className="flex-shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-destructive"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-destructive">
+                        Category Required
+                      </p>
+                      <p className="text-xs text-destructive/80">
+                        Please select at least one category to view the treemap
+                        visualization
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-destructive">
-                      Category Required
-                    </p>
-                    <p className="text-xs text-destructive/80">
-                      Please select at least one category to view the treemap
-                      visualization
-                    </p>
-                  </div>
-                </div>
-              )}
+                )}
               <Button
                 onClick={applyHandler}
                 className="w-full h-10"
