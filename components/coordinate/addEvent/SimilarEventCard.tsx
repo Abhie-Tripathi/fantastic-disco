@@ -100,7 +100,7 @@ const SimilarEventCard = ({
 
       {showSimilar && (
         <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
-          <div className="my-2">
+          <div className="">
             <div className="flex gap-1 mb-1">
               <Image src={fetchIcon} height={18} width={18} alt="loading" />
               <span className="font-medium text-base">

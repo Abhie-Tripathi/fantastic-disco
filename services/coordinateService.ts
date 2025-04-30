@@ -372,10 +372,9 @@ export const useCoordinateService = () => {
   }
 
   const addNewEvent = async(formData: any) => {
-    const data = await externalAxios.get<any>(
+    const data = await externalAxios.post<any>(
       `https://stg-board.10times.com/enquiry/submit`,
       {
-        method: "POST",
         data: formData,
       }
     );

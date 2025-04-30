@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
       {/* Modal content */}
       <div
-        className={`fixed top-0 right-0 w-2/3 h-full bg-background z-50 transform transition-all duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 w-1/2 h-full bg-background z-50 transform transition-all duration-500 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
