@@ -3,17 +3,26 @@
 import { useEventsService } from "@/services/eventsService";
 import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
 import { Badge } from "../ui/badge";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
 const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
+  const [intelData, setIntelData] = useState<any>(null);
   useEffect(() => {  
-    const data = getEventIntelScore(eventId);
-    console.log(data);
-  },[])
+    const fetchIntelScore = async () => {
+      try {
+        const data = await getEventIntelScore(eventId);
+        console.log(data);
+        setIntelData(data);
+      } catch (error) {
+        console.error('Failed to fetch event intel score:', error);
+      }
+    };
   
+    fetchIntelScore();
+  },[])
   
   return (
     <div className={"gap-8 flex flex-col"}>
@@ -30,12 +39,12 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         </Badge>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <CircularProgress percentages={[80, 50, 70]} relevanceScore={"89"} />
+        <CircularProgress percentages={[intelData?.[0]?.people_score ?? 0, intelData?.[0]?.purpose_score ?? 0, intelData?.[0]?.prospect_score ?? 0]} relevanceScore={intelData?.[0]?.alltrackers_score} />
       </div>
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>80</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.people_score ?? 0}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -54,7 +63,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div>
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>50</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? "-"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -73,7 +82,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div>
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>70</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? "-"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
