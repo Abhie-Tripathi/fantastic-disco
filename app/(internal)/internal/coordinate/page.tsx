@@ -16,7 +16,6 @@ const Page = () => {
     isLoading: isOutreachConfigLoading,
   } = useConfiguration.outreach();
 
-
   return (
     <div className={`${styles.container}`}>
       { (isInterestConfigLoading || isOutreachConfigLoading) ?

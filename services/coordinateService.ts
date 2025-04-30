@@ -12,8 +12,6 @@ import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
 import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
-import websiteSuggestion from "@/public/data/addEvent/websiteSuggestion.json";
-import duplicateEventData from "@/public/data/addEvent/duplicateEventData.json";
 
 interface fnProp {
   offset: number;
@@ -332,14 +330,7 @@ export const useCoordinateService = () => {
     });
   };
 
-  const fetchEvents = (websiteUrl: string) => {
-    // const data = await externalAxios.get(
-    //   `https://stg-serve.10times.com/index.php/v1/event/search?website=10times.com`,
-    //   {
-    //     method: "GET",
-    //   }
-    // );
-    // return websiteSuggestion;    
+  const fetchEvents = (websiteUrl: string) => {  
     const data = {
       events: [],
       totalCount: 0,
@@ -361,14 +352,6 @@ export const useCoordinateService = () => {
         params: payload,
       }
     );
-  }
-
-  const checkDuplicate = () => {
-    return duplicateEventData;
-  }
-
-  const addEvent = () => {
-    return duplicateEventData;
   }
 
   const addNewEvent = async(formData: any) => {
@@ -408,7 +391,6 @@ export const useCoordinateService = () => {
     deleteEnquiryActivityIntent,
     fetchEvents,
     fetchSimilarEvents,
-    checkDuplicate,
     addNewEvent,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
