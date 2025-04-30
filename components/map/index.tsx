@@ -93,7 +93,7 @@ export default function MapComponent({
   eventType,
 }: MapProps) {
   const mapRef = useRef<MapRef>(null);
-  const { getLocalFilterValue, searchParams } = useFilterContext();
+  const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -140,7 +140,7 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const isHolidaySelected = getLocalFilterValue("eventTypes")
+  const isHolidaySelected = getFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
@@ -372,7 +372,7 @@ export default function MapComponent({
               JSON.stringify(viewBound)
             );
 
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
               "locationIds"
             )}`;
 
@@ -499,9 +499,15 @@ export default function MapComponent({
             let bboxLocation = null;
 
             if (details.formattedLocations.length === 1) {
-              bboxLocation =
-                details.formattedLocations[0].displayName ||
-                details.formattedLocations[0].name;
+              const location = details.formattedLocations[0];
+              bboxLocation = [
+                location.name,
+                location.city?.name,
+                location.state?.name,
+                location.country?.iso,
+              ]
+                .filter(Boolean)
+                .join(",");
             } else {
               const locations = details.formattedLocations;
 
@@ -522,8 +528,9 @@ export default function MapComponent({
               }
             }
 
+            const locationType = details.formattedLocations[0].locationType;
             if (bboxLocation) {
-              const bbox = await getLocationBBox(bboxLocation);
+              const bbox = await getLocationBBox(bboxLocation, locationType);
               setLocationBBox(bbox);
             } else {
               setLocationBBox(null);
@@ -540,8 +547,6 @@ export default function MapComponent({
   useEffect(() => {
     if (!mapRef.current) return;
     if (location.locationIds == "defaultLoc") {
-
-      console.log("flying to default loc")
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,

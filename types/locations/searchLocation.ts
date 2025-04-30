@@ -9,6 +9,7 @@ export interface Location {
   latitude: string;
   longitude: string;
   locationType: string;
+  city?: City;
   state?: State;
   country?: Country;
 }
@@ -30,6 +31,13 @@ interface Geometry {
   location_type: string;
 }
 
+interface City {
+  id: string;
+  name: string;
+  latitude: string;
+  longitude: string;
+}
+
 interface State {
   id: string;
   name: string;
@@ -41,4 +49,5 @@ interface Country {
   name: string;
   latitude: string;
   longitude: string;
+  iso: string
 }
