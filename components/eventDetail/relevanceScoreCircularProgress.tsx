@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface CircularProgressProps {
   percentages: number[];
@@ -10,10 +10,32 @@ const CircularProgress = ({
   relevanceScore,
 }: CircularProgressProps) => {
   const colors = ["#646BDC", "#E99CD4", "#9B86D4"];
+  const [animatedPercentages, setAnimatedPercentages] = useState<number[]>([]);
 
   const baseRadius = 22;
   const spacing = 3;
   const strokeWidth = 3;
+
+  useEffect(() => {
+    setAnimatedPercentages(percentages.map(() => 0));
+    
+    const animationDuration = 1000;
+    const startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      
+      const newPercentages = percentages.map(p => p * progress);
+      setAnimatedPercentages(newPercentages);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, []);
 
   const circleRadius = (index: number) => {
     const radius = baseRadius - index * (strokeWidth + spacing);
@@ -23,16 +45,14 @@ const CircularProgress = ({
   return (
     <div style={{ position: "relative", display: "inline-flex" }}>
       <svg viewBox="0 0 52 52" style={{ width: "200px", height: "200px" }}>
-        {percentages.map((percentage, index) => {
+        {animatedPercentages.map((percentage, index) => {
           const radius = circleRadius(index);
           const circum = 2 * Math.PI * radius;
-          const filledBar = Math.round((percentage * circum) / 100);
 
           return (
             radius > 0 && (
-              <React.Fragment key={`circle-${percentage}`}>
+              <React.Fragment key={`circle-${index}`}>
                 <circle
-                  className="text-gray-200"
                   strokeWidth={strokeWidth}
                   stroke="currentColor"
                   fill="transparent"

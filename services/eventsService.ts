@@ -287,8 +287,13 @@ export const useEventsService = () => {
     });
     return response?.filter((item) => item.name.toLowerCase() !== "online");
   };
-
+  const getEventIntelScore = async (eventId: string) => {
+    return api.request(
+      `${endpoints.event.getIntelScore}/${eventId}/intelScore`
+    );
+  };
   return {
+    getEventIntelScore,
     getEvents,
     saveEvent,
     getAlertPolygon,

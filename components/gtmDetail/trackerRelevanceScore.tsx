@@ -1,9 +1,20 @@
 "use client";
 
+import { useEventsService } from "@/services/eventsService";
 import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
 import { Badge } from "../ui/badge";
-
-const TrackerRelevanceScore = () => {
+import { useEffect } from "react";
+interface TrackerRelevanceScoreProps {
+  eventId: string;
+}
+const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
+  const {getEventIntelScore} = useEventsService();
+  useEffect(() => {  
+    const data = getEventIntelScore(eventId);
+    console.log(data);
+  },[])
+  
+  
   return (
     <div className={"gap-8 flex flex-col"}>
       <div className={"flex justify-between items-center"}>

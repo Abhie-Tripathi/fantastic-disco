@@ -36,7 +36,6 @@ export const useEventServices = () => {
       `${endpoints.events.getEventByPublicAPI}/${eventId}`
     );
   };
-
   const deleteEvent = async (eventId:any) => {
     console.log("delte_api",eventId,`${endpoints.events.deleteEvent}/${eventId}`)
     return api.request(`${endpoints.events.deleteEvent}/${eventId}`, {

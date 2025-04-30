@@ -33,6 +33,7 @@ export const endpoints = {
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
     recentSearch: `${BASE_URL}/me/recent-searches`,
+    getIntelScore: `${BASE_URL}/events`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,

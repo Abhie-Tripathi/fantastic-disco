@@ -276,7 +276,7 @@ export const Overview = ({
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm h-full">
-          {!isEventeli && <TrackerRelevanceScore />}
+          {!isEventeli && <TrackerRelevanceScore eventId={eventDetails.basic.id}/>}
           <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={eventLocation}
