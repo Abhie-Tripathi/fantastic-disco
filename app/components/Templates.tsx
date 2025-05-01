@@ -221,7 +221,7 @@ return(
                   <div className="w-[33%] flex flex-col gap-1 bg-[var(--background-secondary-color)]" key={index}>
                   <div className="pl-2">+{item.value}%</div>
                   <div className="pl-2 text-xs" style={{color:`${item.fill}`}}>{item.name}</div>
-                    <Slider key={index} width={item.value} color={item.fill}/>
+                    <Slider key={index} width={item.value} color={item.fill} source="template"/>
                     </div>
                   ))}
                   

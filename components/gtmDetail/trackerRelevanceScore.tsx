@@ -4,6 +4,7 @@ import { useEventsService } from "@/services/eventsService";
 import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
 import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
+import Slider from "../slider";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
@@ -54,16 +55,17 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             People
           </div>
-          <div
+          <Slider width={intelData?.[0]?.people_score ?? 0} color="#646BDC"/>
+          {/* <div
             style={{
               height: "13px",
               background: "#646BDC",
               borderRadius: "4px",
             }}
-          ></div>
+          ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? "-"}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? 0}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -73,16 +75,17 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             Purpose
           </div>
-          <div
+          <Slider width={intelData?.[0]?.purpose_score ?? 0} color="#E99CD4"/>
+          {/* <div
             style={{
               height: "13px",
               background: "#E99CD4",
               borderRadius: "4px",
             }}
-          ></div>
+          ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? "-"}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? 0}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -92,13 +95,14 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             Prospect
           </div>
-          <div
+          <Slider width={intelData?.[0]?.prospect_score ?? 0} color="#9B86D4"/>
+          {/* <div
             style={{
               height: "13px",
               background: "#9B86D4",
               borderRadius: "4px",
             }}
-          ></div>
+          ></div> */}
         </div>
       </div>
     </div>

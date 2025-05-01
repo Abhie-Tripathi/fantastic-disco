@@ -14,6 +14,7 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
+import IntelScore from '@/app/components/Table/IntelScore'
 import {
   alertIcons,
   eventTypeColors,
@@ -345,6 +346,7 @@ const EventListItem = ({
   showMaturity: boolean;
   global?: string;
 }) => {
+  const {getFilterValue} = useFilterState();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -428,8 +430,14 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-  console.log(view);
-
+  const type=getFilterValue("type")
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: event?.intelScore || 0,
+      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+    }
+  ];
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
@@ -951,7 +959,7 @@ const EventListItem = ({
                 event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
-                  <div className="flex justify-end gap-6 w-full">
+                  <div className="flex justify-end gap-4 w-full">
                     <div className="flex flex-col gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
@@ -1009,7 +1017,14 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                    {global !== "global" && (
+                    {trackerId && 
+                    <div className="space-y-4">
+                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 min-h-[196px]">
+                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
+                      <div>Relevance Score</div>
+                      </div>
+                    </div>
+                    }                    {global !== "global" && (
                       <div
                         className="flex items-start justify-end"
                         onClick={(e) => e.preventDefault()}
@@ -1021,12 +1036,13 @@ const EventListItem = ({
                           setInterest={setInterest}
                           setEventId={setEventId}
                         />
+                      
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full gap-6">
-                    <div className="grid grid-row-2 items-end gap-4">
+                  <div className="flex justify-end w-full gap-4">
+                    <div className="grid grid-row-2 items-start gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
@@ -1071,6 +1087,14 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                    {trackerId &&
+                    <div className="space-y-4">
+                    <div className="grid grid-rows-1 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
+                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
+                      <div className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm" style={{fontSize:"10px"}}>Relevance Score</div>
+                      </div>
+                    </div>
+                    }
                     {global !== "global" && (
                       <div
                         className="flex items-start justify-end"

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { z } from "zod";
+import { number, z } from "zod";
 
 const LocationSchema = z.object({
   id: z.string(),
@@ -238,6 +238,7 @@ const EventDataSchema = z.object({
   interests: InterestSchema.optional(),
   alerts: z.array(AlertSchema).optional(),
   trackerMatchInfo: TrackerMatchInfoSchema.optional(),
+  intelScore: z.number(),
 });
 
 export interface EventResponse {
