@@ -70,6 +70,7 @@ interface MapProps {
   trackerLoc?: string;
   trackerType?: string;
   eventType?: string;
+  trackerGeoCordinates?:any;
 }
 
 interface Coordinates {
@@ -91,9 +92,12 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
+  trackerGeoCordinates
 }: MapProps) {
+  console.log(trackerGeoCordinates);
+  
   const mapRef = useRef<MapRef>(null);
-  const { getLocalFilterValue, searchParams } = useFilterContext();
+  const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -140,7 +144,7 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const isHolidaySelected = getLocalFilterValue("eventTypes")
+  const isHolidaySelected = getFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
@@ -156,7 +160,8 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates) {
+    if (geoCoordinates || trackerGeoCordinates) {
+      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -372,7 +377,7 @@ export default function MapComponent({
               JSON.stringify(viewBound)
             );
 
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
               "locationIds"
             )}`;
 
@@ -499,9 +504,15 @@ export default function MapComponent({
             let bboxLocation = null;
 
             if (details.formattedLocations.length === 1) {
-              bboxLocation =
-                details.formattedLocations[0].displayName ||
-                details.formattedLocations[0].name;
+              const location = details.formattedLocations[0];
+              bboxLocation = [
+                location.name,
+                location.city?.name,
+                location.state?.name,
+                location.country?.iso,
+              ]
+                .filter(Boolean)
+                .join(",");
             } else {
               const locations = details.formattedLocations;
 
@@ -522,8 +533,9 @@ export default function MapComponent({
               }
             }
 
+            const locationType = details.formattedLocations[0].locationType;
             if (bboxLocation) {
-              const bbox = await getLocationBBox(bboxLocation);
+              const bbox = await getLocationBBox(bboxLocation, locationType);
               setLocationBBox(bbox);
             } else {
               setLocationBBox(null);
@@ -540,8 +552,6 @@ export default function MapComponent({
   useEffect(() => {
     if (!mapRef.current) return;
     if (location.locationIds == "defaultLoc") {
-
-      console.log("flying to default loc")
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -551,7 +561,7 @@ export default function MapComponent({
     }
 
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -576,7 +586,10 @@ export default function MapComponent({
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      console.log(location.trackerGeoCordinates);
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      
+      
       const center = point([
         Number(coordinates.longitude),
         Number(coordinates.latitude),

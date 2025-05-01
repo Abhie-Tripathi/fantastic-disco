@@ -144,7 +144,7 @@ export default function Alerts() {
                         }
                       >
                         {alertIcons[alert.type] ||
-                          (alert.type.toLowerCase() === "warning" ? (
+                          (alert?.type?.toLowerCase() === "warning" ? (
                             <AlertTriangle className="h-4 w-4 text-primary" />
                           ) : (
                             <Info className="h-4 w-4 text-primary" />

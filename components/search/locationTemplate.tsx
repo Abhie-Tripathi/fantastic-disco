@@ -43,8 +43,9 @@ export interface LocationProps {
   type?: string;
   isMandatory?: boolean;
   filterName?: string;
+  setIsMandatory?: (value: boolean) => void;
 }
-export default function LocationSelector({ type, isMandatory, filterName="locationIds" }: LocationProps) {
+export default function LocationSelector({ type, isMandatory, filterName="locationIds", setIsMandatory }: LocationProps) {
   
   const pathName = usePathname();
   const { localFilters, setLocalFilter } = useFilterContext();
@@ -59,6 +60,11 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
   const [localSelectedLocation, setLocalSelectedLocation] =
     useState<Location | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
+  const [validationErrors, setValidationErrors] = useState<{
+    radius?: string;
+    lat?: string;
+    lng?: string;
+  }>({});
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
     const fetchUrlLocation = async () => {  
@@ -102,49 +108,97 @@ export default function LocationSelector({ type, isMandatory, filterName="locati
         setSelectedLocation?.(null);
       }
     };
-    const applyHandler = () => {
-      if (selectedLocation && !Array.isArray(selectedLocation)) {
-        const geoLocation = selectedLocation as GeoLocation;
-        const radiusInKm =
-          radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
-  
-        if (radiusUnit === "mi") {
-          setRadiusUnit("km");
-        }
-        console.log(selectedLocation)
-        replaceLocalFilter(
-          "locationIds",
-          "viewBound",
-          JSON.stringify({
-            boundType: "point",
-            coordinates: {
-              latitude: geoLocation.lat,
-              longitude: geoLocation.lng,
-              radius: radiusInKm,
-            },
-            properties: {
-              name: geoLocation.description,
-            },
-          })
-        );
-        saveLastSearchedLocation(geoLocation);
-      } else if (
-        selectedLocation &&
-        Array.isArray(selectedLocation) &&
-        selectedLocation.length > 0
-      ) {
-        replaceLocalFilter(
-          "viewBound",
-          filterName,
-          (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
-        );
-        saveLastSearchedLocation(selectedLocation);
-      } else {
-        deleteMultipleLocalFilters([filterName, "viewBound"]);
-        clearLastSearchedLocation();
-      }
-      setIsOpen(false);
-    };
+   const applyHandler = () => {
+       if (selectedLocation && !Array.isArray(selectedLocation)) {
+         // Validate center point data first
+         if (activeTab === "center") {
+           if (!validateCenterPoint()) {
+             return; // Don't proceed if validation fails
+           }
+           
+           // Additional check for empty coordinates
+           const geoLocation = selectedLocation as GeoLocation;
+           if (geoLocation.lat === undefined || geoLocation.lng === undefined) {
+             // Update validation errors for any missing coordinates
+             const errors = {...validationErrors};
+             if (geoLocation.lat === undefined) errors.lat = "Latitude is required";
+             if (geoLocation.lng === undefined) errors.lng = "Longitude is required";
+             setValidationErrors(errors);
+             setIsMandatory(true);
+             return; // Don't proceed with applying the filter
+           }
+           
+           const radiusInKm =
+             radiusUnit === "mi"
+               ? (geoLocation.radius || 5) * 1.60934
+               : geoLocation.radius;
+   
+           if (radiusUnit === "mi") {
+             setRadiusUnit("km");
+           }
+           
+           replaceLocalFilter(
+             "locationIds",
+             "viewBound",
+             JSON.stringify({
+               boundType: "point",
+               coordinates: {
+                 latitude: geoLocation.lat,
+                 longitude: geoLocation.lng,
+                 radius: radiusInKm,
+               },
+               properties: {
+                 name: geoLocation.description,
+               },
+             })
+           );
+           saveLastSearchedLocation(geoLocation);
+         } else {
+           // Non-center point case
+           const geoLocation = selectedLocation as GeoLocation;
+           const radiusInKm =
+             radiusUnit === "mi"
+               ? (geoLocation.radius || 5) * 1.60934
+               : geoLocation.radius;
+   
+           if (radiusUnit === "mi") {
+             setRadiusUnit("km");
+           }
+           
+           replaceLocalFilter(
+             "locationIds",
+             "viewBound",
+             JSON.stringify({
+               boundType: "point",
+               coordinates: {
+                 latitude: geoLocation.lat,
+                 longitude: geoLocation.lng,
+                 radius: radiusInKm,
+               },
+               properties: {
+                 name: geoLocation.description,
+               },
+             })
+           );
+           saveLastSearchedLocation(geoLocation);
+         }
+       } else if (
+         selectedLocation &&
+         Array.isArray(selectedLocation) &&
+         selectedLocation.length > 0
+       ) {
+         replaceLocalFilter(
+           "viewBound",
+           filterName,
+           (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
+         );
+         saveLastSearchedLocation(selectedLocation);
+       } else {
+         deleteMultipleLocalFilters([filterName, "viewBound"]);
+         clearLastSearchedLocation();
+       }
+       setIsOpen(false);
+     };
 useEffect(() => {
   fetchUrlLocation();
 }, [localFilters]);
@@ -159,6 +213,130 @@ useEffect(()=>{
   }
 },[applyHandlerCalled])
   
+
+
+const handleRadiusChange = (value: string) => {
+  const numValue = value === "" ? null : Number(value);
+  setSelectedLocation?.((prev) =>
+    prev
+      ? {
+          ...prev,
+          radius: numValue,
+        }
+      : null
+  );
+  
+  // Validate radius immediately
+  let radiusError;
+  if (numValue === null) {
+    radiusError = "Radius is required";
+  } else if (numValue <= 0) {
+    radiusError = "Radius must be greater than 0";
+  } else if (numValue > 50) {
+    radiusError = "Radius cannot exceed 50";
+  }
+  
+  setValidationErrors(prev => ({ ...prev, radius: radiusError }));
+};
+const validateCenterPoint = (): boolean => {
+    const errors: { radius?: string; lat?: string; lng?: string } = {};
+    const geo = selectedLocation as GeoLocation;
+    
+    if (!geo) return true;
+    
+    // Validate radius
+    if (geo.radius === null) {
+      errors.radius = "Radius is required";
+    } else if (geo.radius <= 0) {
+      errors.radius = "Radius must be greater than 0";
+    } else if (geo.radius > 50) {
+      errors.radius = "Radius cannot exceed 50";
+    }
+    
+    // Validate latitude
+    if (geo.lat === undefined) {
+      errors.lat = "Latitude is required";
+    } else if (geo.lat < -90 || geo.lat > 90) {
+      errors.lat = "Latitude must be between -90 and 90";
+    }
+    
+    // Validate longitude
+    if (geo.lng === undefined) {
+      errors.lng = "Longitude is required";
+    } else if (geo.lng < -180 || geo.lng > 180) {
+      errors.lng = "Longitude must be between -180 and 180";
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+const handleLatChange = (value: string) => {
+  // If value is empty, set to undefined rather than 0
+  if (value === "") {
+    setSelectedLocation?.((prev) =>
+      prev
+        ? {
+            ...prev,
+            lat: undefined,
+          }
+        : null
+    );
+    setValidationErrors(prev => ({ ...prev, lat: "Latitude is required" }));
+    return;
+  }
+  
+  const numValue = Number(value);
+  setSelectedLocation?.((prev) =>
+    prev
+      ? {
+          ...prev,
+          lat: numValue,
+        }
+      : null
+  );
+  
+  // Validate latitude immediately
+  let latError;
+  if (numValue < -90 || numValue > 90) {
+    latError = "Latitude must be between -90 and 90";
+  }
+  
+  setValidationErrors(prev => ({ ...prev, lat: latError }));
+};
+
+const handleLngChange = (value: string) => {
+  // If value is empty, set to undefined rather than 0
+  if (value === "") {
+    setSelectedLocation?.((prev) =>
+      prev
+        ? {
+            ...prev,
+            lng: undefined,
+          }
+        : null
+    );
+    setValidationErrors(prev => ({ ...prev, lng: "Longitude is required" }));
+    return;
+  }
+  
+  const numValue = Number(value);
+  setSelectedLocation?.((prev) =>
+    prev
+      ? {
+          ...prev,
+          lng: numValue,
+        }
+      : null
+  );
+  
+  // Validate longitude immediately
+  let lngError;
+  if (numValue < -180 || numValue > 180) {
+    lngError = "Longitude must be between -180 and 180";
+  }
+  
+  setValidationErrors(prev => ({ ...prev, lng: lngError }));
+};
   return (
    <>
           {/* <div className="flex items-center truncate">
@@ -236,22 +414,15 @@ useEffect(()=>{
                     Radius
                   </label>
                   <Input
-                    id="radius"
-                    type="number"
-                    className="mt-1"
-                    value={(selectedLocation as GeoLocation)?.radius}
-                    onChange={(e) => {
-                      setSelectedLocation?.((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              radius: Number(e.target.value),
-                            }
-                          : null
-                      );
-                      setIsApply(true);
-                    }}
-                  />
+                              id="radius"
+                              type="number"
+                              className={`mt-1 ${validationErrors.radius ? "border-red-500" : ""}`}
+                              value={(selectedLocation as GeoLocation)?.radius ?? ""}
+                              onChange={(e) => handleRadiusChange(e.target.value)}
+                            />
+                            {validationErrors.radius && (
+                              <p className="text-xs text-red-500 mt-1">{validationErrors.radius}</p>
+                            )}
                 </div>
                 <div className="col-span-2">
                   <label htmlFor="unit" className="text-sm font-medium">
@@ -280,18 +451,11 @@ useEffect(()=>{
                     type="number"
                     className="mt-1"
                     value={(selectedLocation as GeoLocation)?.lat}
-                    onChange={(e) => {
-                      setSelectedLocation?.((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              lat: Number(e.target.value),
-                            }
-                          : null
-                      );
-                      setIsApply(true);
-                    }}
+                    onChange={(e) => handleLatChange(e.target.value)}
                   />
+                  {validationErrors.lat && (
+            <p className="text-xs text-red-500 mt-1">{validationErrors.lat}</p>
+          )}
                 </div>
                 <div className="col-span-3">
                   <label htmlFor="longitude" className="text-sm font-medium">
@@ -300,20 +464,13 @@ useEffect(()=>{
                   <Input
                     id="longitude"
                     type="number"
-                    className="mt-1"
-                    value={(selectedLocation as GeoLocation)?.lng}
-                    onChange={(e) => {
-                      setSelectedLocation?.((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              lng: Number(e.target.value),
-                            }
-                          : null
-                      );
-                      setIsApply(true);
-                    }}
-                  />
+                              className={`mt-1 ${validationErrors.lng ? "border-red-500" : ""}`}
+                              value={(selectedLocation as GeoLocation)?.lng ?? ""}
+                              onChange={(e) => handleLngChange(e.target.value)}
+                            />
+                            {validationErrors.lng && (
+                              <p className="text-xs text-red-500 mt-1">{validationErrors.lng}</p>
+                            )}
                 </div>
               </div>
               <div className="flex justify-end">

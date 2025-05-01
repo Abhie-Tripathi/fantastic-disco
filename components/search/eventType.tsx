@@ -210,7 +210,7 @@ export default function EventTypeSelector({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
+          className="w-full max-w-lg p-0"
           align="start"
         >
           {content}

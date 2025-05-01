@@ -48,6 +48,7 @@ const Trackers = ({ searchParams }: Search) => {
     else setType("All Trackers")
   },[tab])
   const [locations, setLocations] = useState<any>();
+  const [geoCoordinate,setGeoCoordinate]=useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
@@ -207,6 +208,14 @@ const Trackers = ({ searchParams }: Search) => {
     // const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
     // const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
     // const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
+    if(singleTrackerData?.filterValues?.viewBound){
+      const ids = singleTrackerData?.filterValues?.viewBound;
+      console.log(ids);
+      
+      setGeoCoordinate(ids);
+      // setLocalFilter("locationIds", ids.join(","))
+      // console.log(ids);
+    }else setGeoCoordinate({});
     if(singleTrackerData?.filterValues?.locationIds){
       const ids = Object?.keys(singleTrackerData?.filterValues?.locationIds);
       setLocations(ids);
@@ -399,6 +408,7 @@ const Trackers = ({ searchParams }: Search) => {
         source="tracker"
         eventType={activeType}
         searchParams="active"
+        trackerGeoCordinates={geoCoordinate}
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
         trackerType={singleTrackerData?.type || ""}

@@ -127,6 +127,7 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const showMaturity = !!getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -281,7 +282,10 @@ export default function EventAccordion({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
+    } else
+      return (
+        <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
+      );
   }
   return (
     <div className="flex flex-col h-full">
@@ -297,6 +301,7 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
+              showMaturity={showMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
             />
@@ -327,6 +332,7 @@ const EventListItem = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  showMaturity,
 }: {
   trackerId?: string;
   view?: string;
@@ -336,6 +342,7 @@ const EventListItem = ({
   showValues: Show[];
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
+  showMaturity: boolean;
   global?: string;
 }) => {
   const address = event.basic.eventLocation ? (
@@ -652,24 +659,23 @@ const EventListItem = ({
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {showValues.includes(Show.maturity) &&
-                    event.advance?.maturity && (
-                      <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger>
-                            <Badge
-                              variant="outline"
-                              className="text-gray-600 capitalize rounded-sm"
-                            >
-                              {event.advance?.maturity}
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Maturity</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+                  {showMaturity && event.advance?.maturity && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.advance?.maturity}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Maturity</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                   {showValues.includes(Show.frequency) &&
                     event.advance?.frequency && (
                       <TooltipProvider>
@@ -972,18 +978,19 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {isEventeli && event.insights?.economicImpact !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(
-                              event.insights?.economicImpact
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {isEventeli &&
+                        event.insights?.economicImpact !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Economic Impact
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatEstimatedSpend(
+                                event.insights?.economicImpact
+                              )}
+                            </p>
+                          </div>
+                        )}
                     </div>
 
                     <div className="space-y-4">
@@ -1030,7 +1037,9 @@ const EventListItem = ({
                               {event.insights?.estimatedExhibitors == "" ||
                               event.insights?.estimatedExhibitors == null
                                 ? "--"
-                                : formatExhibitorCount(event.insights?.estimatedExhibitors)}
+                                : formatExhibitorCount(
+                                    event.insights?.estimatedExhibitors
+                                  )}
                             </p>
                           </div>
                         )}

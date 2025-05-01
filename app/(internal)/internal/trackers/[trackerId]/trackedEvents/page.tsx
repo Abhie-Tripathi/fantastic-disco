@@ -108,6 +108,7 @@ const Page = ({ params }: { params: any }) => {
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
   const [sendInvite,setSendInvite]=useState(false);
+  const [geoCoordinate,setGeoCoordinate]=useState<any>();
   const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
@@ -460,6 +461,17 @@ const Page = ({ params }: { params: any }) => {
     trackerLoc=ids;
   }
   useEffect(() => {
+    if(data?.filterValues?.viewBound){
+      const ids = data?.filterValues?.viewBound;
+      console.log(ids);
+      
+      setGeoCoordinate(ids);
+      // setLocalFilter("locationIds", ids.join(","))
+      // console.log(ids);
+    }else setGeoCoordinate({});
+  },[data])
+ 
+  useEffect(() => {
     const handlePopState = (event: any) => {
         if (event.state && event.state.shareOpen) {
             closeShareModal();
@@ -758,6 +770,7 @@ console.log(activeCount);
                 <Map source="tracker" 
                 searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"past":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
+                trackerGeoCordinates={geoCoordinate}
                 trackerLoc={trackerLoc.join(",")}
                 trackerType={trackerType}
                 eventType={active || ""}

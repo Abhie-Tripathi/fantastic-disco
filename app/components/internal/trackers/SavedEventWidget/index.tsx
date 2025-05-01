@@ -57,8 +57,8 @@ const EventContent = ({ savedEvents }: { savedEvents: { events: EventTableType[]
             <ArrowUpRight width="16px" height='16px' color='var(--primary-color)' />
           </div>
           <div className="text-[12px]" style={{ color: "var(--secondary-text-color)" }}>
-            {(item.basic.eventLocation?.city.name && item.basic.eventLocation?.country.name) ?
-              (item.basic?.eventLocation.city.name !== item.basic?.eventLocation?.country.name ?
+            {(item.basic.eventLocation?.city?.name && item.basic.eventLocation?.country?.name) ?
+              (item.basic?.eventLocation?.city?.name !== item?.basic?.eventLocation?.country?.name ?
                 item.basic.eventLocation.city.name + ', ' + item.basic.eventLocation?.country.name :
                 item.basic.eventLocation.country.name) :
               item.basic.eventLocation.country.name}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -49,21 +49,35 @@ export default function EventList({
   const { getCalendarViewEvents } = useTrackerServices();
   const active = getFilterValue("eventType");
 
-  const filteredParams = new URLSearchParams(searchParams.toString());
-  filteredParams.delete("view");
-  filteredParams.set("offset", String((currentPage - 1) * 20));
-  filteredParams.set("active_lte", eventDate.toISOString());
-  filteredParams.set("active_gte", eventDate.toISOString());
-  filteredParams.set("sortBy", sortBy);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [eventDate.toISOString(), sortBy]);
+
+  const filteredParams = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("view");
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
+    params.set("active_lte", eventDate.toISOString());
+    params.set("active_gte", eventDate.toISOString());
+    params.set("sortBy", sortBy);
+
+    return params;
+  }, [eventDate.toISOString(), sortBy, currentPage, searchParams]);
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
-      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(
-        trackerId || "", 
-        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}`
-        + (isEventeli ? `&type=${active}` : ''),
-        true
-      ),
+      source !== "tracker"
+        ? eventService.getEventsWithSearchParams(filteredParams.toString())
+        : getCalendarViewEvents(
+            trackerId || "",
+            `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${
+              (currentPage - 1) * 20
+            }&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}` +
+              (isEventeli ? `&type=${active}` : ""),
+            true
+          ),
   });
 
   const handlePageChange = (page: number) => {
@@ -103,10 +117,10 @@ export default function EventList({
             <div className="flex items-start gap-3">
               {event.basic.logoUrl ? (
                 <img
-                    src={event.basic.logoUrl}
-                    alt={`${event.basic.name} logo`}
-                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
-                  />
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
               ) : event.basic.website ? (
                 <div className="w-12 h-12 relative">
                   <img
