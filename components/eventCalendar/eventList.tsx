@@ -1,12 +1,12 @@
 "use client";
 
+import SortDropdown from "@/components/search/sortDropdown";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, X, Star } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -16,18 +16,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event } from "@/types/events";
-import { differenceInDays, format } from "date-fns";
-import { useEventsService } from "@/services/eventsService";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { formattedDateRange } from "@/utils/date";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useTrackerServices } from "@/services/trackerServices";
-import SortDropdown from "@/components/search/sortDropdown";
-import { lightenColor } from "@/lib/utils";
 import { isEventeli } from "@/config";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { useFilterState } from "@/hooks/useFilterState";
+import { lightenColor } from "@/lib/utils";
+import { useEventsService } from "@/services/eventsService";
+import { useTrackerServices } from "@/services/trackerServices";
+import { Event } from "@/types/events";
+import { formattedDateRange } from "@/utils/date";
+import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Loader2, Star, X } from "lucide-react";
+import Link from "next/link";
+import { PaginationComponent } from "../pagination";
 export default function EventList({
   eventDate,
   onClose,
@@ -74,7 +74,8 @@ export default function EventList({
             trackerId || "",
             `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${
               (currentPage - 1) * 20
-            }&sortBy=${sortBy}&type=${active}`,
+            }&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}` +
+              (isEventeli ? `&type=${active}` : ""),
             true
           ),
   });
@@ -320,12 +321,17 @@ export default function EventList({
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <p className="text-lg font-semibold text-destructive">
+            {error && (
+              <p className="text-sm font-semibold text-destructive px-2">
+                {error.message}
+              </p>
+            )}
+            {/* <p className="text-lg font-semibold text-destructive">
               Failed to load events
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Please try again later
-            </p>
+            </p> */}
           </div>
         </div>
       );
@@ -382,6 +388,17 @@ export default function EventList({
             <EventCard key={event.basic.id} event={event} />
           ))}
           {events.length > 0 && (
+            <PaginationComponent
+              showEntriesCount={false}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={20}
+              count={10}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={() => {}}
+            />
+          )}
+          {/* {events.length > 0 && (
             <Pagination>
               <PaginationContent className="flex-wrap">
                 <PaginationItem>
@@ -411,7 +428,7 @@ export default function EventList({
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          )}
+          )} */}
         </ScrollArea>
       </>
     );
