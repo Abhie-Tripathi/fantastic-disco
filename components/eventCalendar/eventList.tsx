@@ -74,8 +74,7 @@ export default function EventList({
             trackerId || "",
             `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${
               (currentPage - 1) * 20
-            }&sortBy=${sortBy}${active === "new" ? "&type=new" : ""}` +
-              (isEventeli ? `&type=${active}` : ""),
+            }&sortBy=${sortBy}&type=${active}`,
             true
           ),
   });
