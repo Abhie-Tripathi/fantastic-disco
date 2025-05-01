@@ -787,7 +787,6 @@ const LineChartComponent = ({
                   <div>
                     <p className="font-semibold text-[#6750a4]">{total}</p>
                     <Text size="normal" color="secondary" fontWeight="regular">
-                      Current Year{" "}
                       {columnsDropdown.find((column) => column.value === metric)
                         ?.label ?? ""}
                     </Text>
@@ -856,20 +855,26 @@ const LineChartComponent = ({
           {/* Comparison Section */}
           {compareFrom && compareTo && (
             <div>
-              {isEventeli && <div className="px-4 py-2 border-b">
-                <div className="flex flex-col gap-2">
-                  <div>
-                    <p className="font-semibold text-[#4B9EF4]">
-                      {previousYearTotal}
-                    </p>
-                    <Text size="normal" color="secondary" fontWeight="regular">
-                      Comparison Period{" "}
-                      {columnsDropdown.find((column) => column.value === metric)
-                        ?.label ?? ""}
-                    </Text>
+              {isEventeli && (
+                <div className="px-4 py-2 border-b">
+                  <div className="flex flex-col gap-2">
+                    <div>
+                      <p className="font-semibold text-[#4B9EF4]">
+                        {previousYearTotal}
+                      </p>
+                      <Text
+                        size="normal"
+                        color="secondary"
+                        fontWeight="regular"
+                      >
+                        {columnsDropdown.find(
+                          (column) => column.value === metric
+                        )?.label ?? ""}
+                      </Text>
+                    </div>
                   </div>
                 </div>
-              </div>}
+              )}
               <div className="flex flex-col px-4 py-2 gap-2 border-b">
                 {previousYearEventTypes.map((eventTypesValues) => (
                   <div
