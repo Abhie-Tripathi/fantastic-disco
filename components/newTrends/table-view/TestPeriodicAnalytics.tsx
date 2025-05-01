@@ -559,7 +559,7 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 h-1/2 ${cellData["thresholdHighlightCol"]}`} />
+                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
                       <div className="flex items-center gap-2">
@@ -600,7 +600,7 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 h-1/2 ${cellData["thresholdHighlightCol"]}`} />
+                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
                       <div className="flex items-center gap-2">
@@ -684,7 +684,7 @@ const TestPeriodicAnalytics = () => {
                         className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)] relative`}
                       >
                         {isSmartInsightEnabledForColumn && (
-                          <div className={`absolute top-0 left-0 right-0 h-1/2 
+                          <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} 
                             ${subCol.slug === "avg" ? "bg-[#DA2F35] bg-opacity-5" : ""}
                             ${
                               cellData["maxRow"] &&
