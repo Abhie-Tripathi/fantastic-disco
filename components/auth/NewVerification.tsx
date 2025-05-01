@@ -39,6 +39,7 @@ type OTPData = z.infer<typeof otpSchema>;
 export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
+  const [showResendOtpMessage, setShowResendOtpMessage] = useState(false);
   const { verifyOtp, error, signin, setError, isLoading } = useAuthContext();
   const searchParams = useSearchParams();
   const sessionCategories =
@@ -126,6 +127,7 @@ export default function NewVerificationForm() {
 
   const resendOTP = async (email: string) => {
     setTime(30);
+    setShowResendOtpMessage(true);
     await signin({ email });
   };
 
@@ -176,6 +178,11 @@ export default function NewVerificationForm() {
             >
               <ArrowLeft width={18} height={18} />
               <span>Back</span>
+            </p>
+            <p className="text-sm text-center">
+              {showResendOtpMessage
+                ? "A new 6 digit OTP has been resent to your email"
+                : "We have sent a 6 digit OTP to your email"}
             </p>
             <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
             <FormField
