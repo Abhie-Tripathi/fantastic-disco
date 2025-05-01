@@ -5,18 +5,23 @@ import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
 import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
 import Slider from "../slider";
+import IntelSkeleton from "@/app/components/Skeleton/dashboardskeleton/IntelSkeleton";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
 const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const [intelData, setIntelData] = useState<any>(null);
+  const [isLoading, setIsLoading]= useState(true);
   useEffect(() => {  
     const fetchIntelScore = async () => {
       try {
         const data = await getEventIntelScore(eventId);
+        if(data){
         console.log(data);
         setIntelData(data);
+        setIsLoading(false);
+        }
       } catch (error) {
         console.error('Failed to fetch event intel score:', error);
       }
@@ -39,13 +44,16 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           Demo
         </Badge>
       </div>
+      <>
+      {isLoading ? <IntelSkeleton /> : 
+      <>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <CircularProgress percentages={[intelData?.[0]?.people_score ?? 0, intelData?.[0]?.purpose_score ?? 0, intelData?.[0]?.prospect_score ?? 0]} relevanceScore={intelData?.[0]?.alltrackers_score} />
       </div>
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.people_score ?? 0}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.people_score ?? "--"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -65,7 +73,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? 0}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? "--"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -75,7 +83,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             Purpose
           </div>
-          <Slider width={intelData?.[0]?.purpose_score ?? 0} color="#E99CD4"/>
+          <Slider width={intelData?.[0]?.purpose_score ?? "--"} color="#E99CD4"/>
           {/* <div
             style={{
               height: "13px",
@@ -85,7 +93,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? 0}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? "-"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -105,6 +113,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div> */}
         </div>
       </div>
+      </>}
+      </>
     </div>
   );
 };
