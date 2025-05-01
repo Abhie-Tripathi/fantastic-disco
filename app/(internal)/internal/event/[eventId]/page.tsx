@@ -46,7 +46,7 @@ import {
   PhoneIcon,
   Radio,
   Share2,
-  Star
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -188,7 +188,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     endDateTime,
     organizer,
     website,
-    format: typeOfEvent,
+    format: rawFormat,
     primaryEventType,
     eventLocation,
     status,
@@ -259,6 +259,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       speakersCount > 0);
 
   const isOverviewVisible = true;
+  const typeOfEvent = rawFormat.toLowerCase();
 
   const tabs = [
     { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
