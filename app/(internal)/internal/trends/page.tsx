@@ -385,7 +385,7 @@ const EventTrends = () => {
             isFiltersCollapsed ? "" : "border-r"
           }`}
         >
-          <ScrollArea className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             <div className="space-y-4 p-4">
               <Tabs defaultValue="events" className="w-full">
                 <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
@@ -418,7 +418,11 @@ const EventTrends = () => {
                     {visibleFilters.eventTypes && (
                       <EventTypeSelector variant="popover" />
                     )}
-                    {visibleFilters.location && <LocationSelector />}
+                    {visibleFilters.location && (
+                      <LocationSelector
+                        disableCenterPoint={activeView === "treemap"}
+                      />
+                    )}
                     {visibleFilters.dateRange && <DateRangeSelector />}
                     {activeView === "treemap" && visibleFilters.categories && (
                       <CategorySelector maxCategories={5} variant="accordion" />
@@ -451,7 +455,7 @@ const EventTrends = () => {
                 </div>
               </Tabs>
             </div>
-          </ScrollArea>
+          </div>
 
           <div
             className={`w-full bg-background z-10 transition-all duration-300 ${

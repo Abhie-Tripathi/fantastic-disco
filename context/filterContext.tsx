@@ -110,6 +110,10 @@ export interface Filters {
   total_attendance_lte?: string;
   eventType?: string;
 
+  //Preset Filters
+  presetCountry?:string;
+  presetCategory?:string;
+
   // Coordinate Filters
   eventId?: string;
   type?: string;

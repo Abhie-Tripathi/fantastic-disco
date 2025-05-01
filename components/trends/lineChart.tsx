@@ -437,7 +437,7 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = searchParams.get("viewBound");
+    const viewBound = searchParams.get("viewBound");
     const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
@@ -451,8 +451,8 @@ const LineChartComponent = ({
     if (locationIds) {
       searchEventParams.set("locationIds", locationIds);
     }
-    if (geoCoordinates) {
-      searchEventParams.set("geoCoordinates", geoCoordinates);
+    if (viewBound) {
+      searchEventParams.set("viewBound", viewBound);
     }
     if (eventTypes && eventTypes.length > 0) {
       searchEventParams.set("eventTypes", eventTypes);
@@ -738,7 +738,7 @@ const LineChartComponent = ({
 
     return (
       <div
-        className={`border-none shadow-lg bg-[#ffffff] ${
+        className={`border-none shadow-lg bg-background ${
           compareFrom && compareTo ? "w-[600px]" : "w-[300px]"
         } z-10`}
       >
@@ -766,7 +766,7 @@ const LineChartComponent = ({
                   matchingHoliday.holidays.length > 1
                     ? "list-decimal"
                     : "list-none"
-                } list-inside text-sm text-gray-600`}
+                } list-inside text-sm text-gray-600 dark:text-gray-300`}
               >
                 {matchingHoliday.holidays.map((holidayName, index) => (
                   <li key={index}>{holidayName}</li>
