@@ -13,14 +13,12 @@ import { useEventsService } from "@/services/eventsService";
 import { useTrendsService } from "@/services/trendsService";
 import { TableGroupedHoliday } from "@/types";
 import { EventResponse } from "@/types/events";
-import {
-  EventTrendsResponse
-} from "@/types/trends/trends";
+import { EventTrendsResponse } from "@/types/trends/trends";
 import {
   generateDatesArray,
   generateTrendsTableColumnHeaders,
   morphToGraphData,
-  toMidnightISOString
+  toMidnightISOString,
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
@@ -40,11 +38,12 @@ import {
   Tooltip,
   TooltipProps,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import { CategoricalChartState } from "recharts/types/chart/types";
 import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
+import Text from "../new-ui/Text";
 
 interface IProps {
   showLegend: boolean;
@@ -720,28 +719,40 @@ const LineChartComponent = ({
 
     // Previous year event types
     const previousYearEventTypes = [];
-    if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
-      previousYearEventTypes.push({
-        text: "Social",
-        bg: "--social-color",
-        value: tooltipPayload.previousYearSocial,
-      });
-    }
-    if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
-      previousYearEventTypes.push({
-        text: "Business",
-        bg: "--business-color",
-        value: tooltipPayload.previousYearBusiness,
-      });
+    if (compareFrom && compareTo) {
+      if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
+        previousYearEventTypes.push({
+          text: "Social",
+          bg: "--social-color",
+          value: tooltipPayload.previousYearSocial,
+        });
+      }
+      if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
+        previousYearEventTypes.push({
+          text: "Business",
+          bg: "--business-color",
+          value: tooltipPayload.previousYearBusiness,
+        });
+      }
     }
 
     return (
-      <div className="border-none shadow-lg bg-[#ffffff] w-[600px] z-10">
-        <div className="px-4 py-2 flex text-lg font-medium border-b justify-between">
+      <div
+        className={`border-none shadow-lg bg-[#ffffff] ${
+          compareFrom && compareTo ? "w-[600px]" : "w-[300px]"
+        } z-10`}
+      >
+        <div
+          className={`px-4 py-2 flex text-lg font-medium border-b ${
+            compareFrom && compareTo ? "justify-between" : "justify-start"
+          }`}
+        >
           <span>{format(new Date(date), "d MMM yyyy")}</span>
-          <span className="text-[#4B9EF4]">
-            {format(comparisonDate, "d MMM yyyy")}
-          </span>
+          {compareFrom && compareTo && (
+            <span className="text-[#4B9EF4]">
+              {format(comparisonDate, "d MMM yyyy")}
+            </span>
+          )}
         </div>
         {isEventeli &&
           matchingHoliday &&
@@ -763,21 +774,27 @@ const LineChartComponent = ({
               </ul>
             </div>
           )}
-        <div className="grid grid-cols-2">
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
           {/* Current Year Section */}
-          <div className="border-r">
-            <div className="px-4 py-2 border-b">
-              <div className="flex flex-col gap-2">
-                <div>
-                  <p className="font-semibold text-[#6750a4]">{total}</p>
-                  {/* <Text size="normal" color="secondary" fontWeight="regular">
-                    Current Year{" "}
-                    {columnsDropdown.find((column) => column.value === metric)
-                      ?.label ?? ""}
-                  </Text> */}
+          <div className={compareFrom && compareTo ? "border-r" : ""}>
+            {isEventeli && (
+              <div className="px-4 py-2 border-b">
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="font-semibold text-[#6750a4]">{total}</p>
+                    <Text size="normal" color="secondary" fontWeight="regular">
+                      Current Year{" "}
+                      {columnsDropdown.find((column) => column.value === metric)
+                        ?.label ?? ""}
+                    </Text>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="flex flex-col px-4 py-2 gap-2 border-b">
               {currentYearEventTypes.map((eventTypesValues) => (
                 <div
@@ -837,95 +854,110 @@ const LineChartComponent = ({
           </div>
 
           {/* Comparison Section */}
-          <div>
-            <div className="px-4 py-2 border-b">
-              <div className="flex flex-col gap-2">
-                <div>
-                  <p className="font-semibold text-[#4B9EF4]">
-                    {previousYearTotal}
-                  </p>
-                  {/* <Text size="normal" color="secondary" fontWeight="regular">
-                    Comparison Period{" "}
-                    {columnsDropdown.find((column) => column.value === metric)
-                      ?.label ?? ""}
-                  </Text> */}
+          {compareFrom && compareTo && (
+            <div>
+              {isEventeli && <div className="px-4 py-2 border-b">
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="font-semibold text-[#4B9EF4]">
+                      {previousYearTotal}
+                    </p>
+                    <Text size="normal" color="secondary" fontWeight="regular">
+                      Comparison Period{" "}
+                      {columnsDropdown.find((column) => column.value === metric)
+                        ?.label ?? ""}
+                    </Text>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-col px-4 py-2 gap-2 border-b">
-              {previousYearEventTypes.map((eventTypesValues) => (
-                <div
-                  key={eventTypesValues.text}
-                  className="flex justify-between"
-                >
-                  <div className="flex gap-2">
-                    <div
-                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
-                    ></div>
+              </div>}
+              <div className="flex flex-col px-4 py-2 gap-2 border-b">
+                {previousYearEventTypes.map((eventTypesValues) => (
+                  <div
+                    key={eventTypesValues.text}
+                    className="flex justify-between"
+                  >
+                    <div className="flex gap-2">
+                      <div
+                        className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                      ></div>
+                      <p
+                        className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                      >
+                        {eventTypesValues.text} Events
+                      </p>
+                    </div>
                     <p
                       className={`font-semibold text-[var(${eventTypesValues.bg})]`}
                     >
-                      {eventTypesValues.text} Events
+                      {eventTypesValues.value}
                     </p>
                   </div>
-                  <p
-                    className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                  >
-                    {eventTypesValues.value}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="px-4 py-2">
+                <p className="text-sm font-medium">TOP EVENTS</p>
+                <ul className="flex flex-col gap-2 mt-4">
+                  {isPreviouseventsLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                  ) : previousYearEventData &&
+                    (previousYearEventData as any).events.length > 0 ? (
+                    (previousYearEventData as any).events
+                      .slice(0, 4)
+                      .map((event: any, index: number) => {
+                        const { basic } = event || {};
+                        const { name, id } = basic || {};
+                        return (
+                          <li key={id} className="flex gap-4">
+                            <div className="flex flex-col items-center">
+                              <span className="text-[12px] font-semibold">
+                                {index + 1}.
+                              </span>
+                            </div>
+                            <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                              {name}
+                            </p>
+                          </li>
+                        );
+                      })
+                  ) : (
+                    <p className="text-[#666666] text-sm flex items-center gap-2">
+                      <Image
+                        src={Disable}
+                        alt="Disable"
+                        width={15}
+                        height={15}
+                      />
+                      No historical events found
+                    </p>
+                  )}
+                </ul>
+              </div>
             </div>
-            <div className="px-4 py-2">
-              <p className="text-sm font-medium">TOP EVENTS</p>
-              <ul className="flex flex-col gap-2 mt-4">
-                {isPreviouseventsLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
-                ) : previousYearEventData &&
-                  (previousYearEventData as any).events.length > 0 ? (
-                  (previousYearEventData as any).events
-                    .slice(0, 4)
-                    .map((event: any, index: number) => {
-                      const { basic } = event || {};
-                      const { name, id } = basic || {};
-                      return (
-                        <li key={id} className="flex gap-4">
-                          <div className="flex flex-col items-center">
-                            <span className="text-[12px] font-semibold">
-                              {index + 1}.
-                            </span>
-                          </div>
-                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                            {name}
-                          </p>
-                        </li>
-                      );
-                    })
-                ) : (
-                  <p className="text-[#666666] text-sm flex items-center gap-2">
-                    <Image src={Disable} alt="Disable" width={15} height={15} />
-                    No historical events found
-                  </p>
-                )}
-              </ul>
-            </div>
-          </div>
+          )}
         </div>
-        <div className="grid grid-cols-2">
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
           <Link
             href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
-            className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer border-r"
+            className={`px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer ${
+              compareFrom && compareTo ? "border-r" : ""
+            }`}
           >
             VIEW ALL
             <ArrowUpRight height={18} width={18} stroke="#6750a4" />
           </Link>
-          <Link
-            href={`/internal/search/events?${previousYearLink}`}
-            className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
-          >
-            VIEW ALL
-            <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
-          </Link>
+          {compareFrom && compareTo && (
+            <Link
+              href={`/internal/search/events?${previousYearLink}`}
+              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+            >
+              VIEW ALL
+              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
+            </Link>
+          )}
         </div>
       </div>
     );
@@ -938,7 +970,9 @@ const LineChartComponent = ({
     // Separate year entries from threshold entries
     const yearEntries =
       payload?.filter(
-        (entry) => entry.id === "current_year" || entry.id === "previous_year"
+        (entry) =>
+          entry.id === "current_year" ||
+          (compareFrom && compareTo && entry.id === "previous_year")
       ) || [];
 
     const thresholdEntries =
@@ -960,9 +994,9 @@ const LineChartComponent = ({
                 className="flex items-center gap-2"
               >
                 <div
-                  className={`w-2 h-2 rounded-full`}
+                  className="w-4 h-0 border-t-2"
                   style={{
-                    backgroundColor: entry.color,
+                    borderColor: entry.color,
                   }}
                 ></div>
                 <TooltipProvider>
@@ -996,24 +1030,17 @@ const LineChartComponent = ({
               key={`threshold-item-${index}`}
               className="flex items-center gap-2"
             >
-              {entry.id === "upper_threshold" ||
-              entry.id === "lower_threshold" ? (
-                <div
-                  className="w-4 h-0 border-t-2"
-                  style={{
-                    borderColor: entry.color,
-                    borderStyle: "dashed",
-                    borderWidth: "2px",
-                  }}
-                ></div>
-              ) : (
-                <div
-                  className={`w-2 h-2 rounded-full`}
-                  style={{
-                    backgroundColor: entry.color,
-                  }}
-                ></div>
-              )}
+              <div
+                className="w-4 h-0 border-t-2"
+                style={{
+                  borderColor: entry.color,
+                  borderStyle:
+                    entry.id === "upper_threshold" ||
+                    entry.id === "lower_threshold"
+                      ? "dashed"
+                      : "solid",
+                }}
+              ></div>
               <TooltipProvider>
                 <ShadcnTooltip>
                   <TooltipTrigger asChild>
@@ -1040,7 +1067,7 @@ const LineChartComponent = ({
     );
   };
 
-  if (isLoading) {
+  if (isLoading || (compareFrom && compareTo && previousYearLoading)) {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
         <Loading />
