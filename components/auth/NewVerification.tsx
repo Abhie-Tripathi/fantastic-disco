@@ -40,7 +40,8 @@ export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
   const [showResendOtpMessage, setShowResendOtpMessage] = useState(false);
-  const { verifyOtp, error, signin, setError, isLoading } = useAuthContext();
+  const { verifyOtp, error, signin, setError, isLoading, showOTPMessage } =
+    useAuthContext();
   const searchParams = useSearchParams();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
@@ -179,11 +180,16 @@ export default function NewVerificationForm() {
               <ArrowLeft width={18} height={18} />
               <span>Back</span>
             </p>
-            <p className="text-sm text-center">
-              {showResendOtpMessage
-                ? "A new 6 digit OTP has been resent to your email"
-                : "We have sent a 6 digit OTP to your email"}
-            </p>
+            {showOTPMessage && (
+              <p className="text-sm text-center">
+                {showResendOtpMessage
+                  ? "A new 6 digit OTP has been resent to your email"
+                  : showOTPMessage
+                  ? "We have sent a 6 digit OTP to your email"
+                  : ""}
+              </p>
+            )}
+
             <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
             <FormField
               control={form.control}
@@ -259,6 +265,9 @@ export default function NewVerificationForm() {
             00 : {time > 9 ? time : `0${time}`}
           </span>
         )}
+        <span className="text-gray-400 text-xs">
+          {"Didn’t find the OTP? Check your spam box"}
+        </span>
       </div>
     </div>
   );
