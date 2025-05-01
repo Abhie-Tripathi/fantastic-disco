@@ -4,7 +4,7 @@ import YourEventCard from "./YourEventCard";
 import styles from "./internal.style.module.css";
 import TimelineItem from "@/app/components/employee/listView/TimelineItem";
 import CloseIcon from "/public/internal/cross.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { enquiryType, eventDataType } from "../../../types/coordinateEventType";
 import Loading from "../UI/Loading";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
@@ -24,6 +24,8 @@ import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
 import { endpoints } from "@/config/endpoints";
+import AddEventModal from "@/components/coordinate/addEvent/AddEventModal";
+import { isEventeli } from "@/config";
 
 interface Props {
   coordinateActions: any;
@@ -35,6 +37,8 @@ const Internal = ({
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
+
+  const { user } = useAuthContext();
 
   let prevDate: any = null;
   const { theme } = useTheme();
@@ -291,6 +295,19 @@ const Internal = ({
             <div style={{ width: "15%" }} className={styles.outerDiv}>
               <UpvoteSelector />
             </div>
+            
+            {user?.accountId &&
+              ((isEventeli &&
+                [
+                  "e485cdd3-0e61-5f36-b896-aed7ba606697",
+                  "a5ea32fb-0c4e-486a-8a2f-81fabc3a87ee",
+                ].includes(user.accountId)) ||
+                (!isEventeli &&
+                  [
+                    "aace9785-9427-4fdd-88c2-2340d30e909c",
+                    "ee24cd48-3274-4df2-bec3-c864fa2d13ae",
+                  ].includes(user.accountId))) && <AddEventModal />
+            }
           </div>
 
           <div className={styles.timelineContainer}>
