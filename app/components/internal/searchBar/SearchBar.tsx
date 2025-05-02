@@ -137,10 +137,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                   updatedData = eventSuggestion.map((item) => {
                     return {
                       key: item.basic.id,
-                      eventLocation:item.basic.eventLocation.cityName,
-                      eventCountry:item.basic.eventLocation.countryName,
+                      eventLocation:item.basic.eventLocation.city.name,
+                      eventCountry:item.basic.eventLocation.country.name,
                       name: item.basic.name || '',
-                      tableEntry: `${item.basic.name}, ${item.basic.eventLocation.cityName}, ${item.basic.eventLocation.countryName}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
+                      tableEntry: `${item.basic.name}, ${item.basic.eventLocation.city.name}, ${item.basic.eventLocation.country.name}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
                       eventStartDate: item.basic.startDateTime,
                       eventEndDate: item.basic.endDateTime
                     };
