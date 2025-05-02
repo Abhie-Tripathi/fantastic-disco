@@ -508,7 +508,6 @@ export const AuthContextProvider = ({ children }: any) => {
   );
 
   const isTentimesUser = useMemo(() => {
-    console.log(user?.accountId, TENTIMES_USER_ACCOUNT_ID);
     return user?.accountId === TENTIMES_USER_ACCOUNT_ID;
   }, [user]);
 
