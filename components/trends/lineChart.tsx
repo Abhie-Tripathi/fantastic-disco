@@ -1140,7 +1140,19 @@ const LineChartComponent = ({
             dataKey="total"
             fontSize="12px"
             width={70}
-            domain={["auto", "auto"]}
+            domain={[
+              () => {
+                const minTotal = Math.min(...graphData.map((item: any) => item.total || 0));
+                const minPreviousYear = Math.min(...graphData.map((item: any) => item.previousYearTotal || 0));
+                return Math.floor(Math.min(minTotal, minPreviousYear, 0));
+              },
+              () => {
+                const maxTotal = Math.max(...graphData.map((item: any) => item.total || 0));
+                const maxPreviousYear = Math.max(...graphData.map((item: any) => item.previousYearTotal || 0));
+                const overallMax = Math.max(maxTotal, maxPreviousYear);
+                return Math.ceil(overallMax * 1.1); // Add 10% padding
+              }
+            ]}
             tickCount={5}
             tickFormatter={tickFormatter}
             label={{

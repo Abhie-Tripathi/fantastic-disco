@@ -571,11 +571,11 @@ const TestPeriodicAnalytics = () => {
                             </span>
                           )}
                         </div>
-                        {cellData["thresholdHighlightCol"] ===
+                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
                           "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
                           <ArrowUp width={15} height={15} />
                         )}
-                        {cellData["thresholdHighlightCol"] ===
+                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
                           "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
                           <ArrowDown width={15} height={15} color="#E1313A" />
                         )}
@@ -612,11 +612,11 @@ const TestPeriodicAnalytics = () => {
                             </span>
                           )}
                         </div>
-                        {cellData["thresholdHighlightCol"] ===
+                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
                           "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
                           <ArrowUp width={15} height={15} />
                         )}
-                        {cellData["thresholdHighlightCol"] ===
+                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
                           "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
                           <ArrowDown width={15} height={15} color="#E1313A" />
                         )}
@@ -718,20 +718,16 @@ const TestPeriodicAnalytics = () => {
                                 </span>
                               )}
                             </div>
-                            {cellData["thresholdHighlightCol"] ===
-                              "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
-                              subCol.slug === "value" && (
-                                <ArrowUp width={15} height={15} />
-                              )}
-                            {cellData["thresholdHighlightCol"] ===
-                              "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
-                              subCol.slug === "value" && (
-                                <ArrowDown
-                                  width={15}
-                                  height={15}
-                                  color="#E1313A"
-                                />
-                              )}
+                            {isSmartInsightEnabledForColumn && 
+                             cellData["thresholdHighlightCol"] === "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                             subCol.slug === "value" && (
+                              <ArrowUp width={15} height={15} />
+                            )}
+                            {isSmartInsightEnabledForColumn && 
+                             cellData["thresholdHighlightCol"] === "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                             subCol.slug === "value" && (
+                              <ArrowDown width={15} height={15} color="#E1313A" />
+                            )}
                           </div>
                           {comparisonCellData && (
                             <div className="font-semibold">
