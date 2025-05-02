@@ -160,7 +160,7 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates || trackerGeoCordinates) {
+    if (geoCoordinates || Object.keys(trackerGeoCordinates).length != 0) {
       if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {

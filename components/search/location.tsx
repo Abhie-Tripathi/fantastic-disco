@@ -493,6 +493,7 @@ export default function LocationSelector({
       setValidationErrors(errors);
     }
   }, [selectedLocation, activeTab]);
+console.log(isMandatory, selectedLocation);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -500,14 +501,14 @@ export default function LocationSelector({
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            (selectedLocation === undefined ||
-              (Array.isArray(selectedLocation) &&
-                selectedLocation?.length === 0)) &&
-            isMandatory
+            isMandatory && 
+            (selectedLocation === undefined || 
+             selectedLocation === null || 
+             (Array.isArray(selectedLocation) && selectedLocation.length === 0))
               ? "border-destructive"
               : isOpen
-              ? "border-primary"
-              : "border-input"
+                ? "border-primary"
+                : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}

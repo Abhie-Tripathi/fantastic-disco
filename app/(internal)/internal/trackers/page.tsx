@@ -254,6 +254,8 @@ const Trackers = ({ searchParams }: Search) => {
       "Saved Tracker | Any Filter Applied",
       "View"
     );
+    console.log(id);
+    
     setIsNewCall(true); 
     setTrackerId(id);
   }
@@ -408,7 +410,7 @@ const Trackers = ({ searchParams }: Search) => {
         source="tracker"
         eventType={activeType}
         searchParams="active"
-        trackerGeoCordinates={geoCoordinate}
+        trackerGeoCordinates={Object.keys(geoCoordinate || {}).length != 0?geoCoordinate:{}}
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
         trackerType={singleTrackerData?.type || ""}

@@ -59,9 +59,10 @@ export const TrackerContextProvider = ({ children }: any) => {
       setIsNewCall(true);
     }
   }, [pathName]);
+console.log(isNewCall);
 
   useEffect(() => {
-    // console.log(11111);
+    console.log(11111);
 
     if (isNewCall) {
       fetchData();
@@ -77,7 +78,6 @@ export const TrackerContextProvider = ({ children }: any) => {
         setData(data);
         setSavedEventCount(data.savedEventsCount || 0);
         console.log(data);
-        setIsNewCall(false);
         setEditTrue(false);
       }
       if (error) {
@@ -86,6 +86,7 @@ export const TrackerContextProvider = ({ children }: any) => {
     } catch (error) {
       console.error("Fetch data error:", error);
     }
+    setIsNewCall(false);
   }, [trackerId, getTrackerDetail, error]);
 
   const value = {

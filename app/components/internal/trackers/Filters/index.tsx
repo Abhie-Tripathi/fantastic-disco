@@ -764,7 +764,6 @@ const Pages = () => {
 
 
     const secondLast = pathName[pathName.length - 2];
-
     if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
       setIsCreating(false);
       setIsMandatory(true);
@@ -816,7 +815,7 @@ const Pages = () => {
       setIsMandatory(true);
       return;
     }
-    else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+    else if (type === defaultType && (getLocalFilterValue("locationIds")?.length === 0 || trackerName.length === 0)) {
       console.log("Please, Fill all the details");
       setIsCreating(false);
       setIsMandatory(true);
@@ -902,7 +901,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+      else if (type === defaultType && (getLocalFilterValue("locationIds")?.length === 0 || trackerName.length === 0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -911,7 +910,6 @@ const Pages = () => {
       // else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("viewBound").latitude))) {
 
       // }
-      console.log(getLocalFilterValue("locationIds").length, trackerName.length === 0, type === defaultType);
       
       try{
         const data= await createTracker(formData)
