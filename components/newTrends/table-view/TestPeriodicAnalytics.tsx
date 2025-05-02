@@ -562,7 +562,7 @@ const TestPeriodicAnalytics = () => {
                       <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-[100px]">
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
                           {comparisonCellData && (
@@ -581,7 +581,7 @@ const TestPeriodicAnalytics = () => {
                         )}
                       </div>
                       {comparisonCellData && (
-                        <span>{comparisonValue}</span>
+                        <span className="min-w-[100px] text-start">{comparisonValue}</span>
                       )}
                     </div>
                   </TableCell>
@@ -649,7 +649,7 @@ const TestPeriodicAnalytics = () => {
                       >
                         <div className="flex flex-col items-center w-full">
                           <div className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 min-w-[100px]">
                               <span>{currentValue}</span>
                               {comparisonCellData && (
                                 <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
@@ -659,7 +659,7 @@ const TestPeriodicAnalytics = () => {
                             </div>
                           </div>
                           {comparisonCellData && (
-                            <div className="font-semibold">
+                            <div className="font-semibold min-w-[100px] text-start ">
                               {comparisonValue}
                             </div>
                           )}
