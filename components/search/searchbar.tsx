@@ -237,12 +237,15 @@ export default function MultiSelectSearchBar() {
                       onSelect={() => handleItemSelect(event)}
                       className="flex flex-col items-start"
                     >
-                      <div className="font-medium">{event.basic.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {formattedDateRange(
-                          event.basic.startDateTime,
-                          event.basic.endDateTime
-                        )}
+                      <div className="font-medium">
+                        <span>{event.basic.name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {formattedDateRange(
+                            event.basic.startDateTime,
+                            event.basic.endDateTime,
+                            false
+                          )}
+                        </span>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {event.basic.eventLocation.city?.name},{" "}
