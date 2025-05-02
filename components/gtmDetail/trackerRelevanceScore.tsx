@@ -13,21 +13,34 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
-  useEffect(() => {  
-    const fetchIntelScore = async () => {
-      try {
-        const data = await getEventIntelScore(eventId);
-        if(data){
-        console.log(data);
-        setIntelData(data);
-        setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to fetch event intel score:', error);
-      }
-    };
+  const data=[
+      {
+        people_score: 90,
+        purpose_score: 80,
+        prospect_score: 70,
+        alltrackers_score: 50,
+      },
+    ]
   
-    fetchIntelScore();
+  useEffect(() => {  
+    // const fetchIntelScore = async () => {
+    //   try {
+    //     const data = await getEventIntelScore(eventId);
+    //     if(data){
+    //     console.log(data);
+    //     setIntelData(data);
+    //     setIsLoading(false);
+    //     }
+    //   } catch (error) {
+    //     console.error('Failed to fetch event intel score:', error);
+    //   }
+    // };
+  
+    // fetchIntelScore();
+    setInterval(() => {
+      setIntelData(data);
+      setIsLoading(false);
+    }, 2000);
   },[])
   
   return (
