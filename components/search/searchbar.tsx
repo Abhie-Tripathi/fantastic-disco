@@ -21,6 +21,7 @@ import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formattedDateRange } from "@/utils/date";
 
 export default function MultiSelectSearchBar() {
   const router = useRouter();
@@ -185,9 +186,9 @@ export default function MultiSelectSearchBar() {
               {selectedItems.map((item) => (
                 <div
                   key={item.basic.id}
-                  className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+                  className="flex items-center bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 m-1"
                 >
-                  <span className="text-sm">{item.basic.name}</span>
+                  <span className="text-sm text-gray-900 dark:text-gray-100">{item.basic.name}</span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -234,8 +235,19 @@ export default function MultiSelectSearchBar() {
                     <CommandItem
                       key={event.basic.id || index}
                       onSelect={() => handleItemSelect(event)}
+                      className="flex flex-col items-start"
                     >
-                      {event.basic.name}
+                      <div className="font-medium">{event.basic.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {formattedDateRange(
+                          event.basic.startDateTime,
+                          event.basic.endDateTime
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {event.basic.eventLocation.city?.name},{" "}
+                        {event.basic.eventLocation.country?.name}
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandList>

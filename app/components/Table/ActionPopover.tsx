@@ -23,10 +23,10 @@ import { useTrackerServices } from "@/services/trackerServices";
 interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
-  trackerId?:string;
-  setInterest:any;
-  setEventId:any;
-  view?:string;
+  trackerId?: string;
+  setInterest: any;
+  setEventId: any;
+  view?: string;
 }
 
 export function ActionPopover({
@@ -35,10 +35,10 @@ export function ActionPopover({
   trackerId,
   setInterest,
   setEventId,
-  view
+  view,
 }: ActionPopoverProps) {
   console.log();
-  const {removeBookmark}=useTrackerServices();
+  const { removeBookmark } = useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setSavedEventCount, savedEventCount } = useTrackerContext();
@@ -50,27 +50,28 @@ export function ActionPopover({
   const { createUserEventInterest, isLoading: isSubmitting } =
     useIntent.createUserEventInterest();
   const [selectedAction, setSelectedAction] = useState<string | undefined>(
-    interests?.bookmark
-      ? "BOOKMARK"
-      : interests?.speak
-      ? "SPEAK"
-      : interests?.sponsor
-      ? "SPONSOR"
-      : interests?.attend
-      ? "ATTEND"
-      : interests?.exhibit
-      ? "EXHIBIT"
-      : undefined
+    () => {
+      if (interests?.speak) return "SPEAK";
+      if (interests?.sponsor) return "SPONSOR";
+      if (interests?.attend) return "ATTEND";
+      if (interests?.exhibit) return "EXHIBIT";
+      if (interests?.bookmark) return "BOOKMARK";
+      return undefined;
+    }
   );
   const [isOpen, setIsOpen] = useState(false);
 
   const actions = [
-    ...interestConfiguration?.interest || [],
-    ...(!interests?.bookmark ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+    ...(interestConfiguration?.interest || []),
+    ...(!interests?.bookmark
+      ? [{ label: "Bookmark", status: "BOOKMARK" }]
+      : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
   const handleSubmit = async () => {
     if (view === "bookmarked") {
-      const response = await removeBookmark(interests?.bookmark?.interestId || "");
+      const response = await removeBookmark(
+        interests?.bookmark?.interestId || ""
+      );
       if (response?.interest && setInterest) {
         setInterest({
           [response.interest.toLowerCase()]: {
@@ -83,7 +84,9 @@ export function ActionPopover({
       setIsOpen(false);
     } else if (selectedAction) {
       if (selectedAction === "UN-BOOKMARK") {
-        const response = await removeBookmark(interests?.bookmark?.interestId || "");
+        const response = await removeBookmark(
+          interests?.bookmark?.interestId || ""
+        );
         if (response?.interest && setInterest) {
           setSavedEventCount(savedEventCount - 1);
           setInterest({
@@ -129,7 +132,7 @@ export function ActionPopover({
               });
             },
             onError: (error) => {
-              console.log(error)
+              console.log(error);
               toast({
                 title: "Error",
                 description: error.message,
@@ -141,7 +144,6 @@ export function ActionPopover({
       }
     }
   };
-  
 
   const isSaved =
     interests?.bookmark ||
@@ -157,7 +159,7 @@ export function ActionPopover({
   if (isConfigLoading) {
     return <Skeleton className="w-4 h-4" />;
   }
-console.log(interests);
+  console.log(interests);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
