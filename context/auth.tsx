@@ -33,6 +33,10 @@ import {
 import { SignUpDTO, TSignInFormSchema } from "../types";
 import { UserResponse } from "../types/user";
 
+const TENTIMES_USER_ACCOUNT_ID = isEventeli
+  ? process.env.NEXT_PUBLIC_EVENTELI_TENTIMES_ACCOUNTID
+  : process.env.NEXT_PUBLIC_EVENTGENI_TENTIMES_ACCOUNTID;
+
 type authContextType = {
   user: UserResponse | null;
   error:
@@ -74,6 +78,7 @@ type authContextType = {
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
   isAuthenticating: boolean;
+  isTentimesUser: boolean;
 };
 interface newUserResponse {
   user: {
@@ -108,6 +113,7 @@ const authContextDefaultValues: authContextType = {
   setIsProfileUpdated: () => {},
   setProfilePic: () => {},
   isAuthenticating: false,
+  isTentimesUser: false,
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -501,6 +507,11 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
+  const isTentimesUser = useMemo(() => {
+    console.log(user?.accountId, TENTIMES_USER_ACCOUNT_ID);
+    return user?.accountId === TENTIMES_USER_ACCOUNT_ID;
+  }, [user]);
+
   useEffect(() => {
     if (!user) {
       const userData = window.localStorage.getItem("user");
@@ -546,6 +557,7 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     },
     isAuthenticating,
+    isTentimesUser,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

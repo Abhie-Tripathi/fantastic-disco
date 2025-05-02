@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import * as React from "react";
 import { useEffect } from "react";
 import DateRangePopup from "./dateRangePopup";
+import { useAuthContext } from "@/context";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -69,6 +70,7 @@ export default function DateRangeSelector({
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
+  const { isTentimesUser } = useAuthContext();
   const {
     setMultipleLocalFilters,
     searchParams,
@@ -77,7 +79,9 @@ export default function DateRangeSelector({
   } = useFilterContext();
   const viewParam = searchParams.get("view");
   const enableCompareOptions =
-    pathName === "/internal/trends" && viewParam !== "treemap";
+    pathName === "/internal/trends" &&
+    viewParam !== "treemap" &&
+    isTentimesUser;
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
