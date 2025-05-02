@@ -30,10 +30,12 @@ import Alerts from "@/components/search/alerts";
 import SortDropdown from "@/components/search/sortDropdown";
 import { isEventeli } from "@/config";
 import { CallBackProps, STATUS, Step } from "react-joyride";
+import BulkImport from "@/components/bulk-import";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
+  const [showCheckBox, setShowCheckBox] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
@@ -178,16 +180,24 @@ const Events = () => {
               {(selectedView === "list" ||
                 selectedView === "table" ||
                 selectedView == "") && <SortDropdown />}
+              {(selectedView === "list" ||
+                selectedView === "table" ||
+                selectedView === "") && (
+                <BulkImport
+                  bulkActions={["Take Action"]}
+                  setShowCheckBox={setShowCheckBox}
+                />
+              )}
             </div>
           </div>
 
           <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
             {isEventeli && <Alerts />}
-            <List />
+            <List showCheckBox={showCheckBox}/>
           </TabsContent>
           <TabsContent value="table" className="flex-grow overflow-hidden">
             {isEventeli && <Alerts />}
-            <Table />
+            <Table showCheckBox={showCheckBox}/>
           </TabsContent>
           <TabsContent value="map">
             <Map />
