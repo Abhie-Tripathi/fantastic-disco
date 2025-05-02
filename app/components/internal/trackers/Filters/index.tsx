@@ -1708,7 +1708,7 @@ const Pages = () => {
 
               </div>
             }
-            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
               <Presets template={template} handlePresetClick={handlePresetClick} />
             }
           </div>
