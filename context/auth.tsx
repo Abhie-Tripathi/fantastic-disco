@@ -174,44 +174,13 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   };
 
-  const fetchUserLocation = async (primaryLocation: PrimaryLocation) => {
-    try {
-      if (
-        primaryLocation &&
-        primaryLocation.locationType === "LOCATION_ID" &&
-        primaryLocation.locationId
-      ) {
-        const userLocation = await request<{
-          formattedLocations: Location[] | undefined;
-        }>(`${endpoints.locations}?locationIds=${primaryLocation.locationId}`);
-        return userLocation?.formattedLocations?.[0];
-      }
-
-      if (
-        primaryLocation &&
-        primaryLocation.locationType === "GEO_JSON" &&
-        primaryLocation.geoJson
-      ) {
-        const coordinates = primaryLocation.geoJson.geometry?.coordinates || [];
-        const lat = coordinates[0];
-        const lng = coordinates[1];
-        const userLocation = await getLocationName(lat, lng);
-        return userLocation;
-      }
-    } catch (error) {
-      console.error("Error fetching user location:", error);
-      return undefined;
-    }
-  };
-
   const newcheckAuth = useCallback(async () => {
     const userData = await fetchUserData();
     if (!userData) {
       setUser(null);
       return;
     }
-    const userLocation = await fetchUserLocation(userData?.primaryLocation);
-    setUser({ ...userData, userLocation: userLocation as UserLocation });
+    setUser(userData);
   }, [request]);
 
   const generateOTP = async (
@@ -421,7 +390,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm")
+        router.push("https://whr.ai/gtm");
       }
     },
     [request, router]
