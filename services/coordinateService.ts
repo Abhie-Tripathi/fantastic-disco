@@ -354,14 +354,25 @@ export const useCoordinateService = () => {
     );
   }
 
-  const addNewEvent = async(formData: any) => {
-    const data = await externalAxios.post<any>(
-      `https://stg-board.10times.com/enquiry/submit`,
+  const fetchDuplicateEvents = (eventData: any) => {
+    return api.request(
+      endpoints.coordinate.fetchDuplicateEvent,
       {
-        data: formData,
+        method: "POST",
+        data: eventData,
       }
     );
-    return data.data;
+
+  }
+
+  const addNewEvent = async(eventData: any) => {
+    return api.request(
+      endpoints.coordinate.addNewEvent,
+      {
+        method: "POST",
+        data: eventData,
+      }
+    );
   }
 
   return {
@@ -391,6 +402,7 @@ export const useCoordinateService = () => {
     deleteEnquiryActivityIntent,
     fetchEvents,
     fetchSimilarEvents,
+    fetchDuplicateEvents,
     addNewEvent,
     isLoading: api.isLoading,
     // error: api.error as ApiError,

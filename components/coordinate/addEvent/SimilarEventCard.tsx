@@ -33,7 +33,7 @@ const SimilarEventCard = ({
   const event = {
     name: eventData.name,
     logoUrl: eventData.logo,
-    organizer: eventData.organizer,
+    organizer: eventData?.organizer ?? "",
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
     // address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
@@ -111,17 +111,28 @@ const SimilarEventCard = ({
 
           {duplicateEvents?.map((item: any) => {
             const eventItem = {
-              id: item.basic.id,
-              name: item.basic.name,
-              logo: item.basic.logo,
+              // id: item.basic.id,
+              // name: item.basic.name,
+              // logo: item.basic.logo,
+              // organizer: item.basic?.organizer?.name,
+              // startDate: item.basic.startDateTime,
+              // endDate: item.basic.endDateTime,
+              // venue: "Dubai International Convention & Exhibition Centre",
+              // state: item.basic.eventLocation?.state?.name,
+              // city: item.basic.eventLocation?.city?.name,
+              // country: item.basic.eventLocation?.country?.name,
+              // eventType: item.basic?.primaryEventType,
+              id: item.id,
+              name: item.name,
+              logo: "",
               organizer: item.basic?.organizer?.name,
-              startDate: item.basic.startDateTime,
-              endDate: item.basic.endDateTime,
-              venue: "Dubai International Convention & Exhibition Centre",
-              state: item.basic.eventLocation?.state?.name,
-              city: item.basic.eventLocation?.city?.name,
-              country: item.basic.eventLocation?.country?.name,
-              eventType: item.basic?.primaryEventType,
+              startDate: item?.startDate,
+              endDate: item?.endDate,
+              venue: item?.venueName,
+              state: item?.state,
+              city: item?.cityName,
+              country: item?.countryName,
+              eventType: item?.eventType?.[0],
             };
             return <EventCard {...eventItem} key={eventItem.id} />;
           })}

@@ -1,0 +1,87 @@
+.body{
+    padding: 9px 19px;
+    width: 100%;
+    background-color: #ffffff55;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+.darkBody{
+    background-color: #4d4d4d53;
+}
+.editIcon{
+    cursor: pointer;
+}
+.locationContainer{
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    cursor: pointer;
+}
+.eventLocation{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.eventLocation .eventLocationOne{
+    font-weight: 500;
+    font-size: var(--font-size-default);
+
+}
+.darkEventLocation{
+    color: white;
+}
+.lightEventLocation{
+    color: #7D7D7D;
+}
+/* .eventLocation .activeLocation{
+    color: black;
+} */
+.eventLocation .eventLocationTwo{
+    /* color: #7D7D7D; 
+     font-size: 10px;
+    line-height: 20px; */
+    font-size: var( --font-size-small);
+    font-family: var(--font-weight-regular);
+    color: var(--primary-text-color); 
+}
+.dropdown{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(194, 194, 194));
+    background-color: white;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+.errorHighlight {
+    border: 1px solid red;
+}
+
+
+.location_details__container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.virtual_location_Container{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+
+}
+
+.divider {
+    width: 100%;
+    height: 1px; 
+    background-color: #ddd; 
+    margin: 12px 0; 
+  }
+  

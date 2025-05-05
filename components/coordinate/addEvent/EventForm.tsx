@@ -8,11 +8,10 @@ import Placeholder from "@/public/placeholder.png";
 // import EventType from "./eventType";
 // import ParticipationMode from "./participationMode";
 // import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
-import { FormState } from "@/types/Formstate";
-// import LocationContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer";
+import { AddEventFormState, addEventPayloadType } from "@/types/Formstate";
 // import { Button } from "../../ui/button";
 // import ParticipationMode from "./participationMode";
-import Details from "@/app/components/TemplateViewsNew/AddEventForm/Details/Details";
+// import Details from "@/app/components/TemplateViewsNew/AddEventForm/Details/Details";
 import { useEffect, useRef, useState } from "react";
 import SimilarEventCard from "./SimilarEventCard";
 // import EventCard from "./EventCard";
@@ -21,15 +20,14 @@ import { useCoordinateService } from "@/services/coordinateService";
 import LoadingSkeleton from "./LoadingSkeleton";
 import { useAuthContext } from "@/context";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
+// import Image from "next/image";
 // import EventType from "./eventType";
-import ParticipationMode from "./participationMode";
-import { Button } from "@/components/ui/button";
+// import ParticipationMode from "./participationMode";
+// import { Button } from "@/components/ui/button";
 import DateTimeContainer from "./DateTimeContainer";
-// import LocationContainer from "./LocationContainer";
 import EventType from "@/app/components/TemplateViewsNew/AddEventForm/Details/eventtypeinmaineventform/EventType";
 import InterestSelectContainer from "./InterestSelectContainer";
-import LocationContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer";
+import LocationContainer from "./location/LocationContainer";
 
 interface Props {
   eventFormState:
@@ -91,7 +89,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   const prefilledSubEvent: any = {};
   const prefilledGlobalEvent: any = {};
 
-  const initialFormState: FormState = {
+  const initialFormState: AddEventFormState = {
     parentData: "",
     descriptionModal: false,
     speakerModal: false,
@@ -141,16 +139,21 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     exhibitor: [],
     prefilledExhibitorDetails: undefined,
     event_type: "",
+    venueId: "",
+    cityId: "",
+    locationType: "",
+    locationName: "",
+    locationDisplayName: "",
   };
 
   const [isApproved, setIsApproved] = useState<boolean>(true);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mainEventState, setMainEventState] =
-    useState<FormState>(initialFormState);
+    useState<AddEventFormState>(initialFormState);
 
   // const handleChange = () => {};
 
-  const handleChange = (field: keyof FormState, value: any) => {
+  const handleChange = (field: keyof AddEventFormState, value: any) => {
     setMainEventState((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -200,8 +203,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       ((mainEventState.eventFormat === "In-person" ||
         mainEventState.eventFormat === "Hybrid" ||
         mainEventState.eventFormat === "OFFLINE") &&
-        (!mainEventState.countryName ||
-          !mainEventState.timeZone ||
+        (!mainEventState.cityId ||
           !mainEventState.latitude ||
           !mainEventState.longitude))
     ) {
@@ -217,7 +219,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   };
 
   const handleInputChange = (value: string) => {
-    console.log("value typed : ", value);
     const specialCharRegex = /[@#$%^&*"|<>]/g;
     handleChange("isEventNameEmpty", false);
     // setIsEventNameEmpty(false)
@@ -236,8 +237,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     }
   };
 
-  const handleSave = () => {};
-
   const handleSaveClick = async () => {
     setEventFormState("fetching");
 
@@ -251,25 +250,109 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       endDate: mainEventState.endDate,
       venue: mainEventState.venue,
       // state: string;
-      city: mainEventState.cityName,
-      country: mainEventState.countryName,
+      city: mainEventState.locationDisplayName,
+      // country: mainEventState.countryName,
       eventType: mainEventState.event_type,
     };
 
     setEventData(e_data);
 
-    const apiData: any = await coordinateService.fetchSimilarEvents(e_data);
+    const duplicateEventPayload = {
+      name: mainEventState.eventName,
+      latitude: mainEventState.latitude,
+      longitude: mainEventState.longitude,
+      locationIds: mainEventState.cityId,
+      startDate: mainEventState.startDate,
+      endDate: mainEventState.endDate,
+      venueId: "",
+    };
 
-    if (apiData.count > 0) {
+    if (mainEventState.locationType === "VENUE") {
+      duplicateEventPayload.venueId = mainEventState.venueId;
+    }
+
+    const apiData2: any = await coordinateService.fetchDuplicateEvents(
+      duplicateEventPayload
+    );
+
+    if (apiData2.blocked.length > 0) {
       setEventFormState("similarEvents");
-      setSimilarEvents(apiData.events);
+      setSimilarEvents(apiData2.blocked);
     } else {
       // sendMail();
-      resetForm();
-      toast({
-        title: "Request has been submitted!",
-        variant: "default",
-      });
+
+      const eventData: addEventPayloadType = {
+        start_date: mainEventState.startDate,
+        end_date: mainEventState.endDate,
+        start_time: mainEventState.startTime,
+        end_time: mainEventState.endTime,
+        gmt_time: mainEventState.timeZone,
+        location_city_id: mainEventState.cityId,
+        // "location_city": "Las Vegas",
+        // "location_country": "United States",
+        // "location_country_id": "dd718c3c-be27-5c3e-bd82-dc78a23e01e0",
+        // "location_country_iso_code": "US",
+        // "location_state": "Nevada",
+        // "location_state_id": "c82071eb-c3c8-577e-9cae-4cd5394877b0",
+        description: "An international tech event showcasing innovations in AI and robotics.",
+        // "venue_name": "Las Vegas Convention Center",
+        // "venue_address": " 3150 Paradise Rd Las Vegas NV 89109",
+        // venue_latitude: Number(""),
+        // venue_longitude: Number(""),
+        // venue_id: "",
+        latitude: mainEventState.latitude,
+        longitude: mainEventState.longitude,
+        format: mainEventState.eventFormat,
+        // "booth_number": "B12",
+        participationType: mainEventState.participationType,
+        event_type: mainEventState.event_type,
+        // "category": "technology",
+        // "tags": "ai,robotics,tech",
+        // "customizationData": "{}",
+        // "parentData": "{}"
+      };
+      if (mainEventState.locationType === "VENUE") {
+        eventData.venue_id = mainEventState.venueId;
+        eventData.venue_latitude = mainEventState.latitude;
+        eventData.venue_longitude = mainEventState.longitude;
+      }
+
+      const addEventPayload = {
+        name: mainEventState.eventName,
+        interest: mainEventState.participationType,
+        sourceModule: "COORDINATE",
+        // logoUrl:
+        //   mainEventState.banner.file !== null &&
+        //   mainEventState.banner.placeHolder,
+        data: JSON.stringify(eventData),
+      };
+
+      try {
+        const apiData: any = await coordinateService.addNewEvent(
+          addEventPayload
+        );
+
+        if (apiData?.error) {
+          toast({
+            variant: "destructive",
+            title: "Something went wrong.",
+            description: "Failed to add event. Please try again.",
+          });
+        } else {
+          toast({
+            title: "Event Added Successfully!",
+            variant: "default",
+          });
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Something went wrong.",
+          description: "Failed to add event. Please try again.",
+        });
+      } finally {
+        resetForm();
+      }
     }
   };
 
@@ -288,16 +371,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       phoneNumber: user?.phoneNumber,
       description: JSON.stringify(description),
     };
-
-    /*
-      const response = await fetch("http://stg-board.10times.com/enquiry/submit", {
-        method: "POST",
-        body: formData,
-      });
-
-      const apiData1 = await response.json();
-      console.log('apiData', apiData1);return false;
-    */
 
     const apiData: any = await coordinateService.addNewEvent(formData1);
 
@@ -460,11 +533,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
               )}
             </div>
           </div>
-          {/* <div className="flex justify-end col-span-4">
-            <Button size="sm" onClick={handleSave}>
-              Save and Add Event
-            </Button>
-          </div> */}
         </div>
       )}
     </div>

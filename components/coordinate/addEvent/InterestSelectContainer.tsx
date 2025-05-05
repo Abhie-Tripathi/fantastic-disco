@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import { FormState } from "@/types/Formstate";
+import { AddEventFormState } from "@/types/Formstate";
 import { useConfiguration } from "@/hooks/useConfiguration";
 
 interface Props {
-  handleChange: (field: keyof FormState, value: any) => void;
-  formState: FormState;
+  handleChange: (field: keyof AddEventFormState, value: any) => void;
+  formState: AddEventFormState;
   formTheme: string;
   heading: string;
   size: string;
