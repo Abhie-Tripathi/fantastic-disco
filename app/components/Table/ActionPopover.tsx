@@ -37,7 +37,6 @@ export function ActionPopover({
   setEventId,
   view,
 }: ActionPopoverProps) {
-  console.log();
   const { removeBookmark } = useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -102,7 +101,6 @@ export function ActionPopover({
         });
         setEventId(response?.eventId);
         setIsOpen(false);
-        console.log(response);
       } else {
         createUserEventInterest(
           {
@@ -132,7 +130,6 @@ export function ActionPopover({
               });
             },
             onError: (error) => {
-              console.log(error);
               toast({
                 title: "Error",
                 description: error.message,
@@ -159,7 +156,6 @@ export function ActionPopover({
   if (isConfigLoading) {
     return <Skeleton className="w-4 h-4" />;
   }
-  console.log(interests);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

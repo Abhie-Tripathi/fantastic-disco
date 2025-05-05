@@ -108,7 +108,6 @@ export default function MultiSelectSearchBar() {
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log("Selected items:", selectedItems);
       setOpen(false);
     },
     [selectedItems]
