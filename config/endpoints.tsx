@@ -50,7 +50,6 @@ export const endpoints = {
   //     predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
-  locations: `${BASE_URL}/location/country`,
   savedLocations: `${BASE_URL}/me/saved-locations`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,

@@ -41,7 +41,12 @@ export function PaginationComponent({
   paginationItems = ["10", "20"],
 }: PaginationComponentProps) {
   const pathname = usePathname();
-  const hideLastPage = pathname === '/internal/search/companies' || pathname === '/internal/search/people';
+
+  const hideLastPage =
+    pathname === "/internal/search/companies" ||
+    pathname === "/internal/search/people" ||
+    pathname === "/internal/search/events" ||
+    pathname.includes("/internal/trackers");
 
   const renderPaginationItems = () => {
     const items = [];
@@ -162,9 +167,7 @@ export function PaginationComponent({
 
       {showEntriesCount && (
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">
-            Results/page 
-          </span>
+          <span className="text-sm text-muted-foreground">Results/page</span>
           <Select
             value={itemsPerPage.toString()}
             onValueChange={onItemsPerPageChange}
@@ -173,9 +176,11 @@ export function PaginationComponent({
               <SelectValue>{itemsPerPage}</SelectValue>
             </SelectTrigger>
             <SelectContent align="end">
-              {paginationItems.map(item =>
-                <SelectItem value={item} key={item}>{item}</SelectItem>
-              )}
+              {paginationItems.map((item) => (
+                <SelectItem value={item} key={item}>
+                  {item}
+                </SelectItem>
+              ))}
               {/* <SelectItem value="10">10</SelectItem>
               <SelectItem value="20">20</SelectItem> */}
             </SelectContent>

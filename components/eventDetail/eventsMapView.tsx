@@ -85,6 +85,7 @@ const EventsMapView: React.FC<MapProps> = ({
             }
           : { eventTypes: "workshops,tradeshows,conferences" }),
         view: "map",
+        limit: 20,
         ...(startDate && { active_gte: new Date(startDate).toISOString() }),
         ...(endDate && { active_lte: new Date(endDate).toISOString() }),
         ...(latitude && longitude && { viewBound: JSON.stringify(viewBound) }),
