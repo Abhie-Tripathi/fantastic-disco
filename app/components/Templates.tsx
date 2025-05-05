@@ -13,6 +13,7 @@ import { Building2, Users, Lightbulb, CheckCheck } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
 import Add from "/public/add.svg";
 import { Button } from "@/components/ui/button";
+import FetchTemplateModal from "./internal/trackers/FetchTemplateModal";
 
 interface TemplateProps{
   isData: boolean;
@@ -23,6 +24,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
 
   const {getTrackerCount}=useTrackerServices();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
+  const [showFetchedData, setShowFetchedData] = useState(false);
   const [intelScoreData,setIntelScoreData] = useState([
     {
       name: "Prospect",
@@ -108,9 +110,13 @@ const renderCount = useCallback((url:string) => {
     <div className={`badge_info text-[12px]`} style={{fontWeight:"400", fontSize: "var(--font-size-label)", padding: "6px" }}>{count} in Use</div>
   ) : null;
 }, [result]);
+const handleTemplateSelect = useCallback((template: any) => {
+  // Handle template selection logic here
+  console.log("Selected template:", template);
+  setShowFetchedData(false);
+}, []);
 const EventeliView = useMemo(() => {
   if (!isEventeli) return null;
-
   return (
     <div className={`${styles.container}`}>
       {(data as TemplateItem[]).map((item: any, ind: number) =>
@@ -203,6 +209,7 @@ const EventeliView = useMemo(() => {
 
 
 const StandardView = useMemo(() => {
+
 if(isEventeli) return null;
 return(
 <div className={`flex flex-col gap-6 pl-6 pr-6`}>
@@ -210,6 +217,17 @@ return(
               <div className="flex flex-col gap-2">
                 <div className="text-xl font-medium">Brand Brief Builder </div>
                 <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
+                <div className="flex gap-2 w-[29rem]">
+                <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[#D2D2F3] focus-within:border-[#D2D2F3] transition-all duration-200">
+                <input type="text" placeholder="Enter Web URL" className="border-none outline-none bg-transparent w-full"/>
+                </div>
+                <Button className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
+                onClick={() => {
+                  console.log("Setting showFetchedData to true");
+                  setShowFetchedData(true);
+                }}
+                >Fetch</Button>
+                </div>
               </div>
               <div className="w-[100%] sm:w-[25%] h-40 border border-[var(--border-color)] p-1 flex flex-col gap-3">
               <div className="flex justify-between items-center">
@@ -357,9 +375,10 @@ return(
             </Link>
             </div>
             </div>
+            
           </div>
 )
-},[data, intelScoreData, IntelScore, isEventeli]);
+},[data, intelScoreData, IntelScore, isEventeli, handleTemplateSelect]);
 // console.log({countData?.find(item => item.type === "T_PRODUCT_KEYWORDS")?.count ?? 0});
 
     return(
@@ -376,7 +395,11 @@ return(
        EventeliView:
           StandardView
       }
-       
+       <FetchTemplateModal
+        open={showFetchedData}
+        onOpenChange={setShowFetchedData}
+        onSelectTemplate={handleTemplateSelect}
+      />
         </div>
     )
 })
