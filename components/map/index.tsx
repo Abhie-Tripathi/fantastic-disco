@@ -412,29 +412,29 @@ export default function MapComponent({
     setViewport(viewState);
   }, []);
 
-  // const eventCountsGeoJSON = React.useMemo(() => {
-  //   return {
-  //     type: "FeatureCollection",
-  //     features: eventCountsQuery.data
-  //       ? eventCountsQuery?.data?.map((count: EventCount) => ({
-  //           type: "Feature",
-  //           geometry: {
-  //             type: "Point",
-  //             coordinates: [
-  //               parseFloat(count.longitude),
-  //               parseFloat(count.latitude),
-  //             ],
-  //           },
-  //           properties: {
-  //             count: count.count,
-  //             id: count.cityId,
-  //             name: count.name,
-  //             type: currentZoomGroup, // "country" or "city"
-  //           },
-  //         }))
-  //       : [],
-  //   };
-  // }, [eventCountsQuery.data, currentZoomGroup, location]);
+  const eventCountsGeoJSON = React.useMemo(() => {
+    return {
+      type: "FeatureCollection",
+      features: eventCountsQuery.data
+        ? eventCountsQuery?.data?.map((count: EventCount) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [
+                parseFloat(count.longitude),
+                parseFloat(count.latitude),
+              ],
+            },
+            properties: {
+              count: count.count,
+              id: count.cityId,
+              name: count.name,
+              type: currentZoomGroup, // "country" or "city"
+            },
+          }))
+        : [],
+    };
+  }, [eventCountsQuery.data, currentZoomGroup, location]);
   
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
@@ -553,7 +553,6 @@ export default function MapComponent({
   useEffect(() => {
     if (!mapRef.current) return;
     if (Object.keys(trackerGeoCordinates).length == 0 && location.locationIds == "defaultLoc") {
-      console.log("executed");
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -574,7 +573,6 @@ export default function MapComponent({
       });
     }
     if (Object.keys(trackerGeoCordinates).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
-      console.log("executed");
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -589,7 +587,6 @@ export default function MapComponent({
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      console.log(location.trackerGeoCordinates);
       const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
       
       
