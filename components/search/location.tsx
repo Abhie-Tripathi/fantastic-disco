@@ -529,7 +529,7 @@ export default function LocationSelector({
                     selectedLocation.map((loc) => loc.description).join(", ")
                   )
                 ) : (
-                  selectedLocation.description
+                  hideCenterPoint ? "" :  selectedLocation.description
                 )}
               </span>
             )}
