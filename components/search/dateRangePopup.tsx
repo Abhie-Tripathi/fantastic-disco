@@ -157,6 +157,10 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
+      const endDate = dateRange.to;
+      if (endDate && date > endDate) {
+        return;
+      }
       setLocalFilter("active_gte", format(date, "yyyy-MM-dd"));
     }
   };
@@ -164,6 +168,10 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
+      const startDate = dateRange.from;
+      if (startDate && date < startDate) {
+        return;
+      }
       setLocalFilter("active_lte", format(date, "yyyy-MM-dd"));
     }
   };
@@ -210,6 +218,10 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   ) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
+      const compareEndDate = compareTo ? new Date(compareTo) : undefined;
+      if (compareEndDate && date > compareEndDate) {
+        return;
+      }
       setLocalFilter("compare_from", format(date, "yyyy-MM-dd"));
     }
   };
@@ -219,6 +231,10 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   ) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
+      const compareStartDate = compareFrom ? new Date(compareFrom) : undefined;
+      if (compareStartDate && date < compareStartDate) {
+        return;
+      }
       setLocalFilter("compare_to", format(date, "yyyy-MM-dd"));
     }
   };
