@@ -624,11 +624,6 @@ const Pages = () => {
       if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
         finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
       }
-      // const getLocationIds = (presetItem?.filterValue?.country || [])
-      //   .map((loc) => loc.id).join(",");
-      // const getCategoriesSlug = (presetItem?.filterValue?.category || []).map((cat: { slug: string }) => cat.slug).join(",");
-      // setLocalFilter("categories", getCategoriesSlug)
-      // setLocalFilter("locationIds", getLocationIds)
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
@@ -907,13 +902,9 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      // else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("viewBound").latitude))) {
-
-      // }
       
       try{
         const data= await createTracker(formData)
-        // const data="hg"
         if (error) {
           // console.log(error);
           setIsCreating(false);
@@ -1039,7 +1030,7 @@ const Pages = () => {
       if (editData?.filterValues?.locationIds) {
         const ids = Object?.keys(editData?.filterValues?.locationIds);
         setLocalFilter("locationIds", ids.join(","))
-        console.log(ids);
+        // console.log(ids);
       }
       if (editData?.filterValues?.categories) {
         const categories = Object.values(editData?.filterValues?.categories || {}).map((category: any) => {
@@ -1325,7 +1316,7 @@ const Pages = () => {
                 onChange={(event) => setTrackerName(event.target.value)}
               />
             </div>
-            <TeliTemplates type={type} isMandatory={isMandatory} setIsMandatory={setIsMandatory}/>
+            <TeliTemplates type={type} isMandatory={isMandatory}/>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
               <div style={{ display: 'flex', gap: '25px' }}>
                 <div className={`card ${styles.competitor}`}>

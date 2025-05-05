@@ -226,7 +226,7 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
-    console.log(data);
+    // console.log(data);
     const CountValues = {
       geo : ['social','business','unattended'],
       gtm : ['active','past', 'new']
@@ -322,7 +322,7 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     setOpen(true);
   }, []);
-  console.log(data);
+  // console.log(data);
   
   const [exp, setExp] = useState(false);
   const exportData = async () => {
@@ -456,14 +456,14 @@ const Page = ({ params }: { params: any }) => {
   
   if(data?.filterValues?.locationIds){
     const ids = Object?.keys(data?.filterValues?.locationIds);
-    console.log(ids);
+    // console.log(ids);
     
     trackerLoc=ids;
   }
   useEffect(() => {
     if(data?.filterValues?.viewBound){
       const ids = data?.filterValues?.viewBound;
-      console.log(ids);
+      // console.log(ids);
       
       setGeoCoordinate(ids);
       // setLocalFilter("locationIds", ids.join(","))
@@ -512,7 +512,7 @@ if (!share) {
   closeShareModal();
 }
 };
-console.log(activeCount);
+// console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -803,7 +803,7 @@ console.log(activeCount);
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount} eventType={active || ""}/>
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount}/>
             </Suspense>
           </div>
         )}

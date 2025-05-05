@@ -43,9 +43,8 @@ export interface LocationProps {
   type?: string;
   isMandatory?: boolean;
   filterName?: string;
-  setIsMandatory?: (value: boolean) => void;
 }
-export default function LocationSelector({ type, isMandatory, filterName="locationIds", setIsMandatory }: LocationProps) {
+export default function LocationSelector({ type, isMandatory, filterName="locationIds" }: LocationProps) {
   
   const pathName = usePathname();
   const { localFilters, setLocalFilter } = useFilterContext();

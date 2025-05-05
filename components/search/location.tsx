@@ -493,7 +493,6 @@ export default function LocationSelector({
       setValidationErrors(errors);
     }
   }, [selectedLocation, activeTab]);
-console.log(isMandatory, selectedLocation);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

@@ -254,7 +254,6 @@ const Trackers = ({ searchParams }: Search) => {
       "Saved Tracker | Any Filter Applied",
       "View"
     );
-    console.log(id);
     
     setIsNewCall(true); 
     setTrackerId(id);

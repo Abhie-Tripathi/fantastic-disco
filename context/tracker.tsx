@@ -59,10 +59,8 @@ export const TrackerContextProvider = ({ children }: any) => {
       setIsNewCall(true);
     }
   }, [pathName]);
-console.log(isNewCall);
 
   useEffect(() => {
-    console.log(11111);
 
     if (isNewCall) {
       fetchData();

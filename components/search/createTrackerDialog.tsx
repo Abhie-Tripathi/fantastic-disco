@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { BASE_URL, isEventeli } from "@/config";
+import { BASE_URL } from "@/config";
 import { myFetch } from "@/utils/myFetch";
 import { useRouter } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
@@ -113,7 +113,7 @@ export default function CreateTrackerDialog({
         audienceSpread: localFilters.audienceSpread,
         ...(showsData.length > 0 && { show: showsData.join(",") }),
       },
-      type: (isEventeli && locationIds) ? "T_CUSTOM" : "T_VENUE",
+      type: locationIds ? "T_CUSTOM" : "T_VENUE",
     };
 
     try {
