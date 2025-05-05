@@ -157,14 +157,14 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
-      handleDateSelect(date);
+      setLocalFilter("active_gte", format(date, "yyyy-MM-dd"));
     }
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(e.target.value);
     if (!isNaN(date.getTime())) {
-      handleDateSelect(date);
+      setLocalFilter("active_lte", format(date, "yyyy-MM-dd"));
     }
   };
 

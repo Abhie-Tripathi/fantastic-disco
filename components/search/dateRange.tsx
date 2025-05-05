@@ -81,7 +81,9 @@ export default function DateRangeSelector({
   const enableCompareOptions =
     pathName === "/internal/trends" &&
     viewParam !== "treemap" &&
+    viewParam !== null &&
     isTentimesUser;
+
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
