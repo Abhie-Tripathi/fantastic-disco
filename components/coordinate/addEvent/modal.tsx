@@ -1,4 +1,6 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Cross } from "geist-icons";
 import React, { ReactNode } from "react";
 
 interface ModalProps {
@@ -24,6 +26,17 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
+        {isOpen &&
+          <div className="left-[-32px] absolute">
+            <Button
+                className="p-2 rounded-[2px] h-8"
+                variant="outline"
+                onClick={onClose}
+              >
+                <Cross width="14px" height="14px" color="var(--tertiary-text-color)" />
+              </Button>
+          </div>
+        }
         <div className="p-6 h-full">
           {/* Render the children content passed from the parent */}
           {/* <div>{children}</div> */}
