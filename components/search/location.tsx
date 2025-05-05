@@ -52,6 +52,7 @@ export default function LocationSelector({
   disableCenterPoint = false,
 }: LocationProps) {
   const pathName = usePathname();
+  const hideCenterPoint = disableCenterPoint || pathName === "/internal/search/people" || pathName === "/internal/search/companies";
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
@@ -528,7 +529,7 @@ export default function LocationSelector({
                     selectedLocation.map((loc) => loc.description).join(", ")
                   )
                 ) : (
-                  selectedLocation.description
+                  hideCenterPoint ? "" :  selectedLocation.description
                 )}
               </span>
             )}
@@ -556,7 +557,7 @@ export default function LocationSelector({
         </div>
 
         {isEventeli ? (
-          disableCenterPoint ? (
+          hideCenterPoint ? (
             <div className="p-4">{renderCityInput()}</div>
           ) : (
             <Tabs
