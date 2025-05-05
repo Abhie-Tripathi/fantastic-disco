@@ -94,7 +94,6 @@ export default function MapComponent({
   eventType,
   trackerGeoCordinates
 }: MapProps) {
-  console.log(trackerGeoCordinates);
   
   const mapRef = useRef<MapRef>(null);
   const searchParams = useSearchParams();
@@ -347,7 +346,8 @@ export default function MapComponent({
         mapRef.current
       ) {
         await new Promise((resolve) => setTimeout(resolve, 600));
-        const map = mapRef.current.getMap();
+        const map = mapRef?.current?.getMap();
+        if(map){
         const center = map.getCenter();
         const bounds = map.getBounds();
         if (bounds) {
@@ -402,6 +402,7 @@ export default function MapComponent({
       } else {
         setEvents([]);
       }
+    }
     };
 
     fetchEvents();
@@ -434,7 +435,7 @@ export default function MapComponent({
   //       : [],
   //   };
   // }, [eventCountsQuery.data, currentZoomGroup, location]);
-
+  
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
     events.forEach((event) => {
@@ -547,11 +548,12 @@ export default function MapComponent({
       }
     };
     fetchLocationDetails();
-  }, [location, trackerId]);
+  }, [location, trackerId, trackerLoc]);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location.locationIds == "defaultLoc") {
+    if (Object.keys(trackerGeoCordinates).length == 0 && location.locationIds == "defaultLoc") {
+      console.log("executed");
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -571,7 +573,8 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (locationBBox && location.locationIds != "defaultLoc") {
+    if (Object.keys(trackerGeoCordinates).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
+      console.log("executed");
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -624,7 +627,23 @@ export default function MapComponent({
         if (!map.hasImage(key)) map.addImage(key, image);
       });
     }
-  }, []);
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const bearing = map.getBearing();
+    const pitch = map.getPitch();
+  
+    onMove({
+      viewState: {
+        latitude: center.lat,
+        longitude: center.lng,
+        zoom,
+        bearing,
+        pitch,
+        transitionDuration: 0,
+      },
+    });
+  }, [iconUrls, onMove]);
+  
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12;
