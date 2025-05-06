@@ -70,6 +70,12 @@ export const useTrackerServices = () => {
       `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
     )
   }
+  const fetchCompanyData = (query: string, offset: number, limit:number):Promise<{ companyName: string } | undefined> => { 
+    return api.request(
+      `${endpoints.tracker.suggestion}?query=${query}&offset=${offset}&limit=${limit}`,
+    )
+
+  }
     const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
@@ -386,6 +392,7 @@ export const useTrackerServices = () => {
       getTrackerDetail,
       getTrackerEvents,
       presetData,
+      fetchCompanyData,
       isLoading: api.isLoading,
       error: api.error,
     };

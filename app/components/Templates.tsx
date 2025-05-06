@@ -14,6 +14,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import Add from "/public/add.svg";
 import { Button } from "@/components/ui/button";
 import FetchTemplateModal from "./internal/trackers/FetchTemplateModal";
+import { fetchData } from "next-auth/client/_utils";
 
 interface TemplateProps{
   isData: boolean;
@@ -25,6 +26,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const {getTrackerCount}=useTrackerServices();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
   const [showFetchedData, setShowFetchedData] = useState(false);
+  const {fetchCompanyData}=useTrackerServices();
   const [intelScoreData,setIntelScoreData] = useState([
     {
       name: "Prospect",
@@ -115,6 +117,15 @@ const handleTemplateSelect = useCallback((template: any) => {
   console.log("Selected template:", template);
   setShowFetchedData(false);
 }, []);
+const fetchData =() => {
+  setShowFetchedData(true);
+  fetchCompany();
+}
+const fetchCompany = async () => {
+  const response = await fetchCompanyData("10times.com", 0, 1)
+  console.log(response);
+  
+}
 const EventeliView = useMemo(() => {
   if (!isEventeli) return null;
   return (
@@ -222,10 +233,7 @@ return(
                 <input type="text" placeholder="Enter Web URL" className="border-none outline-none bg-transparent w-full"/>
                 </div>
                 <Button className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
-                onClick={() => {
-                  console.log("Setting showFetchedData to true");
-                  setShowFetchedData(true);
-                }}
+                onClick={() => fetchData()}
                 >Fetch</Button>
                 </div>
               </div>
@@ -400,6 +408,7 @@ return(
         onOpenChange={setShowFetchedData}
         onSelectTemplate={handleTemplateSelect}
       />
+
         </div>
     )
 })

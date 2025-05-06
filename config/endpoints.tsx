@@ -73,7 +73,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
     verifyAccess: `${BASE_URL}/auth/verify-access`,
-    templatePreset: `${BASE_URL}/others/preset`
+    templatePreset: `${BASE_URL}/others/preset`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,
