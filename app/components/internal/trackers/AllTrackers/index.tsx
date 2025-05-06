@@ -100,7 +100,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     );
     
     const zoneLocation = item?.filterValues?.viewBound?.properties?.name;
-    console.log(zoneLocation);
     
     // Build the final array before updating the state
     const updatedLocations = zoneLocation
@@ -166,7 +165,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
          id: item.id,
       })
   }
-  console.log(eventsCount);
   
   return (
     <div className="card cursor-pointer h-[160px]" onClick={()=>handleSingleClick(item)}

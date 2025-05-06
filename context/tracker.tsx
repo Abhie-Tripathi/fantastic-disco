@@ -68,14 +68,11 @@ export const TrackerContextProvider = ({ children }: any) => {
   }, [isNewCall]);
   const fetchData = useCallback(async () => {
     try {
-      console.log(trackerId);
       const data = editTrue?await getTrackerDetail(trackerId, "refresh=true"):await getTrackerDetail(trackerId);
       if (data) {
-        console.log(data);
 
         setData(data);
         setSavedEventCount(data.savedEventsCount || 0);
-        console.log(data);
         setEditTrue(false);
       }
       if (error) {

@@ -210,7 +210,6 @@ const Trackers = ({ searchParams }: Search) => {
     // const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
     if(singleTrackerData?.filterValues?.viewBound){
       const ids = singleTrackerData?.filterValues?.viewBound;
-      console.log(ids);
       
       setGeoCoordinate(ids);
       // setLocalFilter("locationIds", ids.join(","))
