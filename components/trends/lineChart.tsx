@@ -255,16 +255,17 @@ const LineChartComponent = ({
   }, [trendsData]);
 
   const tickFormatter = (value: any) => {
-    if (value >= 1e9) {
-      return `${value / 1e9}B`;
-      // return `${Math.round(value / 1e9)}B`;
-    } else if (value >= 1e6) {
-      return `${value / 1e6}M`;
-      // return `${Math.round(value / 1e6)}M`;
-    } else if (value >= 1e3) {
-      return `${Math.round(value / 1e3)}k`;
-    }
-    return value.toString();
+    if (typeof value !== 'number' || isNaN(value)) return '';
+    
+    const absValue = Math.abs(value);
+    
+    const formatter = new Intl.NumberFormat('en-US', {
+      notation: 'compact',
+      maximumFractionDigits: 1,
+      compactDisplay: 'short'
+    });
+    
+    return formatter.format(value);
   };
 
   const CustomDot = (props: any) => {
@@ -1142,15 +1143,64 @@ const LineChartComponent = ({
             width={70}
             domain={[
               () => {
-                const minTotal = Math.min(...graphData.map((item: any) => item.total || 0));
-                const minPreviousYear = Math.min(...graphData.map((item: any) => item.previousYearTotal || 0));
-                return Math.floor(Math.min(minTotal, minPreviousYear, 0));
+                if (!graphData || graphData.length === 0) return 0;
+
+                const validTotals = graphData
+                  .map((item: any) => item.total)
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                const validPrevYears = graphData
+                  .map((item: any) => item.previousYearTotal)
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+
+                if (validTotals.length === 0 && validPrevYears.length === 0) return 0;
+
+                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minValue = Math.min(minTotal, minPreviousYear, 0);
+                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
+                const paddedMax = overallMax * 1.1; // Add 10% padding
+
+                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const idealTickSize = range / 4;
+
+                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                let roundedTickSize = magnitude;
+                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+
+                return Math.floor(minValue / roundedTickSize) * roundedTickSize;
               },
               () => {
-                const maxTotal = Math.max(...graphData.map((item: any) => item.total || 0));
-                const maxPreviousYear = Math.max(...graphData.map((item: any) => item.previousYearTotal || 0));
-                const overallMax = Math.max(maxTotal, maxPreviousYear);
-                return Math.ceil(overallMax * 1.1); // Add 10% padding
+                if (!graphData || graphData.length === 0) return 100;
+
+                const validTotals = graphData
+                  .map((item: any) => item.total)
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                const validPrevYears = graphData
+                  .map((item: any) => item.previousYearTotal)
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+
+                if (validTotals.length === 0 && validPrevYears.length === 0) return 100;
+
+                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minValue = Math.min(minTotal, minPreviousYear, 0);
+                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
+                const paddedMax = overallMax * 1.1; // Add 10% padding
+
+                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const idealTickSize = range / 4;
+
+                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                let roundedTickSize = magnitude;
+                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+
+                return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
               }
             ]}
             tickCount={5}
