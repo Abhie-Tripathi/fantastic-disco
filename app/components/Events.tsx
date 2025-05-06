@@ -13,11 +13,15 @@ import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
 import {
+  ArrowDownUp,
   ArrowUpRight,
   CalendarIcon,
   Globe,
+  Grid,
   ListIcon,
   TableIcon,
+  Filter,
+  LayoutGrid,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GAEvent } from "@/utils/GAEvent";
@@ -30,14 +34,22 @@ import Alerts from "@/components/search/alerts";
 import SortDropdown from "@/components/search/sortDropdown";
 import { isEventeli } from "@/config";
 import { CallBackProps, STATUS, Step } from "react-joyride";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import FilterContent from "@/components/search/FilterContent";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
+  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
     useFilterContext();
+  const [showFilters, setShowFilter] = useState<boolean>(false);
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
@@ -98,6 +110,14 @@ const Events = () => {
     setFilter("view", value);
   };
 
+  const toggleFilterHandler = () => {
+    if (showFilters) {
+      setShowFilter(false);
+    } else {
+      setShowFilter(true);
+    }
+  };
+
   const filtersCount = (function () {
     let count = 0;
     if (
@@ -119,7 +139,7 @@ const Events = () => {
 
   return (
     <div className="flex-1 relative">
-      <div className={`px-6 transition-all duration-300`}>
+      <div className={`md:px-6 transition-all duration-300`}>
         <Tabs
           defaultValue="list"
           value={selectedView}
@@ -129,10 +149,8 @@ const Events = () => {
           <div
             className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
           >
-            <div className="flex items-center gap-2">
-              <EventCount view="events" />
-            </div>
-            <div className="flex justify-center">
+            <EventCount view="events" />
+            <div className="justify-center hidden md:flex">
               <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
                 <TabsTrigger
                   value="table"
@@ -164,7 +182,7 @@ const Events = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            <div className="flex justify-end gap-2">
+            <div className="hidden md:flex justify-end gap-2 ">
               {/* <Button
                 variant="outline"
                 className="flex items-center gap-2"
@@ -179,24 +197,108 @@ const Events = () => {
                 selectedView === "table" ||
                 selectedView == "") && <SortDropdown />}
             </div>
-          </div>
 
-          <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-            {isEventeli && <Alerts />}
-            <List />
-          </TabsContent>
-          <TabsContent value="table" className="flex-grow overflow-hidden">
-            {isEventeli && <Alerts />}
-            <Table />
-          </TabsContent>
-          <TabsContent value="map">
-            <Map />
-          </TabsContent>
-          <TabsContent value="calendar">
-            <Suspense fallback={<Loading />}>
-              <EventCalendar />
-            </Suspense>
-          </TabsContent>
+            <div className="flex md:hidden items-center justify-end gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 border"
+                  >
+                    {selectedView === "list" ? (
+                      <ListIcon className="w-4 h-4" />
+                    ) : selectedView === "table" ? (
+                      <TableIcon className="w-4 h-4" />
+                    ) : selectedView === "map" ? (
+                      <Globe className="w-4 h-4" />
+                    ) : (
+                      <CalendarIcon className="w-4 h-4" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-48 p-2">
+                  <div className="flex flex-col space-y-1">
+                    <Button
+                      variant={selectedView === "list" ? "secondary" : "ghost"}
+                      className="justify-start flex items-center gap-2"
+                      onClick={() => onTabsChange("list")}
+                    >
+                      <ListIcon className="h-4 w-4" />
+                      <span>List View</span>
+                    </Button>
+                    <Button
+                      variant={selectedView === "table" ? "secondary" : "ghost"}
+                      className="justify-start flex items-center gap-2"
+                      onClick={() => onTabsChange("table")}
+                    >
+                      <TableIcon className="h-4 w-4" />
+                      <span>Table View</span>
+                    </Button>
+                    <Button
+                      variant={selectedView === "map" ? "secondary" : "ghost"}
+                      className="justify-start flex items-center gap-2"
+                      onClick={() => onTabsChange("map")}
+                    >
+                      <Globe className="h-4 w-4" />
+                      <span>Map View</span>
+                    </Button>
+                    <Button
+                      variant={
+                        selectedView === "calendar" ? "secondary" : "ghost"
+                      }
+                      className="justify-start flex items-center gap-2"
+                      onClick={() => onTabsChange("calendar")}
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                      <span>Calendar View</span>
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <SortDropdown compact />
+
+              <Button
+                onClick={toggleFilterHandler}
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 border"
+              >
+                <Filter className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          {showFilters ? (
+            <FilterContent
+              type={"events"}
+              filterCount={3}
+              createTrackerHandler={()=>{}}
+              searchHandler={searchHandler}
+            />
+          ) : (
+            <div>
+              <TabsContent
+                value="list"
+                className="flex-grow overflow-hidden mt-0"
+              >
+                {isEventeli && <Alerts />}
+                <List />
+              </TabsContent>
+              <TabsContent value="table" className="flex-grow overflow-hidden">
+                {isEventeli && <Alerts />}
+                <Table />
+              </TabsContent>
+              <TabsContent value="map">
+                <Map />
+              </TabsContent>
+              <TabsContent value="calendar">
+                <Suspense fallback={<Loading />}>
+                  <EventCalendar />
+                </Suspense>
+              </TabsContent>
+            </div>
+          )}
         </Tabs>
       </div>
     </div>

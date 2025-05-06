@@ -141,9 +141,9 @@ export default function LocationSelector({
   const validateCenterPoint = (): boolean => {
     const errors: { radius?: string; lat?: string; lng?: string } = {};
     const geo = selectedLocation as GeoLocation;
-    
+
     if (!geo) return true;
-    
+
     // Validate radius
     if (geo.radius === null) {
       errors.radius = "Radius is required";
@@ -152,21 +152,21 @@ export default function LocationSelector({
     } else if (geo.radius > 50) {
       errors.radius = "Radius cannot exceed 50";
     }
-    
+
     // Validate latitude
     if (geo.lat === undefined) {
       errors.lat = "Latitude is required";
     } else if (geo.lat < -90 || geo.lat > 90) {
       errors.lat = "Latitude must be between -90 and 90";
     }
-    
+
     // Validate longitude
     if (geo.lng === undefined) {
       errors.lng = "Longitude is required";
     } else if (geo.lng < -180 || geo.lng > 180) {
       errors.lng = "Longitude must be between -180 and 180";
     }
-    
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -178,18 +178,20 @@ export default function LocationSelector({
         if (!validateCenterPoint()) {
           return; // Don't proceed if validation fails
         }
-        
+
         // Additional check for empty coordinates
         const geoLocation = selectedLocation as GeoLocation;
         if (geoLocation.lat === undefined || geoLocation.lng === undefined) {
           // Update validation errors for any missing coordinates
-          const errors = {...validationErrors};
-          if (geoLocation.lat === undefined) errors.lat = "Latitude is required";
-          if (geoLocation.lng === undefined) errors.lng = "Longitude is required";
+          const errors = { ...validationErrors };
+          if (geoLocation.lat === undefined)
+            errors.lat = "Latitude is required";
+          if (geoLocation.lng === undefined)
+            errors.lng = "Longitude is required";
           setValidationErrors(errors);
           return; // Don't proceed with applying the filter
         }
-        
+
         const radiusInKm =
           radiusUnit === "mi"
             ? (geoLocation.radius || 5) * 1.60934
@@ -198,7 +200,7 @@ export default function LocationSelector({
         if (radiusUnit === "mi") {
           setRadiusUnit("km");
         }
-        
+
         replaceLocalFilter(
           "locationIds",
           "viewBound",
@@ -226,7 +228,7 @@ export default function LocationSelector({
         if (radiusUnit === "mi") {
           setRadiusUnit("km");
         }
-        
+
         replaceLocalFilter(
           "locationIds",
           "viewBound",
@@ -279,7 +281,7 @@ export default function LocationSelector({
           }
         : null
     );
-    
+
     // Validate radius immediately
     let radiusError;
     if (numValue === null) {
@@ -289,8 +291,8 @@ export default function LocationSelector({
     } else if (numValue > 50) {
       radiusError = "Radius cannot exceed 50";
     }
-    
-    setValidationErrors(prev => ({ ...prev, radius: radiusError }));
+
+    setValidationErrors((prev) => ({ ...prev, radius: radiusError }));
   };
 
   const handleLatChange = (value: string) => {
@@ -304,10 +306,10 @@ export default function LocationSelector({
             }
           : null
       );
-      setValidationErrors(prev => ({ ...prev, lat: "Latitude is required" }));
+      setValidationErrors((prev) => ({ ...prev, lat: "Latitude is required" }));
       return;
     }
-    
+
     const numValue = Number(value);
     setSelectedLocation?.((prev) =>
       prev
@@ -317,14 +319,14 @@ export default function LocationSelector({
           }
         : null
     );
-    
+
     // Validate latitude immediately
     let latError;
     if (numValue < -90 || numValue > 90) {
       latError = "Latitude must be between -90 and 90";
     }
-    
-    setValidationErrors(prev => ({ ...prev, lat: latError }));
+
+    setValidationErrors((prev) => ({ ...prev, lat: latError }));
   };
 
   const handleLngChange = (value: string) => {
@@ -338,10 +340,13 @@ export default function LocationSelector({
             }
           : null
       );
-      setValidationErrors(prev => ({ ...prev, lng: "Longitude is required" }));
+      setValidationErrors((prev) => ({
+        ...prev,
+        lng: "Longitude is required",
+      }));
       return;
     }
-    
+
     const numValue = Number(value);
     setSelectedLocation?.((prev) =>
       prev
@@ -351,14 +356,14 @@ export default function LocationSelector({
           }
         : null
     );
-    
+
     // Validate longitude immediately
     let lngError;
     if (numValue < -180 || numValue > 180) {
       lngError = "Longitude must be between -180 and 180";
     }
-    
-    setValidationErrors(prev => ({ ...prev, lng: lngError }));
+
+    setValidationErrors((prev) => ({ ...prev, lng: lngError }));
   };
 
   const renderCityInput = () => (
@@ -401,12 +406,16 @@ export default function LocationSelector({
           <Input
             id="radius"
             type="number"
-            className={`mt-1 ${validationErrors.radius ? "border-red-500" : ""}`}
+            className={`mt-1 ${
+              validationErrors.radius ? "border-red-500" : ""
+            }`}
             value={(selectedLocation as GeoLocation)?.radius ?? ""}
             onChange={(e) => handleRadiusChange(e.target.value)}
           />
           {validationErrors.radius && (
-            <p className="text-xs text-red-500 mt-1">{validationErrors.radius}</p>
+            <p className="text-xs text-red-500 mt-1">
+              {validationErrors.radius}
+            </p>
           )}
         </div>
         <div className="col-span-2">
@@ -463,10 +472,14 @@ export default function LocationSelector({
 
   useEffect(() => {
     // Validate inputs when selectedLocation changes
-    if (selectedLocation && !Array.isArray(selectedLocation) && activeTab === "center") {
+    if (
+      selectedLocation &&
+      !Array.isArray(selectedLocation) &&
+      activeTab === "center"
+    ) {
       const geo = selectedLocation as GeoLocation;
       const errors: { radius?: string; lat?: string; lng?: string } = {};
-      
+
       // Validate radius
       if (geo.radius === null) {
         errors.radius = "Radius is required";
@@ -475,21 +488,21 @@ export default function LocationSelector({
       } else if (geo.radius > 50) {
         errors.radius = "Radius cannot exceed 50";
       }
-      
+
       // Validate latitude
       if (geo.lat === undefined) {
         errors.lat = "Latitude is required";
       } else if (geo.lat < -90 || geo.lat > 90) {
         errors.lat = "Latitude must be between -90 and 90";
       }
-      
+
       // Validate longitude
       if (geo.lng === undefined) {
         errors.lng = "Longitude is required";
       } else if (geo.lng < -180 || geo.lng > 180) {
         errors.lng = "Longitude must be between -180 and 180";
       }
-      
+
       setValidationErrors(errors);
     }
   }, [selectedLocation, activeTab]);
@@ -527,6 +540,8 @@ export default function LocationSelector({
                   ) : (
                     selectedLocation.map((loc) => loc.description).join(", ")
                   )
+                ) : disableCenterPoint ? (
+                  ""
                 ) : (
                   selectedLocation.description
                 )}

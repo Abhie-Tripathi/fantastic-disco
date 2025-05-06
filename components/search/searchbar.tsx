@@ -22,7 +22,11 @@ import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function MultiSelectSearchBar() {
+interface MultiSelectSearchBar {
+  varient?: "small" | "medium" | "large";
+}
+
+export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSearchBar) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
@@ -180,12 +184,20 @@ export default function MultiSelectSearchBar() {
               }`}
             >
               <Search
-                className={`ml-2 text-gray-400 ${isDashboard ? "" : "w-4 h-4"}`}
+                className={`ml-2 text-gray-400 ${isDashboard ? "" : "w-4 h-4"} ${
+                  varient === "small" ? "w-3 h-3" : 
+                  varient === "large" ? "w-5 h-5" : 
+                  "w-4 h-4"
+                }`}
               />
               {selectedItems.map((item) => (
                 <div
                   key={item.basic.id}
-                  className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+                  className={`flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 ${
+                    varient === "small" ? "text-xs" :
+                    varient === "large" ? "text-base" :
+                    "text-sm"
+                  }`}
                 >
                   <span className="text-sm">{item.basic.name}</span>
                   <button
@@ -208,6 +220,10 @@ export default function MultiSelectSearchBar() {
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className={`pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none ${
                     isDashboard ? "text-base" : "text-sm"
+                  } ${
+                    varient === "small" ? "text-xs h-7" :
+                    varient === "large" ? "text-lg h-11" :
+                    "text-sm h-9"
                   }`}
                 />
               </div>

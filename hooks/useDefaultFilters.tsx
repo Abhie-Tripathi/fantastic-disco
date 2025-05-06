@@ -74,7 +74,7 @@ export function useDefaultFilters() {
       : startOfMonth(new Date()).toISOString(),
     active_lte: filters.durations?.endDate
       ? new Date(filters.durations.endDate.split(",")[1]).toISOString()
-      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
+      : endOfMonth(addMonths(new Date(), 2)).toISOString(),
     entryType:
       filters.entryType?.enabledValue
         ?.map((item: string) => item.toLowerCase())

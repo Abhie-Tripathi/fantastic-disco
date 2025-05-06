@@ -111,8 +111,8 @@ export interface Filters {
   eventType?: string;
 
   //Preset Filters
-  presetCountry?:string;
-  presetCategory?:string;
+  presetCountry?: string;
+  presetCategory?: string;
 
   // Coordinate Filters
   eventId?: string;
@@ -135,6 +135,8 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
+
+  filter?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -193,7 +195,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
-      const params = Object.fromEntries(searchParams.entries()) as Filters;
+      const params = {
+        ...Object.fromEntries(searchParams.entries()),
+      } as Filters;
 
       // Set default date range if not present
       if (
