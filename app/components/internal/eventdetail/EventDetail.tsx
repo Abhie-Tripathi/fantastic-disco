@@ -48,7 +48,7 @@ interface Props {
   handleRefresh?: () => void;
   configData?: any;
   coordinateActions?: any;
-  modalContent?: any;
+  modalContent: any;
 }
 
 const EventDetail = ({
@@ -63,9 +63,9 @@ const EventDetail = ({
   currentEnquiryStatus,
   configData,
   coordinateActions,
-  modalContent,
   handleRefresh,
   handleDropdownSelect,
+  modalContent,
 }: Props) => {
   const [pipelineIndex, setPipelineIndex] = useState<number>(
     configData?.findIndex((item: any) => item.status === currentEnquiryStatus)
@@ -74,7 +74,7 @@ const EventDetail = ({
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
   const [stage, setStage] = useState<string>("");
-  const [singleEventData, setSingleEventData] = useState<any>();
+  const [singleEventData, setSingleEventData] = useState<any>(modalContent?.eventData);
   const urlPath = usePathname().split("/")[2];
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const [participentData, setParticipentData] = useState<any>({});
@@ -131,8 +131,7 @@ const EventDetail = ({
         console.error("Error fetching data:", error);
       }
     };
-    if (eventId != "") fetchEventData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // if (eventId != "") fetchEventData();
   }, []);
 
   const handleCloseModal = () => {
@@ -244,11 +243,11 @@ const EventDetail = ({
               <>
                 <SingleEvent event={singleEventData} />
                 <EventDescription
-                  description={singleEventData?.basic?.description}
+                  description={singleEventData?.description}
                   open={openEventDetails}
                   speakers={false}
                   shortlist={false}
-                  eventDetail={singleEventData?.basic}
+                  eventDetail={singleEventData}
                 />
               </>
             )}
@@ -260,7 +259,7 @@ const EventDetail = ({
             />
             <Organiser
               open={openOrganiserDetails}
-              organizerData={singleEventData?.basic?.organizer}
+              organizerData={singleEventData?.organizer}
             />
             <EventPoc
               open={openPocDetails}
@@ -280,7 +279,7 @@ const EventDetail = ({
           <div className={styles.containerRight} ref={rightContainerRef}>
             {singleEventData && expandedTab === "notes" ? (
               <Notes
-                eventId={singleEventData?.basic?.id}
+                eventId={singleEventData?.id}
                 enquiryId={enquiryId}
                 stage={stage}
               />

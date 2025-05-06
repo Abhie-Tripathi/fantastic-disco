@@ -38,7 +38,7 @@ const LocationContainer = ({
             {(formState.eventFormat === "In-person" ||
               formState.eventFormat === "OFFLINE") && (
               <div
-                className="w-full text-[var(--tertiary-text-color)] text-sm cursor-pointer"
+                className="w-full text-sm cursor-pointer"
                 onClick={() => setDropdown(!dropdown)}
               >
                 {formState.locationDisplayName ? (
@@ -51,14 +51,14 @@ const LocationContainer = ({
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2 font-medium">
+                    <div className="flex items-center gap-2 font-medium text-[var(--tertiary-text-color)]">
                       <Location
                         height="16px"
                         color="var(--tertiary-text-color)"
                       />
                       Add Event Location
                     </div>
-                    <div className="text-xs ml-7 mt-1.5">
+                    <div className="text-xs ml-7 mt-1.5 text-[var(--tertiary-text-color)]">
                       Offline location or Virtual Link
                     </div>
                   </>
@@ -93,7 +93,7 @@ const LocationContainer = ({
               formState.eventFormat === "HYBRID") && (
               <div className={styles.location_details__container}>
                 <div
-                  className="w-full text-[var(--tertiary-text-color)] text-sm cursor-pointer"
+                  className="w-full text-sm cursor-pointer"
                   onClick={() => setDropdown(!dropdown)}
                 >
                   {formState.locationDisplayName ? (

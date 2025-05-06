@@ -1,3 +1,5 @@
+import { Event } from "@/types/events";
+
 export interface eventDataType {
     id: string;
     eventId: string;
@@ -33,19 +35,20 @@ export interface enquiryType {
     id: string;
     status: string;
     eventId: string;
-    eventData: {
-        name: string;
-        startDate: string;
-        endDate: string;
-        eventId: string;
-        logoUrl: string | null;
-        organizerName: string;
-        location: {
-            cityName: string | null,
-            stateName: string | null,
-            countryName: string | null
-        }
-    };
+    // eventData: {
+    //     name: string;
+    //     startDate: string;
+    //     endDate: string;
+    //     eventId: string;
+    //     logoUrl: string | null;
+    //     organizerName: string;
+    //     location: {
+    //         cityName: string | null,
+    //         stateName: string | null,
+    //         countryName: string | null
+    //     }
+    // };
+    eventData: Event["basic"];
     ownerId: string | null;
     createdAt: string;
     updatedAt: string;

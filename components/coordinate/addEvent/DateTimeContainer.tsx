@@ -233,9 +233,7 @@ const DateTimeContainer = ({
   return (
     <div className={`${styles.body}`}>
       <div
-        className={`${styles.dateAndTimeContainer} ${
-          theme && theme === "dark" ? styles.darkdateAndTimeContainer : ""
-        }`}
+        className={`bg-accent flex items-center justify-between rounded-md py-3 pl-9 px-4 w-full`}
       >
         <div
           className={`${styles.startEndStyle} ${

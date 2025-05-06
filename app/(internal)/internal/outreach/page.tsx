@@ -36,7 +36,7 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<any>();
+  const [modalContent, setModalContent] = useState<enquiryType>();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
@@ -287,6 +287,9 @@ const Page: React.FC = () => {
       setSingleEventId(eventId);
       setModalOpen(true);
       setCurrentEnquiryStatus(eventenquiryStatus);
+      // const task = taskDetail[eventenquiryStatus]?.data?.find((item: any) => item.id === eventEnquiryId);
+      // // console.log('taskdetail11', task, taskDetail);
+      // setModalContent(task);
     }
   };
   

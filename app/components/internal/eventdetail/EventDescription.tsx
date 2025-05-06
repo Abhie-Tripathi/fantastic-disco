@@ -80,13 +80,13 @@ const EventDescription = ({
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
               {/* <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} /> */}
-              <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+              {/* <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
               <div className={styles.location}>
                 {(eventDetail.eventLocation?.city?.name && eventDetail.eventLocation?.country?.name) ?
                   (eventDetail.eventLocation.city.name !== eventDetail.eventLocation?.country.name ?eventDetail.eventLocation.city.name +', '+eventDetail.eventLocation?.country.name: eventDetail.eventLocation.country.name) :
                   eventDetail.eventLocation.country.name
                 }
-              </div>
+              </div> */}
             </div>
             {/* <div className={styles.locationContainer_direction}>
               View Location

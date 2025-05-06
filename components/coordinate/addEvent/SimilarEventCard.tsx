@@ -125,7 +125,7 @@ const SimilarEventCard = ({
               id: item.id,
               name: item.name,
               logo: "",
-              organizer: item.basic?.organizer?.name,
+              organizer: item?.companyName,
               startDate: item?.startDate,
               endDate: item?.endDate,
               venue: item?.venueName,

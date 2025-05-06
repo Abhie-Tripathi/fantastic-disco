@@ -1,33 +1,16 @@
-// import AttendeeIcon from "/public/widgetimages/attendeeIcon.svg";
-// import SpeakerIcon from "/public/widgetimages/speakerIcon.svg";
-// import ExhibitorIcon from "/public/widgetimages/exhibitorIcon.svg";
-// import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
-// import Image from "next/image";
-// import placeHolder from "@/public/placeholder.png";
+"use client";
 import Placeholder from "@/public/placeholder.png";
-// import EventType from "./eventType";
-// import ParticipationMode from "./participationMode";
-// import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
 import { AddEventFormState, addEventPayloadType } from "@/types/Formstate";
-// import { Button } from "../../ui/button";
-// import ParticipationMode from "./participationMode";
-// import Details from "@/app/components/TemplateViewsNew/AddEventForm/Details/Details";
 import { useEffect, useRef, useState } from "react";
 import SimilarEventCard from "./SimilarEventCard";
-// import EventCard from "./EventCard";
-// import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useCoordinateService } from "@/services/coordinateService";
 import LoadingSkeleton from "./LoadingSkeleton";
 import { useAuthContext } from "@/context";
 import { useToast } from "@/hooks/use-toast";
-// import Image from "next/image";
-// import EventType from "./eventType";
-// import ParticipationMode from "./participationMode";
-// import { Button } from "@/components/ui/button";
 import DateTimeContainer from "./DateTimeContainer";
-import EventType from "@/app/components/TemplateViewsNew/AddEventForm/Details/eventtypeinmaineventform/EventType";
 import InterestSelectContainer from "./InterestSelectContainer";
 import LocationContainer from "./location/LocationContainer";
+import EventTypeSelector from "./eventType";
 
 interface Props {
   eventFormState:
@@ -40,27 +23,7 @@ interface Props {
   resetForm: any;
 }
 
-const eventData = {
-  name: "Arab Health",
-  // logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
-  // organizer: "Informa Middle East & Africa",
-  startDate: "2019-01-28",
-  endDate: "2019-01-31",
-  // venue: "Dubai International Convention & Exhibition Centre",
-  // state: "Dubai",
-  city: "Dubai",
-  country: "UAE",
-  eventType: "Tradeshow",
-};
-
 const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
-  //   const participationOptions = [
-  //     { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
-  //     { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
-  //     { label: "Exhibitor", value: "Exhibitor", icon: ExhibitorIcon },
-  //     { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
-  //   ];
-
   const { user } = useAuthContext();
 
   const [eventData, setEventData] = useState<any>();
@@ -71,24 +34,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
 
   const { toast } = useToast();
 
-  const formState = {
-    startDate: "2025-04-12",
-    endDate: "2025-04-13",
-    startTime: "12:00 A.M",
-    endTime: "12:00 A.M",
-    timeZone: "GMT+05:30 Chennai",
-    timeZoneKey: 1,
-    eventFormat: "In-person",
-    cityName: "",
-    countryName: "",
-    virtualLink: "",
-    query: "",
-  };
-
-  const prefilledEvent: any = {};
-  const prefilledSubEvent: any = {};
-  const prefilledGlobalEvent: any = {};
-
   const initialFormState: AddEventFormState = {
     parentData: "",
     descriptionModal: false,
@@ -98,13 +43,11 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     participationType: "",
     description: "",
     textValue: "",
-    cityName: "",
     speaker: [],
     prefilledProfile: undefined,
     registerMessage: "Welcome! To join the event, please register below.",
     registerBtnText: "Register",
     registerBtnColor: "#1a1a1a",
-    countryName: "",
     timeZone: "GMT+05:30 Chennai",
     timeZoneKey: 1,
     startDate: "",
@@ -116,9 +59,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     boothNumber: "",
     participationMessage: "",
     banner: { placeHolder: Placeholder, file: null },
-    venue: "",
-    latitude: Number(""),
-    longitude: Number(""),
     hashtags: [],
     query: "",
     isEventNameEmpty: false,
@@ -139,11 +79,22 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     exhibitor: [],
     prefilledExhibitorDetails: undefined,
     event_type: "",
-    venueId: "",
-    cityId: "",
     locationType: "",
-    locationName: "",
     locationDisplayName: "",
+    cityId: "",
+    cityName: "",
+    latitude: Number(""),
+    longitude: Number(""),
+    countryName: "",
+    countryId: "",
+    countryCode: "",
+    stateName: "",
+    stateId: "",
+    venueName: "",
+    venueAddress: "",
+    venueLatitude: Number(""),
+    venueLongitude: Number(""),
+    venueId: "",
   };
 
   const [isApproved, setIsApproved] = useState<boolean>(true);
@@ -151,15 +102,9 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   const [mainEventState, setMainEventState] =
     useState<AddEventFormState>(initialFormState);
 
-  // const handleChange = () => {};
-
   const handleChange = (field: keyof AddEventFormState, value: any) => {
     setMainEventState((prev) => ({ ...prev, [field]: value }));
   };
-
-  const setLoadingState = () => {};
-
-  const handleCollapseForm = () => {};
 
   const checkFormValidation = (callback: any) => {
     if (!mainEventState.eventName || mainEventState.eventName === "") {
@@ -248,7 +193,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       // organizer: string;
       startDate: mainEventState.startDate,
       endDate: mainEventState.endDate,
-      venue: mainEventState.venue,
+      venue: mainEventState.venueName,
       // state: string;
       city: mainEventState.locationDisplayName,
       // country: mainEventState.countryName,
@@ -271,6 +216,16 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       duplicateEventPayload.venueId = mainEventState.venueId;
     }
 
+    if (
+      mainEventState.eventFormat === "Virtual" ||
+      mainEventState.eventFormat === "ONLINE"
+    ) {
+      duplicateEventPayload.latitude = -75.250973;
+      duplicateEventPayload.longitude = -0.071389;
+      duplicateEventPayload.locationIds =
+        "e1ae6da4-3c7c-5283-8860-e224ea7cce97";
+    }
+
     const apiData2: any = await coordinateService.fetchDuplicateEvents(
       duplicateEventPayload
     );
@@ -286,35 +241,26 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
         end_date: mainEventState.endDate,
         start_time: mainEventState.startTime,
         end_time: mainEventState.endTime,
-        gmt_time: mainEventState.timeZone,
         location_city_id: mainEventState.cityId,
-        // "location_city": "Las Vegas",
-        // "location_country": "United States",
-        // "location_country_id": "dd718c3c-be27-5c3e-bd82-dc78a23e01e0",
-        // "location_country_iso_code": "US",
-        // "location_state": "Nevada",
-        // "location_state_id": "c82071eb-c3c8-577e-9cae-4cd5394877b0",
-        description: "An international tech event showcasing innovations in AI and robotics.",
-        // "venue_name": "Las Vegas Convention Center",
-        // "venue_address": " 3150 Paradise Rd Las Vegas NV 89109",
-        // venue_latitude: Number(""),
-        // venue_longitude: Number(""),
-        // venue_id: "",
+        location_city: mainEventState.cityName,
+        location_country: mainEventState.countryName,
+        location_country_id: mainEventState.countryId,
+        location_country_iso_code: mainEventState.countryCode,
+        location_state: mainEventState.stateName,
+        location_state_id: mainEventState.stateId,
+        // logoUrl: z.string().nullable().optional(),
         latitude: mainEventState.latitude,
         longitude: mainEventState.longitude,
-        format: mainEventState.eventFormat,
-        // "booth_number": "B12",
         participationType: mainEventState.participationType,
         event_type: mainEventState.event_type,
-        // "category": "technology",
-        // "tags": "ai,robotics,tech",
-        // "customizationData": "{}",
-        // "parentData": "{}"
+        format: mainEventState.eventFormat,
       };
       if (mainEventState.locationType === "VENUE") {
         eventData.venue_id = mainEventState.venueId;
         eventData.venue_latitude = mainEventState.latitude;
         eventData.venue_longitude = mainEventState.longitude;
+        eventData.venue_name = mainEventState.venueName;
+        eventData.venue_address = mainEventState.venueAddress;
       }
 
       const addEventPayload = {
@@ -429,7 +375,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   // );
 
   return (
-    <div className="p-3 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {eventFormState === "fetching" ? (
         <LoadingSkeleton />
       ) : eventFormState === "similarEvents" ? (
@@ -452,7 +398,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       ) : (
         <div className="grid grid-cols-4 gap-5 border rounded-lg p-4 px-6 h-full py-6 pb-[200px]">
           <div className="col-span-4">
-            <EventType
+            <EventTypeSelector
               formTheme="light"
               prefilledEvent={mainEventState}
               mainEventType={mainEventState.event_type}
@@ -491,7 +437,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
           <div className="grid gap-4 col-span-4">
             <div className="">
               <textarea
-                className={`hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full ${
+                className={`bg-background hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full ${
                   mainEventState.isEventNameEmpty
                     ? "bg-[var(--danger-background-color)] hover:bg-[var(--danger-background-color)]"
                     : ""

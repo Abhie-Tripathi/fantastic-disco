@@ -67,6 +67,7 @@ export default function InterestSelector({
         align="start"
       >
         <div className="py-2">
+          <h3 className="text-xs font-medium ml-2 mb-0">Actions</h3>
           {options &&
             options.map((item) => (
               <div

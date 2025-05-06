@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import UrlFetch from "./UrlFetch";
 import BulkImport from "./BulkImport";
 import SampleTable from "./SampleTable";
+import { X } from "lucide-react";
 
 export default function AddEventModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -170,17 +171,24 @@ export default function AddEventModal() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-4 h-full">
           <div className="flex justify-between items-center h-10">
-            <h2 className="text-base font-medium leading-6">Add Event</h2>
-            <div>
+            <h2 className="text-lg font-medium leading-6">Add Event</h2>
+            <div className="flex gap-3">
               {(selectedView === "urlFetch" ||
                 selectedView === "addEventForm" ||
                 selectedView === "bulkImport") && (
-                <span
-                  className="cursor-pointer text-primary text-base mr-4"
-                  onClick={() => setSelectedView("home")}
-                >
-                  Back
-                </span>
+                // <span
+                //   className="cursor-pointer text-primary text-base mr-4"
+                //   onClick={() => setSelectedView("home")}
+                // >
+                //   Back
+                // </span>
+                <Button
+                  className="text-sm text-primary hover:text-primary"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedView("home")}>
+                    Back
+                </Button>
               )}
 
               {(selectedView === "home" ||
@@ -200,16 +208,29 @@ export default function AddEventModal() {
 
               {selectedView === "addEventForm" &&
                 (eventFormState === "default" ? (
-                  <Button onClick={() => setEventFormState("validating")}>
-                    Save Event
+                  <Button
+                    className="text-sm"
+                    size="sm"
+                    onClick={() => setEventFormState("validating")}>
+                      Save Event
                   </Button>
                 ) : eventFormState === "similarEvents" ? (
-                  <Button onClick={() => setEventFormState("default")}>
+                  <Button
+                    className="text-primary hover:text-primary"
+                    variant="outline"
+                    onClick={() => setEventFormState("default")}>
                     Edit Event
                   </Button>
                 ) : (
                   <></>
                 ))}
+                <Button
+                  className="p-1 h-8 w-8 rounded-sm"
+                  variant="ghost"
+                  size="sm">
+                  <X className="h-5 w-5"
+                  onClick={closeModal} />
+                </Button>
             </div>
           </div>
 
@@ -248,7 +269,7 @@ export default function AddEventModal() {
                     Upload a .PDF, .CSV, or .XLSX file following the sample
                     format to fetch your events effortlessly!
                   </div>
-                  <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)] text-[#A1A2A2]">
+                  <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-background border-[var(--border-color)] text-[#A1A2A2]">
                     <span className="text-xs">
                       Click to browse or drag and drop your files
                     </span>

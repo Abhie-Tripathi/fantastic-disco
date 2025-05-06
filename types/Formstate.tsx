@@ -66,7 +66,6 @@ export interface AddEventFormState {
     speakerModal : boolean;
     registerModal : boolean;
     eventName : string;
-    cityName : string;
     participationType : string;
     description : string;
     textValue: string;
@@ -76,7 +75,6 @@ export interface AddEventFormState {
     registerMessage: string;
     registerBtnText: string;
     registerBtnColor: string;
-    countryName: string;
     timeZone: string;
     timeZoneKey: number;
     startDate: string;
@@ -87,7 +85,6 @@ export interface AddEventFormState {
     boothNumber: string;
     participationMessage: string;
     banner: ImageState;
-    venue: string;
     hashtags: string[];
     query: string;
     isEventNameEmpty: boolean;
@@ -108,14 +105,23 @@ export interface AddEventFormState {
     exhibitor:any[];
     event_type:string;
     isEventTypeEmpty:boolean,
-
-    venueId: string;
-    cityId: string;
+    // Location Data
+    locationDisplayName: string;
     locationType: string;
-    locationName: string;
+    cityId: string;
+    cityName: string;
     latitude: number;
     longitude: number;
-    locationDisplayName: string;
+    countryName: string;
+    countryId: string;
+    countryCode: string;
+    stateName: string;
+    stateId: string;
+    venueName: string;
+    venueAddress: string;
+    venueLatitude: number;
+    venueLongitude: number;
+    venueId: string;
 }
 
 export interface addEventPayloadType {
@@ -123,16 +129,23 @@ export interface addEventPayloadType {
     end_date: string;
     start_time: string;
     end_time: string;
-    gmt_time?: string;
-    description?: string;
     location_city_id: string;
+    location_city: string;
+    location_country: string;
+    location_country_id: string;
+    location_country_iso_code: string;
+    location_state: string;
+    location_state_id: string;
+    // logoUrl: z.string().nullable().optional(),
+    venue_id?: string;
+    venue_name?: string;
+    venue_address?: string;
     venue_latitude?: number,
     venue_longitude?: number,
-    venue_id?: string;
     latitude: number;
     longitude: number;
-    format: string;
     participationType: string;
     event_type: string;
+    format: string;
 }
   

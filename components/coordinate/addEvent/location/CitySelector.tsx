@@ -37,36 +37,42 @@ const CitySelector = ({ formState, handleChange, locationType }: Props) => {
   };
 
   const handleSuggestionClick = (suggestion: any) => {
+    handleChange("locationType", suggestion.locationType);
+    handleChange("locationDisplayName", suggestion.displayName);
+
     if (suggestion.locationType === "VENUE") {
       handleChange("venueId", suggestion.id);
+      handleChange("venueName", suggestion.name);
+      handleChange("venueAddress", suggestion.displayName);
+      handleChange("venueLatitude", suggestion.latitude);
+      handleChange("venueLongitude", suggestion.longitude);
       handleChange("cityId", suggestion.city.id);
+      handleChange("cityName", suggestion.city.name);
+      handleChange("latitude", suggestion.city.latitude);
+      handleChange("longitude", suggestion.city.longitude);
+      handleChange("stateId", suggestion.state.id);
+      handleChange("stateName", suggestion.state.name);
+      handleChange("countryId", suggestion.country.id);
+      handleChange("countryCode", suggestion.country.iso);
+      handleChange("countryName", suggestion.country.name);
     } else if (suggestion.locationType === "CITY") {
-      handleChange("cityId", suggestion.id);
       handleChange("venueId", "");
+      handleChange("venueName", "");
+      handleChange("venueAddress", "");
+      handleChange("venueLatitude", "");
+      handleChange("venueLongitude", "");
+      handleChange("cityId", suggestion.id);
+      handleChange("cityName", suggestion.name);
+      handleChange("latitude", suggestion.latitude);
+      handleChange("longitude", suggestion.longitude);
+      handleChange("stateId", suggestion.state.id);
+      handleChange("stateName", suggestion.state.name);
+      handleChange("countryId", suggestion.country.id);
+      handleChange("countryCode", suggestion.country.iso);
+      handleChange("countryName", suggestion.country.name);
     }
 
-    if (
-      suggestion.locationType === "CITY" ||
-      suggestion.locationType === "VENUE"
-    ) {
-      handleChange("locationType", suggestion.locationType);
-
-      if (suggestion.displayName) {
-        handleChange("locationDisplayName", suggestion.displayName);
-      }
-
-      if (suggestion.name) {
-        handleChange("locationName", suggestion.name);
-      }
-
-      if (suggestion.latitude) {
-        handleChange("latitude", Number(suggestion.latitude));
-      }
-      if (suggestion.longitude) {
-        handleChange("longitude", Number(suggestion.longitude));
-      }
-      setOpen(false);
-    }
+    setOpen(false);
   };
 
   return (
