@@ -70,6 +70,7 @@ interface MapProps {
   trackerLoc?: string;
   trackerType?: string;
   eventType?: string;
+  trackerGeoCordinates?:any;
 }
 
 interface Coordinates {
@@ -91,7 +92,9 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
+  trackerGeoCordinates
 }: MapProps) {
+  
   const mapRef = useRef<MapRef>(null);
   const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
@@ -156,7 +159,8 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates) {
+    if (geoCoordinates || Object?.keys(trackerGeoCordinates || {}).length != 0) {
+      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -342,7 +346,8 @@ export default function MapComponent({
         mapRef.current
       ) {
         await new Promise((resolve) => setTimeout(resolve, 600));
-        const map = mapRef.current.getMap();
+        const map = mapRef?.current?.getMap();
+        if(map){
         const center = map.getCenter();
         const bounds = map.getBounds();
         if (bounds) {
@@ -397,6 +402,7 @@ export default function MapComponent({
       } else {
         setEvents([]);
       }
+    }
     };
 
     fetchEvents();
@@ -410,7 +416,7 @@ export default function MapComponent({
     return {
       type: "FeatureCollection",
       features: eventCountsQuery.data
-        ? eventCountsQuery.data.map((count: EventCount) => ({
+        ? eventCountsQuery?.data?.map((count: EventCount) => ({
             type: "Feature",
             geometry: {
               type: "Point",
@@ -429,7 +435,7 @@ export default function MapComponent({
         : [],
     };
   }, [eventCountsQuery.data, currentZoomGroup, location]);
-
+  
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
     events.forEach((event) => {
@@ -542,11 +548,11 @@ export default function MapComponent({
       }
     };
     fetchLocationDetails();
-  }, [location, trackerId]);
+  }, [location, trackerId, trackerLoc]);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location.locationIds == "defaultLoc") {
+    if (Object?.keys(trackerGeoCordinates || {}).length == 0 && location.locationIds == "defaultLoc") {
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -556,7 +562,7 @@ export default function MapComponent({
     }
 
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -566,7 +572,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (locationBBox && location.locationIds != "defaultLoc") {
+    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -581,7 +587,9 @@ export default function MapComponent({
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      
+      
       const center = point([
         Number(coordinates.longitude),
         Number(coordinates.latitude),
@@ -616,7 +624,23 @@ export default function MapComponent({
         if (!map.hasImage(key)) map.addImage(key, image);
       });
     }
-  }, []);
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const bearing = map.getBearing();
+    const pitch = map.getPitch();
+  
+    onMove({
+      viewState: {
+        latitude: center.lat,
+        longitude: center.lng,
+        zoom,
+        bearing,
+        pitch,
+        transitionDuration: 0,
+      },
+    });
+  }, [iconUrls, onMove]);
+  
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12;
