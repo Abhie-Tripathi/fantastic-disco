@@ -552,7 +552,7 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (Object.keys(trackerGeoCordinates).length == 0 && location.locationIds == "defaultLoc") {
+    if (Object?.keys(trackerGeoCordinates || {}).length == 0 && location.locationIds == "defaultLoc") {
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -572,7 +572,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (Object.keys(trackerGeoCordinates).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
+    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
