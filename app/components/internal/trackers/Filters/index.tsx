@@ -624,11 +624,6 @@ const Pages = () => {
       if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
         finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
       }
-      // const getLocationIds = (presetItem?.filterValue?.country || [])
-      //   .map((loc) => loc.id).join(",");
-      // const getCategoriesSlug = (presetItem?.filterValue?.category || []).map((cat: { slug: string }) => cat.slug).join(",");
-      // setLocalFilter("categories", getCategoriesSlug)
-      // setLocalFilter("locationIds", getLocationIds)
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
@@ -693,6 +688,15 @@ const Pages = () => {
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings"
+  };
+  const isViewBoundEmpty = (value: string | null) => {
+    if (!value) return true;
+    try {
+      const parsed = JSON.parse(value);
+      return Object.keys(parsed).length === 0;
+    } catch {
+      return true;
+    }
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -764,16 +768,15 @@ const Pages = () => {
 
 
     const secondLast = pathName[pathName.length - 2];
-
-    if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
+    if (type === "T_PRODUCT_KEYWORDS" && (trackerName.trim().length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
       setIsCreating(false);
       setIsMandatory(true);
       return;
     }
-    else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+    else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.trim().length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
       setIsCreating(false);
       setIsMandatory(true);
-      if (trackerName.length !== 0)
+      if (trackerName.trim().length !== 0)
         toast({
           title: "Error",
           description: "Location must be selected.",
@@ -784,7 +787,7 @@ const Pages = () => {
     else if (
       type === "T_GEOTIME" &&
       (
-        trackerName.length === 0 ||
+        trackerName.trim().length === 0 ||
         (
           getLocalFilterValue("locationIds").length === 0 &&
           !getLocalFilterValue("viewBound")
@@ -795,7 +798,7 @@ const Pages = () => {
     ) {
       setIsCreating(false);
       setIsMandatory(true);
-      if (trackerName.length !== 0)
+      if (trackerName.trim().length !== 0)
         toast({
           title: "Error",
           description: "Location and Date must be selected.",
@@ -809,14 +812,22 @@ const Pages = () => {
       type !== defaultType &&
       type !== "T_PRODUCT_KEYWORDS" &&
       type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME" &&
-      (trackerName.length === 0 || customData.length === 0)
+      (trackerName.trim().length === 0 || customData.length === 0)
     ) {
       console.log("Please, Fill all the details");
       setIsCreating(false);
       setIsMandatory(true);
       return;
     }
-    else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+    else if (
+      type === defaultType &&
+      (
+        (getLocalFilterValue("locationIds")?.length===0 &&
+          isViewBoundEmpty(getLocalFilterValue("viewBound")))
+        ||
+        trackerName.trim().length === 0
+      )
+    ) {
       console.log("Please, Fill all the details");
       setIsCreating(false);
       setIsMandatory(true);
@@ -855,12 +866,12 @@ const Pages = () => {
     } else {
       // console.log(formData);
 
-      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
+      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.trim().length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+      else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.trim().length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
         toast({
@@ -873,7 +884,7 @@ const Pages = () => {
       else if (
         type === "T_GEOTIME" &&
         (
-          trackerName.length === 0 ||
+          trackerName.trim().length === 0 ||
           (
             getLocalFilterValue("locationIds").length === 0 &&
             !getLocalFilterValue("viewBound")
@@ -895,21 +906,30 @@ const Pages = () => {
         type !== defaultType &&
         type !== "T_PRODUCT_KEYWORDS" &&
         type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME" &&
-        (trackerName.length === 0 || customData.length === 0)
+        (trackerName.trim().length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+      else if (
+        type === defaultType &&
+        (
+          (getLocalFilterValue("locationIds")?.length===0 &&
+            isViewBoundEmpty(getLocalFilterValue("viewBound")))
+          ||
+          trackerName.trim().length === 0
+        )
+      ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      try {
-        const data = await createTracker(formData)
+      
+      try{
+        const data= await createTracker(formData)
         if (error) {
           // console.log(error);
           setIsCreating(false);
@@ -1035,7 +1055,7 @@ const Pages = () => {
       if (editData?.filterValues?.locationIds) {
         const ids = Object?.keys(editData?.filterValues?.locationIds);
         setLocalFilter("locationIds", ids.join(","))
-        console.log(ids);
+        // console.log(ids);
       }
       if (editData?.filterValues?.categories) {
         const categories = Object.values(editData?.filterValues?.categories || {}).map((category: any) => {
@@ -1310,7 +1330,7 @@ const Pages = () => {
               className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
               style={{
                 border:
-                  isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+                  isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
               }}
             >
               <input
@@ -1321,7 +1341,7 @@ const Pages = () => {
                 onChange={(event) => setTrackerName(event.target.value)}
               />
             </div>
-            <TeliTemplates type={type} isMandatory={isMandatory} />
+            <TeliTemplates type={type} isMandatory={isMandatory}/>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
               <div style={{ display: 'flex', gap: '25px' }}>
                 <div className={`card ${styles.competitor}`}>
@@ -1708,7 +1728,7 @@ const Pages = () => {
 
               </div>
             }
-            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
               <Presets template={template} handlePresetClick={handlePresetClick} />
             }
           </div>
