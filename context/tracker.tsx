@@ -9,11 +9,16 @@ import React, {
 import { usePathname } from "next/navigation";
 import { Tracker } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
+import { setWeek } from "date-fns";
 
 const trackerValues: any = {
   isNewCall: false,
   isLoading: false,
   savedEventCount: 0,
+  comp: [],
+  setComp: () => {},
+  keywordsTracker: [],
+  setKeywordsTracker: () => {},
   setSavedEventCount: () => {},
   setIsNewCall: () => {},
   editTrue: false,
@@ -40,6 +45,11 @@ export const TrackerContextProvider = ({ children }: any) => {
   const [trackerId, setTrackerId] = useState("");
   const [skip, setSkip] = useState(Number(getFilterValue("skip")) || 0);
   const [searchValue, setSearchValue] = useState(getFilterValue("q") || "");
+  const [comp,setComp] = useState([]);
+  const [keywordsTracker, setKeywordsTracker] = useState({
+    keywords: [],
+    name:"",
+  });
   const pages = [
     "manageAccess",
     "editTracker",
@@ -103,6 +113,10 @@ export const TrackerContextProvider = ({ children }: any) => {
     setSkip,
     searchValue,
     setSearchValue,
+    comp,
+    setComp,
+    keywordsTracker,
+    setKeywordsTracker
   };
   return (
     <TrackerContext.Provider value={value}>{children}</TrackerContext.Provider>

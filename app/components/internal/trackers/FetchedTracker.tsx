@@ -1,6 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import Image from "next/image";
+import TrackerDraftCard from "./TrackerDraftCard";
+import Link from "next/link";
 
 const CardSkeleton = () => {
   return (
@@ -17,8 +19,13 @@ const CardSkeleton = () => {
     </div>
   );
 };
+interface fetchedTrackerProps {
+  isLoading: boolean;
+  keywords: string[];
+  competitors: string[];
+}
+const FetchedTracker = ({isLoading, keywords, competitors}:fetchedTrackerProps) => {
 
-const FetchedTracker = () => {
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -32,8 +39,18 @@ const FetchedTracker = () => {
           We&apos;re gathering the information to create your trackers
         </div>
       </div>
-
-      <CardSkeleton />
+      {isLoading ?
+        <CardSkeleton />:
+        <Link href="/internal/trackers/create?type=T_COMPETITOR">
+        <TrackerDraftCard data={competitors} type="Competitors" heading="Top Competitors Tracker"  />
+        </Link>
+      }
+      {isLoading ?
+      <CardSkeleton />:
+      <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
+      <TrackerDraftCard data={keywords} type="Product Keywords" heading="Top Product & Topic Tracker"  />
+      </Link>
+    }
       <CardSkeleton />
       <CardSkeleton />
     </div>

@@ -412,7 +412,7 @@ const Pages = () => {
   const { searchParams: search } = useDefaultFilters();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall } = useTrackerContext();
+  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall, comp, keywordsTracker } = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters } = useFilterContext();
   const { enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
@@ -444,6 +444,8 @@ const Pages = () => {
       // fetchData(secondLast);
     }
   }, [last]);
+  console.log(comp);
+  
   const [websites, setWebsites] = useState("");
   const [org, setOrg] = useState("");
   const [speakerName, setSpeakerName] = useState("");
@@ -939,16 +941,21 @@ const Pages = () => {
     }
   };
 
-  useEffect(() => {
-    if (editData && last === "editTracker") {
-      console.log(editData);
+useEffect(()=>{
 
+    console.log(keywordsTracker);
+    const updatedValue = keywordsTracker.keywords.map((item) => item.replaceAll("_", " "));
+    console.log(updatedValue);
+    setLocalFilter("includeKeywords", updatedValue.join(","));
+},[keywordsTracker])
+  useEffect(() => {
+    if ((editData && last === "editTracker")|| comp.length>0) {
       setTrackerName(editData?.name || "");
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.filterValues?.orgName?.
           split(',');
         const orgWebsites = editData?.filterValues?.orgWebsite?.
-          split(',');
+          split(',') || comp;
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
             ...prevData,
@@ -990,7 +997,7 @@ const Pages = () => {
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-        const value = editData.filterValues[key];
+        const value = editData?.filterValues[key];
         console.log(typeof value, value);
         if (Array.isArray(value)) {
           if (key === "includeKeywords" || key === "excludeKeywords") {
@@ -1053,7 +1060,7 @@ const Pages = () => {
       }
     }
 
-  }, [editData, searchParams]);
+  }, [editData, searchParams, comp, keywordsTracker]);
 
   // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);

@@ -5,6 +5,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogPortal,
+  DialogOverlay
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -85,6 +87,10 @@ const templates: TemplateType[] = [
 ];
 
 type TemplatesModalProps = {
+  inputValue: string;
+  keywords: string[];
+  competitors: string[];
+  isLoading: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectTemplate: (template: TemplateType) => void;
@@ -94,6 +100,10 @@ const TemplatesModal = ({
   open,
   onOpenChange,
   onSelectTemplate,
+  inputValue,
+  keywords,
+  isLoading,
+  competitors
 }: TemplatesModalProps) => {
 //   const categories = [
 //     {
@@ -106,33 +116,66 @@ const TemplatesModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[50%] h-[90vh] p-0 gap-0">
-        <DialogHeader className="px-6 pt-6">
-          <DialogTitle className="tracking-normal">
-            Brand Brief Builder
-          </DialogTitle>
-          <div className="flex gap-2 w-[29rem] bg-[var(--background-secondary-color)] p-2">
-                          <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[#D2D2F3] focus-within:border-[#D2D2F3] transition-all duration-200 bg-[var(--accent-foreground)]">
-                          <input type="text" placeholder="Enter Web URL" className="border-none outline-none bg-transparent w-full"/>
-                          <Button className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
-                          onClick={() => {
-                            console.log("Setting showFetchedData to true");
-                            setShowFetchedData(true);
-                          }}
-                          >Fetch</Button>
-                          </div>
-                          </div>
-          {/* <DialogDescription>
-            Choose a template to quickly analyze specific event trends
-          </DialogDescription> */}
-        </DialogHeader>
-        <ScrollArea className="h-[calc(90vh-120px)] px-6 pb-6">
+  <DialogPortal>
+    {/* BACKDROP OVERLAY */}
+    <DialogOverlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
+
+    {/* DIALOG CONTENT */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="bg-white dark:bg-zinc-900 w-[40vw] h-[90vh] rounded-lg shadow-lg relative flex flex-col overflow-hidden">
+        {/* CUSTOM CLOSE BUTTON */}
+        <div className="absolute right-4 top-4 z-10">
+          <Button
+            variant="ghost"
+            onClick={() => onOpenChange(false)}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Hide
+          </Button>
+        </div>
+
+        {/* HEADER */}
+        <div className="px-6 pt-6">
+          <DialogTitle className="tracking-normal">Brand Brief Builder</DialogTitle>
+        </div>
+
+        {/* INPUT FIELD + FETCH BUTTON */}
+        <div className="flex gap-2 w-[29rem] bg-[var(--background-secondary-color)] p-2 mx-6 my-4 rounded">
+          <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[#D2D2F3] focus-within:border-[#D2D2F3] transition-all duration-200 bg-[var(--accent-foreground)]">
+            <input 
+              type="text" 
+              // value={inputValue}
+              placeholder="Enter Web URL" 
+              className="border-none outline-none bg-transparent w-full"
+            />
+            <Button 
+              className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
+              onClick={() => {
+                console.log("Setting showFetchedData to true");
+                setShowFetchedData(true);
+              }}
+            >
+              Fetch
+            </Button>
+          </div>
+        </div>
+
+        {/* SCROLLABLE CONTENT */}
+        <ScrollArea className="h-[calc(90vh-160px)] px-6 pb-6">
           <div className="space-y-4">
-            <FetchedTracker/>
+            <FetchedTracker 
+              keywords={keywords}
+              competitors={competitors}
+              isLoading={isLoading}
+            />
           </div>
         </ScrollArea>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
+  </DialogPortal>
+</Dialog>
+
+
   );
 };
 
