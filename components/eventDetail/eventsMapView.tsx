@@ -85,11 +85,9 @@ const EventsMapView: React.FC<MapProps> = ({
             }
           : { eventTypes: "workshops,tradeshows,conferences" }),
         view: "map",
+        limit: 20,
         ...(startDate && { active_gte: new Date(startDate).toISOString() }),
         ...(endDate && { active_lte: new Date(endDate).toISOString() }),
-        ...(eventLocation?.city?.id && {
-          locationIds: eventLocation?.city?.id || "",
-        }),
         ...(latitude && longitude && { viewBound: JSON.stringify(viewBound) }),
       }),
     refetchOnWindowFocus: false,
@@ -139,7 +137,7 @@ const EventsMapView: React.FC<MapProps> = ({
             isEventeli ? "h-[430px]" : "h-[308px]"
           }`}
         >
-          Failed to fetch the nearby events
+          Failed to fetch nearby events
         </div>
       ) : (
         <Map
@@ -157,26 +155,18 @@ const EventsMapView: React.FC<MapProps> = ({
           }}
         >
           <div key={event.id}>
-            {eventsData &&
-              eventsData.events.length > 0 &&
-              eventsData.events
-                .filter((event) => event.basic.id !== eventId)
+            {events.length &&
+              events
+                .filter((event) => event.id !== eventId)
                 .map((event) => {
-                  const { id, eventLocation, primaryEventType } = event.basic;
-                  const latitude =
-                    eventLocation?.venue?.latitude ??
-                    eventLocation?.city?.latitude ??
-                    eventLocation?.state?.latitude;
-                  const longitude =
-                    eventLocation?.venue?.longitude ??
-                    eventLocation?.city?.longitude ??
-                    eventLocation?.state?.longitude;
                   return (
                     <Marker
-                      key={id}
-                      onClick={() => handleMarkerClick(id)}
-                      longitude={longitude ? parseFloat(longitude) : 0}
-                      latitude={latitude ? parseFloat(latitude) : 0}
+                      key={event.id}
+                      onClick={() => handleMarkerClick(event.id)}
+                      longitude={
+                        event.longitude ? parseFloat(event.longitude) : 0
+                      }
+                      latitude={event.latitude ? parseFloat(event.latitude) : 0}
                       anchor="bottom"
                     >
                       <div className="marker">

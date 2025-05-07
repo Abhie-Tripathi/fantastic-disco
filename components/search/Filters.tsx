@@ -48,9 +48,12 @@ import EventRankingSelector from "@/components/search/advancedFilters/eventRanki
 import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
 import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
+import Seniority from "@/app/components/prospect/Filters/seniority";
+import Department from "@/app/components/prospect/Filters/department";
 import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductTopics from "@/components/search/advancedFilters/product&Topics";
+import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
 import MultiSelectSearchBar from "@/components/search/searchbar";
 import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
 import { Switch } from "@/components/ui/switch";
@@ -213,7 +216,7 @@ const gtmFilters: {
         {
           id: "category",
           component: "CategorySelector",
-          filterName: "companyCategoryIds",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -224,13 +227,14 @@ const gtmFilters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
-          filterName: "companyProductIds",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
           id: "companyType",
           component: "CompanyType",
+          filterName: "eventParticipationType",
           enabled: true,
         },
         {
@@ -264,10 +268,22 @@ const gtmFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
           filterName: "userJobTitle",
           enabled: true,
         },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -290,13 +306,20 @@ const gtmFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
           filterName: "userJobTitle",
           enabled: true,
         },
         {
           id: "category",
           component: "CategorySelector",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -307,7 +330,8 @@ const gtmFilters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
@@ -453,21 +477,21 @@ const geoFilters: {
       id: "audience-intel",
       label: "Audience Intel",
       filters: [
-        {
-          id: "audienceSpread",
-          component: "AudienceZoneSatusSelector",
-          enabled: !isEventeli,
-        },
+        // {
+        //   id: "audienceSpread",
+        //   component: "AudienceZoneSatusSelector",
+        //   enabled: !isEventeli,
+        // },
         {
           id: "designations",
           component: "AudienceDesAndDep",
           enabled: true,
         },
-        {
-          id: "audienceSpreadRegions",
-          component: "AudienceSpread",
-          enabled: true,
-        },
+        // {
+        //   id: "audienceSpreadRegions",
+        //   component: "AudienceSpread",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -479,7 +503,7 @@ const geoFilters: {
         {
           id: "category",
           component: "CategorySelector",
-          filterName: "companyCategoryIds",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -490,13 +514,14 @@ const geoFilters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
-          filterName: "companyProductIds",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
           id: "companyType",
           component: "CompanyType",
+          filterName: "eventParticipationType",
           enabled: true,
         },
         {
@@ -530,10 +555,22 @@ const geoFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
           filterName: "userJobTitle",
           enabled: true,
         },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -556,13 +593,20 @@ const geoFilters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
           filterName: "userJobTitle",
           enabled: true,
         },
         {
           id: "category",
           component: "CategorySelector",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -573,7 +617,8 @@ const geoFilters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
@@ -606,6 +651,7 @@ const getFilterComponent = (componentName: string) => {
     CategorySelector,
     EventFormatSelector,
     ProductTopics,
+    ProductTopicsNew,
     LocationSelector,
     DateRangeSelector,
     StatusSelector,
@@ -634,6 +680,8 @@ const getFilterComponent = (componentName: string) => {
     EstablishedYear,
     Industry,
     CompanyType,
+    Seniority,
+    Department,
   };
 
   return components[componentName];
@@ -668,7 +716,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
 
-    if (!getFilterValue("locationIds")) {
+    if (!(getFilterValue("locationIds") || getFilterValue("viewBound"))) {
       toast({
         title: "Please select location",
         variant: "destructive",
@@ -727,25 +775,26 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
             {type === "events" && filterCount > 0 && (
-              <div className="mb-3 bg-[#F7F7FF] dark:bg-accent/10 rounded-xl p-4 border border-border">
+              <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
                 <div className="flex items-center gap-2">
                   <Image
                     src={whrbotlogo}
                     alt="WHR bot"
                     className="w-8 h-8 rounded-full bg-background"
                   />
-                  <div className="text-sm font-medium text-foreground">WHR bot</div>
+                  <div className="text-sm font-medium text-foreground">
+                    Save this search
+                  </div>
                 </div>
-                <div className="mt-1 flex items-center justify-between">
-                  <div className="text-xs text-muted-foreground">
-                    Let&apos;s save this search and help you track efficiently.
-                  </div>
-                  <div className="flex items-center">
-                    <Switch
-                      checked={trackerModalOpen}
-                      onCheckedChange={createTrackerHandler}
-                    />
-                  </div>
+                <div className=" flex items-center justify-between">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={createTrackerHandler}
+                    className="h-8"
+                  >
+                    Save
+                  </Button>
                 </div>
               </div>
             )}
@@ -800,7 +849,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         </div>
 
         <div className="w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3 mb-3">
+          <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
             <div className="flex items-center justify-between mb-2">
               <Button
                 variant="ghost"

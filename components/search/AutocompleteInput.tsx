@@ -43,6 +43,7 @@ interface AutocompleteInputProps {
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   multiple?: boolean;
   value?: Location[] | Location | null;
+  setApplyHandlerCalled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function AutocompleteInput({
@@ -54,6 +55,7 @@ export default function AutocompleteInput({
   setIsOpen,
   multiple = false,
   value,
+  setApplyHandlerCalled,
 }: AutocompleteInputProps) {
   const { getCoordinates } = useLocationService();
   const [open, setOpen] = useState(false);
@@ -97,8 +99,9 @@ export default function AutocompleteInput({
         if (
           selectedLocations.some((location) => location.id === newLocation.id)
         ) {
-          updatedLocations = [newLocation];
-        } else updatedLocations = [...selectedLocations, newLocation];
+          return;
+        }
+        updatedLocations = [...selectedLocations, newLocation];
         setSelectedLocations(updatedLocations);
         setInputValue("");
         onSelect(updatedLocations);
@@ -117,6 +120,7 @@ export default function AutocompleteInput({
           radius: 5,
         });
       }
+      setApplyHandlerCalled?.(true);
     },
     [multiple, type, getCoordinates, onSelect, selectedLocations]
   );
@@ -153,23 +157,27 @@ export default function AutocompleteInput({
             {multiple && selectedLocations.length > 0 ? (
               selectedLocations.map((location) => (
                 <Badge key={location.id} variant="secondary">
-                  {location.description}
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleRemove(location);
-                      }
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onClick={() => handleRemove(location)}
-                  >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  <div className="flex items-center max-w-full">
+                    <span className="truncate max-w-[200px]">
+                      {location.description}
+                    </span>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="ml-1 flex-shrink-0 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRemove(location);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleRemove(location)}
+                    >
+                      <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    </div>
                   </div>
                 </Badge>
               ))
@@ -197,13 +205,18 @@ export default function AutocompleteInput({
               </div>
             ) : isError ? (
               "Error fetching locations."
+            ) : inputValue.trim() === "" ? (
+              <div className="flex items-center justify-center p-4 text-muted-foreground">
+                <Search className="h-4 w-4 mr-2 opacity-50" />
+                <span>Type to search locations...</span>
+              </div>
             ) : (
               "No locations found."
             )}
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {predictions?.map((prediction: any) => {
+              {predictions.map((prediction: any) => {
                 const city = prediction.name;
                 const placeId = prediction.id;
                 const state = prediction.state?.name;

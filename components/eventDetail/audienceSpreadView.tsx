@@ -1,18 +1,16 @@
 "use client";
-import { Event } from "@/types/events";
-import * as Flags from "country-flag-icons/react/3x2";
-import { CircleSlash } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Text from "../new-ui/Text";
-import { Layer, Map, Marker, Source } from "react-map-gl";
-import { useTheme } from "@/context";
-import "mapbox-gl/dist/mapbox-gl.css";
-import * as echarts from "echarts";
 import worldGeoJson from "@/data/world.json";
+import { Event } from "@/types/events";
 import {
   getCountryName,
   getUpdatedCountryISOCode,
 } from "@/utils/convertCountryName";
+import * as Flags from "country-flag-icons/react/3x2";
+import * as echarts from "echarts";
+import { CircleSlash } from "lucide-react";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useRef, useState } from "react";
+import Text from "../new-ui/Text";
 
 interface Props {
   audienceSpread: NonNullable<Event["audience"]>["audienceSpread"] | undefined;
@@ -91,6 +89,17 @@ interface Props {
 //   );
 // };
 
+function getFlagComponent(iso: string) {
+  const FlagComponent = Flags[iso as keyof typeof Flags];
+  return FlagComponent ? (
+    <FlagComponent className="w-8 h-8" />
+  ) : (
+    <div className="text-sm text-blue-600 bg-card w-8 h-6 border text-center">
+      ?
+    </div>
+  );
+}
+
 export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
   const chartRef = useRef(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
@@ -101,20 +110,26 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
     chartInstance.current = chart;
 
     const data = audienceSpread
-      ? Object.entries(audienceSpread).map(([_, value]) => ({
-          name: getCountryName(value.iso),
-          value: value.percentage,
-          iso: getUpdatedCountryISOCode(value.iso),
-          itemStyle: {
-            borderColor: "#6750a4",
-            borderWidth: 0.6,
-            opacity: 1,
-          },
-        }))
+      ? Object.entries(audienceSpread)
+          .filter(
+            ([_, value]) =>
+              value.name.toLowerCase() !== "online" &&
+              value.name.toLowerCase() !== "hybrid" &&
+              value.name.toLowerCase() !== "offline"
+          )
+          .map(([_, value]) => ({
+            name: getCountryName(value.iso),
+            value: value.percentage,
+            iso: getUpdatedCountryISOCode(value.iso),
+            itemStyle: {
+              borderColor: "#6750a4",
+              borderWidth: 0.6,
+              opacity: 1,
+            },
+          }))
       : [];
 
     const maxPercentage = Math.max(...data.map((d) => d.value));
-    const minPercentage = Math.min(...data.map((d) => d.value));
 
     const option = {
       tooltip: {
@@ -150,7 +165,7 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
         },
       },
       visualMap: {
-        min: minPercentage,
+        min: 0,
         max: maxPercentage,
         inRange: {
           color: ["#E7D4E8", "#6750a4"],
@@ -224,7 +239,7 @@ export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
       window.removeEventListener("resize", handleResize);
     };
   }, [audienceSpread]);
-  return <div ref={chartRef} className="w-full h-96 xl:h-full" />;
+  return <div ref={chartRef} className="w-full h-96" />;
 };
 
 export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
@@ -253,32 +268,38 @@ export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
       } scrollbar `}
     >
       {audienceSpread && Object.keys(audienceSpread).length > 0 ? (
-        Object.entries(audienceSpread).map(([key, value], index) => {
-          if (value.iso == "UK") value.iso = "GB";
-          const Flag = Flags[value.iso as keyof typeof Flags];
-          return (
-            <li
-              className={`flex items-center justify-between p-3 ${
-                (index + 1) % 2 !== 0
-                  ? "bg-[#FAFAFA] dark:bg-[#171717] border border-[#F2F2F2] rounded-md dark:border-[#1A1A1A]"
-                  : ""
-              }`}
-              key={key}
-            >
-              <div className="flex items-center gap-4">
-                <Flag className="w-8 h-8" />{" "}
-                <Text color="primary" variant="noMargin" size="large">
-                  {value.name}
-                </Text>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
-                  {value.percentage}%
-                </span>
-              </div>
-            </li>
-          );
-        })
+        Object.entries(audienceSpread)
+          .filter(
+            ([_, value]) =>
+              value.name.toLowerCase() !== "online" &&
+              value.name.toLowerCase() !== "hybrid" &&
+              value.name.toLowerCase() !== "offline"
+          )
+          .map(([key, value], index) => {
+            if (value.iso == "UK") value.iso = "GB";
+            return (
+              <li
+                className={`flex items-center justify-between p-3 ${
+                  (index + 1) % 2 !== 0
+                    ? "bg-[#FAFAFA] dark:bg-[#171717] border border-[#F2F2F2] rounded-md dark:border-[#1A1A1A]"
+                    : ""
+                }`}
+                key={key}
+              >
+                <div className="flex items-center gap-4">
+                  {getFlagComponent(value.iso)}{" "}
+                  <Text color="primary" variant="noMargin" size="large">
+                    {value.name}
+                  </Text>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
+                    {value.percentage}%
+                  </span>
+                </div>
+              </li>
+            );
+          })
       ) : (
         <span className="text-[#666666] text-sm flex items-center gap-2">
           <CircleSlash width={15} height={15} />

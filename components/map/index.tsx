@@ -70,6 +70,7 @@ interface MapProps {
   trackerLoc?: string;
   trackerType?: string;
   eventType?: string;
+  trackerGeoCordinates?:any;
 }
 
 interface Coordinates {
@@ -91,13 +92,15 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
+  trackerGeoCordinates
 }: MapProps) {
+  
   const mapRef = useRef<MapRef>(null);
-  const { getLocalFilterValue, searchParams } = useFilterContext();
+  const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  
+
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -140,7 +143,7 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const isHolidaySelected = getLocalFilterValue("eventTypes")
+  const isHolidaySelected = getFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
@@ -155,13 +158,9 @@ export default function MapComponent({
         : getFilterValue("locationIds").length === 0
         ? "defaultLoc"
         : getFilterValue("locationIds");
-    if (locationIds === "defaultLoc")
-      setViewport({
-        ...viewport,
-        zoom: 1,
-      });
 
-    if (geoCoordinates) {
+    if (geoCoordinates || Object?.keys(trackerGeoCordinates || {}).length != 0) {
+      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -346,7 +345,9 @@ export default function MapComponent({
         currentZoomGroup === "event" &&
         mapRef.current
       ) {
-        const map = mapRef.current.getMap();
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        const map = mapRef?.current?.getMap();
+        if(map){
         const center = map.getCenter();
         const bounds = map.getBounds();
         if (bounds) {
@@ -376,7 +377,7 @@ export default function MapComponent({
               JSON.stringify(viewBound)
             );
 
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
               "locationIds"
             )}`;
 
@@ -401,6 +402,7 @@ export default function MapComponent({
       } else {
         setEvents([]);
       }
+    }
     };
 
     fetchEvents();
@@ -414,7 +416,7 @@ export default function MapComponent({
     return {
       type: "FeatureCollection",
       features: eventCountsQuery.data
-        ? eventCountsQuery.data.map((count: EventCount) => ({
+        ? eventCountsQuery?.data?.map((count: EventCount) => ({
             type: "Feature",
             geometry: {
               type: "Point",
@@ -433,7 +435,7 @@ export default function MapComponent({
         : [],
     };
   }, [eventCountsQuery.data, currentZoomGroup, location]);
-
+  
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
     events.forEach((event) => {
@@ -489,8 +491,11 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (location?.type === "locationIds" && location.locationIds.length > 0 && location.locationIds!=="defaultLoc") {
-        
+      if (
+        location?.type === "locationIds" &&
+        location.locationIds.length > 0 &&
+        location.locationIds !== "defaultLoc"
+      ) {
         try {
           const details = await getLocationDetails(location.locationIds);
           if (
@@ -500,9 +505,15 @@ export default function MapComponent({
             let bboxLocation = null;
 
             if (details.formattedLocations.length === 1) {
-              bboxLocation =
-                details.formattedLocations[0].displayName ||
-                details.formattedLocations[0].name;
+              const location = details.formattedLocations[0];
+              bboxLocation = [
+                location.name,
+                location.city?.name,
+                location.state?.name,
+                location.country?.iso,
+              ]
+                .filter(Boolean)
+                .join(",");
             } else {
               const locations = details.formattedLocations;
 
@@ -523,8 +534,9 @@ export default function MapComponent({
               }
             }
 
+            const locationType = details.formattedLocations[0].locationType;
             if (bboxLocation) {
-              const bbox = await getLocationBBox(bboxLocation);
+              const bbox = await getLocationBBox(bboxLocation, locationType);
               setLocationBBox(bbox);
             } else {
               setLocationBBox(null);
@@ -536,12 +548,21 @@ export default function MapComponent({
       }
     };
     fetchLocationDetails();
-  }, [location, trackerId]);
+  }, [location, trackerId, trackerLoc]);
 
   useEffect(() => {
     if (!mapRef.current) return;
+    if (Object?.keys(trackerGeoCordinates || {}).length == 0 && location.locationIds == "defaultLoc") {
+      mapRef.current.flyTo({
+        center: [35.2433, 38.9637],
+        zoom: 0.8,
+        duration: 3000,
+        essential: true,
+      });
+    }
+
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -551,7 +572,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (locationBBox) {
+    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -562,11 +583,13 @@ export default function MapComponent({
         essential: true,
       });
     }
-  }, [location, mapRef.current, locationBBox]);
+  }, [location, mapRef.current, locationBBox, trackerId]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = location;
+      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      
+      
       const center = point([
         Number(coordinates.longitude),
         Number(coordinates.latitude),
@@ -601,7 +624,23 @@ export default function MapComponent({
         if (!map.hasImage(key)) map.addImage(key, image);
       });
     }
-  }, []);
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const bearing = map.getBearing();
+    const pitch = map.getPitch();
+  
+    onMove({
+      viewState: {
+        latitude: center.lat,
+        longitude: center.lng,
+        zoom,
+        bearing,
+        pitch,
+        transitionDuration: 0,
+      },
+    });
+  }, [iconUrls, onMove]);
+  
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12;
@@ -743,7 +782,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {isEventeli && source!=="tracker" && (
+                  {isEventeli && source !== "tracker" && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}

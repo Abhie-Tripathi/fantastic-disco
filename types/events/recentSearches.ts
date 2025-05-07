@@ -4,6 +4,7 @@ export interface RecentSearchesResponse {
 
 export interface RecentSearch {
   filterValues: {
+    eventIds?: string[];
     limit: number;
     offset: number;
     locationIds: string[];

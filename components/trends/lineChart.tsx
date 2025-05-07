@@ -1,4 +1,5 @@
 "use client";
+import { TemplateType } from "@/app/components/trends/templates-modal";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -6,16 +7,35 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
+import { NewColumn } from "@/data/trendsTableColHead";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
+import { useTrendsService } from "@/services/trendsService";
 import { TableGroupedHoliday } from "@/types";
-import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
+import { EventResponse } from "@/types/events";
+import {
+  EventTrendsResponse,
+  GetSaveTrendData,
+  TableData,
+} from "@/types/trends/trends";
+import { HierarchyLevel } from "@/utils/chart-options";
+import {
+  generateDatesArray,
+  generateTrendsTableColumnHeaders,
+  morphToGraphData,
+  morphToSmartInsightsData,
+  morphToTrendsTableData,
+  toMidnightISOString,
+} from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Loading from "../ui/Loading";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
@@ -36,9 +56,6 @@ import Text from "../new-ui/Text";
 import Disable from "/public/disable.svg";
 
 interface IProps {
-  predictedData: any;
-  selectedEventType: string;
-  threshold: number;
   showLegend: boolean;
   holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
@@ -48,26 +65,338 @@ interface IProps {
 type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
-  predictedData,
-  selectedEventType,
-  threshold,
   showLegend,
   holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
-  const searchParams = useSearchParams();
-  const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
+
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const thresholdArea = [
-    threshold * 1.5, // 5% above threshold
-    threshold * 0.5, // 5% below threshold
-  ];
 
   const [dragging, setDragging] = useState(false);
   const [linePosition, setLinePosition] = useState(300); // Initial Y position of the line
+  const { searchParams } = useDefaultFilters();
+
+  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const {
+    applyFilters,
+    setLocalFilter,
+    getLocalFilterValue,
+    setMultipleLocalFilters,
+    deleteMultipleLocalFilters,
+    localFilters,
+  } = useFilterContext();
+  const columns = searchParams.get("columns");
+  const eventTypes = searchParams.get("eventTypes");
+  const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
+  const hasHoliday =
+    eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
+  const columnsData = (columns && columns.split(",")) || [];
+  const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
+    useState<boolean>(false);
+  const [smartInsightState, setSmartInsightState] = useState<{
+    [key: string]: boolean;
+  }>(
+    columnsData.length > 0
+      ? columnsData.reduce((acc, key) => {
+          acc[key] = false;
+          return acc;
+        }, {} as { [key: string]: boolean })
+      : {}
+  );
+  const [eventTrendsData, setEventTrendsData] = useState<
+    EventTrendsResponse | undefined
+  >();
+  const [predictedData, setPredictedData] = useState<any>();
+  const [tableData, setTableData] = useState<TableData[] | []>();
+  const [tableColumns, setTableColumns] = useState<NewColumn[]>();
+  const { getEventsWithSearchParams } = useEventsService();
+  const { getFilterValue } = useFilterState();
+  const metric = getFilterValue("columns") as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate";
+  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
+    ? (getFilterValue("view") as "line" | "treemap" | "table")
+    : "treemap";
+  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
+    { id: "location", label: "Location", value: "location" },
+    { id: "category", label: "Category", value: "category" },
+  ]);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
+    null
+  );
+  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
+  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
+  const categories = getLocalFilterValue("categories");
+  type FilterKey =
+    | "location"
+    | "eventTypes"
+    | "dateRange"
+    | "categories"
+    | "metrics";
+
+  const [visibleFilters, setVisibleFilters] = useState<
+    Record<FilterKey, boolean>
+  >({
+    location: true,
+    eventTypes: true,
+    dateRange: true,
+    categories: true,
+    metrics: true,
+  });
+
+  const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
+
+  const apiParams = useMemo(() => {
+    const params = new URLSearchParams({
+      groupBy: "date",
+      dateView: "day",
+    });
+    searchParams.forEach((value, key) => {
+      params.append(key, value);
+    });
+    params.delete("categories");
+    return params.toString();
+  }, [stringParams]);
+
+  const updatedParams = useMemo(() => {
+    const updatedSearchParams = new URLSearchParams(searchParams.toString());
+    updatedSearchParams.set("eventTypes", "holiday");
+    updatedSearchParams.delete("skip");
+    return updatedSearchParams.toString();
+  }, [searchParams]);
+
+  const {
+    data: trendsData,
+    error,
+    isLoading,
+  } = useQuery<EventTrendsResponse | undefined>({
+    queryKey: ["trends", apiParams.toString()],
+    queryFn: () => getEventTrends(apiParams.toString()),
+    enabled: !!apiParams.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const { data: holdiayData } = useQuery({
+    queryKey: ["holiday", updatedParams],
+    queryFn: async () => await getEventsWithSearchParams(updatedParams),
+    enabled: isEventeli && hasHoliday,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const groupedData = (holdiayData as EventResponse)?.events.reduce<
+    Record<string, TableGroupedHoliday>
+  >((acc, { basic }) => {
+    const { startDateTime, name } = basic;
+    if (!acc[startDateTime]) {
+      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
+    }
+    acc[startDateTime].count++;
+    acc[startDateTime].holidays.push(name);
+    return acc;
+  }, {});
+
+  const filterCount = useMemo(() => {
+    const excludedFilters = ["active_gte", "active_lte"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
+  const holidaysByDate =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
+
+  useEffect(() => {
+    if (trendsData !== undefined) {
+      setEventTrendsData(trendsData);
+    }
+  }, [trendsData]);
+
+  useEffect(() => {
+    const skip = searchParams.get("skip");
+
+    if (!skip) {
+      setIsSmartInsightsEnabled(false);
+
+      setSmartInsightState((prev) => {
+        const updatedState = columnsData.reduce((acc, key) => {
+          acc[key] = false;
+          return acc;
+        }, {} as { [key: string]: boolean });
+
+        return updatedState;
+      });
+    }
+  }, [trendsData, searchParams]);
+
+  useEffect(() => {
+    if (Object.keys(smartInsightState).length > 0) {
+      const allFalse = Object.values(smartInsightState).every(
+        (value) => value === false
+      );
+      const allTrue = Object.values(smartInsightState).every(
+        (value) => value === true
+      );
+      if (allFalse) {
+        setIsSmartInsightsEnabled(false);
+      }
+      if (allTrue) {
+        setIsSmartInsightsEnabled(true);
+      }
+    }
+  }, [smartInsightState]);
+
+  useEffect(() => {
+    setSmartInsightState((prevState) => {
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = isSmartInsightsEnabled;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      return newState;
+    });
+  }, [isSmartInsightsEnabled]);
+
+  useEffect(() => {
+    if (eventTrendsData && eventTrendsData.groupedData) {
+      // Convert string values to arrays
+      const eventTypesArray = eventTypes ? eventTypes.split(',') : [];
+      const columnsArray = columns ? columns.split(',') : [];
+      
+      const tableColumns = generateTrendsTableColumnHeaders(
+        eventTypesArray,
+        columnsArray
+      );
+
+      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+
+      const tableData = morphToTrendsTableData(
+        eventTrendsData.thresholds,
+        eventTrendsData.groupedData,
+        eventTypesArray
+      );
+
+      const smartInsightsData = morphToSmartInsightsData(tableData);
+
+      setPredictedData(graphData);
+      setTableData(smartInsightsData);
+      setTableColumns(tableColumns);
+    }
+  }, [eventTrendsData, metric, eventTypes, columns]);
+
+  useEffect(() => {
+    if (trendsData === undefined) {
+      setPredictedData(undefined);
+    }
+  }, [trendsData]);
+
+  const handleViewChange = (view: "line" | "treemap" | "table") => {
+    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
+      return; // Don't change view if not supported by template
+    }
+    if (view === "treemap") {
+      if (categories.length === 0) {
+        const defaultCategories = "technology,medical-pharma";
+        setMultipleLocalFilters({ categories: defaultCategories, view: view });
+      }
+      setMultipleLocalFilters({ columns: "eventCount", view: view });
+    }
+    setLocalFilter("view", view);
+    applyFilters({ resetPage: true });
+  };
+
+  const handleTemplateSelect = (template: TemplateType) => {
+    // Set visualization type - use first available visualization
+    const defaultView = template.visualization[0] as
+      | "line"
+      | "treemap"
+      | "table";
+    handleViewChange(defaultView);
+
+    // Update visible filters - ensure all properties are set
+    const newVisibleFilters: Record<FilterKey, boolean> = {
+      location: template.visibleFilters.location ?? true,
+      eventTypes: template.visibleFilters.eventTypes ?? true,
+      dateRange: template.visibleFilters.dateRange ?? true,
+      categories: template.visibleFilters.categories ?? true,
+      metrics: template.visibleFilters.metrics ?? true,
+    };
+    setVisibleFilters(newVisibleFilters);
+
+    // Set hierarchy levels if provided in template
+    if (template.hierarchy) {
+      setHierarchyLevels(template.hierarchy);
+    } else {
+      // Set default hierarchy levels
+      setHierarchyLevels([
+        { id: "location", label: "Location", value: "location" },
+        { id: "category", label: "Category", value: "category" },
+      ]);
+    }
+
+    // Set active template and update history
+    setActiveTemplate(template);
+    setTemplateHistory((prev) => {
+      const filtered = prev.filter((t) => t.id !== template.id);
+      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
+    });
+    setHasModifiedFilters(false);
+
+    // Close modal and templates view
+    setShowTemplatesModal(false);
+    setShowTemplates(false);
+
+    // Apply filters
+    applyFilters({ resetPage: true });
+  };
+
+  const handleTemplateRemove = () => {
+    setActiveTemplate(null);
+    // Reset visible filters to show all
+    const defaultFilters: Record<FilterKey, boolean> = {
+      location: true,
+      eventTypes: true,
+      dateRange: true,
+      categories: true,
+      metrics: true,
+    };
+    setVisibleFilters(defaultFilters);
+    applyFilters({ resetPage: true });
+    setHasModifiedFilters(false);
+  };
+
+  // Track filter changes
+  useEffect(() => {
+    if (!activeTemplate) return;
+
+    // Track filter changes by comparing current filter values with template's visible filters
+    const hasChanged = Object.entries(visibleFilters).some(
+      ([key, isVisible]) => {
+        if (!isVisible) return false;
+        // Only check filters that are visible
+        const filterKey = key as keyof typeof visibleFilters;
+        if (!activeTemplate.visibleFilters[filterKey]) return false;
+
+        // Check if the filter has a value
+        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
+        return currentValue && currentValue.length > 0;
+      }
+    );
+
+    setHasModifiedFilters(hasChanged);
+  }, [localFilters, activeTemplate, visibleFilters]);
 
   // Handle drag start
   const handleDragStart = (e: any) => {
@@ -284,7 +613,7 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = searchParams.get("viewBound");
+    const viewBound = searchParams.get("viewBound");
     const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
@@ -298,8 +627,8 @@ const LineChartComponent = ({
     if (locationIds) {
       searchEventParams.set("locationIds", locationIds);
     }
-    if (geoCoordinates) {
-      searchEventParams.set("geoCoordinates", geoCoordinates);
+    if (viewBound) {
+      searchEventParams.set("viewBound", viewBound);
     }
     if (eventTypes && eventTypes.length > 0) {
       searchEventParams.set("eventTypes", eventTypes);
@@ -330,12 +659,7 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: eventData, isLoading: isTooltipLoading } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
@@ -344,11 +668,48 @@ const LineChartComponent = ({
     staleTime: 0,
   });
 
+  const threshold =
+    (eventTrendsData && eventTrendsData.thresholds[metric]) ?? 0;
+  const thresholdArea = [
+    threshold * 1.5, // 5% above threshold
+    threshold * 0.5, // 5% below threshold
+  ];
+
   function generateDateIntervals(startDate: any, endDate: any) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const totalDays = differenceInDays(end, start) + 1;
-
+    
+    // For mobile screens, show exactly 6 ticks
+    if (isMobileView) {
+      // Always show exactly 6 ticks on mobile screens
+      const dates = [];
+      
+      // First date
+      dates.push(format(start, "yyyy-MM-dd"));
+      
+      // Calculate an even interval for 4 middle points
+      const step = Math.max(1, Math.floor(totalDays / 5));
+      
+      // Add 4 evenly spaced points (for a total of 6 with start and end)
+      for (let i = 1; i <= 4; i++) {
+        const nextDate = addDays(start, i * step);
+        // Only add if not past the end date
+        if (!isAfter(nextDate, end)) {
+          dates.push(format(nextDate, "yyyy-MM-dd"));
+        }
+      }
+      
+      // Add end date if not already included
+      const lastDateStr = format(end, "yyyy-MM-dd");
+      if (dates[dates.length - 1] !== lastDateStr) {
+        dates.push(lastDateStr);
+      }
+      
+      return dates;
+    }
+    
+    // Desktop view - original logic
     // If range is 10 days or less, show all dates
     if (totalDays <= 10) {
       const dates = [];
@@ -387,6 +748,31 @@ const LineChartComponent = ({
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
     const date = new Date(payload.value);
+    
+    if (isMobileView) {
+      // Simplified format for mobile
+      const mobileDateFormat = format(date, "dd MMM");
+      
+      return (
+        <g transform={`translate(${x},${y})`}>
+          <text
+            x={0}
+            y={0}
+            dy={16}
+            textAnchor="middle"
+            fill="#615E83"
+            fontSize="12px"
+            fontWeight="500"
+          >
+            <tspan x={0} dy="1em">
+              {mobileDateFormat}
+            </tspan>
+          </text>
+        </g>
+      );
+    }
+    
+    // Desktop format with date and year on separate lines
     const dayMonth = format(date, "dd MMM");
     const year = format(date, "yyyy");
 
@@ -414,7 +800,7 @@ const LineChartComponent = ({
   };
 
   const graphData =
-    predictedData.length > 0
+    predictedData && predictedData.length > 0
       ? predictedData.map((data: any) => ({
           ...data,
         }))
@@ -429,8 +815,7 @@ const LineChartComponent = ({
         }));
 
   const label =
-    columnsDropdown.find((column) => column.value === selectedEventType)
-      ?.label ?? "";
+    columnsDropdown.find((column) => column.value === metric)?.label ?? "";
 
   const CustomToolTip = ({
     active,
@@ -470,7 +855,7 @@ const LineChartComponent = ({
     }
 
     return (
-      <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
+      <div className={`border-none shadow-lg bg-background ${isMobileView ? 'w-[calc(100vw-40px)] max-w-xs' : 'w-72'} z-10`}>
         <div className="px-4 py-2 flex text-lg font-medium border-b">
           {format(date, "d MMM yyyy")}
         </div>
@@ -486,7 +871,7 @@ const LineChartComponent = ({
                   matchingHoliday.holidays.length > 1
                     ? "list-decimal"
                     : "list-none"
-                } list-inside text-sm text-gray-600`}
+                } list-inside text-sm text-gray-600 dark:text-gray-300`}
               >
                 {matchingHoliday.holidays.map((holidayName, index) => (
                   <li key={index}>{holidayName}</li>
@@ -497,9 +882,8 @@ const LineChartComponent = ({
         <div className="px-4 py-2 border-b">
           <p className="font-semibold text-[var(--primary-color)]">{total}</p>
           <Text size="normal" color="secondary" fontWeight="regular">
-            {columnsDropdown.find(
-              (column) => column.value === selectedEventType
-            )?.label ?? ""}
+            {columnsDropdown.find((column) => column.value === metric)?.label ??
+              ""}
           </Text>
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
@@ -524,7 +908,7 @@ const LineChartComponent = ({
         <div className="px-4 py-2">
           <p className="text-sm font-medium">TOP EVENTS</p>
           <ul className="flex flex-col gap-2 mt-4">
-            {isLoading ? (
+            {isTooltipLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
             ) : eventData && (eventData as any).events.length > 0 ? (
               (eventData as any).events
@@ -539,16 +923,17 @@ const LineChartComponent = ({
                           {index + 1}.
                         </span>
                       </div>
-                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                      <p className="text-[#79747E] dark:text-gray-300 text-[12px] truncate whitespace-nowrap">
                         {name}
                       </p>
                     </li>
                   );
                 })
             ) : (
-              <p className="text-[#666666] text-sm flex items-center gap-2">
+              <p className="text-[#666666] dark:text-gray-300 text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
-                No events found
+                No events found. Try expanding your preferences by selecting
+                more categories, products, or topics.
               </p>
             )}
           </ul>
@@ -558,7 +943,7 @@ const LineChartComponent = ({
           className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
         >
           VIEW ALL
-          <ArrowUpRight height={18} width={18} stroke="#6750a4" />
+          <ArrowUpRight height={18} width={18} stroke="currentColor" />
         </Link>
       </div>
     );
@@ -566,12 +951,12 @@ const LineChartComponent = ({
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
     return (
-      <div className="flex gap-5 items-center justify-end w-fit">
+      <div className={`flex ${isMobileView ? 'flex-wrap gap-2 justify-center px-2' : 'gap-5 justify-end'} items-center w-fit`}>
         {payload &&
           payload.map((entry, index) => (
             <div
               key={`legend-item-${index}`}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1"
             >
               <div
                 className={`w-2 h-2 rounded-full`}
@@ -579,21 +964,22 @@ const LineChartComponent = ({
                   backgroundColor: entry.color,
                 }}
               ></div>
-              {/* <span
-                className={`text-sm font-medium ${`text-[${entry.color}]`}`}
-              >
-                {entry.value}
-              </span> */}
               <TooltipProvider>
                 <ShadcnTooltip>
                   <TooltipTrigger asChild>
                     <span
-                      className={`cursor-pointer text-sm font-medium ${`text-[${entry.color}]`}`}
+                      className={`cursor-pointer ${isMobileView ? 'text-xs' : 'text-sm'} font-medium ${`text-[${entry.color}]`}`}
                     >
-                      {entry.value}
+                      {isMobileView && entry.value.length > 10 
+                        ? (entry.value === "Upper Threshold" 
+                           ? "Upper" 
+                           : entry.value === "Lower Threshold" 
+                             ? "Lower" 
+                             : entry.value)
+                        : entry.value}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="w-60 tooltip-content-styles">
+                  <TooltipContent className={`${isMobileView ? 'w-48' : 'w-60'} tooltip-content-styles`}>
                     <p className="font-medium text-[var(--secondary-text-color)]">
                       {entry.tooltipDescription}
                     </p>
@@ -606,16 +992,59 @@ const LineChartComponent = ({
     );
   };
 
+  // Check if we're on mobile
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  const isMobileView = windowWidth < 768;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[500px]">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+
+  if (eventData && (eventData as any).events.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>
+          No events found. Try expanding your preferences by selecting more
+          categories, products, or topics.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div ref={chartRef}>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={isMobileView ? 340 : 420}>
         <AreaChart
           data={graphData}
           margin={{
-            left: 10,
-            right: 30,
-            top: 40,
-            bottom: doInvertTicks ? 30 : 0,
+            left: isMobileView ? 0 : 10,
+            right: isMobileView ? 10 : 30,
+            top: isMobileView ? 20 : 40,
+            bottom: isMobileView ? 40 : (doInvertTicks ? 30 : 0),
           }}
           onClick={(e) => handleChartClick(e)}
         >
@@ -628,8 +1057,8 @@ const LineChartComponent = ({
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
-            fontSize="12px"
-            height={40}
+            fontSize={isMobileView ? "10px" : "12px"}
+            height={isMobileView ? 30 : 40}
             tick={<CustomTick />}
             ticks={generateDateIntervals(
               graphData[0].date,
@@ -638,19 +1067,20 @@ const LineChartComponent = ({
             interval={0}
             width={10}
             axisLine={false}
-            tickLine={true}
+            tickLine={isMobileView ? false : true}
+            padding={{ left: isMobileView ? 5 : 10, right: isMobileView ? 5 : 10 }}
             label={{
               style: { fill: "#615E83" },
             }}
           />
           <YAxis
             dataKey="total"
-            fontSize="12px"
-            width={70}
+            fontSize={isMobileView ? "10px" : "12px"}
+            width={isMobileView ? 45 : 70}
             domain={["auto", "auto"]}
-            tickCount={5}
+            tickCount={isMobileView ? 4 : 5}
             tickFormatter={tickFormatter}
-            label={{
+            label={isMobileView ? undefined : {
               value: label,
               angle: -90,
               position: "insideLeft",
@@ -661,8 +1091,8 @@ const LineChartComponent = ({
             tickLine={false}
             tick={{
               fill: "#615E83",
-              fontSize: "14px",
-              fontWeight: "500",
+              fontSize: isMobileView ? "10px" : "14px",
+              fontWeight: isMobileView ? "400" : "500",
             }}
           />
           <Tooltip
@@ -791,13 +1221,24 @@ const LineChartComponent = ({
                   },
                 ] as CustomPayload
               }
-              wrapperStyle={{
+              wrapperStyle={isMobileView ? {
+                width: "100%",
+                position: "relative", 
+                bottom: -5,
+                left: 0,
+                fontSize: "12px",
+                fontWeight: "400",
+                display: "flex",
+                justifyContent: "center"
+              } : {
                 width: "auto",
                 top: -30,
                 right: 0,
                 fontSize: "14px",
                 fontWeight: "500",
               }}
+              verticalAlign={isMobileView ? "bottom" : "top"}
+              align={isMobileView ? "center" : "right"}
             />
           )}
         </AreaChart>

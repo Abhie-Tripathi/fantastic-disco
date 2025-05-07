@@ -46,8 +46,8 @@ const EventTable = ({
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
   const bulkOption = ["Attend", "Speak"];
   const { localFilters } = useFilterContext();
-  const { data, setSavedEventCount, savedEventCount } = useTrackerContext();
-  const [interest, setInterest] = useState<any>();
+  const { data, editTrue } = useTrackerContext();
+  const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   const [action, setAction] = useState();
   const {
@@ -59,7 +59,7 @@ const EventTable = ({
   query.view = "list";
   delete query.show;
   console.log(trackerId);
-  let events, totalEvents, isLoading, error;
+  let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
 
   const sourceModule = pathName.includes("trackers")
@@ -68,7 +68,7 @@ const EventTable = ({
     ? "RESEARCH"
     : "";
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
       query,
       trackerId,
       view
@@ -80,7 +80,8 @@ const EventTable = ({
   const mapping = {
     rating: "rating",
     maturity: "maturity",
-    branded: "branded,series",
+    branded: "branded",
+    series:"series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -254,7 +255,6 @@ const EventTable = ({
     });
   }, [eventId, interest]);
 
-  console.log(events); // Now it will print correctly
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -262,7 +262,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Loading className="h-24 text-primary" />;
   }
 
@@ -296,7 +296,7 @@ const EventTable = ({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found" />;
+    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
   }
 
   return (

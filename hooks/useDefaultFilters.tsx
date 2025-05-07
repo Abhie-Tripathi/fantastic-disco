@@ -20,7 +20,6 @@ export function useDefaultFilters() {
   const { setMultipleLocalFilters } = useFilterContext();
   const pathName = usePathname();
   const router = useRouter();
-  const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
   const allowedEventTypes = isEventeli
     ? [...EVENT_TYPE_GROUPS.Social, ...EVENT_TYPE_GROUPS.Business]
@@ -40,11 +39,16 @@ export function useDefaultFilters() {
     },
     active_gte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
-    ).toISOString(), // Starting date of current month going on.
+    )
+      .toISOString()
+      .split("T")[0], // Starting date of current month going on.
     active_lte: new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
-    ).toISOString(), // Ending date of current month going on.
+    )
+      .toISOString()
+      .split("T")[0], // Ending date of current month going on.
     eventTypes: allowedEventTypes, // Event Types according to the platform.
+    categories: "technology,medical-pharma",
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
@@ -92,6 +96,7 @@ export function useDefaultFilters() {
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => {
     const recentSearchParams = {
+      eventIds: recentSearch.filterValues.eventIds?.join(",") ?? undefined,
       eventFormats:
         recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
       status: recentSearch.filterValues.status?.join(",") ?? undefined,
@@ -154,7 +159,8 @@ export function useDefaultFilters() {
 
     if (
       !recentSearch.filterValues.active_gte &&
-      !recentSearch.filterValues.active_lte
+      !recentSearch.filterValues.active_lte &&
+      !recentSearch.filterValues.eventIds
     ) {
       recentSearchParams.active_gte = startOfMonth(new Date()).toISOString();
       recentSearchParams.active_lte = endOfMonth(
@@ -318,19 +324,8 @@ export function useDefaultFilters() {
 
     paramsToDelete.forEach((param) => trendsParams.delete(param));
 
-    // Set columns by filtering out specific values.
-    trendsParams.set(
-      "columns",
-      columnsDropdown
-        .filter(
-          (column) =>
-            column.value !== "impactScore" && column.value !== "economicImpact"
-        )
-        .map((column) => column.value)
-        .join(",")
-    );
+    trendsParams.set("columns", "eventCount");
 
-    // Set fixed and filtered parameters.
     trendsParams.set("show", "alerts,scores,economicImpact");
     if (filteredEventTypes && filteredEventTypes.length > 0) {
       trendsParams.set("eventTypes", filteredEventTypes.join(","));
@@ -354,10 +349,12 @@ export function useDefaultFilters() {
     }
     trendsParams.delete("viewBound");
     trendsParams.delete("show");
+    trendsParams.delete("eventIds");
     trendsParams.set("eventTypes", defaultTrendsParams.eventTypes.join(","));
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
     trendsParams.set("locationIds", defaultTrendsParams.locationIds);
+    trendsParams.set("categories", defaultTrendsParams.categories);
 
     return trendsParams;
   };
@@ -422,6 +419,7 @@ export function useDefaultFilters() {
       const recentSearchResponse = await eventService.getRecentSearch();
       if (
         recentSearchResponse &&
+        recentSearchResponse.recentSearches.length &&
         recentSearchResponse.recentSearches[0].filterValues
       ) {
         const params = new URLSearchParams(searchParams.toString());
@@ -434,7 +432,6 @@ export function useDefaultFilters() {
           recentSearch = recentSearchResponse.recentSearches[0];
         }
         const recentFilterParams = mapRecentSearchToParams(recentSearch);
-        console.log(recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
@@ -458,9 +455,31 @@ export function useDefaultFilters() {
           // Set local filters using the context
           setMultipleLocalFilters(recentFilterParams);
         }
+        return;
       }
     } catch (error) {
       console.error("Error setting initial filters:", error);
+    }
+
+    const defaultSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (pathName.split("/").includes("trends")) {
+      defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
+      defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
+      defaultSearchParams.set("locationIds", defaultTrendsParams.locationIds);
+      defaultSearchParams.set("categories", defaultTrendsParams.categories);
+      defaultSearchParams.set("columns", "eventCount");
+      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
+        scroll: false,
+      });
+    }
+
+    if (pathName.split("/").includes("search")) {
+      defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
+      defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
+      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
+        scroll: false,
+      });
     }
   };
 

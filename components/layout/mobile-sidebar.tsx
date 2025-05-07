@@ -215,7 +215,7 @@ const MobileSidebar = () => {
           </li>
           <li>
             <SheetClose asChild>
-              <Link href="/internal/profile">
+              <Link href="/internal/settings/profile">
                 <Button
                   variant="ghost"
                   className="w-full justify-start px-3 h-10"

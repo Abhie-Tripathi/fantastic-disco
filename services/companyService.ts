@@ -7,8 +7,6 @@ import { endpoints } from "@/config/endpoints";
 import { pocDetail } from "@/types/coordinateEventType";
 import externalAxios from "@/lib/externalAxios";
 import { CompanyDetailResponse, CompanyListResponse } from "@/types/prospect";
-import prospectUserData from "@/public/data/prospect/prospectUserData.json";
-import eventData from "@/public/data/prospect/userEventData.json";
 
 interface fnProp {
   offset: number;

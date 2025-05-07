@@ -5,6 +5,7 @@ import { baseUrl } from "@/constants";
 import { useProductSettingServices } from "@/services/settingservices/productService";
 import { useAuthContext, useTheme } from "@/context";
 import { showToast } from "@/utils/showToast";
+import { isEventeli } from "@/config";
 
 interface ResearchProps {
   label: string;
@@ -492,7 +493,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="grid place-items-center min-h-screen gap-y-10 p-6">
+    <div className="grid place-items-center gap-y-10 p-6">
       <div className="grid place-items-center max-w-5xl">
         <div
           className="flex gap-2 justify-start"
@@ -597,109 +598,111 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 border bg-background rounded-md p-4">
-            <div className="grid grid-cols-2 border-b pb-3">
-              <div className="font-semibold">Outreach</div>
-              <div className="ml-5">Kanban board</div>
-            </div>
-            <div className="grid grid-cols-2 gap-6  border-b pb-3">
-              <div className="text-sm text-gray-500">
-                Personalise your workflow by renaming columns on your kanban
-                board! Update them any time to fit your project needs or
-                preferences.
-                <div className="mt-10 text-xs text-blue-500">
-                  Please note: If this value is renamed, the changes will
-                  automatically be reflected in all previous entries where it
-                  has been used.
+          {!isEventeli &&
+            <div className="grid gap-3 border bg-background rounded-md p-4">
+              <div className="grid grid-cols-2 border-b pb-3">
+                <div className="font-semibold">Outreach</div>
+                <div className="ml-5">Kanban board</div>
+              </div>
+              <div className="grid grid-cols-2 gap-6  border-b pb-3">
+                <div className="text-sm text-gray-500">
+                  Personalise your workflow by renaming columns on your kanban
+                  board! Update them any time to fit your project needs or
+                  preferences.
+                  <div className="mt-10 text-xs text-blue-500">
+                    Please note: If this value is renamed, the changes will
+                    automatically be reflected in all previous entries where it
+                    has been used.
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {filteredOutreachScreenboxes
+                    .slice(1, filteredOutreachScreenboxes.length - 1)
+                    .map((box: any, index: any) => (
+                      <div
+                        key={box.status}
+                        className="flex items-center gap-1 relative"
+                        draggable
+                        onDragStart={(e) =>
+                          handleDragStartOutreachScreen(e, index + 1)
+                        }
+                        onDragOver={handleDragOverOutreachScreen}
+                        onDrop={(e) => handleDropOutreachScreen(e, index + 1)}
+                        onDragEnd={handleDragEndOutreachScreen}
+                      >
+                        <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
+                          <DragIcon />
+                        </div>
+                        <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
+                          <input
+                            type="text"
+                            value={
+                              editingOutreachScreenBoxId === box.status
+                                ? outreachTempValue
+                                : box?.label
+                            }
+                            onChange={(e) =>
+                              handleChangeOutreachScreenBoxes(
+                                box.status,
+                                e.target.value
+                              )
+                            }
+                            className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
+                            onClick={() =>
+                              handleOutreachchScreenEdit(box.status, box.label)
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleOutreachScreenSave(box);
+                              }
+                            }}
+                          />
+                        </div>
+                        {editingOutreachScreenBoxId === box.status && (
+                          <div className="flex items-center gap-2 ml-2">
+                            <button
+                              className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                              onClick={() => handleOutreachScreenSave(box)}
+                            >
+                              <CheckIcon />
+                            </button>
+                            {/* <button
+                              className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                              onClick={() => removeOutreachScreenBox(box)}
+                            >
+                              <CrossIcon />
+                            </button> */}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  {/* <button
+                    className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
+                    onClick={addOutreachScreenBox}
+                  >
+                    <PlusIcon />
+                  </button> */}
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {filteredOutreachScreenboxes
-                  .slice(1, filteredOutreachScreenboxes.length - 1)
-                  .map((box: any, index: any) => (
-                    <div
-                      key={box.status}
-                      className="flex items-center gap-1 relative"
-                      draggable
-                      onDragStart={(e) =>
-                        handleDragStartOutreachScreen(e, index + 1)
-                      }
-                      onDragOver={handleDragOverOutreachScreen}
-                      onDrop={(e) => handleDropOutreachScreen(e, index + 1)}
-                      onDragEnd={handleDragEndOutreachScreen}
-                    >
-                      <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
-                        <DragIcon />
-                      </div>
-                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
-                        <input
-                          type="text"
-                          value={
-                            editingOutreachScreenBoxId === box.status
-                              ? outreachTempValue
-                              : box?.label
-                          }
-                          onChange={(e) =>
-                            handleChangeOutreachScreenBoxes(
-                              box.status,
-                              e.target.value
-                            )
-                          }
-                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
-                          onClick={() =>
-                            handleOutreachchScreenEdit(box.status, box.label)
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleOutreachScreenSave(box);
-                            }
-                          }}
-                        />
-                      </div>
-                      {editingOutreachScreenBoxId === box.status && (
-                        <div className="flex items-center gap-2 ml-2">
-                          <button
-                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                            onClick={() => handleOutreachScreenSave(box)}
-                          >
-                            <CheckIcon />
-                          </button>
-                          {/* <button
-                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                            onClick={() => removeOutreachScreenBox(box)}
-                          >
-                            <CrossIcon />
-                          </button> */}
+              <div className="grid place-items-center">
+                <div className="flex flex-wrap gap-4 justify-center  w-full max-w-5xl">
+                  {filteredOutreachScreenboxes
+                    .slice(1, filteredOutreachScreenboxes.length - 1)
+                    .map((box: any) => (
+                      <div
+                        key={box.status}
+                        className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
+                      >
+                        <div className="flex items-center w-full min-h-[32px] bg-primary text-white text-sm font-normal px-2 rounded-t-md">
+                          <span className="truncate w-full">{box.label}</span>
                         </div>
-                      )}
-                    </div>
-                  ))}
-                {/* <button
-                  className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
-                  onClick={addOutreachScreenBox}
-                >
-                  <PlusIcon />
-                </button> */}
-              </div>
-            </div>
-            <div className="grid place-items-center">
-              <div className="flex flex-wrap gap-4 justify-center  w-full max-w-5xl">
-                {filteredOutreachScreenboxes
-                  .slice(1, filteredOutreachScreenboxes.length - 1)
-                  .map((box: any) => (
-                    <div
-                      key={box.status}
-                      className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
-                    >
-                      <div className="flex items-center w-full min-h-[32px] bg-primary text-white text-sm font-normal px-2 rounded-t-md">
-                        <span className="truncate w-full">{box.label}</span>
+                        <div className="absolute top-8 left-0 right-0 bottom-0 border-l border-r  border-t-transparent"></div>
                       </div>
-                      <div className="absolute top-8 left-0 right-0 bottom-0 border-l border-r  border-t-transparent"></div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
             </div>
-          </div>
+          }
         </div>
       </div>
     </div>

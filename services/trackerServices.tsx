@@ -1,7 +1,7 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
@@ -30,6 +30,11 @@ interface UserAccessData {
   superAdmin: UserAccess[];
   others: UserAccess[];
 }
+interface PresetDataResponse {
+  count: number;
+  trackers: PresetData[];
+}
+
 type GetSavedEventsResponse =
 
   | { result: EventTableType[]; count: number }
@@ -60,6 +65,11 @@ export const useTrackerServices = () => {
         }
       ); 
     }
+  const getTrackerCount =():Promise<{ count: TrackerTypeProp[] } | undefined>=>{
+    return api.request(
+      `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
+    )
+  }
     const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
@@ -339,7 +349,21 @@ export const useTrackerServices = () => {
     //   );
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
+    const presetData = async (data: any): Promise<PresetDataResponse> => {
+      const urlParams = new URLSearchParams(data).toString();
+      const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`, {
+        method: "GET",
+      });
+    
+      return response as PresetDataResponse;
+    };
+    
+    
+    
+    
+    
     return {
+      getTrackerCount,
       removeBookmark,
       createTracker,
       globalSavedEvents,
@@ -363,6 +387,7 @@ export const useTrackerServices = () => {
       getSavedEvents,
       getTrackerDetail,
       getTrackerEvents,
+      presetData,
       isLoading: api.isLoading,
       error: api.error,
     };
