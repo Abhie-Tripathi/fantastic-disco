@@ -133,6 +133,7 @@ const SimilarEventCard = ({
               city: item?.cityName,
               country: item?.countryName,
               eventType: item?.eventType?.[0],
+              isProductEvent: item?.isProductEvent,
             };
             return <EventCard {...eventItem} key={eventItem.id} />;
           })}

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { InterestConfiguration } from "@/types/configuration";
 import { useIntent } from "@/hooks/useIntent";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   id: string;
@@ -21,6 +23,7 @@ interface Props {
   country?: string | null;
   eventType: string;
   participationType?: string | null;
+  isProductEvent?: boolean;
 }
 
 const EventCard = (eventData: Props) => {
@@ -48,7 +51,7 @@ const EventCard = (eventData: Props) => {
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
     address: [
-      eventData.venue || "TBA",
+      eventData.venue,
       eventData.city,
       eventData.state !== eventData.city ? eventData.state : null,
       eventData.country !== eventData.city ? eventData.country : null,
@@ -128,7 +131,17 @@ const EventCard = (eventData: Props) => {
         </div>
       )}
       <div className="flex flex-col gap-1.5 h-full w-full">
-        <div className="text-base font-medium">{event.name}</div>
+        {eventData?.isProductEvent ? (
+          <div className="text-base font-medium">{event.name}</div>
+        ) : (
+          <Link
+            href={`/internal/event/${event.id}`}
+            className="text-base font-medium hover:text-primary transition-colors"
+            target="_blank"
+          >
+            {event.name}
+          </Link>
+        )}
         <div className={`text-[var(--tertiary-text-color)] text-xs`}>
           {event.organizer}
         </div>
@@ -159,7 +172,9 @@ const EventCard = (eventData: Props) => {
             options={interestConfiguration?.interest}
           />
 
-          {eventAdded ? (
+          {isSubmitting ? (
+            <Loader2 className="mr-2 animate-spin text-primary" />
+          ) : eventAdded ? (
             <div className="text-primary text-sm font-medium pr-2">Added</div>
           ) : (
             <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">

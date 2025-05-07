@@ -105,6 +105,7 @@ export interface AddEventFormState {
     exhibitor:any[];
     event_type:string;
     isEventTypeEmpty:boolean,
+    venue?: string;
     // Location Data
     locationDisplayName: string;
     locationType: string;
