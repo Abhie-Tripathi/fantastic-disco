@@ -19,11 +19,15 @@ import { useFilterState } from "@/hooks/useFilterState";
 interface CreateTrackerDialog {
   open: boolean;
   onOpenChange: (value: boolean) => void;
+  trackerType?: string;
+  trackerPayloadFilterValues?: any;
 }
 
 export default function CreateTrackerDialog({
   open,
   onOpenChange,
+  trackerType,
+  trackerPayloadFilterValues,
 }: CreateTrackerDialog) {
   const [trackerName, setTrackerName] = useState("");
   const [error, setError] = useState("");
@@ -155,6 +159,10 @@ export default function CreateTrackerDialog({
       setIsLoading(false);
     }
   };
+
+  function createCompaniesTracker() {}
+
+  function createPeopleTracker() {}
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

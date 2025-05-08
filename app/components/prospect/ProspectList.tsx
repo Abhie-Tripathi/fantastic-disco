@@ -9,7 +9,14 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  MouseEventHandler,
+  ChangeEventHandler,
+} from "react";
 import Loading from "@/components/ui/Loading";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
@@ -35,6 +42,11 @@ import { Location } from "geist-icons";
 import { Button } from "@/components/ui/button";
 import SortDropdown from "@/components/search/sortDropdown";
 import EventCount from "@/components/search/eventCount";
+import { useBulkAction } from "@/context/bulkAction";
+import { Input } from "@/components/ui/input";
+import { CheckedState } from "@radix-ui/react-checkbox";
+import { Label } from "@/components/ui/label";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 
 // Constants
 const EXCLUDED_TAGS = [
@@ -59,6 +71,9 @@ const STALE_TIME = 300000; // 5 minutes
 // Types
 interface ProspectCardProps {
   companyDetail: companyListData;
+  isBulkActionActive: boolean;
+  selectedCompaniesIds: Set<string>;
+  toggleSelection: (id: string) => void;
 }
 
 interface StatsBadgeProps {
@@ -69,15 +84,23 @@ interface StatsBadgeProps {
 // Components
 const StatsBadge: React.FC<StatsBadgeProps> = ({ label, value }) => {
   if (value === null || value <= 0) return null;
-  
+
   return (
-    <Badge variant="secondary" className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm">
+    <Badge
+      variant="secondary"
+      className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+    >
       {label}: {value}
     </Badge>
   );
 };
 
-const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
+const ProspectCard: React.FC<ProspectCardProps> = ({
+  companyDetail,
+  isBulkActionActive,
+  selectedCompaniesIds,
+  toggleSelection,
+}) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
 
@@ -96,18 +119,23 @@ const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
           }
         }
       } catch (error) {
-        console.error('Error fetching company logo:', error);
+        console.error("Error fetching company logo:", error);
         setCompLogo(null);
       }
     };
 
     fetchLogo();
-  }, [companyDetail.id, companyDetail.logo, companyDetail.website, checkCompanyLogo]);
+  }, [
+    companyDetail.id,
+    companyDetail.logo,
+    companyDetail.website,
+    checkCompanyLogo,
+  ]);
 
   const locationDisplay = useMemo(() => {
     const { cityName, countryName } = companyDetail.location || {};
     if (!cityName && !countryName) return null;
-    
+
     return cityName === countryName
       ? cityName
       : [cityName, countryName].filter(Boolean).join(", ");
@@ -115,75 +143,103 @@ const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
 
   const filteredTags = useMemo(() => {
     return companyDetail.company_tag
-      ?.filter((item): item is string => 
-        Boolean(item) && !EXCLUDED_TAGS.includes(item as typeof EXCLUDED_TAGS[number])
+      ?.filter(
+        (item): item is string =>
+          Boolean(item) &&
+          !EXCLUDED_TAGS.includes(item as (typeof EXCLUDED_TAGS)[number])
       )
       ?.slice(0, 2);
   }, [companyDetail.company_tag]);
 
-  const renderTags = (tags: string[], prefix: string = '') => (
+  const renderTags = (tags: string[], prefix: string = "") =>
     tags.map((item) => (
       <span
         key={item}
         className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
       >
-        {prefix}{item}
+        {prefix}
+        {item}
       </span>
-    ))
-  );
+    ));
 
   return (
-    <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
-      <Link href={`/internal/company/${companyDetail.id}`} className="block">
-        <div className="p-4 flex gap-6">
-          {compLogo && (
-            <Image
-              src={compLogo}
-              alt={`${companyDetail.name} logo`}
-              className="flex h-16 w-16 rounded-lg shadow-lg"
-              width={200}
-              height={200}
-              priority={false}
-            />
-          )}
-          <div className="flex gap-2 flex-col">
-            <div className="text-xl font-semibold">{companyDetail.name}</div>
-            {companyDetail?.description && companyDetail.description.length > 10 && (
-              <div className="text-[#707287] text-sm line-clamp-2">
-                {companyDetail.description}
-              </div>
+    <div className="flex gap-4 w-full items-center">
+      {isBulkActionActive && (
+        <Checkbox
+          checked={selectedCompaniesIds.has(companyDetail.id)}
+          onCheckedChange={() => toggleSelection(companyDetail.id)}
+        />
+      )}
+      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
+        <Link href={`/internal/company/${companyDetail.id}`} className="block">
+          <div className="p-4 flex gap-6">
+            {compLogo && (
+              <Image
+                src={compLogo}
+                alt={`${companyDetail.name} logo`}
+                className="flex h-16 w-16 rounded-lg shadow-lg"
+                width={200}
+                height={200}
+                priority={false}
+              />
             )}
-
-            <div className="flex flex-wrap gap-2">
-              {locationDisplay && (
-                <div className="flex gap-2 items-center border-r w-fit pr-3">
-                  <Location color="#666666" width="14px" height="14px" />
-                  <span className="text-[#6E6F89] text-sm">{locationDisplay}</span>
-                </div>
-              )}
-
-              <div className="flex gap-2 items-center w-fit">
-                {companyDetail.event_categoryName?.length > 0 && (
-                  <>
-                    <Buildings color="#666666" width="14px" height="14px" />
-                    {renderTags(companyDetail.event_categoryName)}
-                  </>
+            <div className="flex gap-2 flex-col">
+              <div className="text-xl font-semibold">{companyDetail.name}</div>
+              {companyDetail?.description &&
+                companyDetail.description.length > 10 && (
+                  <div className="text-[#707287] text-sm line-clamp-2">
+                    {companyDetail.description}
+                  </div>
                 )}
 
-                {filteredTags?.length > 0 && renderTags(filteredTags, '#')}
+              <div className="flex flex-wrap gap-2">
+                {locationDisplay && (
+                  <div className="flex gap-2 items-center border-r w-fit pr-3">
+                    <Location color="#666666" width="14px" height="14px" />
+                    <span className="text-[#6E6F89] text-sm">
+                      {locationDisplay}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex gap-2 items-center w-fit">
+                  {companyDetail.event_categoryName?.length > 0 && (
+                    <>
+                      <Buildings color="#666666" width="14px" height="14px" />
+                      {renderTags(companyDetail.event_categoryName)}
+                    </>
+                  )}
+
+                  {filteredTags?.length > 0 && renderTags(filteredTags, "#")}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 items-center w-fit">
+                <StatsBadge
+                  label="Total Events"
+                  value={companyDetail.stats?.totalEvents}
+                />
+                <StatsBadge
+                  label="Upcoming Events"
+                  value={companyDetail.stats?.upcomingEvents}
+                />
+                <StatsBadge
+                  label="Events Exhibited"
+                  value={companyDetail.stats?.totalExhibit}
+                />
+                <StatsBadge
+                  label="Events Sponsored"
+                  value={companyDetail.stats?.totalSponsor}
+                />
+                <StatsBadge
+                  label="Events Visited"
+                  value={companyDetail.stats?.totalVisitor}
+                />
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-2 items-center w-fit">
-              <StatsBadge label="Total Events" value={companyDetail.stats?.totalEvents} />
-              <StatsBadge label="Upcoming Events" value={companyDetail.stats?.upcomingEvents} />
-              <StatsBadge label="Events Exhibited" value={companyDetail.stats?.totalExhibit} />
-              <StatsBadge label="Events Sponsored" value={companyDetail.stats?.totalSponsor} />
-              <StatsBadge label="Events Visited" value={companyDetail.stats?.totalVisitor} />
-            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -192,7 +248,12 @@ export const ProspectList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const { getCompanyList } = useCompanyService();
-
+  const { isBulkActionActive, setIsBulkActionActive } = useBulkAction();
+  const [selectedCompaniesIds, setSelectedCompaniesIds] = useState<Set<string>>(
+    new Set()
+  );
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
+  const [filterValues, setFilterValues] = useState<any>();
   const {
     data: companyData,
     error,
@@ -205,26 +266,73 @@ export const ProspectList: React.FC = () => {
     staleTime: STALE_TIME,
   });
 
-  const companies = useMemo(() => companyData?.companyData || [], [companyData]);
+  const companies = useMemo(
+    () => companyData?.companyData || [],
+    [companyData]
+  );
   const count = useMemo(() => companyData?.totalCount || 0, [companyData]);
 
-  const itemsPerPage = parseInt(getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString());
-  const currentPage = Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
+  const itemsPerPage = parseInt(
+    getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString()
+  );
+  const currentPage =
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const handlePageChange = useCallback((page: number) => {
-    setMultipleFilters({
-      offset: ((page - 1) * itemsPerPage).toString(),
-      limit: itemsPerPage.toString(),
-    });
-  }, [itemsPerPage, setMultipleFilters]);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setMultipleFilters({
+        offset: ((page - 1) * itemsPerPage).toString(),
+        limit: itemsPerPage.toString(),
+      });
+    },
+    [itemsPerPage, setMultipleFilters]
+  );
 
-  const handleItemsPerPageChange = useCallback((newItemsPerPage: string) => {
-    setMultipleFilters({
-      limit: newItemsPerPage,
-    });
-  }, [setMultipleFilters]);
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: string) => {
+      setMultipleFilters({
+        limit: newItemsPerPage,
+      });
+    },
+    [setMultipleFilters]
+  );
 
+  function handleSelectAll(checked: boolean) {
+    if (checked) {
+      const allIds = companies.map((company) => company.id);
+      setSelectedCompaniesIds(new Set(allIds));
+    } else {
+      setSelectedCompaniesIds(new Set());
+    }
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedCompaniesIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  function handleCancel() {
+    setIsBulkActionActive(false);
+    setSelectedCompaniesIds(new Set());
+  }
+
+  function handleCreate() {
+    setTrackerModalOpen(true);
+    const filterValues = {
+      orgWebsite: companies
+        .filter((company) => selectedCompaniesIds.has(company.id))
+        .map((company) => company.website || "")
+        .join(","),
+    };
+  }
   if (isLoading) {
     return (
       <div className="flex-1 items-center justify-center min-h-svh">
@@ -234,7 +342,12 @@ export const ProspectList: React.FC = () => {
   }
 
   if (error) {
-    return <NullState image={coordinateNullState} title={(error as ApiError).message} />;
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
   }
 
   if (count === 0) {
@@ -264,8 +377,42 @@ export const ProspectList: React.FC = () => {
           {/* Export and Sort buttons removed as they were disabled */}
         </div>
       </div>
+      {isBulkActionActive && (
+        <div className="flex gap-4">
+          <div className="flex gap-2 items-center">
+            <Checkbox
+              className="rounded-sm"
+              checked={selectedCompaniesIds.size === companies.length}
+              onCheckedChange={handleSelectAll}
+            />
+            <label className="text-sm">Select All</label>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant={"default"}
+              className="h-8"
+              onClick={() => handleCreate()}
+            >
+              Create
+            </Button>
+            <Button
+              variant={"outline"}
+              className="h-8 text-destructive"
+              onClick={() => handleCancel()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
       {companies.map((item) => (
-        <ProspectCard key={item.id} companyDetail={item} />
+        <ProspectCard
+          key={item.id}
+          companyDetail={item}
+          isBulkActionActive={isBulkActionActive}
+          selectedCompaniesIds={selectedCompaniesIds}
+          toggleSelection={toggleSelection}
+        />
       ))}
       <div className="sticky bg-background py-2 border-t">
         <PaginationComponent
@@ -278,6 +425,12 @@ export const ProspectList: React.FC = () => {
           paginationItems={["5", "10"]}
         />
       </div>
+
+      <CreateTrackerDialog
+        trackerType="companies"
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
     </div>
   );
 };

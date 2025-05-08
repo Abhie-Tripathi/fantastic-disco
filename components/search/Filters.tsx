@@ -65,6 +65,7 @@ import CreateTrackerDialog from "./createTrackerDialog";
 import { GAEvent } from "@/utils/GAEvent";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/context/theme";
+import { useBulkAction } from "@/context/bulkAction";
 
 interface FilterSection {
   id: string;
@@ -697,6 +698,8 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
 
+  const { setIsBulkActionActive } = useBulkAction();
+
   const { getFilterValue } = useFilterState();
   const { theme } = useTheme();
 
@@ -794,6 +797,30 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                     className="h-8"
                   >
                     Save
+                  </Button>
+                </div>
+              </div>
+            )}
+            {(type === "companies" || type === "people") && (
+              <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={whrbotlogo}
+                    alt="WHR bot"
+                    className="w-8 h-8 rounded-full bg-background"
+                  />
+                  <div className="text-sm font-medium text-foreground">
+                    Create Company Tracker
+                  </div>
+                </div>
+                <div className=" flex items-center justify-between">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsBulkActionActive(true)}
+                    className="h-8"
+                  >
+                    Create
                   </Button>
                 </div>
               </div>
