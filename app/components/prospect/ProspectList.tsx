@@ -383,14 +383,16 @@ export const ProspectList: React.FC = () => {
         </div>
       </div>
       {isBulkActionActive && (
-        <div className="flex gap-4">
+        <div className="flex justify-between w-full">
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
               checked={selectedCompaniesIds.size === companies.length}
               onCheckedChange={handleSelectAll}
             />
-            <label className="text-sm">Select All</label>
+            <label className="text-sm">
+              Select companies to create tracker
+            </label>
           </div>
           <div className="flex gap-2">
             <Button

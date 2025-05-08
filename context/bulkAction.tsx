@@ -1,11 +1,13 @@
 "use client";
 
 import { useTrackerServices } from "@/services/trackerServices";
+import { usePathname } from "next/navigation";
 import {
   createContext,
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -38,6 +40,11 @@ const BulkActionContext = createContext<BulkActionContextType | null>({
 export function BulkActionProvider({ children }: Props) {
   // Internal state to track if bulk action mode is enabled
   const [isBulkActionActive, setIsBulkActionActive] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setIsBulkActionActive(false);
+  }, [pathname]);
 
   return (
     <BulkActionContext.Provider

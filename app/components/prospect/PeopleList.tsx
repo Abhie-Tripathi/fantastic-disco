@@ -384,14 +384,14 @@ export const PeopleList: React.FC = () => {
         </div>
       </div>
       {isBulkActionActive && (
-        <div className="flex gap-4 py-3">
+        <div className="flex justify-between py-3 w-full">
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
               checked={selectedPeopleIds.size === filteredUsers.length}
               onCheckedChange={handleSelectAll}
             />
-            <label className="text-sm">Select All</label>
+            <label className="text-sm">Select people to create tracker</label>
           </div>
           <div className="flex gap-2">
             <Button
