@@ -15,7 +15,6 @@ export default function Page() {
   const otp = searchParams.get("otp") || "";
   const target = searchParams.get("target") || "";
   const targetId = searchParams.get("targetId") || "";
-  const source = searchParams.get("utm_source") || "";
   const token = searchParams.get("hash") || "";
   const userId = Number(searchParams.get("uid") || "");
   const redirectPath = searchParams.get("redirect") || "";
@@ -35,13 +34,14 @@ export default function Page() {
       }
     };
 
-    if (source === "10times") {
-      if (!source || !token || !userId) router.push("https://whr.ai/gtm");
-      else signUpSSO10times(token, userId, redirectPath);
-    } else {
-      if (!email || !otp || !target || !targetId)
-        router.push("https://whr.ai/gtm");
-      else verify();
+    if (token && userId) {
+      signUpSSO10times(token, userId, redirectPath);
+    }
+    else if (email && otp && target && targetId) {
+      verify();
+    }
+    else {
+      router.push("https://whr.ai/gtm");
     }
   }, [email, otp, target, targetId, router]);
 
