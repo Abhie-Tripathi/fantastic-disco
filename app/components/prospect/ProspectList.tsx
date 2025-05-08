@@ -327,12 +327,17 @@ export const ProspectList: React.FC = () => {
   function handleCreate() {
     setTrackerModalOpen(true);
     const filterValues = {
-      orgWebsite: companies
-        .filter((company) => selectedCompaniesIds.has(company.id))
-        .map((company) => company.website || "")
-        .join(","),
+      filterValues: {
+        orgWebsite: companies
+          .filter((company) => selectedCompaniesIds.has(company.id))
+          .map((company) => company.website || "")
+          .join(","),
+      },
     };
+
+    setFilterValues(filterValues);
   }
+
   if (isLoading) {
     return (
       <div className="flex-1 items-center justify-center min-h-svh">
@@ -389,6 +394,7 @@ export const ProspectList: React.FC = () => {
           </div>
           <div className="flex gap-2">
             <Button
+              disabled={selectedCompaniesIds.size === 0}
               variant={"default"}
               className="h-8"
               onClick={() => handleCreate()}
@@ -428,6 +434,7 @@ export const ProspectList: React.FC = () => {
 
       <CreateTrackerDialog
         trackerType="companies"
+        trackerPayloadFilterValues={filterValues}
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
       />

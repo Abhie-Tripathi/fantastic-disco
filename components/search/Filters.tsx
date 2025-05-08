@@ -810,7 +810,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                     className="w-8 h-8 rounded-full bg-background"
                   />
                   <div className="text-sm font-medium text-foreground">
-                    Create Company Tracker
+                    Create Tracker
                   </div>
                 </div>
                 <div className=" flex items-center justify-between">

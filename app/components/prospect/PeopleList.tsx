@@ -17,6 +17,9 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
 import Link from "next/link";
 import Image from "next/image";
+import { useBulkAction } from "@/context/bulkAction";
+import { Checkbox } from "@/components/ui/checkbox";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -28,6 +31,9 @@ const DEFAULT_USER_ICON = "/usersIcon.svg";
 interface PeopleCardProps {
   poc: userListData;
   unlockPoc: (pocId: number | string) => Promise<void>;
+  isBulkActionActive: boolean;
+  selectedPeopleIds: Set<string>;
+  toggleSelection: (id: string) => void;
 }
 
 interface ContactInfoProps {
@@ -49,8 +55,16 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => (
   </div>
 );
 
-const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(poc.user_profilePicture);
+const PeopleCard: React.FC<PeopleCardProps> = ({
+  poc,
+  unlockPoc,
+  isBulkActionActive,
+  selectedPeopleIds,
+  toggleSelection,
+}) => {
+  const [imageSrc, setImageSrc] = useState<string | null>(
+    poc.user_profilePicture
+  );
 
   const handleImageError = useCallback(() => {
     setImageSrc(DEFAULT_USER_ICON);
@@ -65,7 +79,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
 
   const renderEventCategories = useCallback(() => {
     if (!poc.top_event_categories?.length) return null;
-    
+
     return poc.top_event_categories.slice(0, 2).map((item) => (
       <span
         key={item.key}
@@ -78,7 +92,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
 
   const renderCountryZones = useCallback(() => {
     if (!poc.top_event_countryZone?.length) return null;
-    
+
     return poc.top_event_countryZone.slice(0, 2).map((item) => (
       <Badge
         key={item.key}
@@ -91,80 +105,96 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
   }, [poc.top_event_countryZone]);
 
   return (
-    <div className="bg-background rounded-xl border shadow-sm relative">
-      <Link href={`/internal/user/${poc.user_id}`} className="block">
-        <div className="p-4 flex gap-6">
-          {imageSrc && (
-            <Image
-              src={imageSrc}
-              alt={`${poc.user_name}'s profile picture`}
-              className="flex h-16 w-16 rounded-lg shadow-lg border"
-              width={200}
-              height={200}
-              onError={handleImageError}
-              priority={false}
-            />
-          )}
-          <div className="flex gap-2 flex-col w-full">
-            <div className="flex justify-between">
-              <div className="text-xl font-semibold">{poc.user_name}</div>
-            </div>
-
-            <div className="text-[#6E6F89] text-xs font-medium">
-              {poc.user_designationName}
-              {poc.user_companyName && <>, {poc.user_companyName}</>}
-            </div>
-
-            {locationDisplay && (
-              <div className="flex gap-2 items-center w-fit pr-3">
-                <Location color="#666666" width="14px" height="14px" />
-                <span className="text-[#6E6F89] text-sm">{locationDisplay}</span>
-              </div>
+    <div className="flex gap-4 w-full items-center">
+      {isBulkActionActive && (
+        <Checkbox
+          checked={selectedPeopleIds.has(poc.user_id)}
+          onCheckedChange={() => toggleSelection(poc.user_id)}
+        />
+      )}
+      <div className="bg-background rounded-xl border shadow-sm relative w-full">
+        <Link href={`/internal/user/${poc.user_id}`} className="block">
+          <div className="p-4 flex gap-6">
+            {imageSrc && (
+              <Image
+                src={imageSrc}
+                alt={`${poc.user_name}'s profile picture`}
+                className="flex h-16 w-16 rounded-lg shadow-lg border"
+                width={200}
+                height={200}
+                onError={handleImageError}
+                priority={false}
+              />
             )}
-
-            {poc.about && poc.about.length > 10 && (
-              <div className="text-[#707287] text-sm line-clamp-4">
-                {poc.about}
+            <div className="flex gap-2 flex-col w-full">
+              <div className="flex justify-between">
+                <div className="text-xl font-semibold">{poc.user_name}</div>
               </div>
-            )}
 
-            <div className="flex flex-wrap gap-2 items-center w-fit">
-              {renderEventCategories()}
-              {renderCountryZones()}
-              
-              {poc.speakingCount > 0 && (
-                <Badge variant="secondary" className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm">
-                  Speaker ({poc.speakingCount} events)
-                </Badge>
+              <div className="text-[#6E6F89] text-xs font-medium">
+                {poc.user_designationName}
+                {poc.user_companyName && <>, {poc.user_companyName}</>}
+              </div>
+
+              {locationDisplay && (
+                <div className="flex gap-2 items-center w-fit pr-3">
+                  <Location color="#666666" width="14px" height="14px" />
+                  <span className="text-[#6E6F89] text-sm">
+                    {locationDisplay}
+                  </span>
+                </div>
               )}
-              
-              {poc.attendCount > 0 && (
-                <Badge variant="secondary" className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm">
-                  {poc.attendCount} events attended
-                </Badge>
+
+              {poc.about && poc.about.length > 10 && (
+                <div className="text-[#707287] text-sm line-clamp-4">
+                  {poc.about}
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2 items-center w-fit">
+                {renderEventCategories()}
+                {renderCountryZones()}
+
+                {poc.speakingCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Speaker ({poc.speakingCount} events)
+                  </Badge>
+                )}
+
+                {poc.attendCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    {poc.attendCount} events attended
+                  </Badge>
+                )}
+              </div>
+
+              {poc.state !== 2 && (
+                <div className="mt-1" onClick={(e) => e.preventDefault()}>
+                  <Button
+                    disabled={poc.state === 1}
+                    onClick={() => unlockPoc(poc.user_id)}
+                    variant="default"
+                    size="sm"
+                    className="blur-none"
+                  >
+                    Unlock Contact
+                  </Button>
+                </div>
+              )}
+
+              {poc.state === 2 && (
+                <ContactInfo email={poc.email} phoneNumber={poc.phoneNumber} />
               )}
             </div>
-
-            {poc.state !== 2 && (
-              <div className="mt-1" onClick={(e) => e.preventDefault()}>
-                <Button
-                  disabled={poc.state === 1}
-                  onClick={() => unlockPoc(poc.user_id)}
-                  variant="default"
-                  size="sm"
-                  className="blur-none"
-                >
-                  Unlock Contact
-                </Button>
-              </div>
-            )}
-
-            {poc.state === 2 && (
-              <ContactInfo email={poc.email} phoneNumber={poc.phoneNumber} />
-            )}
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -173,6 +203,12 @@ export const PeopleList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
+  const { isBulkActionActive, setIsBulkActionActive } = useBulkAction();
+  const [selectedPeopleIds, setSelectedPeopleIds] = useState<Set<string>>(
+    new Set()
+  );
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
+  const [filterValues, setFilterValues] = useState<any>();
 
   const {
     data: companyData,
@@ -194,55 +230,112 @@ export const PeopleList: React.FC = () => {
     setCompanyUsers(people);
   }, [people]);
 
-  const itemsPerPage = parseInt(getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString());
-  const currentPage = Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
+  const itemsPerPage = parseInt(
+    getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString()
+  );
+  const currentPage =
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage) - 1;
 
-  const handlePageChange = useCallback((page: number) => {
-    setMultipleFilters({
-      offset: ((page - 1) * itemsPerPage).toString(),
-      limit: itemsPerPage.toString(),
-    });
-  }, [itemsPerPage, setMultipleFilters]);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setMultipleFilters({
+        offset: ((page - 1) * itemsPerPage).toString(),
+        limit: itemsPerPage.toString(),
+      });
+    },
+    [itemsPerPage, setMultipleFilters]
+  );
 
-  const handleItemsPerPageChange = useCallback((newItemsPerPage: string) => {
-    setMultipleFilters({
-      limit: newItemsPerPage,
-    });
-  }, [setMultipleFilters]);
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: string) => {
+      setMultipleFilters({
+        limit: newItemsPerPage,
+      });
+    },
+    [setMultipleFilters]
+  );
 
-  const unlockPoc = useCallback(async (pocId: number | string) => {
-    try {
-      setCompanyUsers((prevPocData) =>
-        prevPocData.map((poc) =>
-          poc.user_id === pocId ? { ...poc, state: 1 } : poc
-        )
-      );
-      
-      const data = await companyService.unlockUserDetail(pocId);
-      if (data) {
+  function handleSelectAll(checked: boolean) {
+    if (checked) {
+      const allIds = filteredUsers.map((user) => user.user_id);
+      setSelectedPeopleIds(new Set(allIds));
+    } else {
+      setSelectedPeopleIds(new Set());
+    }
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedPeopleIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  function handleCancel() {
+    setIsBulkActionActive(false);
+    setSelectedPeopleIds(new Set());
+  }
+
+  function handleCreate() {
+    setTrackerModalOpen(true);
+    const filterValues = {
+      filterValues: {
+        userName: filteredUsers
+          .filter((user) => selectedPeopleIds.has(user.user_id))
+          .map((user) => user.user_name || "")
+          .join(","),
+        userOrgWebsite: filteredUsers
+          .filter((user) => selectedPeopleIds.has(user.user_id))
+          .map((user) => user.user_companyName || "")
+          .join(","),
+      },
+    };
+
+    setFilterValues(filterValues);
+  }
+
+  const unlockPoc = useCallback(
+    async (pocId: number | string) => {
+      try {
         setCompanyUsers((prevPocData) =>
           prevPocData.map((poc) =>
-            poc.user_id === pocId
-              ? {
-                  ...poc,
-                  email: data.email,
-                  phoneNumber: data.phoneNumber,
-                  state: 2,
-                }
-              : poc
+            poc.user_id === pocId ? { ...poc, state: 1 } : poc
           )
         );
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, [companyService]);
 
-  const filteredUsers = useMemo(() => 
-    companyUsers.filter(
-      (item) => item.user_name !== null && item.user_profilePicture !== null
-    ),
+        const data = await companyService.unlockUserDetail(pocId);
+        if (data) {
+          setCompanyUsers((prevPocData) =>
+            prevPocData.map((poc) =>
+              poc.user_id === pocId
+                ? {
+                    ...poc,
+                    email: data.email,
+                    phoneNumber: data.phoneNumber,
+                    state: 2,
+                  }
+                : poc
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    },
+    [companyService]
+  );
+
+  const filteredUsers = useMemo(
+    () =>
+      companyUsers.filter(
+        (item) => item.user_name !== null && item.user_profilePicture !== null
+      ),
     [companyUsers]
   );
 
@@ -255,7 +348,12 @@ export const PeopleList: React.FC = () => {
   }
 
   if (error) {
-    return <NullState image={coordinateNullState} title={(error as ApiError).message} />;
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
   }
 
   if (count === 0) {
@@ -285,9 +383,45 @@ export const PeopleList: React.FC = () => {
           {/* Export and Sort buttons removed as they were disabled */}
         </div>
       </div>
+      {isBulkActionActive && (
+        <div className="flex gap-4 py-3">
+          <div className="flex gap-2 items-center">
+            <Checkbox
+              className="rounded-sm"
+              checked={selectedPeopleIds.size === filteredUsers.length}
+              onCheckedChange={handleSelectAll}
+            />
+            <label className="text-sm">Select All</label>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              disabled={selectedPeopleIds.size === 0}
+              variant={"default"}
+              className="h-8"
+              onClick={() => handleCreate()}
+            >
+              Create
+            </Button>
+            <Button
+              variant={"outline"}
+              className="h-8 text-destructive"
+              onClick={() => handleCancel()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="flex gap-3 flex-col">
         {filteredUsers.map((item) => (
-          <PeopleCard key={item.user_id} poc={item} unlockPoc={unlockPoc} />
+          <PeopleCard
+            key={item.user_id}
+            poc={item}
+            unlockPoc={unlockPoc}
+            isBulkActionActive={isBulkActionActive}
+            selectedPeopleIds={selectedPeopleIds}
+            toggleSelection={toggleSelection}
+          />
         ))}
       </div>
       <div className="sticky bg-background py-2 border-t">
@@ -301,6 +435,13 @@ export const PeopleList: React.FC = () => {
           paginationItems={["5", "10"]}
         />
       </div>
+
+      <CreateTrackerDialog
+        trackerType="people"
+        trackerPayloadFilterValues={filterValues}
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
     </div>
   );
 };

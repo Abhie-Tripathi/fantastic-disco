@@ -38,7 +38,6 @@ const BulkActionContext = createContext<BulkActionContextType | null>({
 export function BulkActionProvider({ children }: Props) {
   // Internal state to track if bulk action mode is enabled
   const [isBulkActionActive, setIsBulkActionActive] = useState(false);
-  const { createTracker } = useTrackerServices();
 
   return (
     <BulkActionContext.Provider
