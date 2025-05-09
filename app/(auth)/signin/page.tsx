@@ -4,27 +4,24 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context";
-import { validPaths } from "@/data/onboarding";
+import { getValidPath } from "@/lib/utils";
 import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import GoogleIcon from "/public/google.svg";
-import LinkedinIcon from "/public/linkedin.svg";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
   const params = useSearchParams();
   const redirectParams = params.get("redirect");
-  const redirectPath = redirectParams && validPaths.includes(redirectParams) ? redirectParams: null;
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const router = useRouter();
   const {
     signin,
@@ -56,8 +53,7 @@ export default function SignInForm() {
   };
 
   useEffect(() => {
-    if(redirectPath)
-    sessionStorage.setItem("redirect", redirectPath); 
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
   }, [redirectPath]);
 
   useEffect(() => {

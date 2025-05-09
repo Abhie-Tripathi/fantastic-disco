@@ -1,4 +1,3 @@
-import { isEventeli } from "@/config";
 import { Industry, SettingResearchData } from "@/types/onboarding";
 import EventParticipant from "/public/authIcons/enterprises.svg";
 import IndustryPartners from "/public/authIcons/eventPlanners.svg";
@@ -91,10 +90,95 @@ export const sessionKeys = [
   "redirect",
 ];
 
-export const validPaths = [
-  "search/events",
-  "trends",
-  "trackers",
-  "coordinate",
-  !isEventeli && "outreach",
+export const dynamicPathPatterns = [
+  // Namespace-based paths
+  (p: string) => /^\/\[namespace\]\/settings$/.test(p),
+  (p: string) => /^\/\[namespace\]\/settings\/notifications$/.test(p),
+  (p: string) => /^\/\[namespace\]\/settings\/product$/.test(p),
+  (p: string) => /^\/\[namespace\]\/settings\/profile$/.test(p),
+  (p: string) => /^\/\[namespace\]\/settings\/rolesandpermission$/.test(p),
+  (p: string) => /^\/\[namespace\]\/settings\/users$/.test(p),
+
+  // Auth paths
+  (p: string) => /^\/api\/auth\/\[\.\.\.nextauth\]$/.test(p),
+  (p: string) => /^\/reset\/\[\.\.\.token\]$/.test(p),
+
+  // ID-based paths
+  (p: string) => /^\/detailpage\/\[id\]$/.test(p),
+  (p: string) => /^\/employee\/\[eventDetail\]$/.test(p),
+  (p: string) => /^\/company\/\[companyId\]$/.test(p),
+  (p: string) => /^\/event\/\[eventId\]$/.test(p),
+  (p: string) => /^\/user\/\[userId\]$/.test(p),
+  (p: string) => /^\/widget\/edit\/\[id\]$/.test(p),
+
+  // Tracker paths
+  (p: string) => /^\/trackers\/\[trackerId\]$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/editTracker$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/manageAccess$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/notesDiscussion$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/savedEvents$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/trackedConfiguration$/.test(p),
+  (p: string) => /^\/trackers\/\[trackerId\]\/trackedEvents$/.test(p),
+
+  // Widget event management paths
+  (p: string) => /^\/widget\/events\/manage\/\[id\]$/.test(p),
+  (p: string) => /^\/widget\/events\/manage\/\[id\]\/blasts$/.test(p),
+  (p: string) => /^\/widget\/events\/manage\/\[id\]\/guests$/.test(p),
+  (p: string) => /^\/widget\/events\/manage\/\[id\]\/overview$/.test(p),
+  (p: string) => /^\/widget\/events\/manage\/\[id\]\/settings$/.test(p),
+
+  // Other dynamic paths
+  (p: string) => /^\/detailpage$/.test(p),
+  (p: string) => /^\/forgot-password$/.test(p),
+  (p: string) => /^\/location$/.test(p),
+  (p: string) => /^\/login$/.test(p),
+  (p: string) => /^\/signin$/.test(p),
+  (p: string) => /^\/signup$/.test(p),
+  (p: string) => /^\/verify-otp$/.test(p),
+];
+
+export const staticPathPatterns = [
+  // Root paths
+  (p: string) => p === "/",
+  (p: string) => p === "/_not-found",
+
+  // Employee paths
+  (p: string) => p === "/employee",
+
+  // Coordinate/Outreach paths
+  (p: string) => p === "/coordinate",
+  (p: string) => p === "/outreach",
+  (p: string) => p === "/prospect",
+
+  // Search paths
+  (p: string) => p === "/search/companies",
+  (p: string) => p === "/search/events",
+  (p: string) => p === "/search/people",
+
+  // Tracker paths
+  (p: string) => p === "/trackers",
+  (p: string) => p === "/trackers/create",
+  (p: string) => p === "/trackers/savedevents",
+
+  // Trends/Profile paths
+  (p: string) => p === "/trends",
+  (p: string) => p === "/profile",
+
+  // Settings paths
+  (p: string) => p === "/settings",
+  (p: string) => p === "/settings/billingdetails",
+  (p: string) => p === "/settings/company",
+  (p: string) => p === "/settings/configurations",
+  (p: string) => p === "/settings/pricingplans",
+  (p: string) => p === "/settings/usermanagement",
+
+  // Widget paths
+  (p: string) => p === "/widget",
+  (p: string) => p === "/widget/add",
+  (p: string) => p === "/widget/brandkit",
+  (p: string) => p === "/widget/dashboard",
+  (p: string) => p === "/widget/events",
+  (p: string) => p === "/widget/list",
+  (p: string) => p === "/widget/setting",
+  (p: string) => p === "/widget/setting/notifications",
 ];
