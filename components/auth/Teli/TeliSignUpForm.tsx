@@ -154,7 +154,7 @@ export default function TeliSignUpForm() {
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
                 >
                   <Image
                     src={GoogleIcon}
@@ -166,7 +166,7 @@ export default function TeliSignUpForm() {
                 <Button
                   onClick={() => signIn("linkedin")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
                 >
                   <Image
                     src={LinkedinIcon}

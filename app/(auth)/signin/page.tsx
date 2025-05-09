@@ -71,7 +71,7 @@ export default function SignInForm() {
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
-          className="flex items-center h-11 w-auto gap-3 px-8"
+          className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
         >
           <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
           <span>Google</span>
@@ -79,7 +79,7 @@ export default function SignInForm() {
         <Button
           onClick={() => signIn("linkedin")}
           variant={"outline"}
-          className="flex items-center h-11 w-auto gap-3 px-8"
+          className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
         >
           <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
           <span>LinkedIn</span>
@@ -88,17 +88,18 @@ export default function SignInForm() {
       <p className="text-sm text-[var(--tertiary-text-color)]">Or</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-5 w-full"
+        className="flex flex-col space-y-5 w-auto sm:w-80 self-center"
       >
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center">
+            <div className="space-y-2 w-full self-center">
               <Input
                 className="rounded-sm bg-white ring-1
                ring-primary outline outline-[#D2D2F3] outline-offset-2
-               focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
+               focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px]
+               focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
@@ -125,7 +126,7 @@ export default function SignInForm() {
         />
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full self-center"
           disabled={isLoading}
           onClick={() => clearErrors()}
         >
