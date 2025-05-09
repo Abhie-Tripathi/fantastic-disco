@@ -92,6 +92,7 @@ const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/signin",
+    signOut: "/signin",
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {

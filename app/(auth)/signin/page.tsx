@@ -4,7 +4,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context";
-import { validPaths } from "@/data/onboarding";
 import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +11,6 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,19 +20,8 @@ import LinkedinIcon from "/public/linkedin.svg";
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
-  const params = useSearchParams();
-  const redirectParams = params.get("redirect");
-  const redirectPath = redirectParams && validPaths.includes(redirectParams) ? redirectParams: null;
-  const router = useRouter();
-  const {
-    signin,
-    error,
-    isLoading,
-    setError,
-    signInSSO,
-    isAuthenticating,
-    user,
-  } = useAuthContext();
+  const { signin, error, isLoading, setError, signInSSO, isAuthenticating } =
+    useAuthContext();
   const { data: session, status } = useSession();
 
   const {
@@ -54,11 +41,6 @@ export default function SignInForm() {
       console.error("Sign in error:", error);
     }
   };
-
-  useEffect(() => {
-    if(redirectPath)
-    sessionStorage.setItem("redirect", redirectPath); 
-  }, [redirectPath]);
 
   useEffect(() => {
     if (
@@ -81,15 +63,15 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
-      <p className="font-semibold text-lg leading-6 text-center mb-5">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3 h-auto">
+      <p className="font-semibold text-lg leading-6 text-center mb-0">
         Login to your account
       </p>
-      {/* <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+      <div className="flex gap-4 w-full sm:w-96 mx-auto justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
-          className="flex items-center h-11 w-auto gap-3 px-8"
+          className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
         >
           <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
           <span>Google</span>
@@ -97,26 +79,27 @@ export default function SignInForm() {
         <Button
           onClick={() => signIn("linkedin")}
           variant={"outline"}
-          className="flex items-center h-11 w-auto gap-3 px-8"
+          className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
         >
           <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
           <span>LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
+      <p className="text-sm text-[var(--tertiary-text-color)]">Or</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-5 w-auto sm:w-80 self-center"
       >
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center">
+            <div className="space-y-2 w-full self-center">
               <Input
                 className="rounded-sm bg-white ring-1
                ring-primary outline outline-[#D2D2F3] outline-offset-2
-               focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
+               focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px]
+               focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
@@ -143,7 +126,7 @@ export default function SignInForm() {
         />
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full self-center"
           disabled={isLoading}
           onClick={() => clearErrors()}
         >

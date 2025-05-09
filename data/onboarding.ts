@@ -88,13 +88,5 @@ export const sessionKeys = [
   "categories",
   "subIndustry",
   "industry",
-  "redirect",
-];
-
-export const validPaths = [
-  "search/events",
-  "trends",
-  "trackers",
-  "coordinate",
-  !isEventeli && "outreach",
+  "newUser",
 ];

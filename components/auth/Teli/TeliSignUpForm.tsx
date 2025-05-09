@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
-import { sessionKeys, validPaths } from "@/data/onboarding";
+import { sessionKeys } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
 import { useToast } from "@/hooks/use-toast";
 import { SignUpDTO } from "@/types";
@@ -36,9 +36,6 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
-  const params = useSearchParams();
-  const redirectParams = params.get("redirect");
-  const redirectPath = redirectParams && validPaths.includes(redirectParams) ? redirectParams: null;
   const {
     isLoading,
     signup,
@@ -88,11 +85,7 @@ export default function TeliSignUpForm() {
         variant: "default",
       });
     }
-  }, [user]);
-
-  useEffect(() => {
-    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
-  }, [redirectPath]);
+  }, [user, isAuthenticating]);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -118,7 +111,6 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
-      redirectParams && sessionStorage.setItem("redirect", redirectParams);
       if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {
@@ -150,19 +142,19 @@ export default function TeliSignUpForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4">
+    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3">
       {signUpFlow === "default" && (
         <>
-          <p className="font-semibold text-lg leading-6 text-center mb-5">
+          <p className="font-semibold text-lg leading-6 text-center">
             Create your account
           </p>
-          {/* {status === "unauthenticated" && (
+          {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+              <div className="flex gap-4 w-full sm:w-96 mx-auto justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
                 >
                   <Image
                     src={GoogleIcon}
@@ -174,7 +166,7 @@ export default function TeliSignUpForm() {
                 <Button
                   onClick={() => signIn("linkedin")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
                 >
                   <Image
                     src={LinkedinIcon}
@@ -185,15 +177,15 @@ export default function TeliSignUpForm() {
                 </Button>
               </div>
               <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
-                OR
+                Or
               </p>
             </>
-          )} */}
+          )}
         </>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-5 w-full"
       >
         {signUpFlow === "default" && (
           <Controller
@@ -283,7 +275,7 @@ export default function TeliSignUpForm() {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center py-2 text-sm">
+          <div className="text-center text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}
