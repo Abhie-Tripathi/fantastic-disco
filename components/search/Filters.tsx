@@ -810,7 +810,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                     className="w-8 h-8 rounded-full bg-background"
                   />
                   <div className="text-sm font-medium text-foreground">
-                    Create Tracker
+                    Save this search
                   </div>
                 </div>
                 <div className=" flex items-center justify-between">
@@ -820,7 +820,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                     onClick={() => setIsBulkActionActive(true)}
                     className="h-8"
                   >
-                    Create
+                    Save
                   </Button>
                 </div>
               </div>

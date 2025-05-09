@@ -95,7 +95,6 @@ export default function BulkActionPopover({
   const labels: Record<string, string> = {
     userJobTitle: "Job Title",
   };
-  console.log(options);
   
   const triggerContent = (
     <div className="flex items-center">
