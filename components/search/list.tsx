@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useIntent } from "@/hooks/useIntent";
@@ -124,6 +124,7 @@ interface EventListProps {
   source?: string;
   view?: string;
   showCheckBox?: boolean;
+  setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function EventAccordion({
@@ -132,6 +133,7 @@ export default function EventAccordion({
   trackerId,
   view,
   showCheckBox,
+  setShowCheckBox,
 }: EventListProps) {
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -203,6 +205,7 @@ export default function EventAccordion({
     }
   });
   const bulkSubmit = async () => {
+    
     try {
       if (eventType === "bookmarked") {
         const bookmarkPromises = totalChecked.map((id) => {
@@ -343,6 +346,12 @@ export default function EventAccordion({
     });
   };
 
+  function handleCancel() {
+    setIsChecked(false);
+    setShowCheckBox?.(false);
+    setTotalChecked([]);
+  }
+
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
       limit: newItemsPerPage,
@@ -414,18 +423,26 @@ export default function EventAccordion({
             </div>
           )}
         </div>
-        <div>
-          {totalChecked.length > 0 && (
+        {showCheckBox && (
+          <div className="flex gap-4">
             <Button
               type="submit"
               className="w-30 self-center"
-              disabled={isLoading}
+              disabled={isLoading || totalChecked.length === 0}
               onClick={() => bulkSubmit()}
             >
               Submit
             </Button>
-          )}
-        </div>
+            <Button
+              variant={"outline"}
+              type="button"
+              className="w-30 self-center text-destructive"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
       </div>
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">

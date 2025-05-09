@@ -24,6 +24,8 @@ import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import { groupedEventTypes } from "@/constants";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 interface EventTableRowProps {
   event: Event;
@@ -35,11 +37,11 @@ interface EventTableRowProps {
   global?: string;
   view?: string;
   localFilters: Filters;
-  showCheckBox?:boolean;
-  totalChecked:string[];
-  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>
-  isChecked:boolean;
-  setIsChecked:React.Dispatch<React.SetStateAction<boolean>>;
+  showCheckBox?: boolean;
+  totalChecked: string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
+  isChecked: boolean;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function getForecastedStatus(data: any) {
@@ -133,7 +135,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   totalChecked,
   isChecked,
   setIsChecked,
-  setTotalChecked
+  setTotalChecked,
 }) => {
   console.log("event table row called");
   const { getFilterValue } = useFilterState();
@@ -152,18 +154,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-    const handleCheckboxChange = (event:React.ChangeEvent<HTMLInputElement>, id:string) => {
-      if (event.target.checked) {
-        console.log(totalChecked);
-        
-        if(totalChecked.length===itemsPerPage-1) setIsChecked(!isChecked)
-        setTotalChecked?.((prev) => [...prev, id]);
-      } else {
-        if(isChecked) setIsChecked(!isChecked);
-        setTotalChecked?.((prev) => prev.filter((item) => item !== id));
-      }
-    };
-    
+  const handleCheckboxChange = (checked: CheckedState, id: string) => {
+    if (checked) {
+      if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => [...prev, id]);
+    } else {
+      if (isChecked) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+    }
+  };
+
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -171,10 +171,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         className="sticky left-0 z-0 bg-[var(--heading-background-color)] max-w-[300px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-[var(--heading-background-color)]"
         style={{ zIndex: 0 }}
       >
-        <div className="flex gap-4">
-          {showCheckBox &&
-          <input type="checkbox" checked={totalChecked.includes(event.basic.id)} onChange={(e)=>handleCheckboxChange(e,event.basic.id)}/>
-          }
+        <div className="flex gap-4 items-center">
+          {showCheckBox && (
+            <Checkbox
+              className=""
+              checked={totalChecked.includes(event.basic.id)}
+              onCheckedChange={(checked) =>
+                handleCheckboxChange(checked, event.basic.id)
+              }
+            />
+          )}
           {/* Logo Section */}
           <div className="flex-shrink-0">
             {event.basic.logoUrl ? (

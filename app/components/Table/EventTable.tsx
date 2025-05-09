@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -21,12 +21,14 @@ import BulkActionPopover from "./BulkActionPopover";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
   eventType?: string;
   view?: string;
   showCheckBox?: boolean;
+  setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 const EventTable = ({
   source,
@@ -34,6 +36,7 @@ const EventTable = ({
   eventType,
   view,
   showCheckBox,
+  setShowCheckBox,
 }: EventTableProps) => {
   const pathName = usePathname();
   // const { theme } = useTheme();
@@ -68,11 +71,8 @@ const EventTable = ({
     ? "RESEARCH"
     : "";
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
-      query,
-      trackerId,
-      view
-    ));
+    ({ events, totalEvents, isLoading, error, isFetching } =
+      useTrackerEvents.list(query, trackerId, view));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -81,7 +81,7 @@ const EventTable = ({
     rating: "rating",
     maturity: "maturity",
     branded: "branded",
-    series:"series",
+    series: "series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -204,15 +204,14 @@ const EventTable = ({
       setUpdatedEvents(events);
     }
   }, [events]);
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = event.target.checked;
-    setIsChecked(isChecked);
-    if (isChecked) {
+  const handleCheckboxChange = (checked: boolean) => {
+    if (checked) {
       const resultId = events.map((event) => event.basic.id);
       setTotalChecked(resultId);
     } else {
       setTotalChecked([]);
     }
+    setIsChecked(checked);
   };
   useEffect(() => {
     if (!events) return;
@@ -255,6 +254,11 @@ const EventTable = ({
     });
   }, [eventId, interest]);
 
+  function handleCancel() {
+    setIsChecked(false);
+    setShowCheckBox?.(false);
+    setTotalChecked([]);
+  }
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -296,7 +300,10 @@ const EventTable = ({
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
+    } else
+      return (
+        <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
+      );
   }
 
   return (
@@ -307,11 +314,10 @@ const EventTable = ({
       >
         <div className="flex items-center gap-4">
           {showCheckBox && (
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
+            <div className="flex gap-2 items-center">
+              <Checkbox
                 checked={isChecked}
-                onChange={handleCheckboxChange}
+                onCheckedChange={handleCheckboxChange}
               />
               <div>Select events to perform action</div>
             </div>
@@ -327,15 +333,25 @@ const EventTable = ({
           )}
         </div>
         <div>
-          {totalChecked.length > 0 && (
-            <Button
-              type="submit"
-              className="w-30 self-center"
-              disabled={isLoading}
-              onClick={() => bulkSubmit()}
-            >
-              Submit
-            </Button>
+          {showCheckBox && (
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                className="w-30 self-center"
+                disabled={isLoading}
+                onClick={() => bulkSubmit()}
+              >
+                Submit
+              </Button>
+              <Button
+                variant={"outline"}
+                type="button"
+                className="w-30 self-center text-destructive"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </div>
           )}
         </div>
       </div>

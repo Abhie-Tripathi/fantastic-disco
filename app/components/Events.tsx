@@ -193,11 +193,11 @@ const Events = () => {
 
           <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
             {isEventeli && <Alerts />}
-            <List showCheckBox={showCheckBox}/>
+            <List showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
           </TabsContent>
           <TabsContent value="table" className="flex-grow overflow-hidden">
             {isEventeli && <Alerts />}
-            <Table showCheckBox={showCheckBox}/>
+            <Table showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
           </TabsContent>
           <TabsContent value="map">
             <Map />
