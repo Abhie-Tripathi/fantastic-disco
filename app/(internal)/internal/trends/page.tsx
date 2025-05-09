@@ -52,10 +52,13 @@ import {
   LineChart,
   Lock,
   Save,
+  Share2,
   Table,
+  X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
+import { useToast } from "@/hooks/use-toast";
 
 const ViewTemplates = [
   {
@@ -82,6 +85,7 @@ const ViewTemplates = [
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getSavedTrends } = useTrendsService();
+  const { toast } = useToast();
   const {
     applyFilters,
     setLocalFilter,
@@ -177,6 +181,28 @@ const EventTrends = () => {
       (key) => !excludedFilters.includes(key)
     ).length;
   }, [localFilters]);
+
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  // Make sure the filter state works correctly for mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+      // Only auto-collapse when resizing from desktop to mobile
+      if (window.innerWidth < 768) {
+        setIsFiltersCollapsed(true);
+      }
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const skip = searchParams.get("skip");
@@ -368,97 +394,113 @@ const EventTrends = () => {
     };
   }, [activeView, categories]);
 
+  const handleShare = () => {
+    const currentUrl = window.location.href;
+    const url = currentUrl.replace("/internal/", "redirect=");
+
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "URL Copied",
+      description: "Link copied to clipboard",
+      duration: 2000,
+    });
+  };
+
   return (
     <div
-      className={`flex h-[calc(100vh-60px)] ${
-        isFiltersCollapsed ? "pl-6" : "pl-0"
+      className={`${isMobileView ? "relative" : "flex h-[calc(100vh-60px)]"} ${
+        !isMobileView && isFiltersCollapsed ? "pl-6" : "pl-0"
       }`}
     >
-      {/* Enhanced Filters Sidebar */}
-      <div
-        className={`relative transition-all duration-300 ${
-          isFiltersCollapsed ? "w-0" : "w-[370px]"
-        }`}
-      >
-        <div
-          className={`h-full bg-background  flex flex-col ${
-            isFiltersCollapsed ? "" : "border-r"
-          }`}
-        >
-          <ScrollArea className="flex-1">
-            <div className="space-y-4 p-4">
-              <Tabs defaultValue="events" className="w-full">
-                <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
-                  <TabsTrigger
-                    value="events"
-                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                  >
-                    <Calendar1 className="w-4 h-4" />
-                    Events
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="companies"
-                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
-                    disabled
-                  >
-                    <Lock className="w-4 h-4" />
-                    Companies
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="people"
-                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
-                    disabled
-                  >
-                    <Lock className="w-4 h-4" />
-                    People
-                  </TabsTrigger>
-                </TabsList>
-                <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
-                  <TabsContent value="events" className="mt-4 space-y-4">
-                    {visibleFilters.eventTypes && (
-                      <EventTypeSelector variant="popover" />
-                    )}
-                    {visibleFilters.location && <LocationSelector />}
-                    {visibleFilters.dateRange && <DateRangeSelector />}
-                    {activeView === "treemap" && visibleFilters.categories && (
-                      <CategorySelector maxCategories={5} variant="accordion" />
-                    )}
-                    {visibleFilters.metrics && <ColumnsSelector />}
-                    {activeView === "treemap" && (
-                      <ChartFilters
-                        type="visitor-flow"
-                        hierarchyLevels={hierarchyLevels}
-                        setHierarchyLevels={setHierarchyLevels}
-                      />
-                    )}
-                  </TabsContent>
-                  <TabsContent value="companies" className="mt-4">
-                    <div className="flex items-center justify-center h-40 text-muted-foreground">
-                      <div className="text-center">
-                        <Lock className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm">Company filters coming soon</p>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="people" className="mt-4">
-                    <div className="flex items-center justify-center h-40 text-muted-foreground">
-                      <div className="text-center">
-                        <Lock className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm">People filters coming soon</p>
-                      </div>
-                    </div>
-                  </TabsContent>
-                </div>
-              </Tabs>
+      {/* Mobile Filters Overlay */}
+      {isMobileView && !isFiltersCollapsed && (
+        <div className="fixed inset-0 bg-background z-50 overflow-auto">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsFiltersCollapsed(true)}
+                className="text-muted-foreground"
+              >
+                <X className="w-5 h-5" />
+              </Button>
             </div>
-          </ScrollArea>
 
-          <div
-            className={`w-full bg-background z-10 transition-all duration-300 ${
-              isFiltersCollapsed ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
+            <ScrollArea className="h-[calc(100vh-200px)]">
+              <div className="space-y-4">
+                <Tabs defaultValue="events" className="w-full">
+                  <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+                    <TabsTrigger
+                      value="events"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    >
+                      <Calendar1 className="w-4 h-4" />
+                      Events
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="companies"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                      disabled
+                    >
+                      <Lock className="w-4 h-4" />
+                      Companies
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="people"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                      disabled
+                    >
+                      <Lock className="w-4 h-4" />
+                      People
+                    </TabsTrigger>
+                  </TabsList>
+                  <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
+                    <TabsContent value="events" className="mt-4 space-y-4">
+                      {visibleFilters.eventTypes && (
+                        <EventTypeSelector variant="popover" />
+                      )}
+                      {visibleFilters.location && <LocationSelector />}
+                      {visibleFilters.dateRange && <DateRangeSelector />}
+                      {activeView === "treemap" &&
+                        visibleFilters.categories && (
+                          <CategorySelector
+                            maxCategories={5}
+                            variant="accordion"
+                          />
+                        )}
+                      {visibleFilters.metrics && <ColumnsSelector />}
+                      {activeView === "treemap" && (
+                        <ChartFilters
+                          type="visitor-flow"
+                          hierarchyLevels={hierarchyLevels}
+                          setHierarchyLevels={setHierarchyLevels}
+                        />
+                      )}
+                    </TabsContent>
+                    <TabsContent value="companies" className="mt-4">
+                      <div className="flex items-center justify-center h-40 text-muted-foreground">
+                        <div className="text-center">
+                          <Lock className="w-8 h-8 mx-auto mb-2" />
+                          <p className="text-sm">Company filters coming soon</p>
+                        </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="people" className="mt-4">
+                      <div className="flex items-center justify-center h-40 text-muted-foreground">
+                        <div className="text-center">
+                          <Lock className="w-8 h-8 mx-auto mb-2" />
+                          <p className="text-sm">People filters coming soon</p>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </div>
+                </Tabs>
+              </div>
+            </ScrollArea>
+
+            <div className="sticky bottom-0 w-full bg-background/80 backdrop-blur-sm py-4 space-y-3 border-t mt-4">
               <div className="flex items-center justify-between mb-2">
                 <Button
                   variant="ghost"
@@ -510,119 +552,321 @@ const EventTrends = () => {
                     </div>
                   </div>
                 )}
-              <Button
-                onClick={applyHandler}
-                className="w-full h-10"
-                disabled={activeView === "treemap" && categories.length === 0}
-              >
-                Apply Filters
-              </Button>
-
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsFiltersCollapsed(true)}
+                  className="w-full"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    applyHandler();
+                    setIsFiltersCollapsed(true);
+                  }}
+                  className="w-full"
+                  disabled={activeView === "treemap" && categories.length === 0}
+                >
+                  Apply
+                </Button>
+              </div>
               <SaveTrend searchParams={searchParams} isLoading={isLoading} />
             </div>
           </div>
         </div>
-        {!isFiltersCollapsed && (
-          <button
-            onClick={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
-            className="group absolute -right-4 top-[52px] z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
-          >
-            <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
-          </button>
-        )}
+      )}
 
-        {isFiltersCollapsed && (
-          <div className="fixed left-[81px] top-[90px] z-30">
-            <button
-              onClick={() => setIsFiltersCollapsed(false)}
-              className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+      {/* Enhanced Filters Sidebar for desktop */}
+      {!isMobileView && (
+        <div
+          className={`relative transition-all duration-300 ${
+            isFiltersCollapsed ? "w-0" : "w-[370px]"
+          }`}
+        >
+          <div
+            className={`h-full bg-background flex flex-col ${
+              isFiltersCollapsed ? "" : "border-r"
+            }`}
+          >
+            <ScrollArea className="flex-1">
+              <div className="space-y-4 p-4">
+                <Tabs defaultValue="events" className="w-full">
+                  <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+                    <TabsTrigger
+                      value="events"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    >
+                      <Calendar1 className="w-4 h-4" />
+                      Events
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="companies"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                      disabled
+                    >
+                      <Lock className="w-4 h-4" />
+                      Companies
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="people"
+                      className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                      disabled
+                    >
+                      <Lock className="w-4 h-4" />
+                      People
+                    </TabsTrigger>
+                  </TabsList>
+                  <div className="mt-3 p-3 bg-[var(--background-secondary-color)] h-full">
+                    <TabsContent value="events" className="mt-4 space-y-4">
+                      {visibleFilters.eventTypes && (
+                        <EventTypeSelector variant="popover" />
+                      )}
+                      {visibleFilters.location && <LocationSelector />}
+                      {visibleFilters.dateRange && <DateRangeSelector />}
+                      {activeView === "treemap" &&
+                        visibleFilters.categories && (
+                          <CategorySelector
+                            maxCategories={5}
+                            variant="accordion"
+                          />
+                        )}
+                      {visibleFilters.metrics && <ColumnsSelector />}
+                      {activeView === "treemap" && (
+                        <ChartFilters
+                          type="visitor-flow"
+                          hierarchyLevels={hierarchyLevels}
+                          setHierarchyLevels={setHierarchyLevels}
+                        />
+                      )}
+                    </TabsContent>
+                    <TabsContent value="companies" className="mt-4">
+                      <div className="flex items-center justify-center h-40 text-muted-foreground">
+                        <div className="text-center">
+                          <Lock className="w-8 h-8 mx-auto mb-2" />
+                          <p className="text-sm">Company filters coming soon</p>
+                        </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="people" className="mt-4">
+                      <div className="flex items-center justify-center h-40 text-muted-foreground">
+                        <div className="text-center">
+                          <Lock className="w-8 h-8 mx-auto mb-2" />
+                          <p className="text-sm">People filters coming soon</p>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </div>
+                </Tabs>
+              </div>
+            </ScrollArea>
+
+            <div
+              className={`w-full bg-background z-10 transition-all duration-300 ${
+                isFiltersCollapsed ? "opacity-0" : "opacity-100"
+              }`}
             >
-              <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" />
-              {filterCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
-                  {filterCount}
-                </span>
-              )}
-            </button>
+              <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      deleteMultipleLocalFilters(
+                        Object.keys(localFilters) as any[]
+                      );
+                    }}
+                    disabled={filterCount === 0}
+                    className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+                  >
+                    <FilterX className="w-3.5 h-3.5 mr-1" />
+                    Reset all filters
+                  </Button>
+                  <span className="text-xs text-[#6E6F89]">
+                    {filterCount} filters applied
+                  </span>
+                </div>
+                {activeView === "treemap" &&
+                  categories.length === 0 &&
+                  showCategoryWarning && (
+                    <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
+                      <div className="flex-shrink-0">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-destructive"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-destructive">
+                          Category Required
+                        </p>
+                        <p className="text-xs text-destructive/80">
+                          Please select at least one category to view the
+                          treemap visualization
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                <Button
+                  onClick={applyHandler}
+                  className="w-full h-10"
+                  disabled={activeView === "treemap" && categories.length === 0}
+                >
+                  Apply Filters
+                </Button>
+
+                <SaveTrend searchParams={searchParams} isLoading={isLoading} />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+
+          {!isFiltersCollapsed && (
+            <button
+              onClick={() => setIsFiltersCollapsed(!isFiltersCollapsed)}
+              className="group absolute -right-4 top-[52px] z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+            >
+              <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
+            </button>
+          )}
+
+          {isFiltersCollapsed && (
+            <div className="fixed left-[16px] lg:left-[81px] top-[90px] z-30">
+              <button
+                onClick={() => setIsFiltersCollapsed(false)}
+                className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+              >
+                <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" />
+                {filterCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
+                    {filterCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Main Content */}
       <div
-        className={`flex-1 overflow-auto ${isFiltersCollapsed ? "pl-6" : ""}`}
+        className={`${isMobileView ? "w-full" : "flex-1 overflow-auto"} ${
+          isFiltersCollapsed && !isMobileView ? "pl-6" : ""
+        }`}
       >
-        <div className="px-6 py-4">
+        {/* Mobile Filter Button - Always visible at the top on mobile */}
+        {isMobileView && (
+          <div className="sticky top-0 z-40 bg-background p-3 border-b mb-2">
+            <Button
+              variant="outline"
+              size="default"
+              className={`w-full flex items-center justify-between h-12 rounded-lg transition-all duration-200 ${
+                filterCount > 0
+                  ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
+                  : "bg-muted/30 border-border hover:bg-muted"
+              }`}
+              onClick={() => setIsFiltersCollapsed(false)}
+            >
+              <div className="flex items-center">
+                <Filter
+                  className={`w-4 h-4 mr-2 ${
+                    filterCount > 0 ? "text-primary" : "text-muted-foreground"
+                  }`}
+                />
+                <span
+                  className={`font-medium ${
+                    filterCount > 0 ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  {filterCount > 0
+                    ? `${filterCount} Active Filter${
+                        filterCount > 1 ? "s" : ""
+                      }`
+                    : "Filter Results"}
+                </span>
+              </div>
+              {filterCount > 0 && (
+                <div className="flex items-center">
+                  <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1 font-medium">
+                    {filterCount}
+                  </span>
+                  <ChevronLeft className="w-4 h-4 ml-2 text-primary rotate-180" />
+                </div>
+              )}
+            </Button>
+          </div>
+        )}
+
+        <div className={`${isMobileView ? "px-2 py-2" : "px-6 py-4"}`}>
           <div className="mb-4">
-            <div className="flex items-center justify-between mb-4">
+            <div
+              className={`flex ${
+                isMobileView ? "flex-col gap-2" : "items-center justify-between"
+              } mb-4`}
+            >
               <h1 className="text-xl font-semibold">
                 {showTemplates ? "Trend Templates" : "Trend Explorations"}
               </h1>
-              {!showTemplates && (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-primary"
-                    onClick={() => setShowSavedTrends(!showSavedTrends)}
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    {showSavedTrends
-                      ? "Hide Saved Trends"
-                      : "Show Saved Trends"}
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-primary"
-                    onClick={() => setShowTemplatesModal(true)}
-                  >
-                    <LayoutGrid className="w-4 h-4 mr-2" />
-                    Browse Templates
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* {!showTemplates && activeTemplate && (
-              <div className="relative">
-                <div className="flex items-center justify-between bg-card border shadow-sm rounded-lg p-2">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                      {activeTemplate.icon}
-                    </div>
-                    <div>
-                      <div className="font-medium mb-0.5">
-                        {activeTemplate.title}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {activeTemplate.description}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
+              <div
+                className={`flex ${
+                  isMobileView ? "justify-start" : ""
+                } items-center gap-2`}
+              >
+                {!showTemplates && (
+                  <>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-primary border-primary/20"
+                      className="text-primary"
+                      onClick={() => setShowSavedTrends(!showSavedTrends)}
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      {showSavedTrends
+                        ? "Hide Saved Trends"
+                        : "Show Saved Trends"}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-primary"
                       onClick={() => setShowTemplatesModal(true)}
                     >
-                      <PenLine className="w-4 h-4 mr-1.5" />
-                      Change Template
+                      <LayoutGrid className="w-4 h-4 mr-2" />
+                      Browse Templates
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={handleTemplateRemove}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
+
+                    {/* <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-primary"
+                            onClick={handleShare}
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy URL to clipboard</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider> */}
+                  </>
+                )}
               </div>
-            )} */}
+            </div>
 
             {showSavedTrends && !showTemplates && savedTrendsList && (
               <div className="mt-6">
@@ -687,7 +931,11 @@ const EventTrends = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div
+              className={`grid ${
+                isMobileView ? "grid-cols-1 gap-2" : "grid-cols-3 gap-4"
+              } mb-4`}
+            >
               {ViewTemplates.map((template) => {
                 return (
                   <Card
@@ -734,21 +982,45 @@ const EventTrends = () => {
                 <div>
                   <>
                     {activeView === "line" && (
-                      <Card className="p-6 relative">
+                      <Card
+                        className={`${
+                          isMobileView ? "p-2 pb-4" : "p-6"
+                        } relative`}
+                      >
                         <div className="flex items-center justify-between mb-4">
-                          <h2 className="text-lg font-medium absolute top-6 left-6">
+                          <h2
+                            className={`text-lg font-medium ${
+                              isMobileView
+                                ? "px-2 py-1"
+                                : "absolute top-6 left-6"
+                            }`}
+                          >
                             Trend Analysis
                           </h2>
                         </div>
-                        <div className={styles.predictedAttendence_container}>
+                        <div
+                          className={`${styles.predictedAttendence_container} ${
+                            isMobileView ? "h-[350px]" : ""
+                          } overflow-x-auto`}
+                        >
                           <LineChartComponent showLegend />
                         </div>
                       </Card>
                     )}
 
                     {activeView === "table" && (
-                      <Card className="p-6">
-                        <TestPeriodicAnalytics />
+                      <Card
+                        className={`${
+                          isMobileView ? "p-0 overflow-hidden" : "p-6"
+                        }`}
+                      >
+                        <div
+                          className={`overflow-x-auto ${
+                            isMobileView ? "max-w-[100vw] pb-4" : ""
+                          }`}
+                        >
+                          <TestPeriodicAnalytics />
+                        </div>
                       </Card>
                     )}
                   </>
@@ -756,7 +1028,11 @@ const EventTrends = () => {
               )}
 
               {activeView === "treemap" && (
-                <Card className="p-4 min-h-[600px]">
+                <Card
+                  className={`${
+                    isMobileView ? "p-2 min-h-[400px]" : "p-4 min-h-[600px]"
+                  }`}
+                >
                   <TreemapView hierarchyLevels={hierarchyLevels} />
                 </Card>
               )}

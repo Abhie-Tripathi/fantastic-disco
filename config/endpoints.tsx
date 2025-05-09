@@ -50,7 +50,6 @@ export const endpoints = {
   //     predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
-  locations: `${BASE_URL}/location/country`,
   savedLocations: `${BASE_URL}/me/saved-locations`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
@@ -74,6 +73,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
     verifyAccess: `${BASE_URL}/auth/verify-access`,
+    templatePreset: `${BASE_URL}/others/preset`
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,

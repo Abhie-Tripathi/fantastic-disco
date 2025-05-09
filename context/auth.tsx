@@ -74,6 +74,7 @@ type authContextType = {
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
   isAuthenticating: boolean;
+  showOTPMessage: boolean;
 };
 interface newUserResponse {
   user: {
@@ -108,6 +109,7 @@ const authContextDefaultValues: authContextType = {
   setIsProfileUpdated: () => {},
   setProfilePic: () => {},
   isAuthenticating: false,
+  showOTPMessage: false,
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -120,6 +122,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const { updateMyProfileData } = useProfileServices();
   const [user, setUser] = useState<UserResponse | null>(null);
   const { getLocationName } = useLocationService();
+  const [showOTPMessage, setShowOTPMessage] = useState(false);
   const { request, error, isLoading, setError } = useApi<any>();
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const eventService = useEventsService();
@@ -174,44 +177,13 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   };
 
-  const fetchUserLocation = async (primaryLocation: PrimaryLocation) => {
-    try {
-      if (
-        primaryLocation &&
-        primaryLocation.locationType === "LOCATION_ID" &&
-        primaryLocation.locationId
-      ) {
-        const userLocation = await request<{
-          formattedLocations: Location[] | undefined;
-        }>(`${endpoints.locations}?locationIds=${primaryLocation.locationId}`);
-        return userLocation?.formattedLocations?.[0];
-      }
-
-      if (
-        primaryLocation &&
-        primaryLocation.locationType === "GEO_JSON" &&
-        primaryLocation.geoJson
-      ) {
-        const coordinates = primaryLocation.geoJson.geometry?.coordinates || [];
-        const lat = coordinates[0];
-        const lng = coordinates[1];
-        const userLocation = await getLocationName(lat, lng);
-        return userLocation;
-      }
-    } catch (error) {
-      console.error("Error fetching user location:", error);
-      return undefined;
-    }
-  };
-
   const newcheckAuth = useCallback(async () => {
     const userData = await fetchUserData();
     if (!userData) {
       setUser(null);
       return;
     }
-    const userLocation = await fetchUserLocation(userData?.primaryLocation);
-    setUser({ ...userData, userLocation: userLocation as UserLocation });
+    setUser(userData);
   }, [request]);
 
   const generateOTP = async (
@@ -295,6 +267,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
+        setShowOTPMessage(true);
         router.push(`/verify-otp?email=${userDto.email}`);
       } catch (err: any) {
         console.error("Sign up error:", err);
@@ -325,6 +298,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
+        setShowOTPMessage(true);
         router.push(`/verify-otp?email=${userDto.email}`);
         // await generateOTP(userDto.email);
       } catch (err) {
@@ -422,7 +396,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm")
+        router.push("https://whr.ai/gtm");
       }
     },
     [request, router]
@@ -583,6 +557,7 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     },
     isAuthenticating,
+    showOTPMessage,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
