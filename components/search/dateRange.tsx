@@ -27,6 +27,8 @@ import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GAEvent } from "@/utils/GAEvent";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import MobileDateRangePopup from "./mobileDateRangePopup";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -67,7 +69,7 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 };
 
 const formatDateForFilter = (date: Date) => {
-  return format(date, 'yyyy-MM-dd');
+  return format(date, "yyyy-MM-dd");
 };
 
 // interface DateRangeProps {
@@ -94,6 +96,7 @@ export default function DateRangeSelector({
   source?: string;
 }) {
   const pathName = usePathname();
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
@@ -328,21 +331,40 @@ export default function DateRangeSelector({
         />
       ) : (
         <PopoverContent className="w-auto p-0" align="start">
-          <DateRangePopup
-            presets={presets}
-            handlePresetChange={handlePresetChange}
-            selectedPreset={selectedPreset}
-            dateRange={dateRange}
-            handleDateSelect={handleDateSelect}
-            calendarDate={calendarDate}
-            setCalendarDate={setCalendarDate}
-            enableCompareOptions={false}
-            compareEnabled={false}
-            setCompareEnabled={setCompareEnabled}
-            comparisonOptions={comparisonOptions}
-            setSelectedComparison={setSelectedComparison}
-            selectedComparison={selectedComparison}
-          />
+          {isMobile ? (
+            <MobileDateRangePopup
+              presets={presets}
+              handlePresetChange={handlePresetChange}
+              selectedPreset={selectedPreset}
+              dateRange={dateRange}
+              handleDateSelect={handleDateSelect}
+              calendarDate={calendarDate}
+              setCalendarDate={setCalendarDate}
+              enableCompareOptions={enableCompareOptions}
+              compareEnabled={compareEnabled}
+              setCompareEnabled={setCompareEnabled}
+              comparisonOptions={comparisonOptions}
+              setSelectedComparison={setSelectedComparison}
+              selectedComparison={selectedComparison}
+              onApply={() => setIsOpen(false)}
+            />
+          ) : (
+            <DateRangePopup
+              presets={presets}
+              handlePresetChange={handlePresetChange}
+              selectedPreset={selectedPreset}
+              dateRange={dateRange}
+              handleDateSelect={handleDateSelect}
+              calendarDate={calendarDate}
+              setCalendarDate={setCalendarDate}
+              enableCompareOptions={false}
+              compareEnabled={false}
+              setCompareEnabled={setCompareEnabled}
+              comparisonOptions={comparisonOptions}
+              setSelectedComparison={setSelectedComparison}
+              selectedComparison={selectedComparison}
+            />
+          )}
         </PopoverContent>
       )}
     </Popover>

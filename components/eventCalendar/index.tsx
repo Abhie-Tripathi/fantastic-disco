@@ -34,6 +34,7 @@ import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -181,8 +182,6 @@ export default function EventCalendar({
     eventsData,
     filter
   );
-
-  console.log(processedEvents);
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -345,8 +344,7 @@ export default function EventCalendar({
         />
       );
     }
-  
-    
+
     return (
       <Calendar
         localizer={localizer}
@@ -393,7 +391,7 @@ export default function EventCalendar({
       />
     );
   };
-  
+
   return (
     <>
       {shouldShowZeroState ? (
