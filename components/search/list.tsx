@@ -205,26 +205,49 @@ export default function EventAccordion({
     }
   });
   const bulkSubmit = async () => {
-    
     try {
-      if (eventType === "bookmarked") {
-        const bookmarkPromises = totalChecked.map((id) => {
-          const unBookmarkEvent = events.find((event) => event.basic.id === id);
-          const response = removeBookmark(
-            unBookmarkEvent?.interests?.bookmark?.interestId
-          );
-          if (response?.interest && setInterest) {
-            setInterest({
-              [response.interest.toLowerCase()]: {
-                interestId: response.id,
-              },
-            });
-          }
-        });
-
+      let filteredIds = [];
+      if (action.status === "UN-BOOKMARK") {
+        filteredIds =
+          updatedEvents
+            ?.filter(
+              (event) =>
+                totalChecked.includes(event.basic.id) &&
+                event.interests &&
+                Object.keys(event.interests).includes("bookmark")
+            )
+            .map(
+              (filteredEvent) => filteredEvent.interests?.bookmark?.interestId
+            ) || [];
+        const bookmarkPromises =
+          filteredIds &&
+          filteredIds.length > 0 &&
+          filteredIds.map((id) => {
+            const response = removeBookmark(id);
+            if (response?.interest && setInterest) {
+              setInterest({
+                [response.interest.toLowerCase()]: {
+                  interestId: response.id,
+                },
+              });
+            }
+          });
         await Promise.all(bookmarkPromises);
       } else {
-        const interestPromises = totalChecked.map((id) =>
+        filteredIds =
+          updatedEvents
+            ?.filter(
+              (event) =>
+                totalChecked.includes(event.basic.id) &&
+                ((event.interests &&
+                  !Object.keys(event.interests).includes(
+                    action.status.toLowerCase()
+                  )) ||
+                  event.interests === undefined)
+            )
+            .map((filteredEvent) => filteredEvent.basic.id) || [];
+
+        const interestPromises = filteredIds.map((id) =>
           createUserEventInterest(
             {
               eventId: id,
@@ -253,15 +276,68 @@ export default function EventAccordion({
             }
           )
         );
-
         await Promise.all(interestPromises);
       }
-
-      // toast({ title: "Success", description: "Done!", variant: "default" });
     } catch (error) {
       console.error("Error in bulk submission:", error);
-      // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
     }
+
+    // try {
+    //   if (eventType === "bookmarked") {
+    //     const bookmarkPromises = totalChecked.map((id) => {
+    //       const unBookmarkEvent = events.find((event) => event.basic.id === id);
+    //       const response = removeBookmark(
+    //         unBookmarkEvent?.interests?.bookmark?.interestId
+    //       );
+    //       if (response?.interest && setInterest) {
+    //         setInterest({
+    //           [response.interest.toLowerCase()]: {
+    //             interestId: response.id,
+    //           },
+    //         });
+    //       }
+    //     });
+
+    //     await Promise.all(bookmarkPromises);
+    //   } else {
+    //     const interestPromises = totalChecked.map((id) =>
+    //       createUserEventInterest(
+    //         {
+    //           eventId: id,
+    //           interest: action?.status,
+    //           sourceModule: sourceModule,
+    //           ...(trackerId && { sourceId: trackerId }),
+    //         },
+    //         {
+    //           onSuccess: (response: any) => {
+    //             if (response?.interest) {
+    //               setInterest((prev) => ({
+    //                 ...prev,
+    //                 [response.interest.toLowerCase()]: {
+    //                   interestId: response.id,
+    //                 },
+    //               }));
+    //             }
+    //             if (response?.eventId && setEventId) {
+    //               setEventId(response?.eventId);
+    //             }
+    //             setSavedEventCount((prev) => prev + 1);
+    //           },
+    //           onError: (error) => {
+    //             console.error("Error while submitting interest:", error);
+    //           },
+    //         }
+    //       )
+    //     );
+
+    //     await Promise.all(interestPromises);
+    //   }
+
+    //   // toast({ title: "Success", description: "Done!", variant: "default" });
+    // } catch (error) {
+    //   console.error("Error in bulk submission:", error);
+    //   // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
+    // }
   };
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -294,6 +370,7 @@ export default function EventAccordion({
   const actions = [
     ...(interestConfiguration?.interest || []),
     ...[{ label: "Bookmark", status: "BOOKMARK" }],
+    ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
     // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
   useEffect(() => {

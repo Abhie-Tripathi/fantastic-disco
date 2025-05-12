@@ -184,7 +184,6 @@ export default function CreateTrackerDialog({
       });
       onOpenChange(false);
       setIsBulkActionActive(false);
-      router.push("/internal/trackers");
     } catch (error) {
       console.log("Tracker creation failed: ", error);
       toast({

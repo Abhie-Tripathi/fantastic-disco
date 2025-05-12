@@ -36,71 +36,69 @@ interface AudienceDesAndDepSelectorProps {
   action: Options;
   setAction: any;
 }
-interface Options{
-  status?:string;
-  label?:string;
+interface Options {
+  status?: string;
+  label?: string;
 }
 export default function BulkActionPopover({
   variant = "popover",
   filterName,
   action,
   setAction,
-  options
+  options,
 }: AudienceDesAndDepSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   // const [action,setAction] = useState(options[0]);
-//   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
-//     useFilterContext();
-//     console.log(options);
-//   const enabled = morphedData.audienceProfile?.isEnabled;
-//   const selectedLabels = useMemo(() => {
-//     const filterDesignations =
-//       getLocalFilterValue(filterName as keyof Filters || "designations")
-//         ?.split(",")
-//         .filter(Boolean) || [];
-//     return designations.filter((d: Designations) =>
-//       filterDesignations.includes(d.slug)
-//     );
-//   }, [localFilters[filterName as keyof Filters || "designations"], designations]);
+  //   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
+  //     useFilterContext();
+  //     console.log(options);
+  //   const enabled = morphedData.audienceProfile?.isEnabled;
+  //   const selectedLabels = useMemo(() => {
+  //     const filterDesignations =
+  //       getLocalFilterValue(filterName as keyof Filters || "designations")
+  //         ?.split(",")
+  //         .filter(Boolean) || [];
+  //     return designations.filter((d: Designations) =>
+  //       filterDesignations.includes(d.slug)
+  //     );
+  //   }, [localFilters[filterName as keyof Filters || "designations"], designations]);
 
-//   console.log("selectedLabels", selectedLabels);
+  //   console.log("selectedLabels", selectedLabels);
 
-//   const handleSelect = (label: Designations) => {
-//     const currentDesignations =
-//       localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
-//     const isSelected = currentDesignations.includes(label.slug);
+  //   const handleSelect = (label: Designations) => {
+  //     const currentDesignations =
+  //       localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
+  //     const isSelected = currentDesignations.includes(label.slug);
 
-//     const newDesignations = isSelected
-//       ? currentDesignations.filter((id) => id !== label.slug)
-//       : [...currentDesignations, label.slug];
+  //     const newDesignations = isSelected
+  //       ? currentDesignations.filter((id) => id !== label.slug)
+  //       : [...currentDesignations, label.slug];
 
-//     setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
-//   };
-  const handleSelect=(option: Options)=>{
-    setAction(option)
-    setIsOpen(!isOpen)
-  }
-//   const handleRemoveLabel = (labelId: string) => {
-//     const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
-//       ?.split(",")
-//       .filter((id) => id !== labelId);
-//     if (currentDesignations)
-//       setLocalFilter(
-//         filterName as keyof Filters || "designations",
-//         currentDesignations.join(",")
-//       );
-//   };
+  //     setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
+  //   };
+  const handleSelect = (option: Options) => {
+    setAction(option);
+    setIsOpen(!isOpen);
+  };
+  //   const handleRemoveLabel = (labelId: string) => {
+  //     const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
+  //       ?.split(",")
+  //       .filter((id) => id !== labelId);
+  //     if (currentDesignations)
+  //       setLocalFilter(
+  //         filterName as keyof Filters || "designations",
+  //         currentDesignations.join(",")
+  //       );
+  //   };
 
   const labels: Record<string, string> = {
     userJobTitle: "Job Title",
   };
-  
+
   const triggerContent = (
     <div className="flex items-center">
-      <span className="mr-2">
-        {action?.label}
-      </span>
+      <span className="mr-2">{action?.label}</span>
       {/* {selectedLabels.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedLabels.length}
@@ -114,7 +112,7 @@ export default function BulkActionPopover({
       <Command shouldFilter={false}>
         <CommandGroup>
           <CommandList className="max-h-48">
-            {options?.map((option: Options,ind: number) => (
+            {options?.map((option: Options, ind: number) => (
               <CommandItem key={ind} onSelect={() => handleSelect(option)}>
                 <Check
                   className={cn(
@@ -152,30 +150,27 @@ export default function BulkActionPopover({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={isOpen}
-            className="w-full justify-between px-3 py-3 text-base font-normal"
-            // disabled={!enabled}
-          >
-            <div className="flex items-center justify-between w-full">
-              {triggerContent}
-              <ChevronDown
-                className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-                  isOpen ? "rotate-180" : ""
-                }`}
-              />
-            </div>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
-          align="start"
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={isOpen}
+          className="w-full justify-between px-3 py-3 text-base font-normal"
+          // disabled={!enabled}
         >
-          {content}
-        </PopoverContent>
-      </Popover>
+          <div className="flex items-center justify-between w-full">
+            {triggerContent}
+            <ChevronDown
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-40 p-0" align="center">
+        {content}
+      </PopoverContent>
+    </Popover>
   );
 }
