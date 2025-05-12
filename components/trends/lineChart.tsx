@@ -175,9 +175,13 @@ const LineChartComponent = ({
     const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
     const columns = searchParams.get("columns")?.split(",") || [];
     if (eventTrendsData && eventTrendsData.groupedData) {
+      // Convert string values to arrays
+      const eventTypesArray = eventTypes ? eventTypes.split(',') : [];
+      const columnsArray = columns ? columns.split(',') : [];
+      
       const tableColumns = generateTrendsTableColumnHeaders(
-        eventTypes,
-        columns
+        eventTypesArray,
+        columnsArray
       );
 
       const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
@@ -564,7 +568,37 @@ const LineChartComponent = ({
     const start = new Date(startDate);
     const end = new Date(endDate);
     const totalDays = differenceInDays(end, start) + 1;
-
+    
+    // For mobile screens, show exactly 6 ticks
+    if (isMobileView) {
+      // Always show exactly 6 ticks on mobile screens
+      const dates = [];
+      
+      // First date
+      dates.push(format(start, "yyyy-MM-dd"));
+      
+      // Calculate an even interval for 4 middle points
+      const step = Math.max(1, Math.floor(totalDays / 5));
+      
+      // Add 4 evenly spaced points (for a total of 6 with start and end)
+      for (let i = 1; i <= 4; i++) {
+        const nextDate = addDays(start, i * step);
+        // Only add if not past the end date
+        if (!isAfter(nextDate, end)) {
+          dates.push(format(nextDate, "yyyy-MM-dd"));
+        }
+      }
+      
+      // Add end date if not already included
+      const lastDateStr = format(end, "yyyy-MM-dd");
+      if (dates[dates.length - 1] !== lastDateStr) {
+        dates.push(lastDateStr);
+      }
+      
+      return dates;
+    }
+    
+    // Desktop view - original logic
     // If range is 10 days or less, show all dates
     if (totalDays <= 10) {
       const dates = [];
@@ -603,6 +637,31 @@ const LineChartComponent = ({
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
     const date = new Date(payload.value);
+    
+    if (isMobileView) {
+      // Simplified format for mobile
+      const mobileDateFormat = format(date, "dd MMM");
+      
+      return (
+        <g transform={`translate(${x},${y})`}>
+          <text
+            x={0}
+            y={0}
+            dy={16}
+            textAnchor="middle"
+            fill="#615E83"
+            fontSize="12px"
+            fontWeight="500"
+          >
+            <tspan x={0} dy="1em">
+              {mobileDateFormat}
+            </tspan>
+          </text>
+        </g>
+      );
+    }
+    
+    // Desktop format with date and year on separate lines
     const dayMonth = format(date, "dd MMM");
     const year = format(date, "yyyy");
 
@@ -1056,10 +1115,16 @@ const LineChartComponent = ({
                         color: entry.color,
                       }}
                     >
-                      {entry.value}
+                      {isMobileView && entry.value.length > 10 
+                        ? (entry.value === "Upper Threshold" 
+                           ? "Upper" 
+                           : entry.value === "Lower Threshold" 
+                             ? "Lower" 
+                             : entry.value)
+                        : entry.value}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="w-60 tooltip-content-styles">
+                  <TooltipContent className={`${isMobileView ? 'w-48' : 'w-60'} tooltip-content-styles`}>
                     <p className="font-medium text-[var(--secondary-text-color)]">
                       {entry.tooltipDescription}
                     </p>
@@ -1106,10 +1171,10 @@ const LineChartComponent = ({
         <LineChart
           data={graphData}
           margin={{
-            left: 10,
-            right: 30,
-            top: 40,
-            bottom: doInvertTicks ? 30 : 0,
+            left: isMobileView ? 0 : 10,
+            right: isMobileView ? 10 : 30,
+            top: isMobileView ? 20 : 40,
+            bottom: isMobileView ? 40 : (doInvertTicks ? 30 : 0),
           }}
           onClick={(e) => handleChartClick(e)}
         >
@@ -1122,8 +1187,8 @@ const LineChartComponent = ({
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
-            fontSize="12px"
-            height={40}
+            fontSize={isMobileView ? "10px" : "12px"}
+            height={isMobileView ? 30 : 40}
             tick={<CustomTick />}
             ticks={generateDateIntervals(
               graphData[0].date,
@@ -1132,7 +1197,8 @@ const LineChartComponent = ({
             interval={0}
             width={10}
             axisLine={false}
-            tickLine={true}
+            tickLine={isMobileView ? false : true}
+            padding={{ left: isMobileView ? 5 : 10, right: isMobileView ? 5 : 10 }}
             label={{
               style: { fill: "#615E83" },
             }}
@@ -1205,7 +1271,7 @@ const LineChartComponent = ({
             ]}
             tickCount={5}
             tickFormatter={tickFormatter}
-            label={{
+            label={isMobileView ? undefined : {
               value: label,
               angle: -90,
               position: "insideLeft",
@@ -1216,8 +1282,8 @@ const LineChartComponent = ({
             tickLine={false}
             tick={{
               fill: "#615E83",
-              fontSize: "14px",
-              fontWeight: "500",
+              fontSize: isMobileView ? "10px" : "14px",
+              fontWeight: isMobileView ? "400" : "500",
             }}
           />
           <Tooltip
@@ -1353,13 +1419,24 @@ const LineChartComponent = ({
                     : []),
                 ] as CustomPayload
               }
-              wrapperStyle={{
+              wrapperStyle={isMobileView ? {
+                width: "100%",
+                position: "relative", 
+                bottom: -5,
+                left: 0,
+                fontSize: "12px",
+                fontWeight: "400",
+                display: "flex",
+                justifyContent: "center"
+              } : {
                 width: "auto",
                 top: -30,
                 right: 0,
                 fontSize: "14px",
                 fontWeight: "500",
               }}
+              verticalAlign={isMobileView ? "bottom" : "top"}
+              align={isMobileView ? "center" : "right"}
             />
           )}
         </LineChart>

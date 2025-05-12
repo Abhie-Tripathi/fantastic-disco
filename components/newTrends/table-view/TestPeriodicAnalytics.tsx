@@ -62,7 +62,6 @@ import {
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import styles from "./TableAnalytics.module.css";
 import CollapseIcon from "/public/collapse.svg";
 import HolidayIcon from "/public/eventType/holiday.svg";
 import ExpandIcon from "/public/expandColumn.svg";
@@ -794,8 +793,12 @@ const TestPeriodicAnalytics = () => {
 
   return (
     <>
-      <div className={styles.analytics_header}>
-        <div className={styles.analytics_header_title}>
+      <div
+      className={`flex ${
+        isMobileView ? "flex-col gap-3" : "justify-between items-center"
+      } py-4`}
+    >
+      <div className="font-medium text-base">
           {compareFrom && compareTo ? (
             `Comparing ${renderFormattedDates(startDate, endDate)} with ${renderFormattedDates(
               format(new Date(compareFrom), "dd MMM yyyy"),
@@ -806,13 +809,30 @@ const TestPeriodicAnalytics = () => {
           )}
         </div>
         <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
-          {/* <Image src={SmartInsights} width={18} height={18} alt={""} /> */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex gap-2 cursor-pointer">
-                  <Image src={SmartInsights} width={18} height={18} alt={""} />
-                  <p className="text-primary m-0 font-normal">Smart Insights</p>
+                <div className="flex gap-2 cursor-pointer items-center">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={SmartInsights}
+                      width={18}
+                      height={18}
+                      alt={""}
+                      className="w-[18px] h-[18px]"
+                    />
+                    <p className="text-primary m-0 font-normal text-sm sm:text-base">
+                      Smart Insights
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isSmartInsightsEnabled}
+                    onCheckedChange={() =>
+                      setIsSmartInsightsEnabled((prev) => !prev)
+                    }
+                    disabled={Object.keys(smartInsightState).length === 0}
+                    className="mt-1 sm:mt-0"
+                  />
                 </div>
               </TooltipTrigger>
               <TooltipContent className="w-64 tooltip-content-styles ">
@@ -823,16 +843,15 @@ const TestPeriodicAnalytics = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Switch
-            checked={isSmartInsightsEnabled}
-            onCheckedChange={() => setIsSmartInsightsEnabled((prev) => !prev)}
-            disabled={Object.keys(smartInsightState).length === 0}
-          ></Switch>
         </div>
       </div>
-      <div className={styles.table_container}>
-        <div className="w-full">
-          <Table className="border border-[var(--neutral-light-color) w-[98%] mx-auto relative">
+      <div className="mt-6 overflow-x-auto">
+        <div className="w-full overflow-x-auto">
+          <Table
+            className={`border border-[var(--neutral-light-color)] ${
+              isMobileView ? "w-full" : "w-[98%]"
+            } mx-auto relative`}
+          >
             <TableHeader>
               <TableRow>
                 {tableColumns &&
@@ -867,7 +886,7 @@ const TestPeriodicAnalytics = () => {
                                     {trends.columnName.toUpperCase()}
                                   </span>
                                 </TooltipTrigger>
-                                <TooltipContent className="w-64 tooltip-content-styles ">
+                                <TooltipContent className="w-64 tooltip-content-styles">
                                   <p className="font-medium text-left text-[var(--secondary-text-color)]">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
@@ -1010,9 +1029,7 @@ const TestPeriodicAnalytics = () => {
                                 <div
                                   className={`flex items-center w-20 mx-auto font-${
                                     cell.fontWeight ?? "normal"
-                                  } justify-center text-[var(${
-                                    cell.color
-                                  })] gap-2`}
+                                  } justify-center text-[var(--primary-text-color)] gap-2`}
                                 >
                                   {cell.icon && (
                                     <Image
@@ -1089,9 +1106,9 @@ const TestPeriodicAnalytics = () => {
                                     key={cell.subColumnName}
                                     className={`flex flex-col items-center justify-center text-center
                     border-x border-[var(--neutral-light-color)]
-                    font-${cell.fontWeight ?? "normal"} text-[var(${
-                                      cell.color
-                                    })] gap-2`}
+                    font-${
+                      cell.fontWeight ?? "normal"
+                    } text-[var(--primary-text-color)] gap-2`}
                                   >
                                     <div className="flex items-center gap-2">
                                       <p
@@ -1154,42 +1171,94 @@ const TestPeriodicAnalytics = () => {
                   .map((data, rowIndex) => renderTableRow(data, rowIndex))}
             </TableBody>
           </Table>
-          {totalPages > 1 && (
-            <div className="mt-4 sticky bottom-0 bg-background py-4">
-              <Pagination>
-                <PaginationContent className="flex-wrap justify-center">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                  {renderPaginationItems()}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
         </div>
+        {totalPages > 1 && (
+          <div
+            className={`mt-4 sticky bottom-0 bg-background py-4 ${
+              isMobileView ? "overflow-x-auto" : ""
+            }`}
+          >
+            <Pagination>
+              <PaginationContent
+                className={`flex-wrap justify-center ${
+                  isMobileView ? "text-sm gap-1" : ""
+                }`}
+              >
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
+                </PaginationItem>
+                {isMobileView ? (
+                  <>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#"
+                        onClick={() => handlePageChange(1)}
+                        isActive={1 === currentPage}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    {currentPage > 3 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {currentPage > 1 && currentPage < totalPages && (
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(currentPage)}
+                          isActive={true}
+                        >
+                          {currentPage}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+                    {currentPage < totalPages - 2 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {totalPages > 1 && (
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(totalPages)}
+                          isActive={totalPages === currentPage}
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+                  </>
+                ) : (
+                  renderPaginationItems()
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </>
   );
