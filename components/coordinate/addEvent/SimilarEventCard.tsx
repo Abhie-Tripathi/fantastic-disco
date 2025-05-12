@@ -6,6 +6,7 @@ import EventCard from "./EventCard";
 import Image from "next/image";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
   duplicateEvents?: any;
@@ -38,6 +39,7 @@ const SimilarEventCard = ({
     endDateTime: eventData.endDate,
     // address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
     address: [
+      eventData.venue,
       eventData.city,
       eventData.state !== eventData.city ? eventData.state : null,
       eventData.country !== eventData.city ? eventData.country : null,
@@ -86,14 +88,20 @@ const SimilarEventCard = ({
               </Badge>
             )}
 
-            <Button
-              size="xs"
-              className="hover:text-[var(--danger-text-color)] text-[var(--danger-text-color)] text-xs font-normal px-2 rounded-sm"
-              variant="outline"
-              onClick={() => setShowSimilar((prev) => !prev)}
-            >
-              {duplicateEvents?.length} Similar Events
-            </Button>
+            {duplicateEvents && duplicateEvents?.length > 0 &&
+              <Button
+                size="xs"
+                className="hover:text-[var(--danger-text-color)] text-[var(--danger-text-color)] text-xs font-normal px-2 rounded-sm"
+                variant="outline"
+                onClick={() => setShowSimilar((prev) => !prev)}
+              >
+                {duplicateEvents?.length} Similar Events
+
+                <ChevronDown
+                  className={`h-4 w-4 ml-1`}
+                />
+              </Button>
+            }
           </div>
         </div>
       </div>

@@ -24,13 +24,14 @@ interface Props {
   eventType: string;
   participationType?: string | null;
   isProductEvent?: boolean;
+  isEventAdded?: boolean;
 }
 
 const EventCard = (eventData: Props) => {
   const { toast } = useToast();
   const [eventRejected, setEventRejected] = useState<boolean>(false);
 
-  const [eventAdded, setEventAdded] = useState<boolean>(false);
+  const [eventAdded, setEventAdded] = useState<boolean>(eventData.isEventAdded || false);
 
   const {
     interestConfiguration,
@@ -170,6 +171,7 @@ const EventCard = (eventData: Props) => {
             selectedHeader={selectedAction}
             changeSelectedHeader={setSelectedAction}
             options={interestConfiguration?.interest}
+            disabledDropdown={eventAdded}
           />
 
           {isSubmitting ? (

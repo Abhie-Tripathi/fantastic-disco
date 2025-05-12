@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               </Button>
           </div>
         } */}
-        <div className="p-6 h-full">
+        <div className="py-4 h-full">
           {/* Render the children content passed from the parent */}
           {/* <div>{children}</div> */}
           {children}
