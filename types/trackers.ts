@@ -65,6 +65,14 @@ export interface Tracker {
       country?: LocationObject[];  
       zone?: LocationObject[];
     } | string | undefined;
+    viewBound?:{
+      boundType: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+        radius: number;
+      };
+    } | string | undefined;
     country?:LocationObject[];
     includeKeywords?:string;
     excludeKeywords?:string;

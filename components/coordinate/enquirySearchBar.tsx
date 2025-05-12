@@ -17,10 +17,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Search, X } from "lucide-react";
-import { useEventsService } from "@/services/eventsService";
-import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCoordinateService } from "@/services/coordinateService";
 import { enquiryType } from "@/types/coordinateEventType";
 
@@ -30,7 +28,7 @@ interface Props {
 
 export default function MultiSelectSearchBar({ selectedData }: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathName = usePathname();
   const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
@@ -38,14 +36,6 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
   const [selectedItems, setSelectedItems] = useState<enquiryType[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
   const { getEvents, isLoading } = useCoordinateService();
-
-  useEffect(() => {
-    const eventIdsString = getLocalFilterValue("eventId");
-    if (eventIdsString) {
-      const eventIds = eventIdsString.split(",");
-      setSelectedItems([selectedData]);
-    }
-  }, [localFilters]);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
@@ -138,6 +128,15 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    const eventIdsString = getLocalFilterValue("eventId");
+
+    if (eventIdsString) {
+      const eventIds = eventIdsString.split(",");
+      setSelectedItems([selectedData]);
+    }
+  }, [pathName]);
+
   return (
     <form onSubmit={handleSearchSubmit} className="w-full">
       <div ref={searchBarRef} className="relative">
@@ -149,7 +148,7 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
                 selectedItems.map((item) => (
                   <div
                     key={item.eventId}
-                    className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+                    className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 max-w-[70%]"
                   >
                     <span className="text-sm line-clamp-1">
                       {item.eventData.name}
