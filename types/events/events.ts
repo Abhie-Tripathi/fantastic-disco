@@ -126,12 +126,14 @@ const BasicEventSchema = z.object({
       slug: z.string(),
     })
   ),
-  eventLocation: z.object({
-    country: CountrySchema.nullable(),
-    venue: VenueSchema.nullable(),
-    city: CitySchema.nullable(),
-    state: StateSchema.nullable(),
-  }),
+  eventLocation: z
+    .object({
+      country: CountrySchema.nullable(),
+      venue: VenueSchema.nullable(),
+      city: CitySchema.nullable(),
+      state: StateSchema.nullable(),
+    })
+    .nullable(),
   organizer: z
     .object({
       id: z.string(),
