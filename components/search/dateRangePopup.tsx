@@ -240,15 +240,15 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   };
 
   return (
-    <div className="flex flex-col border rounded-md bg-white shadow-sm">
+    <div className="flex flex-col border rounded-md bg-background shadow-sm">
       {type === "T_LOCATION_DATE" && (
-        <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Dates</span>
+        <div className="flex justify-between items-center p-4 py-2 border-b border-border">
+          <span className="font-medium text-foreground">Dates</span>
         </div>
       )}
       <div className="flex p-4 overflow-y-scroll max-h-[420px]">
         <div className="w-[200px] pr-4">
-          <div>
+          <div className="pb-4">
             <div className="space-y-0.5">
               {filterPresets.map((preset) => (
                 <Button
@@ -256,9 +256,9 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                   onClick={() => handlePresetChange(preset.value)}
                   variant="ghost"
                   className={cn(
-                    "w-full justify-start font-normal text-sm transition-colors hover:bg-gray-100",
+                    "w-full justify-start font-normal text-sm transition-colors hover:bg-secondary",
                     selectedPreset === preset.value &&
-                      "bg-blue-50 text-blue-600 hover:bg-blue-50"
+                      "bg-secondary text-primary hover:bg-secondary"
                   )}
                 >
                   {preset.label}
@@ -268,8 +268,8 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
               {enableCompareOptions && (
                 <>
                   <Separator className="my-3" />
-                  <div className="flex items-center justify-between px-3 py-2 rounded-md bg-gray-50">
-                    <span className="text-sm">Compare</span>
+                  <div className="flex items-center justify-between px-3 py-2 rounded-md bg-muted">
+                    <span className="text-sm text-foreground">Compare</span>
                     <Switch
                       checked={!!comparisonType}
                       onCheckedChange={handleCompareChange}
@@ -283,9 +283,9 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                           onClick={() => handleComparisonTypeChange(option.id)}
                           variant="ghost"
                           className={cn(
-                            "w-full justify-start text-left font-normal text-sm transition-colors text-wrap hover:bg-gray-100",
+                            "w-full justify-start text-left font-normal text-sm transition-colors text-wrap hover:bg-secondary",
                             comparisonType === option.id &&
-                              "bg-blue-50 text-blue-600 hover:bg-blue-50"
+                              "bg-secondary text-primary hover:bg-secondary"
                           )}
                         >
                           {option.label}
@@ -298,7 +298,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
             </div>
           </div>
         </div>
-        <div className="flex flex-col pl-4 border-l h-full">
+        <div className="flex flex-col pl-4 border-l border-border h-full">
           <div className="space-y-2">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -312,7 +312,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                       dateRange.from ? format(dateRange.from, "yyyy-MM-dd") : ""
                     }
                     onChange={handleStartDateChange}
-                    className="w-[140px] pr-8"
+                    className="w-[140px] pr-8 bg-background border-input"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -325,7 +325,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                       dateRange.to ? format(dateRange.to, "yyyy-MM-dd") : ""
                     }
                     onChange={handleEndDateChange}
-                    className="w-[140px] pr-8"
+                    className="w-[140px] pr-8 bg-background border-input"
                   />
                 </div>
               </div>
@@ -333,7 +333,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
 
             {!!comparisonType && (
               <div>
-                <Label className="text-sm font-medium mb-2 block">
+                <Label className="text-sm font-medium mb-2 block text-foreground">
                   Compare
                 </Label>
                 <div className="flex items-center gap-3">
@@ -349,7 +349,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                           : ""
                       }
                       onChange={handleCompareStartDateChange}
-                      className="w-[140px] pr-8"
+                      className="w-[140px] pr-8 bg-background border-input"
                       disabled={comparisonType !== "custom"}
                     />
                   </div>
@@ -365,7 +365,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
                           : ""
                       }
                       onChange={handleCompareEndDateChange}
-                      className="w-[140px] pr-8"
+                      className="w-[140px] pr-8 bg-background border-input"
                       disabled={comparisonType !== "custom"}
                     />
                   </div>
@@ -382,7 +382,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
               month={calendarDate}
               onMonthChange={setCalendarDate}
               numberOfMonths={1}
-              className="rounded-md border"
+              className="rounded-md border border-border bg-background"
             />
           </div>
         </div>

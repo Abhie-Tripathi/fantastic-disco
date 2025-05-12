@@ -23,6 +23,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import DateRangePopup from "./dateRangePopup";
 import { useAuthContext } from "@/context";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -67,6 +68,12 @@ export default function DateRangeSelector({
   source?: string;
 }) {
   const pathName = usePathname();
+  const isLowHeight = useMediaQuery({
+    type: "down",
+    start: "md",
+    defaultState: false,
+    dimension: "height",
+  });
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
@@ -80,7 +87,7 @@ export default function DateRangeSelector({
   const enableCompareOptions =
     pathName === "/internal/trends" &&
     viewParam !== "treemap" &&
-    viewParam !== null
+    viewParam !== null;
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
@@ -310,7 +317,11 @@ export default function DateRangeSelector({
           enableCompareOptions={false}
         />
       ) : (
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent
+          className="w-auto p-0"
+          align={isLowHeight ? "center" : "start"}
+          side={isLowHeight ? "right" : "bottom"}
+        >
           <DateRangePopup
             presets={presets}
             handlePresetChange={handlePresetChange}

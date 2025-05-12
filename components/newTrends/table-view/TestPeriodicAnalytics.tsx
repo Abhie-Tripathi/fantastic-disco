@@ -113,9 +113,10 @@ const safelyAccessTableData = (
   }
 };
 
-const calculatePercentageChange = (current: number, comparison: number): string => {
-  if (comparison === 0) return '0%';
+const calculatePercentageChange = (current: number, comparison: number): string | null => {
+  if (comparison === 0) return null;
   const change = ((current - comparison) / comparison) * 100;
+  if (change === 0) return null;
   const sign = change > 0 ? '+' : '';
   return `${sign}${change.toFixed(1)}%`;
 };
@@ -563,10 +564,10 @@ const TestPeriodicAnalytics = () => {
                       <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className="flex items-center gap-2 min-w-[100px]">
+                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
-                          {comparisonCellData && (
+                          {comparisonCellData && percentageChange && (
                             <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
                               ({percentageChange})
                             </span>
@@ -604,10 +605,10 @@ const TestPeriodicAnalytics = () => {
                       <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
-                          {comparisonCellData && (
+                          {comparisonCellData && percentageChange && (
                             <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
                               ({percentageChange})
                             </span>
@@ -650,9 +651,9 @@ const TestPeriodicAnalytics = () => {
                       >
                         <div className="flex flex-col items-center w-full">
                           <div className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}>
-                            <div className="flex items-center gap-1 min-w-[100px]">
+                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
                               <span>{currentValue}</span>
-                              {comparisonCellData && (
+                              {comparisonCellData && percentageChange && (
                                 <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
                                   ({percentageChange})
                                 </span>
@@ -711,9 +712,9 @@ const TestPeriodicAnalytics = () => {
                         )}
                         <div className="flex flex-col items-center justify-center w-full h-full relative gap-1">
                           <div className="text-center w-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]">
-                            <div className="flex items-center gap-1">
+                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
                               <span>{currentValue}</span>
-                              {comparisonCellData && (
+                              {comparisonCellData && percentageChange && (
                                 <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
                                   ({percentageChange})
                                 </span>
@@ -749,11 +750,8 @@ const TestPeriodicAnalytics = () => {
                 className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
               >
                 <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1">
+                  <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
                     <span>0</span>
-                    {comparisonCellData && (
-                      <span className="text-xs text-gray-500">(0%)</span>
-                    )}
                   </div>
                   {comparisonCellData && (
                     <span>0</span>

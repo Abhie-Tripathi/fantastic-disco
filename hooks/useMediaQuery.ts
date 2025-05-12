@@ -17,28 +17,33 @@ type QueryType =
   | "between" // matches range
   | "only"; // matches exact breakpoint
 
+type QueryDimension = "width" | "height";
+
 interface MediaQueryOptions {
   type?: QueryType;
   start?: BreakpointKey;
   end?: BreakpointKey;
   defaultState?: boolean;
   ssr?: boolean;
+  dimension?: QueryDimension;
 }
 
 const isBrowser = typeof window !== "undefined";
 
 const constructMediaQuery = (options: MediaQueryOptions): string => {
-  const { type = "up", start = "xs", end } = options;
+  const { type = "up", start = "xs", end, dimension = "width" } = options;
+  const dimensionPrefix = dimension === "height" ? "min-height" : "min-width";
+  const dimensionMaxPrefix = dimension === "height" ? "max-height" : "max-width";
 
   switch (type) {
     case "up":
-      return `(min-width: ${BREAKPOINTS[start]}px)`;
+      return `(${dimensionPrefix}: ${BREAKPOINTS[start]}px)`;
     case "down":
       // Subtract 0.02px to work around Safari rounding issues
-      return `(max-width: ${BREAKPOINTS[start] - 0.02}px)`;
+      return `(${dimensionMaxPrefix}: ${BREAKPOINTS[start] - 0.02}px)`;
     case "between":
       if (!end) throw new Error("End breakpoint is required for between");
-      return `(min-width: ${BREAKPOINTS[start]}px) and (max-width: ${
+      return `(${dimensionPrefix}: ${BREAKPOINTS[start]}px) and (${dimensionMaxPrefix}: ${
         BREAKPOINTS[end] - 0.02
       }px)`;
     case "only":
@@ -46,12 +51,12 @@ const constructMediaQuery = (options: MediaQueryOptions): string => {
         Object.keys(BREAKPOINTS).findIndex((b) => b === start) + 1;
       const nextKey = Object.keys(BREAKPOINTS)[nextBreakpoint] as BreakpointKey;
       return nextKey
-        ? `(min-width: ${BREAKPOINTS[start]}px) and (max-width: ${
+        ? `(${dimensionPrefix}: ${BREAKPOINTS[start]}px) and (${dimensionMaxPrefix}: ${
             BREAKPOINTS[nextKey] - 0.02
           }px)`
-        : `(min-width: ${BREAKPOINTS[start]}px)`;
+        : `(${dimensionPrefix}: ${BREAKPOINTS[start]}px)`;
     default:
-      return `(min-width: ${BREAKPOINTS[start]}px)`;
+      return `(${dimensionPrefix}: ${BREAKPOINTS[start]}px)`;
   }
 };
 
@@ -112,17 +117,28 @@ export const useIsDesktop = (ssrState = false) =>
 export const useIsLargeScreen = (ssrState = false) =>
   useMediaQuery({ type: "up", start: "xl", defaultState: ssrState });
 
+export const useIsShortScreen = (ssrState = false) =>
+  useMediaQuery({ type: "down", start: "md", defaultState: ssrState, dimension: "height" });
 
+export const useIsTallScreen = (ssrState = false) =>
+  useMediaQuery({ type: "up", start: "lg", defaultState: ssrState, dimension: "height" });
 
 export const useResponsiveValue = <T>(config: {
   mobile: T;
   tablet?: T;
   desktop: T;
   defaultValue?: T;
+  shortScreen?: T;
+  tallScreen?: T;
 }): T => {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
   const isDesktop = useIsDesktop();
+  const isShortScreen = useIsShortScreen();
+  const isTallScreen = useIsTallScreen();
+
+  if (isShortScreen && config.shortScreen) return config.shortScreen;
+  if (isTallScreen && config.tallScreen) return config.tallScreen;
 
   if (isMobile) return config.mobile;
   if (isTablet && config.tablet) return config.tablet;

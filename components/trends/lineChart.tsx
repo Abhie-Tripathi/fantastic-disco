@@ -1020,7 +1020,7 @@ const LineChartComponent = ({
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
     // Get the comparison option label - we'll use a generic name regardless of the comparison type
-    const comparisonLabel = "Comparison Period";
+    const comparisonLabel = "Compared Period";
 
     // Separate year entries from threshold entries
     const yearEntries =
@@ -1382,7 +1382,7 @@ const LineChartComponent = ({
           <Line
             type="linear"
             dataKey="total"
-            name="Current Year"
+            name="Selected Period"
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
@@ -1393,7 +1393,7 @@ const LineChartComponent = ({
             <Line
               type="linear"
               dataKey="previousYearTotal"
-              name="Comparison Period"
+              name="Compared Period"
               stroke="#4B9EF4"
               strokeWidth={2}
               strokeOpacity={1}
@@ -1407,14 +1407,14 @@ const LineChartComponent = ({
               payload={
                 [
                   {
-                    value: "Current Year",
+                    value: "Selected Period",
                     type: "line",
                     id: "current_year",
                     color: "#6750a4",
                     tooltipDescription: "Data for the current selected period",
                   },
                   {
-                    value: "Comparison Period",
+                    value: "Compared Period",
                     type: "line",
                     id: "previous_year",
                     color: "#4B9EF4",
