@@ -44,6 +44,7 @@ import { CategoricalChartState } from "recharts/types/chart/types";
 import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface IProps {
   showLegend: boolean;
@@ -68,7 +69,7 @@ const LineChartComponent = ({
   const { getEventTrends } = useTrendsService();
   const compareFrom = searchParams.get("compare_from");
   const compareTo = searchParams.get("compare_to");
-  const columns = searchParams.get("columns");
+  const isMobileView = useIsMobile();
   const eventTypes = searchParams.get("eventTypes");
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
@@ -172,18 +173,7 @@ const LineChartComponent = ({
   }, [trendsData]);
 
   useEffect(() => {
-    const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
-    const columns = searchParams.get("columns")?.split(",") || [];
     if (eventTrendsData && eventTrendsData.groupedData) {
-      // Convert string values to arrays
-      const eventTypesArray = eventTypes ? eventTypes.split(',') : [];
-      const columnsArray = columns ? columns.split(',') : [];
-      
-      const tableColumns = generateTrendsTableColumnHeaders(
-        eventTypesArray,
-        columnsArray
-      );
-
       const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
       const previousYearGraphData = previousYearData
         ? morphToGraphData(previousYearData.groupedData, metric)
@@ -259,16 +249,16 @@ const LineChartComponent = ({
   }, [trendsData]);
 
   const tickFormatter = (value: any) => {
-    if (typeof value !== 'number' || isNaN(value)) return '';
-    
+    if (typeof value !== "number" || isNaN(value)) return "";
+
     const absValue = Math.abs(value);
-    
-    const formatter = new Intl.NumberFormat('en-US', {
-      notation: 'compact',
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      notation: "compact",
       maximumFractionDigits: 1,
-      compactDisplay: 'short'
+      compactDisplay: "short",
     });
-    
+
     return formatter.format(value);
   };
 
@@ -568,18 +558,18 @@ const LineChartComponent = ({
     const start = new Date(startDate);
     const end = new Date(endDate);
     const totalDays = differenceInDays(end, start) + 1;
-    
+
     // For mobile screens, show exactly 6 ticks
     if (isMobileView) {
       // Always show exactly 6 ticks on mobile screens
       const dates = [];
-      
+
       // First date
       dates.push(format(start, "yyyy-MM-dd"));
-      
+
       // Calculate an even interval for 4 middle points
       const step = Math.max(1, Math.floor(totalDays / 5));
-      
+
       // Add 4 evenly spaced points (for a total of 6 with start and end)
       for (let i = 1; i <= 4; i++) {
         const nextDate = addDays(start, i * step);
@@ -588,16 +578,16 @@ const LineChartComponent = ({
           dates.push(format(nextDate, "yyyy-MM-dd"));
         }
       }
-      
+
       // Add end date if not already included
       const lastDateStr = format(end, "yyyy-MM-dd");
       if (dates[dates.length - 1] !== lastDateStr) {
         dates.push(lastDateStr);
       }
-      
+
       return dates;
     }
-    
+
     // Desktop view - original logic
     // If range is 10 days or less, show all dates
     if (totalDays <= 10) {
@@ -637,11 +627,11 @@ const LineChartComponent = ({
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
     const date = new Date(payload.value);
-    
+
     if (isMobileView) {
       // Simplified format for mobile
       const mobileDateFormat = format(date, "dd MMM");
-      
+
       return (
         <g transform={`translate(${x},${y})`}>
           <text
@@ -660,7 +650,7 @@ const LineChartComponent = ({
         </g>
       );
     }
-    
+
     // Desktop format with date and year on separate lines
     const dayMonth = format(date, "dd MMM");
     const year = format(date, "yyyy");
@@ -1115,16 +1105,20 @@ const LineChartComponent = ({
                         color: entry.color,
                       }}
                     >
-                      {isMobileView && entry.value.length > 10 
-                        ? (entry.value === "Upper Threshold" 
-                           ? "Upper" 
-                           : entry.value === "Lower Threshold" 
-                             ? "Lower" 
-                             : entry.value)
+                      {isMobileView && entry.value.length > 10
+                        ? entry.value === "Upper Threshold"
+                          ? "Upper"
+                          : entry.value === "Lower Threshold"
+                          ? "Lower"
+                          : entry.value
                         : entry.value}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className={`${isMobileView ? 'w-48' : 'w-60'} tooltip-content-styles`}>
+                  <TooltipContent
+                    className={`${
+                      isMobileView ? "w-48" : "w-60"
+                    } tooltip-content-styles`}
+                  >
                     <p className="font-medium text-[var(--secondary-text-color)]">
                       {entry.tooltipDescription}
                     </p>
@@ -1174,7 +1168,7 @@ const LineChartComponent = ({
             left: isMobileView ? 0 : 10,
             right: isMobileView ? 10 : 30,
             top: isMobileView ? 20 : 40,
-            bottom: isMobileView ? 40 : (doInvertTicks ? 30 : 0),
+            bottom: isMobileView ? 40 : doInvertTicks ? 30 : 0,
           }}
           onClick={(e) => handleChartClick(e)}
         >
@@ -1198,7 +1192,10 @@ const LineChartComponent = ({
             width={10}
             axisLine={false}
             tickLine={isMobileView ? false : true}
-            padding={{ left: isMobileView ? 5 : 10, right: isMobileView ? 5 : 10 }}
+            padding={{
+              left: isMobileView ? 5 : 10,
+              right: isMobileView ? 5 : 10,
+            }}
             label={{
               style: { fill: "#615E83" },
             }}
@@ -1213,28 +1210,44 @@ const LineChartComponent = ({
 
                 const validTotals = graphData
                   .map((item: any) => item.total)
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
                 const validPrevYears = graphData
                   .map((item: any) => item.previousYearTotal)
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
 
-                if (validTotals.length === 0 && validPrevYears.length === 0) return 0;
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 0;
 
-                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
                 const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
                 const paddedMax = overallMax * 1.1; // Add 10% padding
 
                 const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
                 const idealTickSize = range / 4;
 
-                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
 
                 return Math.floor(minValue / roundedTickSize) * roundedTickSize;
               },
@@ -1243,41 +1256,61 @@ const LineChartComponent = ({
 
                 const validTotals = graphData
                   .map((item: any) => item.total)
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
                 const validPrevYears = graphData
                   .map((item: any) => item.previousYearTotal)
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
 
-                if (validTotals.length === 0 && validPrevYears.length === 0) return 100;
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 100;
 
-                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
                 const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
                 const paddedMax = overallMax * 1.1; // Add 10% padding
 
                 const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
                 const idealTickSize = range / 4;
 
-                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
 
                 return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
-              }
+              },
             ]}
             tickCount={5}
             tickFormatter={tickFormatter}
-            label={isMobileView ? undefined : {
-              value: label,
-              angle: -90,
-              position: "insideLeft",
-              style: { textAnchor: "middle", fill: "#7D7D7D" },
-              fontSize: "14px",
-            }}
+            label={
+              isMobileView
+                ? undefined
+                : {
+                    value: label,
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { textAnchor: "middle", fill: "#7D7D7D" },
+                    fontSize: "14px",
+                  }
+            }
             axisLine={false}
             tickLine={false}
             tick={{
@@ -1419,22 +1452,26 @@ const LineChartComponent = ({
                     : []),
                 ] as CustomPayload
               }
-              wrapperStyle={isMobileView ? {
-                width: "100%",
-                position: "relative", 
-                bottom: -5,
-                left: 0,
-                fontSize: "12px",
-                fontWeight: "400",
-                display: "flex",
-                justifyContent: "center"
-              } : {
-                width: "auto",
-                top: -30,
-                right: 0,
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
+              wrapperStyle={
+                isMobileView
+                  ? {
+                      width: "100%",
+                      position: "relative",
+                      bottom: -5,
+                      left: 0,
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      display: "flex",
+                      justifyContent: "center",
+                    }
+                  : {
+                      width: "auto",
+                      top: -30,
+                      right: 0,
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }
+              }
               verticalAlign={isMobileView ? "bottom" : "top"}
               align={isMobileView ? "center" : "right"}
             />

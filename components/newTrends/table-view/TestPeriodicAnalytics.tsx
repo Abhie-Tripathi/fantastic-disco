@@ -68,6 +68,7 @@ import ExpandIcon from "/public/expandColumn.svg";
 import SmartInsights from "/public/smartInsights.svg";
 import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 function convertToLongDate(isoDateString: string): string {
   const date = new Date(isoDateString);
@@ -135,6 +136,7 @@ const TestPeriodicAnalytics = () => {
   const eventTypes = searchParams.get("eventTypes");
   const compareFrom = searchParams.get("compare_from");
   const compareTo = searchParams.get("compare_to");
+  const isMobileView = useIsMobile()
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
