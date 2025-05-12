@@ -70,7 +70,6 @@ export default function DateRangeSelector({
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
-  const { isTentimesUser } = useAuthContext();
   const {
     setMultipleLocalFilters,
     searchParams,
@@ -81,9 +80,7 @@ export default function DateRangeSelector({
   const enableCompareOptions =
     pathName === "/internal/trends" &&
     viewParam !== "treemap" &&
-    viewParam !== null &&
-    isTentimesUser;
-
+    viewParam !== null
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
