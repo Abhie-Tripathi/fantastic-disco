@@ -287,9 +287,6 @@ const Page: React.FC = () => {
       setSingleEventId(eventId);
       setModalOpen(true);
       setCurrentEnquiryStatus(eventenquiryStatus);
-      // const task = taskDetail[eventenquiryStatus]?.data?.find((item: any) => item.id === eventEnquiryId);
-      // // console.log('taskdetail11', task, taskDetail);
-      // setModalContent(task);
     }
   };
   
