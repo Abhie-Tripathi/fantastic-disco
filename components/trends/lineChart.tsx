@@ -1165,8 +1165,8 @@ const LineChartComponent = ({
         <LineChart
           data={graphData}
           margin={{
-            left: isMobileView ? 0 : 10,
-            right: isMobileView ? 10 : 30,
+            left: isMobileView ? -10 : 10,
+            right: isMobileView ? 0 : 30,
             top: isMobileView ? 20 : 40,
             bottom: isMobileView ? 40 : doInvertTicks ? 30 : 0,
           }}
@@ -1193,8 +1193,8 @@ const LineChartComponent = ({
             axisLine={false}
             tickLine={isMobileView ? false : true}
             padding={{
-              left: isMobileView ? 5 : 10,
-              right: isMobileView ? 5 : 10,
+              left: isMobileView ? 0 : 10,
+              right: isMobileView ? 0 : 10,
             }}
             label={{
               style: { fill: "#615E83" },
@@ -1203,7 +1203,7 @@ const LineChartComponent = ({
           <YAxis
             dataKey="total"
             fontSize="12px"
-            width={70}
+            width={isMobileView ? 50 : 70}
             domain={[
               () => {
                 if (!graphData || graphData.length === 0) return 0;
