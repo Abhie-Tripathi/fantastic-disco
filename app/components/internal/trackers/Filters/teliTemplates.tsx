@@ -47,7 +47,7 @@ const TeliTemplates = ({type, isMandatory}:any) => {
         <div className='flex justify-between w-[100%] gap-2'>
         <div className='flex gap-2 w-[80%]'>
         <div className="flex gap-2 flex-col border w-[50%] h-auto">
-        <LocationTemplate type={type} />
+        <LocationTemplate type={type}/>
       </div>
       <div className="flex justify-between gap-2 flex-col border w-[50%]">
         <DateRangeSelector type={type}/>
