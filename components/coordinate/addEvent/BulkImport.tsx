@@ -260,7 +260,7 @@ const BulkImport = ({
 
   return (
     <div className="px-3 flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-2 bg-[var(--background-secondary-color)] px-4 py-5 border border-[var(--border-color)] rounded-sm text-sm">
+      <div className={`flex items-center justify-between gap-2 bg-[var(--background-secondary-color)] px-4 py-5 border  rounded-sm text-sm ${allMatchTrue ? "border-[var(--border-color)]" : "border-[var(--danger-text-color)]"}`}>
         <span className="text-[var(--link-color)]">Uploaded file: </span>
         <span
           className="text-[#8F8F8F] italic font-bold line-clamp-1"

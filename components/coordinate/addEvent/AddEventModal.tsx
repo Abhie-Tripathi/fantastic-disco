@@ -94,7 +94,7 @@ export default function AddEventModal() {
       isMandatory: false,
     },
     {
-      defaultName: "Participation",
+      defaultName: "Action",
       subHeading: interestConfiguration?.interest
         .map((item) => item.label)
         .join(", "),
@@ -104,6 +104,7 @@ export default function AddEventModal() {
         "participation type",
         "participationType",
         "mode",
+        "action",
       ],
       isMatch: false,
       isMandatory: true,
@@ -184,6 +185,14 @@ export default function AddEventModal() {
 
   const handleImportState = (value: any) => {
     setImportState(value);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/csvFiles/addEvent.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -315,6 +324,7 @@ export default function AddEventModal() {
                   className="text-primary hover:text-primary w-fit self-end"
                   variant="outline"
                   size="sm"
+                  onClick={handleDownload}
                 >
                   Download Sample Format
                 </Button>
