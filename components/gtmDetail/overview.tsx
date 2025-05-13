@@ -286,7 +286,7 @@ export const Overview = ({
           {!isEventeli && (
             <SearchEventsCTAButton
               categories={categories}
-              format={format}
+              format={format.toLowerCase()}
               eventLocation={eventLocation}
             />
           )}

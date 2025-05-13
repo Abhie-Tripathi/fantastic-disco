@@ -135,6 +135,7 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const showMaturity = !!getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -307,6 +308,7 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
+              showMaturity={showMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
             />
@@ -337,6 +339,7 @@ const EventListItem = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  showMaturity,
 }: {
   trackerId?: string;
   view?: string;
@@ -346,6 +349,7 @@ const EventListItem = ({
   showValues: Show[];
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
+  showMaturity: boolean;
   global?: string;
 }) => {
   const address = event.basic.eventLocation ? (
@@ -635,24 +639,23 @@ const EventListItem = ({
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {showValues.includes(Show.maturity) &&
-                    event.advance?.maturity && (
-                      <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger>
-                            <Badge
-                              variant="outline"
-                              className="text-gray-600 capitalize rounded-sm"
-                            >
-                              {event.advance?.maturity}
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Maturity</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+                  {showMaturity && event.advance?.maturity && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.advance?.maturity}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Maturity</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                   {showValues.includes(Show.frequency) &&
                     event.advance?.frequency && (
                       <TooltipProvider>

@@ -146,7 +146,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
             </div>
 
             {poc.state !== 2 && (
-              <div className="mt-1">
+              <div className="mt-1" onClick={(e) => e.preventDefault()}>
                 <Button
                   disabled={poc.state === 1}
                   onClick={() => unlockPoc(poc.user_id)}

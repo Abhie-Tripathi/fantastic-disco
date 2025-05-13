@@ -211,9 +211,7 @@ export const QueryFilter = z.object({
     .optional(),
   viewBound: z.string().optional(),
   eventTypes: z.string().optional(),
-  categories: z
-    .string()
-    .optional(),
+  categories: z.string().optional(),
   designations: z
     .string()
     .transform((data) => {
@@ -524,6 +522,8 @@ export const QueryFilter = z.object({
     .optional(),
   view: z.string().optional(),
   groupBy: z.string().optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
 });
 
 export const FilterNames = Object.keys(QueryFilter.shape);

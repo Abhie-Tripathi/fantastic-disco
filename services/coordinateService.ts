@@ -333,6 +333,40 @@ export const useCoordinateService = () => {
     });
   };
 
+  const fetchEvents = (websiteUrl: string) => {  
+    const data = {
+      events: [],
+      totalCount: 0,
+    }
+    return data;
+  }
+
+  const fetchSimilarEvents = (eventData: any) => {
+    const payload = {
+      query: eventData.name,
+      // active_gte: eventData.startDate,
+      // active_lte: eventData.endDate,
+      limit: 10,
+    }
+    return api.request(
+      `${endpoints.event.events}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
+  }
+
+  const addNewEvent = async(formData: any) => {
+    const data = await externalAxios.post<any>(
+      `https://stg-board.10times.com/enquiry/submit`,
+      {
+        data: formData,
+      }
+    );
+    return data.data;
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -358,6 +392,9 @@ export const useCoordinateService = () => {
     getEnquiryFollowers,
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
+    fetchEvents,
+    fetchSimilarEvents,
+    addNewEvent,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

@@ -31,6 +31,7 @@ import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import { formatLocationParts } from "@/utils/locationFormat";
+import { PaginationComponent } from "../pagination";
 
 const EventCard = memo(
   ({
@@ -454,6 +455,9 @@ function EventList({
       params.set("eventTypes", "holiday");
       params.delete("viewBound");
     }
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
+    if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius && showEventType != "unAttended") {
       const viewBound = {
@@ -465,7 +469,7 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      if (params.get("locationIds"))
+      if (!params.get("viewBound"))
         params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
@@ -474,25 +478,27 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: [
-      "events",
-      filteredParams.toString(),
-      currentPage,
-      sortBy,
-      eventType,
-    ],
-    queryFn: () =>
-      source === "tracker"
-        ? getTrackerMapEvents(
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryFn: async () => {
+      if (source === "tracker") {
+        if (mapCenter && mapRadius) {
+          return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }&sortBy=${sortBy}`
-          )
-        : eventService.getEventsWithSearchParams(filteredParams.toString()),
+          );
+        } else {
+          return [];
+        }
+      } else {
+        return eventService.getEventsWithSearchParams(filteredParams.toString());
+      }
+    },
   });
-
+  
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -608,12 +614,17 @@ function EventList({
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <p className="text-lg font-semibold text-destructive">
+            {error && (
+              <p className="text-sm font-semibold text-destructive px-2">
+                {error.message}
+              </p>
+            )}
+            {/* <p className="text-lg font-semibold text-destructive">
               Failed to load events
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Please try again later
-            </p>
+            </p> */}
           </div>
         </div>
       );
@@ -680,6 +691,17 @@ function EventList({
             );
           })}
           {events.length > 0 && (
+            <PaginationComponent
+              showEntriesCount={false}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={20}
+              count={10}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={() => {}}
+            />
+          )}
+          {/* {events.length > 0 && (
             <Pagination>
               <PaginationContent className="flex-wrap">
                 <PaginationItem>
@@ -709,7 +731,7 @@ function EventList({
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          )}
+          )} */}
         </ScrollArea>
       </>
     );

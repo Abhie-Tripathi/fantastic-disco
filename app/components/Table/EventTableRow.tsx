@@ -126,6 +126,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   global,
 }) => {
   const { getFilterValue } = useFilterState();
+  const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -570,18 +571,17 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Maturity Column */}
-      {show.includes(Show.maturity) &&
-        event.advance?.maturity !== undefined && (
-          <TableCell className="text-center">
-            {event.advance?.maturity ? (
-              <span className="badge_primary capitalize">
-                {event.advance?.maturity}
-              </span>
-            ) : (
-              "-"
-            )}
-          </TableCell>
-        )}
+      {maturity && event.advance?.maturity !== undefined && (
+        <TableCell className="text-center">
+          {event.advance?.maturity ? (
+            <span className="badge_primary capitalize">
+              {event.advance?.maturity}
+            </span>
+          ) : (
+            "-"
+          )}
+        </TableCell>
+      )}
 
       {/* Impact Score Column */}
       {/* {show.includes(Show.scores) &&
