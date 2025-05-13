@@ -38,7 +38,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
   const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
   useEffect(() => {
     const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
-    console.log("aiStatus", aiStatus);
+    // console.log("aiStatus", aiStatus);
     
     let res=0;
     if(aiStatus?.companyData?.status === 1)

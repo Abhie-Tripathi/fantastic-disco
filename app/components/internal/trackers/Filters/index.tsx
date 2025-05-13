@@ -1089,7 +1089,7 @@ const Pages = () => {
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData?.filterValues[key];
-        console.log(typeof value, value);
+        // console.log(typeof value, value);
         if (Array.isArray(value)) {
           if (key === "includeKeywords" || key === "excludeKeywords") {
             const updatedValue = value.map((item) => item.replaceAll("_", " "));
