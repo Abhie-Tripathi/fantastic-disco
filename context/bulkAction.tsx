@@ -16,6 +16,10 @@ import {
 // and a function to update this state.
 interface BulkActionContextType {
   isBulkActionActive: boolean;
+  selectedIds: Set<string>;
+  selectedData: any[];
+  setSelectedData: Dispatch<any>;
+  setSelectedIds: Dispatch<SetStateAction<Set<string>>>;
   setIsBulkActionActive: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -29,6 +33,10 @@ interface Props {
 // if the context is accidentally used outside the provider.
 const BulkActionContext = createContext<BulkActionContextType | null>({
   isBulkActionActive: false,
+  selectedIds: new Set<string>(),
+  selectedData: [],
+  setSelectedData: () => {},
+  setSelectedIds: () => {},
   setIsBulkActionActive: () => {},
 });
 
@@ -40,15 +48,25 @@ const BulkActionContext = createContext<BulkActionContextType | null>({
 export function BulkActionProvider({ children }: Props) {
   // Internal state to track if bulk action mode is enabled
   const [isBulkActionActive, setIsBulkActionActive] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedData, setSelectedData] = useState<any[]>([]);
   const pathname = usePathname();
 
   useEffect(() => {
     setIsBulkActionActive(false);
+    setSelectedIds(new Set());
   }, [pathname]);
 
   return (
     <BulkActionContext.Provider
-      value={{ isBulkActionActive, setIsBulkActionActive }}
+      value={{
+        isBulkActionActive,
+        selectedIds,
+        selectedData,
+        setSelectedData,
+        setSelectedIds,
+        setIsBulkActionActive,
+      }}
     >
       {children}
     </BulkActionContext.Provider>

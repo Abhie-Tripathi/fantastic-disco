@@ -41,7 +41,7 @@ export default function CreateTrackerDialog({
   const { localFilters, getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { createTracker } = useTrackerServices();
-  const { setIsBulkActionActive } = useBulkAction();
+  const { setIsBulkActionActive, setSelectedIds } = useBulkAction();
 
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
@@ -184,6 +184,7 @@ export default function CreateTrackerDialog({
       });
       onOpenChange(false);
       setIsBulkActionActive(false);
+      setSelectedIds(new Set());
     } catch (error) {
       console.log("Tracker creation failed: ", error);
       toast({
@@ -195,8 +196,6 @@ export default function CreateTrackerDialog({
       setIsLoading(false);
     }
   }
-
-  async function createPeopleTracker() {}
 
   function handleTrackerCreationByType() {
     if (trackerType === "people" || trackerType === "companies") {

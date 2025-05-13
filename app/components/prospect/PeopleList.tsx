@@ -33,7 +33,11 @@ interface PeopleCardProps {
   unlockPoc: (pocId: number | string) => Promise<void>;
   isBulkActionActive: boolean;
   selectedPeopleIds: Set<string>;
-  toggleSelection: (id: string) => void;
+  toggleSelection: (
+    id: string,
+    userName?: string | null,
+    userOrgWebsite?: string | null
+  ) => void;
 }
 
 interface ContactInfoProps {
@@ -109,7 +113,9 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
       {isBulkActionActive && (
         <Checkbox
           checked={selectedPeopleIds.has(poc.user_id)}
-          onCheckedChange={() => toggleSelection(poc.user_id)}
+          onCheckedChange={() =>
+            toggleSelection(poc.user_id, poc.user_name, poc.user_companyName)
+          }
         />
       )}
       <div className="bg-background rounded-xl border shadow-sm relative w-full">
@@ -203,10 +209,14 @@ export const PeopleList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
-  const { isBulkActionActive, setIsBulkActionActive } = useBulkAction();
-  const [selectedPeopleIds, setSelectedPeopleIds] = useState<Set<string>>(
-    new Set()
-  );
+  const {
+    isBulkActionActive,
+    selectedIds,
+    selectedData,
+    setSelectedIds,
+    setSelectedData,
+    setIsBulkActionActive,
+  } = useBulkAction();
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<any>();
 
@@ -257,16 +267,25 @@ export const PeopleList: React.FC = () => {
   );
 
   function handleSelectAll(checked: boolean) {
-    if (checked) {
-      const allIds = filteredUsers.map((user) => user.user_id);
-      setSelectedPeopleIds(new Set(allIds));
-    } else {
-      setSelectedPeopleIds(new Set());
-    }
+    setSelectedIds((prevSelectedIds) => {
+      const updatedSelectedIds = new Set(prevSelectedIds);
+      if (checked) {
+        filteredUsers.forEach((user) => updatedSelectedIds.add(user.user_id));
+      } else {
+        filteredUsers.forEach((user) =>
+          updatedSelectedIds.delete(user.user_id)
+        );
+      }
+      return updatedSelectedIds;
+    });
   }
 
-  function toggleSelection(id: string) {
-    setSelectedPeopleIds((prev) => {
+  function toggleSelection(
+    id: string,
+    userName?: string | null,
+    userOrgWebsite?: string | null
+  ) {
+    setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -275,11 +294,26 @@ export const PeopleList: React.FC = () => {
       }
       return next;
     });
+   setSelectedData((prev) => {
+    const next = { ...prev };
+    
+    if (id in next) {
+      // If ID already selected, remove it completely
+      delete next[id];
+    } else {
+      // If ID not selected, add with userName and userOrgWebsite as empty strings
+      next[id] = { userName, userOrgWebsite };
+    }
+
+    return next;
+  });
   }
+
+  console.log(selectedData);
 
   function handleCancel() {
     setIsBulkActionActive(false);
-    setSelectedPeopleIds(new Set());
+    setSelectedIds(new Set());
   }
 
   function handleCreate() {
@@ -287,11 +321,11 @@ export const PeopleList: React.FC = () => {
     const filterValues = {
       filterValues: {
         userName: filteredUsers
-          .filter((user) => selectedPeopleIds.has(user.user_id))
+          .filter((user) => selectedIds.has(user.user_id))
           .map((user) => user.user_name || "")
           .join(","),
         userOrgWebsite: filteredUsers
-          .filter((user) => selectedPeopleIds.has(user.user_id))
+          .filter((user) => selectedIds.has(user.user_id))
           .map((user) => user.user_companyName || "")
           .join(","),
       },
@@ -337,6 +371,11 @@ export const PeopleList: React.FC = () => {
         (item) => item.user_name !== null && item.user_profilePicture !== null
       ),
     [companyUsers]
+  );
+
+  const isAllSelected = useMemo(
+    () => filteredUsers.every((user) => selectedIds.has(user.user_id)),
+    [filteredUsers, selectedIds]
   );
 
   if (isLoading) {
@@ -388,14 +427,14 @@ export const PeopleList: React.FC = () => {
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
-              checked={selectedPeopleIds.size === filteredUsers.length}
+              checked={isAllSelected}
               onCheckedChange={handleSelectAll}
             />
             <label className="text-sm">Select people to create tracker</label>
           </div>
           <div className="flex gap-2">
             <Button
-              disabled={selectedPeopleIds.size === 0}
+              disabled={selectedIds.size === 0}
               variant={"default"}
               className="h-8"
               onClick={() => handleCreate()}
@@ -419,7 +458,7 @@ export const PeopleList: React.FC = () => {
             poc={item}
             unlockPoc={unlockPoc}
             isBulkActionActive={isBulkActionActive}
-            selectedPeopleIds={selectedPeopleIds}
+            selectedPeopleIds={selectedIds}
             toggleSelection={toggleSelection}
           />
         ))}
