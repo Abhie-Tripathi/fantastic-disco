@@ -49,19 +49,7 @@ export const formatEstimatedSpend = (spend: string | null) => {
 };
 
 export const getEventLatLong = (event: Event) => {
-  const lat = parseFloat(
-    event.basic.eventLocation?.venue?.latitude ||
-      event.basic.eventLocation?.city?.latitude ||
-      event.basic.eventLocation?.state?.latitude ||
-      event.basic.eventLocation?.country?.latitude ||
-      ""
-  );
-  const lon = parseFloat(
-    event.basic.eventLocation?.venue?.longitude ||
-      event.basic.eventLocation?.city?.longitude ||
-      event.basic.eventLocation?.state?.longitude ||
-      event.basic.eventLocation?.country?.longitude ||
-      ""
-  );
+  const lat = parseFloat(event.basic.eventLocation?.latitude || "0");
+  const lon = parseFloat(event.basic.eventLocation?.longitude || "0");
   return { lat, lon };
 };

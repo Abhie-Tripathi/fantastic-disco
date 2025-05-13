@@ -5,6 +5,8 @@ import { CalendarMonthEventWithHeatmap } from ".";
 import { Alert, Event } from "@/types/events";
 import { useTheme } from "@/context/theme";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const YearView = ({
   date,
@@ -21,6 +23,7 @@ const YearView = ({
   const { getFilterValue } = useFilterState();
   const months = moment.months();
   const { theme } = useTheme();
+  const searchParams = useSearchParams();
 
   const startingMonth = (function () {
     const active_gte = getFilterValue("active_gte");
@@ -59,8 +62,8 @@ const YearView = ({
     const monthIndex = months.indexOf(month);
     return unattendedEvents.alerts?.filter(
       (event) =>
-        moment(event.startDate).month() === monthIndex &&
-        moment(event.startDate).year() === date.getFullYear()
+        moment(event.basic.startDate).month() === monthIndex &&
+        moment(event.basic.startDate).year() === date.getFullYear()
     );
   };
 
@@ -95,9 +98,23 @@ const YearView = ({
               <div className="flex items-center gap-2">
                 <div className="font-semibold flex gap-5 ">{month}</div>
                 {monthAlerts && monthAlerts.length > 0 && (
-                  <span className="bg-destructive text-white text-xs px-2 py-1 rounded-full">
+                  <Link
+                    href={`?${new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      view: "list",
+                      active_gte: moment(
+                        `${date.getFullYear()}-${index + 1}-01`
+                      ).format("YYYY-MM-DD"),
+                      active_lte: moment(
+                        `${date.getFullYear()}-${index + 1}-01`
+                      )
+                        .endOf("month")
+                        .format("YYYY-MM-DD"),
+                    }).toString()}`}
+                    className="bg-destructive text-white text-xs px-2 py-1 rounded-full hover:opacity-90"
+                  >
                     {monthAlerts.length} Alert
-                  </span>
+                  </Link>
                 )}
               </div>
 
@@ -144,7 +161,10 @@ const YearView = ({
                       );
 
                       const dayHolidays = monthHolidays?.filter((event) =>
-                        moment((event as any).startDateTime).isSame(currentDate, "day")
+                        moment((event as any).startDateTime).isSame(
+                          currentDate,
+                          "day"
+                        )
                       );
                       const dayTotalEvents = dayEvents.reduce(
                         (sum, event) => sum + (event?.count || 0),
@@ -162,7 +182,9 @@ const YearView = ({
                       const backgroundColor =
                         dayTotalEvents > 0
                           ? getHeatmapColor(heatmapCategory)
-                          : theme === "dark" ? "#171717" : "#fff";
+                          : theme === "dark"
+                          ? "#171717"
+                          : "#fff";
 
                       return (
                         <td
