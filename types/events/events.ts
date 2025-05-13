@@ -127,10 +127,19 @@ const BasicEventSchema = z.object({
     })
   ),
   eventLocation: z.object({
-    country: CountrySchema.nullable(),
-    venue: VenueSchema.nullable(),
-    city: CitySchema.nullable(),
-    state: StateSchema.nullable(),
+    id: z.string(),
+    name: z.string(),
+    cityId: z.string().nullable(),
+    cityName: z.string().nullable(),
+    stateId: z.string().nullable(),
+    stateName: z.string().nullable(),
+    countryId: z.string().nullable(),
+    countryName: z.string().nullable(),
+    latitude: z.string().nullable(),
+    longitude: z.string().nullable(),
+    address: z.string().nullable(),
+    displayName: z.string().nullable(),
+    locationType: z.enum(["VENUE", "CITY", "STATE", "COUNTRY"]),
   }),
   organizer: z
     .object({
@@ -255,3 +264,22 @@ export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
 export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
+
+export interface HolidayEventLocation {
+  id: string;
+  name: string;
+  cityId: string | null;
+  cityName: string | null;
+  stateId: string | null;
+  stateName: string | null;
+  countryId: string | null;
+  countryName: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  address: string | null;
+  displayName: string | null;
+  businessScore?: number;
+  socialScore?: number;
+  reason?: string;
+  locationType: "VENUE" | "CITY" | "STATE" | "COUNTRY";
+}
