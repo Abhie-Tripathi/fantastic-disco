@@ -225,9 +225,9 @@ const Internal = ({
       <div className={styles.scrollContainer} ref={divRef}>
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
-          <div className={styles.countsContainer}>
+          <div className="gap-2 justify-between md:mx-[80px] grid grid-cols-4">
             {coordinateCount && coordinateCount.map((item: any, index: number) => (
-              <div className={`${styles.exhibitorCount}`} key={index}>
+              <div className="flex flex-col bg-[var(--primary-light-color)] items-center px-6 py-2 rounded-lg text-primary" key={index}>
                 <div className={styles.count}>
                   {item?.count}
                 </div>
