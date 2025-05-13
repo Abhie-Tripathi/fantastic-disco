@@ -6,6 +6,7 @@ import EventCard from "./EventCard";
 import Image from "next/image";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
   duplicateEvents?: any;
@@ -33,11 +34,12 @@ const SimilarEventCard = ({
   const event = {
     name: eventData.name,
     logoUrl: eventData.logo,
-    organizer: eventData.organizer,
+    organizer: eventData?.organizer ?? "",
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
     // address: `${eventData.venue}, ${eventData.state}, ${eventData.country}`,
     address: [
+      eventData.venue,
       eventData.city,
       eventData.state !== eventData.city ? eventData.state : null,
       eventData.country !== eventData.city ? eventData.country : null,
@@ -86,14 +88,20 @@ const SimilarEventCard = ({
               </Badge>
             )}
 
-            <Button
-              size="xs"
-              className="hover:text-[var(--danger-text-color)] text-[var(--danger-text-color)] text-xs font-normal px-2 rounded-sm"
-              variant="outline"
-              onClick={() => setShowSimilar((prev) => !prev)}
-            >
-              {duplicateEvents?.length} Similar Events
-            </Button>
+            {duplicateEvents && duplicateEvents?.length > 0 &&
+              <Button
+                size="xs"
+                className="hover:text-[var(--danger-text-color)] text-[var(--danger-text-color)] text-xs font-normal px-2 rounded-sm"
+                variant="outline"
+                onClick={() => setShowSimilar((prev) => !prev)}
+              >
+                {duplicateEvents?.length} Similar Events
+
+                <ChevronDown
+                  className={`h-4 w-4 ml-1`}
+                />
+              </Button>
+            }
           </div>
         </div>
       </div>
@@ -111,17 +119,29 @@ const SimilarEventCard = ({
 
           {duplicateEvents?.map((item: any) => {
             const eventItem = {
-              id: item.basic.id,
-              name: item.basic.name,
-              logo: item.basic.logo,
-              organizer: item.basic?.organizer?.name,
-              startDate: item.basic.startDateTime,
-              endDate: item.basic.endDateTime,
-              venue: "Dubai International Convention & Exhibition Centre",
-              state: item.basic.eventLocation?.state?.name,
-              city: item.basic.eventLocation?.city?.name,
-              country: item.basic.eventLocation?.country?.name,
-              eventType: item.basic?.primaryEventType,
+              // id: item.basic.id,
+              // name: item.basic.name,
+              // logo: item.basic.logo,
+              // organizer: item.basic?.organizer?.name,
+              // startDate: item.basic.startDateTime,
+              // endDate: item.basic.endDateTime,
+              // venue: "Dubai International Convention & Exhibition Centre",
+              // state: item.basic.eventLocation?.state?.name,
+              // city: item.basic.eventLocation?.city?.name,
+              // country: item.basic.eventLocation?.country?.name,
+              // eventType: item.basic?.primaryEventType,
+              id: item.id,
+              name: item.name,
+              logo: "",
+              organizer: item?.companyName,
+              startDate: item?.startDate,
+              endDate: item?.endDate,
+              venue: item?.venueName,
+              state: item?.state,
+              city: item?.cityName,
+              country: item?.countryName,
+              eventType: item?.eventType?.[0],
+              isProductEvent: item?.isProductEvent,
             };
             return <EventCard {...eventItem} key={eventItem.id} />;
           })}

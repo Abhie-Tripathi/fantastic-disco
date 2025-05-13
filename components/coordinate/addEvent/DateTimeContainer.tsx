@@ -5,7 +5,7 @@ import styles from "@/app/components/TemplateViewsNew/AddEventForm/Details/datea
 // import CalendarDropdown from "./CalendarDropdown";
 // import TimeDropdown from "./TimeDropdown";
 import useOutsideClick from "@/hooks/useOutsideClick";
-import { FormState } from "@/types/Formstate";
+import { AddEventFormState } from "@/types/Formstate";
 import CalendarDropdown from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/CalendarDropdown";
 import TimeDropdown from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/TimeDropdown";
 
@@ -19,8 +19,8 @@ const formatDate = (date: string) => {
 };
 interface TimeSettingsProps {
   formTheme: string;
-  formState: FormState;
-  handleChange: (field: keyof FormState, value: any) => void;
+  formState: AddEventFormState;
+  handleChange: (field: keyof AddEventFormState, value: any) => void;
   theme?: string;
 }
 
@@ -233,9 +233,7 @@ const DateTimeContainer = ({
   return (
     <div className={`${styles.body}`}>
       <div
-        className={`${styles.dateAndTimeContainer} ${
-          theme && theme === "dark" ? styles.darkdateAndTimeContainer : ""
-        }`}
+        className={`bg-accent flex items-center justify-between rounded-md py-3 pl-9 px-4 w-full`}
       >
         <div
           className={`${styles.startEndStyle} ${
