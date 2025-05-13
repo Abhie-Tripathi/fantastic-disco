@@ -63,7 +63,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
         </span>
       </div>
       <div className="text-sm text-[var(--secondary-text-color)]">
-        Here's What We Found for You! Choose from the below and add them to get started on tracking
+        Here&apos;s What We Found for You! Choose from the below and add them to get started on tracking
       </div>
     </div>
   ) : (!loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) ?(
@@ -71,11 +71,11 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
       <div className="flex gap-1">
         <Image src={fetchIcon} height={18} width={18} alt="loading" />
         <span className="font-medium text-base">
-          Hang in there! We're analysing the best for you <span className="dots"></span>
+          Hang in there! We&apos;re analysing the best for you <span className="dots"></span>
         </span>
       </div>
       <div className="text-sm text-[var(--secondary-text-color)]">
-        We're gathering the information to create your trackers
+        We&apos;re gathering the information to create your trackers
       </div>
     </div>
   ): (
@@ -87,7 +87,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
         </span>
       </div>
       <div className="text-sm text-[var(--secondary-text-color)]">
-        We're gathering the information to create your trackers
+        We&apos;re gathering the information to create your trackers
       </div>
     </div>
   )}
