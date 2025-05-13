@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import DateRangePopup from "./dateRangePopup";
 import { useAuthContext } from "@/context";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { isEventeli } from "@/config";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -87,7 +88,7 @@ export default function DateRangeSelector({
   const enableCompareOptions =
     pathName === "/internal/trends" &&
     viewParam !== "treemap" &&
-    viewParam !== null;
+    (isEventeli || viewParam !== null);
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
