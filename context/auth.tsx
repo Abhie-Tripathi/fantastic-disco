@@ -74,6 +74,7 @@ type authContextType = {
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
   isAuthenticating: boolean;
+  showOTPMessage: boolean;
 };
 interface newUserResponse {
   user: {
@@ -108,6 +109,7 @@ const authContextDefaultValues: authContextType = {
   setIsProfileUpdated: () => {},
   setProfilePic: () => {},
   isAuthenticating: false,
+  showOTPMessage: false,
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -120,6 +122,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const { updateMyProfileData } = useProfileServices();
   const [user, setUser] = useState<UserResponse | null>(null);
   const { getLocationName } = useLocationService();
+  const [showOTPMessage, setShowOTPMessage] = useState(false);
   const { request, error, isLoading, setError } = useApi<any>();
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const eventService = useEventsService();
@@ -264,6 +267,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
+        setShowOTPMessage(true);
         router.push(`/verify-otp?email=${userDto.email}`);
       } catch (err: any) {
         console.error("Sign up error:", err);
@@ -294,6 +298,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
+        setShowOTPMessage(true);
         router.push(`/verify-otp?email=${userDto.email}`);
         // await generateOTP(userDto.email);
       } catch (err) {
@@ -546,6 +551,7 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     },
     isAuthenticating,
+    showOTPMessage,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

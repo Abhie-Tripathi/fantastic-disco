@@ -89,7 +89,6 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
           {/* <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium">Compare with Past data</h3>
             <Switch
-              disabled
               checked={compareEnabled}
               onCheckedChange={setCompareEnabled}
             />
