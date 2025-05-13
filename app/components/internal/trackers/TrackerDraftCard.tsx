@@ -1,17 +1,30 @@
 import { Bell, NotebookPen, Settings } from "lucide-react";
-
-const TrackerDraftCard = ({data, type, heading}:any) => {    
+import Image from 'next/image';
+interface TrackerDraftCardProps {
+    data:string;
+    heading:string;
+    imgUrl:string;
+    view?:string;
+    type:string;
+}
+const TrackerDraftCard = ({data, heading, imgUrl, view, type}:TrackerDraftCardProps) => {   
+   if(!data) return null;
     return(
         <div className="flex gap-5 p-3 rounded-lg shadow-[1.5px_3px_9px_0px_#EDEBEB66] border border-[var(--border-color)] justify-between">
             <div className="flex gap-5">
-            <div>abc</div>
+            <div className="rounded-[8px] bg-white shadow-[0px_3.38px_10.13px_0px_#0000001F] h-fit p-3 items-baseline flex">
+            <Image src={imgUrl} alt="draftTracker" width={30} height={25} />
+            </div>
             <div className="flex flex-col gap-3">
                 <div className="font-semibold text-base">{heading}</div>
-                <div className="badge_info w-fit border border-[var(--info-text-color))] px-1.5 py-0" style={{fontSize:"10px"}}>{type}</div>
+                {/* <div className="badge_info w-fit border border-[var(--info-text-color))] px-1.5 py-0" style={{fontSize:"10px"}}>{type}</div> */}
                 <div className="flex items-center gap-3">
                 <NotebookPen width={16} height={16}/>
                 <Bell width={16} height={16}/>
                 <Settings width={16} height={16}/>
+                {view!=="minView" && 
+                <div className="badge_info w-fit border border-[var(--info-text-color))] px-1.5 py-0" style={{fontSize:"10px"}}>{data}</div>
+                }
                 </div>
             </div>
             <div>

@@ -151,6 +151,20 @@ type Filter = {
 };
 type FilterContextType = {
   localFilters: Filters;
+  loadingState: {
+    isKeywordsLoading: boolean;
+    isCompetitorsLoading: boolean;
+    isPeopleLoading: boolean;
+  };
+  setLoadingState: React.Dispatch<
+    React.SetStateAction<{
+      isKeywordsLoading: boolean;
+      isCompetitorsLoading: boolean;
+      isPeopleLoading: boolean;
+    }>
+  >;
+  templateView: boolean;
+  setTemplateView: React.Dispatch<React.SetStateAction<boolean>>;
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
   clearLocalFilters: () => void;
@@ -185,12 +199,18 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
+  const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")
     ) as Filters;
   }, []);
-
+    const [loadingState, setLoadingState] = useState({
+      isKeywordsLoading:  aiStatus?.keywordData?.status === 1 || false,
+      isCompetitorsLoading: aiStatus?.competitorData?.status===1 || false,
+      isPeopleLoading: aiStatus?.companyData?.status===1 || false,
+    });
+    const [templateView, setTemplateView] = useState(false);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
       const params = Object.fromEntries(searchParams.entries()) as Filters;
@@ -397,6 +417,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       localFilters,
+      loadingState,
+      setLoadingState,
+      templateView,
+      setTemplateView,
       morphedData,
       enabledFilters,
       setLocalFilter,
@@ -409,6 +433,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       replaceLocalFilter,
     }),
     [
+      templateView,
+      loadingState,
       localFilters,
       morphedData,
       enabledFilters,

@@ -9,16 +9,20 @@ import React, {
 import { usePathname } from "next/navigation";
 import { Tracker } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
-import { setWeek } from "date-fns";
+import { set, setWeek } from "date-fns";
 
 const trackerValues: any = {
   isNewCall: false,
   isLoading: false,
   savedEventCount: 0,
-  comp: [],
+  suggestion: 0,
+  setSuggestion: () => {},
+  comp:{},
   setComp: () => {},
-  keywordsTracker: [],
+  keywordsTracker: {},
   setKeywordsTracker: () => {},
+  peopleTracker: {},
+  setPeopleTracker: () => {},
   setSavedEventCount: () => {},
   setIsNewCall: () => {},
   editTrue: false,
@@ -40,14 +44,22 @@ export const TrackerContextProvider = ({ children }: any) => {
   const [savedEventCount, setSavedEventCount] = useState(0);
   const [data, setData] = useState<Tracker | null>(null);
   const pathName = usePathname().split("/");
+  const [suggestion , setSuggestion] = useState(0);
   const [isNewCall, setIsNewCall] = useState(false);
   const [editTrue, setEditTrue] = useState(false);
   const [trackerId, setTrackerId] = useState("");
   const [skip, setSkip] = useState(Number(getFilterValue("skip")) || 0);
   const [searchValue, setSearchValue] = useState(getFilterValue("q") || "");
-  const [comp,setComp] = useState([]);
+  const [comp,setComp] = useState({
+    competitors:[],
+    name:"",
+  });
   const [keywordsTracker, setKeywordsTracker] = useState({
     keywords: [],
+    name:"",
+  });
+  const [peopleTracker, setPeopleTracker] = useState({
+    people: [],
     name:"",
   });
   const pages = [
@@ -116,7 +128,11 @@ export const TrackerContextProvider = ({ children }: any) => {
     comp,
     setComp,
     keywordsTracker,
-    setKeywordsTracker
+    setKeywordsTracker,
+    peopleTracker,
+    setPeopleTracker,
+    suggestion,
+    setSuggestion,
   };
   return (
     <TrackerContext.Provider value={value}>{children}</TrackerContext.Provider>

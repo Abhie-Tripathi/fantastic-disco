@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useCallback} from "react";
+import React, {useEffect, useState, useMemo, useCallback, useRef} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "@/app/(internal)/internal/trackers/page.style.module.css"
@@ -17,36 +17,16 @@ import FetchTemplateModal from "./internal/trackers/FetchTemplateModal";
 import { fetchData } from "next-auth/client/_utils";
 import FetchTemplateMinModal from "./internal/trackers/FetchTemplateMinModal";
 import { useCompanyService } from "@/services/companyService";
-import { suggestionGenerator } from "@/utils/openAI";
+import { perplexityAiSuggestion, suggestionGenerator } from "@/utils/openAI";
 import { useTrackerContext } from "@/context/tracker";
-
+import { useFilterContext } from "@/context/filterContext";
+import {companyData, competitorData, keywordData} from "@/types/trackers";
 interface TemplateProps{
   isData: boolean;
   hideTemplates: (val: boolean) => void;
 }
 
-const fetchAISuggestion = async (inputValue: string) => {
-  const promptText = `List 6 domains including ${inputValue} (as the main entry) and 5 of its competitors. For each, provide their relevant industry categories and keywords based on the following list:
-
-"Agriculture & Forestry, Animals & Pets, Apparel & Clothing, Arts & Crafts, Auto & Automotive, Baby, Kids & Maternity, Banking & Finance, Building & Construction, Business Services, Education & Training, Electric & Electronics, Entertainment & Media, Environment & Waste, Fashion & Beauty, Food & Beverages, Home & Office, Hospitality, Industrial Engineering, IT & Technology, Logistics & Transportation, Medical & Pharma, Miscellaneous, Packing & Packaging, Power & Energy, Science & Research, Security & Defense, Telecommunication, Travel & Tourism, Wellness, Health & Fitness"
-
-Return the output in this format:
-
-{
-  "data": {
-    "domain": "${inputValue}",
-    "categories": ["Category 1", "Category 2"],
-    "keywords": ["keyword1", "keyword2"]
-  },
-  "competitorData": [
-    {
-      "domain": "example1.com",
-      "categories": ["Category A", "Category B"],
-      "keywords": ["keywordA", "keywordB"]
-    }
-  ]
-}`;
-
+const fetchAISuggestion = async (promptText: string) => {
   try {
     const aiResponse: any = await suggestionGenerator(promptText);
     let content = aiResponse.choices?.[0]?.message?.content;
@@ -58,10 +38,14 @@ Return the output in this format:
 
     const temp = JSON.parse(content);
 
-    if (temp?.data && temp?.competitorData && Array.isArray(temp.competitorData)) {
-      return [temp.data, ...temp.competitorData];
+    console.log("AI Parsed Response:", temp); 
+
+    const res = temp?.data?.companyData || temp?.data?.competitorData;
+
+    if (res) {
+      return res;
     } else {
-      throw new Error("Invalid response structure");
+      throw new Error("Invalid response structure: neither companyData nor competitorData found");
     }
   } catch (err) {
     console.error("Fetch failed:", err);
@@ -69,14 +53,34 @@ Return the output in this format:
   }
 };
 
+
+
 const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
-  const {comp,setComp, keywordsTracker, setKeywordsTracker} = useTrackerContext();
+  const {comp,setComp, keywordsTracker, setKeywordsTracker, peopleTracker, setPeopleTracker} = useTrackerContext();
+  const {loadingState, setLoadingState, templateView, setTemplateView} = useFilterContext();
   const {getTrackerCount}=useTrackerServices();
   const {getCompanyDetailById} = useCompanyService();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
   const [showFetchedData, setShowFetchedData] = useState(false);
-  const [inputValue,setInputValue] = useState("");
+  const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  const [inputValue,setInputValue] = useState(aiStatus?.companyData?.domain || "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
+  // const [loadingState, setLoadingState] = useState({
+  //   isKeywordsLoading:  aiStatus?.keywordData?.status === 1 || false,
+  //   isCompetitorsLoading: aiStatus?.competitorData?.status===1 || false,
+  //   isPeopleLoading: aiStatus?.companyData?.status===1 || false,
+  // });
+  const[min, setMin]=useState(false);
+  const initialAIStatus = {
+    competitorData: { status: 0, data: [], domain: "", name:"" },
+    companyData: { status: 0, data: [], name:"" },
+    keywordData: { status: 0, data: [], name:"" },
+  };
   const {fetchCompanyData}=useTrackerServices();
   const [intelScoreData,setIntelScoreData] = useState([
     {
@@ -140,7 +144,16 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
     const finalResult = countData?.find((item) => item?.type === type);
     return finalResult?.count || 0;
   }, [countData]);
-
+const updateLocalStorage=(key:string, data: companyData| competitorData | keywordData)=>{
+  const stored = localStorage.getItem("companySuggestion");
+      const parsed = stored ? JSON.parse(stored) : {};
+      const updated = {
+        ...parsed,
+        [key]: data,
+      };
+    
+      localStorage.setItem("companySuggestion", JSON.stringify(updated));
+}
   const renderCount = useCallback((url:string) => {
     const count = result(url);
     return count > 0 ? (
@@ -154,29 +167,197 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   }, []);
 
   const fetchData = () => {
+    // console.log("templateView", templateView);
+    
+    if(templateView) setTemplateView(false);
+    // 1. Load existing data or use initial state
+    let currentData;
+    try {
+      const storedData = localStorage.getItem("companySuggestion");
+      currentData = storedData ? JSON.parse(storedData) : { ...initialAIStatus };
+    } catch (error) {
+      console.error("Error loading stored data:", error);
+      currentData = { ...initialAIStatus };
+    }
+  
+    // 2. Prepare updated status
+    const updatedStatus = {
+      competitorData: currentData.competitorData?.status === 1 
+        ? currentData.competitorData 
+        : { ...initialAIStatus.competitorData },
+      
+      companyData: {
+        ...(currentData.companyData?.status === 1 
+          ? currentData.companyData 
+          : initialAIStatus.companyData),
+        domain: inputValue // Always update domain
+      },
+      
+      keywordData: currentData.keywordData?.status === 1 
+        ? currentData.keywordData 
+        : { ...initialAIStatus.keywordData }
+    };
+  
+    // 3. Debug before saving
+    console.log("Updating localStorage with:", {
+      original: currentData,
+      updated: updatedStatus
+    });
+  
+    // 4. Save and update UI
+    localStorage.setItem("companySuggestion", JSON.stringify(updatedStatus));
     setShowFetchedData(true);
     fetchCompany();
-  }
+  };
 
   const fetchCompany = async () => {
-    const response = await fetchCompanyData(inputValue, 0, 1);
-    const aiSuggestion = await fetchAISuggestion(inputValue);
-    const domains = aiSuggestion.map((item: any) => item.domain);
-    setComp(domains);
-    console.log(aiSuggestion);
-    
-    console.log(response.companies[0].id);
-    const companyDetail = await getCompanyDetailById(response.companies[0].id);
-    if(companyDetail){
-      setIsLoading(false);
-      const keywordValues = companyDetail.companyData.industries.asOrganizer.map((item: any) => item.name);
-      setKeywordsTracker(prev => ({
+    let fallbackCategories: string[] = [];
+    let fallbackDomains: string[] = [];
+    let allPOCs;
+    try {
+      // Step 1: Always get AI suggestions first
+      const prompt = `List 5 direct competitors of the domain ${inputValue}. Return only this JSON format:
+{
+"data":{
+  "competitorData": [
+    { "domain": "competitor1.com" },
+    { "domain": "competitor2.com" },
+    { "domain": "competitor3.com" },
+    { "domain": "competitor4.com" },
+    { "domain": "competitor5.com" }
+  ]
+}
+}
+
+Respond only with valid JSON. No explanation, no markdown, and no extra text.
+`
+console.log(aiStatus?.competitorData?.status);
+
+      if(!loadingState.isCompetitorsLoading){
+      const aiSuggestion = await fetchAISuggestion(prompt);
+      if (!aiSuggestion || !Array.isArray(aiSuggestion)) {
+        throw new Error("Invalid AI suggestion format");
+      }
+      console.log("aiSuggestion",aiSuggestion);
+      fallbackDomains = aiSuggestion.map((item: any) => item.domain);
+      
+      allPOCs = aiSuggestion.flatMap((company: any) =>
+        (company?.poc || []).map((person: any) => ({
+          name: person.name,
+          companyName: person.companyName,
+        }))
+      );
+      console.log("fallbackDomains",fallbackDomains);
+      setLoadingState(prev => ({
         ...prev,
-        keywords: keywordValues,
-        name: "Top Product & Topic Trackers",
+        isCompetitorsLoading: true
       }));
+      const competitorResponse = {
+        status: 1,
+        data: aiSuggestion,
+        name: "Top Competitors Trackers",
+      };
+     updateLocalStorage("competitorData", competitorResponse);
+      // setComp(prev => ({
+      //     ...prev,
+      //     competitors: [...prev.competitors, ...fallbackDomains],
+      //     name: "Top Competitors Trackers",
+      //   }));
+      }
+      
+      // Step 2: Try internal API
+      if (!loadingState.isKeywordsLoading) {
+        let response;
+        let fallbackCategories: string[] = [];
+      
+        try {
+          await fetchAIFallback(inputValue);
+          // 1. First await with separate error handling
+            await fetchAIFallback(inputValue);
+        } catch (error) {
+          console.error("Main error handler:", error);
+          if (!fallbackCategories.length) {
+            await fetchAIFallback(inputValue);
+          }
+        } finally {
+          setLoadingState(prev => ({ ...prev, isKeywordsLoading: true }));
+          // Step 2: Call poc api
+      if(!loadingState.isCompetitorsLoading){
+        const pocDetail = await getPocDetailByDomain(fallbackDomains);
+        }
+        }
+      }
+    } catch (error) {
+      console.warn("Falling back to AI data due to error:", error);
+    } finally {
+      // Always set competitor domains from AI — even if error happens
+      console.log("fallbackDomains", fallbackDomains);
+      setIsLoading(false);
     }
   };
+  const getPocDetailByDomain = async (domains: string[]) => {
+    const prompt = `Find companies that are clients of ${domains}. For each company, identify publicly verifiable Points of Contact (POCs) who are associated with organizing or managing events. For each POC, include their full name, designation, and company name. Return the data in the following JSON format:
+{
+  "data": {
+    "companyData": {
+      "pocs": [
+        {
+          "customerCompanyName": "[Client Company Name]",
+          "name": "[POC Name]",
+          "designation": "[POC Designation]"
+        }
+      ]
+    }
+  }
+}
+Do not include the competitor platform names in the output. Only return publicly available data.`
+    const response = await fetchAISuggestion(prompt);
+    console.log("POC Response:", response);
+    setLoadingState(prev => ({
+      ...prev,
+      isPeopleLoading: true
+    }));
+    const companyResponse = {
+      status: 1,
+      domain: aiStatus?.companyData?.domain || inputValue,
+      data: response,
+      name: "Top People Tracker",
+    };
+   updateLocalStorage("companyData", companyResponse);
+    // if (response?.companies?.length > 0) {
+    //   const companyId = response.companies[0].id; 
+
+    }
+  async function fetchAIFallback(domain: string) {
+    const prompt = `For the domain ${domain}, identify the relevant keywords.
+  
+  Return only this JSON structure:
+  
+  {
+    "data": {
+      "companyData": {
+        "keywords": ["keyword1", "keyword2", "keyword3"]
+      }
+    }
+  }
+  
+  Respond only with valid JSON. No explanation or extra text.`;
+  
+    const aiSuggestion = await fetchAISuggestion(prompt);
+    console.log(aiSuggestion);
+    // const updatedCategory = aiSuggestion.categories.map((item: any) => item.toLowerCase());
+    const keywords = [...aiSuggestion.keywords]
+    const keywordResponse = {
+      status: 1,
+      data: [keywords],
+      name: "Top Product & Topic Trackers",
+    };
+    
+    updateLocalStorage("keywordData", keywordResponse);
+    
+  }
+
+
 
   const EventeliView = useMemo(() => {
     if (!isEventeli) return null;
@@ -279,16 +460,17 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
             <div className="text-xl font-medium">Brand Brief Builder </div>
             <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
             <div className="flex gap-2 w-[29rem]">
-              <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[#D2D2F3] focus-within:border-[#D2D2F3] transition-all duration-200">
+            <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[var(--primary-color)] focus-within:border-[var(--primary-color)] transition-all duration-200 hover:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)] focus-within:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)]">
                 <input
                   type="text"
+                  ref={inputRef}
                   placeholder="Enter Web URL"
                   className="border-none outline-none bg-transparent w-full"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                 />
               </div>
-              <Button className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
+              <Button className={`w-[100%] sm:w-[25%] ${inputValue.length > 0 ? 'bg-[var(--primary-color)]' : 'bg-[var(--dashboard-brandkit-subtext)]'} text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2`}
                 onClick={() => fetchData()}
               >Fetch</Button>
             </div>
@@ -439,21 +621,12 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
       {isEventeli ? EventeliView : StandardView}
 
       <FetchTemplateModal
-        competitors={comp}
-        keywords={keywordsTracker}
-        isLoading={isLoading}
+        loadingState={loadingState}
+        setMin={setMin}
         inputValue={inputValue}
         open={showFetchedData}
         onOpenChange={setShowFetchedData}
-        onSelectTemplate={handleTemplateSelect}
       />
-      {!showFetchedData && 
-        <FetchTemplateMinModal 
-          open={showFetchedData}
-          onOpenChange={setShowFetchedData}
-          onSelectTemplate={handleTemplateSelect}
-        />
-      }
     </div>
   );
 });

@@ -352,7 +352,7 @@ export const useTrackerServices = () => {
     //     }
     //   );
     //   return EventsAdapter.adaptEventCountResponse(response);
-    // };
+    // };  
     const presetData = async (data: any): Promise<PresetDataResponse> => {
       const urlParams = new URLSearchParams(data).toString();
       const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`, {

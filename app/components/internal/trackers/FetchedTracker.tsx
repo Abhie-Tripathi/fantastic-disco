@@ -3,58 +3,138 @@ import fetchIcon from "@/public/internal/fetch_icon.svg";
 import Image from "next/image";
 import TrackerDraftCard from "./TrackerDraftCard";
 import Link from "next/link";
+import spinnerBrandBrief from "@/public/spinnerBrandBrief.svg";
+import PeopleFinder from "/public/peopleFinder.svg";
+import Competitor from "/public/competitor.svg";
+import Keywords from "/public/keywords.svg";
+import React, { useEffect, useState } from "react"; 
+import { useTrackerContext } from "@/context/tracker";
 
 const CardSkeleton = () => {
   return (
-    <div className="grid grid-cols-6 gap-5 items-center">
+    <div className="grid grid-cols-6 gap-2 items-center">
       <Skeleton className="col-span-1 w-full h-full" />
 
       <div className="col-span-4 gap-2 flex flex-col">
-        <Skeleton className="h-6 w-2/3" />
-        <Skeleton className="h-5" />
-        <Skeleton className="h-5" />
-        <Skeleton className="h-5 w-1/3" />
+        <Skeleton className="h-3 w-1/3" />
+        <Skeleton className="h-2 w-2/3" />
+        <Skeleton className="h-2 w-2/3" />
+        <Skeleton className="h-2 w-1/3" />
       </div>
-      <Skeleton className="col-span-1 h-10" />
+      <Skeleton className="col-span-1 h-4" />
     </div>
   );
 };
 interface fetchedTrackerProps {
-  isLoading: boolean;
-  keywords: string[];
-  competitors: string[];
+    loadingState: {
+      isKeywordsLoading: boolean;
+      isCompetitorsLoading: boolean;
+      isPeopleLoading: boolean;
+    };
 }
-const FetchedTracker = ({isLoading, keywords, competitors}:fetchedTrackerProps) => {
+const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
+  const {setSuggestion} = useTrackerContext();
+  const [loadedCount, setLoadedCount] = useState(0);
+  const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  useEffect(() => {
+    const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+    console.log("aiStatus", aiStatus);
+    
+    let res=0;
+    if(aiStatus?.companyData?.status === 1)
+    res=res+1;
+    if(aiStatus?.competitorData?.status===1)
+    res=res+1;
+    if(aiStatus?.keywordData?.status===1)
+    res=res+1;
+    setLoadedCount(res);
+  },[loadingState])
 
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <div className="flex gap-1 mb-1">
-          <Image src={fetchIcon} height={18} width={18} alt="loading" />
-          <span className="font-medium text-base">
-            Hang in there ! We&apos;re analysing the best for you...
-          </span>
-        </div>
-        <div className="text-sm text-[var(--secondary-text-color)]">
-          We&apos;re gathering the information to create your trackers
-        </div>
+      <div className="flex gap-1 mb-1 items-start transition-all duration-300 ease-in-out">
+  {loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading ? (
+    <div className="flex flex-col gap-1 mb-1 animate-fadeIn"> 
+      <div className="flex gap-1">
+        <Image src={fetchIcon} height={18} width={18} alt="loading" />
+        <span className="font-medium text-base">
+          All set! We have successfully created some trackers for you
+        </span>
       </div>
-      {isLoading ?
+      <div className="text-sm text-[var(--secondary-text-color)]">
+        Here's What We Found for You! Choose from the below and add them to get started on tracking
+      </div>
+    </div>
+  ) : (!loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) ?(
+    <div className="flex flex-col gap-1 mb-1 animate-fadeIn"> 
+      <div className="flex gap-1">
+        <Image src={fetchIcon} height={18} width={18} alt="loading" />
+        <span className="font-medium text-base">
+          Hang in there! We're analysing the best for you <span className="dots"></span>
+        </span>
+      </div>
+      <div className="text-sm text-[var(--secondary-text-color)]">
+        We're gathering the information to create your trackers
+      </div>
+    </div>
+  ): (
+    <div className="flex flex-col gap-1 mb-1 animate-fadeIn"> 
+      <div className="flex gap-1">
+        <Image src={fetchIcon} height={18} width={18} alt="loading" />
+        <span className="font-medium text-base">
+        Hang in there ! <span className="text-[hsl(var(--primary))]">{loadedCount}/{Object.values(loadingState).length}</span> Trackers created <span className="dots"></span>
+        </span>
+      </div>
+      <div className="text-sm text-[var(--secondary-text-color)]">
+        We're gathering the information to create your trackers
+      </div>
+    </div>
+  )}
+</div>
+
+      </div>
+      <div className="flex gap-3 flex-col transition-all duration-300 ease-in-out">
+      {!loadingState.isCompetitorsLoading ?
         <CardSkeleton />:
+        <div onClick={() => setSuggestion(1)} className="animate-fadeIn">
         <Link href="/internal/trackers/create?type=T_COMPETITOR">
-        <TrackerDraftCard data={competitors} type="Competitors" heading="Top Competitors Tracker"  />
+        <TrackerDraftCard
+        data={`${Object.keys(templateData?.competitorData?.data).length} Companies`}
+        type="Competitors"
+        heading="Top Competitors Tracker"
+        imgUrl={Competitor}
+        />
         </Link>
+        </div>
       }
-      {isLoading ?
+      {!loadingState.isKeywordsLoading ?
       <CardSkeleton />:
+      <div onClick={() => setSuggestion(2)} className="animate-fadeIn">
       <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
-      <TrackerDraftCard data={keywords} type="Product Keywords" heading="Top Product & Topic Tracker"  />
+      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data[0]).length} Keywords`} type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} />
       </Link>
+      </div>
     }
-      <CardSkeleton />
-      <CardSkeleton />
+      {!loadingState.isPeopleLoading ?
+      <CardSkeleton />:
+      <div onClick={() => setSuggestion(3)} className="animate-fadeIn">
+      <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
+      <TrackerDraftCard data={`${Object.keys(templateData?.competitorData?.data).length} Profiles`} type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder}/>
+      </Link>
+      </div>
+    }
+    {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
+    <div className="flex w-full items-center justify-center flex-col gap-1">
+      <div className="flex w-4 h-[18px] animate-[spin_1s_linear_infinite]">
+        <Image src={spinnerBrandBrief} alt="spinner"/>
+      </div>
+    <div className="text-[var(--secondary-text-color)]">Analysing...</div>
+    </div>}
+    </div>
     </div>
   );
 };
 
 export default FetchedTracker;
+export { CardSkeleton };

@@ -1,31 +1,25 @@
-import { Button } from "@/components/ui/button";
+import {useRef, useEffect, useState} from "react";
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogPortal,
-  DialogOverlay
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import spinnerBrandBrief from "@/public/spinnerBrandBrief.svg";
+import Image from "next/image";
 import {
-  BarChart3,
-  Building,
   Globe,
-  LineChart,
-  MapPin,
-  Table,
-  Users,
-  TrendingUp,
-  DollarSign,
-  ArrowLeftRight,
   LayoutGrid,
+  X
 } from "lucide-react";
-import FetchedTracker from "./FetchedTracker";
-
+import Link from "next/link";
+import { useTrackerContext } from "@/context/tracker";
+import PeopleFinder from "/public/peopleFinder.svg";
+import Competitor from "/public/competitor.svg";
+import Keywords from "/public/keywords.svg";
+import { CardSkeleton } from "./FetchedTracker";
+import TrackerDraftCard from "./TrackerDraftCard";
+import fetchIcon from "@/public/internal/fetch_icon.svg";
+import { useFilterContext } from "@/context/filterContext";
 export type TemplateType = {
   id: string;
   title: string;
@@ -44,79 +38,100 @@ export type TemplateType = {
   version?: string;
 };
 
-const templates: TemplateType[] = [
-  // Share Analysis Templates
-  {
-    id: "category-share",
-    title: "Event Category Share",
-    description: "Analyze event distribution across categories in a geography",
-    icon: <LayoutGrid className="w-6 h-6" />,
-    visualization: ["treemap"],
-    hierarchy: [
-      { id: "category", label: "Category", value: "category" },
-      { id: "location", label: "Location", value: "location" },
-    ],
-    visibleFilters: {
-      location: true,
-      categories: true,
-      dateRange: true,
-      eventTypes: true,
-      metrics: true,
-    },
-    category: "share",
-  },
-  {
-    id: "country-share",
-    title: "Event Country Share",
-    description: "Compare event distribution across countries",
-    icon: <Globe className="w-6 h-6" />,
-    visualization: ["treemap"],
-    hierarchy: [
-      { id: "location", label: "Location", value: "location" },
-      { id: "category", label: "Category", value: "category" },
-    ],
-    visibleFilters: {
-      location: true,
-      dateRange: true,
-      categories: true,
-      eventTypes: true,
-      metrics: true,
-    },
-    category: "share",
-  },
-];
 
 type TemplatesModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelectTemplate: (template: TemplateType) => void;
 };
 
 const TemplatesModal = ({
   open,
   onOpenChange,
-  onSelectTemplate,
 }: TemplatesModalProps) => {
-//   const categories = [
-//     {
-//       id: "share",
-//       name: "Market Share Analysis",
-//       description: "Compare event distribution and mindshare",
-//       icon: <LayoutGrid className="w-4 h-4" />,
-//     }
-//   ];
 
+   const {setSuggestion} = useTrackerContext();
+   const {loadingState, templateView, setTemplateView} = useFilterContext();
+   const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+   const [loadedCount, setLoadedCount] = useState(0);
+   const scrollRef = useRef<HTMLDivElement>(null);
+   useEffect(() => {
+    const anyLoaded =
+      loadingState.isCompetitorsLoading ||
+      loadingState.isKeywordsLoading ||
+      loadingState.isPeopleLoading;
+  
+    if (anyLoaded && scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+    const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+    let res=0;
+    if(aiStatus.companyData.status === 1)
+    res=res+1;
+    if(aiStatus.competitorData.status===1)
+    res=res+1;
+    if(aiStatus.keywordData.status===1)
+    res=res+1;
+    setLoadedCount(res);
+  }, [loadingState]);
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} >
   <DialogPortal>
     {/* BACKDROP OVERLAY */}
     
 
     {/* DIALOG CONTENT */}
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="bg-white w-[20%] h-[20vh] rounded-lg relative flex flex-col overflow-hidden">
+    <div className="fixed top-[72px] right-2 z-[11] shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] h-[40vh] w-[20rem] bg-background rounded-[1.875rem] overflow-hidden">
+    <div className="absolute z-[111111111] top-3 right-3 cursor-pointer" onClick={() => setTemplateView(false)}>
+  <X className="text-[var(--secondary-text-color)]" />
+  </div>
+    <div className="flex relative"> {/* Container */}
+  {/* Left element */}
+  <div className="
+    absolute 
+    z-10 
+    top-1 
+    left-0 
+    w-[7.5rem] 
+    h-[3.125rem] 
+    bg-background
+    rounded-full 
+    shadow-[0_-0.125rem_0_rgba(0,0,0,0.1)]
+  "></div>
+
+  {/* Center element */}
+  <div className="
+    absolute 
+    left-[40%] 
+    top-1 
+    bg-background
+    shadow-[0_0.125rem_0_rgba(0,0,0,0.1)] 
+    rounded-full 
+    z-[11] 
+    -ml-5 
+    -mt-7 
+    w-[7.5rem] 
+    h-[3.125rem]
+  "></div>
+  {/* Right element */}
+  <div className="
+    absolute 
+    z-10 
+    top-1 
+    right-0 
+    ml-[7.5rem] 
+    w-[33%] 
+    h-[3.125rem] 
+    bg-background
+    rounded-full 
+    shadow-[0_-0.125rem_0_rgba(0,0,0,0.1)]
+  "></div>
+</div>
+      <div className="bg-background h-[30vh] rounded-lg relative flex flex-col overflow-scroll top-[40px] z-10" ref={scrollRef}>
         {/* CUSTOM CLOSE BUTTON */}
-        <div className="absolute right-4 top-4 z-10">
+        {/* <div className="absolute right-4 top-4 z-10">
           <Button
             variant="ghost"
             onClick={() => onOpenChange(false)}
@@ -124,39 +139,55 @@ const TemplatesModal = ({
           >
             Hide
           </Button>
-        </div>
+        </div> */}
 
         {/* HEADER */}
-        <div className="px-6 pt-6">
-          <DialogTitle className="tracking-normal">Brand Brief Builder</DialogTitle>
+        <div className="px-5">
+          <DialogTitle className="tracking-normal text-base font-medium">Brand Brief Builder</DialogTitle>
         </div>
-
-        {/* INPUT FIELD + FETCH BUTTON */}
-        <div className="flex gap-2 w-[29rem] bg-[var(--background-secondary-color)] p-2 mx-6 my-4 rounded">
-          <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[#D2D2F3] focus-within:border-[#D2D2F3] transition-all duration-200 bg-[var(--accent-foreground)]">
-            <input 
-              type="text" 
-              placeholder="Enter Web URL" 
-              className="border-none outline-none bg-transparent w-full"
-            />
-            <Button 
-              className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
-              onClick={() => {
-                console.log("Setting showFetchedData to true");
-                setShowFetchedData(true);
-              }}
-            >
-              Fetch
-            </Button>
+          <div className="px-5 flex gap-1 pt-2">
+          <Image src={fetchIcon} height={18} width={18} alt="loading"/>
+          <div className="text-sm">Hang in there ! <span className="text-[hsl(var(--primary))]">{loadedCount}/{Object.values(loadingState).length}</span> Trackers created...</div>
           </div>
-        </div>
-
         {/* SCROLLABLE CONTENT */}
-        <ScrollArea className="h-[calc(90vh-160px)] px-6 pb-6">
-          <div className="space-y-4 w-[200px]">
-            <FetchedTracker />
+        
+          <div className="space-y-4 m-4">
+          {!loadingState.isCompetitorsLoading &&
+        <CardSkeleton />
+      }
+      {loadingState.isCompetitorsLoading &&
+        <Link href="/internal/trackers/create?type=T_COMPETITOR">
+        <TrackerDraftCard type="Competitors" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data).length} Companies`} view="minView"/>
+        </Link>
+      }
+      {(loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading) &&
+      <CardSkeleton />
+    }
+    {loadingState.isKeywordsLoading && 
+    <div onClick={() => setSuggestion(2)}>
+    <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
+    <TrackerDraftCard type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object.keys(templateData.keywordData.data[0]).length} Keywords`} view="minView"/>
+    </Link>
+    </div>
+    }
+      {(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) &&
+      <CardSkeleton />}
+    {loadingState.isPeopleLoading &&
+      <div onClick={() => setSuggestion(3)}>
+      <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
+      <TrackerDraftCard type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData.competitorData.data).length} Profiles`} view="minView"/>
+      </Link>
+      </div>
+    }
+    {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
+    <div className="flex w-full items-center justify-center flex-col gap-1">
+      <div className="flex w-4 h-[18px] animate-[spin_1s_linear_infinite]">
+        <Image src={spinnerBrandBrief} alt="spinner"/>
+      </div>
+    <div className="text-[var(--secondary-text-color)]">Analysing...</div>
+    </div>}
           </div>
-        </ScrollArea>
+        
       </div>
     </div>
   </DialogPortal>

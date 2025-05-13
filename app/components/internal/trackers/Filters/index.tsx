@@ -412,7 +412,7 @@ const Pages = () => {
   const { searchParams: search } = useDefaultFilters();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall, comp, keywordsTracker } = useTrackerContext();
+  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall, comp, keywordsTracker, peopleTracker, suggestion } = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters } = useFilterContext();
   const { enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
@@ -529,7 +529,7 @@ const Pages = () => {
 
     }
     else if (type === "T_PEOPLE_FINDER") {
-      if (customData.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
+      if (customData?.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -548,15 +548,15 @@ const Pages = () => {
         if (!hideSuggestion)
           fetchAISuggestion(promptText);
       }
-      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userName = customData?.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData
-        .map((item: {}) => Object.values(item)[1])
+        ?.map((item: {}) => Object.values(item)[1])
         .filter((value): value is string => value !== undefined && value !== null)
         .map(value => value.replace(/,/g, ''))
         .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
-      if (userName.length > 0 && userCompany.length > 0) {
+      if (userName?.length > 0 && userCompany?.length > 0) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -940,14 +940,89 @@ const Pages = () => {
 
     }
   };
+  useEffect(() => {
+    if (type === "T_COMPETITOR") {
+      // setTrackerName(comp?.name || "");
+  
+      const localData = localStorage.getItem("companySuggestion");
+      console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+    }
+  }, [comp.competitor]);
+  
+  useEffect(()=>{
+    console.log(1111);
+    
+    if(type === "T_PEOPLE_FINDER" ){
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+  }
 
-useEffect(()=>{
-
-    console.log(keywordsTracker);
-    const updatedValue = keywordsTracker.keywords.map((item) => item.replaceAll("_", " "));
-    console.log(updatedValue);
-    setLocalFilter("includeKeywords", updatedValue.join(","));
-},[keywordsTracker])
+  }, [suggestion])
+  const [inc,setInc]=useState();
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS") {
+      const localData = localStorage.getItem("companySuggestion");
+      console.log("localData", localData);
+  
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.keywordData?.name || "");
+          const keywordArray = parsed?.keywordData?.data?.[0];
+          console.log("keywordArray", keywordArray);
+          if (Array.isArray(keywordArray)) {
+            console.log("keywordArray", keywordArray);
+            
+            setInc(keywordArray);
+          }
+        } catch (error) {
+          console.error("Error parsing keywordData from localStorage", error);
+        }
+      }
+    }
+  }, [suggestion]);
+  useEffect(() => { 
+      setLocalFilter("includeKeywords", inc?.join(","));
+  },[inc])
+  useEffect(() => {
+    console.log("Current includeKeywords:", getLocalFilterValue("includeKeywords"));
+  }, [getLocalFilterValue("includeKeywords")]);
+   
+  
+ 
   useEffect(() => {
     if ((editData && last === "editTracker")|| comp.length>0) {
       setTrackerName(editData?.name || "");
@@ -955,7 +1030,8 @@ useEffect(()=>{
         const orgNames = editData?.filterValues?.orgName?.
           split(',');
         const orgWebsites = editData?.filterValues?.orgWebsite?.
-          split(',') || comp;
+          split(',');
+          
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
             ...prevData,
@@ -1060,7 +1136,7 @@ useEffect(()=>{
       }
     }
 
-  }, [editData, searchParams, comp, keywordsTracker]);
+  }, [editData, searchParams]);
 
   // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);

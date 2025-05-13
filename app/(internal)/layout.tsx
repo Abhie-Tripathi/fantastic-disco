@@ -12,6 +12,7 @@ import { FilterProvider } from "@/context/filterContext";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Toast, ToastProvider } from "@/components/ui/toast";
+import TrackerGlobalModal from "../components/internal/trackers/TrackerGlobalModal";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({
                     id="layout-main"
                     className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
                   >
+                    <TrackerGlobalModal/>
                     <Toaster />
                     {children}
                   </main>
