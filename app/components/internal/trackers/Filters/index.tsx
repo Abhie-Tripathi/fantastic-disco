@@ -444,8 +444,6 @@ const Pages = () => {
       // fetchData(secondLast);
     }
   }, [last]);
-  console.log(comp);
-  
   const [websites, setWebsites] = useState("");
   const [org, setOrg] = useState("");
   const [speakerName, setSpeakerName] = useState("");
@@ -965,7 +963,7 @@ const Pages = () => {
       // setTrackerName(comp?.name || "");
   
       const localData = localStorage.getItem("companySuggestion");
-      console.log("localData", localData);
+      // console.log("localData", localData);
       
       if (localData) {
         try {
@@ -984,24 +982,22 @@ const Pages = () => {
         }
       }
     }
-  }, [comp.competitor]);
+  }, [suggestion]);
   
   useEffect(()=>{
-    console.log(1111);
-    
     if(type === "T_PEOPLE_FINDER" ){
       const localData = localStorage.getItem("companySuggestion");
       if (localData) {
         try {
           const parsed = JSON.parse(localData);
           setTrackerName(parsed?.companyData?.name || "");
-          const speakerNames = parsed?.companyData?.data.pocs.map((item)=>item.name);
-          const speakerOrgs = parsed?.companyData?.data.pocs.map((item)=>item.customerCompanyName);
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
           const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
             "Name": speakerName.trim(),
             "Company Name": speakerOrgs[index]?.trim()
           }));
-          console.log(presentCustomData);
+          // console.log(presentCustomData);
           
           setCustomData(presentCustomData);
         } catch (error) {
@@ -1011,20 +1007,19 @@ const Pages = () => {
   }
 
   }, [suggestion])
-  const [inc,setInc]=useState();
+  const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS") {
       const localData = localStorage.getItem("companySuggestion");
-      console.log("localData", localData);
+      // console.log("localData", localData);
   
       if (localData) {
         try {
           const parsed = JSON.parse(localData);
           setTrackerName(parsed?.keywordData?.name || "");
           const keywordArray = parsed?.keywordData?.data?.[0];
-          console.log("keywordArray", keywordArray);
+          // console.log("keywordArray", keywordArray);
           if (Array.isArray(keywordArray)) {
-            console.log("keywordArray", keywordArray);
             
             setInc(keywordArray);
           }
@@ -1044,7 +1039,7 @@ const Pages = () => {
   
  
   useEffect(() => {
-    if ((editData && last === "editTracker")|| comp.length>0) {
+    if ((editData && last === "editTracker")) {
       setTrackerName(editData?.name || "");
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.filterValues?.orgName?.

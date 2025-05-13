@@ -7,7 +7,6 @@ import { useFilterContext } from "@/context/filterContext";
 
 type TemplatesModalProps = {
   inputValue: string;
-  setMin:(val:boolean)=>void
   loadingState: {
     isKeywordsLoading: boolean;
     isCompetitorsLoading: boolean;
@@ -20,7 +19,6 @@ type TemplatesModalProps = {
 const TemplatesModal = ({
   open,
   onOpenChange,
-  setMin,
   loadingState,
   inputValue,
 }: TemplatesModalProps) => {
@@ -28,7 +26,6 @@ const {setTemplateView} = useFilterContext();
 const closeModal = () => { 
   setTemplateView(true);
   onOpenChange(false);
-  setMin(true);
 }
   return (
 <Modal isOpen={open} onClose={onOpenChange} className="w-[40vw]">

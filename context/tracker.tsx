@@ -9,7 +9,6 @@ import React, {
 import { usePathname } from "next/navigation";
 import { Tracker } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
-import { set, setWeek } from "date-fns";
 
 const trackerValues: any = {
   isNewCall: false,
@@ -17,12 +16,6 @@ const trackerValues: any = {
   savedEventCount: 0,
   suggestion: 0,
   setSuggestion: () => {},
-  comp:{},
-  setComp: () => {},
-  keywordsTracker: {},
-  setKeywordsTracker: () => {},
-  peopleTracker: {},
-  setPeopleTracker: () => {},
   setSavedEventCount: () => {},
   setIsNewCall: () => {},
   editTrue: false,
@@ -50,18 +43,6 @@ export const TrackerContextProvider = ({ children }: any) => {
   const [trackerId, setTrackerId] = useState("");
   const [skip, setSkip] = useState(Number(getFilterValue("skip")) || 0);
   const [searchValue, setSearchValue] = useState(getFilterValue("q") || "");
-  const [comp,setComp] = useState({
-    competitors:[],
-    name:"",
-  });
-  const [keywordsTracker, setKeywordsTracker] = useState({
-    keywords: [],
-    name:"",
-  });
-  const [peopleTracker, setPeopleTracker] = useState({
-    people: [],
-    name:"",
-  });
   const pages = [
     "manageAccess",
     "editTracker",
@@ -121,12 +102,6 @@ export const TrackerContextProvider = ({ children }: any) => {
     setSkip,
     searchValue,
     setSearchValue,
-    comp,
-    setComp,
-    keywordsTracker,
-    setKeywordsTracker,
-    peopleTracker,
-    setPeopleTracker,
     suggestion,
     setSuggestion,
   };

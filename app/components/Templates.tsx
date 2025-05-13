@@ -17,7 +17,7 @@ import FetchTemplateModal from "./internal/trackers/FetchTemplateModal";
 import { fetchData } from "next-auth/client/_utils";
 import FetchTemplateMinModal from "./internal/trackers/FetchTemplateMinModal";
 import { useCompanyService } from "@/services/companyService";
-import { perplexityAiSuggestion, suggestionGenerator } from "@/utils/openAI";
+import { suggestionGenerator } from "@/utils/openAI";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
 import {companyData, competitorData, keywordData} from "@/types/trackers";
@@ -69,13 +69,6 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-  const [isLoading, setIsLoading] = useState(true);
-  // const [loadingState, setLoadingState] = useState({
-  //   isKeywordsLoading:  aiStatus?.keywordData?.status === 1 || false,
-  //   isCompetitorsLoading: aiStatus?.competitorData?.status===1 || false,
-  //   isPeopleLoading: aiStatus?.companyData?.status===1 || false,
-  // });
-  const[min, setMin]=useState(false);
   const initialAIStatus = {
     competitorData: { status: 0, data: [], domain: "", name:"" },
     companyData: { status: 0, data: [], name:"" },
@@ -170,7 +163,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
     // console.log("templateView", templateView);
     
     if(templateView) setTemplateView(false);
-    // 1. Load existing data or use initial state
+    //Load existing data or use initial state
     let currentData;
     try {
       const storedData = localStorage.getItem("companySuggestion");
@@ -180,7 +173,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
       currentData = { ...initialAIStatus };
     }
   
-    // 2. Prepare updated status
+    //Prepare updated status
     const updatedStatus = {
       competitorData: currentData.competitorData?.status === 1 
         ? currentData.competitorData 
@@ -198,13 +191,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
         : { ...initialAIStatus.keywordData }
     };
   
-    // 3. Debug before saving
-    console.log("Updating localStorage with:", {
-      original: currentData,
-      updated: updatedStatus
-    });
-  
-    // 4. Save and update UI
+    // Save and update UI
     localStorage.setItem("companySuggestion", JSON.stringify(updatedStatus));
     setShowFetchedData(true);
     fetchCompany();
@@ -215,7 +202,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
     let fallbackDomains: string[] = [];
     let allPOCs;
     try {
-      // Step 1: Always get AI suggestions first
+      //Always get AI suggestions first
       const prompt = `List 5 direct competitors of the domain ${inputValue}. Return only this JSON format:
 {
 "data":{
@@ -231,14 +218,14 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
 
 Respond only with valid JSON. No explanation, no markdown, and no extra text.
 `
-console.log(aiStatus?.competitorData?.status);
+// console.log(aiStatus?.competitorData?.status);
 
       if(!loadingState.isCompetitorsLoading){
       const aiSuggestion = await fetchAISuggestion(prompt);
       if (!aiSuggestion || !Array.isArray(aiSuggestion)) {
         throw new Error("Invalid AI suggestion format");
       }
-      console.log("aiSuggestion",aiSuggestion);
+      // console.log("aiSuggestion",aiSuggestion);
       fallbackDomains = aiSuggestion.map((item: any) => item.domain);
       
       allPOCs = aiSuggestion.flatMap((company: any) =>
@@ -247,7 +234,7 @@ console.log(aiStatus?.competitorData?.status);
           companyName: person.companyName,
         }))
       );
-      console.log("fallbackDomains",fallbackDomains);
+      // console.log("fallbackDomains",fallbackDomains);
       setLoadingState(prev => ({
         ...prev,
         isCompetitorsLoading: true
@@ -290,9 +277,7 @@ console.log(aiStatus?.competitorData?.status);
     } catch (error) {
       console.warn("Falling back to AI data due to error:", error);
     } finally {
-      // Always set competitor domains from AI — even if error happens
-      console.log("fallbackDomains", fallbackDomains);
-      setIsLoading(false);
+      // console.log("fallbackDomains", fallbackDomains);
     }
   };
   const getPocDetailByDomain = async (domains: string[]) => {
@@ -312,7 +297,7 @@ console.log(aiStatus?.competitorData?.status);
 }
 Do not include the competitor platform names in the output. Only return publicly available data.`
     const response = await fetchAISuggestion(prompt);
-    console.log("POC Response:", response);
+    // console.log("POC Response:", response);
     setLoadingState(prev => ({
       ...prev,
       isPeopleLoading: true
@@ -344,7 +329,7 @@ Do not include the competitor platform names in the output. Only return publicly
   Respond only with valid JSON. No explanation or extra text.`;
   
     const aiSuggestion = await fetchAISuggestion(prompt);
-    console.log(aiSuggestion);
+    // console.log(aiSuggestion);
     // const updatedCategory = aiSuggestion.categories.map((item: any) => item.toLowerCase());
     const keywords = [...aiSuggestion.keywords]
     const keywordResponse = {
@@ -622,7 +607,6 @@ Do not include the competitor platform names in the output. Only return publicly
 
       <FetchTemplateModal
         loadingState={loadingState}
-        setMin={setMin}
         inputValue={inputValue}
         open={showFetchedData}
         onOpenChange={setShowFetchedData}

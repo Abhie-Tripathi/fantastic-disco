@@ -7,8 +7,6 @@ import {
 import spinnerBrandBrief from "@/public/spinnerBrandBrief.svg";
 import Image from "next/image";
 import {
-  Globe,
-  LayoutGrid,
   X
 } from "lucide-react";
 import Link from "next/link";
@@ -20,23 +18,6 @@ import { CardSkeleton } from "./FetchedTracker";
 import TrackerDraftCard from "./TrackerDraftCard";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useFilterContext } from "@/context/filterContext";
-export type TemplateType = {
-  id: string;
-  title: string;
-  description: string;
-  icon: JSX.Element;
-  visualization: string[];
-  hierarchy?: { id: string; label: string; value: string }[];
-  visibleFilters: {
-    location?: boolean;
-    eventTypes?: boolean;
-    dateRange?: boolean;
-    categories?: boolean;
-    metrics?: boolean;
-  };
-  category: "traffic" | "share" | "impact" | "participation";
-  version?: string;
-};
 
 
 type TemplatesModalProps = {

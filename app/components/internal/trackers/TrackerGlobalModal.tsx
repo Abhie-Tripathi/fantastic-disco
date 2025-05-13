@@ -11,7 +11,6 @@ export default function TrackerGlobalModal() {
     //  console.log("Selected template:", template);
      setShowFetchedData(false);
    }, [templateView]);
-  console.log("templateView", templateView);
   
   if (!templateView) return null;
 
