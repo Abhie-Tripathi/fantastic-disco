@@ -118,7 +118,7 @@ export default function DateRangeSelector({
         break;
       case "past":
         from = undefined;
-        to = currentDate;
+        to = new Date(currentDate.setDate(currentDate.getDate() - 1));
         break;
       case "custom":
         from = undefined;
