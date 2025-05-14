@@ -211,8 +211,23 @@ const EventTrends = () => {
       "show",
       "categories",
       "status",
+      "compare_to",
+      "compare_from",
+      "activeCard",
+      "activeCardName",
+      "editTrend",
     ];
-    const treemapExcludedFilters = ["active_gte", "view", "show", "status"];
+    const treemapExcludedFilters = [
+      "active_gte",
+      "view",
+      "show",
+      "status",
+      "compare_to",
+      "compare_from",
+      "activeCard",
+      "activeCardName",
+      "editTrend",
+    ];
     const excludedFilters =
       activeView == "treemap" ? treemapExcludedFilters : lineExcludedFilters;
     return Object.keys(localFilters).filter(
