@@ -561,11 +561,8 @@ const LineChartComponent = ({
 
     // For mobile screens, show exactly 6 ticks
     if (isMobileView) {
-      // Always show exactly 6 ticks on mobile screens
       const dates = [];
-
-      // First date
-      dates.push(format(start, "yyyy-MM-dd"));
+      dates.push(format(start, "yyyy-MM-dd")); // First date
 
       // Calculate an even interval for 4 middle points
       const step = Math.max(1, Math.floor(totalDays / 5));
@@ -573,7 +570,6 @@ const LineChartComponent = ({
       // Add 4 evenly spaced points (for a total of 6 with start and end)
       for (let i = 1; i <= 4; i++) {
         const nextDate = addDays(start, i * step);
-        // Only add if not past the end date
         if (!isAfter(nextDate, end)) {
           dates.push(format(nextDate, "yyyy-MM-dd"));
         }
@@ -588,9 +584,9 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // Desktop view - original logic
-    // If range is 10 days or less, show all dates
+    // Desktop view - improved logic for consistent intervals
     if (totalDays <= 10) {
+      // For 10 days or less, show all dates
       const dates = [];
       for (let i = 0; i < totalDays; i++) {
         dates.push(format(addDays(start, i), "yyyy-MM-dd"));
@@ -598,27 +594,34 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // For more than 10 days, calculate intervals
-    const interval = Math.floor(totalDays / 10);
-    const remainder = totalDays % 10;
-    const dates = [format(start, "yyyy-MM-dd")];
+    // For more than 10 days, automatically calculate best interval
+    const calculateAutoInterval = (days: number) => {
+      // Define possible intervals based on total days
+      if (days <= 15) return 2;      // Every 2 days for 11-15 days
+      if (days <= 30) return 3;      // Every 3 days for 16-30 days
+      if (days <= 60) return 5;      // Every 5 days for 31-60 days
+      if (days <= 90) return 7;      // Every 7 days for 61-90 days
+      if (days <= 180) return 14;    // Every 2 weeks for 91-180 days
+      if (days <= 365) return 30;    // Every month for 181-365 days
+      return 60;                     // Every 2 months for >365 days
+    };
 
+    const interval = calculateAutoInterval(totalDays);
+    const dates = [format(start, "yyyy-MM-dd")]; // First date
+
+    // Generate dates with the calculated interval
     let currentDate = start;
-
-    // Generate dates based on interval, adjusting for remainder
-    for (let i = 1; i <= 9; i++) {
-      currentDate = addDays(
-        currentDate,
-        interval + (i === 9 && remainder > 0 ? remainder : 0)
-      );
+    while (isAfter(end, currentDate)) {
+      currentDate = addDays(currentDate, interval);
       if (!isAfter(currentDate, end)) {
         dates.push(format(currentDate, "yyyy-MM-dd"));
       }
     }
 
-    // Ensure the last date is included
-    if (dates[dates.length - 1] !== format(end, "yyyy-MM-dd")) {
-      dates.push(format(end, "yyyy-MM-dd"));
+    // Add end date if not already included
+    const lastDateStr = format(end, "yyyy-MM-dd");
+    if (dates[dates.length - 1] !== lastDateStr) {
+      dates.push(lastDateStr);
     }
 
     return dates;
