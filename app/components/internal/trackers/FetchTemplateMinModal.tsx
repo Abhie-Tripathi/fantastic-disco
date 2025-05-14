@@ -4,9 +4,11 @@ import {
   DialogTitle,
   DialogPortal,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import spinnerBrandBrief from "@/public/spinnerBrandBrief.svg";
 import Image from "next/image";
 import {
+  Maximize2,
   X
 } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +20,8 @@ import { CardSkeleton } from "./FetchedTracker";
 import TrackerDraftCard from "./TrackerDraftCard";
 import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useFilterContext } from "@/context/filterContext";
+import { DraggableDialog } from "./DraggableDialog";
+import { useRouter } from 'next/navigation';
 
 
 type TemplatesModalProps = {
@@ -29,7 +33,8 @@ const TemplatesModal = ({
   open,
   onOpenChange,
 }: TemplatesModalProps) => {
-
+  const {setShowFetchedData} = useFilterContext();
+  const router = useRouter();
    const {setSuggestion} = useTrackerContext();
    const {loadingState, templateView, setTemplateView} = useFilterContext();
    const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
@@ -57,16 +62,33 @@ const TemplatesModal = ({
     res=res+1;
     setLoadedCount(res);
   }, [loadingState]);
+  const maximizeModal = () => {
+    setShowFetchedData(true);
+    setTemplateView(false);
+    router.push("/internal/trackers?showTemplates=true");   
+  }
   return (
+    // <DraggableDiv>
     <Dialog open={open} onOpenChange={onOpenChange} >
   <DialogPortal>
     {/* BACKDROP OVERLAY */}
-    
+    <DraggableDialog
+          open={open}
+          onOpenChange={onOpenChange}
+          initialPosition={{ x: window.innerWidth - 336, y: 72 }} // Adjust as needed
+          className="shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] dark:shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,1)] bg-[var(--tabs-background-color)]"
+        >
+
 
     {/* DIALOG CONTENT */}
-    <div className="fixed top-[72px] right-2 z-[11] shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] h-[40vh] w-[20rem] bg-background rounded-[1.875rem] overflow-hidden">
-    <div className="absolute z-[111111111] top-3 right-3 cursor-pointer" onClick={() => setTemplateView(false)}>
-  <X className="text-[var(--secondary-text-color)]" />
+    {/* <div className="fixed top-[72px] right-2 z-[11] shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] h-[40vh] w-[20rem] bg-background rounded-[1.875rem] overflow-hidden"> */}
+   <div className="absolute z-[111111111] top-3 right-3 cursor-pointer flex gap-2 items-center" >
+    <Button variant="outline" className="flex gap-1 p-2" onClick={maximizeModal}>
+  <Maximize2  className="text-[var(--secondary-text-color)]" width={14} height={14}/>
+  </Button>
+  <Button onClick={() => setTemplateView(false)} variant="outline" className="flex gap-1 p-2">
+  <X className="text-[var(--secondary-text-color)]" width={14} height={14}/>
+  </Button>
   </div>
     <div className="flex relative"> {/* Container */}
   {/* Left element */}
@@ -77,7 +99,7 @@ const TemplatesModal = ({
     left-0 
     w-[7.5rem] 
     h-[3.125rem] 
-    bg-background
+    bg-[var(--tabs-background-color)]
     rounded-full 
     shadow-[0_-0.125rem_0_rgba(0,0,0,0.1)]
   "></div>
@@ -105,12 +127,12 @@ const TemplatesModal = ({
     ml-[7.5rem] 
     w-[33%] 
     h-[3.125rem] 
-    bg-background
+    bg-[var(--tabs-background-color)]
     rounded-full 
     shadow-[0_-0.125rem_0_rgba(0,0,0,0.1)]
   "></div>
 </div>
-      <div className="bg-background h-[30vh] rounded-lg relative flex flex-col overflow-scroll top-[40px] z-10" ref={scrollRef}>
+      <div className="bg-[var(--tabs-background-color)] h-[30vh] rounded-lg relative flex flex-col overflow-scroll top-[40px] z-10" ref={scrollRef}>
         {/* CUSTOM CLOSE BUTTON */}
         {/* <div className="absolute right-4 top-4 z-10">
           <Button
@@ -147,7 +169,7 @@ const TemplatesModal = ({
     {loadingState.isKeywordsLoading && 
     <div onClick={() => setSuggestion(2)}>
     <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
-    <TrackerDraftCard type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object.keys(templateData.keywordData.data[0]).length} Keywords`} view="minView"/>
+    <TrackerDraftCard type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} view="minView"/>
     </Link>
     </div>
     }
@@ -156,7 +178,7 @@ const TemplatesModal = ({
     {loadingState.isPeopleLoading &&
       <div onClick={() => setSuggestion(3)}>
       <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
-      <TrackerDraftCard type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData.competitorData.data).length} Profiles`} view="minView"/>
+      <TrackerDraftCard type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} view="minView"/>
       </Link>
       </div>
     }
@@ -169,11 +191,13 @@ const TemplatesModal = ({
     </div>}
           </div>
         
-      </div>
+      {/* </div> */}
     </div>
+    </DraggableDialog>
   </DialogPortal>
+ 
 </Dialog>
-
+// </DraggableDiv>
 
   );
 };

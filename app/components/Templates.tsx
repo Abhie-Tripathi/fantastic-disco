@@ -57,11 +57,11 @@ const fetchAISuggestion = async (promptText: string) => {
 
 const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const {comp,setComp, keywordsTracker, setKeywordsTracker, peopleTracker, setPeopleTracker} = useTrackerContext();
-  const {loadingState, setLoadingState, templateView, setTemplateView} = useFilterContext();
+  const {loadingState, setLoadingState, templateView, setTemplateView, showFetchedData, setShowFetchedData} = useFilterContext();
   const {getTrackerCount}=useTrackerServices();
   const {getCompanyDetailById} = useCompanyService();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
-  const [showFetchedData, setShowFetchedData] = useState(false);
+  // const [showFetchedData, setShowFetchedData] = useState(false);
   const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
   const [inputValue,setInputValue] = useState(aiStatus?.companyData?.domain || "");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -287,15 +287,15 @@ Respond only with valid JSON. No explanation, no markdown, and no extra text.
     "companyData": {
       "pocs": [
         {
-          "customerCompanyName": "[Client Company Name]",
           "name": "[POC Name]",
+          "customerCompanyName": "[Client Company Name]",
           "designation": "[POC Designation]"
         }
       ]
     }
   }
 }
-Do not include the competitor platform names in the output. Only return publicly available data.`
+Do not include the competitor platform names in the output. Only return publicly available data also exclude , from customerCompanyName) .`
     const response = await fetchAISuggestion(prompt);
     // console.log("POC Response:", response);
     setLoadingState(prev => ({
@@ -321,7 +321,11 @@ Do not include the competitor platform names in the output. Only return publicly
   {
     "data": {
       "companyData": {
-        "keywords": ["keyword1", "keyword2", "keyword3"]
+        "keywords": [
+        {"keyword": "keyword1"},
+        {"keyword": "keyword2"},
+        {"keyword": "keyword3"},
+        ]
       }
     }
   }
@@ -331,10 +335,10 @@ Do not include the competitor platform names in the output. Only return publicly
     const aiSuggestion = await fetchAISuggestion(prompt);
     // console.log(aiSuggestion);
     // const updatedCategory = aiSuggestion.categories.map((item: any) => item.toLowerCase());
-    const keywords = [...aiSuggestion.keywords]
+    const keywords = aiSuggestion.keywords
     const keywordResponse = {
       status: 1,
-      data: [keywords],
+      data: keywords,
       name: "Top Product & Topic Trackers",
     };
     
@@ -439,13 +443,13 @@ Do not include the competitor platform names in the output. Only return publicly
   const StandardView = useMemo(() => {
     if(isEventeli) return null;
     return (
-      <div className={`flex flex-col gap-6 pl-6 pr-6`}>
+      <div className={`flex flex-col gap-6 pl-6 pr-6 h-[100%]`}>
         <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
           <div className="flex flex-col gap-2">
             <div className="text-xl font-medium">Brand Brief Builder </div>
             <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
-            <div className="flex gap-2 w-[29rem]">
-            <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-full hover:border-[var(--primary-color)] focus-within:border-[var(--primary-color)] transition-all duration-200 hover:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)] focus-within:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)]">
+            <div className="flex gap-2 w:[100%] sm:w-[29rem]">
+            <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-[80%] sm:w-full hover:border-[var(--primary-color)] focus-within:border-[var(--primary-color)] transition-all duration-200 hover:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)] focus-within:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)]">
                 <input
                   type="text"
                   ref={inputRef}
@@ -455,7 +459,7 @@ Do not include the competitor platform names in the output. Only return publicly
                   onChange={(e) => setInputValue(e.target.value)}
                 />
               </div>
-              <Button className={`w-[100%] sm:w-[25%] ${inputValue.length > 0 ? 'bg-[var(--primary-color)]' : 'bg-[var(--dashboard-brandkit-subtext)]'} text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2`}
+              <Button className={`w-[20%] sm:w-[20%] ${inputValue.length > 0 ? 'bg-[var(--primary-color)]' : 'bg-[var(--dashboard-brandkit-subtext)]'} text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2`}
                 onClick={() => fetchData()}
               >Fetch</Button>
             </div>

@@ -35,11 +35,12 @@ interface fetchedTrackerProps {
 const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
   const {setSuggestion} = useTrackerContext();
   const [loadedCount, setLoadedCount] = useState(0);
+  const [d,setD] = useState();
   const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
   useEffect(() => {
     const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
     // console.log("aiStatus", aiStatus);
-    
+  
     let res=0;
     if(aiStatus?.companyData?.status === 1)
     res=res+1;
@@ -49,7 +50,26 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
     res=res+1;
     setLoadedCount(res);
   },[loadingState])
-
+  const structure = (obj: string, innerObj: string): string[] => {
+    const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  
+    const rawData = innerObj === ""
+      ? aiStatus?.[obj]?.data
+      : aiStatus?.[obj]?.data?.[innerObj];
+  
+    const structuredData = rawData?.map((item: any) => {
+      const values = Object.values(item);
+      if (Object.keys(item).length > 1) {
+        const [main, ...rest] = values.slice(0, values.length - 1);
+        return `${main} ${rest.map(v => `(${v})`).join(' ')}`;
+      } else {
+        return values.join(', ');
+      }
+    });
+  
+    return structuredData ?? [];
+  };
+  
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -98,29 +118,32 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
       {!loadingState.isCompetitorsLoading ?
         <CardSkeleton />:
         <div onClick={() => setSuggestion(1)} className="animate-fadeIn">
-        <Link href="/internal/trackers/create?type=T_COMPETITOR">
+        {/* <Link href="/internal/trackers/create?type=T_COMPETITOR"> */}
         <TrackerDraftCard
         data={`${Object.keys(templateData?.competitorData?.data).length} Companies`}
-        type="Competitors"
+        type="T_COMPETITOR"
         heading="Top Competitors Tracker"
         imgUrl={Competitor}
+        entries={structure("competitorData","")}
         />
-        </Link>
+        {/* </Link> */}
         </div>
       }
       {!loadingState.isKeywordsLoading ?
       <CardSkeleton />:
       <div onClick={() => setSuggestion(2)} className="animate-fadeIn">
-      <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
-      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data[0]).length} Keywords`} type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} />
-      </Link>
+      {/* <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS"> */}
+      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} 
+      entries={structure("keywordData","")}
+      />
+      {/* </Link> */}
       </div>
     }
       {!loadingState.isPeopleLoading ?
       <CardSkeleton />:
       <div onClick={() => setSuggestion(3)} className="animate-fadeIn">
       <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
-      <TrackerDraftCard data={`${Object.keys(templateData?.competitorData?.data).length} Profiles`} type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder}/>
+      <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
       </Link>
       </div>
     }

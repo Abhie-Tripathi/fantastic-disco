@@ -28,9 +28,9 @@ const closeModal = () => {
   onOpenChange(false);
 }
   return (
-<Modal isOpen={open} onClose={onOpenChange} className="w-[40vw]">
+<Modal isOpen={open} onClose={onOpenChange} className="w-[100vw] sm:w-[70vw] md:w-[40vw]">
     {/* DIALOG CONTENT */}
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex justify-center">
       <div className="relative flex flex-col overflow-hidden w-full">
         {/* CUSTOM CLOSE BUTTON */}
         <div className="absolute right-4 top-4 z-10">
@@ -58,7 +58,7 @@ const closeModal = () => {
               className="border-none outline-none bg-transparent w-full"
             />
             <Button 
-              className="w-[100%] sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2"
+              className="sm:w-[25%] bg-[var(--dashboard-brandkit-subtext)] text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2 w-[25%]"
             >
               <>
               {loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading 
@@ -75,7 +75,7 @@ const closeModal = () => {
         </div>
 
         {/* SCROLLABLE CONTENT */}
-        <ScrollArea className="h-[calc(90vh-160px)] px-6 pb-6">
+        <ScrollArea className="h-[calc(90vh-100px)] px-6 pb-6">
           <div className="space-y-4">
             <FetchedTracker 
               loadingState={loadingState}

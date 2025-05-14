@@ -1016,12 +1016,19 @@ const Pages = () => {
       if (localData) {
         try {
           const parsed = JSON.parse(localData);
+          const keywordsArray = parsed?.keywordData?.data;
           setTrackerName(parsed?.keywordData?.name || "");
-          const keywordArray = parsed?.keywordData?.data?.[0];
-          // console.log("keywordArray", keywordArray);
-          if (Array.isArray(keywordArray)) {
+          if (Array.isArray(keywordsArray)) {
+            // console.log("keywordsArray", keywordsArray);
+            const res=keywordsArray.map((item:{"keyword":string})=>item.keyword?.trim?.())
+            // console.log("res", res);
             
-            setInc(keywordArray);
+            setInc(res);
+            setCustomData(
+              keywordsArray.map((item: any) => ({
+                "Competitor Name or Website": item.keyword?.trim?.()
+              }))
+            );
           }
         } catch (error) {
           console.error("Error parsing keywordData from localStorage", error);

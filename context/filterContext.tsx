@@ -20,6 +20,7 @@ import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { useConfigurationService } from "@/services/configurationService";
+import { TrackerAIResponse } from "@/types/trackers";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -183,6 +184,8 @@ type FilterContextType = {
     newValue: string
   ) => void;
   enabledFilters: EventFilterData | null;
+  showFetchedData:any;
+  setShowFetchedData:(val:boolean) => void;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -194,12 +197,16 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
+  const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
-  const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  const [aiStatus, setAiStatus] = useState<TrackerAIResponse>({} as TrackerAIResponse);
+  useEffect(() => {
+  setAiStatus(JSON.parse(localStorage.getItem("companySuggestion") || "{}"));
+  },[]);
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")
@@ -416,6 +423,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
+      showFetchedData,
+      setShowFetchedData,
       localFilters,
       loadingState,
       setLoadingState,
@@ -433,6 +442,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       replaceLocalFilter,
     }),
     [
+      showFetchedData,
       templateView,
       loadingState,
       localFilters,
