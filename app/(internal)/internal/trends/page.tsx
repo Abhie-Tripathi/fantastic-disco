@@ -556,9 +556,8 @@ const EventTrends = () => {
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    deleteMultipleLocalFilters(
-                      Object.keys(localFilters) as any[]
-                    );
+                    const filtersToDelete = Object.keys(localFilters).filter(key => key !== 'view');
+                    deleteMultipleLocalFilters(filtersToDelete as any[]);
                   }}
                   disabled={filterCount === 0}
                   className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
@@ -757,9 +756,8 @@ const EventTrends = () => {
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      deleteMultipleLocalFilters(
-                        Object.keys(localFilters) as any[]
-                      );
+                      const filtersToDelete = Object.keys(localFilters).filter(key => key !== 'view');
+                      deleteMultipleLocalFilters(filtersToDelete as any[]);
                     }}
                     disabled={filterCount === 0}
                     className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"

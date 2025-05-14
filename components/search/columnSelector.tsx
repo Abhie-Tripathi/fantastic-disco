@@ -20,6 +20,12 @@ export default function ColumnsSelector() {
   const metric = getLocalFilterValue("columns");
   const [isOpen, setIsOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    if (!metric) {
+      setLocalFilter("columns", "eventCount");
+    }
+  }, [metric, setLocalFilter]);
+
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
