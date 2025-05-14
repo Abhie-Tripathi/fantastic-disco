@@ -143,9 +143,7 @@ const EventTrends = () => {
   const [graphData, setGraphData] = useState<any>();
   const [tableData, setTableData] = useState<TableData[] | []>();
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
-  const { getEventsWithSearchParams } = useEventsService();
   const { getFilterValue } = useFilterState();
-  const [setShowNotificationForm] = useState<boolean>(false);
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const metric = getFilterValue("columns") as
     | "eventCount"
@@ -170,7 +168,11 @@ const EventTrends = () => {
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
   const [showCategoryWarning, setShowCategoryWarning] = useState(false);
+  const [showMandatoryFieldsWarning, setShowMandatoryFieldsWarning] = useState(false);
   const categories = getLocalFilterValue("categories");
+  const locations = getLocalFilterValue("locationIds");
+  const dateRange = getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte");
+  const metrics = getLocalFilterValue("columns");
   type FilterKey =
     | "location"
     | "eventTypes"
@@ -316,6 +318,12 @@ const EventTrends = () => {
         setMultipleLocalFilters({ categories: defaultCategories, view: view });
       }
       setMultipleLocalFilters({ columns: "eventCount", view: view });
+    } else if ((view === "line" || view === "table") && (!locations || locations.length === 0)) {
+      // Set default location ID for line chart and table view if no location is selected
+      setMultipleLocalFilters({ 
+        locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
+        view: view 
+      });
     }
     setLocalFilter("view", view);
     applyFilters({ resetPage: true });
@@ -418,6 +426,24 @@ const EventTrends = () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [activeView, categories]);
+
+  // Add effect for mandatory fields warning
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if ((activeView === "line" || activeView === "table") && 
+        (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0)) {
+      timeoutId = setTimeout(() => {
+        setShowMandatoryFieldsWarning(true);
+      }, 1000); // 1 second delay
+    } else {
+      setShowMandatoryFieldsWarning(false);
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeView, locations, dateRange, metrics]);
 
   const handleShare = () => {
     const currentUrl = window.location.href;
@@ -577,6 +603,37 @@ const EventTrends = () => {
                     </div>
                   </div>
                 )}
+              {(activeView === "line" || activeView === "table") &&
+                showMandatoryFieldsWarning && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
+                    <div className="flex-shrink-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-destructive"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-destructive">
+                        Required Fields Missing
+                      </p>
+                      <p className="text-xs text-destructive/80">
+                        Please select location, date range, and at least one metric to view the {activeView === "line" ? "line chart" : "table"} visualization
+                      </p>
+                    </div>
+                  </div>
+                )}
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   variant="outline"
@@ -591,7 +648,11 @@ const EventTrends = () => {
                     setIsFiltersCollapsed(true);
                   }}
                   className="w-full"
-                  disabled={activeView === "treemap" && categories.length === 0}
+                  disabled={
+                    (activeView === "treemap" && categories.length === 0) ||
+                    ((activeView === "line" || activeView === "table") && 
+                    (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0))
+                  }
                 >
                   Apply
                 </Button>
@@ -743,10 +804,45 @@ const EventTrends = () => {
                       </div>
                     </div>
                   )}
+                {(activeView === "line" || activeView === "table") &&
+                  showMandatoryFieldsWarning && (
+                    <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
+                      <div className="flex-shrink-0">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-destructive"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-destructive">
+                          Required Fields Missing
+                        </p>
+                        <p className="text-xs text-destructive/80">
+                          Please select location, date range, and at least one metric to view the {activeView === "line" ? "line chart" : "table"} visualization
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 <Button
                   onClick={applyHandler}
                   className="w-full h-10"
-                  disabled={activeView === "treemap" && categories.length === 0}
+                  disabled={
+                    (activeView === "treemap" && categories.length === 0) ||
+                    ((activeView === "line" || activeView === "table") && 
+                    (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0))
+                  }
                 >
                   Apply Filters
                 </Button>
