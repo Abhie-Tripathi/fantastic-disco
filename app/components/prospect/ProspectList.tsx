@@ -1,52 +1,24 @@
 "use client";
 
+import NullState from "@/app/components/trackers/nullState";
 import { PaginationComponent } from "@/components/pagination";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import Loading from "@/components/ui/Loading";
+import { useBulkAction } from "@/context/bulkAction";
 import { useFilterState } from "@/hooks/useFilterState";
+import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
+import { ApiError } from "@/types/api";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
 import { useQuery } from "@tanstack/react-query";
+import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  MouseEventHandler,
-  ChangeEventHandler,
-} from "react";
-import Loading from "@/components/ui/Loading";
-import NullState from "@/app/components/trackers/nullState";
-import coordinateNullState from "@/public/coordinateNullState.svg";
-import { ApiError } from "@/types/api";
-import {
-  ArrowUpRight,
-  CalendarIcon,
-  Globe,
-  ListIcon,
-  TableIcon,
-} from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Buildings } from "geist-icons";
-import { Location } from "geist-icons";
-import { Button } from "@/components/ui/button";
-import SortDropdown from "@/components/search/sortDropdown";
-import EventCount from "@/components/search/eventCount";
-import { useBulkAction } from "@/context/bulkAction";
-import { Input } from "@/components/ui/input";
-import { CheckedState } from "@radix-ui/react-checkbox";
-import { Label } from "@/components/ui/label";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Constants
 const EXCLUDED_TAGS = [
@@ -72,8 +44,13 @@ const STALE_TIME = 300000; // 5 minutes
 interface ProspectCardProps {
   companyDetail: companyListData;
   isBulkActionActive: boolean;
-  selectedCompaniesIds: Set<string>;
-  toggleSelection: (id: string) => void;
+  selectedCompaniesIds: Record<
+    string,
+    {
+      orgWebsite: string;
+    }
+  >;
+  toggleSelection: (id: string, website?: string | null | undefined) => void;
 }
 
 interface StatsBadgeProps {
@@ -166,8 +143,10 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
     <div className="flex gap-4 w-full items-center">
       {isBulkActionActive && (
         <Checkbox
-          checked={selectedCompaniesIds.has(companyDetail.id)}
-          onCheckedChange={() => toggleSelection(companyDetail.id)}
+          checked={companyDetail.id in selectedCompaniesIds}
+          onCheckedChange={() =>
+            toggleSelection(companyDetail.id, companyDetail.website)
+          }
         />
       )}
       <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
@@ -248,10 +227,14 @@ export const ProspectList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const { getCompanyList } = useCompanyService();
-  const { isBulkActionActive, setIsBulkActionActive } = useBulkAction();
-  const [selectedCompaniesIds, setSelectedCompaniesIds] = useState<Set<string>>(
-    new Set()
-  );
+  const {
+    isBulkActionActive,
+    selectedData,
+    setSelectedData,
+    setIsBulkActionActive,
+  } = useBulkAction<{
+    orgWebsite: string;
+  }>();
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<any>();
   const {
@@ -299,21 +282,38 @@ export const ProspectList: React.FC = () => {
   );
 
   function handleSelectAll(checked: boolean) {
-    if (checked) {
-      const allIds = companies.map((company) => company.id);
-      setSelectedCompaniesIds(new Set(allIds));
-    } else {
-      setSelectedCompaniesIds(new Set());
-    }
+    setSelectedData((prev) => {
+      const next = { ...prev };
+
+      if (checked) {
+        // ADD all companies to next
+        companies.forEach((company) => {
+          next[company.id] = {
+            orgWebsite: company.website || "",
+          };
+        });
+      } else {
+        // REMOVE all companies from next
+        companies.forEach((company) => {
+          if (company.id in next) {
+            delete next[company.id];
+          }
+        });
+      }
+
+      return next;
+    });
   }
 
-  function toggleSelection(id: string) {
-    setSelectedCompaniesIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
+  function toggleSelection(id: string, website?: string | null | undefined) {
+    setSelectedData((prev) => {
+      const next = { ...prev };
+      if (id in next) {
+        delete next[id];
       } else {
-        next.add(id);
+        next[id] = {
+          orgWebsite: website || "",
+        };
       }
       return next;
     });
@@ -321,22 +321,25 @@ export const ProspectList: React.FC = () => {
 
   function handleCancel() {
     setIsBulkActionActive(false);
-    setSelectedCompaniesIds(new Set());
+    setSelectedData({});
   }
 
   function handleCreate() {
     setTrackerModalOpen(true);
     const filterValues = {
-      filterValues: {
-        orgWebsite: companies
-          .filter((company) => selectedCompaniesIds.has(company.id))
-          .map((company) => company.website || "")
-          .join(","),
-      },
+      orgWebsite: Object.values(selectedData)
+        .map((names) => names.orgWebsite)
+        .join(","),
     };
 
-    setFilterValues(filterValues);
+    setFilterValues({ filterValues });
   }
+
+  const isAllSelected = useMemo(() => {
+    return (
+      companies.length > 0 && companies.every((user) => user.id in selectedData)
+    );
+  }, [companies, selectedData]);
 
   if (isLoading) {
     return (
@@ -387,7 +390,7 @@ export const ProspectList: React.FC = () => {
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
-              checked={selectedCompaniesIds.size === companies.length}
+              checked={isAllSelected}
               onCheckedChange={handleSelectAll}
             />
             <label className="text-sm">
@@ -396,7 +399,7 @@ export const ProspectList: React.FC = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              disabled={selectedCompaniesIds.size === 0}
+              disabled={Object.keys(selectedData).length === 0}
               variant={"default"}
               className="h-8"
               onClick={() => handleCreate()}
@@ -418,7 +421,7 @@ export const ProspectList: React.FC = () => {
           key={item.id}
           companyDetail={item}
           isBulkActionActive={isBulkActionActive}
-          selectedCompaniesIds={selectedCompaniesIds}
+          selectedCompaniesIds={selectedData}
           toggleSelection={toggleSelection}
         />
       ))}

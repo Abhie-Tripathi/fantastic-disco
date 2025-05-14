@@ -1,25 +1,25 @@
 "use client";
 
+import NullState from "@/app/components/trackers/nullState";
 import { PaginationComponent } from "@/components/pagination";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { MailIcon, PhoneIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCompanyService } from "@/services/companyService";
-import { Location } from "geist-icons";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import Loading from "@/components/ui/Loading";
+import { useBulkAction } from "@/context/bulkAction";
+import { useFilterState } from "@/hooks/useFilterState";
+import coordinateNullState from "@/public/coordinateNullState.svg";
+import { useCompanyService } from "@/services/companyService";
+import { ApiError } from "@/types/api";
 import { CompanyListResponse, userListData } from "@/types/prospect";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import Loading from "@/components/ui/Loading";
-import NullState from "@/app/components/trackers/nullState";
-import coordinateNullState from "@/public/coordinateNullState.svg";
-import { ApiError } from "@/types/api";
-import Link from "next/link";
+import { Location } from "geist-icons";
+import { MailIcon, PhoneIcon } from "lucide-react";
 import Image from "next/image";
-import { useBulkAction } from "@/context/bulkAction";
-import { Checkbox } from "@/components/ui/checkbox";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -32,7 +32,10 @@ interface PeopleCardProps {
   poc: userListData;
   unlockPoc: (pocId: number | string) => Promise<void>;
   isBulkActionActive: boolean;
-  selectedPeopleIds: Set<string>;
+  selectedPeopleIds: Record<
+    string,
+    { userName: string; userOrgWebsite: string }
+  >;
   toggleSelection: (
     id: string,
     userName?: string | null,
@@ -112,7 +115,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
     <div className="flex gap-4 w-full items-center">
       {isBulkActionActive && (
         <Checkbox
-          checked={selectedPeopleIds.has(poc.user_id)}
+          checked={poc.user_id in selectedPeopleIds}
           onCheckedChange={() =>
             toggleSelection(poc.user_id, poc.user_name, poc.user_companyName)
           }
@@ -211,12 +214,10 @@ export const PeopleList: React.FC = () => {
   const companyService = useCompanyService();
   const {
     isBulkActionActive,
-    selectedIds,
     selectedData,
-    setSelectedIds,
     setSelectedData,
     setIsBulkActionActive,
-  } = useBulkAction();
+  } = useBulkAction<{ userName: string; userOrgWebsite: string }>();
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<any>();
 
@@ -267,71 +268,66 @@ export const PeopleList: React.FC = () => {
   );
 
   function handleSelectAll(checked: boolean) {
-    setSelectedIds((prevSelectedIds) => {
-      const updatedSelectedIds = new Set(prevSelectedIds);
+    setSelectedData((prev) => {
+      const next = { ...prev };
+
       if (checked) {
-        filteredUsers.forEach((user) => updatedSelectedIds.add(user.user_id));
+        // ADD all filteredUsers to next
+        filteredUsers.forEach((user) => {
+          next[user.user_id] = {
+            userName: user.user_name || "",
+            userOrgWebsite: user.user_companyName || "",
+          };
+        });
       } else {
-        filteredUsers.forEach((user) =>
-          updatedSelectedIds.delete(user.user_id)
-        );
+        // REMOVE all filteredUsers from next
+        filteredUsers.forEach((user) => {
+          if (user.user_id in next) {
+            delete next[user.user_id];
+          }
+        });
       }
-      return updatedSelectedIds;
+
+      return next;
     });
   }
 
   function toggleSelection(
     id: string,
-    userName?: string | null,
-    userOrgWebsite?: string | null
+    userName?: string | null | undefined,
+    userOrgWebsite?: string | null | undefined
   ) {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
+    setSelectedData((prev) => {
+      const next = { ...prev };
+      if (id in next) {
+        delete next[id];
       } else {
-        next.add(id);
+        next[id] = {
+          userName: userName || "",
+          userOrgWebsite: userOrgWebsite || "",
+        };
       }
       return next;
     });
-   setSelectedData((prev) => {
-    const next = { ...prev };
-    
-    if (id in next) {
-      // If ID already selected, remove it completely
-      delete next[id];
-    } else {
-      // If ID not selected, add with userName and userOrgWebsite as empty strings
-      next[id] = { userName, userOrgWebsite };
-    }
-
-    return next;
-  });
   }
-
-  console.log(selectedData);
 
   function handleCancel() {
     setIsBulkActionActive(false);
-    setSelectedIds(new Set());
+    setSelectedData({});
   }
 
   function handleCreate() {
     setTrackerModalOpen(true);
     const filterValues = {
-      filterValues: {
-        userName: filteredUsers
-          .filter((user) => selectedIds.has(user.user_id))
-          .map((user) => user.user_name || "")
-          .join(","),
-        userOrgWebsite: filteredUsers
-          .filter((user) => selectedIds.has(user.user_id))
-          .map((user) => user.user_companyName || "")
-          .join(","),
-      },
+      userName: Object.values(selectedData)
+        .map((names) => names.userName)
+        .join(","),
+      userOrgWebsite: Object.values(selectedData)
+        .map((names) => names.userOrgWebsite)
+        .join(","),
     };
 
-    setFilterValues(filterValues);
+    setFilterValues({ filterValues });
   }
 
   const unlockPoc = useCallback(
@@ -373,10 +369,12 @@ export const PeopleList: React.FC = () => {
     [companyUsers]
   );
 
-  const isAllSelected = useMemo(
-    () => filteredUsers.every((user) => selectedIds.has(user.user_id)),
-    [filteredUsers, selectedIds]
-  );
+  const isAllSelected = useMemo(() => {
+    return (
+      filteredUsers.length > 0 &&
+      filteredUsers.every((user) => user.user_id in selectedData)
+    );
+  }, [filteredUsers, selectedData]);
 
   if (isLoading) {
     return (
@@ -434,7 +432,7 @@ export const PeopleList: React.FC = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              disabled={selectedIds.size === 0}
+              disabled={Object.keys(selectedData).length === 0}
               variant={"default"}
               className="h-8"
               onClick={() => handleCreate()}
@@ -458,7 +456,7 @@ export const PeopleList: React.FC = () => {
             poc={item}
             unlockPoc={unlockPoc}
             isBulkActionActive={isBulkActionActive}
-            selectedPeopleIds={selectedIds}
+            selectedPeopleIds={selectedData}
             toggleSelection={toggleSelection}
           />
         ))}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,15 +9,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { BASE_URL } from "@/config";
-import { myFetch } from "@/utils/myFetch";
-import { useRouter } from "next/navigation";
+import { useBulkAction } from "@/context/bulkAction";
 import { useFilterContext } from "@/context/filterContext";
-import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
-import { useBulkAction } from "@/context/bulkAction";
+import { myFetch } from "@/utils/myFetch";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 interface CreateTrackerDialog {
   open: boolean;
   onOpenChange: (value: boolean) => void;
@@ -41,7 +40,7 @@ export default function CreateTrackerDialog({
   const { localFilters, getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { createTracker } = useTrackerServices();
-  const { setIsBulkActionActive, setSelectedIds } = useBulkAction();
+  const { setIsBulkActionActive, setSelectedData } = useBulkAction();
 
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
@@ -184,7 +183,7 @@ export default function CreateTrackerDialog({
       });
       onOpenChange(false);
       setIsBulkActionActive(false);
-      setSelectedIds(new Set());
+      setSelectedData({});
     } catch (error) {
       console.log("Tracker creation failed: ", error);
       toast({
