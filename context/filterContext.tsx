@@ -136,6 +136,8 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
+  compare_from?: string;
+  compare_to?: string;
 }
 type Filter = {
   eventTypes: string;
