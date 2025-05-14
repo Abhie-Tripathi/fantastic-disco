@@ -9,18 +9,20 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 
-const SingleEvent = ({ event }: { event: Event }) => {
+const SingleEvent = ({ event }: { event: Event["basic"] }) => {
   const eventImageSrc =
-    event.basic.logoUrl ||
+    event?.logoUrl ||
     `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${
-      event.basic.website || ""
+      event?.website || ""
     }&size=64`;
+
+    const eventType: string[] = event?.eventTypes?.length > 0 ? event.eventTypes.map(item => item.name) : event?.primaryEventType ? [event.primaryEventType] : [];    
   return (
     <div className="flex mt-4 gap-4 items-start">
-      {!event.basic.website && !event.basic.logoUrl ? (
+      {!event.website && !event.logoUrl ? (
         <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
           <span className="text-[#5055A3] text-2xl font-semibold">
-            {event.basic.name.replace(/[+*-/"'"]/g, "").charAt(0)}
+            {event.name.replace(/[+*-/"'"]/g, "").charAt(0)}
           </span>
         </div>
       ) : (
@@ -33,22 +35,21 @@ const SingleEvent = ({ event }: { event: Event }) => {
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
           <div className="flex flex-row gap-3 flex-wrap">
-            {event.basic &&
-              event.basic.eventTypes &&
-              event.basic.eventTypes.length > 0 && (
+            {eventType.length > 0 && (
                 <ul className="flex flex-row flex-wrap gap-3">
-                  {event.basic.eventTypes.map((type: any) => (
-                    <TooltipProvider key={type.id}>
+                  {eventType.map((type: any) => (
+                    <TooltipProvider key={type}>
                       <Tooltip>
-                        <TooltipTrigger asChild>
+                        <TooltipTrigger>
                           <Badge
                             variant={"outline"}
-                            className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer"
+                            className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer capitalize"
                           >
-                            {type.name}
+                            {type}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent
+                          alignOffset={-50}
                           align="center"
                           className="tooltip-content-styles"
                         >
@@ -63,7 +64,7 @@ const SingleEvent = ({ event }: { event: Event }) => {
               )}
           </div>
           <div className="flex items-center gap-1">
-            {event.basic.rating !== null && event.basic.rating > 0 && (
+            {event.rating !== null && event.rating > 0 && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -72,7 +73,7 @@ const SingleEvent = ({ event }: { event: Event }) => {
                       className="text-gray-600 capitalize py-1 rounded-sm"
                     >
                       <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                      <span className="mt-[2px]">{event.basic.rating}</span>
+                      <span className="mt-[2px]">{event.rating}</span>
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent
@@ -89,8 +90,8 @@ const SingleEvent = ({ event }: { event: Event }) => {
             )}
           </div>
         </div>
-        {event.basic.name && (
-          <p className="text-lg font-medium">{event.basic.name}</p>
+        {event.name && (
+          <p className="text-lg font-medium">{event.name}</p>
         )}
       </div>
     </div>

@@ -30,8 +30,9 @@ export const useEventsService = () => {
   const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
     const tempQuery = params;
     if (
-      Object.keys(tempQuery).length === 1 &&
-      Object.keys(tempQuery)[0].toLowerCase() == "view"
+      (Object.keys(tempQuery).length === 1 &&
+        Object.keys(tempQuery)[0].toLowerCase() == "view") ||
+      Object.keys(tempQuery).length == 0
     ) {
       return {
         events: [],

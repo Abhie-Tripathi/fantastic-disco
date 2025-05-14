@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
-import { Alert } from "@/types/events/alert";
+import { Alert, AlertCount, AlertCountItem } from "@/types/events/alerts";
 import { formattedDateRange } from "@/utils/date";
 
 interface AlertResponse {
@@ -37,20 +37,22 @@ export function AlertItem({
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium capitalize text-muted-foreground">
-          {alert.type.toLowerCase()}
+          {alert.basic.type.toLowerCase()}
         </span>
         <span
           className={cn(
             "p-1 border-2 rounded-sm",
-            getAlertLevelBorderColor(alert.level.toLowerCase())
+            getAlertLevelBorderColor(alert.basic.level.toLowerCase())
           )}
         >
-          {alertIcons[alert.type]}
+          {alertIcons[alert.basic.type]}
         </span>
       </div>
-      <p className="text-sm">{alert.name || `New ${alert.type} alert`}</p>
+      <p className="text-sm">
+        {alert.basic.name || `New ${alert.basic.type} alert`}
+      </p>
       <time className="text-xs text-muted-foreground">
-        {formattedDateRange(alert.startDate, alert.endDate)}
+        {formattedDateRange(alert.basic.startDate, alert.basic.endDate)}
       </time>
     </div>
   );
@@ -68,6 +70,8 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.set("eventTypes", "alert");
   filteredParams.set("view", "list");
+  filteredParams.set("limit", "50");
+
   if (filteredParams.get("viewBound")) {
     const viewBound = JSON.parse(
       filteredParams.get("viewBound")?.toString() || "{}"
@@ -93,14 +97,18 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   } = useQuery<AlertResponse, Error>({
     queryKey: ["alerts", filteredParams.toString()],
     queryFn: async () => {
-      const response = await eventService.getEventsWithSearchParams(filteredParams.toString());
+      const response = await eventService.getEventsWithSearchParams(
+        filteredParams.toString()
+      );
       return response as AlertResponse;
     },
     refetchOnWindowFocus: false,
   });
 
   const selectedAlertData = useMemo(() => {
-    return alerts?.events.find((alert: Alert) => alert.id === selectedAlert);
+    return alerts?.events.find(
+      (alert: Alert) => alert.basic.id === selectedAlert
+    );
   }, [alerts, selectedAlert]);
 
   if (error || !alerts?.events?.length) return null;
@@ -123,8 +131,8 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
               <AlertTriangle className="w-4 h-4 mr-2" />
               Possibility of
               <span className={cn("mx-1 font-semibold underline text-primary")}>
-                {alerts.events.length} Alert
-                {alerts.events.length !== 1 && "s"}
+                {alerts.total} Alert
+                {alerts.total !== 1 && "s"}
               </span>
               in this Region
             </div>
@@ -135,9 +143,9 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
             <div className="[&>*:not(:last-child)]:border-b">
               {alerts.events.map((alert: Alert) => (
                 <AlertItem
-                  key={alert.id}
+                  key={alert.basic.id}
                   alert={alert}
-                  onClick={() => onClickHandler(alert.id)}
+                  onClick={() => onClickHandler(alert.basic.id)}
                 />
               ))}
             </div>
