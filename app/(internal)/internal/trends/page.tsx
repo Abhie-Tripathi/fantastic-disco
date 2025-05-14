@@ -168,10 +168,12 @@ const EventTrends = () => {
   const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
   const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
   const [showCategoryWarning, setShowCategoryWarning] = useState(false);
-  const [showMandatoryFieldsWarning, setShowMandatoryFieldsWarning] = useState(false);
+  const [showMandatoryFieldsWarning, setShowMandatoryFieldsWarning] =
+    useState(false);
   const categories = getLocalFilterValue("categories");
   const locations = getLocalFilterValue("locationIds");
-  const dateRange = getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte");
+  const dateRange =
+    getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte");
   const metrics = getLocalFilterValue("columns");
   type FilterKey =
     | "location"
@@ -203,7 +205,16 @@ const EventTrends = () => {
     });
 
   const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
+    const lineExcludedFilters = [
+      "active_gte",
+      "view",
+      "show",
+      "categories",
+      "status",
+    ];
+    const treemapExcludedFilters = ["active_gte", "view", "show", "status"];
+    const excludedFilters =
+      activeView == "treemap" ? treemapExcludedFilters : lineExcludedFilters;
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
@@ -318,11 +329,14 @@ const EventTrends = () => {
         setMultipleLocalFilters({ categories: defaultCategories, view: view });
       }
       setMultipleLocalFilters({ columns: "eventCount", view: view });
-    } else if ((view === "line" || view === "table") && (!locations || locations.length === 0)) {
+    } else if (
+      (view === "line" || view === "table") &&
+      (!locations || locations.length === 0)
+    ) {
       // Set default location ID for line chart and table view if no location is selected
-      setMultipleLocalFilters({ 
+      setMultipleLocalFilters({
         locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
-        view: view 
+        view: view,
       });
     }
     setLocalFilter("view", view);
@@ -431,8 +445,14 @@ const EventTrends = () => {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
-    if ((activeView === "line" || activeView === "table") && 
-        (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0)) {
+    if (
+      (activeView === "line" || activeView === "table") &&
+      (!locations ||
+        locations.length === 0 ||
+        !dateRange ||
+        !metrics ||
+        metrics.length === 0)
+    ) {
       timeoutId = setTimeout(() => {
         setShowMandatoryFieldsWarning(true);
       }, 1000); // 1 second delay
@@ -556,7 +576,9 @@ const EventTrends = () => {
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    const filtersToDelete = Object.keys(localFilters).filter(key => key !== 'view');
+                    const filtersToDelete = Object.keys(localFilters).filter(
+                      (key) => key !== "view"
+                    );
                     deleteMultipleLocalFilters(filtersToDelete as any[]);
                   }}
                   disabled={filterCount === 0}
@@ -628,7 +650,10 @@ const EventTrends = () => {
                         Required Fields Missing
                       </p>
                       <p className="text-xs text-destructive/80">
-                        Please select location, date range, and at least one metric to view the {activeView === "line" ? "line chart" : "table"} visualization
+                        Please select location, date range, and at least one
+                        metric to view the{" "}
+                        {activeView === "line" ? "line chart" : "table"}{" "}
+                        visualization
                       </p>
                     </div>
                   </div>
@@ -649,8 +674,12 @@ const EventTrends = () => {
                   className="w-full"
                   disabled={
                     (activeView === "treemap" && categories.length === 0) ||
-                    ((activeView === "line" || activeView === "table") && 
-                    (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0))
+                    ((activeView === "line" || activeView === "table") &&
+                      (!locations ||
+                        locations.length === 0 ||
+                        !dateRange ||
+                        !metrics ||
+                        metrics.length === 0))
                   }
                 >
                   Apply
@@ -756,7 +785,9 @@ const EventTrends = () => {
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      const filtersToDelete = Object.keys(localFilters).filter(key => key !== 'view');
+                      const filtersToDelete = Object.keys(localFilters).filter(
+                        (key) => key !== "view"
+                      );
                       deleteMultipleLocalFilters(filtersToDelete as any[]);
                     }}
                     disabled={filterCount === 0}
@@ -828,7 +859,10 @@ const EventTrends = () => {
                           Required Fields Missing
                         </p>
                         <p className="text-xs text-destructive/80">
-                          Please select location, date range, and at least one metric to view the {activeView === "line" ? "line chart" : "table"} visualization
+                          Please select location, date range, and at least one
+                          metric to view the{" "}
+                          {activeView === "line" ? "line chart" : "table"}{" "}
+                          visualization
                         </p>
                       </div>
                     </div>
@@ -838,8 +872,12 @@ const EventTrends = () => {
                   className="w-full h-10"
                   disabled={
                     (activeView === "treemap" && categories.length === 0) ||
-                    ((activeView === "line" || activeView === "table") && 
-                    (!locations || locations.length === 0 || !dateRange || !metrics || metrics.length === 0))
+                    ((activeView === "line" || activeView === "table") &&
+                      (!locations ||
+                        locations.length === 0 ||
+                        !dateRange ||
+                        !metrics ||
+                        metrics.length === 0))
                   }
                 >
                   Apply Filters
