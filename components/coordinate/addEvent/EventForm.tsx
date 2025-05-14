@@ -1,35 +1,16 @@
-// import AttendeeIcon from "/public/widgetimages/attendeeIcon.svg";
-// import SpeakerIcon from "/public/widgetimages/speakerIcon.svg";
-// import ExhibitorIcon from "/public/widgetimages/exhibitorIcon.svg";
-// import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
-// import Image from "next/image";
-// import placeHolder from "@/public/placeholder.png";
+"use client";
 import Placeholder from "@/public/placeholder.png";
-// import EventType from "./eventType";
-// import ParticipationMode from "./participationMode";
-// import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
-import { FormState } from "@/types/Formstate";
-// import LocationContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer";
-// import { Button } from "../../ui/button";
-// import ParticipationMode from "./participationMode";
-import Details from "@/app/components/TemplateViewsNew/AddEventForm/Details/Details";
+import { AddEventFormState, addEventPayloadType } from "@/types/Formstate";
 import { useEffect, useRef, useState } from "react";
 import SimilarEventCard from "./SimilarEventCard";
-// import EventCard from "./EventCard";
-// import fetchIcon from "@/public/internal/fetch_icon.svg";
 import { useCoordinateService } from "@/services/coordinateService";
 import LoadingSkeleton from "./LoadingSkeleton";
 import { useAuthContext } from "@/context";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-// import EventType from "./eventType";
-import ParticipationMode from "./participationMode";
-import { Button } from "@/components/ui/button";
 import DateTimeContainer from "./DateTimeContainer";
-// import LocationContainer from "./LocationContainer";
-import EventType from "@/app/components/TemplateViewsNew/AddEventForm/Details/eventtypeinmaineventform/EventType";
 import InterestSelectContainer from "./InterestSelectContainer";
-import LocationContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer";
+import LocationContainer from "./location/LocationContainer";
+import EventTypeSelector from "./eventType";
 
 interface Props {
   eventFormState:
@@ -42,27 +23,7 @@ interface Props {
   resetForm: any;
 }
 
-const eventData = {
-  name: "Arab Health",
-  // logo: "https://login.10times.com/upload/event/11281/eventlogo-22-1552279989.jpg",
-  // organizer: "Informa Middle East & Africa",
-  startDate: "2019-01-28",
-  endDate: "2019-01-31",
-  // venue: "Dubai International Convention & Exhibition Centre",
-  // state: "Dubai",
-  city: "Dubai",
-  country: "UAE",
-  eventType: "Tradeshow",
-};
-
 const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
-  //   const participationOptions = [
-  //     { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
-  //     { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
-  //     { label: "Exhibitor", value: "Exhibitor", icon: ExhibitorIcon },
-  //     { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
-  //   ];
-
   const { user } = useAuthContext();
 
   const [eventData, setEventData] = useState<any>();
@@ -73,25 +34,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
 
   const { toast } = useToast();
 
-  const formState = {
-    startDate: "2025-04-12",
-    endDate: "2025-04-13",
-    startTime: "12:00 A.M",
-    endTime: "12:00 A.M",
-    timeZone: "GMT+05:30 Chennai",
-    timeZoneKey: 1,
-    eventFormat: "In-person",
-    cityName: "",
-    countryName: "",
-    virtualLink: "",
-    query: "",
-  };
-
-  const prefilledEvent: any = {};
-  const prefilledSubEvent: any = {};
-  const prefilledGlobalEvent: any = {};
-
-  const initialFormState: FormState = {
+  const initialFormState: AddEventFormState = {
     parentData: "",
     descriptionModal: false,
     speakerModal: false,
@@ -100,13 +43,11 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     participationType: "",
     description: "",
     textValue: "",
-    cityName: "",
     speaker: [],
     prefilledProfile: undefined,
     registerMessage: "Welcome! To join the event, please register below.",
     registerBtnText: "Register",
     registerBtnColor: "#1a1a1a",
-    countryName: "",
     timeZone: "GMT+05:30 Chennai",
     timeZoneKey: 1,
     startDate: "",
@@ -118,9 +59,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     boothNumber: "",
     participationMessage: "",
     banner: { placeHolder: Placeholder, file: null },
-    venue: "",
-    latitude: Number(""),
-    longitude: Number(""),
     hashtags: [],
     query: "",
     isEventNameEmpty: false,
@@ -141,22 +79,32 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     exhibitor: [],
     prefilledExhibitorDetails: undefined,
     event_type: "",
+    locationType: "",
+    locationDisplayName: "",
+    cityId: "",
+    cityName: "",
+    latitude: Number(""),
+    longitude: Number(""),
+    countryName: "",
+    countryId: "",
+    countryCode: "",
+    stateName: "",
+    stateId: "",
+    venueName: "",
+    venueAddress: "",
+    venueLatitude: Number(""),
+    venueLongitude: Number(""),
+    venueId: "",
   };
 
   const [isApproved, setIsApproved] = useState<boolean>(true);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mainEventState, setMainEventState] =
-    useState<FormState>(initialFormState);
+    useState<AddEventFormState>(initialFormState);
 
-  // const handleChange = () => {};
-
-  const handleChange = (field: keyof FormState, value: any) => {
+  const handleChange = (field: keyof AddEventFormState, value: any) => {
     setMainEventState((prev) => ({ ...prev, [field]: value }));
   };
-
-  const setLoadingState = () => {};
-
-  const handleCollapseForm = () => {};
 
   const checkFormValidation = (callback: any) => {
     if (!mainEventState.eventName || mainEventState.eventName === "") {
@@ -200,8 +148,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       ((mainEventState.eventFormat === "In-person" ||
         mainEventState.eventFormat === "Hybrid" ||
         mainEventState.eventFormat === "OFFLINE") &&
-        (!mainEventState.countryName ||
-          !mainEventState.timeZone ||
+        (!mainEventState.cityId ||
           !mainEventState.latitude ||
           !mainEventState.longitude))
     ) {
@@ -217,7 +164,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   };
 
   const handleInputChange = (value: string) => {
-    console.log("value typed : ", value);
     const specialCharRegex = /[@#$%^&*"|<>]/g;
     handleChange("isEventNameEmpty", false);
     // setIsEventNameEmpty(false)
@@ -236,8 +182,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
     }
   };
 
-  const handleSave = () => {};
-
   const handleSaveClick = async () => {
     setEventFormState("fetching");
 
@@ -249,27 +193,112 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       // organizer: string;
       startDate: mainEventState.startDate,
       endDate: mainEventState.endDate,
-      venue: mainEventState.venue,
+      venue: mainEventState.venueName,
       // state: string;
-      city: mainEventState.cityName,
-      country: mainEventState.countryName,
+      city: mainEventState.locationDisplayName,
+      // country: mainEventState.countryName,
       eventType: mainEventState.event_type,
     };
 
     setEventData(e_data);
 
-    const apiData: any = await coordinateService.fetchSimilarEvents(e_data);
+    const duplicateEventPayload = {
+      name: mainEventState.eventName,
+      latitude: mainEventState.latitude,
+      longitude: mainEventState.longitude,
+      locationIds: mainEventState.cityId,
+      startDate: mainEventState.startDate,
+      endDate: mainEventState.endDate,
+      venueId: "",
+    };
 
-    if (apiData.count > 0) {
+    if (mainEventState.locationType === "VENUE") {
+      duplicateEventPayload.venueId = mainEventState.venueId;
+    }
+
+    if (
+      mainEventState.eventFormat === "Virtual" ||
+      mainEventState.eventFormat === "ONLINE"
+    ) {
+      duplicateEventPayload.latitude = -75.250973;
+      duplicateEventPayload.longitude = -0.071389;
+      duplicateEventPayload.locationIds =
+        "e1ae6da4-3c7c-5283-8860-e224ea7cce97";
+    }
+
+    const apiData2: any = await coordinateService.fetchDuplicateEvents(
+      duplicateEventPayload
+    );
+
+    if (apiData2.blocked.length > 0) {
       setEventFormState("similarEvents");
-      setSimilarEvents(apiData.events);
+      setSimilarEvents(apiData2.blocked);
     } else {
       // sendMail();
-      resetForm();
-      toast({
-        title: "Request has been submitted!",
-        variant: "default",
-      });
+
+      const eventData: addEventPayloadType = {
+        start_date: mainEventState.startDate,
+        end_date: mainEventState.endDate,
+        start_time: mainEventState.startTime,
+        end_time: mainEventState.endTime,
+        location_city_id: mainEventState.cityId,
+        location_city: mainEventState.cityName,
+        location_country: mainEventState.countryName,
+        location_country_id: mainEventState.countryId,
+        location_country_iso_code: mainEventState.countryCode,
+        location_state: mainEventState.stateName,
+        location_state_id: mainEventState.stateId,
+        // logoUrl: z.string().nullable().optional(),
+        latitude: mainEventState.latitude,
+        longitude: mainEventState.longitude,
+        participationType: mainEventState.participationType,
+        event_type: mainEventState.event_type,
+        format: mainEventState.eventFormat,
+      };
+      if (mainEventState.locationType === "VENUE") {
+        eventData.venue_id = mainEventState.venueId;
+        eventData.venue_latitude = mainEventState.latitude;
+        eventData.venue_longitude = mainEventState.longitude;
+        eventData.venue_name = mainEventState.venueName;
+        eventData.venue_address = mainEventState.venueAddress;
+      }
+
+      const addEventPayload = {
+        name: mainEventState.eventName,
+        interest: mainEventState.participationType,
+        sourceModule: "COORDINATE",
+        // logoUrl:
+        //   mainEventState.banner.file !== null &&
+        //   mainEventState.banner.placeHolder,
+        data: JSON.stringify(eventData),
+      };
+
+      try {
+        const apiData: any = await coordinateService.addNewEvent(
+          addEventPayload
+        );
+
+        if (apiData?.error) {
+          toast({
+            variant: "destructive",
+            title: "Something went wrong.",
+            description: "Failed to add event. Please try again.",
+          });
+        } else {
+          toast({
+            title: "Event Added Successfully!",
+            variant: "default",
+          });
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Something went wrong.",
+          description: "Failed to add event. Please try again.",
+        });
+      } finally {
+        resetForm();
+      }
     }
   };
 
@@ -288,16 +317,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       phoneNumber: user?.phoneNumber,
       description: JSON.stringify(description),
     };
-
-    /*
-      const response = await fetch("http://stg-board.10times.com/enquiry/submit", {
-        method: "POST",
-        body: formData,
-      });
-
-      const apiData1 = await response.json();
-      console.log('apiData', apiData1);return false;
-    */
 
     const apiData: any = await coordinateService.addNewEvent(formData1);
 
@@ -356,7 +375,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
   // );
 
   return (
-    <div className="p-3 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {eventFormState === "fetching" ? (
         <LoadingSkeleton />
       ) : eventFormState === "similarEvents" ? (
@@ -379,7 +398,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       ) : (
         <div className="grid grid-cols-4 gap-5 border rounded-lg p-4 px-6 h-full py-6 pb-[200px]">
           <div className="col-span-4">
-            <EventType
+            <EventTypeSelector
               formTheme="light"
               prefilledEvent={mainEventState}
               mainEventType={mainEventState.event_type}
@@ -418,7 +437,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
           <div className="grid gap-4 col-span-4">
             <div className="">
               <textarea
-                className={`hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full ${
+                className={`bg-background hover:bg-accent rounded-md p-3 outline-none resize-none text-3xl font-semibold w-full ${
                   mainEventState.isEventNameEmpty
                     ? "bg-[var(--danger-background-color)] hover:bg-[var(--danger-background-color)]"
                     : ""
@@ -460,11 +479,6 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
               )}
             </div>
           </div>
-          {/* <div className="flex justify-end col-span-4">
-            <Button size="sm" onClick={handleSave}>
-              Save and Add Event
-            </Button>
-          </div> */}
         </div>
       )}
     </div>

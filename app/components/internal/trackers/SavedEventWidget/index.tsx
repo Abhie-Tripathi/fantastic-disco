@@ -1,73 +1,86 @@
-import { EventTableType } from '@/types/ListViewTable';
-import { ArrowUpRight } from 'geist-icons';
-import Link from 'next/link';
-import React,{useState, useEffect} from 'react'
-interface SavedEvents{
-        result:any,
-        count: number,
-    
+import { EventTableType } from "@/types/ListViewTable";
+import { formatLocationParts } from "@/utils/locationFormat";
+import { ArrowUpRight } from "geist-icons";
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
+interface SavedEvents {
+  result: any;
+  count: number;
 }
-interface SavedEventWidgetProps{
+interface SavedEventWidgetProps {
   savedEvents: { events: EventTableType[]; count: number } | undefined;
-    redirectUrl:string
+  redirectUrl: string;
 }
-const SavedEventWidget = ({ savedEvents, redirectUrl }: SavedEventWidgetProps) => {
+const SavedEventWidget = ({
+  savedEvents,
+  redirectUrl,
+}: SavedEventWidgetProps) => {
   console.log(savedEvents);
-  return (
-    redirectUrl.length > 0 ? (
-      <Link 
-        href={redirectUrl} 
-        className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)] bg-[var(--primary-foreground)]"
-      >
-        <EventContent savedEvents={savedEvents} />
-      </Link>
-    ) : (
-      <div className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)] bg-[var(--primary-foreground)]">
-        <EventContent savedEvents={savedEvents} />
-      </div>
-    )
+  return redirectUrl.length > 0 ? (
+    <Link
+      href={redirectUrl}
+      className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)] bg-[var(--primary-foreground)]"
+    >
+      <EventContent savedEvents={savedEvents} />
+    </Link>
+  ) : (
+    <div className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)] bg-[var(--primary-foreground)]">
+      <EventContent savedEvents={savedEvents} />
+    </div>
   );
 };
 
-const EventContent = ({ savedEvents }: { savedEvents: { events: EventTableType[]; count: number } | undefined }) => (
-  
+const EventContent = ({
+  savedEvents,
+}: {
+  savedEvents: { events: EventTableType[]; count: number } | undefined;
+}) => (
   <>
-    <div className='flex items-center gap-2' style={{ color: "var(--primary-color)" }}>
+    <div
+      className="flex items-center gap-2"
+      style={{ color: "var(--primary-color)" }}
+    >
       {savedEvents && savedEvents.count > 0 && (
-        <div 
-          className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" 
+        <div
+          className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm"
           style={{ backgroundColor: "var(--primary-light-color)" }}
         >
           {savedEvents?.count}
         </div>
       )}
-      <div className='font-semibold'>Bookmarked Events</div>
+      <div className="font-semibold">Bookmarked Events</div>
     </div>
     {savedEvents && savedEvents.count > 0 ? (
       savedEvents?.events?.map((item: any) => (
-        <div 
-          className='flex p-2 flex-col border rounded gap-2' 
-          style={{ border: "1px solid var(--border-color)" }} 
+        <div
+          className="flex p-2 flex-col border rounded gap-2"
+          style={{ border: "1px solid var(--border-color)" }}
           key={item.id}
         >
-          <div className='flex justify-between items-center w-[100%]'>
-            <div className='text-[12px] font-semibold'>
-              {item?.basic?.name?.length > 61 ? `${item.basic.name.substring(0, 61)}...` : item?.basic?.name}
+          <div className="flex justify-between items-center w-[100%]">
+            <div className="text-[12px] font-semibold">
+              {item?.basic?.name?.length > 61
+                ? `${item.basic.name.substring(0, 61)}...`
+                : item?.basic?.name}
             </div>
-            <ArrowUpRight width="16px" height='16px' color='var(--primary-color)' />
+            <ArrowUpRight
+              width="16px"
+              height="16px"
+              color="var(--primary-color)"
+            />
           </div>
-          <div className="text-[12px]" style={{ color: "var(--secondary-text-color)" }}>
-            {(item.basic.eventLocation?.city.name && item.basic.eventLocation?.country.name) ?
-              (item.basic?.eventLocation.city.name !== item.basic?.eventLocation?.country.name ?
-                item.basic.eventLocation.city.name + ', ' + item.basic.eventLocation?.country.name :
-                item.basic.eventLocation.country.name) :
-              item.basic.eventLocation.country.name}
+          <div
+            className="text-[12px]"
+            style={{ color: "var(--secondary-text-color)" }}
+          >
+            {formatLocationParts(item.basic.eventLocation,true)}
           </div>
         </div>
       ))
     ) : (
-      <div className='text-[var(--secondary-text-color)] text-sm'>
-        Stay informed about the latest industry events and save them to stay updated on event updates.
+      <div className="text-[var(--secondary-text-color)] text-sm">
+        Stay informed about the latest industry events and save them to stay
+        updated on event updates.
       </div>
     )}
   </>

@@ -38,34 +38,46 @@ const Organiser = ({ open, organizerData }: Props) => {
       </div>
       {accordianToggle && (
         <div className={styles.accordian}>
-          <div className={styles.organiserContainer}>
-            {/* <Image
+          {organizerData ? (
+            <>
+              <div className={styles.organiserContainer}>
+                {/* <Image
               src={Placehodler}
               alt="placeholder"
               className={styles.orgLogo}
             /> */}
-            <div className={styles.organiserNameContainer}>
-              <div>{organizerData?.name? organizerData.name :''}</div>
-              {/* <div style={{ fontSize: 12, color: "#999999" }}>
+                <div className={styles.organiserNameContainer}>
+                  <div>{organizerData?.name ? organizerData.name : ""}</div>
+                  {/* <div style={{ fontSize: 12, color: "#999999" }}>
                 Supercharge your online meetings
               </div> */}
-            </div>
-          </div>
-          <div className={`${styles.locationContainer}`}>
-            <div className={styles.locationContainer_location}>
-              {organizerData?.location?.country?.name &&
-                <>
-                  <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}} />
-                  <div className={styles.location}>
-                    {(organizerData?.location?.city?.name && organizerData?.location?.country?.name) ?
-                    (organizerData?.location.city.name !== organizerData?.location?.country.name ? organizerData?.location.city.name +', '+organizerData?.location?.country.name: organizerData?.location.country.name) :
-                    organizerData?.location.country.name
-                    }
-                  </div>
-                </>
-              }
-            </div>
-            {/* <div className={styles.locationContainer_direction}>
+                </div>
+              </div>
+              <div className={`${styles.locationContainer}`}>
+                <div className={styles.locationContainer_location}>
+                  {organizerData?.location?.country?.name && (
+                    <>
+                      <Location
+                        height={"16px"}
+                        width={"16px"}
+                        color="var(--primary-text-color)"
+                        style={{ display: "flex" }}
+                      />
+                      <div className={styles.location}>
+                        {organizerData?.location?.city?.name &&
+                        organizerData?.location?.country?.name
+                          ? organizerData?.location.city.name !==
+                            organizerData?.location?.country.name
+                            ? organizerData?.location.city.name +
+                              ", " +
+                              organizerData?.location?.country.name
+                            : organizerData?.location.country.name
+                          : organizerData?.location.country.name}
+                      </div>
+                    </>
+                  )}
+                </div>
+                {/* <div className={styles.locationContainer_direction}>
               View Location
               <span className={styles.image_container}>
                 <Image
@@ -76,7 +88,13 @@ const Organiser = ({ open, organizerData }: Props) => {
                 />
               </span>
             </div> */}
-          </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+              Organiser information will appear here
+            </p>
+          )}
           {/* <div className={styles.eventStats}>
             <div className={styles.upcomingEvent}>
               <Image

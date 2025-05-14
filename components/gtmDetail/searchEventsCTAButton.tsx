@@ -43,12 +43,14 @@ const SearchEventsCTAButton = ({
         : null;
 
     const locationIds =
-      (format === "offline" || format === "in_person" || format === "hybrid") && eventLocation
-        ? eventLocation?.country?.id ||
-          eventLocation?.state?.id ||
-          eventLocation?.city?.id ||
-          eventLocation?.venue?.id ||
-          null
+      (format === "offline" || format === "in_person" || format === "hybrid") &&
+      eventLocation
+        ? eventLocation?.countryId ||
+          eventLocation?.stateId ||
+          eventLocation?.cityId ||
+          eventLocation?.locationType === "VENUE"
+          ? eventLocation?.id
+          : null
         : null;
 
     enabledCategories && params.set("categories", enabledCategories);

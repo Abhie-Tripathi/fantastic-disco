@@ -59,8 +59,9 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
 import { useToast } from "@/hooks/use-toast";
+import { isEventeli } from "@/config";
 
-const ViewTemplates = [
+const gtmViewTemplates = [
   {
     id: "treemap",
     title: "Treemap",
@@ -73,6 +74,28 @@ const ViewTemplates = [
     description: "Track over time with interactive line graphs",
     icon: <LineChart className="w-6 h-6" />,
     disabledFor: ["inbound-traffic"],
+  },
+  {
+    id: "table",
+    title: "Table View",
+    description: "Analyze detailed data in a structured format",
+    icon: <Table className="w-6 h-6" />,
+  },
+];
+
+const geoViewTemplates = [
+  {
+    id: "line",
+    title: "Line Chart",
+    description: "Track over time with interactive line graphs",
+    icon: <LineChart className="w-6 h-6" />,
+    disabledFor: ["inbound-traffic"],
+  },
+  {
+    id: "treemap",
+    title: "Treemap",
+    description: "Visualize hierarchical data with nested rectangles",
+    icon: <LayoutGrid className="w-6 h-6" />,
   },
   {
     id: "table",
@@ -129,9 +152,11 @@ const EventTrends = () => {
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
+  const ViewTemplates = isEventeli ? geoViewTemplates : gtmViewTemplates;
   const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
     ? (getFilterValue("view") as "line" | "treemap" | "table")
-    : "treemap";
+    : ViewTemplates[0].id;
+
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
     { id: "location", label: "Location", value: "location" },
     { id: "category", label: "Category", value: "category" },
