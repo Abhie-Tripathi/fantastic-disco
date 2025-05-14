@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AlertTriangle, Loader2, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -17,6 +18,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { isEventeli } from "@/config";
+import { formatLocationParts } from "@/utils/locationFormat";
+
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { useFilterState } from "@/hooks/useFilterState";
 import { lightenColor } from "@/lib/utils";
@@ -25,7 +28,6 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { Event } from "@/types/events";
 import { formattedDateRange } from "@/utils/date";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Loader2, Star, X } from "lucide-react";
 import Link from "next/link";
 import { PaginationComponent } from "../pagination";
 export default function EventList({
@@ -97,18 +99,23 @@ export default function EventList({
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : [
-            event.basic.eventLocation?.venue?.name || "TBA",
-            event.basic.eventLocation?.city?.name,
-            event.basic.eventLocation?.state?.name,
-            event.basic.eventLocation?.country?.name,
-          ]
-            .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
+    const address = event.basic.eventLocation ? (
+      event.basic.format === "online" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" /> Online
+        </span>
+      ) : event.basic.format === "hybrid" ? (
+        <span>
+          <Radio className="w-4 h-4 mr-1 inline-block" />
+          Hybrid&nbsp;-&nbsp;
+          {formatLocationParts(event.basic.eventLocation)}
+        </span>
+      ) : (
+        formatLocationParts(event.basic.eventLocation)
+      )
+    ) : (
+      "Venue to be announced"
+    );
 
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">

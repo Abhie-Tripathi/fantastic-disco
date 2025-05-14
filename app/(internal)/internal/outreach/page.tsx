@@ -36,7 +36,7 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<any>();
+  const [modalContent, setModalContent] = useState<enquiryType>();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
