@@ -586,7 +586,7 @@ Do not include the competitor platform names in the output. Only return publicly
         ))}
         <div className="flex w-[100%]">
           <div className="flex w-[0%] sm:w-[25%]"></div>
-          <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%]">
+          <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%] pb-5">
             <div>Or start from scratch</div>
             <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
               <Button>Create Custom Tracker</Button>
