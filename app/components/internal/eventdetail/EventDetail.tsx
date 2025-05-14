@@ -20,6 +20,7 @@ import Loading from "../../UI/Loading";
 import EventNotes from "./EventNotes";
 import { pocDetail } from "@/types/coordinateEventType";
 import { GAEvent } from "@/utils/GAEvent";
+import { Event } from "@/types/events";
 
 interface EventData {
   id: string;
@@ -48,7 +49,7 @@ interface Props {
   handleRefresh?: () => void;
   configData?: any;
   coordinateActions?: any;
-  modalContent?: any;
+  modalContent: any;
 }
 
 const EventDetail = ({
@@ -63,9 +64,9 @@ const EventDetail = ({
   currentEnquiryStatus,
   configData,
   coordinateActions,
-  modalContent,
   handleRefresh,
   handleDropdownSelect,
+  modalContent,
 }: Props) => {
   const [pipelineIndex, setPipelineIndex] = useState<number>(
     configData?.findIndex((item: any) => item.status === currentEnquiryStatus)
@@ -74,7 +75,7 @@ const EventDetail = ({
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
   const [stage, setStage] = useState<string>("");
-  const [singleEventData, setSingleEventData] = useState<any>();
+  const [singleEventData, setSingleEventData] = useState<Event["basic"]>(modalContent?.eventData);
   const urlPath = usePathname().split("/")[2];
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const [participentData, setParticipentData] = useState<any>({});
@@ -119,20 +120,19 @@ const EventDetail = ({
     //   const leftContainerHeight = leftContainerRef.current.clientHeight;
     //   rightContainerRef.current.style.height = leftContainerHeight + "px";
     // }
-    const fetchEventData = async () => {
-      try {
-        const data: any = await coordinateService.getEventDetailById(eventId);
-        if (data) {
-          // const eventsData = data.event;
+    // const fetchEventData = async () => {
+    //   try {
+    //     const data = await coordinateService.getEventDetailById(eventId);
+    //     if (data) {
+    //       // const eventsData = data.event;
 
-          setSingleEventData(data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    if (eventId != "") fetchEventData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //       setSingleEventData(data);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // };
+    // if (eventId != "") fetchEventData();
   }, []);
 
   const handleCloseModal = () => {
@@ -244,11 +244,11 @@ const EventDetail = ({
               <>
                 <SingleEvent event={singleEventData} />
                 <EventDescription
-                  description={singleEventData?.basic?.description}
+                  description={singleEventData?.description}
                   open={openEventDetails}
                   speakers={false}
                   shortlist={false}
-                  eventDetail={singleEventData?.basic}
+                  eventDetail={singleEventData}
                 />
               </>
             )}
@@ -260,7 +260,7 @@ const EventDetail = ({
             />
             <Organiser
               open={openOrganiserDetails}
-              organizerData={singleEventData?.basic?.organizer}
+              organizerData={singleEventData?.organizer}
             />
             <EventPoc
               open={openPocDetails}
@@ -280,7 +280,7 @@ const EventDetail = ({
           <div className={styles.containerRight} ref={rightContainerRef}>
             {singleEventData && expandedTab === "notes" ? (
               <Notes
-                eventId={singleEventData?.basic?.id}
+                eventId={singleEventData?.id}
                 enquiryId={enquiryId}
                 stage={stage}
               />

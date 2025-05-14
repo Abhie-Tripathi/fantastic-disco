@@ -13,12 +13,14 @@ interface Props {
   options: InterestConfiguration[] | undefined;
   selectedHeader: InterestConfiguration;
   changeSelectedHeader: any;
+  disabledDropdown?: boolean;
 }
 
 export default function InterestSelector({
   options,
   selectedHeader,
   changeSelectedHeader,
+  disabledDropdown = false,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -40,7 +42,7 @@ export default function InterestSelector({
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={disabledDropdown}>
         <Button
           variant="outline"
           className={`w-1/3 justify-between px-3 py-0 text-sm h-8 font-medium rounded-sm border-input`}
@@ -67,6 +69,7 @@ export default function InterestSelector({
         align="start"
       >
         <div className="py-2">
+          <h3 className="text-xs font-medium ml-2 mb-0">Actions</h3>
           {options &&
             options.map((item) => (
               <div

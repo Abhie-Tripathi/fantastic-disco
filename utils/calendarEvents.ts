@@ -34,12 +34,12 @@ export const procesEvents = (
     );
 
     const alerts = unattendedEvents?.alerts?.map((alert: Alert) => ({
-      id: alert.id,
-      name: alert.name,
-      startDateTime: alert.startDate,
-      endDateTime: alert.endDate,
-      eventType: alert.type,
-      level: alert.level,
+      id: alert.basic.id,
+      name: alert.basic.name,
+      startDateTime: alert.basic.startDate,
+      endDateTime: alert.basic.endDate,
+      eventType: "alert",
+      level: alert.basic.level,
       impactScore: 0,
     }));
 

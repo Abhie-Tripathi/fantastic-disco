@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { formattedDateRange } from "@/utils/date";
 import { Calendar, Check, Cross } from "geist-icons";
 import { useToast } from "@/hooks/use-toast";
@@ -8,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { InterestConfiguration } from "@/types/configuration";
 import { useIntent } from "@/hooks/useIntent";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   id: string;
@@ -22,11 +23,15 @@ interface Props {
   country?: string | null;
   eventType: string;
   participationType?: string | null;
+  isProductEvent?: boolean;
+  isEventAdded?: boolean;
 }
 
 const EventCard = (eventData: Props) => {
   const { toast } = useToast();
   const [eventRejected, setEventRejected] = useState<boolean>(false);
+
+  const [eventAdded, setEventAdded] = useState<boolean>(eventData.isEventAdded || false);
 
   const {
     interestConfiguration,
@@ -47,7 +52,7 @@ const EventCard = (eventData: Props) => {
     startDateTime: eventData.startDate,
     endDateTime: eventData.endDate,
     address: [
-      eventData.venue || "TBA",
+      eventData.venue,
       eventData.city,
       eventData.state !== eventData.city ? eventData.state : null,
       eventData.country !== eventData.city ? eventData.country : null,
@@ -65,8 +70,6 @@ const EventCard = (eventData: Props) => {
   };
 
   const handleSelect = (eventId: string, action: string) => {
-    // console.log("handleSelect", eventId, action, selectedAction);
-
     if (selectedAction.status === "") {
       toast({
         // title: "Success",
@@ -89,6 +92,7 @@ const EventCard = (eventData: Props) => {
               description: "Event added successfully!",
               variant: "default",
             });
+            setEventAdded(true);
           },
           onError: (error) => {
             console.log(error);
@@ -105,11 +109,14 @@ const EventCard = (eventData: Props) => {
 
   useEffect(() => {
     if (interestConfiguration && eventData?.participationType) {
-      const ss = interestConfiguration.interest.find(item => item.label.toLowerCase() === eventData?.participationType?.toLowerCase());
-      if (ss)
-        setSelectedAction(ss);
+      const ss = interestConfiguration.interest.find(
+        (item) =>
+          item.label.toLowerCase() ===
+          eventData?.participationType?.toLowerCase()
+      );
+      if (ss) setSelectedAction(ss);
     }
-  }, [])
+  }, []);
 
   if (eventRejected) return <></>;
 
@@ -124,12 +131,22 @@ const EventCard = (eventData: Props) => {
           />
         </div>
       )}
-      <div className="flex flex-col gap-1 h-full w-full">
-        <div className="text-base font-medium">{event.name}</div>
-        <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+      <div className="flex flex-col gap-1.5 h-full w-full">
+        {eventData?.isProductEvent ? (
+          <div className="text-base font-medium">{event.name}</div>
+        ) : (
+          <Link
+            href={`/internal/event/${event.id}`}
+            className="text-base font-medium hover:text-primary transition-colors"
+            target="_blank"
+          >
+            {event.name}
+          </Link>
+        )}
+        <div className={`text-[var(--tertiary-text-color)] text-xs`}>
           {event.organizer}
         </div>
-        <p className="text-sm capitalize">{event.address}</p>
+        <p className="text-xs capitalize">{event.address}</p>
         <div
           className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
         >
@@ -142,7 +159,7 @@ const EventCard = (eventData: Props) => {
             {formattedDateRange(event.startDateTime, event.endDateTime)}
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <Badge
             variant="outline"
             className="text-[#0062D1] bg-[#E0EAF5]  capitalize rounded-sm"
@@ -154,22 +171,29 @@ const EventCard = (eventData: Props) => {
             selectedHeader={selectedAction}
             changeSelectedHeader={setSelectedAction}
             options={interestConfiguration?.interest}
+            disabledDropdown={eventAdded}
           />
 
-          <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Cross
-              className="cursor-pointer"
-              onClick={() => handleReject(event.id)}
-              color="#DA2F35"
-              height="16px"
-            />
-            <Check
-              className="cursor-pointer"
-              onClick={() => handleSelect(event.id, "interestedAction")}
-              color="#398E4A"
-              height="16px"
-            />
-          </div>
+          {isSubmitting ? (
+            <Loader2 className="mr-2 animate-spin text-primary" />
+          ) : eventAdded ? (
+            <div className="text-primary text-sm font-medium pr-2">Added</div>
+          ) : (
+            <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Cross
+                className="cursor-pointer"
+                onClick={() => handleReject(event.id)}
+                color="#DA2F35"
+                height="16px"
+              />
+              <Check
+                className="cursor-pointer"
+                onClick={() => handleSelect(event.id, "interestedAction")}
+                color="#398E4A"
+                height="16px"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
