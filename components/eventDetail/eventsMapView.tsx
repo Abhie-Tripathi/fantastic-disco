@@ -51,14 +51,8 @@ const EventsMapView: React.FC<MapProps> = ({
     tradeshows: "/eventType/expo.png",
   };
 
-  const latitude =
-    eventLocation?.venue?.latitude ??
-    eventLocation?.city?.latitude ??
-    eventLocation?.state?.latitude;
-  const longitude =
-    eventLocation?.venue?.longitude ??
-    eventLocation?.city?.longitude ??
-    eventLocation?.state?.longitude;
+  const latitude = eventLocation?.latitude;
+  const longitude = eventLocation?.longitude;
 
   const viewBound = {
     boundType: "point",
@@ -105,18 +99,8 @@ const EventsMapView: React.FC<MapProps> = ({
       const { eventLocation } = (eventDetails && eventDetails.basic) || {};
       const result = {
         coordinates: {
-          latitude: parseFloat(
-            eventLocation?.venue?.latitude ||
-              eventLocation?.city?.latitude ||
-              eventLocation?.state?.latitude ||
-              "0"
-          ).toString(),
-          longitude: parseFloat(
-            eventLocation?.venue?.longitude ||
-              eventLocation?.city?.longitude ||
-              eventLocation?.state?.longitude ||
-              "0"
-          ).toString(),
+          latitude: parseFloat(eventLocation?.latitude || "0").toString(),
+          longitude: parseFloat(eventLocation?.longitude || "0").toString(),
         },
         events: [eventDetails],
       };

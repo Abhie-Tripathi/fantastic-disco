@@ -13,8 +13,6 @@ interface TrackerDraftCardProps {
 const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDraftCardProps) => {   
    if(!data) return null;
    
-   console.log("entries", entries);
-   
     return(
         <div className="flex gap-5 p-3 rounded-lg shadow-[1.5px_3px_9px_0px_#EDEBEB66] border border-[var(--border-color)] justify-between bg-background">
             <div className="flex gap-5 w-[100%]">
@@ -22,11 +20,16 @@ const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDr
             <Image src={imgUrl} alt="draftTracker" width={30} height={25} />
             </div>
             <div className="flex flex-col gap-3 w-[100%]">
+                <div className="flex justify-between">
                 <div className="font-semibold text-base">{heading}</div>
+                <div className="bg-[var(--accent-color)] text-[12px] px-[14px] py-1 rounded-[13px] h-fit">
+                Draft
+            </div>
+            </div>
                 {/* <div className="badge_info w-fit border border-[var(--info-text-color))] px-1.5 py-0" style={{fontSize:"10px"}}>{type}</div> */}
                 {view!="minView" &&
                 <div className="text-[var(--secondary-text-color)] text-sm px-2">
-                    {" "}{entries.slice(0,2).join(",")} 
+                    {" "}{entries.slice(0,2).join(", ")} 
                     <Link href={`/internal/trackers/create?type=${type}`}>
                     <span className="pl-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] hover:underline">+{entries.length>2 && entries.length-2}</span>
                     </Link>
@@ -43,7 +46,7 @@ const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDr
                 </div>
                     {/* </div> */}
                     <Link href={`/internal/trackers/create?type=${type}`}>
-                    <Button className="h-7">Save</Button>
+                    <Button className="h-7">Edit</Button>
                     </Link>
                 </div>
             </div>

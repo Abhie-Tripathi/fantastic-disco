@@ -1039,9 +1039,6 @@ const Pages = () => {
   useEffect(() => { 
       setLocalFilter("includeKeywords", inc?.join(","));
   },[inc])
-  useEffect(() => {
-    console.log("Current includeKeywords:", getLocalFilterValue("includeKeywords"));
-  }, [getLocalFilterValue("includeKeywords")]);
    
   
  

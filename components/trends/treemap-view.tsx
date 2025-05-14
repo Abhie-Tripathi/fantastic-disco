@@ -33,7 +33,6 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
   const [currentPath, setCurrentPath] = useState<
     Array<{ name: string; value: string }>
   >([]);
-
   // Reset state when hierarchy levels change
 
   const locationId = getFilterValue("locationIds");

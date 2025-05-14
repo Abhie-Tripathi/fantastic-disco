@@ -203,10 +203,20 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
-  const [aiStatus, setAiStatus] = useState<TrackerAIResponse>({} as TrackerAIResponse);
-  useEffect(() => {
-  setAiStatus(JSON.parse(localStorage.getItem("companySuggestion") || "{}"));
-  },[]);
+  const getCompanySuggestion = () => {
+    if (typeof window === 'undefined') {
+      return {};
+    }
+  
+    try {
+      const item = localStorage.getItem("companySuggestion");
+      return item ? JSON.parse(item) : {};
+    } catch (error) {
+      console.error("Error parsing companySuggestion", error);
+      return {};
+    }
+  };
+  const aiStatus = getCompanySuggestion();
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")

@@ -84,6 +84,8 @@ export const endpoints = {
     latestComment: `${BASE_URL}/me/account/latest-comment`,
     createIntent: `${BASE_URL}/intents/user-event-interest`,
     eventDetail: `${BASE_URL}/events`,
+    fetchDuplicateEvent: `${BASE_URL}/promot-event/find-duplicates`,
+    addNewEvent: `${BASE_URL}/promot-event`,
   },
   intent: {
     userEventInterest: `${BASE_URL}/intents/user-event-interest`,
