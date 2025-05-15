@@ -194,6 +194,10 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
     // Save and update UI
     localStorage.setItem("companySuggestion", JSON.stringify(updatedStatus));
     setShowFetchedData(true);
+    if(inputValue.length === 0) {
+      setShowFetchedData(false);
+      return;
+    }
     fetchCompany();
   };
 
@@ -447,7 +451,7 @@ Do not include the competitor platform names in the output. Only return publicly
         <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
           <div className="flex flex-col gap-2">
             <div className="text-xl font-medium">Brand Brief Builder </div>
-            <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
+            <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy or paste your link below.</div>
             <div className="flex gap-2 w:[100%] sm:w-[29rem]">
             <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-[80%] sm:w-full hover:border-[var(--primary-color)] focus-within:border-[var(--primary-color)] transition-all duration-200 hover:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)] focus-within:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)]">
                 <input
@@ -608,13 +612,14 @@ Do not include the competitor platform names in the output. Only return publicly
         </button>
       }
       {isEventeli ? EventeliView : StandardView}
-
+      {inputValue.length > 0 && (
       <FetchTemplateModal
         loadingState={loadingState}
         inputValue={inputValue}
         open={showFetchedData}
         onOpenChange={setShowFetchedData}
       />
+      )}
     </div>
   );
 });
