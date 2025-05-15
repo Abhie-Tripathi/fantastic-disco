@@ -594,31 +594,33 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // For more than 10 days, automatically calculate best interval
-    const calculateAutoInterval = (days: number) => {
-      // Define possible intervals based on total days
-      if (days <= 15) return 2;      // Every 2 days for 11-15 days
-      if (days <= 30) return 3;      // Every 3 days for 16-30 days
-      if (days <= 60) return 5;      // Every 5 days for 31-60 days
-      if (days <= 90) return 7;      // Every 7 days for 61-90 days
-      if (days <= 180) return 14;    // Every 2 weeks for 91-180 days
-      if (days <= 365) return 30;    // Every month for 181-365 days
-      return 60;                     // Every 2 months for >365 days
+    // For longer periods, use a fixed number of ticks based on the duration
+    const getTickCount = (days: number) => {
+      if (days <= 30) return 6;      // 6 ticks for up to 1 month
+      if (days <= 90) return 7;      // 7 ticks for up to 3 months
+      if (days <= 180) return 8;     // 8 ticks for up to 6 months
+      if (days <= 365) return 9;     // 9 ticks for up to 1 year
+      return 10;                     // 10 ticks for more than 1 year
     };
 
-    const interval = calculateAutoInterval(totalDays);
-    const dates = [format(start, "yyyy-MM-dd")]; // First date
-
-    // Generate dates with the calculated interval
-    let currentDate = start;
-    while (isAfter(end, currentDate)) {
-      currentDate = addDays(currentDate, interval);
-      if (!isAfter(currentDate, end)) {
-        dates.push(format(currentDate, "yyyy-MM-dd"));
+    const tickCount = getTickCount(totalDays);
+    const dates = [];
+    
+    // Always include start date
+    dates.push(format(start, "yyyy-MM-dd"));
+    
+    // Calculate the interval between ticks
+    const interval = Math.floor(totalDays / (tickCount - 1));
+    
+    // Generate intermediate dates
+    for (let i = 1; i < tickCount - 1; i++) {
+      const nextDate = addDays(start, i * interval);
+      if (!isAfter(nextDate, end)) {
+        dates.push(format(nextDate, "yyyy-MM-dd"));
       }
     }
-
-    // Add end date if not already included
+    
+    // Always include end date
     const lastDateStr = format(end, "yyyy-MM-dd");
     if (dates[dates.length - 1] !== lastDateStr) {
       dates.push(lastDateStr);
