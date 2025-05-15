@@ -52,6 +52,7 @@ export default function LocationSelector({
   disableCenterPoint = false,
 }: LocationProps) {
   const pathName = usePathname();
+  const hideCenterPoint = disableCenterPoint || pathName === "/internal/search/people" || pathName === "/internal/search/companies";
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
@@ -75,7 +76,7 @@ export default function LocationSelector({
       ? localFilters[filterName as keyof Filters].split(",")
       : null;
 
-    if (geoCoordinate) {
+    if (geoCoordinate && isEventeli) {
       const locationName = await getLocationName(
         geoCoordinate.coordinates.latitude,
         geoCoordinate.coordinates.longitude
@@ -513,14 +514,14 @@ export default function LocationSelector({
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            (selectedLocation === undefined ||
-              (Array.isArray(selectedLocation) &&
-                selectedLocation?.length === 0)) &&
-            isMandatory
+            isMandatory && 
+            (selectedLocation === undefined || 
+             selectedLocation === null || 
+             (Array.isArray(selectedLocation) && selectedLocation.length === 0))
               ? "border-destructive"
               : isOpen
-              ? "border-primary"
-              : "border-input"
+                ? "border-primary"
+                : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
@@ -543,7 +544,7 @@ export default function LocationSelector({
                 ) : disableCenterPoint ? (
                   ""
                 ) : (
-                  selectedLocation.description
+                  hideCenterPoint ? "" :  selectedLocation.description
                 )}
               </span>
             )}
@@ -571,7 +572,7 @@ export default function LocationSelector({
         </div>
 
         {isEventeli ? (
-          disableCenterPoint ? (
+          hideCenterPoint ? (
             <div className="p-4">{renderCityInput()}</div>
           ) : (
             <Tabs

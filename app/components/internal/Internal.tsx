@@ -63,12 +63,14 @@ const Internal = ({
   const [shortlistModalOpen, setShortlistModalOpen] = useState(false);
   const [shortlistModalData, setShortlistModalData] = useState({});
   const [singleEventId, setSingleEventId] = useState<string>("");
+  const [currentEnquiry, setCurrentEnquiry] = useState<enquiryType>();
   const [enquiryId, setEnquiryId] = useState<string>("");
 
   const handleModal = (eventId: string, enquiryId: string) => {
     setModalOpen(!modalOpen);
     setSingleEventId(eventId);
     setEnquiryId(enquiryId);
+    setCurrentEnquiry(eventData1.find((item) => item.eventId === eventId));
   };
 
   const handleShortlistModal = (eventId: string, enquiryId: string = "") => {
@@ -313,13 +315,13 @@ const Internal = ({
           <div className={styles.timelineContainer}>
             {eventData1?.map((item, index) => {
               // Check if current event's date is different from previous event's date
-              const showDate = item.eventData.startDate !== prevDate;
+              const showDate = item.eventData.startDateTime !== prevDate;
               // Update previous date
-              prevDate = item.eventData.startDate;
+              prevDate = item.eventData.startDateTime;
               return (
                   <div key={item.eventId} className={styles.timeline}>
                     <TimelineItem
-                      eventDate={showDate ? item.eventData.startDate : null}
+                      eventDate={showDate ? item.eventData.startDateTime : null}
                     />
                     <YourEventCard
                       eventId={item.eventId}
@@ -327,12 +329,12 @@ const Internal = ({
                       isDateSame={showDate}
                       enquiryId={item.id}
                       eventName={item.eventData.name}
-                      eventLocation={item.eventData.location.cityName}
-                      eventCountry={item.eventData.location.countryName}
+                      eventLocation={item.eventData.eventLocation?.cityName}
+                      eventCountry={item.eventData.eventLocation?.countryName}
                       eventImage={item.eventData.logoUrl}
-                      eventStartDate={item.eventData.startDate}
-                      eventEndDate={item.eventData.endDate}
-                      eventCompany={item.eventData.organizerName}
+                      eventStartDate={item.eventData.startDateTime}
+                      eventEndDate={item.eventData.endDateTime}
+                      eventCompany={item.eventData.organizer?.name}
                       currentEnquiryStatus={item.status}
                       upvote={item.activityCount} // upvote activity data
                       enquiryActivity={item.myActivity}
@@ -374,6 +376,7 @@ const Internal = ({
             eventId={singleEventId}
             enquiryId={enquiryId}
             coordinateActions={coordinateActions}
+            modalContent={currentEnquiry}
           />
         </div>
       )}

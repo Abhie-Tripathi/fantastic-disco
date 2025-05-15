@@ -21,6 +21,8 @@ import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface MultiSelectSearchBar {
   varient?: "small" | "medium" | "large";
@@ -111,7 +113,6 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log("Selected items:", selectedItems);
       setOpen(false);
     },
     [selectedItems]
@@ -199,7 +200,9 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
                     "text-sm"
                   }`}
                 >
-                  <span className="text-sm">{item.basic.name}</span>
+                  <span className="text-sm text-gray-900 dark:text-gray-100">
+                    {item.basic.name}
+                  </span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -250,8 +253,21 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
                     <CommandItem
                       key={event.basic.id || index}
                       onSelect={() => handleItemSelect(event)}
+                      className="flex flex-col items-start"
                     >
-                      {event.basic.name}
+                      <div className="font-medium">
+                        <span>{event.basic.name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {formattedDateRange(
+                            event.basic.startDateTime,
+                            event.basic.endDateTime,
+                            false
+                          )}
+                        </span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatLocationParts(event.basic.eventLocation, true)}
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandList>

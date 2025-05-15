@@ -61,7 +61,6 @@ export const TrackerContextProvider = ({ children }: any) => {
   }, [pathName]);
 
   useEffect(() => {
-    // console.log(11111);
 
     if (isNewCall) {
       fetchData();
@@ -69,15 +68,11 @@ export const TrackerContextProvider = ({ children }: any) => {
   }, [isNewCall]);
   const fetchData = useCallback(async () => {
     try {
-      console.log(trackerId);
       const data = editTrue?await getTrackerDetail(trackerId, "refresh=true"):await getTrackerDetail(trackerId);
       if (data) {
-        console.log(data);
 
         setData(data);
         setSavedEventCount(data.savedEventsCount || 0);
-        console.log(data);
-        setIsNewCall(false);
         setEditTrue(false);
       }
       if (error) {
@@ -86,6 +81,7 @@ export const TrackerContextProvider = ({ children }: any) => {
     } catch (error) {
       console.error("Fetch data error:", error);
     }
+    setIsNewCall(false);
   }, [trackerId, getTrackerDetail, error]);
 
   const value = {

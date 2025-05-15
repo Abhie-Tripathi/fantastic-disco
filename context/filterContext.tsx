@@ -137,6 +137,8 @@ export interface Filters {
   userSocialLink?: string;
 
   filter?: string;
+  compare_from?: string;
+  compare_to?: string;
 }
 type Filter = {
   eventTypes: string;

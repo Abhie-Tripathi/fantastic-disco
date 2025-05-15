@@ -6,13 +6,13 @@ import Papa from "papaparse";
 import EventForm from "./EventForm";
 import Modal from "./modal";
 // import ColMapping from "./colMapping";
-import { useCoordinateService } from "@/services/coordinateService";
-import { useToast } from "@/hooks/use-toast";
 // import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 // import LoadingSkeleton from "./LoadingSkeleton";
 import UrlFetch from "./UrlFetch";
 import BulkImport from "./BulkImport";
 import SampleTable from "./SampleTable";
+import { X } from "lucide-react";
+import { useConfiguration } from "@/hooks/useConfiguration";
 
 export default function AddEventModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,11 +27,17 @@ export default function AddEventModal() {
     "default" | "similarEvents" | "editEvents" | "validating" | "fetching"
   >("default");
 
-  const { toast } = useToast();
+  const [importState, setImportState] = useState<
+    "default" | "loading" | "fetched"
+  >("default");
 
-  const coordinateService = useCoordinateService();
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error: configError,
+  } = useConfiguration.interest();
 
-  const [csvData, setCsvData] = useState<any[]>([]);
+  const [csvData, setCsvData] = useState<string[][]>([]);
 
   const [csvFileName, setCsvFileName] = useState<string>("");
 
@@ -49,41 +55,66 @@ export default function AddEventModal() {
       fieldName: "",
       suggestions: ["name", "event name", "eventname"],
       isMatch: false,
+      isMandatory: true,
     },
     {
       defaultName: "Start Date",
       fieldName: "",
       suggestions: ["start date", "start", "startdate", "startDate"],
       isMatch: false,
+      isMandatory: true,
     },
     {
       defaultName: "End Date",
       fieldName: "",
       suggestions: ["end date", "end", "enddate", "endDate"],
       isMatch: false,
+      isMandatory: true,
     },
     {
-      defaultName: "Location",
+      defaultName: "City",
       fieldName: "",
-      suggestions: ["location", "venue", "address"],
+      suggestions: ["city", "event city"],
       isMatch: false,
+      isMandatory: true,
     },
     {
-      defaultName: "Participation",
+      defaultName: "Country",
+      fieldName: "",
+      suggestions: ["country", "event country"],
+      isMatch: false,
+      isMandatory: true,
+    },
+    {
+      defaultName: "Venue",
+      subHeading: "(Optional)",
+      fieldName: "",
+      suggestions: ["venue", "event venue", "address"],
+      isMatch: false,
+      isMandatory: false,
+    },
+    {
+      defaultName: "Action",
+      subHeading: interestConfiguration?.interest
+        .map((item) => item.label)
+        .join(", "),
       fieldName: "",
       suggestions: [
         "participation",
         "participation type",
         "participationType",
         "mode",
+        "action",
       ],
       isMatch: false,
+      isMandatory: true,
     },
     {
       defaultName: "Event Type",
       fieldName: "",
       suggestions: ["type", "event type", "eventType"],
       isMatch: false,
+      isMandatory: true,
     },
   ]);
 
@@ -95,28 +126,27 @@ export default function AddEventModal() {
 
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
     setCsvFileName(file.name);
+
+    handleImportState("default");
     // resetForm();
 
     // Parse the CSV file using PapaParse
     Papa.parse(file, {
-      complete: (result) => {
-        // console.log("result.data", result.data);
-
+      complete: (result: { data: string[][]; errors: any[] }) => {
         // const mappedData = result.data.map((item: any) => ({
         //   name: item['Name'], // Map to your column names
         //   age: item['Age'],
         //   email: item['Email'],
         // }));
 
-        setCsvData(result.data);
+        setCsvData(result.data.slice(1)); // Skip the header row
 
-        const colHeader = result.data[0] ? Object.keys(result.data[0]) : [];
+        const colHeader = result.data[0] ? result.data[0] : [];
 
         const tempHeader2 = mappedHeaders;
         tempHeader2.map((header, index) => {
@@ -136,8 +166,9 @@ export default function AddEventModal() {
         setError("");
         // setShowColMapping(true);
       },
-      header: true, // assuming the first row contains headers
+      header: false, // assuming the first row contains headers
       skipEmptyLines: true, // skip empty lines
+      preview: 51, // consider only top 50 rows
       error: (err) => {
         setError("Error parsing file");
         console.error(err);
@@ -152,35 +183,46 @@ export default function AddEventModal() {
     fileInputRef.current?.click();
   };
 
-  // const handleMainModal = (action: string) => {
-  //   if (action === "open")
-  //     setIsModalOpen(true);
-  //   else if (action === "close")
-  //     setIsModalOpen(false);
-  // }
+  const handleImportState = (value: any) => {
+    setImportState(value);
+  };
 
-  // useEffect(() => {
-  //   resetForm();
-  // }, [isModalOpen]);
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/csvFiles/addEvent.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div>
-      <Button size="lg" onClick={openModal}>Add Event</Button>
+      <Button size="lg" onClick={openModal}>
+        Add Event
+      </Button>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col gap-4 h-full">
-          <div className="flex justify-between items-center h-10">
-            <h2 className="text-base font-medium leading-6">Add Event</h2>
-            <div>
+          <div className="flex justify-between items-center h-10 px-6">
+            <h2 className="text-lg font-medium leading-6">Add Event</h2>
+            <div className="flex gap-3">
               {(selectedView === "urlFetch" ||
                 selectedView === "addEventForm" ||
                 selectedView === "bulkImport") && (
-                <span
-                  className="cursor-pointer text-primary text-base mr-4"
+                // <span
+                //   className="cursor-pointer text-primary text-base mr-4"
+                //   onClick={() => setSelectedView("home")}
+                // >
+                //   Back
+                // </span>
+                <Button
+                  className="text-sm text-primary hover:text-primary"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setSelectedView("home")}
                 >
                   Back
-                </span>
+                </Button>
               )}
 
               {(selectedView === "home" ||
@@ -200,36 +242,53 @@ export default function AddEventModal() {
 
               {selectedView === "addEventForm" &&
                 (eventFormState === "default" ? (
-                  <Button onClick={() => setEventFormState("validating")}>
+                  <Button
+                    className="text-sm"
+                    size="sm"
+                    onClick={() => setEventFormState("validating")}
+                  >
                     Save Event
                   </Button>
                 ) : eventFormState === "similarEvents" ? (
-                  <Button onClick={() => setEventFormState("default")}>
+                  <Button
+                    className="text-primary hover:text-primary"
+                    variant="outline"
+                    onClick={() => setEventFormState("default")}
+                  >
                     Edit Event
                   </Button>
                 ) : (
                   <></>
                 ))}
+              <Button
+                className="p-1 h-8 w-8 rounded-sm"
+                variant="ghost"
+                size="sm"
+              >
+                <X className="h-5 w-5" onClick={closeModal} />
+              </Button>
             </div>
           </div>
 
           {selectedView === "home" && (
-            <>
+            <div className="space-y-4 overflow-y-auto px-6 ">
               <div className="bg-[var(--background-secondary-color)] px-3 py-4 border border-[var(--border-color)] rounded-sm">
                 <div className="text-[var(--link-color)] text-xs mb-3">
                   Enter the Event Website Link Or paste a link containing
                   multiple events to fetch them all
                 </div>
                 <div className="flex gap-4">
-                  <Input
-                    id="name"
-                    className="rounded-sm bg-background focus-visible:border-none"
-                    placeholder="Enter web URL"
-                    value={websiteUrl}
-                    onChange={(e) => setWebsiteUrl(e.target.value)}
-                    // aria-invalid={error ? "true" : "false"}
-                    aria-describedby="name-error"
-                  />
+                  <div className="w-full border-[3px] border-[#D2D2F3] rounded-md">
+                    <Input
+                      id="name"
+                      className="rounded-sm ring-1 ring-primary bg-background  focus-visible:ring-primary"
+                      placeholder="Enter web URL"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      // aria-invalid={error ? "true" : "false"}
+                      aria-describedby="name-error"
+                    />
+                  </div>
                   <Button
                     onClick={() => setSelectedView("urlFetch")}
                     disabled={isFetching || websiteUrl.trim() === ""}
@@ -248,7 +307,7 @@ export default function AddEventModal() {
                     Upload a .PDF, .CSV, or .XLSX file following the sample
                     format to fetch your events effortlessly!
                   </div>
-                  <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)] text-[#A1A2A2]">
+                  <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-background border-[var(--border-color)] text-[#A1A2A2]">
                     <span className="text-xs">
                       Click to browse or drag and drop your files
                     </span>
@@ -265,59 +324,49 @@ export default function AddEventModal() {
                   className="text-primary hover:text-primary w-fit self-end"
                   variant="outline"
                   size="sm"
+                  onClick={handleDownload}
                 >
                   Download Sample Format
                 </Button>
               </div>
 
-              <SampleTable mappedHeaders={mappedHeaders} isSampleTable={true} />
-            </>
+              <div className="overflow-x-auto w-full">
+                <SampleTable
+                  mappedHeaders={mappedHeaders}
+                  isSampleTable={true}
+                />
+              </div>
+            </div>
           )}
 
-          <div
-            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
-              selectedView === "addEventForm" ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {selectedView === "addEventForm" && (
+          {selectedView === "addEventForm" && (
+            <div className="overflow-y-auto px-6">
               <EventForm
                 eventFormState={eventFormState}
                 setEventFormState={setEventFormState}
                 resetForm={resetForm}
               />
-            )}
-          </div>
+            </div>
+          )}
+          {selectedView === "urlFetch" && (
+            <div className="overflow-y-auto px-6">
+              <UrlFetch url={websiteUrl} />
+            </div>
+          )}
 
-          {/* <div
-            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
-              selectedView === 'loading' ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {selectedView === 'loading' && <LoadingSkeleton />}
-          </div> */}
-
-          <div
-            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
-              selectedView === "urlFetch" ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {selectedView === "urlFetch" && <UrlFetch url={websiteUrl} />}
-          </div>
-
-          <div
-            className={`transition-opacity duration-500 ease-in-out overflow-y-auto ${
-              selectedView === "bulkImport" ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {selectedView === "bulkImport" && (
+          {selectedView === "bulkImport" && (
+            <div className="overflow-y-auto px-6">
               <BulkImport
                 mappedHeaders={mappedHeaders}
                 csvFileName={csvFileName}
                 handleFileUpload={handleButtonClick}
                 csvData={csvData}
+                interestConfiguration={interestConfiguration?.interest ?? []}
+                importState={importState}
+                handleImportState={handleImportState}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </Modal>
       <input

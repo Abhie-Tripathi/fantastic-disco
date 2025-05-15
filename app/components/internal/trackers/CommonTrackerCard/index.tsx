@@ -26,6 +26,7 @@ const CommonTrackerCard = () => {
   const {data: item}=useTrackerContext();
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
+  const {savedEventCount} = useTrackerContext();
   const pathName = usePathname().split('/');
   const [loading,setLoading]=useState(false);
   const {getTrackerDetail, error}=useTrackerServices();
@@ -265,7 +266,7 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.savedEventsCount)}
+                    {formatCount(savedEventCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
@@ -314,7 +315,7 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.savedEventsCount)}
+                    {formatCount(savedEventCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>

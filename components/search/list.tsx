@@ -1,10 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
+import {
+  Star,
+  Radio,
+  TicketPercent,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event } from "@/types/events/events";
+import { Event, HolidayEventLocation } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
@@ -43,6 +50,7 @@ import { isEventeli } from "@/config";
 import { Button } from "../ui/button";
 import * as Flags from "country-flag-icons/react/3x2";
 import { groupedEventTypes } from "@/constants";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface CircularProgressProps {
   value: number | null;
@@ -230,7 +238,6 @@ export default function EventAccordion({
           return event;
         });
       }
-      console.log(newEvents);
 
       return newEvents;
     });
@@ -351,39 +358,13 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" /> Online
       </span>
     ) : event.basic.format === "hybrid" ? (
-      <span className="flex items-center">
-        <Radio className="w-4 h-4 mr-1" />
-        <span>Hybrid&nbsp;-&nbsp;</span>
-        {[
-          event.basic.eventLocation?.venue?.name || "TBA",
-          event.basic.eventLocation?.city?.name,
-          event.basic.eventLocation?.state?.name !==
-          event.basic.eventLocation?.city?.name
-            ? event.basic.eventLocation?.state?.name
-            : null,
-          event.basic.eventLocation?.country?.name !==
-          event.basic.eventLocation?.city?.name
-            ? event.basic.eventLocation?.country?.name
-            : null,
-        ]
-          .filter(Boolean)
-          .join(", ")}
+      <span>
+        <Radio className="w-4 h-4 mr-1 inline-block" />
+        Hybrid&nbsp;-&nbsp;
+        {formatLocationParts(event.basic.eventLocation)}
       </span>
     ) : (
-      [
-        event.basic.eventLocation?.venue?.name || "TBA",
-        event.basic.eventLocation?.city?.name,
-        event.basic.eventLocation?.state?.name !==
-        event.basic.eventLocation?.city?.name
-          ? event.basic.eventLocation?.state?.name
-          : null,
-        event.basic.eventLocation?.country?.name !==
-        event.basic.eventLocation?.city?.name
-          ? event.basic.eventLocation?.country?.name
-          : null,
-      ]
-        .filter(Boolean)
-        .join(", ")
+      formatLocationParts(event.basic.eventLocation)
     )
   ) : (
     "Venue to be announced"
@@ -428,7 +409,6 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-  console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -1098,29 +1078,52 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  function formatAddress(eventLocation: any): string {
+  // const [currentSlide, setCurrentSlide] = useState(0);
+  // const slides = [
+  //   {
+  //     label: "India",
+  //     businessScore: 20,
+  //     socialScore: 20,
+  //   },
+  //   {
+  //     label: "Global",
+  //     businessScore: 30,
+  //     socialScore: 25,
+  //   },
+  //   {
+  //     label: "Regional",
+  //     businessScore: 15,
+  //     socialScore: 18,
+  //   },
+  // ];
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
+  //   }, 3000);
+
+  //   return () => clearInterval(interval);
+  // }, [slides.length]);
+
+  // const nextSlide = () => {
+  //   setCurrentSlide((prev) => (prev + 1) % slides.length);
+  // };
+
+  // const prevSlide = () => {
+  //   setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  // };
+
+  function formatAddress(eventLocation: HolidayEventLocation[]): string {
     const addressParts: string[] = [];
-    if (Array.isArray(eventLocation?.city)) {
-      const cities = eventLocation.city.map((s: any) => s.name).join(", ");
-      addressParts.push(cities);
-    } else if (eventLocation?.city) {
-      addressParts.push(eventLocation.city.name);
-    }
 
-    if (Array.isArray(eventLocation?.state)) {
-      const states = eventLocation.state.map((s: any) => s.name).join(", ");
-      addressParts.push(states);
-    } else if (eventLocation?.state) {
-      addressParts.push(eventLocation.state.name);
-    }
+    if (Array.isArray(eventLocation)) {
+      const locations = eventLocation.map((loc) => {
+        const parts: string[] = [];
+        if (loc.displayName) parts.push(loc.displayName);
 
-    if (Array.isArray(eventLocation?.country)) {
-      const countries = eventLocation.country
-        .map((s: any) => s.name)
-        .join(", ");
-      addressParts.push(countries);
-    } else if (eventLocation?.country) {
-      addressParts.push(eventLocation.country.name);
+        return parts.join(", ");
+      });
+      return locations.join("; ");
     }
     return addressParts.join(", ");
   }
@@ -1133,141 +1136,175 @@ const UnplannedCard = ({ event }: { event: Event }) => {
     })
     .map((eventType) => eventType.name);
 
-  function formatExhibitorCount(value: string | number | null): string {
-    if (value === null || value === undefined) return "-";
-
-    const stringValue = String(value);
-    const values = stringValue.split("-");
-
-    if (values.length === 2 && values[0] === values[1]) {
-      return Number(values[0]).toLocaleString();
-    }
-
-    return stringValue.toLocaleString();
-  }
-
   return (
-    <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
-      <div
-        className="absolute w-[6px] h-full left-0 top-0 rounded-lg"
-        style={{
-          backgroundColor: eventTypeColors.holiday,
-        }}
-      ></div>
-      <div className="p-6">
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-7 flex flex-col justify-between gap-3">
-            <h2 className="text-2xl font-semibold text-gray-900 ">
-              {event.basic.name}
-            </h2>
-
-            <div>
-              <p className="text-sm capitalize">
-                {formatAddress(event.basic.eventLocation)}
-              </p>
-              <p className={cn("text-sm text-gray-600 mt-2")}>
-                {formattedDateRange(
-                  event.basic.startDateTime,
-                  event.basic.endDateTime
-                )}
-              </p>
-            </div>
-            <div>
-              <div className="flex flex-wrap gap-2 mt-2 items-center">
-                <Image
-                  src={holiday || "/placeholder.svg"}
-                  alt="holiday"
-                  className="w-4 h-4"
-                />
-                <Badge
-                  variant="outline"
-                  className="text-gray-600 capitalize rounded-sm bg-gray-100"
-                >
-                  <span className="ml-1 uppercase">
-                    {event.basic.primaryEventType}
-                  </span>
-                </Badge>
-                {eventTypes.map((eventType) => (
-                  <Badge
-                    variant="outline"
-                    className="text-gray-600 capitalize rounded-sm"
-                    key={eventType}
-                  >
-                    <span className="ml-1">{eventType}</span>
-                  </Badge>
-                ))}
+    <div className="bg-background rounded-lg border shadow-sm relative">
+      <div className="block">
+        <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
+          {event.basic.logoUrl ? (
+            <img
+              src={event.basic.logoUrl}
+              alt={`${event.basic.name} logo`}
+              className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          ) : event.basic.website ? (
+            <div className="w-24 h-24 relative">
+              <img
+                src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                alt={`${event.basic.name} website favicon`}
+                className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.dataset.error = "true";
+                }}
+              />
+              <div
+                className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                style={{ display: "none" }}
+                ref={(el) => {
+                  if (el) {
+                    const img = el.previousSibling as HTMLImageElement;
+                    if (img && img.dataset.error === "true") {
+                      el.style.display = "flex";
+                    }
+                  }
+                }}
+              >
+                <span className="text-[#5055A3] text-2xl font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
               </div>
-              {/* <div className="flex flex-wrap gap-2 mt-2">
-                <Badge
-                  variant="outline"
-                  className="text-gray-600 capitalize rounded-sm"
-                  key="National"
-                >
-                  <span className="ml-1">Regional Holiday</span>
-                </Badge>
-              </div> */}
             </div>
-          </div>
-          <div className="col-span-5 flex flex-col justify-between">
-            <div className="flex items-center justify-end gap-2">
-              {/* {event.basic.alerts?.map((alert) => (
-                <Badge
-                  key={alert.id}
-                  variant="outline"
-                  className={cn(
-                    "capitalize text-sm border-2",
-                    getAlertLevelBorderColor(alert.level)
+          ) : (
+            <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="pl-[136px] p-6 pr-3">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-7 flex flex-col justify-between gap-3">
+              <h2 className="text-2xl font-semibold">{event.basic.name}</h2>
+              <div>
+                <p className="text-sm capitalize">
+                  {formatAddress(
+                    event.basic
+                      .eventLocation as unknown as HolidayEventLocation[]
                   )}
-                >
-                  <span>{alertIcons[alert.type]}</span>
-                  <span className="ml-1 font-medium">
-                    {alert.name.toLowerCase()}
-                  </span>
-                </Badge>
-              ))} */}
+                </p>
+                <p className="text-sm text-gray-600 mt-2">
+                  {formattedDateRange(
+                    event.basic.startDateTime,
+                    event.basic.endDateTime
+                  )}
+                </p>
+              </div>
+              <div>
+                <div className="flex flex-wrap gap-2">
+                  <TooltipProvider>
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger>
+                        <Badge
+                          variant="secondary"
+                          className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                          style={{
+                            color:
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
+                            backgroundColor: lightenColor(
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
+                              0.9
+                            ),
+                          }}
+                        >
+                          <span>
+                            {
+                              eventTypeIcons[
+                                event.basic.primaryEventType || "festivals"
+                              ]
+                            }
+                          </span>
+                          <span>{event.basic.primaryEventType}</span>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                        <p>Event Type</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  {eventTypes.map((eventType) => (
+                    <TooltipProvider key={eventType}>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {eventType}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Category</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex items-center justify-end">
-              {/* {event.insights?.scores ? (
-                  <div className="flex items-center justify-end w-full">
-                    <div className="space-y-4">
-                      {event.insights?.scores && (
-                        <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                          <CircularProgress
-                            value={-39}
-                            label="Business Score"
-                          />
-                          <CircularProgress value={80} label="Social Score" />
+
+            {/* <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
+              <div className="max-w-[94px] h-full">
+                <div className="relative">
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-300 ease-in-out"
+                      style={{
+                        transform: `translateX(-${currentSlide * 100}%)`,
+                      }}
+                    >
+                      {slides.map((slide, index) => (
+                        <div
+                          key={index}
+                          className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
+                        >
+                          <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                            {slide.label}
+                          </p>
+                          <div className="grid grid-rows-2 gap-2">
+                            <CircularProgress
+                              value={slide.businessScore}
+                              label="Business"
+                            />
+                            <CircularProgress
+                              value={slide.socialScore}
+                              label="Social"
+                            />
+                          </div>
                         </div>
-                      )}
+                      ))}
                     </div>
                   </div>
-                ) : ( */}
-              <div className="grid grid-row-2 items-end gap-4">
-                {/* {event.insights?.estimatedAttendance !== undefined && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Estimated Visitors
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {event.insights?.estimatedAttendance == "0"
-                            ? "--"
-                            : event.insights?.estimatedAttendance}
-                        </p>
-                      </div>
-                    )} */}
-                {/* {event.economicImpact !== undefined && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Economic Impact
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {formatEstimatedSpend(event.economicImpact)}
-                        </p>
-                      </div>
-                    )} */}
+                  <div className="flex justify-center gap-1 mt-2">
+                    {slides.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          currentSlide === index
+                            ? "bg-primary w-4"
+                            : "bg-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
-              {/* )} */}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

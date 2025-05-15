@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import { FormState } from "@/types/Formstate";
+import { AddEventFormState } from "@/types/Formstate";
 import { useConfiguration } from "@/hooks/useConfiguration";
 
 interface Props {
-  handleChange: (field: keyof FormState, value: any) => void;
-  formState: FormState;
+  handleChange: (field: keyof AddEventFormState, value: any) => void;
+  formState: AddEventFormState;
   formTheme: string;
   heading: string;
   size: string;
@@ -40,13 +40,13 @@ const InterestSelectContainer = ({
       <div className="text-[var(--tertiary-text-color)] text-sm font-medium">
         {heading}
       </div>
-      <div className="flex items-center gap-6 pt-3">
+      <div className="flex flex-wrap items-center gap-3 md:gap-6 pt-3">
         {options.map((option) => (
           <div
             key={option.value}
-            className={`px-6 py-2 rounded-md border border-[#E6E6E6] flex items-center gap-2 cursor-pointer hover:bg-[#F8F8FA] transition-all duration-200 font-medium text-sm ${
+            className={`px-6 py-1.5 rounded-md border-2 border-[#E6E6E6] flex items-center gap-2 cursor-pointer hover:bg-accent transition-all duration-300 font-medium text-sm ${
               option.value === formState.participationType
-                ? "border-primary"
+                ? "border-primary text-primary"
                 : ""
             }`}
             onClick={() => handleSelection(option.value)}
