@@ -17,6 +17,7 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
 import Link from "next/link";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -50,7 +51,10 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => (
 );
 
 const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(poc.user_profilePicture);
+  const [imageSrc, setImageSrc] = useState<string | null>(
+    poc.user_profilePicture
+  );
+  const isMobile = useIsMobile();
 
   const handleImageError = useCallback(() => {
     setImageSrc(DEFAULT_USER_ICON);
@@ -65,30 +69,52 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
 
   const renderEventCategories = useCallback(() => {
     if (!poc.top_event_categories?.length) return null;
-    
-    return poc.top_event_categories.slice(0, 2).map((item) => (
-      <span
-        key={item.key}
-        className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
-      >
-        {item.key}
-      </span>
-    ));
-  }, [poc.top_event_categories]);
+
+    const maxVisibleTags = isMobile ? 1 : 2;
+    const visibleCategories = poc.top_event_categories.slice(0, maxVisibleTags);
+    const remainingCount = poc.top_event_categories.length - maxVisibleTags;
+
+    return (
+      <div className="flex flex-wrap gap-2 items-center">
+        {visibleCategories.map((item) => (
+          <span
+            key={item.key}
+            className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+          >
+            {item.key}
+          </span>
+        ))}
+        {remainingCount > 0 && (
+          <span className="text-xs text-[#6E6F89]">+{remainingCount} more</span>
+        )}
+      </div>
+    );
+  }, [poc.top_event_categories, isMobile]);
 
   const renderCountryZones = useCallback(() => {
     if (!poc.top_event_countryZone?.length) return null;
-    
-    return poc.top_event_countryZone.slice(0, 2).map((item) => (
-      <Badge
-        key={item.key}
-        variant="secondary"
-        className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-      >
-        {item.key}
-      </Badge>
-    ));
-  }, [poc.top_event_countryZone]);
+
+    const maxVisibleTags = isMobile ? 1 : 2;
+    const visibleZones = poc.top_event_countryZone.slice(0, maxVisibleTags);
+    const remainingCount = poc.top_event_countryZone.length - maxVisibleTags;
+
+    return (
+      <div className="flex flex-wrap gap-2 items-center">
+        {visibleZones.map((item) => (
+          <Badge
+            key={item.key}
+            variant="secondary"
+            className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+          >
+            {item.key}
+          </Badge>
+        ))}
+        {remainingCount > 0 && (
+          <span className="text-xs text-[#6E6F89]">+{remainingCount} more</span>
+        )}
+      </div>
+    );
+  }, [poc.top_event_countryZone, isMobile]);
 
   return (
     <div className="bg-background rounded-xl border shadow-sm relative">
@@ -118,7 +144,9 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
             {locationDisplay && (
               <div className="flex gap-2 items-center w-fit pr-3">
                 <Location color="#666666" width="14px" height="14px" />
-                <span className="text-[#6E6F89] text-sm">{locationDisplay}</span>
+                <span className="text-[#6E6F89] text-sm">
+                  {locationDisplay}
+                </span>
               </div>
             )}
 
@@ -131,21 +159,27 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
             <div className="flex flex-wrap gap-2 items-center w-fit">
               {renderEventCategories()}
               {renderCountryZones()}
-              
+
               {poc.speakingCount > 0 && (
-                <Badge variant="secondary" className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm">
-                  Speaker ({poc.speakingCount} events)
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Speaker {!isMobile ? `${poc.speakingCount} events` : ""}
                 </Badge>
               )}
-              
+
               {poc.attendCount > 0 && (
-                <Badge variant="secondary" className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm">
-                  {poc.attendCount} events attended
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  {poc.attendCount} events {isMobile ? "" : "attended"}
                 </Badge>
               )}
             </div>
 
-            {poc.state !== 2 && (
+            {poc.state !== 2 && !isMobile && (
               <div className="mt-1" onClick={(e) => e.preventDefault()}>
                 <Button
                   disabled={poc.state === 1}
@@ -194,55 +228,68 @@ export const PeopleList: React.FC = () => {
     setCompanyUsers(people);
   }, [people]);
 
-  const itemsPerPage = parseInt(getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString());
-  const currentPage = Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
+  const itemsPerPage = parseInt(
+    getFilterValue("limit") || DEFAULT_ITEMS_PER_PAGE.toString()
+  );
+  const currentPage =
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage) - 1;
 
-  const handlePageChange = useCallback((page: number) => {
-    setMultipleFilters({
-      offset: ((page - 1) * itemsPerPage).toString(),
-      limit: itemsPerPage.toString(),
-    });
-  }, [itemsPerPage, setMultipleFilters]);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setMultipleFilters({
+        offset: ((page - 1) * itemsPerPage).toString(),
+        limit: itemsPerPage.toString(),
+      });
+    },
+    [itemsPerPage, setMultipleFilters]
+  );
 
-  const handleItemsPerPageChange = useCallback((newItemsPerPage: string) => {
-    setMultipleFilters({
-      limit: newItemsPerPage,
-    });
-  }, [setMultipleFilters]);
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: string) => {
+      setMultipleFilters({
+        limit: newItemsPerPage,
+      });
+    },
+    [setMultipleFilters]
+  );
 
-  const unlockPoc = useCallback(async (pocId: number | string) => {
-    try {
-      setCompanyUsers((prevPocData) =>
-        prevPocData.map((poc) =>
-          poc.user_id === pocId ? { ...poc, state: 1 } : poc
-        )
-      );
-      
-      const data = await companyService.unlockUserDetail(pocId);
-      if (data) {
+  const unlockPoc = useCallback(
+    async (pocId: number | string) => {
+      try {
         setCompanyUsers((prevPocData) =>
           prevPocData.map((poc) =>
-            poc.user_id === pocId
-              ? {
-                  ...poc,
-                  email: data.email,
-                  phoneNumber: data.phoneNumber,
-                  state: 2,
-                }
-              : poc
+            poc.user_id === pocId ? { ...poc, state: 1 } : poc
           )
         );
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, [companyService]);
 
-  const filteredUsers = useMemo(() => 
-    companyUsers.filter(
-      (item) => item.user_name !== null && item.user_profilePicture !== null
-    ),
+        const data = await companyService.unlockUserDetail(pocId);
+        if (data) {
+          setCompanyUsers((prevPocData) =>
+            prevPocData.map((poc) =>
+              poc.user_id === pocId
+                ? {
+                    ...poc,
+                    email: data.email,
+                    phoneNumber: data.phoneNumber,
+                    state: 2,
+                  }
+                : poc
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    },
+    [companyService]
+  );
+
+  const filteredUsers = useMemo(
+    () =>
+      companyUsers.filter(
+        (item) => item.user_name !== null && item.user_profilePicture !== null
+      ),
     [companyUsers]
   );
 
@@ -255,7 +302,12 @@ export const PeopleList: React.FC = () => {
   }
 
   if (error) {
-    return <NullState image={coordinateNullState} title={(error as ApiError).message} />;
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
   }
 
   if (count === 0) {

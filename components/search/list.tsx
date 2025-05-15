@@ -295,7 +295,7 @@ export default function EventAccordion({
       );
   }
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full px-4 md:px-0">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (

@@ -147,7 +147,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center sticky top-[117px] md:top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+            className={`flex justify-between items-center !sticky !top-[137px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
           >
             <EventCount view="events" />
             <div className="justify-center hidden md:flex">
@@ -227,14 +227,14 @@ const Events = () => {
                       <ListIcon className="h-4 w-4" />
                       <span>List View</span>
                     </Button>
-                    <Button
+                    {/* <Button
                       variant={selectedView === "table" ? "secondary" : "ghost"}
                       className="justify-start flex items-center gap-2"
                       onClick={() => onTabsChange("table")}
                     >
                       <TableIcon className="h-4 w-4" />
                       <span>Table View</span>
-                    </Button>
+                    </Button> */}
                     <Button
                       variant={selectedView === "map" ? "secondary" : "ghost"}
                       className="justify-start flex items-center gap-2"

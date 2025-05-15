@@ -704,7 +704,7 @@ const Filters = ({
   const { localFilters, applyFilters } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { theme } = useTheme();
-  
+
   const filterCount = useMemo(() => {
     const excludedFilters = ["active_gte", "active_lte"];
     return Object.keys(localFilters).filter(
@@ -743,8 +743,8 @@ const Filters = ({
           <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
       </button>
-      <div className="overflow-y-auto pt-4 md:pl-6 h-[calc(100vh-60px)] flex flex-col md:pr-6 pr-4 pl-4">
-        <div className="pb-3 sticky top-0 bg-background z-10">
+      <div className="overflow-y-auto md:pt-4 md:pl-6 h-[calc(100vh-60px)] flex flex-col md:pr-6">
+        <div className="sticky top-0 bg-background z-10 p-4">
           <Tabs defaultValue={type} value={type}>
             <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
               <Link href="/internal/search/events" className="contents">
@@ -781,12 +781,12 @@ const Filters = ({
         </div>
 
         <div className="hidden md:block">
-        <FilterContent
-          type={type}
-          filterCount={filterCount}
-          createTrackerHandler={createTrackerHandler}
-          searchHandler={searchHandler}
-        />
+          <FilterContent
+            type={type}
+            filterCount={filterCount}
+            createTrackerHandler={createTrackerHandler}
+            searchHandler={searchHandler}
+          />
         </div>
 
         <div className="md:hidden block">{children}</div>

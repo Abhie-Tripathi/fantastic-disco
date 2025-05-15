@@ -321,22 +321,39 @@ export default function DateRangeSelector({
           enableCompareOptions={false}
         />
       ) : (
-        <PopoverContent
-          className="w-auto p-0"
-          align={isLowHeight ? "center" : "start"}
-          side={isLowHeight ? "right" : "bottom"}
-        >
-          <DateRangePopup
-            presets={presets}
-            handlePresetChange={handlePresetChange}
-            selectedPreset={selectedPreset}
-            dateRange={dateRange}
-            handleDateSelect={handleDateSelect}
-            calendarDate={calendarDate}
-            setCalendarDate={setCalendarDate}
-            enableCompareOptions={enableCompareOptions}
-          />
-        </PopoverContent>
+        <>
+          {!isMobile ? (
+            <PopoverContent
+              className="w-auto p-0"
+              align={isLowHeight ? "center" : "start"}
+              side={isLowHeight ? "right" : "bottom"}
+            >
+              <DateRangePopup
+                presets={presets}
+                handlePresetChange={handlePresetChange}
+                selectedPreset={selectedPreset}
+                dateRange={dateRange}
+                handleDateSelect={handleDateSelect}
+                calendarDate={calendarDate}
+                setCalendarDate={setCalendarDate}
+                enableCompareOptions={enableCompareOptions}
+              />
+            </PopoverContent>
+          ) : (
+            <PopoverContent className="w-auto p-0" align="start">
+              <MobileDateRangePopup
+                presets={presets}
+                handlePresetChange={handlePresetChange}
+                selectedPreset={selectedPreset}
+                dateRange={dateRange}
+                handleDateSelect={handleDateSelect}
+                calendarDate={calendarDate}
+                setCalendarDate={setCalendarDate}
+                enableCompareOptions={enableCompareOptions}
+              />
+            </PopoverContent>
+          )}
+        </>
       )}
     </Popover>
   );

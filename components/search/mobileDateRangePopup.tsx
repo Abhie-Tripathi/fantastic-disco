@@ -52,7 +52,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-fit">
+    <div className="flex flex-col h-full max-w-[300px]">
       {/* Quick selection buttons */}
       <div className="flex overflow-x-auto p-2">
         {quickSelections.map((preset) => (
