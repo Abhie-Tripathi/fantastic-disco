@@ -561,11 +561,8 @@ const LineChartComponent = ({
 
     // For mobile screens, show exactly 6 ticks
     if (isMobileView) {
-      // Always show exactly 6 ticks on mobile screens
       const dates = [];
-
-      // First date
-      dates.push(format(start, "yyyy-MM-dd"));
+      dates.push(format(start, "yyyy-MM-dd")); // First date
 
       // Calculate an even interval for 4 middle points
       const step = Math.max(1, Math.floor(totalDays / 5));
@@ -573,7 +570,6 @@ const LineChartComponent = ({
       // Add 4 evenly spaced points (for a total of 6 with start and end)
       for (let i = 1; i <= 4; i++) {
         const nextDate = addDays(start, i * step);
-        // Only add if not past the end date
         if (!isAfter(nextDate, end)) {
           dates.push(format(nextDate, "yyyy-MM-dd"));
         }
@@ -588,9 +584,9 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // Desktop view - original logic
-    // If range is 10 days or less, show all dates
+    // Desktop view - improved logic for consistent intervals
     if (totalDays <= 10) {
+      // For 10 days or less, show all dates
       const dates = [];
       for (let i = 0; i < totalDays; i++) {
         dates.push(format(addDays(start, i), "yyyy-MM-dd"));
@@ -598,27 +594,36 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // For more than 10 days, calculate intervals
-    const interval = Math.floor(totalDays / 10);
-    const remainder = totalDays % 10;
-    const dates = [format(start, "yyyy-MM-dd")];
+    // For longer periods, use a fixed number of ticks based on the duration
+    const getTickCount = (days: number) => {
+      if (days <= 30) return 6;      // 6 ticks for up to 1 month
+      if (days <= 90) return 7;      // 7 ticks for up to 3 months
+      if (days <= 180) return 8;     // 8 ticks for up to 6 months
+      if (days <= 365) return 9;     // 9 ticks for up to 1 year
+      return 10;                     // 10 ticks for more than 1 year
+    };
 
-    let currentDate = start;
-
-    // Generate dates based on interval, adjusting for remainder
-    for (let i = 1; i <= 9; i++) {
-      currentDate = addDays(
-        currentDate,
-        interval + (i === 9 && remainder > 0 ? remainder : 0)
-      );
-      if (!isAfter(currentDate, end)) {
-        dates.push(format(currentDate, "yyyy-MM-dd"));
+    const tickCount = getTickCount(totalDays);
+    const dates = [];
+    
+    // Always include start date
+    dates.push(format(start, "yyyy-MM-dd"));
+    
+    // Calculate the interval between ticks
+    const interval = Math.floor(totalDays / (tickCount - 1));
+    
+    // Generate intermediate dates
+    for (let i = 1; i < tickCount - 1; i++) {
+      const nextDate = addDays(start, i * interval);
+      if (!isAfter(nextDate, end)) {
+        dates.push(format(nextDate, "yyyy-MM-dd"));
       }
     }
-
-    // Ensure the last date is included
-    if (dates[dates.length - 1] !== format(end, "yyyy-MM-dd")) {
-      dates.push(format(end, "yyyy-MM-dd"));
+    
+    // Always include end date
+    const lastDateStr = format(end, "yyyy-MM-dd");
+    if (dates[dates.length - 1] !== lastDateStr) {
+      dates.push(lastDateStr);
     }
 
     return dates;

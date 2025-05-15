@@ -1,32 +1,40 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Star,
-  Radio,
-  TicketPercent,
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import { Event, HolidayEventLocation } from "@/types/events/events";
-import { format } from "date-fns";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useTrackerEvents } from "@/hooks/useTrackerEvents";
-import { useEventsService } from "@/services/eventsService";
+import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from "@/public/trackerNullState.svg";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "../ui/toast";
-import { cn, lightenColor } from "@/lib/utils";
+import Loading from "@/app/components/UI/Loading";
+import ZeroState from "@/app/components/zerostate";
+import { Badge } from "@/components/ui/badge";
+import { isEventeli } from "@/config";
+import { groupedEventTypes } from "@/constants";
 import {
   alertIcons,
   eventTypeColors,
   eventTypeIcons,
   getAlertLevelBorderColor,
 } from "@/constants/eventTypes";
+import { useTrackerContext } from "@/context/tracker";
+import { useEvents } from "@/hooks/useEvents";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
+import { cn, lightenColor } from "@/lib/utils";
+import TrackerNullState from "@/public/trackerNullState.svg";
+import { ApiError } from "@/types/api";
+import { Show } from "@/types/events/dto/event-query.dto";
+import { Event, HolidayEventLocation } from "@/types/events/events";
+import { formattedDateRange } from "@/utils/date";
+import { formatEstimatedSpend } from "@/utils/formater";
+import { formatLocationParts } from "@/utils/locationFormat";
+import * as Flags from "country-flag-icons/react/3x2";
+import { format } from "date-fns";
+import {
+  Radio,
+  Star,
+  TicketPercent
+} from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { PaginationComponent } from "../pagination";
 import {
   Tooltip,
@@ -34,23 +42,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Show } from "@/types/events/dto/event-query.dto";
-import { formatEstimatedSpend } from "@/utils/formater";
-import { ActionPopover } from "@/app/components/Table/ActionPopover";
-import { formattedDateRange } from "@/utils/date";
-import { useEvents } from "@/hooks/useEvents";
-import { useSearchParams } from "next/navigation";
-import Loading from "@/app/components/UI/Loading";
-import ZeroState from "@/app/components/zerostate";
-import { ApiError } from "@/types/api";
-import Image from "next/image";
-import holiday from "/public/eventType/holiday.svg";
-import { useTrackerContext } from "@/context/tracker";
-import { isEventeli } from "@/config";
-import { Button } from "../ui/button";
-import * as Flags from "country-flag-icons/react/3x2";
-import { groupedEventTypes } from "@/constants";
-import { formatLocationParts } from "@/utils/locationFormat";
 
 interface CircularProgressProps {
   value: number | null;
