@@ -47,10 +47,7 @@ const SearchEventsCTAButton = ({
       eventLocation
         ? eventLocation?.countryId ||
           eventLocation?.stateId ||
-          eventLocation?.cityId ||
-          eventLocation?.locationType === "VENUE"
-          ? eventLocation?.id
-          : null
+          eventLocation?.cityId
         : null;
 
     enabledCategories && params.set("categories", enabledCategories);
