@@ -183,10 +183,7 @@ export default function EventCalendar({
                 true
               )
             : await getEvents(query);
-          
-          console.log("Raw holiday response:", holidayResponse);
           holidays = (holidayResponse?.events || []) as Event[];
-          console.log("Processed holidays:", holidays);
         }
       } catch (error) {
         console.error("Error fetching holidays:", error);
