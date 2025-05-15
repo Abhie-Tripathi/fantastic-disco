@@ -160,6 +160,7 @@ export default function EventCalendar({
       if(source!=="tracker"){
       const alertSearchParams = new URLSearchParams(searchParams.toString());
       alertSearchParams.set("eventTypes", "alert");
+      alertSearchParams.set("limit", "50");
       const query = Object.fromEntries(alertSearchParams.entries());
       alerts = await getEvents(query);
       }

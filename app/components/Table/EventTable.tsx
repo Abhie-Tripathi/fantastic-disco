@@ -105,7 +105,6 @@ const EventTable = ({
     
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
-      let isBookmarked = newEvents.some((event: Event) => event.basic.id === eventId);
 
       if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
         newEvents = newEvents.filter(

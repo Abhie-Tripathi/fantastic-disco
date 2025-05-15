@@ -209,10 +209,10 @@ export default function EventAccordion({
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter(
-          (event: Event) => event.basic.id !== eventId
-        );
+      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
+              newEvents = newEvents.filter(
+                (event: Event) => event.basic.id !== eventId
+              );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
