@@ -102,11 +102,12 @@ const EventTable = ({
   
   useEffect(() => {
     if (!events) return;
-
+    
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
+      let isBookmarked = newEvents.some((event: Event) => event.basic.id === eventId);
 
-      if (query.eventType === "bookmarked") {
+      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
         newEvents = newEvents.filter(
           (event: Event) => event.basic.id !== eventId
         );
