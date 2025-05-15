@@ -775,8 +775,10 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         );
 
         if (!walkthroughCompleted.includes("research")) {
-          setSteps(newSteps);
-          setRun(true);
+          setTimeout(() => {
+            setSteps(newSteps);
+            setRun(true);
+          }, 2000);
         }
       });
 
@@ -787,7 +789,44 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   return (
     <div className="w-full flex flex-col h-full bg-background">
       {mounted && steps.length > 0 && (
-        <Joyride steps={steps} run={run} callback={joyrideCallback} />
+        <Joyride
+          steps={steps}
+          run={run}
+          callback={joyrideCallback}
+          scrollToFirstStep={false}
+          disableScrolling={true}
+          spotlightPadding={4}
+          styles={{
+            options: {
+              zIndex: 10000,
+              primaryColor: "#6750a4",
+              textColor: "#333",
+              backgroundColor: "#fff",
+              arrowColor: "#fff",
+            },
+            tooltip: {
+              borderRadius: "8px",
+              padding: "10px",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
+              fontSize: "13px",
+              lineHeight: "1.4",
+              width: "auto",
+            },
+            tooltipContent: {
+              display: "flex",
+              justifyContent: "center",
+              padding: "10px 5px",
+            },
+            tooltipFooter: {
+              margin: "5px 0px",
+            },
+            buttonClose: {
+              color: "#999",
+              fontSize: "10px",
+              margin: "0px",
+            },
+          }}
+        />
       )}
       <button
         onClick={onToggleCollapse}
@@ -836,10 +875,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
             {type === "events" && filterCount > 0 && (
-              <div
-                className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
-                ref={saveSearchRef}
-              >
+              <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
                 <div className="flex items-center gap-2">
                   <Image
                     src={whrbotlogo}
@@ -852,6 +888,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 </div>
                 <div className=" flex items-center justify-between">
                   <Button
+                    ref={saveSearchRef}
                     id="save-search-btn"
                     variant="outline"
                     size="sm"
