@@ -142,9 +142,9 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
       {!loadingState.isPeopleLoading ?
       <CardSkeleton />:
       <div onClick={() => setSuggestion(3)} className="animate-fadeIn">
-      <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
+      {/* <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER"> */}
       <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
-      </Link>
+      {/* </Link> */}
       </div>
     }
     {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&

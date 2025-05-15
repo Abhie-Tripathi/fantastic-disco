@@ -262,7 +262,6 @@ Respond only with valid JSON. No explanation, no markdown, and no extra text.
         let fallbackCategories: string[] = [];
       
         try {
-          await fetchAIFallback(inputValue);
           // 1. First await with separate error handling
             await fetchAIFallback(inputValue);
         } catch (error) {

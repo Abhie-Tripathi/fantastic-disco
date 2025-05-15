@@ -76,7 +76,7 @@ const TemplatesModal = ({
           open={open}
           onOpenChange={onOpenChange}
           initialPosition={{ x: window.innerWidth - 336, y: 72 }} // Adjust as needed
-          className="shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] dark:shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,1)] bg-[var(--tabs-background-color)]"
+          className="shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,0.1)] dark:shadow-[0_0.3125rem_0.3125rem_rgba(0,0,0,1)] bg-transparent"
         >
 
 
@@ -109,10 +109,10 @@ const TemplatesModal = ({
     absolute 
     left-[40%] 
     top-1 
-    bg-background
+    bg-transparent
     shadow-[0_0.125rem_0_rgba(0,0,0,0.1)] 
-    rounded-full 
-    z-[11] 
+    rounded-[20px] 
+    z-[1] 
     -ml-5 
     -mt-7 
     w-[7.5rem] 
@@ -132,7 +132,9 @@ const TemplatesModal = ({
     shadow-[0_-0.125rem_0_rgba(0,0,0,0.1)]
   "></div>
 </div>
-      <div className="bg-[var(--tabs-background-color)] h-[30vh] rounded-lg relative flex flex-col overflow-scroll top-[40px] z-10" ref={scrollRef}>
+<div className="h-[28px] top-[20px] mt-[26px]
+ w-full bg-[var(--tabs-background-color)]">{" "}</div>
+      <div className="bg-[var(--tabs-background-color)] rounded-lg relative flex flex-col overflow-scroll top-[10px] z-10 h-[32vh] -mt-4" ref={scrollRef}>
         {/* CUSTOM CLOSE BUTTON */}
         {/* <div className="absolute right-4 top-4 z-10">
           <Button
@@ -159,27 +161,21 @@ const TemplatesModal = ({
         <CardSkeleton />
       }
       {loadingState.isCompetitorsLoading &&
-        <Link href="/internal/trackers/create?type=T_COMPETITOR">
-        <TrackerDraftCard type="Competitors" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data).length} Companies`} view="minView"/>
-        </Link>
+        <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data).length} Companies`} view="minView"/>
       }
       {(loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading) &&
       <CardSkeleton />
     }
     {loadingState.isKeywordsLoading && 
     <div onClick={() => setSuggestion(2)}>
-    <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS">
-    <TrackerDraftCard type="Product Keywords" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} view="minView"/>
-    </Link>
+    <TrackerDraftCard type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} view="minView"/>
     </div>
     }
       {(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) &&
       <CardSkeleton />}
     {loadingState.isPeopleLoading &&
       <div onClick={() => setSuggestion(3)}>
-      <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER">
-      <TrackerDraftCard type="People Finder" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} view="minView"/>
-      </Link>
+      <TrackerDraftCard type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} view="minView"/>
       </div>
     }
     {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
