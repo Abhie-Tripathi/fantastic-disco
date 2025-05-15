@@ -18,7 +18,7 @@ import {
   UserSearch,
   Lock,
 } from "lucide-react";
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect, useRef } from "react";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
@@ -65,6 +65,7 @@ import CreateTrackerDialog from "./createTrackerDialog";
 import { GAEvent } from "@/utils/GAEvent";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/context/theme";
+import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 
 interface FilterSection {
   id: string;
@@ -726,8 +727,68 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
     }
   };
 
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState<boolean>(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const saveSearchRef = useRef(null);
+
+  const joyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+      if (typeof window !== "undefined") {
+        let walkthroughCompleted: string[] = JSON.parse(
+          localStorage.getItem("walkthroughCompleted") || "[]"
+        );
+
+        if (!walkthroughCompleted.includes("research")) {
+          walkthroughCompleted.push("research");
+
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(walkthroughCompleted)
+          );
+        }
+      }
+      setRun(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mounted && saveSearchRef.current) {
+      const handle = requestAnimationFrame(() => {
+        const newSteps: Step[] = [
+          {
+            target: "#save-search-btn",
+            title: "Save Search",
+            content: "Save this search to add it as tracker",
+            disableBeacon: true,
+          },
+        ];
+
+        const walkthroughCompleted: string[] = JSON.parse(
+          localStorage.getItem("walkthroughCompleted") || "[]"
+        );
+
+        if (!walkthroughCompleted.includes("research")) {
+          setSteps(newSteps);
+          setRun(true);
+        }
+      });
+
+      return () => cancelAnimationFrame(handle);
+    }
+  }, [mounted, saveSearchRef.current]);
+
   return (
     <div className="w-full flex flex-col h-full bg-background">
+      {mounted && steps.length > 0 && (
+        <Joyride steps={steps} run={run} callback={joyrideCallback} />
+      )}
       <button
         onClick={onToggleCollapse}
         className="group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -775,7 +836,10 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
             {type === "events" && filterCount > 0 && (
-              <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
+              <div
+                className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
+                ref={saveSearchRef}
+              >
                 <div className="flex items-center gap-2">
                   <Image
                     src={whrbotlogo}
@@ -788,6 +852,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 </div>
                 <div className=" flex items-center justify-between">
                   <Button
+                    id="save-search-btn"
                     variant="outline"
                     size="sm"
                     onClick={createTrackerHandler}
