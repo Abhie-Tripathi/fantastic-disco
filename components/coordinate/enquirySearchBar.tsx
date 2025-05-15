@@ -22,6 +22,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCoordinateService } from "@/services/coordinateService";
 import { enquiryType } from "@/types/coordinateEventType";
 import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface Props {
   selectedData: enquiryType;
@@ -213,8 +214,7 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
                         </span>
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {event.eventData.eventLocation.city?.name},{" "}
-                        {event.eventData.eventLocation.country?.name}
+                        {formatLocationParts(event.eventData.eventLocation, true)}
                       </div>
                     </CommandItem>
                   ))}
