@@ -11,7 +11,7 @@ import {
 import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
-import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
+import { Target, Unmask, UnmaskPocApiParamType, Source, Event } from "@/types/events";
 
 interface fnProp {
   offset: number;
@@ -140,9 +140,12 @@ export const useCoordinateService = () => {
   };
 
   const getEventDetailById = (eventId: string) => {
-    return api.request(`${endpoints.coordinate.eventDetail}/${eventId}`, {
-      method: "GET",
-    });
+    return api.request<Event>(
+      `${endpoints.coordinate.eventDetail}/${eventId}`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getEventPOC = (eventId: string) => {

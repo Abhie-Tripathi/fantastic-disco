@@ -1,32 +1,30 @@
 "use client";
 
-import * as React from "react";
-import { useEffect } from "react";
-import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  addMonths,
-  parseISO,
-} from "date-fns";
-import { ChevronDown } from "lucide-react";
-import DateRangePopup from "./dateRangePopup";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
-import { useFilterState } from "@/hooks/useFilterState";
-import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { GAEvent } from "@/utils/GAEvent";
+import {
+  addMonths,
+  endOfMonth,
+  endOfWeek,
+  format,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
+import { ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
+import * as React from "react";
+import { useEffect } from "react";
+import DateRangePopup from "./dateRangePopup";
+import { useAuthContext } from "@/context";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { isEventeli } from "@/config";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -38,13 +36,6 @@ const presets = [
   { label: "Past", value: "past" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Custom", value: "custom" },
-];
-
-const comparisonOptions = [
-  "Preceding Period (match day of the week)",
-  "Same period last year (match day of the week)",
-  "Preceding Period",
-  "Same Period Last year",
 ];
 
 const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
@@ -67,24 +58,8 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 };
 
 const formatDateForFilter = (date: Date) => {
-  return format(date, 'yyyy-MM-dd');
+  return format(date, "yyyy-MM-dd");
 };
-
-// interface DateRangeProps {
-//   source: string;
-//   enabledDateRange?:any;
-//   type?:string;
-//   dateRange?: {
-//     from: Date | undefined;
-//     to: Date | undefined;
-//   };
-//   setDateRange?: React.Dispatch<
-//     React.SetStateAction<{
-//       from: Date | undefined;
-//       to: Date | undefined;
-//     }>
-//   >;
-// }
 
 export default function DateRangeSelector({
   type,
@@ -94,22 +69,26 @@ export default function DateRangeSelector({
   source?: string;
 }) {
   const pathName = usePathname();
+  const isLowHeight = useMediaQuery({
+    type: "down",
+    start: "md",
+    defaultState: false,
+    dimension: "height",
+  });
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
-  const [compareEnabled, setCompareEnabled] = React.useState(false);
   const {
     setMultipleLocalFilters,
     searchParams,
     getLocalFilterValue,
-    deleteMultipleLocalFilters,
     applyFilters,
   } = useFilterContext();
-  const { getFilterValue } = useFilterState();
-  const [selectedComparison, setSelectedComparison] = React.useState(
-    comparisonOptions[0]
-  );
-  const enableCompareOptions = pathName === "/trends";
+  const viewParam = searchParams.get("view");
+  const enableCompareOptions =
+    pathName === "/internal/trends" &&
+    viewParam !== "treemap" &&
+    (isEventeli || viewParam !== null);
 
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
@@ -139,7 +118,7 @@ export default function DateRangeSelector({
         break;
       case "past":
         from = undefined;
-        to = currentDate;
+        to = new Date(currentDate.setDate(currentDate.getDate() - 1));
         break;
       case "custom":
         from = undefined;
@@ -295,11 +274,28 @@ export default function DateRangeSelector({
           >
             <div className="flex items-center truncate">
               <span className="mr-2">Dates</span>
-              {(dateRange.from || dateRange.to) && (
-                <span className="text-xs text-primary truncate">
-                  {formatDateRange(dateRange.from, dateRange.to)}
-                </span>
-              )}
+              <div className="max-w-[200px] overflow-hidden">
+                <div className="text-xs truncate text-primary font-medium">
+                  {(dateRange.from || dateRange.to) && (
+                    <span className="text-primary">
+                      {formatDateRange(dateRange.from, dateRange.to)}
+                    </span>
+                  )}
+                  {enableCompareOptions &&
+                    getLocalFilterValue("compare_from") &&
+                    getLocalFilterValue("compare_to") && (
+                      <>
+                        <span className="mx-1 text-muted-foreground">vs</span>
+                        <span className="text-muted-foreground">
+                          {formatDateRange(
+                            new Date(getLocalFilterValue("compare_from")),
+                            new Date(getLocalFilterValue("compare_to"))
+                          )}
+                        </span>
+                      </>
+                    )}
+                </div>
+              </div>
             </div>
             <ChevronDown
               className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -319,15 +315,14 @@ export default function DateRangeSelector({
           handleDateSelect={handleDateSelect}
           calendarDate={calendarDate}
           setCalendarDate={setCalendarDate}
-          enableCompareOptions={true}
-          compareEnabled={compareEnabled}
-          setCompareEnabled={setCompareEnabled}
-          comparisonOptions={comparisonOptions}
-          setSelectedComparison={setSelectedComparison}
-          selectedComparison={selectedComparison}
+          enableCompareOptions={false}
         />
       ) : (
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent
+          className="w-auto p-0"
+          align={isLowHeight ? "center" : "start"}
+          side={isLowHeight ? "right" : "bottom"}
+        >
           <DateRangePopup
             presets={presets}
             handlePresetChange={handlePresetChange}
@@ -336,12 +331,7 @@ export default function DateRangeSelector({
             handleDateSelect={handleDateSelect}
             calendarDate={calendarDate}
             setCalendarDate={setCalendarDate}
-            enableCompareOptions={false}
-            compareEnabled={false}
-            setCompareEnabled={setCompareEnabled}
-            comparisonOptions={comparisonOptions}
-            setSelectedComparison={setSelectedComparison}
-            selectedComparison={selectedComparison}
+            enableCompareOptions={enableCompareOptions}
           />
         </PopoverContent>
       )}
