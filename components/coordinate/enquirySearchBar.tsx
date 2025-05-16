@@ -21,6 +21,8 @@ import { useFilterContext } from "@/context/filterContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCoordinateService } from "@/services/coordinateService";
 import { enquiryType } from "@/types/coordinateEventType";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface Props {
   selectedData: enquiryType;
@@ -182,7 +184,7 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
             className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
             align="start"
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
@@ -199,8 +201,21 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
                     <CommandItem
                       key={event.eventId || index}
                       onSelect={() => handleItemSelect(event)}
+                      className="flex flex-col items-start"
                     >
-                      {event.eventData.name}
+                      <div className="font-medium">
+                        <span>{event.eventData.name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {formattedDateRange(
+                            event.eventData.startDateTime,
+                            event.eventData.endDateTime,
+                            false
+                          )}
+                        </span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatLocationParts(event.eventData.eventLocation, true)}
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandList>

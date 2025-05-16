@@ -97,8 +97,11 @@ export function useDefaultFilters() {
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => {
     const recentSearchParams = {
       eventIds: recentSearch.filterValues.eventIds?.join(",") ?? undefined,
+      //Replaces the event format "offline" with "in_person" and other values will be untouched.
       eventFormats:
-        recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
+        recentSearch.filterValues.eventFormats
+          ?.map((format) => (format === "offline" ? "in_person" : format))
+          .join(",") ?? undefined,
       status: recentSearch.filterValues.status?.join(",") ?? undefined,
       categories: recentSearch.filterValues.categories?.join(",") ?? undefined,
       eventTypes: recentSearch.filterValues.eventTypes?.join(",") ?? undefined,
