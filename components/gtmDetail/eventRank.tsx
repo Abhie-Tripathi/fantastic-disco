@@ -94,7 +94,11 @@ const EventRankCarousel = ({
         direction="vertical"
         centeredSlides={true}
         slidesPerView={3}
-        initialSlide={precedingEvents.length > 0 ? precedingEvents.length : 1}
+        initialSlide={
+          precedingEvents.length > 0 && currentEvent
+            ? precedingEvents.length
+            : 1
+        }
         coverflowEffect={{
           rotate: 0,
           stretch: -1,
@@ -175,51 +179,57 @@ const EventRankCarousel = ({
                               : `${region}, ${country}`
                             : region || country || ""}
                         </Text>
-                        <Text color="secondary" variant="noMargin">
-                          {format(new Date(startDateTime), "MMM dd")}
-                        </Text>
+                        {startDateTime && (
+                          <Text color="secondary" variant="noMargin">
+                            {format(new Date(startDateTime), "MMM dd")}
+                          </Text>
+                        )}
                       </div>
                     </div>
                   </Link>
                 </SwiperSlide>
               );
             })}
-          <SwiperSlide className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`/internal/event/${eventId}`}
-              className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
-            >
-              <p className="text-xl font-semibold p-2">
-                #{enableEventRank && rank}
-              </p>
-              <div className="flex flex-col justify-between">
-                <Text
-                  color="primary"
-                  variant="noMargin"
-                  fontWeight="medium"
-                  className="w-28 truncate"
-                >
-                  {name}
-                </Text>
-                <div className="flex justify-between gap-4">
-                  <Text color="secondary" variant="noMargin">
-                    {STATE?.name || COUNTRY?.name
-                      ? STATE?.name === "Online" || COUNTRY?.name === "Online"
-                        ? [STATE?.name || COUNTRY?.name].filter(Boolean)
-                        : [STATE?.name, COUNTRY?.name]
-                            .filter(Boolean)
-                            .join(", ")
-                      : ""}
+          {currentEvent && (
+            <SwiperSlide className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`/internal/event/${eventId}`}
+                className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
+              >
+                <p className="text-xl font-semibold p-2">
+                  #{enableEventRank && rank}
+                </p>
+                <div className="flex flex-col justify-between">
+                  <Text
+                    color="primary"
+                    variant="noMargin"
+                    fontWeight="medium"
+                    className="w-28 truncate"
+                  >
+                    {name}
                   </Text>
-                  <Text color="secondary" variant="noMargin">
-                    {format(new Date(startDateTime), "MMM dd")}
-                  </Text>
+                  <div className="flex justify-between gap-4">
+                    <Text color="secondary" variant="noMargin">
+                      {STATE?.name || COUNTRY?.name
+                        ? STATE?.name === "Online" || COUNTRY?.name === "Online"
+                          ? [STATE?.name || COUNTRY?.name].filter(Boolean)
+                          : [STATE?.name, COUNTRY?.name]
+                              .filter(Boolean)
+                              .join(", ")
+                        : ""}
+                    </Text>
+                    {startDateTime && (
+                      <Text color="secondary" variant="noMargin">
+                        {format(new Date(startDateTime), "MMM dd")}
+                      </Text>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
+              </Link>
+            </SwiperSlide>
+          )}
           {succeedingEvents &&
             succeedingEvents.length > 0 &&
             succeedingEvents.map((event) => {
@@ -304,7 +314,6 @@ const RankContainer = ({
   rankData: RankingData;
   enableEventRank: boolean;
 }) => {
-  console.log(rankData);
   const { maxRank, currentEvent } = rankData;
   const { categoryId, rank, location } = currentEvent || {};
   const { categories } = (eventDetails && eventDetails.basic) || {};
@@ -314,9 +323,13 @@ const RankContainer = ({
   return (
     <div className="flex flex-col p-3 rounded-sm gap-6 w-fit h-auto items-center">
       <div className="flex flex-col items-center border border-[var(--neutral-light-color)] w-48 rounded-sm dark:border-[var(--border-color)] ">
-        <p className="text-3xl font-semibold p-2">
-          {enableEventRank ? rank : <Restriction />}
-        </p>
+        {enableEventRank && rank ? (
+          <p className="text-3xl font-semibold p-2">
+            {enableEventRank ? rank : <Restriction />}
+          </p>
+        ) : (
+          <span className="text-3xl ">--</span>
+        )}
         <Text
           color="secondary"
           variant="noMargin"
@@ -327,29 +340,35 @@ const RankContainer = ({
         </Text>
       </div>
       <div>
-        <Text color="secondary" className="text-center">
-          #{rank} of {maxRank} in
-        </Text>
-        <p className="text-[#6750A4] text-center font-medium">
-          <span
-            className={`${
-              rankType === "Country + Category Rank"
-                ? "text-[var(--highlight-text-color)]"
-                : ""
-            }`}
-          >
-            {rankType === "Country Rank"
-              ? location?.COUNTRY?.name
-              : rankType === "Category Rank"
-              ? categoryName
-              : rankType === "Country + Category Rank"
-              ? location?.COUNTRY?.name
-              : ""}
-          </span>
-          <span className="ml-2">
-            {rankType === "Country + Category Rank" ? categoryName : ""}
-          </span>
-        </p>
+        {(rank || maxRank) && (
+          <Text color="secondary" className="text-center">
+            #{rank} of {maxRank} in
+          </Text>
+        )}
+        {(location?.COUNTRY?.name || categoryName) && (
+          <p className="text-[#6750A4] text-center font-medium">
+            <span
+              className={`${
+                rankType === "Country + Category Rank"
+                  ? "text-[var(--highlight-text-color)]"
+                  : ""
+              }`}
+            >
+              {rankType === "Country Rank"
+                ? location?.COUNTRY?.name
+                : rankType === "Category Rank"
+                ? categoryName
+                : rankType === "Country + Category Rank"
+                ? location?.COUNTRY?.name
+                : ""}
+            </span>
+            {categoryName && (
+              <span className="ml-2">
+                {rankType === "Country + Category Rank" ? categoryName : ""}
+              </span>
+            )}
+          </p>
+        )}
       </div>
       <EventRankCarousel
         id={rank}
