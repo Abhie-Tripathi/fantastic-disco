@@ -69,31 +69,31 @@ export interface EventCoOrganizerDetail {
 }
 
 export interface OverallRankingsDetail {
-  category: RankingData;
-  category_country: RankingData;
-  country: RankingData;
-  global: RankingData;
+  category: RankingData | null | undefined;
+  category_country: RankingData | null | undefined;
+  country: RankingData | null | undefined;
+  global: RankingData | null | undefined;
 }
 
 export interface RankingData {
-  maxRank: number;
-  precedingEvents: EventRankingDetail[];
-  succeedingEvents: EventRankingDetail[];
-  currentEvent: EventRankingDetail;
+  maxRank: number | null | undefined;
+  precedingEvents: EventRankingDetail[] | [] | null | undefined;
+  succeedingEvents: EventRankingDetail[] | [] | null | undefined;
+  currentEvent: EventRankingDetail | null | undefined;
 }
 
 export interface EventRankingDetail {
-  id: string;
-  name: string;
-  rank: number;
-  startDateTime: string;
-  endDateTime: string;
-  categoryId?: string | null;
+  id: string | null | undefined;
+  name: string | null | undefined;
+  rank: number | null | undefined;
+  startDateTime: string | null | undefined;
+  endDateTime: string | null | undefined;
+  categoryId?: string | null | null | undefined;
   location: {
-    CITY?: EventRankingLocation;
-    STATE?: EventRankingLocation;
-    VENUE?: EventRankingLocation;
-    COUNTRY?: EventRankingLocation;
+    CITY?: EventRankingLocation | null | undefined;
+    STATE?: EventRankingLocation | null | undefined;
+    VENUE?: EventRankingLocation | null | undefined;
+    COUNTRY?: EventRankingLocation | null | undefined;
   };
 }
 
@@ -147,9 +147,9 @@ export interface EventParticipantsDetails {
 }
 
 export interface EventRankingLocation {
-  id: string;
-  name: string;
-  locationType: "CITY" | "STATE" | "VENUE" | "COUNTRY";
+  id: string | null | undefined;
+  name: string | null | undefined;
+  locationType: "CITY" | "STATE" | "VENUE" | "COUNTRY" | null | undefined;
 }
 
 export interface EventDate {
