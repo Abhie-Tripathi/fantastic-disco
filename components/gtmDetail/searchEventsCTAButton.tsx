@@ -17,7 +17,6 @@ const SearchEventsCTAButton = ({
 }: Props) => {
   const router = useRouter();
   const { enabledFilters } = useFilterContext();
-  const params = new URLSearchParams();
 
   const generateSearchEventsParams = (): string => {
     const enabledCategories =
@@ -45,15 +44,18 @@ const SearchEventsCTAButton = ({
     const locationIds =
       (format === "offline" || format === "in_person" || format === "hybrid") &&
       eventLocation
-        ? eventLocation?.countryId ||
-          eventLocation?.stateId ||
-          eventLocation?.cityId
+        ? eventLocation?.countryId || eventLocation?.cityId
         : null;
 
-    enabledCategories && params.set("categories", enabledCategories);
-    locationIds && params.set("locationIds", locationIds);
+    const eventFormats = format === "online" ? format : null;
 
-    return params.toString();
+    const params = {
+      ...(enabledCategories && { categories: enabledCategories }),
+      ...(locationIds && { locationIds }),
+      ...(eventFormats && { eventFormats }),
+    };
+
+    return new URLSearchParams(params).toString();
   };
 
   return (
