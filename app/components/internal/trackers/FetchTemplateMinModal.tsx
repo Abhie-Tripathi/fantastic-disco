@@ -54,11 +54,11 @@ const TemplatesModal = ({
     }
     const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
     let res=0;
-    if(aiStatus.companyData.status === 1)
+    if(aiStatus?.companyData?.status === 1 && Object.keys(aiStatus?.companyData?.data)?.length>0)
     res=res+1;
-    if(aiStatus.competitorData.status===1)
+    if(aiStatus?.competitorData?.status===1 && aiStatus?.competitorData?.data?.length>0)
     res=res+1;
-    if(aiStatus.keywordData.status===1)
+    if(aiStatus?.keywordData?.status===1 && aiStatus?.keywordData?.data?.length>0)
     res=res+1;
     setLoadedCount(res);
   }, [loadingState]);
@@ -67,6 +67,25 @@ const TemplatesModal = ({
     setTemplateView(false);
     router.push("/internal/trackers?showTemplates=true");   
   }
+  const structure = (obj: string, innerObj: string): string[] => {
+    const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  
+    const rawData = innerObj === ""
+      ? aiStatus?.[obj]?.data
+      : aiStatus?.[obj]?.data?.[innerObj];
+  
+    const structuredData = rawData?.map((item: any) => {
+      const values = Object.values(item);
+      if (Object.keys(item).length > 1) {
+        const [main, ...rest] = values.slice(0, values.length - 1);
+        return `${main} ${rest.map(v => `(${v})`).join(' ')}`;
+      } else {
+        return values.join(', ');
+      }
+    });
+  
+    return structuredData ?? [];
+  };
   return (
     // <DraggableDiv>
     <Dialog open={open} onOpenChange={onOpenChange} >
@@ -161,30 +180,30 @@ const TemplatesModal = ({
         <CardSkeleton />
       }
       {loadingState.isCompetitorsLoading &&
-        <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data).length} Companies`} view="minView"/>
+        <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data || {}).length} Companies`} view="minView" entries={structure("competitorData","")}/>
       }
       {(loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading) &&
       <CardSkeleton />
     }
     {loadingState.isKeywordsLoading && 
     <div onClick={() => setSuggestion(2)}>
-    <TrackerDraftCard type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} view="minView"/>
+    <TrackerDraftCard type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data || {}).length} Keywords`} view="minView"  entries={structure("keywordData","")}/>
     </div>
     }
       {(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) &&
       <CardSkeleton />}
     {loadingState.isPeopleLoading &&
       <div onClick={() => setSuggestion(3)}>
-      <TrackerDraftCard type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} view="minView"/>
+      <TrackerDraftCard type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} view="minView" entries={structure("companyData", "pocs")}/>
       </div>
     }
-    {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
+    {/* {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
     <div className="flex w-full items-center justify-center flex-col gap-1">
       <div className="flex w-4 h-[18px] animate-[spin_1s_linear_infinite]">
         <Image src={spinnerBrandBrief} alt="spinner"/>
       </div>
     <div className="text-[var(--secondary-text-color)]">Analysing...</div>
-    </div>}
+    </div>} */}
           </div>
         
       {/* </div> */}

@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) =
           className
         )}
       >
-        <div className="p-6 h-full">{children}</div>
+        <div className="py-6 h-full">{children}</div>
       </div>
     </>
   );

@@ -11,10 +11,10 @@ interface TrackerDraftCardProps {
     entries?:any;
 }
 const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDraftCardProps) => {   
-   if(!data) return null;
+   if(entries.length===0) return null;
    
     return(
-        <div className="flex gap-5 p-3 rounded-lg shadow-[1.5px_3px_9px_0px_#EDEBEB66] border border-[var(--border-color)] justify-between bg-background">
+        <div className="flex gap-5 p-3 shadow-[1.5px_3px_9px_0px_#EDEBEB66] justify-between bg-background border-2 border-[var(--border-color)] rounded-[var(--border-radius-md)] shadow-[var(--shadow-large)]" style={{boxShadow:"var(--shadow-small)"}}>
             <div className="flex gap-5 w-[100%]">
             <div className="rounded-[8px] bg-white shadow-[0px_3.38px_10.13px_0px_#0000001F] h-fit p-3 items-baseline flex">
             <Image src={imgUrl} alt="draftTracker" width={30} height={25} />

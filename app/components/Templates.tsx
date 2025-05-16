@@ -456,6 +456,11 @@ Do not include the competitor platform names in the output. Only return publicly
                 <input
                   type="text"
                   ref={inputRef}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      fetchData() 
+                    }
+                  }}
                   placeholder="Enter Web URL"
                   className="border-none outline-none bg-transparent w-full"
                   value={inputValue}

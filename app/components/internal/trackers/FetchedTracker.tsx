@@ -42,11 +42,11 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
     // console.log("aiStatus", aiStatus);
   
     let res=0;
-    if(aiStatus?.companyData?.status === 1)
+    if(aiStatus?.companyData?.status === 1 && aiStatus?.companyData?.data?.length>0)
     res=res+1;
-    if(aiStatus?.competitorData?.status===1)
+    if(aiStatus?.competitorData?.status===1 && aiStatus?.competitorData?.data?.length>0)
     res=res+1;
-    if(aiStatus?.keywordData?.status===1)
+    if(aiStatus?.keywordData?.status===1 && aiStatus?.keywordData?.data?.length>0)
     res=res+1;
     setLoadedCount(res);
   },[loadingState])
@@ -120,7 +120,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
         <div onClick={() => setSuggestion(1)} className="animate-fadeIn">
         {/* <Link href="/internal/trackers/create?type=T_COMPETITOR"> */}
         <TrackerDraftCard
-        data={`${Object.keys(templateData?.competitorData?.data).length} Companies`}
+        data={`${Object?.keys(templateData?.competitorData?.data || {}).length} Companies`}
         type="T_COMPETITOR"
         heading="Top Competitors Tracker"
         imgUrl={Competitor}
@@ -133,7 +133,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
       <CardSkeleton />:
       <div onClick={() => setSuggestion(2)} className="animate-fadeIn">
       {/* <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS"> */}
-      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data).length} Keywords`} type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} 
+      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data||{}).length} Keywords`} type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} 
       entries={structure("keywordData","")}
       />
       {/* </Link> */}
@@ -141,19 +141,22 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
     }
       {!loadingState.isPeopleLoading ?
       <CardSkeleton />:
+      (
+        (
       <div onClick={() => setSuggestion(3)} className="animate-fadeIn">
-      {/* <Link href="/internal/trackers/create?type=T_PEOPLE_FINDER"> */}
-      <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
-      {/* </Link> */}
+
+      <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
+     
       </div>
+        ))
     }
-    {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
+    {/* {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&
     <div className="flex w-full items-center justify-center flex-col gap-1">
       <div className="flex w-4 h-[18px] animate-[spin_1s_linear_infinite]">
         <Image src={spinnerBrandBrief} alt="spinner"/>
       </div>
     <div className="text-[var(--secondary-text-color)]">Analysing...</div>
-    </div>}
+    </div>} */}
     </div>
     </div>
   );
