@@ -122,7 +122,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
         <TrackerDraftCard
         data={`${Object?.keys(templateData?.competitorData?.data || {}).length} Companies`}
         type="T_COMPETITOR"
-        heading="Top Competitors Tracker"
+        heading="Top Competitors"
         imgUrl={Competitor}
         entries={structure("competitorData","")}
         />
@@ -133,7 +133,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
       <CardSkeleton />:
       <div onClick={() => setSuggestion(2)} className="animate-fadeIn">
       {/* <Link href="/internal/trackers/create?type=T_PRODUCT_KEYWORDS"> */}
-      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data||{}).length} Keywords`} type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} 
+      <TrackerDraftCard data={`${Object?.keys(templateData?.keywordData?.data||{}).length} Keywords`} type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic" imgUrl={Keywords} 
       entries={structure("keywordData","")}
       />
       {/* </Link> */}
@@ -145,7 +145,7 @@ const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
         (
       <div onClick={() => setSuggestion(3)} className="animate-fadeIn">
 
-      <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
+      <TrackerDraftCard data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} type="T_PEOPLE_FINDER" heading="Top People Finder" imgUrl={PeopleFinder} entries={structure("companyData", "pocs")}/>
      
       </div>
         ))

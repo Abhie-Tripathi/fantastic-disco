@@ -180,21 +180,21 @@ const TemplatesModal = ({
         <CardSkeleton />
       }
       {loadingState.isCompetitorsLoading &&
-        <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors Tracker" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data || {}).length} Companies`} view="minView" entries={structure("competitorData","")}/>
+        <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data || {}).length} Companies`} view="minView" entries={structure("competitorData","")}/>
       }
       {(loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading) &&
       <CardSkeleton />
     }
     {loadingState.isKeywordsLoading && 
     <div onClick={() => setSuggestion(2)}>
-    <TrackerDraftCard type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic Tracker" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data || {}).length} Keywords`} view="minView"  entries={structure("keywordData","")}/>
+    <TrackerDraftCard type="T_PRODUCT_KEYWORDS" heading="Top Product & Topic" imgUrl={Keywords} data={`${Object?.keys(templateData?.keywordData?.data || {}).length} Keywords`} view="minView"  entries={structure("keywordData","")}/>
     </div>
     }
       {(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading &&!loadingState.isPeopleLoading) &&
       <CardSkeleton />}
     {loadingState.isPeopleLoading &&
       <div onClick={() => setSuggestion(3)}>
-      <TrackerDraftCard type="T_PEOPLE_FINDER" heading="Top People Finder Tracker" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} view="minView" entries={structure("companyData", "pocs")}/>
+      <TrackerDraftCard type="T_PEOPLE_FINDER" heading="Top People Finder" imgUrl={PeopleFinder} data={`${Object.keys(templateData?.companyData?.data?.pocs || {}).length} Profiles`} view="minView" entries={structure("companyData", "pocs")}/>
       </div>
     }
     {/* {!(loadingState.isCompetitorsLoading && loadingState.isKeywordsLoading && loadingState.isPeopleLoading) &&

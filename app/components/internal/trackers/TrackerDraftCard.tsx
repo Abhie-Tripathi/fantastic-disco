@@ -19,7 +19,7 @@ const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDr
             <div className="rounded-[8px] bg-white shadow-[0px_3.38px_10.13px_0px_#0000001F] h-fit p-3 items-baseline flex">
             <Image src={imgUrl} alt="draftTracker" width={30} height={25} />
             </div>
-            <div className="flex flex-col gap-3 w-[100%]">
+            <div className="flex flex-col gap-2 w-[100%]">
                 <div className="flex justify-between">
                 <div className="font-semibold text-base">{heading}</div>
                 <div className="bg-[var(--accent-color)] text-[12px] px-[14px] py-1 rounded-[13px] h-fit">
@@ -28,7 +28,7 @@ const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDr
             </div>
                 {/* <div className="badge_info w-fit border border-[var(--info-text-color))] px-1.5 py-0" style={{fontSize:"10px"}}>{type}</div> */}
                 {view!="minView" &&
-                <div className="text-[var(--secondary-text-color)] text-sm px-2">
+                <div className="text-[var(--secondary-text-color)] text-sm pr-2">
                     {" "}{entries.slice(0,2).join(", ")} 
                     <Link href={`/internal/trackers/create?type=${type}`}>
                     <span className="pl-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] hover:underline">+{entries.length>2 && entries.length-2}</span>
