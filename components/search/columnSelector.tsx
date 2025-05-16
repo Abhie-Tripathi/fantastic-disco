@@ -20,6 +20,12 @@ export default function ColumnsSelector() {
   const metric = getLocalFilterValue("columns");
   const [isOpen, setIsOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    if (!metric) {
+      setLocalFilter("columns", "eventCount");
+    }
+  }, [metric, setLocalFilter]);
+
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
@@ -32,14 +38,14 @@ export default function ColumnsSelector() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`justify-between py-5 w-full ${
+          className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="flex items-center truncate">
             <span className="mr-2">Metric</span>
-            <span className="truncate text-xs text-primary">
+            <span className="text-xs truncate text-primary font-medium">
               {metric &&
                 columnsDropdown.find((column) => column.value === metric)
                   ?.label}
