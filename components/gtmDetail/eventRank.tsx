@@ -95,7 +95,7 @@ const EventRankCarousel = ({
         centeredSlides={true}
         slidesPerView={3}
         initialSlide={
-          precedingEvents.length > 0 && currentEvent
+          precedingEvents && precedingEvents.length > 0 && currentEvent
             ? precedingEvents.length
             : 1
         }
@@ -136,8 +136,7 @@ const EventRankCarousel = ({
           {precedingEvents &&
             precedingEvents.length > 0 &&
             precedingEvents.map((event) => {
-              const { id, name, rank, startDateTime, endDateTime, location } =
-                event;
+              const { id, name, rank, startDateTime, location } = event;
               const [region, country] = [
                 location?.STATE?.name || location?.CITY?.name,
                 location?.COUNTRY?.name,
@@ -269,9 +268,11 @@ const EventRankCarousel = ({
                               : `${region}, ${country}`
                             : region || country || ""}
                         </Text>
-                        <Text color="secondary" variant="noMargin">
-                          {format(new Date(startDateTime), "MMM dd")}
-                        </Text>
+                        {startDateTime && (
+                          <Text color="secondary" variant="noMargin">
+                            {format(new Date(startDateTime), "MMM dd")}
+                          </Text>
+                        )}
                       </div>
                     </div>
                   </Link>
@@ -340,7 +341,7 @@ const RankContainer = ({
         </Text>
       </div>
       <div>
-        {(rank || maxRank) && (
+        {rank && (
           <Text color="secondary" className="text-center">
             #{rank} of {maxRank} in
           </Text>
@@ -371,7 +372,7 @@ const RankContainer = ({
         )}
       </div>
       <EventRankCarousel
-        id={rank}
+        id={rank || 0}
         rankData={rankData}
         rankType={rankType}
         rankSlug={rankSlug}
