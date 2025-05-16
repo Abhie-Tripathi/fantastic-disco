@@ -28,7 +28,7 @@ import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import { MoveUpRight } from "lucide-react";
-
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 interface Search {
   searchParams: {
     tab:string;
@@ -154,46 +154,32 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [type]);
   
   
-  // const updateSteps = useCallback(() => {
-  //   const newSteps: Step[] = [];
-  //   if (allTrackerRef && allTrackerRef.current) {
-  //     newSteps.push({
-  //       target: allTrackerRef.current,
-  //       title: "Create Tracker",
-  //       content: "Discover insights on business trends filtered by geography and category, all in one glance.",
-  //       disableBeacon: true,
-  //     });
-  //   }
-  //   // if (customTrackerRef.current) {
-  //   //   newSteps.push({
-  //   //     target: customTrackerRef.current,
-  //   //     // title: "Search Intel",
-  //   //     content: "Search for relevant events happening in any location",
-  //   //     disableBeacon: true,
-  //   //   });
-  //   // }
-  //   if (savedEventRef.current) {
-  //     newSteps.push({
-  //       target: savedEventRef.current,
-  //       // title: "Search Intel",
-  //       content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
-  //       disableBeacon: true,
-  //     });
-  //   }
+  const updateSteps = useCallback(() => {
+    const newSteps: Step[] = [];
+    
+    // Only add step if ref and element exist
+    if (customTrackerRef.current && document.contains(customTrackerRef.current)) {
+      newSteps.push({
+        target: customTrackerRef.current,
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+  
+    // Add other steps...
+    setSteps(newSteps);
+  }, [customTrackerRef.current]);
 
-  //   setSteps(newSteps);
-  // }, [ customTrackerRef.current, savedEventRef.current]);
+  useEffect(() => {
+    const walkthroughCompleted: string[] = JSON.parse(
+      localStorage.getItem("walkthroughCompleted") || "[]"
+    );
 
-  // useEffect(() => {
-  //   const walkthroughCompleted: string[] = JSON.parse(
-  //     localStorage.getItem("walkthroughCompleted") || "[]"
-  //   );
-
-  //   if (!walkthroughCompleted.includes("tracker")) {
-  //     updateSteps();
-  //     setRun(true);
-  //   }
-  // }, [updateSteps]);
+    if (!walkthroughCompleted.includes("tracker")) {
+      updateSteps();
+      setRun(true);
+    }
+  }, [updateSteps]);
   
   const [note,setNote]=useState<any>(null);
   const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);
@@ -314,7 +300,16 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
+        {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName="tracker"
+          />
+          )}
   <div className="w-1/2 h-[calc(100vh-67px)]">
+  <button ref={customTrackerRef}>Add</button>
     <div className="flex flex-col gap-4 px-5 py-0">
       <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
         {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}

@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
@@ -82,6 +82,8 @@ import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { Step } from "react-joyride";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -456,6 +458,67 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+   const [steps, setSteps] = useState<Step[]>([]);
+    const [run, setRun] = useState(true);
+    const brandBriefRef = useRef<HTMLDivElement>(null);
+    const customTrackerRef = useRef<HTMLDivElement>(null);
+    const prospectTrackerRef = useRef<HTMLDivElement>(null);
+    const peopleTrackerRef = useRef<HTMLDivElement>(null);
+    const purposeTrackerRef = useRef<HTMLDivElement>(null);
+  const updateSteps = useCallback(() => {
+    const newSteps: Step[] = [];
+    console.log("updated steps called");
+    
+    // Only add step if ref and element exist
+    if (brandBriefRef.current && document.contains(brandBriefRef.current)) {
+      newSteps.push({
+        target: brandBriefRef.current,
+        content: "Click here to create a custom tracker with advanced filters",
+        disableBeacon: true,
+      });
+    }
+    if (prospectTrackerRef.current) {
+      newSteps.push({
+        target: prospectTrackerRef.current,
+        content: "From networking to results – Capture, track, and convert prospects seamlessly",
+        disableBeacon: true
+      });
+    }
+  
+    if (peopleTrackerRef.current) {
+      newSteps.push({
+        target: peopleTrackerRef.current,
+        content: "Effortlessly track and stay updated on where your people are.",
+        disableBeacon: true
+      });
+    }
+  
+    if (purposeTrackerRef.current) {
+      newSteps.push({
+        target: purposeTrackerRef.current,
+        content: "Track your purpose, maximize impact and make every event count.",
+        disableBeacon: true
+      });
+    }
+    if (customTrackerRef.current && document.contains(customTrackerRef.current)) {
+      newSteps.push({
+        target: customTrackerRef.current,
+        content: "Click here to create a custom tracker with advanced filters",
+        disableBeacon: true,
+      });
+    }
+    setSteps(newSteps);
+  }, [brandBriefRef.current, customTrackerRef.current, prospectTrackerRef.current]);
+  useEffect(() => {
+      const walkthroughCompleted: string[] = JSON.parse(
+        localStorage.getItem("walkthroughCompleted") || "[]"
+      );
+  
+      if (!walkthroughCompleted.includes("tracker")) {
+        updateSteps();
+        setRun(true);
+      }
+    }, [updateSteps]);
   useEffect(() => {
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if (customData.length > 0 && Object.values(customData[0])[0]) {
@@ -1271,6 +1334,14 @@ const Pages = () => {
     <>
       <div>{isLoading ? <Loading /> :
         <>
+        {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName="tracker?showTemplates=true"
+          />
+          )}
           <div
             className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
             style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex: '5' }}
@@ -1596,7 +1667,7 @@ const Pages = () => {
                     (customData && customData.length > 0 ? (
                       <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
                     ) : (
-                      <div className={styles.emptyTableData}>
+                      <div className={styles.emptyTableData} >
                         <Image
                           src={trackerEmptyTable}
                           alt="table"

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useCallback} from "react";
+import React, {useEffect, useState, useMemo, useCallback, useRef} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "@/app/(internal)/internal/trackers/page.style.module.css"
@@ -13,7 +13,8 @@ import { Building2, Users, Lightbulb, CheckCheck } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
 import Add from "/public/add.svg";
 import { Button } from "@/components/ui/button";
-
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { Step } from "react-joyride";
 interface TemplateProps{
   isData: boolean;
   hideTemplates: (val: boolean) => void;
@@ -23,6 +24,13 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
 
   const {getTrackerCount}=useTrackerServices();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState(true);
+  const brandBriefRef = useRef<HTMLDivElement>(null);
+  const customTrackerRef = useRef<HTMLDivElement>(null);
+  const prospectTrackerRef = useRef<HTMLDivElement>(null);
+  const peopleTrackerRef = useRef<HTMLDivElement>(null);
+  const purposeTrackerRef = useRef<HTMLDivElement>(null);
   const [intelScoreData,setIntelScoreData] = useState([
     {
       name: "Prospect",
@@ -96,6 +104,59 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
 //     value: "30"
 //   }
 // ];
+const updateSteps = useCallback(() => {
+  const newSteps: Step[] = [];
+  
+  // Only add step if ref and element exist
+  if (brandBriefRef.current && document.contains(brandBriefRef.current)) {
+    newSteps.push({
+      target: brandBriefRef.current,
+      content: "Click here to create a custom tracker with advanced filters",
+      disableBeacon: true,
+    });
+  }
+  if (prospectTrackerRef.current) {
+    newSteps.push({
+      target: prospectTrackerRef.current,
+      content: "From networking to results – Capture, track, and convert prospects seamlessly",
+      disableBeacon: true
+    });
+  }
+
+  if (peopleTrackerRef.current) {
+    newSteps.push({
+      target: peopleTrackerRef.current,
+      content: "Effortlessly track and stay updated on where your people are.",
+      disableBeacon: true
+    });
+  }
+
+  if (purposeTrackerRef.current) {
+    newSteps.push({
+      target: purposeTrackerRef.current,
+      content: "Track your purpose, maximize impact and make every event count.",
+      disableBeacon: true
+    });
+  }
+  if (customTrackerRef.current && document.contains(customTrackerRef.current)) {
+    newSteps.push({
+      target: customTrackerRef.current,
+      content: "Click here to create a custom tracker with advanced filters",
+      disableBeacon: true,
+    });
+  }
+  setSteps(newSteps);
+}, [brandBriefRef.current, customTrackerRef.current, prospectTrackerRef.current]);
+useEffect(() => {
+    const walkthroughCompleted: string[] = JSON.parse(
+      localStorage.getItem("walkthroughCompleted") || "[]"
+    );
+
+    if (!walkthroughCompleted.includes("tracker?showTemplates=true")) {
+      updateSteps();
+      setRun(true);
+    }
+  }, [updateSteps]);
 const result = useCallback((type:string) => {
   const finalResult = countData?.find((item) => item?.type === type);
   return finalResult?.count || 0;
@@ -194,7 +255,7 @@ const EventeliView = useMemo(() => {
           href="/internal/trackers/create?type=T_CUSTOM"
           className={styles.createUrl}
         >
-          <Button className="text-white">Create Custom</Button>
+          <Button ref={customTrackerRef} className="text-white">Create Custom</Button>
         </Link>
       </div>
     </div>
@@ -206,7 +267,7 @@ const StandardView = useMemo(() => {
 if(isEventeli) return null;
 return(
 <div className={`flex flex-col gap-6 pl-6 pr-6`}>
-            <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
+            <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0" ref={brandBriefRef}>
               <div className="flex flex-col gap-2">
                 <div className="text-xl font-medium">Brand Brief Builder </div>
                 <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
@@ -230,9 +291,14 @@ return(
               </div>
             </div>
             <hr className="my-4 border-t border-gray-300 mb-[0px] mt-[0px]"/>
-            {(data as StandardTemplateGroup[]).map((item, index)=>(
+            {(data as StandardTemplateGroup[]).map((item, index)=>{
+               const sectionRef = 
+               item.heading === "Prospect" ? prospectTrackerRef :
+               item.heading === "People" ? peopleTrackerRef :
+               purposeTrackerRef;
+              return (
               <div key={index}>
-                <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
+                <div className="flex flex-col sm:flex-row gap-6 sm:gap-0" ref={sectionRef}>
                 <div className="flex flex-col sm:w-[25%] sm:pr-6 pr-0 gap-2 w-[100%]">
                 <div className="text-2xl flex gap-2 items-center justify-between">
                 <div className="flex gap-2 items-center">
@@ -347,13 +413,14 @@ return(
                 </div>
                 </div>
               </div>
-            ))}
+            )}
+          )}
             <div className="flex w-[100%]">
             <div className="flex w-[0%] sm:w-[25%]"></div>
             <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%]">
             <div>Or start from scratch</div>
             <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
-            <Button>Create Custom Tracker</Button>
+            <Button ref={customTrackerRef}>Create Custom Tracker</Button>
             </Link>
             </div>
             </div>
@@ -365,6 +432,14 @@ return(
     return(
         <div  style={{padding:"16px 14px",width:"100%", overflowY:"auto"}}>
         {(!isData && isEventeli) && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
+        {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName="tracker?showTemplates=true"
+          />
+          )}
       {isData && 
           <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center ml-6"
       style={{ color: "var(--primary-color)" }} onClick={()=>hideTemplates(true)}>
