@@ -12,7 +12,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 
 const eventFormats = [
   { id: "online", label: "Online/Virtual" },
-  { id: "offline", label: "Offline" },
+  { id: "in_person", label: "In Person" },
   { id: "hybrid", label: "Hybrid" },
 ];
 
