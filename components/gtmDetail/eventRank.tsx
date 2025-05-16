@@ -3,8 +3,10 @@ import { useFilterContext } from "@/context/filterContext";
 import { Event, OverallRankingsDetail, RankingData } from "@/types/events";
 import { format } from "date-fns";
 import {
-  ArrowDown, ArrowLeftIcon,
-  ArrowRightIcon, ArrowUp
+  ArrowDown,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUp,
 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -41,8 +43,14 @@ const EventRankCarousel = ({
 }) => {
   const swiperRef = useRef(null);
   const { precedingEvents, succeedingEvents, currentEvent } = rankData;
-  const { startDateTime, location, name, rank, id: eventId } = currentEvent;
-  const { STATE, COUNTRY } = location;
+  const {
+    startDateTime,
+    location,
+    name,
+    rank,
+    id: eventId,
+  } = currentEvent || {};
+  const { STATE, COUNTRY } = location || {};
   const [countryActiveIndex, setCountryIndex] = useState<number>(0);
   const [countryTotalSlides, setCountryTotalSlides] = useState<number>(0);
   const [categoryActiveIndex, setCategoryIndex] = useState<number>(0);
@@ -215,8 +223,7 @@ const EventRankCarousel = ({
           {succeedingEvents &&
             succeedingEvents.length > 0 &&
             succeedingEvents.map((event) => {
-              const { id, name, rank, startDateTime, location } =
-                event;
+              const { id, name, rank, startDateTime, location } = event;
               const [region, country] = [
                 location?.STATE?.name || location?.CITY?.name,
                 location?.COUNTRY?.name,
@@ -297,8 +304,9 @@ const RankContainer = ({
   rankData: RankingData;
   enableEventRank: boolean;
 }) => {
+  console.log(rankData);
   const { maxRank, currentEvent } = rankData;
-  const { categoryId, rank, location } = currentEvent;
+  const { categoryId, rank, location } = currentEvent || {};
   const { categories } = (eventDetails && eventDetails.basic) || {};
   const categoryName =
     categoryId &&
@@ -331,11 +339,11 @@ const RankContainer = ({
             }`}
           >
             {rankType === "Country Rank"
-              ? location.COUNTRY?.name
+              ? location?.COUNTRY?.name
               : rankType === "Category Rank"
               ? categoryName
               : rankType === "Country + Category Rank"
-              ? location.COUNTRY?.name
+              ? location?.COUNTRY?.name
               : ""}
           </span>
           <span className="ml-2">
@@ -456,7 +464,7 @@ export const EventRank = ({
           <ArrowLeftIcon className="w-4 h-4" />
         </div>
         <div className="custom-next-ranking flex justify-center items-center absolute right-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
-           <ArrowRightIcon className="w-4 h-4" />
+          <ArrowRightIcon className="w-4 h-4" />
         </div>
         <div className="custom-pagination flex justify-center mt-4"></div>
       </Swiper>
