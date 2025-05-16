@@ -27,6 +27,8 @@ export const formatLocationParts = (
 
   const { name, cityName, countryName, locationType } = location;
 
+  if (name?.toLowerCase() === "online") return "Online";
+
   if (!name && !cityName && !countryName) return "";
 
   const type = locationType?.toLowerCase() || "";
@@ -52,7 +54,7 @@ export const formatLocationParts = (
       if (countryName) return countryName;
       return "";
     }
-    
+
     if (cityName && countryName) return `${name}, ${cityName}, ${countryName}`;
     if (cityName) return `${name}, ${cityName}`;
     if (countryName) return `${name}, ${countryName}`;
