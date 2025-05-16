@@ -378,6 +378,15 @@ export const useCoordinateService = () => {
     );
   }
 
+  const getEnquiryDetailByEventId = (eventId: string) => {
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?offset=0&eventId=${eventId}`,
+      {
+        method: "GET",
+      }
+    );
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -407,6 +416,7 @@ export const useCoordinateService = () => {
     fetchSimilarEvents,
     fetchDuplicateEvents,
     addNewEvent,
+    getEnquiryDetailByEventId,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

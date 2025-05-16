@@ -375,13 +375,19 @@ const Sidebar = () => {
                         alt="user image"
                         className="w-10 h-10 rounded-full"
                       />
-                    ) : (
+                    ) : storedUser?.firstname || storedUser?.lastname ? (
                       <div
                         className="bg-primary flex items-center justify-center
                       text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm"
                       >
                         {generateProfileName()}
                       </div>
+                    ) : (
+                      <img
+                        src="/defaultProfilePic.png"
+                        alt="user image"
+                        className="w-10 h-10 rounded-full"
+                      />
                     )
                   ) : (
                     <Skeleton className="w-10 h-10 rounded-full" />
