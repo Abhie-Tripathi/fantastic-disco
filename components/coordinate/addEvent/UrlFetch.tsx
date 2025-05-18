@@ -10,6 +10,7 @@ import NullImage from "@/public/addEventNullState.svg";
 import NullState from "./NullState";
 import { useEffect, useState } from "react";
 import { useCoordinateService } from "@/services/coordinateService";
+import { useToast } from "@/hooks/use-toast";
 
 const eventData = {
   name: "Arab Health",
@@ -28,7 +29,36 @@ interface Props {
   url: string;
 }
 
+function isValidURL(url: string): boolean {
+  try {
+    // Prepend http if missing for URL constructor to work properly
+    const hasProtocol = /^(https?:)?\/\//i.test(url);
+    const testUrl = hasProtocol ? url : `http://${url}`;
+    const parsed = new URL(testUrl);
+
+    // Basic checks
+    if (!parsed.hostname) return false;
+
+    // Optionally, check for valid TLD or IP format
+    const hostname = parsed.hostname;
+    const tldPattern = /^[a-z]{2,}$/i;
+    const ipPattern =
+      /^(25[0-5]|2[0-4]\d|1?\d{1,2})(\.(25[0-5]|2[0-4]\d|1?\d{1,2})){3}$/;
+
+    const parts = hostname.split(".");
+    const tld = parts[parts.length - 1];
+
+    return (
+      ipPattern.test(hostname) || // is IP
+      (parts.length > 1 && tldPattern.test(tld)) // has valid domain and TLD
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
 const UrlFetch = ({ url }: Props) => {
+  const { toast } = useToast();
   const [websiteUrl, setWebsiteUrl] = useState<string>(url ?? "");
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const coordinateService = useCoordinateService();
@@ -36,6 +66,15 @@ const UrlFetch = ({ url }: Props) => {
 
   const hadleFetch = async () => {
     if (!websiteUrl) return;
+    const checkURL = isValidURL(websiteUrl);
+    if (!checkURL) {
+      toast({
+        description: "Please enter valid url",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsFetching(true);
 
     const data = await coordinateService.fetchEvents(websiteUrl);
@@ -68,7 +107,10 @@ const UrlFetch = ({ url }: Props) => {
           // aria-invalid={error ? "true" : "false"}
           aria-describedby="name-error"
         />
-        <Button onClick={hadleFetch} disabled={isFetching || websiteUrl.trim() === ""}>
+        <Button
+          onClick={hadleFetch}
+          disabled={isFetching || websiteUrl.trim() === ""}
+        >
           {isFetching ? "Fetching..." : "Fetch"}
         </Button>
       </div>
@@ -85,8 +127,8 @@ const UrlFetch = ({ url }: Props) => {
               </span>
             </div>
             <div className="text-sm text-[var(--secondary-text-color)]">
-              Here&apos;s What We Found for You! Choose from the events below and add
-              them
+              Here&apos;s What We Found for You! Choose from the events below
+              and add them
             </div>
           </div>
 
