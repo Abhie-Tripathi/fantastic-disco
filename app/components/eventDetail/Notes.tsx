@@ -1355,10 +1355,10 @@ const Comment = ({
                                 <span>
                                   {" "}
                                   @
-                                  {`${comment.user.firstname
-                                    }${comment.user.lastname
-                                      .charAt(0)
-                                      .toLowerCase()}${comment.user.lastname.slice(
+                                  {`${comment.user?.firstname
+                                    }${comment.user?.lastname
+                                      ?.charAt(0)
+                                      .toLowerCase()}${comment.user?.lastname?.slice(
                                         1
                                       )}`}
                                 </span>

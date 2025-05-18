@@ -143,6 +143,7 @@ const EventForm = ({ eventFormState, setEventFormState, resetForm }: Props) => {
       !mainEventState.startDate ||
       !mainEventState.endDate ||
       !mainEventState.participationType ||
+      !mainEventState.event_type ||
       // !eventState.participationMessage ||
       // Check location fields only for "In-person" or "Hybrid" events
       ((mainEventState.eventFormat === "In-person" ||

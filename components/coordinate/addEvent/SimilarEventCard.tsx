@@ -106,7 +106,7 @@ const SimilarEventCard = ({
         </div>
       </div>
 
-      {showSimilar && (
+      {showSimilar && duplicateEvents.length > 0 && (
         <div className="flex flex-col gap-4 bg-[var(--background-secondary-color)] px-4 py-6 border border-[var(--border-color)] rounded-sm">
           <div className="">
             <div className="flex gap-1 mb-1">
