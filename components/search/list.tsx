@@ -450,8 +450,8 @@ const EventListItem = ({
           )}
         </div>
         <div className="pl-[136px] p-6 pr-3">
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-7 flex flex-col justify-between gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="col-span-1 md:col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>
               <div>
                 <p className="text-sm capitalize">{address}</p>
@@ -896,7 +896,7 @@ const EventListItem = ({
               </div>
             </div>
 
-            <div className="col-span-5 flex flex-col gap-2 justify-between">
+            <div className="col-span-1 md:col-span-5 flex flex-col gap-2 justify-between">
               {isEventeli && event.alerts && event.alerts?.length > 0 && (
                 <div className="flex items-center justify-end gap-2">
                   {event.alerts?.map((alert) => (
@@ -923,7 +923,7 @@ const EventListItem = ({
                 (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
                   <div className="flex justify-end gap-6 w-full">
-                    <div className="flex flex-col gap-4">
+                    <div className="hidden md:flex flex-col gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
@@ -964,7 +964,7 @@ const EventListItem = ({
                         )}
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="hidden md:block space-y-4">
                       {isEventeli &&
                         showValues.includes(Show.scores) &&
                         event.insights?.scores && (
@@ -997,7 +997,7 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="flex justify-end w-full gap-6">
-                    <div className="grid grid-row-2 items-end gap-4">
+                    <div className="hidden md:grid grid-row-2 items-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>

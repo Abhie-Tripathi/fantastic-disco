@@ -16,6 +16,7 @@ import { isEventeli } from "@/config";
 import { formattedDateRange } from "@/utils/date";
 import { useFilterState } from "@/hooks/useFilterState";
 import { groupedEventTypes } from "@/constants";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface CustomToolbarProps {
   date: Date;
@@ -35,6 +36,7 @@ const CustomToolbar = ({
   onFilterChange,
 }: CustomToolbarProps) => {
   const { getFilterValue } = useFilterState();
+  const isMobile = useIsMobile();
 
   const eventTypes = getFilterValue("eventTypes").split(",");
   const isBusinessEnabled = eventTypes.some((eventType: string) =>
@@ -71,7 +73,7 @@ const CustomToolbar = ({
 
   return (
     <div className="grid grid-cols-10 my-4">
-      <div className="col-span-2">
+      <div className="col-span-2 hidden md:block">
         <Select
           value={view}
           onValueChange={(newView) => setView(newView as any)}
@@ -86,7 +88,7 @@ const CustomToolbar = ({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center space-x-4 place-self-center col-span-6">
+      <div className="flex items-center space-x-4 place-self-center col-start-4  col-end-8  col-span-6">
         <Button variant="ghost" size="icon" onClick={goToBack}>
           <ChevronLeft className="h-4 w-4" />
         </Button>

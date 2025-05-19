@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/popover";
 import { useFilterContext } from "@/context/filterContext";
 import { GAEvent } from "@/utils/GAEvent";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import MobileDateRangePopup from "./mobileDateRangePopup";
 import {
   addMonths,
   endOfMonth,
@@ -69,6 +71,7 @@ export default function DateRangeSelector({
   source?: string;
 }) {
   const pathName = usePathname();
+  const isMobile = useIsMobile();
   const isLowHeight = useMediaQuery({
     type: "down",
     start: "md",
