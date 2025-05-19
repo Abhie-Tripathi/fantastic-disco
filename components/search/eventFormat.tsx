@@ -31,7 +31,8 @@ export default function EventFormatSelector({
   const enabled = morphedData?.eventFormats?.isEnabled;
   const selectedFormats = getLocalFilterValue("eventFormats")
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((format) => (format === "offline" ? "in_person" : format));
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFormatToggle = (formatId: string) => {
@@ -112,7 +113,12 @@ export default function EventFormatSelector({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="eventFormat" className="border rounded-md">
-        <AccordionTrigger className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}>
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
+        >
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
         <AccordionContent>{content}</AccordionContent>

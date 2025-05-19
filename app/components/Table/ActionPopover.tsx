@@ -67,26 +67,27 @@ export function ActionPopover({
       : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
   const handleSubmit = async () => {
-    if (view === "bookmarked") {
-      const response = await removeBookmark(
-        interests?.bookmark?.interestId || ""
-      );
-      if (response?.interest && setInterest) {
-        setInterest({
-          [response.interest.toLowerCase()]: {
-            interestId: response.id,
-          },
-        });
-      }
-      setSavedEventCount(savedEventCount - 1);
-      setEventId(response?.eventId);
-      setIsOpen(false);
-    } else if (selectedAction) {
+    // if (view === "bookmarked") {
+    //   const response = await removeBookmark(
+    //     interests?.bookmark?.interestId || ""
+    //   );
+    //   if (response?.interest && setInterest) {
+    //     setInterest({
+    //       [response.interest.toLowerCase()]: {
+    //         interestId: response.id,
+    //       },
+    //     });
+    //   }
+    //   setSavedEventCount(savedEventCount - 1);
+    //   setEventId(response?.eventId);
+    //   setIsOpen(false);
+    // } else if (selectedAction) {
       if (selectedAction === "UN-BOOKMARK") {
         const response = await removeBookmark(
           interests?.bookmark?.interestId || ""
         );
         if (response?.interest && setInterest) {
+          if(selectedAction === "UN-BOOKMARK")
           setSavedEventCount(savedEventCount - 1);
           setInterest({
             [response.interest.toLowerCase()]: {
@@ -94,6 +95,7 @@ export function ActionPopover({
             },
           });
         }
+        
         toast({
           title: "Success",
           description: "Your interest has been recorded",
@@ -105,7 +107,7 @@ export function ActionPopover({
         createUserEventInterest(
           {
             eventId,
-            interest: selectedAction,
+            interest: selectedAction || '',
             sourceModule: trackerId ? "TRACKER" : "RESEARCH",
             ...(trackerId && { sourceId: trackerId }),
           },
@@ -121,6 +123,7 @@ export function ActionPopover({
               if (response?.eventId && setEventId) {
                 setEventId(response?.eventId);
               }
+              if(selectedAction === "BOOKMARK")
               setSavedEventCount(savedEventCount + 1);
               setIsOpen(false);
               toast({
@@ -139,7 +142,7 @@ export function ActionPopover({
           }
         );
       }
-    }
+    // }
   };
 
   const isSaved =
