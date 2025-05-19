@@ -630,7 +630,7 @@ const Pages = () => {
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-        console.log(temp);
+      
 
         presetData.push(temp);
       })
@@ -958,12 +958,10 @@ const Pages = () => {
 
     }
   };
-  
   useEffect(() => {
-    console.log("suggestion",suggestion);
     if (type === "T_COMPETITOR" && suggestion===1) {
       // setTrackerName(comp?.name || "");
-  
+      setSuggestions([]);
       const localData = localStorage.getItem("companySuggestion");
       // console.log("localData", localData);
       
@@ -985,10 +983,11 @@ const Pages = () => {
       }
       setSuggestion(0);
     }
-  }, [suggestion]);
+  }, [type]);
   
   useEffect(()=>{
     if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
       const localData = localStorage.getItem("companySuggestion");
       if (localData) {
         try {
@@ -1010,13 +1009,13 @@ const Pages = () => {
       setSuggestion(0);
   }
 
-  }, [suggestion])
+  }, [type])
   const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
       const localData = localStorage.getItem("companySuggestion");
       // console.log("localData", localData);
-  
+      setSuggestions([]);
       if (localData) {
         try {
           const parsed = JSON.parse(localData);
@@ -1040,9 +1039,24 @@ const Pages = () => {
       }
       setSuggestion(0);
     }
-  }, [suggestion]);
+  }, [type]);
   useEffect(() => { 
+    if(suggestion===2 && inc.length>0){
       setLocalFilter("includeKeywords", inc?.join(","));
+      fetchAISuggestion?.(
+        `List top 5 keywords similar to ${
+          inc[0]
+        } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+        "data": [
+          ["keyword 1" ],
+          ["keyword 2" ],
+          ["keyword 3" ],
+          ["keyword 4" ],
+          ["keyword 5" ]
+        ]
+      }.`
+      );
+    }
   },[inc])
    
   

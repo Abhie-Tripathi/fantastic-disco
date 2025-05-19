@@ -71,7 +71,6 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
     companyData: { status: 0, data: [], name:"" },
     keywordData: { status: 0, data: [], name:"" },
   };
-  const {fetchCompanyData}=useTrackerServices();
   const [intelScoreData,setIntelScoreData] = useState([
     {
       name: "Prospect",
@@ -243,7 +242,7 @@ Respond only with valid JSON. No explanation, no markdown, and no extra text.
       const competitorResponse = {
         status: 1,
         data: aiSuggestion,
-        name: "Top Competitors Trackers",
+        name: "Top Competitors",
       };
      updateLocalStorage("competitorData", competitorResponse);
       // setComp(prev => ({
@@ -260,12 +259,12 @@ Respond only with valid JSON. No explanation, no markdown, and no extra text.
       
         try {
           // 1. First await with separate error handling
-            await fetchAIFallback(inputValue);
+            await fetchKeywordData(inputValue);
         } catch (error) {
           console.error("Main error handler:", error);
-          if (!fallbackCategories.length) {
-            await fetchAIFallback(inputValue);
-          }
+          // if (!fallbackCategories.length) {
+          //   await fetchAIFallback(inputValue);
+          // }
         } finally {
           setLoadingState(prev => ({ ...prev, isKeywordsLoading: true }));
           // Step 2: Call poc api
@@ -306,14 +305,14 @@ Do not include the competitor platform names in the output. Only return publicly
       status: 1,
       domain: aiStatus?.companyData?.domain || inputValue,
       data: response,
-      name: "Top People Tracker",
+      name: "Top People Finder",
     };
    updateLocalStorage("companyData", companyResponse);
     // if (response?.companies?.length > 0) {
     //   const companyId = response.companies[0].id; 
 
     }
-  async function fetchAIFallback(domain: string) {
+  async function fetchKeywordData(domain: string) {
     const prompt = `For the domain ${domain}, identify the relevant keywords.
   
   Return only this JSON structure:
@@ -339,7 +338,7 @@ Do not include the competitor platform names in the output. Only return publicly
     const keywordResponse = {
       status: 1,
       data: keywords,
-      name: "Top Product & Topic Trackers",
+      name: "Top Product & Topic",
     };
     
     updateLocalStorage("keywordData", keywordResponse);

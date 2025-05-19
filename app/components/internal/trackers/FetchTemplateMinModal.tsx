@@ -35,7 +35,7 @@ const TemplatesModal = ({
 }: TemplatesModalProps) => {
   const {setShowFetchedData, setSuggestion, suggestion} = useFilterContext();
   const router = useRouter();
-   console.log("suggestion", suggestion);
+    
    
    const {loadingState, templateView, setTemplateView} = useFilterContext();
    const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
