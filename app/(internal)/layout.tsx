@@ -12,6 +12,7 @@ import { FilterProvider } from "@/context/filterContext";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Toast, ToastProvider } from "@/components/ui/toast";
+import { WalkthroughProvider } from "@/context/WalkthroughProvider";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -39,19 +40,21 @@ export default function RootLayout({
         <AuthContextProvider>
           <FilterProvider>
             <ThemeProvider>
-              <div className="flex h-screen bg-gray-100">
-                <Sidebar />
-                <div className="flex-1 flex flex-col overflow-hidden lg:ml-16">
-                  <Navbar />
-                  <main
-                    id="layout-main"
-                    className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
-                  >
-                    <Toaster />
-                    {children}
-                  </main>
+              <WalkthroughProvider>
+                <div className="flex h-screen bg-gray-100">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden lg:ml-16">
+                    <Navbar />
+                    <main
+                      id="layout-main"
+                      className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
+                    >
+                      <Toaster />
+                      {children}
+                    </main>
+                  </div>
                 </div>
-              </div>
+              </WalkthroughProvider>
               {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
             </ThemeProvider>
           </FilterProvider>

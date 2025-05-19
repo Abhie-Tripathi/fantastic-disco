@@ -66,6 +66,8 @@ import { GAEvent } from "@/utils/GAEvent";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/context/theme";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import { generateWalkthroughSteps } from "@/data/walkthroughSteps";
+import { useWalkthroughContext } from "@/context/WalkthroughProvider";
 
 interface FilterSection {
   id: string;
@@ -727,68 +729,81 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
     }
   };
 
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [run, setRun] = useState<boolean>(true);
-  const [mounted, setMounted] = useState(false);
+  // const [steps, setSteps] = useState<Step[]>([]);
+  // const [run, setRun] = useState<boolean>(true);
+  // const [mounted, setMounted] = useState(false);
+
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
+
+  // const saveSearchRef = useRef(null);
+
+  // const joyrideCallback = (data: CallBackProps) => {
+  //   const { status } = data;
+  //   if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+  //     if (typeof window !== "undefined") {
+  //       let walkthroughCompleted: string[] = JSON.parse(
+  //         localStorage.getItem("walkthroughCompleted") || "[]"
+  //       );
+
+  //       if (!walkthroughCompleted.includes("research")) {
+  //         walkthroughCompleted.push("research");
+
+  //         localStorage.setItem(
+  //           "walkthroughCompleted",
+  //           JSON.stringify(walkthroughCompleted)
+  //         );
+  //       }
+  //     }
+  //     setRun(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (mounted && saveSearchRef.current) {
+  //     const handle = requestAnimationFrame(() => {
+  //       const newSteps: Step[] = [
+  //         {
+  //           target: "#research-tabs",
+  //           title: "Research Tabs",
+  //           content: "Save this search to add it as tracker",
+  //           disableBeacon: true,
+  //         },
+  //         {
+  //           target: "#save-search-btn",
+  //           title: "Save Search",
+  //           content: "Save this search to add it as tracker",
+  //           disableBeacon: true,
+  //         },
+  //       ];
+
+  //       const walkthroughCompleted: string[] = JSON.parse(
+  //         localStorage.getItem("walkthroughCompleted") || "[]"
+  //       );
+
+  //       if (!walkthroughCompleted.includes("research")) {
+  //         setTimeout(() => {
+  //           setSteps(newSteps);
+  //           setRun(true);
+  //         }, 2000);
+  //       }
+  //     });
+
+  //     return () => cancelAnimationFrame(handle);
+  //   }
+  // }, [mounted, saveSearchRef.current]);
+
+  const { setSteps } = useWalkthroughContext();
 
   useEffect(() => {
-    setMounted(true);
+    const joyrideSteps = generateWalkthroughSteps("research");
+    setSteps(joyrideSteps);
   }, []);
-
-  const saveSearchRef = useRef(null);
-
-  const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      if (typeof window !== "undefined") {
-        let walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
-
-        if (!walkthroughCompleted.includes("research")) {
-          walkthroughCompleted.push("research");
-
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(walkthroughCompleted)
-          );
-        }
-      }
-      setRun(false);
-    }
-  };
-
-  useEffect(() => {
-    if (mounted && saveSearchRef.current) {
-      const handle = requestAnimationFrame(() => {
-        const newSteps: Step[] = [
-          {
-            target: "#save-search-btn",
-            title: "Save Search",
-            content: "Save this search to add it as tracker",
-            disableBeacon: true,
-          },
-        ];
-
-        const walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
-
-        if (!walkthroughCompleted.includes("research")) {
-          setTimeout(() => {
-            setSteps(newSteps);
-            setRun(true);
-          }, 2000);
-        }
-      });
-
-      return () => cancelAnimationFrame(handle);
-    }
-  }, [mounted, saveSearchRef.current]);
 
   return (
     <div className="w-full flex flex-col h-full bg-background">
-      {mounted && steps.length > 0 && (
+      {/* {mounted && steps.length > 0 && (
         <Joyride
           steps={steps}
           run={run}
@@ -827,7 +842,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             },
           }}
         />
-      )}
+      )} */}
       <button
         onClick={onToggleCollapse}
         className="group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -841,7 +856,10 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
       <div className="overflow-y-auto pt-4 pl-6 h-[calc(100vh-60px)] flex flex-col">
         <div className="pb-3 sticky top-0 bg-background z-10">
           <Tabs defaultValue={type} value={type}>
-            <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+            <TabsList
+              className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
+              id="research-tabs"
+            >
               <Link href="/internal/search/events" className="contents">
                 <TabsTrigger
                   value="events"
@@ -888,7 +906,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 </div>
                 <div className=" flex items-center justify-between">
                   <Button
-                    ref={saveSearchRef}
                     id="save-search-btn"
                     variant="outline"
                     size="sm"
