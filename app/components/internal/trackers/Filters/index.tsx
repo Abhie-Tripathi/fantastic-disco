@@ -412,8 +412,8 @@ const Pages = () => {
   const { searchParams: search } = useDefaultFilters();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall, comp, keywordsTracker, peopleTracker, suggestion } = useTrackerContext();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters } = useFilterContext();
+  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, suggestion, setSuggestion } = useFilterContext();
   const { enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const { getTrackerDetail, createTracker, editTracker, error, delTracker } = useTrackerServices();
@@ -958,8 +958,10 @@ const Pages = () => {
 
     }
   };
+  
   useEffect(() => {
-    if (type === "T_COMPETITOR") {
+    console.log("suggestion",suggestion);
+    if (type === "T_COMPETITOR" && suggestion===1) {
       // setTrackerName(comp?.name || "");
   
       const localData = localStorage.getItem("companySuggestion");
@@ -981,11 +983,12 @@ const Pages = () => {
           console.error("Error parsing competitorData from localStorage", error);
         }
       }
+      setSuggestion(0);
     }
   }, [suggestion]);
   
   useEffect(()=>{
-    if(type === "T_PEOPLE_FINDER" ){
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
       const localData = localStorage.getItem("companySuggestion");
       if (localData) {
         try {
@@ -1004,12 +1007,13 @@ const Pages = () => {
           console.error("Error parsing competitorData from localStorage", error);
         }
       }
+      setSuggestion(0);
   }
 
   }, [suggestion])
   const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
-    if (type === "T_PRODUCT_KEYWORDS") {
+    if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
       const localData = localStorage.getItem("companySuggestion");
       // console.log("localData", localData);
   
@@ -1034,6 +1038,7 @@ const Pages = () => {
           console.error("Error parsing keywordData from localStorage", error);
         }
       }
+      setSuggestion(0);
     }
   }, [suggestion]);
   useEffect(() => { 

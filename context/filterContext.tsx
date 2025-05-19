@@ -153,6 +153,8 @@ type Filter = {
   estimatedVisitorRangeTag: string;
 };
 type FilterContextType = {
+  suggestion: number;
+  setSuggestion: React.Dispatch<React.SetStateAction<number>>;
   localFilters: Filters;
   loadingState: {
     isKeywordsLoading: boolean;
@@ -201,6 +203,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const [morphedData, setMorphedData] = useState(searchFilters);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
+  const [suggestion , setSuggestion] = useState<number>(0);
   const [localFilters, setLocalFilters] = useState<Filters>({});
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
@@ -435,6 +438,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
+      suggestion, 
+      setSuggestion,
       showFetchedData,
       setShowFetchedData,
       localFilters,
@@ -454,6 +459,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       replaceLocalFilter,
     }),
     [
+      suggestion,
       showFetchedData,
       templateView,
       loadingState,

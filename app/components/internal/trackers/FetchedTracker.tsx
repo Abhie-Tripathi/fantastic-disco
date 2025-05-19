@@ -9,6 +9,7 @@ import Competitor from "/public/competitor.svg";
 import Keywords from "/public/keywords.svg";
 import React, { useEffect, useState } from "react"; 
 import { useTrackerContext } from "@/context/tracker";
+import { useFilterContext } from "@/context/filterContext";
 
 const CardSkeleton = () => {
   return (
@@ -33,7 +34,7 @@ interface fetchedTrackerProps {
     };
 }
 const FetchedTracker = ({loadingState}:fetchedTrackerProps) => {
-  const {setSuggestion} = useTrackerContext();
+  const {setSuggestion} = useFilterContext();
   const [loadedCount, setLoadedCount] = useState(0);
   const [d,setD] = useState();
   const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");

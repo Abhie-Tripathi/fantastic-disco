@@ -33,9 +33,10 @@ const TemplatesModal = ({
   open,
   onOpenChange,
 }: TemplatesModalProps) => {
-  const {setShowFetchedData} = useFilterContext();
+  const {setShowFetchedData, setSuggestion, suggestion} = useFilterContext();
   const router = useRouter();
-   const {setSuggestion} = useTrackerContext();
+   console.log("suggestion", suggestion);
+   
    const {loadingState, templateView, setTemplateView} = useFilterContext();
    const templateData = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
    const [loadedCount, setLoadedCount] = useState(0);
@@ -180,7 +181,9 @@ const TemplatesModal = ({
         <CardSkeleton />
       }
       {loadingState.isCompetitorsLoading &&
+        <div onClick={() => setSuggestion(1)}>
         <TrackerDraftCard type="T_COMPETITOR" heading="Top Competitors" imgUrl={Competitor} data={`${Object.keys(templateData.competitorData.data || {}).length} Companies`} view="minView" entries={structure("competitorData","")}/>
+        </div>
       }
       {(loadingState.isCompetitorsLoading && !loadingState.isKeywordsLoading) &&
       <CardSkeleton />
