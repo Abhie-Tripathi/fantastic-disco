@@ -26,11 +26,38 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
   const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(true);
-  const brandBriefRef = useRef<HTMLDivElement>(null);
-  const customTrackerRef = useRef<HTMLDivElement>(null);
-  const prospectTrackerRef = useRef<HTMLDivElement>(null);
-  const peopleTrackerRef = useRef<HTMLDivElement>(null);
-  const purposeTrackerRef = useRef<HTMLDivElement>(null);
+  const refs = {
+    brandBriefRef: useRef<HTMLDivElement>(null),
+    customTrackerRef: useRef<HTMLDivElement>(null),
+    prospectTrackerRef: useRef<HTMLDivElement>(null),
+    peopleTrackerRef: useRef<HTMLDivElement>(null),
+    purposeTrackerRef: useRef<HTMLDivElement>(null),
+  };
+  
+  const stepsConfig = [
+    {
+      key: "brandBriefRef",
+      content: "Click here to create a custom tracker with advanced filters",
+    },
+    {
+      key: "prospectTrackerRef",
+      content:
+        "From networking to results – Capture, track, and convert prospects seamlessly",
+    },
+    {
+      key: "peopleTrackerRef",
+      content: "Effortlessly track and stay updated on where your people are.",
+    },
+    {
+      key: "purposeTrackerRef",
+      content: "Track your purpose, maximize impact and make every event count.",
+    },
+    {
+      key: "customTrackerRef",
+      content: "Click here to create a custom tracker with advanced filters",
+    },
+  ] as const;
+  
   const [intelScoreData,setIntelScoreData] = useState([
     {
       name: "Prospect",
@@ -105,58 +132,31 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
 //   }
 // ];
 const updateSteps = useCallback(() => {
-  const newSteps: Step[] = [];
-  
-  // Only add step if ref and element exist
-  if (brandBriefRef.current && document.contains(brandBriefRef.current)) {
-    newSteps.push({
-      target: brandBriefRef.current,
-      content: "Click here to create a custom tracker with advanced filters",
+  const newSteps: Step[] = stepsConfig
+    .filter(({ key }) => {
+      const el = refs[key as keyof typeof refs]?.current;
+      return el && document.contains(el);
+    })
+    .map(({ key, content }) => ({
+      target: refs[key as keyof typeof refs].current!,
+      content,
       disableBeacon: true,
-    });
-  }
-  if (prospectTrackerRef.current) {
-    newSteps.push({
-      target: prospectTrackerRef.current,
-      content: "From networking to results – Capture, track, and convert prospects seamlessly",
-      disableBeacon: true
-    });
-  }
+    }));
 
-  if (peopleTrackerRef.current) {
-    newSteps.push({
-      target: peopleTrackerRef.current,
-      content: "Effortlessly track and stay updated on where your people are.",
-      disableBeacon: true
-    });
-  }
-
-  if (purposeTrackerRef.current) {
-    newSteps.push({
-      target: purposeTrackerRef.current,
-      content: "Track your purpose, maximize impact and make every event count.",
-      disableBeacon: true
-    });
-  }
-  if (customTrackerRef.current && document.contains(customTrackerRef.current)) {
-    newSteps.push({
-      target: customTrackerRef.current,
-      content: "Click here to create a custom tracker with advanced filters",
-      disableBeacon: true,
-    });
-  }
   setSteps(newSteps);
-}, [brandBriefRef.current, customTrackerRef.current, prospectTrackerRef.current]);
-useEffect(() => {
-    const walkthroughCompleted: string[] = JSON.parse(
-      localStorage.getItem("walkthroughCompleted") || "[]"
-    );
+}, []);
 
-    if (!walkthroughCompleted.includes("tracker?showTemplates=true")) {
-      updateSteps();
-      setRun(true);
-    }
-  }, [updateSteps]);
+useEffect(() => {
+  const walkthroughCompleted: string[] = JSON.parse(
+    localStorage.getItem("walkthroughCompleted") || "[]"
+  );
+
+  if (!walkthroughCompleted.includes("tracker?showTemplates=true")) {
+    updateSteps();
+    setRun(true);
+  }
+}, [updateSteps]);
+
 const result = useCallback((type:string) => {
   const finalResult = countData?.find((item) => item?.type === type);
   return finalResult?.count || 0;
@@ -267,7 +267,7 @@ const StandardView = useMemo(() => {
 if(isEventeli) return null;
 return(
 <div className={`flex flex-col gap-6 pl-6 pr-6`}>
-            <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0" ref={brandBriefRef}>
+            <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0" ref={refs.brandBriefRef}>
               <div className="flex flex-col gap-2">
                 <div className="text-xl font-medium">Brand Brief Builder </div>
                 <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy.</div>
@@ -293,9 +293,9 @@ return(
             <hr className="my-4 border-t border-gray-300 mb-[0px] mt-[0px]"/>
             {(data as StandardTemplateGroup[]).map((item, index)=>{
                const sectionRef = 
-               item.heading === "Prospect" ? prospectTrackerRef :
-               item.heading === "People" ? peopleTrackerRef :
-               purposeTrackerRef;
+               item.heading === "Prospect" ? refs.prospectTrackerRef :
+               item.heading === "People" ? refs.peopleTrackerRef :
+               refs.purposeTrackerRef;
               return (
               <div key={index}>
                 <div className="flex flex-col sm:flex-row gap-6 sm:gap-0" ref={sectionRef}>
@@ -420,7 +420,7 @@ return(
             <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%]">
             <div>Or start from scratch</div>
             <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
-            <Button ref={customTrackerRef}>Create Custom Tracker</Button>
+            <Button ref={refs.customTrackerRef}>Create Custom Tracker</Button>
             </Link>
             </div>
             </div>

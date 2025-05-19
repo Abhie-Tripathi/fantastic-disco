@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useCallback, useLayoutEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
@@ -460,65 +460,63 @@ const Pages = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
    const [steps, setSteps] = useState<Step[]>([]);
     const [run, setRun] = useState(true);
-    const brandBriefRef = useRef<HTMLDivElement>(null);
-    const customTrackerRef = useRef<HTMLDivElement>(null);
-    const prospectTrackerRef = useRef<HTMLDivElement>(null);
-    const peopleTrackerRef = useRef<HTMLDivElement>(null);
-    const purposeTrackerRef = useRef<HTMLDivElement>(null);
+    const refs = {
+      additionalFilterRef: useRef<HTMLDivElement>(null),
+      presetRef: useRef<HTMLDivElement>(null),
+      templateRef: useRef<HTMLDivElement>(null),
+      basicFilterRef: useRef<HTMLDivElement>(null),
+      advanceFilterRef: useRef<HTMLDivElement>(null)
+    };
+  const stepsConfig =[
+      {"key":"templateRef", "content":"Effortlessly track and stay updated on where your people are."},
+      {"key":"additionalFilterRef","content":"Click here to create a custom tracker with advanced filters"},
+      {"key":"presetRef","content":"Click here to create a custom tracker with advanced filters"},
+      {"key":"basicFilterRef","content":"Click on basic filter"},
+      {"key":"advanceFilterRef","content":"Click on advance filter"}
+    ]
   const updateSteps = useCallback(() => {
-    const newSteps: Step[] = [];
-    console.log("updated steps called");
     
-    // Only add step if ref and element exist
-    if (brandBriefRef.current && document.contains(brandBriefRef.current)) {
-      newSteps.push({
-        target: brandBriefRef.current,
-        content: "Click here to create a custom tracker with advanced filters",
-        disableBeacon: true,
-      });
-    }
-    if (prospectTrackerRef.current) {
-      newSteps.push({
-        target: prospectTrackerRef.current,
-        content: "From networking to results – Capture, track, and convert prospects seamlessly",
-        disableBeacon: true
-      });
-    }
-  
-    if (peopleTrackerRef.current) {
-      newSteps.push({
-        target: peopleTrackerRef.current,
-        content: "Effortlessly track and stay updated on where your people are.",
-        disableBeacon: true
-      });
-    }
-  
-    if (purposeTrackerRef.current) {
-      newSteps.push({
-        target: purposeTrackerRef.current,
-        content: "Track your purpose, maximize impact and make every event count.",
-        disableBeacon: true
-      });
-    }
-    if (customTrackerRef.current && document.contains(customTrackerRef.current)) {
-      newSteps.push({
-        target: customTrackerRef.current,
-        content: "Click here to create a custom tracker with advanced filters",
-        disableBeacon: true,
-      });
-    }
+    const newSteps = stepsConfig
+  .filter(({ key }) => refs[key as keyof typeof refs]?.current)
+  .map(({ key, content }) => ({
+    target: refs[key as keyof typeof refs].current!,
+    content,
+    disableBeacon: true,
+  }));
     setSteps(newSteps);
-  }, [brandBriefRef.current, customTrackerRef.current, prospectTrackerRef.current]);
+  }, []);
   useEffect(() => {
-      const walkthroughCompleted: string[] = JSON.parse(
-        localStorage.getItem("walkthroughCompleted") || "[]"
-      );
+    const walkthroughCompleted: string[] = JSON.parse(
+      localStorage.getItem("walkthroughCompleted") || "[]"
+    );
   
-      if (!walkthroughCompleted.includes("tracker")) {
-        updateSteps();
-        setRun(true);
-      }
-    }, [updateSteps]);
+    if (walkthroughCompleted.includes("tracker")) return;
+  
+    let tries = 0;
+    const maxTries = 10;
+  
+    const keysToCheck = type!=="T_CUSTOM"?["templateRef", "additionalFilterRef", "presetRef"]:["basicFilterRef", "advanceFilterRef"];
+    console.log(keysToCheck);
+    
+
+const checkRefsAndRun = () => {
+  const allReady = keysToCheck.every(
+    (key) => refs[key as keyof typeof refs]?.current
+  );
+
+  if (allReady) {
+    updateSteps();
+    setRun(true);
+  } else if (tries < maxTries) {
+    tries++;
+    requestAnimationFrame(checkRefsAndRun);
+  }
+};
+  
+    checkRefsAndRun();
+  }, [updateSteps]);
+  
+  
   useEffect(() => {
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if (customData.length > 0 && Object.values(customData[0])[0]) {
@@ -1414,13 +1412,14 @@ const Pages = () => {
             </div>
             <TeliTemplates type={type} isMandatory={isMandatory}/>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
-              <div style={{ display: 'flex', gap: '25px' }}>
-                <div className={`card ${styles.competitor}`}>
+              <div style={{ display: 'flex', gap: '25px' }} >
+                <div className={`card ${styles.competitor}`} ref={refs.templateRef}>
                   {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
         </div> */}
                   <div className={styles.bar}></div>
+                  <div >
                   <div>
                     <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
                       <InformationFill style={{ marginBottom: "3px" }} color="var(--info-text-color)" height="12px" />
@@ -1582,6 +1581,7 @@ const Pages = () => {
                       {/* } */}
                     </div>
                   }
+                  </div>
                 </div>
                 <div className={`card ${styles.competitor}`} >
                   <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
@@ -1691,7 +1691,7 @@ const Pages = () => {
             {
               <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
                 {type !== "T_CUSTOM" &&
-                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }}>
+                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }} ref={refs.additionalFilterRef}>
                     <div className={styles.hiddenFiltersInnerDiv}>
                       {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
                       <div className={styles.hiddenFilterHeading}>Additional filters</div>
@@ -1703,7 +1703,7 @@ const Pages = () => {
                   <Suspense fallback={<Loading />}>
                     <div className={styles.container}>
                       <div className={styles.sub_container}>
-                        <div className="grid grid-cols-5 gap-3">
+                        <div className="grid grid-cols-5 gap-3" ref={refs.basicFilterRef}>
                           <EventTypeSelector />
                           <CategorySelector />
                           <EventFormatSelector />
@@ -1725,6 +1725,7 @@ const Pages = () => {
                         defaultValue="list"
                         value={selectedAdvancedView}
                         onValueChange={handleTabChange}
+                        ref={refs.advanceFilterRef}
                       >
                         <div className="flex justify-center my-6">
                           <div className="flex justify-center">
@@ -1800,7 +1801,9 @@ const Pages = () => {
               </div>
             }
             {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
+            <div ref={refs.presetRef}>
               <Presets template={template} handlePresetClick={handlePresetClick} />
+            </div>
             }
           </div>
         </>

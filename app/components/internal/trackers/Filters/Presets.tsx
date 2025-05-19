@@ -18,9 +18,10 @@ import { useFilterContext } from "@/context/filterContext";
 interface Props {
   template: any;
   handlePresetClick: any;
+  presetRef:any;
 }
 
-const Presets = ({ template, handlePresetClick }: Props) => {
+const Presets = ({ template, handlePresetClick, presetRef }: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
   console.log(template.name);
   
@@ -164,7 +165,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     return count;
   };
   return (
-    <div>
+    <div ref={presetRef}>
       <div className="flex justify-center gap-2 items-center font-semibold">
         <span className="text-lg">Get Started with Pre-sets</span>
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">

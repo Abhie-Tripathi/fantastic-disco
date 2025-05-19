@@ -49,10 +49,10 @@ const JoyRideCustom: React.FC<Props> = ({
   
     if (type === 'step:before' && step.target) {
       // Scroll first with delay before updating current step index
-      setTimeout(() => {
+      // setTimeout(() => {
         scrollToTarget(step.target);
         setCurrIndex(index); // update step index after scroll starts
-      }, 300); // delay in ms (adjust as needed)
+      // }, 100); // delay in ms (adjust as needed)
     } else {
       setCurrIndex(index);
     }
@@ -83,6 +83,8 @@ const JoyRideCustom: React.FC<Props> = ({
         ...step,
         disableBeacon: true, // Disable beacon for all steps
       }))}
+      scrollToFirstStep={false}
+      disableScrollParentFix={true}
       run={joyrideRun}
       callback={joyrideCallback}
       continuous
