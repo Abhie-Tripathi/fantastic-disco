@@ -57,7 +57,7 @@ const JoyRideCustom: React.FC<Props> = ({
       setCurrIndex(index);
     }
   
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED){
       const walkthroughCompleted: string[] = JSON.parse(
         localStorage.getItem("walkthroughCompleted") || "[]"
       );

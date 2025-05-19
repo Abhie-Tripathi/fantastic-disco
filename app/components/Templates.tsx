@@ -28,7 +28,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const [run, setRun] = useState(true);
   const refs = {
     brandBriefRef: useRef<HTMLDivElement>(null),
-    customTrackerRef: useRef<HTMLDivElement>(null),
+    customTrackerRef: useRef<HTMLButtonElement>(null),
     prospectTrackerRef: useRef<HTMLDivElement>(null),
     peopleTrackerRef: useRef<HTMLDivElement>(null),
     purposeTrackerRef: useRef<HTMLDivElement>(null),
@@ -255,7 +255,7 @@ const EventeliView = useMemo(() => {
           href="/internal/trackers/create?type=T_CUSTOM"
           className={styles.createUrl}
         >
-          <Button ref={customTrackerRef} className="text-white">Create Custom</Button>
+          <Button ref={refs.customTrackerRef} className="text-white">Create Custom</Button>
         </Link>
       </div>
     </div>
