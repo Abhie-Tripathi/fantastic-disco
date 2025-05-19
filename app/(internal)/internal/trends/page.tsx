@@ -1064,6 +1064,9 @@ const EventTrends = () => {
             </div>
 
             {/* Content Area for mobile */}
+
+            
+
             {selectedView === "line" && (
               <Card className="p-2 pb-36 md:pb-4 relative rounded-none md:rounded border-none md:border">
                 <div className=" hidden md:flex items-center justify-between mb-4">
