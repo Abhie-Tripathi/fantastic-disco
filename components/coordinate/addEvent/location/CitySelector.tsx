@@ -27,7 +27,7 @@ const CitySelector = ({ formState, handleChange, locationType }: Props) => {
   const [open, setOpen] = useState(false);
 
   const { predictions, isLoading, isError } = useDatabaseLocationcomplete(
-    formState.query,
+    formState.query.trim(),
     locationType
   );
 

@@ -80,7 +80,15 @@ const Profile = () => {
       setMobileNo(data.phoneNumber || "");
       setDept(data.department || "");
       setRole(data.designation || "");
-      setProfilePicture(data.imageUrl || null);
+      if (data.imageUrl) {
+        setProfilePicture(data.imageUrl || null);
+      }
+      else if (!data.firstname && !data.lastName ) {
+        setProfilePicture("/defaultProfilePic.png");
+      }
+      else {
+        setProfilePicture(null);
+      }
       setProfilePic(data.imageUrl || null);
     }
   };

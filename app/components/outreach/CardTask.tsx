@@ -56,6 +56,13 @@ const CardTask: React.FC<CardTaskProps> = ({
   interests,
   task,
 }) => {
+
+  const eventImageSrc =
+    task.eventData?.logoUrl ||
+    `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${
+      task.eventData?.website || ""
+    }&size=64`;
+    
   return (
     <>
       <div
@@ -64,25 +71,24 @@ const CardTask: React.FC<CardTaskProps> = ({
         onDragStart={(event) => onDragStart(event, name)}
         onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}
       >
-        {task.eventData.logoUrl && (
-          <div className="">
-            {task.eventData.logoUrl ? (
-              <div className="w-14 h-14">
-                <img
-                  src={task.eventData.logoUrl}
-                  alt={`logo`}
-                  className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
-                />
-              </div>
-            ) : (
-              <div className="w-14 h-14 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+        <div className="">
+          <div className="w-14 h-14">
+            {!task.eventData.website && !task.eventData.logoUrl ? (
+              <div className="h-14 w-14 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
                 <span className="text-[#5055A3] text-2xl font-semibold">
-                  {task.eventData.name.charAt(0)}
+                  {task.eventData.name.replace(/[+*-/"'"]/g, "").charAt(0)}
                 </span>
               </div>
+            ) : (
+              <img
+                src={eventImageSrc}
+                alt={`logo`}
+                className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+              />
             )}
           </div>
-        )}
+        </div>
+
         <div className="flex flex-col gap-2 h-full">
           <div className={`text-lg font-medium`}>{name}</div>
           <div className={`text-[var(--tertiary-text-color)] text-sm`}>
