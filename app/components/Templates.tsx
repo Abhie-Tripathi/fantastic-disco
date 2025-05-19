@@ -14,8 +14,6 @@ import { useTrackerServices } from "@/services/trackerServices";
 import Add from "/public/add.svg";
 import { Button } from "@/components/ui/button";
 import FetchTemplateModal from "./internal/trackers/FetchTemplateModal";
-import { fetchData } from "next-auth/client/_utils";
-import FetchTemplateMinModal from "./internal/trackers/FetchTemplateMinModal";
 import { useCompanyService } from "@/services/companyService";
 import { suggestionGenerator } from "@/utils/openAI";
 import { useTrackerContext } from "@/context/tracker";
@@ -59,7 +57,6 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const {comp,setComp, keywordsTracker, setKeywordsTracker, peopleTracker, setPeopleTracker} = useTrackerContext();
   const {loadingState, setLoadingState, templateView, setTemplateView, showFetchedData, setShowFetchedData} = useFilterContext();
   const {getTrackerCount}=useTrackerServices();
-  const {getCompanyDetailById} = useCompanyService();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
   // const [showFetchedData, setShowFetchedData] = useState(false);
   const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
