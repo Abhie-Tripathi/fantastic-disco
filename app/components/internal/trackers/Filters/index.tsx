@@ -490,8 +490,8 @@ const Pages = () => {
       localStorage.getItem("walkthroughCompleted") || "[]"
     );
   
-    if (walkthroughCompleted.includes("tracker")) return;
-  
+    if (type==="T_CUSTOM" && walkthroughCompleted.includes("trackers/create?type=custom")) return;
+    else if(type!=="T_CUSTOM" && walkthroughCompleted.includes("trackers/create?type=template")) return;
     let tries = 0;
     const maxTries = 10;
   
@@ -1337,7 +1337,7 @@ const checkRefsAndRun = () => {
             steps={steps}
             run={run}
             onFinish={() => setRun(false)}
-            pathName="tracker?showTemplates=true"
+            pathName={type === "T_CUSTOM" ? "trackers/create?type=custom" : "trackers/create?type=template"}
           />
           )}
           <div
