@@ -40,11 +40,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import FilterContent from "@/components/search/FilterContent";
+import { useSearchParams } from "next/navigation";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
-  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
+  const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
@@ -108,6 +109,7 @@ const Events = () => {
 
   const onTabsChange = (value: string) => {
     setFilter("view", value);
+    setShowViewDropdown(false);
   };
 
   const toggleFilterHandler = () => {
@@ -119,20 +121,12 @@ const Events = () => {
   };
 
   const filtersCount = (function () {
-    let count = 0;
-    if (
-      localFilters.onlyBranded === "true" ||
-      localFilters.onlySeries === "true"
-    )
-      count++;
-    if (localFilters.frequencies) count++;
-    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
-    if (localFilters.maturity) count++;
-    if (localFilters.estimatedVisitors) count++;
-    if (localFilters.impact_score_gte) count++;
-    if (localFilters.top) count++;
-    return count;
+    const excludedFilters = ["view", "sort", "offset", "limit"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
   })();
+
   useEffect(() => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
@@ -147,7 +141,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[137px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
           >
             <EventCount view="events" />
             <div className="justify-center hidden md:flex">
@@ -199,7 +193,10 @@ const Events = () => {
             </div>
 
             <div className="flex md:hidden items-center justify-end gap-2">
-              <Popover>
+              <Popover
+                open={showViewDropdown}
+                onOpenChange={setShowViewDropdown}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
@@ -257,15 +254,20 @@ const Events = () => {
                 </PopoverContent>
               </Popover>
 
-              <SortDropdown compact />
+              {view !== "map" && <SortDropdown compact />}
 
               <Button
                 onClick={toggleFilterHandler}
-                variant="ghost"
+                variant={filtersCount > 0 ? "secondary" : "ghost"}
                 size="icon"
-                className="h-8 w-8 border"
+                className="h-8 w-8 border relative"
               >
                 <Filter className="w-4 h-4" />
+                {filtersCount > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                    {filtersCount}
+                  </div>
+                )}
               </Button>
             </div>
           </div>

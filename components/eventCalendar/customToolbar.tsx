@@ -72,7 +72,7 @@ const CustomToolbar = ({
   };
 
   return (
-    <div className="grid grid-cols-10 my-4">
+    <div className="grid grid-cols-10 md:my-4 my-2">
       <div className="col-span-2 hidden md:block">
         <Select
           value={view}

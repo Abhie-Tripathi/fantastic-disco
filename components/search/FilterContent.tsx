@@ -10,6 +10,7 @@ import Image from "next/image";
 import whrbotlogo from "@/public/whrbotlogo.svg";
 import { useFilterContext } from "@/context/filterContext";
 import { filters, getFilterComponent } from "@/components/search/filterUtils";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface FilterSection {
   id: string;
@@ -38,6 +39,7 @@ const FilterContent = ({
   searchHandler,
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
+  const isMobile = useIsMobile()
 
   return (
     <div className="flex-1">
@@ -86,7 +88,7 @@ const FilterContent = ({
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
                   <div className="space-y-4 border-t pt-4 mt-1">
-                    {section.filters.map((filter: FilterItem) => {
+                    {section.filters.filter((filter: FilterItem) => !isMobile || filter.id !== "eventIds").map((filter: FilterItem) => {
                       const Component = getFilterComponent(filter.component);
                       if (!Component) return null;
 

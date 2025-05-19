@@ -321,8 +321,10 @@ export const PeopleList: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 px-6">
-      <div className="flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4">
+    <div className="flex flex-col">
+      <div
+        className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+      >
         <div className="flex items-center gap-2">
           <Badge className="bg-primary text-white">
             {new Intl.NumberFormat("en", {
@@ -337,7 +339,7 @@ export const PeopleList: React.FC = () => {
           {/* Export and Sort buttons removed as they were disabled */}
         </div>
       </div>
-      <div className="flex gap-3 flex-col">
+      <div className="flex-1 flex gap-3 flex-col px-4 md:px-6">
         {filteredUsers.map((item) => (
           <PeopleCard key={item.user_id} poc={item} unlockPoc={unlockPoc} />
         ))}

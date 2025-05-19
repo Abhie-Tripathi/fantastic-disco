@@ -776,7 +776,7 @@ const Filters = ({
             </TabsList>
           </Tabs>
           <div className="block md:hidden mt-4">
-            <MultiSelectSearchBar varient="large" />
+            <MultiSelectSearchBar varient="medium" />
           </div>
         </div>
 

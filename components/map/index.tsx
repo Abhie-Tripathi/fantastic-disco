@@ -45,6 +45,7 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -96,6 +97,7 @@ export default function MapComponent({
 }: MapProps) {
   
   const mapRef = useRef<MapRef>(null);
+  const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
@@ -663,7 +665,7 @@ export default function MapComponent({
     return <ZeroState text="Location is Mandatory" />;
   }
   return (
-    <div className="relative">
+    <div className="relative px-4 md:px-0">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
         <Loading />
       ) : eventCountsQuery.error ? (
@@ -691,7 +693,7 @@ export default function MapComponent({
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal ? "calc(100vh - 136px)" : "300px",
+                    height: !isGlobal ? isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 136px)" : "300px",
                   }}
                   onMove={onMove}
                   onLoad={onMapLoad}
@@ -762,7 +764,7 @@ export default function MapComponent({
                   {!isGlobal && (
                     <Button
                       variant="default"
-                      className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
+                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
                       onClick={() => setShowEventList("all")}
                     >
                       <AlignLeft className="w-5 h-5" />
