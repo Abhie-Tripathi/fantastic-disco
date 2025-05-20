@@ -44,7 +44,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
   onApply,
 }) => {
   const quickSelections = presets.filter((preset) =>
-    ["this-week", "this-month", "3-months", "6-months"].includes(preset.value)
+    ["this-week", "this-month", "3-months", "6-months", "12-months"].includes(preset.value)
   );
 
   const navigateMonth = (direction: "prev" | "next") => {
