@@ -45,6 +45,7 @@ import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { useRouter, useSearchParams, ReadonlyURLSearchParams } from "next/navigation";
 
 interface IProps {
   showLegend: boolean;
@@ -81,11 +82,12 @@ const LineChartComponent = ({
 
   const { getEventsWithSearchParams } = useEventsService();
   const { getFilterValue } = useFilterState();
-  const metric = getFilterValue("columns") as
-    | "eventCount"
-    | "predictedAttendance"
-    | "inboundEstimate"
-    | "internationalEstimate";
+  const metrics = (getFilterValue("columns") as string)?.split(",") || [];
+  const primaryMetric = metrics[0] as "eventCount" | "predictedAttendance" | "inboundEstimate" | "internationalEstimate";
+  const secondaryMetric = metrics[1] as "eventCount" | "predictedAttendance" | "inboundEstimate" | "internationalEstimate" | undefined;
+
+  const primaryLabel = columnsDropdown.find((column) => column.value === primaryMetric)?.label ?? "";
+  const secondaryLabel = columnsDropdown.find((column) => column.value === secondaryMetric)?.label ?? "";
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -174,9 +176,9 @@ const LineChartComponent = ({
 
   useEffect(() => {
     if (eventTrendsData && eventTrendsData.groupedData) {
-      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+      const graphData = morphToGraphData(eventTrendsData.groupedData, primaryMetric, secondaryMetric);
       const previousYearGraphData = previousYearData
-        ? morphToGraphData(previousYearData.groupedData, metric)
+        ? morphToGraphData(previousYearData.groupedData, primaryMetric, secondaryMetric)
         : [];
 
       // Combine current and previous year data with proper date alignment
@@ -217,30 +219,23 @@ const LineChartComponent = ({
         if (comparisonItem) {
           return {
             ...currentItem,
-            previousYearTotal: comparisonItem.total,
+            [`previousYear${primaryMetric}`]: comparisonItem[primaryMetric],
             previousYearSocial: comparisonItem.social,
             previousYearBusiness: comparisonItem.business,
+            ...(secondaryMetric && {
+              [`previousYear${secondaryMetric}`]: comparisonItem[secondaryMetric],
+              [`previousYearSocial${secondaryMetric}`]: comparisonItem[`social${secondaryMetric}`],
+              [`previousYearBusiness${secondaryMetric}`]: comparisonItem[`business${secondaryMetric}`],
+            }),
           };
         }
 
-        return {
-          ...currentItem,
-          previousYearTotal: undefined,
-          previousYearSocial: undefined,
-          previousYearBusiness: undefined,
-        };
+        return currentItem;
       });
 
       setPredictedData(combinedData);
     }
-  }, [
-    eventTrendsData,
-    previousYearData,
-    metric,
-    searchParams,
-    compareFrom,
-    compareTo,
-  ]);
+  }, [eventTrendsData, previousYearData, primaryMetric, secondaryMetric, compareFrom, compareTo, searchParams]);
 
   useEffect(() => {
     if (trendsData === undefined) {
@@ -548,7 +543,7 @@ const LineChartComponent = ({
     });
 
   const threshold =
-    (eventTrendsData && eventTrendsData.thresholds[metric]) ?? 0;
+    (eventTrendsData && eventTrendsData.thresholds[primaryMetric as keyof typeof eventTrendsData.thresholds]) ?? 0;
   const thresholdArea = [
     threshold * 1.5, // 5% above threshold
     threshold * 0.5, // 5% below threshold
@@ -698,14 +693,22 @@ const LineChartComponent = ({
           ),
         }));
 
-  const label =
-    columnsDropdown.find((column) => column.value === metric)?.label ?? "";
-
   const CustomToolTip = ({
     active,
     payload,
     label,
-  }: TooltipProps<number, string>) => {
+    holidayByDates,
+    compareFrom,
+    compareTo,
+    searchParams,
+  }: TooltipProps<number, string> & {
+    holidayByDates?: TableGroupedHoliday[];
+    compareFrom?: string;
+    compareTo?: string;
+    searchParams: {
+      get: (key: string) => string | null;
+    };
+  }) => {
     if (
       !payload ||
       !Array.isArray(payload) ||
@@ -720,7 +723,7 @@ const LineChartComponent = ({
       return null;
     }
 
-    const { date, total, previousYearTotal } = tooltipPayload;
+    const { date } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
 
@@ -728,19 +731,21 @@ const LineChartComponent = ({
     let comparisonDate = new Date(date);
 
     if (compareFrom && compareTo) {
-      const mainStartDate = new Date(searchParams.get("active_gte") || "");
-      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const activeGte = searchParams.get("active_gte");
+      const activeLte = searchParams.get("active_lte");
+      if (!activeGte || !activeLte) return null;
+
+      const mainStartDate = new Date(activeGte);
+      const mainEndDate = new Date(activeLte);
       const currentDate = new Date(date);
 
-      const compareStartDate = new Date(compareFrom);
-      const compareEndDate = new Date(compareTo);
-
-      // Calculate the relative position (0 to 1) of the current date in the main range
       const mainRangePosition =
         (currentDate.getTime() - mainStartDate.getTime()) /
         (mainEndDate.getTime() - mainStartDate.getTime());
 
-      // Find the corresponding date in the comparison range
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
+
       comparisonDate = new Date(
         compareStartDate.getTime() +
           mainRangePosition *
@@ -748,275 +753,123 @@ const LineChartComponent = ({
       );
     }
 
-    const hasSocial = eventTypes
-      ?.split(",")
-      .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
-    const hasBusiness = eventTypes
-      ?.split(",")
-      .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
-
-    // Current year event types
-    const currentYearEventTypes = [];
-    if (hasSocial && tooltipPayload.social !== undefined) {
-      currentYearEventTypes.push({
-        text: "Social",
-        bg: "--social-color",
-        value: tooltipPayload.social,
-      });
-    }
-    if (hasBusiness && tooltipPayload.business !== undefined) {
-      currentYearEventTypes.push({
-        text: "Business",
-        bg: "--business-color",
-        value: tooltipPayload.business,
-      });
-    }
-
-    // Previous year event types
-    const previousYearEventTypes = [];
-    if (compareFrom && compareTo) {
-      if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
-        previousYearEventTypes.push({
-          text: "Social",
-          bg: "--social-color",
-          value: tooltipPayload.previousYearSocial,
-        });
-      }
-      if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
-        previousYearEventTypes.push({
-          text: "Business",
-          bg: "--business-color",
-          value: tooltipPayload.previousYearBusiness,
-        });
-      }
-    }
+    const hasSocial = tooltipPayload.social !== undefined;
+    const hasBusiness = tooltipPayload.business !== undefined;
+    const hasPreviousYear = tooltipPayload[`previousYear${primaryMetric}`] !== undefined;
+    const hasPreviousYearSocial = tooltipPayload.previousYearSocial !== undefined;
+    const hasPreviousYearBusiness = tooltipPayload.previousYearBusiness !== undefined;
+    const hasSecondaryMetric = secondaryMetric && tooltipPayload[secondaryMetric] !== undefined;
+    const hasPreviousYearSecondaryMetric = secondaryMetric && tooltipPayload[`previousYear${secondaryMetric}`] !== undefined;
+    const hasPreviousYearSocialSecondaryMetric = secondaryMetric && tooltipPayload[`previousYearSocial${secondaryMetric}`] !== undefined;
+    const hasPreviousYearBusinessSecondaryMetric = secondaryMetric && tooltipPayload[`previousYearBusiness${secondaryMetric}`] !== undefined;
 
     return (
       <div
-        className={`border-none shadow-lg bg-background ${
-          compareFrom && compareTo ? "w-[600px]" : "w-[300px]"
-        } z-10`}
+        className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
+          compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
+        }`}
       >
-        <div
-          className={`px-4 py-2 flex text-lg font-medium border-b ${
-            compareFrom && compareTo ? "justify-between" : "justify-start"
-          }`}
-        >
-          <span>{format(new Date(date), "d MMM yyyy")}</span>
-          {compareFrom && compareTo && (
-            <span className="text-[#4B9EF4]">
-              {format(comparisonDate, "d MMM yyyy")}
-            </span>
-          )}
+        <div className="text-sm font-semibold text-gray-700 mb-2">
+          {format(new Date(date), "d MMM yyyy")}
         </div>
-        {isEventeli &&
-          matchingHoliday &&
-          matchingHoliday.holidays.length > 0 && (
-            <div className="px-4 py-2 border-b">
-              <p className="font-semibold text-[var(--primary-color)]">
-                Holidays :
-              </p>
-              <ul
-                className={`${
-                  matchingHoliday.holidays.length > 1
-                    ? "list-decimal"
-                    : "list-none"
-                } list-inside text-sm text-gray-600 dark:text-gray-300`}
-              >
-                {matchingHoliday.holidays.map((holidayName, index) => (
-                  <li key={index}>{holidayName}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        <div
-          className={`grid ${
-            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
-          }`}
-        >
-          {/* Current Year Section */}
-          <div className={compareFrom && compareTo ? "border-r" : ""}>
-            {isEventeli && (
-              <div className="px-4 py-2 border-b">
-                <div className="flex flex-col gap-2">
-                  <div>
-                    <p className="font-semibold text-[#6750a4]">{total}</p>
-                    <Text size="normal" color="secondary" fontWeight="regular">
-                      {columnsDropdown.find((column) => column.value === metric)
-                        ?.label ?? ""}
-                    </Text>
-                  </div>
-                </div>
+        <div className="space-y-2">
+          <div className="text-sm">
+            <div className="font-medium text-gray-600">Current Year</div>
+            <div className="mt-1">
+              <div className="flex justify-between">
+                <span className="text-gray-500">{primaryLabel}</span>
+                <span className="font-medium">{tooltipPayload[primaryMetric]}</span>
               </div>
-            )}
-            <div className="flex flex-col px-4 py-2 gap-2 border-b">
-              {currentYearEventTypes.map((eventTypesValues) => (
-                <div
-                  key={eventTypesValues.text}
-                  className="flex justify-between"
-                >
-                  <div className="flex gap-2">
-                    <div
-                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
-                    ></div>
-                    <p
-                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                    >
-                      {eventTypesValues.text} Events
-                    </p>
-                  </div>
-                  <p
-                    className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                  >
-                    {eventTypesValues.value}
-                  </p>
+              {hasSocial && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Social</span>
+                  <span className="font-medium">{tooltipPayload.social}</span>
                 </div>
-              ))}
-            </div>
-            <div className="px-4 py-2">
-              <p className="text-sm font-medium">TOP EVENTS</p>
-              <ul className="flex flex-col gap-2 mt-4">
-                {iseventsLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
-                ) : eventData && (eventData as any).events.length > 0 ? (
-                  (eventData as any).events
-                    .slice(0, 4)
-                    .map((event: any, index: number) => {
-                      const { basic } = event || {};
-                      const { name, id } = basic || {};
-                      return (
-                        <li key={id} className="flex gap-4">
-                          <div className="flex flex-col items-center">
-                            <span className="text-[12px] font-semibold">
-                              {index + 1}.
-                            </span>
-                          </div>
-                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                            {name}
-                          </p>
-                        </li>
-                      );
-                    })
-                ) : (
-                  <p className="text-[#666666] text-sm flex items-center gap-2">
-                    <Image src={Disable} alt="Disable" width={15} height={15} />
-                    No events found.
-                  </p>
-                )}
-              </ul>
+              )}
+              {hasBusiness && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Business</span>
+                  <span className="font-medium">{tooltipPayload.business}</span>
+                </div>
+              )}
+              {hasSecondaryMetric && (
+                <>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-gray-500">{secondaryLabel}</span>
+                    <span className="font-medium">{tooltipPayload[secondaryMetric]}</span>
+                  </div>
+                  {hasPreviousYearSocialSecondaryMetric && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Social</span>
+                      <span className="font-medium">{tooltipPayload[`social${secondaryMetric}`]}</span>
+                    </div>
+                  )}
+                  {hasPreviousYearBusinessSecondaryMetric && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Business</span>
+                      <span className="font-medium">{tooltipPayload[`business${secondaryMetric}`]}</span>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
-          {/* Comparison Section */}
-          {compareFrom && compareTo && (
-            <div>
-              {isEventeli && (
-                <div className="px-4 py-2 border-b">
-                  <div className="flex flex-col gap-2">
-                    <div>
-                      <p className="font-semibold text-[#4B9EF4]">
-                        {previousYearTotal}
-                      </p>
-                      <Text
-                        size="normal"
-                        color="secondary"
-                        fontWeight="regular"
-                      >
-                        {columnsDropdown.find(
-                          (column) => column.value === metric
-                        )?.label ?? ""}
-                      </Text>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-col px-4 py-2 gap-2 border-b">
-                {previousYearEventTypes.map((eventTypesValues) => (
-                  <div
-                    key={eventTypesValues.text}
-                    className="flex justify-between"
-                  >
-                    <div className="flex gap-2">
-                      <div
-                        className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
-                      ></div>
-                      <p
-                        className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                      >
-                        {eventTypesValues.text} Events
-                      </p>
-                    </div>
-                    <p
-                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                    >
-                      {eventTypesValues.value}
-                    </p>
-                  </div>
-                ))}
+          {hasPreviousYear && (
+            <div className="text-sm pt-2 border-t border-gray-200">
+              <div className="font-medium text-gray-600">
+                Previous Year ({format(comparisonDate, "d MMM yyyy")})
               </div>
-              <div className="px-4 py-2">
-                <p className="text-sm font-medium">TOP EVENTS</p>
-                <ul className="flex flex-col gap-2 mt-4">
-                  {isPreviouseventsLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
-                  ) : previousYearEventData &&
-                    (previousYearEventData as any).events.length > 0 ? (
-                    (previousYearEventData as any).events
-                      .slice(0, 4)
-                      .map((event: any, index: number) => {
-                        const { basic } = event || {};
-                        const { name, id } = basic || {};
-                        return (
-                          <li key={id} className="flex gap-4">
-                            <div className="flex flex-col items-center">
-                              <span className="text-[12px] font-semibold">
-                                {index + 1}.
-                              </span>
-                            </div>
-                            <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                              {name}
-                            </p>
-                          </li>
-                        );
-                      })
-                  ) : (
-                    <p className="text-[#666666] text-sm flex items-center gap-2">
-                      <Image
-                        src={Disable}
-                        alt="Disable"
-                        width={15}
-                        height={15}
-                      />
-                      No historical events found
-                    </p>
-                  )}
-                </ul>
+              <div className="mt-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{primaryLabel}</span>
+                  <span className="font-medium">{tooltipPayload[`previousYear${primaryMetric}`]}</span>
+                </div>
+                {hasPreviousYearSocial && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Social</span>
+                    <span className="font-medium">{tooltipPayload.previousYearSocial}</span>
+                  </div>
+                )}
+                {hasPreviousYearBusiness && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Business</span>
+                    <span className="font-medium">{tooltipPayload.previousYearBusiness}</span>
+                  </div>
+                )}
+                {hasPreviousYearSecondaryMetric && (
+                  <>
+                    <div className="flex justify-between mt-2">
+                      <span className="text-gray-500">{secondaryLabel}</span>
+                      <span className="font-medium">{tooltipPayload[`previousYear${secondaryMetric}`]}</span>
+                    </div>
+                    {hasPreviousYearSocialSecondaryMetric && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Social</span>
+                        <span className="font-medium">{tooltipPayload[`previousYearSocial${secondaryMetric}`]}</span>
+                      </div>
+                    )}
+                    {hasPreviousYearBusinessSecondaryMetric && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Business</span>
+                        <span className="font-medium">{tooltipPayload[`previousYearBusiness${secondaryMetric}`]}</span>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           )}
-        </div>
-        <div
-          className={`grid ${
-            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
-          }`}
-        >
-          <Link
-            href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
-            className={`px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer ${
-              compareFrom && compareTo ? "border-r" : ""
-            }`}
-          >
-            VIEW ALL
-            <ArrowUpRight height={18} width={18} stroke="#6750a4" />
-          </Link>
-          {compareFrom && compareTo && (
-            <Link
-              href={`/internal/search/events?${previousYearLink}`}
-              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
-            >
-              VIEW ALL
-              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
-            </Link>
+
+          {matchingHoliday && (
+            <div className="text-sm pt-2 border-t border-gray-200">
+              <div className="font-medium text-gray-600">Holiday</div>
+              <div className="mt-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{matchingHoliday.holidays.join(", ")}</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
@@ -1137,6 +990,40 @@ const LineChartComponent = ({
     );
   };
 
+  const renderLegend = (props: LegendProps) => {
+    const { payload } = props;
+
+    if (!payload) {
+      return null;
+    }
+
+    return (
+      <div className="flex flex-wrap gap-4 justify-center">
+        {payload.map((entry, index) => {
+          const isPreviousYear = entry.dataKey?.toString().startsWith("previousYear");
+          const isSecondaryMetric = entry.dataKey === secondaryMetric || entry.dataKey?.toString().startsWith(`previousYear${secondaryMetric}`);
+          const color = isSecondaryMetric ? "#9333ea" : "#615E83";
+          const label = isPreviousYear
+            ? `${entry.value} (Previous Year)`
+            : entry.value;
+
+          return (
+            <div key={`item-${index}`} className="flex items-center gap-2">
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{
+                  backgroundColor: color,
+                  opacity: isPreviousYear ? 0.5 : 1,
+                }}
+              />
+              <span className="text-sm text-gray-600">{label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   if (isLoading || (compareFrom && compareTo && previousYearLoading)) {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
@@ -1206,100 +1093,57 @@ const LineChartComponent = ({
             }}
           />
           <YAxis
-            dataKey="total"
+            yAxisId="left"
+            dataKey={primaryMetric}
             fontSize="12px"
             width={isMobileView ? 50 : 70}
             domain={[
               () => {
                 if (!graphData || graphData.length === 0) return 0;
-
                 const validTotals = graphData
-                  .map((item: any) => item.total)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
+                  .map((item: any) => item[primaryMetric])
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
                 const validPrevYears = graphData
-                  .map((item: any) => item.previousYearTotal)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
-
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 0;
-
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  .map((item: any) => item[`previousYear${primaryMetric}`])
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                if (validTotals.length === 0 && validPrevYears.length === 0) return 0;
+                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
-                const paddedMax = overallMax * 1.1; // Add 10% padding
-
-                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                const paddedMax = overallMax * 1.1;
+                const range = Math.max(paddedMax - minValue, 1);
                 const idealTickSize = range / 4;
-
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
+                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-
+                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
                 return Math.floor(minValue / roundedTickSize) * roundedTickSize;
               },
               () => {
                 if (!graphData || graphData.length === 0) return 100;
-
                 const validTotals = graphData
-                  .map((item: any) => item.total)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
+                  .map((item: any) => item[primaryMetric])
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
                 const validPrevYears = graphData
-                  .map((item: any) => item.previousYearTotal)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
-
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 100;
-
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  .map((item: any) => item[`previousYear${primaryMetric}`])
+                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                if (validTotals.length === 0 && validPrevYears.length === 0) return 100;
+                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
-                const paddedMax = overallMax * 1.1; // Add 10% padding
-
-                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                const paddedMax = overallMax * 1.1;
+                const range = Math.max(paddedMax - minValue, 1);
                 const idealTickSize = range / 4;
-
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
+                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-
+                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
                 return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
               },
             ]}
@@ -1309,7 +1153,7 @@ const LineChartComponent = ({
               isMobileView
                 ? undefined
                 : {
-                    value: label,
+                    value: primaryLabel,
                     angle: -90,
                     position: "insideLeft",
                     style: { textAnchor: "middle", fill: "#7D7D7D" },
@@ -1324,13 +1168,93 @@ const LineChartComponent = ({
               fontWeight: isMobileView ? "400" : "500",
             }}
           />
+          {secondaryMetric && (
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              dataKey={secondaryMetric}
+              fontSize="12px"
+              width={isMobileView ? 50 : 70}
+              domain={[
+                () => {
+                  if (!graphData || graphData.length === 0) return 0;
+                  const validTotals = graphData
+                    .map((item: any) => item[secondaryMetric])
+                    .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${secondaryMetric}`])
+                    .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  if (validTotals.length === 0 && validPrevYears.length === 0) return 0;
+                  const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                  return Math.floor(minValue / roundedTickSize) * roundedTickSize;
+                },
+                () => {
+                  if (!graphData || graphData.length === 0) return 100;
+                  const validTotals = graphData
+                    .map((item: any) => item[secondaryMetric])
+                    .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${secondaryMetric}`])
+                    .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  if (validTotals.length === 0 && validPrevYears.length === 0) return 100;
+                  const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                  return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
+                },
+              ]}
+              tickCount={5}
+              tickFormatter={tickFormatter}
+              label={
+                isMobileView
+                  ? undefined
+                  : {
+                      value: secondaryLabel,
+                      angle: 90,
+                      position: "insideRight",
+                      style: { textAnchor: "middle", fill: "#7D7D7D" },
+                      fontSize: "14px",
+                    }
+              }
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#615E83",
+                fontSize: isMobileView ? "10px" : "14px",
+                fontWeight: isMobileView ? "400" : "500",
+              }}
+            />
+          )}
           <Tooltip
-            content={<CustomToolTip />}
+            content={<CustomToolTip holidayByDates={holidayByDates} compareFrom={compareFrom} compareTo={compareTo} searchParams={searchParams} />}
             trigger="click"
             wrapperStyle={{ pointerEvents: "auto" }}
           />
           {showThresholdLines && (
             <ReferenceArea
+              yAxisId="left"
               y1={thresholdArea[0]}
               y2={thresholdArea[1]}
               fill="#FAEFE2"
@@ -1339,6 +1263,7 @@ const LineChartComponent = ({
           {threshold && threshold > 0 && showThresholdLines && (
             <>
               <ReferenceLine
+                yAxisId="left"
                 y={thresholdArea[0]}
                 stroke="#398E4A"
                 strokeDasharray="12 12"
@@ -1354,6 +1279,7 @@ const LineChartComponent = ({
                 }}
               />
               <ReferenceLine
+                yAxisId="left"
                 y={threshold}
                 stroke="#DF2670"
                 label={{
@@ -1368,6 +1294,7 @@ const LineChartComponent = ({
                 }}
               />
               <ReferenceLine
+                yAxisId="left"
                 y={thresholdArea[1]}
                 stroke="#FF990A"
                 strokeDasharray="12 12"
@@ -1385,26 +1312,56 @@ const LineChartComponent = ({
             </>
           )}
           <Line
+            yAxisId="left"
             type="linear"
-            dataKey="total"
-            name="Selected Period"
+            dataKey={primaryMetric}
+            name={primaryLabel}
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
             connectNulls={true}
             dot={<CustomDot />}
           />
-          {compareFrom && compareTo && (
+          {secondaryMetric && (
             <Line
+              yAxisId="right"
               type="linear"
-              dataKey="previousYearTotal"
-              name="Compared Period"
+              dataKey={secondaryMetric}
+              name={secondaryLabel}
               stroke="#4B9EF4"
               strokeWidth={2}
               strokeOpacity={1}
               connectNulls={true}
-              dot={false}
+              dot={<CustomDot />}
             />
+          )}
+          {compareFrom && compareTo && (
+            <>
+              <Line
+                yAxisId="left"
+                type="linear"
+                dataKey={`previousYear${primaryMetric}`}
+                name={`Previous Year ${primaryLabel}`}
+                stroke="#6750a4"
+                strokeWidth={2}
+                strokeOpacity={0.5}
+                connectNulls={true}
+                dot={false}
+              />
+              {secondaryMetric && (
+                <Line
+                  yAxisId="right"
+                  type="linear"
+                  dataKey={`previousYear${secondaryMetric}`}
+                  name={`Previous Year ${secondaryLabel}`}
+                  stroke="#4B9EF4"
+                  strokeWidth={2}
+                  strokeOpacity={0.5}
+                  connectNulls={true}
+                  dot={false}
+                />
+              )}
+            </>
           )}
           {showLegend && (
             <Legend
@@ -1412,19 +1369,47 @@ const LineChartComponent = ({
               payload={
                 [
                   {
-                    value: "Selected Period",
+                    value: primaryLabel,
                     type: "line",
-                    id: "current_year",
+                    id: "primary_metric",
                     color: "#6750a4",
-                    tooltipDescription: "Data for the current selected period",
+                    tooltipDescription: `Data for ${primaryLabel}`,
                   },
-                  {
-                    value: "Compared Period",
-                    type: "line",
-                    id: "previous_year",
-                    color: "#4B9EF4",
-                    tooltipDescription: "Data for the comparison period",
-                  },
+                  ...(secondaryMetric
+                    ? [
+                        {
+                          value: secondaryLabel,
+                          type: "line",
+                          id: "secondary_metric",
+                          color: "#4B9EF4",
+                          tooltipDescription: `Data for ${secondaryLabel}`,
+                        },
+                      ]
+                    : []),
+                  ...(compareFrom && compareTo
+                    ? [
+                        {
+                          value: `Previous Year ${primaryLabel}`,
+                          type: "line",
+                          id: "previous_year_primary",
+                          color: "#6750a4",
+                          tooltipDescription: `Previous year data for ${primaryLabel}`,
+                          strokeOpacity: 0.5,
+                        },
+                        ...(secondaryMetric
+                          ? [
+                              {
+                                value: `Previous Year ${secondaryLabel}`,
+                                type: "line",
+                                id: "previous_year_secondary",
+                                color: "#4B9EF4",
+                                tooltipDescription: `Previous year data for ${secondaryLabel}`,
+                                strokeOpacity: 0.5,
+                              },
+                            ]
+                          : []),
+                      ]
+                    : []),
                   ...(showThresholdLines
                     ? [
                         {
