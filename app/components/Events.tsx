@@ -49,53 +49,6 @@ const Events = () => {
     applyFilters({ resetPage: true });
   }, []);
 
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [run, setRun] = useState<boolean>(true);
-
-  const saveSearchRef = useRef(null);
-
-  const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      if (typeof window !== "undefined") {
-        let walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
-
-        if (!walkthroughCompleted.includes("research")) {
-          walkthroughCompleted.push("research");
-
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(walkthroughCompleted)
-          );
-        }
-      }
-      setRun(false);
-    }
-  };
-
-  useEffect(() => {
-    const newSteps: Step[] = [
-      {
-        target: saveSearchRef.current || "",
-        title: "Save Search",
-        content: "Save this search to add it as tracker",
-        disableBeacon: true,
-      },
-    ];
-
-    if (typeof window !== "undefined") {
-      const walkthroughCompleted: string[] = JSON.parse(
-        localStorage.getItem("walkthroughCompleted") || "[]"
-      );
-      if (!walkthroughCompleted.includes("research")) {
-        setSteps(newSteps);
-        setRun(true);
-      }
-    }
-  }, []);
-
   const onTabsChange = (value: string) => {
     setFilter("view", value);
   };

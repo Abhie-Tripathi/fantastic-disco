@@ -27,14 +27,16 @@ import { formatEstimatedSpend } from "@/utils/formater";
 import { formatLocationParts } from "@/utils/locationFormat";
 import * as Flags from "country-flag-icons/react/3x2";
 import { format } from "date-fns";
-import {
-  Radio,
-  Star,
-  TicketPercent
-} from "lucide-react";
+import { Radio, Star, TicketPercent } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { PaginationComponent } from "../pagination";
 import {
   Tooltip,
@@ -371,6 +373,24 @@ export default function EventAccordion({
     }
     setIsChecked(checked);
   };
+
+  function toggleSelection(id: string) {
+    setTotalChecked((prev) => {
+      if (prev.includes(id)) {
+        // Remove the id
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        // Add the id
+        return [...prev, id];
+      }
+    });
+  }
+
+  // function handleSelectAll(checked:boolean){
+  //   if(checked){
+
+  //   }
+  // }
   const actions = [
     ...(interestConfiguration?.interest || []),
     ...[{ label: "Bookmark", status: "BOOKMARK" }],
@@ -388,10 +408,14 @@ export default function EventAccordion({
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
-              newEvents = newEvents.filter(
-                (event: Event) => event.basic.id !== eventId
-              );
+      if (
+        query.eventType === "bookmarked" &&
+        interest &&
+        "bookmark" in interest
+      ) {
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
@@ -438,6 +462,14 @@ export default function EventAccordion({
       limit: newItemsPerPage,
     });
   };
+
+  const isAllChecked = useMemo(() => {
+    return (
+      updatedEvents &&
+      updatedEvents.length > 0 &&
+      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
+    );
+  }, [totalChecked, updatedEvents]);
 
   if (isLoading) {
     return <Loading className="h-24 text-primary" />;
@@ -529,6 +561,7 @@ export default function EventAccordion({
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              toggleSelection={toggleSelection}
               totalChecked={totalChecked}
               isChecked={isChecked}
               setIsChecked={setIsChecked}
@@ -565,6 +598,7 @@ export default function EventAccordion({
 }
 
 const EventListItem = ({
+  toggleSelection,
   global,
   view,
   trackerId,
@@ -582,6 +616,7 @@ const EventListItem = ({
   itemsPerPage,
   showMaturity,
 }: {
+  toggleSelection: (id: string) => void;
   trackerId?: string;
   view?: string;
   setEventId: any;
@@ -672,9 +707,10 @@ const EventListItem = ({
         <div className="flex pl-4">
           <Checkbox
             checked={totalChecked.includes(event.basic.id)}
-            onCheckedChange={(checked) =>
-              handleCheckboxChange(checked, event.basic.id)
-            }
+            onCheckedChange={(checked) => {
+              handleCheckboxChange(checked, event.basic.id);
+              toggleSelection(event.basic.id);
+            }}
           />
         </div>
       )}
