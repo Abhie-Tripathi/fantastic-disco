@@ -90,15 +90,15 @@ export default function UpvoteSelector( {variant = "popover"}: Props ) {
     )}>
       <div className="space-y-4">
         {eventStatuses.map((item: any) => (
-          <div key={item.status} className="flex items-center space-x-2">
+          <div key={item.id} className="flex items-center space-x-2">
             <Checkbox
-              id={item.status}
+              id={item.id}
               className="rounded-none"
-              checked={selectedStatuses.includes(item.status)}
-              onCheckedChange={() => handleStatusToggle(item.status)}
+              checked={selectedStatuses.includes(item.id)}
+              onCheckedChange={() => handleStatusToggle(item.id)}
             />
             <label
-              htmlFor={item.status}
+              htmlFor={item.id}
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               {item.label}
