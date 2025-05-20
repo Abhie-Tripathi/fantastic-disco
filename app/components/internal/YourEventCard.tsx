@@ -169,6 +169,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           <div className="flex flex-col space-y-1">
             {coordinateActions.map((item) => (
               <Button
+                key={item.status}
                 variant={"ghost"}
                 className="justify-between flex items-center gap-2"
                 onClick={() =>
