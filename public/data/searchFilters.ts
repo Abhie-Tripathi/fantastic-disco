@@ -38,7 +38,7 @@ export const searchFilters = {
       isEnabled: true,
       options: [
         { id: "online", label: "Online/Virtual", isEnabled: true },
-        { id: "offline", label: "Offline", isEnabled: true },
+        { id: "in_person", label: "In Person", isEnabled: true },
         { id: "hybrid", label: "Hybrid", isEnabled: true },
       ] as EventFormat[],
     },

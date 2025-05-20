@@ -13,12 +13,15 @@ import BulkImport from "./BulkImport";
 import SampleTable from "./SampleTable";
 import { X } from "lucide-react";
 import { useConfiguration } from "@/hooks/useConfiguration";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AddEventModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const { toast } = useToast();
 
   const [selectedView, setSelectedView] = useState<
     "home" | "addEventForm" | "bulkImport" | "urlFetch"
@@ -128,6 +131,15 @@ export default function AddEventModal() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
+      return;
+    }
+    const isCSV = file.name.toLowerCase().endsWith('.csv');
+    if (!isCSV) {
+      toast({
+        title: "Invalid file format",
+        description: "Please upload a csv file",
+        variant: "destructive",
+      });
       return;
     }
     setCsvFileName(file.name);
@@ -304,7 +316,7 @@ export default function AddEventModal() {
                     </span>
                   </div>
                   <div className="text-start text-[var(--link-color)] text-xs mb-3">
-                    Upload a .PDF, .CSV, or .XLSX file following the sample
+                    Upload a .CSV file following the sample
                     format to fetch your events effortlessly!
                   </div>
                   <div className="flex flex-col gap-2 justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-background border-[var(--border-color)] text-[#A1A2A2]">
