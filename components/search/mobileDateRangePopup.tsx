@@ -44,7 +44,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
   onApply,
 }) => {
   const quickSelections = presets.filter((preset) =>
-    ["this-week", "this-month", "3-months", "6-months"].includes(preset.value)
+    ["this-week", "this-month", "3-months", "6-months", "12-months"].includes(preset.value)
   );
 
   const navigateMonth = (direction: "prev" | "next") => {
@@ -84,7 +84,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
       </div>
 
       {/* Compare options */}
-      {enableCompareOptions && (
+      {/* {enableCompareOptions && (
         <div className="p-4 border-t">
           <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium">Compare with Past data</h3>
@@ -115,7 +115,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
               </div>
             )}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -37,6 +37,7 @@ import {
 import FilterContent from "@/components/search/FilterContent";
 import { GAEvent } from "@/utils/GAEvent";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -51,6 +52,7 @@ const Events = () => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -130,6 +132,12 @@ const Events = () => {
       (key) => !excludedFilters.includes(key)
     ).length;
   })();
+
+  useEffect(() => {
+    if (isMobile && searchParams.get("view") == "table") {
+      setFilter("view", "list");
+    }
+  }, [isMobile]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
