@@ -490,7 +490,7 @@ Do not include the competitor platform names in the output. Only return publicly
     if(isEventeli) return null;
     return (
       <div className={`flex flex-col gap-6 pl-6 pr-6 h-[100%]`}>
-        <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0">
+        <div className="flex justify-between flex-col sm:flex-row gap-6 sm:gap-0" id="brandBrief">
           <div className="flex flex-col gap-2">
             <div className="text-xl font-medium">Brand Brief Builder </div>
             <div className="text-sm" style={{color:"var(--tertiary-text-color)"}}>Use below templates to track & plan your event strategy or paste your link below.</div>
@@ -532,8 +532,13 @@ Do not include the competitor platform names in the output. Only return publicly
           </div>
         </div>
         <hr className="my-4 border-t border-gray-300 mb-[0px] mt-[0px]"/>
-        {(data as StandardTemplateGroup[]).map((item, index) => (
-          <div key={index}>
+        {(data as StandardTemplateGroup[]).map((item, index) => {
+          const sectionId = 
+          item.heading === "Prospect" ? "prospectTracker" :
+          item.heading === "People" ? "peopleTracker" :
+          "purposeTracker";
+          return(
+          <div key={index} id={sectionId}>
             <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
               <div className="flex flex-col sm:w-[25%] sm:pr-6 pr-0 gap-2 w-[100%]">
                 <div className="text-2xl flex gap-2 items-center justify-between">
@@ -634,10 +639,12 @@ Do not include the competitor platform names in the output. Only return publicly
               </div>
             </div>
           </div>
-        ))}
+          
+        )}
+      )}
         <div className="flex w-[100%]">
           <div className="flex w-[0%] sm:w-[25%]"></div>
-          <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%] pb-5">
+          <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%] pb-5" id="customTracker">
             <div>Or start from scratch</div>
             <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
               <Button>Create Custom Tracker</Button>
