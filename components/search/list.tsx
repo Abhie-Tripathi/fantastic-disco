@@ -159,15 +159,10 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events]
 
-<<<<<<< HEAD
-      if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId)
-=======
       if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
               newEvents = newEvents.filter(
                 (event: Event) => event.basic.id !== eventId
               );
->>>>>>> 2667d3bb67dfd4744922bbc383ee4c5649dc880c
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
