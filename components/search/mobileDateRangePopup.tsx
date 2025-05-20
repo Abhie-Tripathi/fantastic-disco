@@ -84,7 +84,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
       </div>
 
       {/* Compare options */}
-      {enableCompareOptions && (
+      {/* {enableCompareOptions && (
         <div className="p-4 border-t">
           <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium">Compare with Past data</h3>
@@ -115,7 +115,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
               </div>
             )}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

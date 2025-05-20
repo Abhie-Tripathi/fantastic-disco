@@ -984,7 +984,7 @@ const EventTrends = () => {
             </div>
 
             {/* Trends Visualisations & Templates */}
-            <div className="flex justify-between items-center px-4 py-2">
+            <div className="flex justify-between items-center px-4 py-3">
               <span className="text-primary text-xs font-medium">
                 Trends Visualisations
               </span>
