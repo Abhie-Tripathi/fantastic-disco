@@ -35,6 +35,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import FilterContent from "@/components/search/FilterContent";
+import { GAEvent } from "@/utils/GAEvent";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -128,6 +130,19 @@ const Events = () => {
       (key) => !excludedFilters.includes(key)
     ).length;
   })();
+
+  const createTrackerHandler = async () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
+
+    if (!(getFilterValue("locationIds") || getFilterValue("viewBound"))) {
+      toast({
+        title: "Please select location",
+        variant: "destructive",
+      });
+    } else {
+      setTrackerModalOpen(true);
+    }
+  };
 
   useEffect(() => {
     setView(searchParams.get("view") || "");
@@ -280,7 +295,7 @@ const Events = () => {
               <FilterContent
                 type={"events"}
                 filterCount={3}
-                createTrackerHandler={() => {}}
+                createTrackerHandler={createTrackerHandler}
                 searchHandler={searchHandler}
               />
               <div className="w-full sticky bottom-0 bg-background z-10">
@@ -334,6 +349,10 @@ const Events = () => {
           )}
         </Tabs>
       </div>
+      <CreateTrackerDialog
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
     </div>
   );
 };
