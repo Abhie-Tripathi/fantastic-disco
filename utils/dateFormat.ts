@@ -169,29 +169,36 @@ export const formatEventDates = (startDate: string, endDate: string) => {
 };
 
 export const renderFormattedDates = (startDate: string, endDate: string) => {
-  if (startDate && !endDate) {
-    return format(new Date(startDate), "dd MMM yyyy");
-  }
-  if (!startDate && endDate) {
-    return format(new Date(endDate), "dd MMM yyyy");
-  }
-  if (!startDate && !endDate) {
+  if (!startDate || !endDate) {
     return "";
   }
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  if (start.getTime() === end.getTime()) {
-    return format(start, "dd MMM yyyy");
-  }
-  const isSameMonth = start.getMonth() === end.getMonth();
-  const isSameYear = start.getFullYear() === end.getFullYear();
 
-  if (isSameMonth && isSameYear) {
-    return `${format(start, "dd")} - ${format(end, "dd MMM, yyyy")}`;
-  } else if (!isSameMonth && isSameYear) {
-    return `${format(start, "dd MMM")} - ${format(end, "dd MMM, yyyy")}`;
-  } else {
-    return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM, yyyy")}`;
+  try {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Check if dates are valid
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return "";
+    }
+
+    if (start.getTime() === end.getTime()) {
+      return format(start, "dd MMM yyyy");
+    }
+
+    const isSameMonth = start.getMonth() === end.getMonth();
+    const isSameYear = start.getFullYear() === end.getFullYear();
+
+    if (isSameMonth && isSameYear) {
+      return `${format(start, "dd")} - ${format(end, "dd MMM yyyy")}`;
+    } else if (!isSameMonth && isSameYear) {
+      return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
+    } else {
+      return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`;
+    }
+  } catch (error) {
+    console.error("Error formatting dates:", error);
+    return "";
   }
 };
 

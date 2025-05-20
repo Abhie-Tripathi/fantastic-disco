@@ -41,6 +41,7 @@ import {
   EventTypeData,
   TableData,
   TableGroupedHoliday,
+  Values,
 } from "@/types";
 import { EventResponse } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
@@ -52,7 +53,7 @@ import {
   sortingTableData,
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, startOfWeek, endOfWeek } from "date-fns";
 import {
   ArrowDown,
   ArrowDownWideNarrow,
@@ -69,19 +70,7 @@ import SmartInsights from "/public/smartInsights.svg";
 import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-
-function convertToLongDate(isoDateString: string): string {
-  const date = new Date(isoDateString);
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  return date
-    .toLocaleDateString("en-US", options)
-    .toLocaleUpperCase()
-    .replace(",", "");
-}
+import { Button } from "@/components/ui/button";
 
 // Add tooltipDescription to NewColumn interface if it doesn't exist in the original type
 interface ExtendedNewColumn extends NewColumn {
@@ -113,13 +102,29 @@ const safelyAccessTableData = (
   }
 };
 
-const calculatePercentageChange = (current: number, comparison: number): string | null => {
+const calculatePercentageChange = (
+  current: number,
+  comparison: number
+): string | null => {
   if (comparison === 0) return null;
   const change = ((current - comparison) / comparison) * 100;
   if (change === 0) return null;
-  const sign = change > 0 ? '+' : '';
+  const sign = change > 0 ? "+" : "";
   return `${sign}${change.toFixed(1)}%`;
 };
+
+function convertToLongDate(isoDateString: string): string {
+  const date = new Date(isoDateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date
+    .toLocaleDateString("en-US", options)
+    .toLocaleUpperCase()
+    .replace(",", "");
+}
 
 const TestPeriodicAnalytics = () => {
   const params = useSearchParams();
@@ -127,6 +132,8 @@ const TestPeriodicAnalytics = () => {
   const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
   const [tableData, setTableData] = useState<TableData[] | []>();
   const { setFilter, getFilterValue } = useFilterState();
+  const currentView =
+    (getFilterValue("dateView") as "day" | "week" | "month") || "day";
   const [sortingColumnOrder, setSortingColumnOrder] = useState<{
     order: "asc" | "desc";
     eventType: keyof TableData | null;
@@ -137,7 +144,7 @@ const TestPeriodicAnalytics = () => {
   const eventTypes = searchParams.get("eventTypes");
   const compareFrom = searchParams.get("compare_from");
   const compareTo = searchParams.get("compare_to");
-  const isMobileView = useIsMobile()
+  const isMobileView = useIsMobile();
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
@@ -173,15 +180,17 @@ const TestPeriodicAnalytics = () => {
   const apiParams = useMemo(() => {
     const params = new URLSearchParams({
       groupBy: "date",
-      dateView: "day",
+      dateView: currentView,
     });
 
     searchParams.forEach((value, key) => {
-      params.append(key, value);
+      if (key !== "dateView") {
+        params.append(key, value);
+      }
     });
     params.delete("categories");
     return params.toString();
-  }, [stringParams]);
+  }, [currentView, searchParams]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -312,26 +321,276 @@ const TestPeriodicAnalytics = () => {
         columns
       );
 
-      const tableData = morphToTrendsTableData(
+      let processedData = morphToTrendsTableData(
         eventTrendsData.thresholds,
         eventTrendsData.groupedData,
         eventTypes
       );
 
-      const smartInsightsData = morphToSmartInsightsData(tableData);
+      // Process data based on view type
+      if (currentView === "week") {
+        processedData = processDataForWeekView(processedData);
+      } else if (currentView === "month") {
+        processedData = processDataForMonthView(processedData);
+      }
+
+      const smartInsightsData = morphToSmartInsightsData(processedData);
       setTableData(smartInsightsData);
       setTableColumns(tableColumns);
     }
 
     if (comparisonTrendsData && comparisonTrendsData.groupedData) {
-      const comparisonTableData = morphToTrendsTableData(
+      let comparisonTableData = morphToTrendsTableData(
         comparisonTrendsData.thresholds,
         comparisonTrendsData.groupedData,
         eventTypes
       );
+
+      // Process comparison data based on view type
+      if (currentView === "week") {
+        comparisonTableData = processDataForWeekView(comparisonTableData);
+      } else if (currentView === "month") {
+        comparisonTableData = processDataForMonthView(comparisonTableData);
+      }
+
       setComparisonData(comparisonTableData);
     }
-  }, [eventTrendsData, comparisonTrendsData, metric]);
+  }, [eventTrendsData, comparisonTrendsData, metric, currentView]);
+
+  const processDataForWeekView = (data: TableData[]) => {
+    const weeklyData: { [key: string]: TableData } = {};
+
+    data.forEach((item) => {
+      try {
+        // The date is already in the format "YYYY-MM-DD_YYYY-MM-DD" for week view
+        const weekKey = item.date;
+
+        if (!weeklyData[weekKey]) {
+          // Initialize the week's data with proper type casting
+          weeklyData[weekKey] = {
+            date: weekKey,
+            predictedAttendance: item.predictedAttendance
+              ? ({ ...item.predictedAttendance } as EventTypeData & Values)
+              : undefined,
+            inboundEstimate: item.inboundEstimate
+              ? ({ ...item.inboundEstimate } as EventTypeData & Values)
+              : undefined,
+            internationalEstimate: item.internationalEstimate
+              ? ({ ...item.internationalEstimate } as EventTypeData & Values)
+              : undefined,
+            impactScore: item.impactScore
+              ? ({ ...item.impactScore } as EventTypeData & Values)
+              : undefined,
+            economicImpact: item.economicImpact
+              ? ({ ...item.economicImpact } as EventTypeData & Values)
+              : undefined,
+            eventCount: item.eventCount
+              ? ({ ...item.eventCount } as EventTypeData & Values)
+              : undefined,
+          };
+        } else {
+          // Aggregate the data for each metric
+          const metrics = [
+            "predictedAttendance",
+            "inboundEstimate",
+            "internationalEstimate",
+            "impactScore",
+            "economicImpact",
+            "eventCount",
+          ] as const;
+
+          metrics.forEach((metric) => {
+            const currentMetric = item[metric];
+            const existingMetric = weeklyData[weekKey][metric];
+
+            if (currentMetric && existingMetric) {
+              // Aggregate the Values part
+              if ("value" in currentMetric && "value" in existingMetric) {
+                const currentValue = (currentMetric as any).value;
+                const existingValue = (existingMetric as any).value;
+                const currentAvg = (currentMetric as any).avg;
+                const existingAvg = (existingMetric as any).avg;
+
+                if (
+                  typeof currentValue === "number" &&
+                  typeof existingValue === "number"
+                ) {
+                  (existingMetric as any).value = currentValue + existingValue;
+                  (existingMetric as any).avg = (currentAvg + existingAvg) / 2;
+                }
+              }
+
+              // Aggregate the EventTypeData part
+              const eventTypes = [
+                "tradeshows",
+                "conferences",
+                "workshops",
+                "festival",
+                "concert",
+                "sport",
+                "community",
+                "performing-arts",
+              ] as const;
+
+              eventTypes.forEach((eventType) => {
+                if (eventType in currentMetric && eventType in existingMetric) {
+                  const currentValue = (currentMetric as any)[eventType];
+                  const existingValue = (existingMetric as any)[eventType];
+                  if (
+                    typeof currentValue === "number" &&
+                    typeof existingValue === "number"
+                  ) {
+                    (existingMetric as any)[eventType] =
+                      currentValue + existingValue;
+                  }
+                }
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error(
+          "Error processing week data:",
+          error,
+          "for date:",
+          item.date
+        );
+      }
+    });
+
+    // Sort the weeks by date
+    const sortedWeeks = Object.values(weeklyData).sort((a, b) => {
+      try {
+        const [aStart] = a.date.split("_");
+        const [bStart] = b.date.split("_");
+        return new Date(aStart).getTime() - new Date(bStart).getTime();
+      } catch (error) {
+        console.error("Error sorting weeks:", error);
+        return 0;
+      }
+    });
+
+    return sortedWeeks;
+  };
+
+  const processDataForMonthView = (data: TableData[]) => {
+    const monthlyData: { [key: string]: TableData } = {};
+
+    data.forEach((item) => {
+      try {
+        // Skip single-day entries (they have zero values)
+        if (item.date.includes("-01") && item.date.length === 10) {
+          return;
+        }
+
+        // The date is already in the format "YYYY-MM" for month view
+        const monthKey = item.date;
+
+        if (!monthlyData[monthKey]) {
+          // Initialize the month's data with proper type casting
+          monthlyData[monthKey] = {
+            date: monthKey,
+            predictedAttendance: item.predictedAttendance
+              ? ({ ...item.predictedAttendance } as EventTypeData & Values)
+              : undefined,
+            inboundEstimate: item.inboundEstimate
+              ? ({ ...item.inboundEstimate } as EventTypeData & Values)
+              : undefined,
+            internationalEstimate: item.internationalEstimate
+              ? ({ ...item.internationalEstimate } as EventTypeData & Values)
+              : undefined,
+            impactScore: item.impactScore
+              ? ({ ...item.impactScore } as EventTypeData & Values)
+              : undefined,
+            economicImpact: item.economicImpact
+              ? ({ ...item.economicImpact } as EventTypeData & Values)
+              : undefined,
+            eventCount: item.eventCount
+              ? ({ ...item.eventCount } as EventTypeData & Values)
+              : undefined,
+          };
+        } else {
+          // Aggregate the data for each metric
+          const metrics = [
+            "predictedAttendance",
+            "inboundEstimate",
+            "internationalEstimate",
+            "impactScore",
+            "economicImpact",
+            "eventCount",
+          ] as const;
+
+          metrics.forEach((metric) => {
+            const currentMetric = item[metric];
+            const existingMetric = monthlyData[monthKey][metric];
+
+            if (currentMetric && existingMetric) {
+              // Aggregate the Values part
+              if ("value" in currentMetric && "value" in existingMetric) {
+                const currentValue = (currentMetric as any).value;
+                const existingValue = (existingMetric as any).value;
+                const currentAvg = (currentMetric as any).avg;
+                const existingAvg = (existingMetric as any).avg;
+
+                if (
+                  typeof currentValue === "number" &&
+                  typeof existingValue === "number"
+                ) {
+                  (existingMetric as any).value = currentValue + existingValue;
+                  (existingMetric as any).avg = (currentAvg + existingAvg) / 2;
+                }
+              }
+
+              // Aggregate the EventTypeData part
+              const eventTypes = [
+                "tradeshows",
+                "conferences",
+                "workshops",
+                "festival",
+                "concert",
+                "sport",
+                "community",
+                "performing-arts",
+              ] as const;
+
+              eventTypes.forEach((eventType) => {
+                if (eventType in currentMetric && eventType in existingMetric) {
+                  const currentValue = (currentMetric as any)[eventType];
+                  const existingValue = (existingMetric as any)[eventType];
+                  if (
+                    typeof currentValue === "number" &&
+                    typeof existingValue === "number"
+                  ) {
+                    (existingMetric as any)[eventType] =
+                      currentValue + existingValue;
+                  }
+                }
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error(
+          "Error processing month data:",
+          error,
+          "for date:",
+          item.date
+        );
+      }
+    });
+
+    // Sort the months chronologically
+    const sortedMonths = Object.values(monthlyData).sort((a, b) => {
+      try {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      } catch (error) {
+        console.error("Error sorting months:", error);
+        return 0;
+      }
+    });
+
+    return sortedMonths;
+  };
 
   useEffect(() => {
     if (tableData && tableData.length > 0 && sortingColumnOrder.eventType) {
@@ -357,14 +616,8 @@ const TestPeriodicAnalytics = () => {
     }));
   };
 
-  const startDate =
-    (tableData && tableData[0] && convertToLongDate(tableData[0].date ?? "")) ||
-    "";
-  const endDate =
-    (tableData &&
-      tableData[tableData.length - 1] &&
-      convertToLongDate(tableData[tableData.length - 1].date ?? "")) ||
-    "";
+  const startDate = getFilterValue("active_gte");
+  const endDate = getFilterValue("active_lte");
   const itemsPerPage = 10;
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
@@ -487,7 +740,7 @@ const TestPeriodicAnalytics = () => {
     const comparisonDate = comparisonData?.find((item) => {
       const mainStartDate = new Date(searchParams.get("active_gte") || "");
       const mainEndDate = new Date(searchParams.get("active_lte") || "");
-      const currentDate = new Date(data.date);
+      const currentDate = new Date(data.date.split("_")[0]); // Use start date of week for comparison
       const compareStartDate = new Date(compareFrom || "");
       const compareEndDate = new Date(compareTo || "");
 
@@ -503,7 +756,27 @@ const TestPeriodicAnalytics = () => {
             (compareEndDate.getTime() - compareStartDate.getTime())
       );
 
-      // Match with a small tolerance (same day)
+      // For week view, compare the start of the week
+      if (currentView === "week") {
+        const itemStartDate = new Date(item.date.split("_")[0]);
+        return (
+          Math.abs(itemStartDate.getTime() - targetCompareDate.getTime()) <
+          7 * 24 * 60 * 60 * 1000
+        ); // Within a week
+      }
+
+      // For month view, compare months
+      if (currentView === "month") {
+        const itemDate = new Date(item.date);
+        const targetMonth = targetCompareDate.getMonth();
+        const targetYear = targetCompareDate.getFullYear();
+        return (
+          itemDate.getMonth() === targetMonth &&
+          itemDate.getFullYear() === targetYear
+        );
+      }
+
+      // For day view, use existing comparison logic
       return (
         Math.abs(new Date(item.date).getTime() - targetCompareDate.getTime()) <
         24 * 60 * 60 * 1000
@@ -529,10 +802,12 @@ const TestPeriodicAnalytics = () => {
                   className="text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[340px]"
                 >
                   <div className="w-full flex flex-col justify-center px-2">
-                    <p className="truncate">{format(new Date(data[key]), "dd MMM yyyy")}</p>
+                    <p className="truncate">
+                      {formatDateForDisplay(data[key])}
+                    </p>
                     {comparisonDate && (
                       <p className="truncate text-[#4B9EF4]">
-                        {format(new Date(comparisonDate.date), "dd MMM yyyy")}
+                        {formatDateForDisplay(comparisonDate.date)}
                       </p>
                     )}
                   </div>
@@ -552,8 +827,11 @@ const TestPeriodicAnalytics = () => {
               if (!isSmartInsightEnabledForColumn && !isOpenState) {
                 const currentValue = cellData["value"] ?? 0;
                 const comparisonValue = comparisonCellData?.["value"] ?? 0;
-                const percentageChange = calculatePercentageChange(currentValue, comparisonValue);
-                
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
+
                 return (
                   <TableCell
                     key={key}
@@ -561,29 +839,49 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
                           {comparisonCellData && percentageChange && (
-                            <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               ({percentageChange})
                             </span>
                           )}
                         </div>
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
-                          <ArrowUp width={15} height={15} />
-                        )}
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
-                          <ArrowDown width={15} height={15} color="#E1313A" />
-                        )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
                       </div>
                       {comparisonCellData && (
-                        <span className="min-w-[100px] text-start">{comparisonValue}</span>
+                        <span className="min-w-[100px] text-start">
+                          {comparisonValue}
+                        </span>
                       )}
                     </div>
                   </TableCell>
@@ -593,7 +891,10 @@ const TestPeriodicAnalytics = () => {
               if (isSmartInsightEnabledForColumn && !isOpenState) {
                 const currentValue = cellData["value"] ?? 0;
                 const comparisonValue = comparisonCellData?.["value"] ?? 0;
-                const percentageChange = calculatePercentageChange(currentValue, comparisonValue);
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
 
                 return (
                   <TableCell
@@ -602,30 +903,46 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
                           {comparisonCellData && percentageChange && (
-                            <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               ({percentageChange})
                             </span>
                           )}
                         </div>
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
-                          <ArrowUp width={15} height={15} />
-                        )}
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
-                          <ArrowDown width={15} height={15} color="#E1313A" />
-                        )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
                       </div>
-                      {comparisonCellData && (
-                        <span>{comparisonValue}</span>
-                      )}
+                      {comparisonCellData && <span>{comparisonValue}</span>}
                     </div>
                   </TableCell>
                 );
@@ -638,23 +955,42 @@ const TestPeriodicAnalytics = () => {
               ) {
                 return subHeading
                   .filter((heading) => heading.slug !== "avg")
-                  .map((subCol) => {
-                    const currentValue = cellData[subCol.slug as keyof EventTypeData];
-                    const comparisonValue = comparisonCellData?.[subCol.slug as keyof EventTypeData];
-                    const percentageChange = calculatePercentageChange(Number(currentValue), Number(comparisonValue));
+                  .map((cell) => {
+                    const currentValue =
+                      cellData[cell.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[cell.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
 
                     return (
                       <TableCell
-                        key={subCol.slug}
+                        key={cell.slug}
                         width={100}
                         className="p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]"
                       >
                         <div className="flex flex-col items-center w-full">
-                          <div className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}>
-                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                          <div
+                            className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}
+                          >
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
                               <span>{currentValue}</span>
                               {comparisonCellData && percentageChange && (
-                                <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
                                   ({percentageChange})
                                 </span>
                               )}
@@ -674,62 +1010,92 @@ const TestPeriodicAnalytics = () => {
               if (subHeading && isSmartInsightEnabledForColumn && isOpenState) {
                 return subHeading
                   .filter((heading) => heading.slug !== "avg")
-                  .map((subCol) => {
-                    const currentValue = cellData[subCol.slug as keyof EventTypeData];
-                    const comparisonValue = comparisonCellData?.[subCol.slug as keyof EventTypeData];
-                    const percentageChange = calculatePercentageChange(Number(currentValue), Number(comparisonValue));
+                  .map((cell) => {
+                    const currentValue =
+                      cellData[cell.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[cell.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
 
                     return (
                       <TableCell
-                        key={subCol.slug}
+                        key={cell.slug}
                         width={100}
                         className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)] relative`}
                       >
                         {isSmartInsightEnabledForColumn && (
-                          <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} 
-                            ${subCol.slug === "avg" ? "bg-[#DA2F35] bg-opacity-5" : ""}
+                          <div
+                            className={`absolute top-0 left-0 right-0 ${
+                              comparisonCellData ? "h-1/2" : "h-full"
+                            } 
+                            ${
+                              cell.slug === "avg"
+                                ? "bg-[#DA2F35] bg-opacity-5"
+                                : ""
+                            }
                             ${
                               cellData["maxRow"] &&
-                              subCol.slug !== "avg" &&
-                              subCol.slug !== "value" &&
+                              cell.slug !== "avg" &&
+                              cell.slug !== "value" &&
                               cellData["maxRow"] ===
-                                cellData[subCol.slug as keyof EventTypeData]
+                                cellData[cell.slug as keyof EventTypeData]
                                 ? cellData["thresholdHighlightRow"]
                                 : ""
                             }
                             ${
-                              subCol.slug === "value"
+                              cell.slug === "value"
                                 ? cellData["thresholdHighlightCol"]
                                 : ""
                             }
                             ${
-                              subCol.slug === "value" &&
+                              cell.slug === "value" &&
                               cellData["maxCol"] === cellData["value"]
                                 ? "border-2 border-[var(--negative-color)]"
                                 : ""
-                            }`} 
+                            }`}
                           />
                         )}
                         <div className="flex flex-col items-center justify-center w-full h-full relative gap-1">
                           <div className="text-center w-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]">
-                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
                               <span>{currentValue}</span>
                               {comparisonCellData && percentageChange && (
-                                <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
                                   ({percentageChange})
                                 </span>
                               )}
                             </div>
-                            {isSmartInsightEnabledForColumn && 
-                             cellData["thresholdHighlightCol"] === "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
-                             subCol.slug === "value" && (
-                              <ArrowUp width={15} height={15} />
-                            )}
-                            {isSmartInsightEnabledForColumn && 
-                             cellData["thresholdHighlightCol"] === "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
-                             subCol.slug === "value" && (
-                              <ArrowDown width={15} height={15} color="#E1313A" />
-                            )}
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                              cell.slug === "value" && (
+                                <ArrowUp width={15} height={15} />
+                              )}
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                              cell.slug === "value" && (
+                                <ArrowDown
+                                  width={15}
+                                  height={15}
+                                  color="#E1313A"
+                                />
+                              )}
                           </div>
                           {comparisonCellData && (
                             <div className="font-semibold">
@@ -750,18 +1116,44 @@ const TestPeriodicAnalytics = () => {
                 className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
               >
                 <div className="flex flex-col items-center">
-                  <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                  <div
+                    className={`flex items-center gap-1 ${
+                      comparisonCellData ? "min-w-[100px]" : ""
+                    }`}
+                  >
                     <span>0</span>
                   </div>
-                  {comparisonCellData && (
-                    <span>0</span>
-                  )}
+                  {comparisonCellData && <span>0</span>}
                 </div>
               </TableCell>
             );
           })}
       </TableRow>
     );
+  };
+
+  const handleViewChange = (view: "day" | "week" | "month") => {
+    setFilter("dateView", view);
+  };
+
+  const formatDateForDisplay = (dateString: string) => {
+    try {
+      if (currentView === "month") {
+        return format(new Date(dateString), "MMM yyyy");
+      }
+      if (currentView === "week" && dateString.includes("_")) {
+        const [startDate, endDate] = dateString.split("_");
+        return `${format(new Date(startDate), "dd MMM")} - ${format(
+          new Date(endDate),
+          "dd MMM yyyy"
+        )}`;
+      }
+      // For day view, format as "dd MMM yyyy"
+      return format(new Date(dateString), "dd MMM yyyy");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
+    }
   };
 
   if (isLoading || (compareFrom && compareTo && isComparisonLoading)) {
@@ -794,19 +1186,48 @@ const TestPeriodicAnalytics = () => {
   return (
     <>
       <div
-      className={`flex ${
-        isMobileView ? "flex-col gap-3" : "justify-between items-center"
-      } py-4`}
-    >
-      <div className="font-medium text-base">
-          {compareFrom && compareTo ? (
-            `Comparing ${renderFormattedDates(startDate, endDate)} with ${renderFormattedDates(
-              format(new Date(compareFrom), "dd MMM yyyy"),
-              format(new Date(compareTo), "dd MMM yyyy")
-            )}`
-          ) : (
-            `For the selected time period (${renderFormattedDates(startDate, endDate)})`
-          )}
+        className={`flex ${
+          isMobileView ? "flex-col gap-3" : "justify-between items-center"
+        } py-4`}
+      >
+        <div className="flex flex-col gap-2">
+          <div className="font-medium text-base">
+            {compareFrom && compareTo
+              ? `Comparing ${renderFormattedDates(
+                  startDate,
+                  endDate
+                )} with ${renderFormattedDates(
+                  format(new Date(compareFrom), "dd MMM yyyy"),
+                  format(new Date(compareTo), "dd MMM yyyy")
+                )}`
+              : `For the selected time period (${renderFormattedDates(
+                  startDate,
+                  endDate
+                )})`}
+          </div>
+          <div className="flex justify-start gap-2">
+            <Button
+              variant={currentView === "day" ? "default" : "outline"}
+              onClick={() => handleViewChange("day")}
+              size="sm"
+            >
+              Day
+            </Button>
+            <Button
+              variant={currentView === "week" ? "default" : "outline"}
+              onClick={() => handleViewChange("week")}
+              size="sm"
+            >
+              Week
+            </Button>
+            <Button
+              variant={currentView === "month" ? "default" : "outline"}
+              onClick={() => handleViewChange("month")}
+              size="sm"
+            >
+              Month
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
           <TooltipProvider>
@@ -868,9 +1289,13 @@ const TestPeriodicAnalytics = () => {
                         key={trends.columnName}
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
-                        style={{ width: trends.slug === "date" ? "340px" : "1000px" }}
+                        style={{
+                          width: trends.slug === "date" ? "340px" : "1000px",
+                        }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
-                          trends.slug === "date" ? "sticky left-0 z-30 max-w-[340px]" : ""
+                          trends.slug === "date"
+                            ? "sticky left-0 z-30 max-w-[340px]"
+                            : ""
                         }`}
                       >
                         {trends.slug === "date" &&

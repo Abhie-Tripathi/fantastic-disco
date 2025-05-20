@@ -184,38 +184,40 @@ const LineChartComponent = ({
         : [];
 
       // Combine current and previous year data with proper date alignment
-      const combinedData = graphData.map((currentItem, index) => {
+      const combinedData = graphData.map((currentItem) => {
         if (!compareFrom || !compareTo) {
           return currentItem;
         }
 
-        // Calculate the relative position (0 to 1) of the current date in the main range
+        // Get the date range for the current item
+        const [startDate, endDate] = currentItem.date.split('_');
+        const currentStartDate = new Date(startDate);
+        const currentEndDate = new Date(endDate || startDate);
+
+        // Calculate the relative position in the main range
         const mainStartDate = new Date(searchParams.get("active_gte") || "");
         const mainEndDate = new Date(searchParams.get("active_lte") || "");
-        const currentDate = new Date(currentItem.date);
-
-        const compareStartDate = new Date(compareFrom);
-        const compareEndDate = new Date(compareTo);
-
-        const mainRangePosition =
-          (currentDate.getTime() - mainStartDate.getTime()) /
+        
+        const mainRangePosition = (currentStartDate.getTime() - mainStartDate.getTime()) /
           (mainEndDate.getTime() - mainStartDate.getTime());
 
-        // Find the corresponding date in the comparison range
+        // Calculate the corresponding date in the comparison range
+        const compareStartDate = new Date(compareFrom);
+        const compareEndDate = new Date(compareTo);
+        
         const targetCompareDate = new Date(
           compareStartDate.getTime() +
-            mainRangePosition *
-              (compareEndDate.getTime() - compareStartDate.getTime())
+          mainRangePosition * (compareEndDate.getTime() - compareStartDate.getTime())
         );
 
-        // Find the closest date in previousYearGraphData
+        // Find the closest week in previousYearGraphData
         const comparisonItem = previousYearGraphData.find((item) => {
-          const itemDate = new Date(item.date);
-          // Allow for a small tolerance (same day)
-          return (
-            Math.abs(itemDate.getTime() - targetCompareDate.getTime()) <
-            24 * 60 * 60 * 1000
-          );
+          const [itemStartDate, itemEndDate] = item.date.split('_');
+          const itemDate = new Date(itemStartDate);
+          const itemEnd = new Date(itemEndDate || itemStartDate);
+          
+          // Check if the target date falls within this week
+          return targetCompareDate >= itemDate && targetCompareDate <= itemEnd;
         });
 
         if (comparisonItem) {
@@ -543,14 +545,34 @@ const LineChartComponent = ({
   };
 
   const formatDateForWeekView = (dateString: string) => {
-    if (currentView === "month") {
-      return format(new Date(dateString), 'MMM yyyy');
+    try {
+      if (currentView === "month") {
+        return format(new Date(dateString), 'MMM yyyy');
+      }
+      if (currentView === "week" && dateString.includes('_')) {
+        const [startDate, endDate] = dateString.split('_');
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        // Validate dates
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          console.warn('Invalid date in week view:', dateString);
+          return dateString;
+        }
+        
+        return `${format(start, 'dd MMM')} - ${format(end, 'dd MMM yyyy')}`;
+      }
+      // For day view
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date:', dateString);
+        return dateString;
+      }
+      return format(date, 'dd MMM yyyy');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
     }
-    if (currentView === "week" && dateString.includes('_')) {
-      const [startDate, endDate] = dateString.split('_');
-      return `${format(new Date(startDate), 'dd MMM')} - ${format(new Date(endDate), 'dd MMM yyyy')}`;
-    }
-    return format(new Date(dateString), 'dd MMM yyyy');
   };
 
   const CustomTick = (props: any) => {
@@ -685,16 +707,28 @@ const LineChartComponent = ({
 
   const graphData =
     predictedData && predictedData.length > 0
-      ? predictedData.map((data: any) => ({
-          ...data,
-        }))
+      ? predictedData.map((data: any) => {
+          if (currentView === "week") {
+            return {
+              ...data,
+              date: data.date // Keep the week format as is
+            };
+          } else {
+            // For day and month views, ensure we're using the correct date format
+            const date = data.date.includes('_') ? data.date.split('_')[0] : data.date;
+            return {
+              ...data,
+              date: format(new Date(date), "yyyy-MM-dd")
+            };
+          }
+        })
       : generateDatesArray(
           searchParams.get("active_gte")?.split("T")[0] ?? "",
           searchParams.get("active_lte")?.split("T")[0] ?? ""
         ).map((date) => ({
           date: format(
             new Date(toMidnightISOString(date).split("T")[0]),
-            "d MMM yyyy"
+            "yyyy-MM-dd"
           ),
         }));
 
