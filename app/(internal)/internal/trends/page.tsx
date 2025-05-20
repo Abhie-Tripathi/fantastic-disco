@@ -55,11 +55,20 @@ import {
   Share2,
   Table,
   X,
+  Bookmark,
+  ChevronDown,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
 import { useToast } from "@/hooks/use-toast";
 import { isEventeli } from "@/config";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const gtmViewTemplates = [
   {
@@ -145,12 +154,14 @@ const EventTrends = () => {
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
   const { getFilterValue } = useFilterState();
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
   const metric = getFilterValue("columns") as
     | "eventCount"
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
   const ViewTemplates = isEventeli ? geoViewTemplates : gtmViewTemplates;
+
   const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
     ? (getFilterValue("view") as "line" | "treemap" | "table")
     : ViewTemplates[0].id;
@@ -499,7 +510,7 @@ const EventTrends = () => {
       }`}
     >
       {/* Mobile Filters Overlay */}
-      {isMobileView && !isFiltersCollapsed && (
+      {/* {isMobileView && !isFiltersCollapsed && (
         <div className="fixed inset-0 bg-background z-50 overflow-auto">
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
@@ -704,7 +715,7 @@ const EventTrends = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Enhanced Filters Sidebar for desktop */}
       {!isMobileView && (
@@ -932,285 +943,530 @@ const EventTrends = () => {
 
       {/* Main Content */}
       <div
-        className={`${isMobileView ? "w-full" : "flex-1 overflow-auto"} ${
-          isFiltersCollapsed && !isMobileView ? "pl-6" : ""
-        }`}
+        className={`${
+          isMobileView
+            ? "w-full min-h-screen flex flex-col bg-[#fafbfc]"
+            : "flex-1 overflow-auto"
+        } ${isFiltersCollapsed && !isMobileView ? "pl-6" : ""}`}
       >
-        {/* Mobile Filter Button - Always visible at the top on mobile */}
-        {isMobileView && (
-          <div className="sticky top-0 z-40 bg-background p-3 border-b mb-2">
-            <Button
-              variant="outline"
-              size="default"
-              className={`w-full flex items-center justify-between h-12 rounded-lg transition-all duration-200 ${
-                filterCount > 0
-                  ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
-                  : "bg-muted/30 border-border hover:bg-muted"
-              }`}
-              onClick={() => setIsFiltersCollapsed(false)}
-            >
-              <div className="flex items-center">
-                <Filter
-                  className={`w-4 h-4 mr-2 ${
-                    filterCount > 0 ? "text-primary" : "text-muted-foreground"
-                  }`}
-                />
-                <span
-                  className={`font-medium ${
-                    filterCount > 0 ? "text-primary" : "text-foreground"
-                  }`}
-                >
-                  {filterCount > 0
-                    ? `${filterCount} Active Filter${
-                        filterCount > 1 ? "s" : ""
-                      }`
-                    : "Filter Results"}
-                </span>
-              </div>
-              {filterCount > 0 && (
-                <div className="flex items-center">
-                  <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1 font-medium">
-                    {filterCount}
-                  </span>
-                  <ChevronLeft className="w-4 h-4 ml-2 text-primary rotate-180" />
-                </div>
-              )}
-            </Button>
-          </div>
-        )}
-
-        <div className={`${isMobileView ? "px-2 py-2" : "px-6 py-4"}`}>
-          <div className="mb-4">
-            <div
-              className={`flex ${
-                isMobileView ? "flex-col gap-2" : "items-center justify-between"
-              } mb-4`}
-            >
-              <h1 className="text-xl font-semibold">
-                {showTemplates ? "Trend Templates" : "Trend Explorations"}
-              </h1>
-              <div
-                className={`flex ${
-                  isMobileView ? "justify-start" : ""
-                } items-center gap-2`}
-              >
-                {!showTemplates && (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-primary"
-                      onClick={() => setShowSavedTrends(!showSavedTrends)}
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      {showSavedTrends
-                        ? "Hide Saved Trends"
-                        : "Show Saved Trends"}
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-primary"
-                      onClick={() => setShowTemplatesModal(true)}
-                    >
-                      <LayoutGrid className="w-4 h-4 mr-2" />
-                      Browse Templates
-                    </Button>
-
-                    {/* <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-primary"
-                            onClick={handleShare}
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Copy URL to clipboard</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider> */}
-                  </>
-                )}
-              </div>
+        {/* MOBILE LAYOUT */}
+        {isMobileView ? (
+          <>
+            {/* Tabs */}
+            <div className="w-full px-2 pt-2">
+              <Tabs defaultValue="events" className="w-full">
+                <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+                  <TabsTrigger
+                    value="events"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Calendar1 className="w-4 h-4" />
+                    Events
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="companies"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                    disabled
+                  >
+                    <Lock className="w-4 h-4" />
+                    Companies
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="people"
+                    className="text-sm flex gap-2 items-center p-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm relative"
+                    disabled
+                  >
+                    <Lock className="w-4 h-4" />
+                    People
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
 
-            {showSavedTrends && !showTemplates && savedTrendsList && (
-              <div className="mt-6">
-                <Card className="p-4">
-                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                    <Save className="w-5 h-5" />
-                    Saved Trends
-                  </h3>
-                  {savedTrendsList?.trackers.length > 0 ? (
-                    <SavedTrendsList
-                      savedTrendsList={savedTrendsList?.trackers}
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
-                      <div className="text-center space-y-2">
-                        <Save className="w-10 h-10 mx-auto text-primary/50" />
-                        <p className="text-sm font-medium">
-                          No saved trends yet
-                        </p>
-                        <p className="text-xs text-muted-foreground/70">
-                          Save your favorite trend configurations to access them
-                          later
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </Card>
-              </div>
-            )}
-          </div>
+            {/* Trends Visualisations & Templates */}
+            <div className="flex justify-between items-center px-4 py-2">
+              <span className="text-primary text-xs font-medium">
+                Trends Visualisations
+              </span>
+              <button
+                className="text-primary text-xs font-medium"
+                onClick={() => setShowTemplatesModal(true)}
+              >
+                Templates &rarr;
+              </button>
+            </div>
 
-          {/* View Templates */}
-          {showTemplates ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {ViewTemplates.map((template) => (
-                <Card
-                  key={template.id}
-                  className="p-6 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md"
-                  onClick={() => {
-                    handleViewChange(
-                      template.id as "line" | "treemap" | "table"
-                    );
-                    setShowTemplates(false);
+            {/* Dropdown for Tree Map - custom trigger with icon+label */}
+            <div className="px-4 pb-2">
+              <div className="flex items-center gap-2">
+                <Select
+                  value={activeView}
+                  onValueChange={(val) => {
+                    handleViewChange(val as "line" | "treemap" | "table");
                   }}
                 >
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-primary/10 text-primary">
-                        {template.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-lg">
-                          {template.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {template.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
+                  <SelectTrigger className="flex-1 bg-white rounded-xl shadow px-4 py-2 h-auto min-h-[44px] border-none focus:ring-0">
+                    <span className="!flex items-center">
+                      {activeView === "line" && (
+                        <LineChart className="w-5 h-5 text-gray-500 mr-2" />
+                      )}
+                      {activeView === "table" && (
+                        <Table className="w-5 h-5 text-gray-500 mr-2" />
+                      )}
+                      {activeView === "treemap" && (
+                        <LayoutGrid className="w-5 h-5 text-gray-500 mr-2" />
+                      )}
+                      <span className="font-medium text-base text-gray-800">
+                        {activeView === "line"
+                          ? "Line Chart"
+                          : activeView === "table"
+                          ? "Table View"
+                          : "Tree Map"}
+                      </span>
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="treemap">
+                      <span className="flex items-center">
+                        <LayoutGrid className="w-5 h-5 text-gray-500 mr-2" />
+                        Tree Map
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="line">
+                      <span className="flex items-center">
+                        <LineChart className="w-5 h-5 text-gray-500 mr-2" />
+                        Line Chart
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="table">
+                      <span className="flex items-center">
+                        <Table className="w-5 h-5 text-gray-500 mr-2" />
+                        Table View
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {/* Bookmark Button */}
+                <button
+                  onClick={() => setShowSavedTrends(!showSavedTrends)}
+                  className="relative bg-white rounded-lg border border-gray-200 shadow px-2 py-2 flex items-center justify-center"
+                >
+                  <Bookmark className="w-5 h-5 text-primary" />
+                </button>
+                {/* Filter Button with Badge */}
+                <button
+                  className="relative bg-white rounded-lg border border-gray-200 shadow px-2 py-2 flex items-center justify-center"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <Filter className="w-5 h-5 text-primary" />
+                  {filterCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">
+                      {filterCount}
+                    </span>
+                  )}
+                </button>
+              </div>
             </div>
-          ) : (
-            <div
-              className={`grid ${
-                isMobileView ? "grid-cols-1 gap-2" : "grid-cols-3 gap-4"
-              } mb-4`}
-            >
-              {ViewTemplates.map((template) => {
-                return (
-                  <Card
-                    key={template.id}
-                    className={`p-4 cursor-pointer transition-colors ${
-                      activeView === template.id ? "border-primary" : ""
-                    } `}
-                    onClick={() => {
-                      handleViewChange(
-                        template.id as "line" | "treemap" | "table"
-                      );
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="text-primary">{template.icon}</div>
-                          <h3 className={`font-medium`}>{template.title}</h3>
+
+            {/* Content Area for mobile */}
+
+            {showFilters ? (
+              <div className="p-3 bg-[var(--background-secondary-color)]">
+                <div className="space-y-4">
+                  {visibleFilters.eventTypes && (
+                    <EventTypeSelector variant="popover" />
+                  )}
+                  {visibleFilters.location && <LocationSelector />}
+                  {visibleFilters.dateRange && <DateRangeSelector />}
+                  {activeView === "treemap" && visibleFilters.categories && (
+                    <CategorySelector maxCategories={5} variant="accordion" />
+                  )}
+                  {visibleFilters.metrics && <ColumnsSelector />}
+                  {activeView === "treemap" && (
+                    <ChartFilters
+                      type="visitor-flow"
+                      hierarchyLevels={hierarchyLevels}
+                      setHierarchyLevels={setHierarchyLevels}
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <>
+                {showSavedTrends && !showTemplates && savedTrendsList && (
+                  <Card className="p-3 md:p-4 border-none md:border rounded-none md:rounded">
+                    <h3 className="font-semibold text-base md:text-lg mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
+                      <Save className="w-4 h-4 md:w-5 md:h-5" />
+                      Saved Trends
+                    </h3>
+                    {savedTrendsList?.trackers.length > 0 ? (
+                      <SavedTrendsList
+                        savedTrendsList={savedTrendsList?.trackers}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-32 md:h-40 text-muted-foreground">
+                        <div className="text-center space-y-1.5 md:space-y-2">
+                          <Save className="w-8 h-8 md:w-10 md:h-10 mx-auto text-primary/50" />
+                          <p className="text-xs md:text-sm font-medium">
+                            No saved trends yet
+                          </p>
+                          <p className="text-[10px] md:text-xs text-muted-foreground/70 max-w-[200px] md:max-w-none">
+                            Save your favorite trend configurations to access
+                            them later
+                          </p>
                         </div>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info
-                                className={`w-4 h-4 text-muted-foreground hover:text-primary`}
-                              />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{template.description}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
                       </div>
+                    )}
+                  </Card>
+                )}
+                {activeView === "line" && (
+                  <Card className="p-2 pb-36 md:pb-4 relative rounded-none md:rounded border-none md:border">
+                    <div className=" hidden md:flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-medium px-2 py-1">
+                        Trend Analysis
+                      </h2>
+                    </div>
+
+                    <LineChartComponent showLegend />
+                  </Card>
+                )}
+                {activeView === "table" && (
+                  <Card className="p-0 pb-36 md:pb-0 overflow-hidden border-none md:border rounded-none md:rounded">
+                    <div className="overflow-x-auto max-w-[100vw] pb-4">
+                      <TestPeriodicAnalytics />
                     </div>
                   </Card>
-                );
-              })}
+                )}
+                {activeView === "treemap" && (
+                  <Card className="p-2 pb-36 md:pb-0 min-h-[400px] border-none md:border rounded-none md:rounded">
+                    <TreemapView hierarchyLevels={hierarchyLevels} />
+                  </Card>
+                )}
+              </>
+            )}
+
+            {/* Footer for mobile, matching the provided design */}
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t px-4 py-3 z-50">
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  className="text-red-500 flex items-center text-xs font-medium"
+                  onClick={() => {
+                    const filtersToDelete = Object.keys(localFilters).filter(
+                      (key) => key !== "view"
+                    );
+                    deleteMultipleLocalFilters(filtersToDelete as any[]);
+                  }}
+                  disabled={filterCount === 0}
+                >
+                  <FilterX className="w-4 h-4 mr-1" />
+                  Reset Filters
+                </button>
+                <span className="text-xs text-primary font-medium">
+                  {filterCount} Filters applied
+                </span>
+              </div>
+              {showFilters && (
+                <button
+                  className="w-full bg-primary text-white rounded-md py-2 mb-2 font-semibold text-base disabled:opacity-50"
+                  onClick={() => {
+                    applyHandler();
+                    setShowFilters(false);
+                  }}
+                  disabled={
+                    (activeView === "treemap" && categories.length === 0) ||
+                    ((activeView === "line" || activeView === "table") &&
+                      (!locations ||
+                        locations.length === 0 ||
+                        !dateRange ||
+                        !metrics ||
+                        metrics.length === 0))
+                  }
+                >
+                  Apply Filters
+                </button>
+              )}
+              <div className="w-full">
+                <SaveTrend searchParams={searchParams} isLoading={isLoading} />
+              </div>
             </div>
-          )}
+          </>
+        ) : (
+          <>
+            {/* Mobile Filter Button - Always visible at the top on mobile */}
+            {isMobileView && (
+              <div className="sticky top-0 z-40 bg-background p-3 border-b mb-2">
+                <Button
+                  variant="outline"
+                  size="default"
+                  className={`w-full flex items-center justify-between h-12 rounded-lg transition-all duration-200 ${
+                    filterCount > 0
+                      ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
+                      : "bg-muted/30 border-border hover:bg-muted"
+                  }`}
+                  onClick={() => setIsFiltersCollapsed(false)}
+                >
+                  <div className="flex items-center">
+                    <Filter
+                      className={`w-4 h-4 mr-2 ${
+                        filterCount > 0
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                    <span
+                      className={`font-medium ${
+                        filterCount > 0 ? "text-primary" : "text-foreground"
+                      }`}
+                    >
+                      {filterCount > 0
+                        ? `${filterCount} Active Filter${
+                            filterCount > 1 ? "s" : ""
+                          }`
+                        : "Filter Results"}
+                    </span>
+                  </div>
+                  {filterCount > 0 && (
+                    <div className="flex items-center">
+                      <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1 font-medium">
+                        {filterCount}
+                      </span>
+                      <ChevronLeft className="w-4 h-4 ml-2 text-primary rotate-180" />
+                    </div>
+                  )}
+                </Button>
+              </div>
+            )}
 
-          {/* Content Area */}
-          {!showTemplates && (
-            <>
-              {(activeView === "line" || activeView === "table") && (
-                <div>
-                  <>
-                    {activeView === "line" && (
-                      <Card
-                        className={`${
-                          isMobileView ? "p-2 pb-4" : "p-6"
-                        } relative`}
-                      >
-                        <div className="flex items-center justify-between mb-4">
-                          <h2
-                            className={`text-lg font-medium ${
-                              isMobileView
-                                ? "px-2 py-1"
-                                : "absolute top-6 left-6"
-                            }`}
-                          >
-                            Trend Analysis
-                          </h2>
-                        </div>
-                        <div
-                          className={`${styles.predictedAttendence_container} ${
-                            isMobileView ? "h-[350px]" : ""
-                          } overflow-x-auto`}
+            <div className={`${isMobileView ? "px-2 py-2" : "px-6 py-4"}`}>
+              <div className="mb-4">
+                <div
+                  className={`flex ${
+                    isMobileView
+                      ? "flex-col gap-2"
+                      : "items-center justify-between"
+                  } mb-4`}
+                >
+                  <h1 className="text-xl font-semibold">
+                    {showTemplates ? "Trend Templates" : "Trend Explorations"}
+                  </h1>
+                  <div
+                    className={`flex ${
+                      isMobileView ? "justify-start" : ""
+                    } items-center gap-2`}
+                  >
+                    {!showTemplates && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-primary"
+                          onClick={() => setShowSavedTrends(!showSavedTrends)}
                         >
-                          <LineChartComponent showLegend />
+                          <Save className="w-4 h-4 mr-2" />
+                          {showSavedTrends
+                            ? "Hide Saved Trends"
+                            : "Show Saved Trends"}
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-primary"
+                          onClick={() => setShowTemplatesModal(true)}
+                        >
+                          <LayoutGrid className="w-4 h-4 mr-2" />
+                          Browse Templates
+                        </Button>
+
+                        {/* <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-primary"
+                                onClick={handleShare}
+                              >
+                                <Share2 className="w-4 h-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Copy URL to clipboard</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider> */}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {showSavedTrends && !showTemplates && savedTrendsList && (
+                  <div className="mt-6">
+                    <Card className="p-4">
+                      <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                        <Save className="w-5 h-5" />
+                        Saved Trends
+                      </h3>
+                      {savedTrendsList?.trackers.length > 0 ? (
+                        <SavedTrendsList
+                          savedTrendsList={savedTrendsList?.trackers}
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+                          <div className="text-center space-y-2">
+                            <Save className="w-10 h-10 mx-auto text-primary/50" />
+                            <p className="text-sm font-medium">
+                              No saved trends yet
+                            </p>
+                            <p className="text-xs text-muted-foreground/70">
+                              Save your favorite trend configurations to access
+                              them later
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </Card>
+                  </div>
+                )}
+              </div>
+
+              {/* View Templates */}
+              {showTemplates ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {ViewTemplates.map((template) => (
+                    <Card
+                      key={template.id}
+                      className="p-6 cursor-pointer hover:border-primary/50 transition-all hover:shadow-md"
+                      onClick={() => {
+                        handleViewChange(
+                          template.id as "line" | "treemap" | "table"
+                        );
+                        setShowTemplates(false);
+                      }}
+                    >
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                            {template.icon}
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-lg">
+                              {template.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {template.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className={`grid ${
+                    isMobileView ? "grid-cols-1 gap-2" : "grid-cols-3 gap-4"
+                  } mb-4`}
+                >
+                  {ViewTemplates.map((template) => {
+                    return (
+                      <Card
+                        key={template.id}
+                        className={`p-4 cursor-pointer transition-colors ${
+                          activeView === template.id ? "border-primary" : ""
+                        } `}
+                        onClick={() => {
+                          handleViewChange(
+                            template.id as "line" | "treemap" | "table"
+                          );
+                        }}
+                      >
+                        <div className="flex flex-col">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="text-primary">
+                                {template.icon}
+                              </div>
+                              <h3 className={`font-medium`}>
+                                {template.title}
+                              </h3>
+                            </div>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Info
+                                    className={`w-4 h-4 text-muted-foreground hover:text-primary`}
+                                  />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{template.description}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                         </div>
                       </Card>
-                    )}
-
-                    {activeView === "table" && (
-                      <Card
-                        className={`${
-                          isMobileView ? "p-0 overflow-hidden" : "p-6"
-                        }`}
-                      >
-                        <div
-                          className={`overflow-x-auto ${
-                            isMobileView ? "max-w-[100vw] pb-4" : ""
-                          }`}
-                        >
-                          <TestPeriodicAnalytics />
-                        </div>
-                      </Card>
-                    )}
-                  </>
+                    );
+                  })}
                 </div>
               )}
 
-              {activeView === "treemap" && (
-                <Card
-                  className={`${
-                    isMobileView ? "p-2 min-h-[400px]" : "p-4 min-h-[600px]"
-                  }`}
-                >
-                  <TreemapView hierarchyLevels={hierarchyLevels} />
-                </Card>
+              {/* Content Area */}
+              {!showTemplates && (
+                <>
+                  {(activeView === "line" || activeView === "table") && (
+                    <div>
+                      <>
+                        {activeView === "line" && (
+                          <Card className="p-2 pb-4 md:p-6 relative">
+                            <div className="hidden md:flex items-center justify-between mb-4">
+                              <h2 className="text-lg font-medium absolute top-6 left-6">
+                                Trend Analysis
+                              </h2>
+                            </div>
+                            <div
+                              className={`${
+                                styles.predictedAttendence_container
+                              } ${isMobileView ? "" : ""} overflow-x-auto`}
+                            >
+                              <LineChartComponent showLegend />
+                            </div>
+                          </Card>
+                        )}
+
+                        {activeView === "table" && (
+                          <Card
+                            className={`${
+                              isMobileView ? "p-0 overflow-hidden" : "p-6"
+                            }`}
+                          >
+                            <div
+                              className={`overflow-x-auto ${
+                                isMobileView ? "max-w-[100vw] pb-4" : ""
+                              }`}
+                            >
+                              <TestPeriodicAnalytics />
+                            </div>
+                          </Card>
+                        )}
+                      </>
+                    </div>
+                  )}
+
+                  {activeView === "treemap" && (
+                    <Card
+                      className={`${
+                        isMobileView ? "p-2 min-h-[400px]" : "p-4 min-h-[600px]"
+                      }`}
+                    >
+                      <TreemapView hierarchyLevels={hierarchyLevels} />
+                    </Card>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       <TemplatesModal

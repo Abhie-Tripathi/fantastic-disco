@@ -52,7 +52,10 @@ export default function LocationSelector({
   disableCenterPoint = false,
 }: LocationProps) {
   const pathName = usePathname();
-  const hideCenterPoint = disableCenterPoint || pathName === "/internal/search/people" || pathName === "/internal/search/companies";
+  const hideCenterPoint =
+    disableCenterPoint ||
+    pathName === "/internal/search/people" ||
+    pathName === "/internal/search/companies";
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
@@ -514,14 +517,15 @@ export default function LocationSelector({
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isMandatory && 
-            (selectedLocation === undefined || 
-             selectedLocation === null || 
-             (Array.isArray(selectedLocation) && selectedLocation.length === 0))
+            isMandatory &&
+            (selectedLocation === undefined ||
+              selectedLocation === null ||
+              (Array.isArray(selectedLocation) &&
+                selectedLocation.length === 0))
               ? "border-destructive"
               : isOpen
-                ? "border-primary"
-                : "border-input"
+              ? "border-primary"
+              : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
@@ -543,8 +547,10 @@ export default function LocationSelector({
                   )
                 ) : disableCenterPoint ? (
                   ""
+                ) : hideCenterPoint ? (
+                  ""
                 ) : (
-                  hideCenterPoint ? "" :  selectedLocation.description
+                  selectedLocation.description
                 )}
               </span>
             )}
@@ -557,7 +563,9 @@ export default function LocationSelector({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[392px] border rounded-md shadow-sm p-0"
+        className={
+          "border rounded-md shadow-sm p-0 w-[var(--radix-popover-trigger-width)] md:w-[392px]"
+        }
         align="start"
       >
         <div className="flex justify-between items-center p-4 py-2 border-b">

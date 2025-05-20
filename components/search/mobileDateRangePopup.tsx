@@ -52,7 +52,7 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-fit">
+    <div className="flex flex-col h-full max-w-[300px]">
       {/* Quick selection buttons */}
       <div className="flex overflow-x-auto p-2">
         {quickSelections.map((preset) => (
@@ -93,9 +93,6 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
               checked={compareEnabled}
               onCheckedChange={setCompareEnabled}
             />
-            <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
-              Coming Soon
-            </span>
           </div>
           {compareEnabled &&
             comparisonOptions &&

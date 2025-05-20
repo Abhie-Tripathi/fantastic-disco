@@ -72,6 +72,7 @@ export default function EventCalendar({
   eventType,
 }: EventCalendarProps) {
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams, getEvents } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
@@ -104,7 +105,9 @@ export default function EventCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const filteredParams = new URLSearchParams(searchParams.toString());
 
-  const view = getFilterValue("calendar_type") || ("month" as CustomView);
+  const view =
+    getFilterValue("calendar_type") ||
+    (isMobile ? "year" : ("month" as CustomView));
   const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };

@@ -8,23 +8,18 @@ import {
 } from "react";
 import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
 import {
-  ArrowDownUp,
-  ArrowUpRight,
   CalendarIcon,
   Globe,
-  Grid,
   ListIcon,
   TableIcon,
   Filter,
-  LayoutGrid,
+  FilterX,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GAEvent } from "@/utils/GAEvent";
 import EventCount from "@/components/search/eventCount";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -40,14 +35,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import FilterContent from "@/components/search/FilterContent";
+import { GAEvent } from "@/utils/GAEvent";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
-  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
+  const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
+  const { applyFilters, localFilters, deleteMultipleLocalFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState<boolean>(false);
   const [view, setView] = useState<string>(searchParams.get("view") || "");
@@ -57,6 +54,7 @@ const Events = () => {
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
+    setShowFilter(false);
   }, []);
 
   const [steps, setSteps] = useState<Step[]>([]);
@@ -108,6 +106,7 @@ const Events = () => {
 
   const onTabsChange = (value: string) => {
     setFilter("view", value);
+    setShowViewDropdown(false);
   };
 
   const toggleFilterHandler = () => {
@@ -119,26 +118,38 @@ const Events = () => {
   };
 
   const filtersCount = (function () {
-    let count = 0;
-    if (
-      localFilters.onlyBranded === "true" ||
-      localFilters.onlySeries === "true"
-    )
-      count++;
-    if (localFilters.frequencies) count++;
-    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
-    if (localFilters.maturity) count++;
-    if (localFilters.estimatedVisitors) count++;
-    if (localFilters.impact_score_gte) count++;
-    if (localFilters.top) count++;
-    return count;
+    const excludedFilters = [
+      "view",
+      "sort",
+      "offset",
+      "limit",
+      "active_gte",
+      "active_lte",
+    ];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
   })();
+
+  const createTrackerHandler = async () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
+
+    if (!(getFilterValue("locationIds") || getFilterValue("viewBound"))) {
+      toast({
+        title: "Please select location",
+        variant: "destructive",
+      });
+    } else {
+      setTrackerModalOpen(true);
+    }
+  };
+
   useEffect(() => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1 relative md:w-[62%]">
       <div className={`md:px-6 transition-all duration-300`}>
         <Tabs
           defaultValue="list"
@@ -147,7 +158,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center sticky top-[117px] md:top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div className="justify-center hidden md:flex">
@@ -199,7 +210,10 @@ const Events = () => {
             </div>
 
             <div className="flex md:hidden items-center justify-end gap-2">
-              <Popover>
+              <Popover
+                open={showViewDropdown}
+                onOpenChange={setShowViewDropdown}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
@@ -227,14 +241,14 @@ const Events = () => {
                       <ListIcon className="h-4 w-4" />
                       <span>List View</span>
                     </Button>
-                    <Button
+                    {/* <Button
                       variant={selectedView === "table" ? "secondary" : "ghost"}
                       className="justify-start flex items-center gap-2"
                       onClick={() => onTabsChange("table")}
                     >
                       <TableIcon className="h-4 w-4" />
                       <span>Table View</span>
-                    </Button>
+                    </Button> */}
                     <Button
                       variant={selectedView === "map" ? "secondary" : "ghost"}
                       className="justify-start flex items-center gap-2"
@@ -257,25 +271,59 @@ const Events = () => {
                 </PopoverContent>
               </Popover>
 
-              <SortDropdown compact />
+              {(view == "list" || view == "table" || view == "") && (
+                <SortDropdown compact />
+              )}
 
               <Button
                 onClick={toggleFilterHandler}
-                variant="ghost"
+                variant={filtersCount > 0 ? "secondary" : "ghost"}
                 size="icon"
-                className="h-8 w-8 border"
+                className="h-8 w-8 border relative"
               >
                 <Filter className="w-4 h-4" />
+                {filtersCount > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                    {filtersCount}
+                  </div>
+                )}
               </Button>
             </div>
           </div>
           {showFilters ? (
-            <FilterContent
-              type={"events"}
-              filterCount={3}
-              createTrackerHandler={() => {}}
-              searchHandler={searchHandler}
-            />
+            <>
+              <FilterContent
+                type={"events"}
+                filterCount={3}
+                createTrackerHandler={createTrackerHandler}
+                searchHandler={searchHandler}
+              />
+              <div className="w-full sticky bottom-0 bg-background z-10">
+                <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        deleteMultipleLocalFilters(
+                          Object.keys(localFilters) as any[]
+                        );
+                      }}
+                      disabled={filtersCount === 0}
+                      className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+                    >
+                      <FilterX className="w-3.5 h-3.5 mr-1" />
+                      Reset all filters
+                    </Button>
+                    <span className="text-xs text-[#6E6F89]">
+                      {filtersCount} filters applied
+                    </span>
+                  </div>
+                  <Button onClick={searchHandler} className="w-full h-10">
+                    Apply Filters
+                  </Button>
+                </div>
+              </div>
+            </>
           ) : (
             <div>
               <TabsContent
@@ -301,6 +349,10 @@ const Events = () => {
           )}
         </Tabs>
       </div>
+      <CreateTrackerDialog
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
     </div>
   );
 };
