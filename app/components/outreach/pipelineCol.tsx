@@ -74,7 +74,7 @@ const PipelineCol = ({
 
   return (
     <>
-      <div className={`${styles.outerCard}`}>
+      <div className="min-w-[90%] sm:min-w-[45%] lg:min-w-[30%]">
         <div className="group relative">
           <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t flex items-center justify-between">
             <div>

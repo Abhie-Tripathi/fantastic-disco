@@ -1,4 +1,4 @@
-import React, { useState, useRef, RefObject, useEffect } from "react";
+import React, { useState, useRef, RefObject, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import YourEventCard from "./YourEventCard";
 import styles from "./internal.style.module.css";
@@ -19,13 +19,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
-import { Pencil } from "lucide-react";
+import { Filter, Loader2, Pencil } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
 import { endpoints } from "@/config/endpoints";
 import AddEventModal from "@/components/coordinate/addEvent/AddEventModal";
 import { isEventeli } from "@/config";
+import { Button } from "@/components/ui/button";
+import CoordinateFilters from "@/components/coordinate/CoordinateFilters";
+import { Badge } from "@/components/ui/badge";
+import { useFilterContext } from "@/context/filterContext";
+// import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Props {
   coordinateActions: any;
@@ -38,7 +43,11 @@ const Internal = ({
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
 
-  const { user } = useAuthContext();
+  const { user, isTentimesUser } = useAuthContext();
+
+  // const isMobile = useIsMobile();
+
+  const { localFilters, applyFilters } =useFilterContext();
 
   let prevDate: any = null;
   const { theme } = useTheme();
@@ -65,6 +74,9 @@ const Internal = ({
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiry, setCurrentEnquiry] = useState<enquiryType>();
   const [enquiryId, setEnquiryId] = useState<string>("");
+  const [showFilters, setShowFilter] = useState<boolean>(false);
+  const [eventCount, setEventCount] = useState<number>(0);
+  const [countLoading, setCountLoading] = useState<boolean>(false);
 
   const handleModal = (eventId: string, enquiryId: string) => {
     setModalOpen(!modalOpen);
@@ -128,12 +140,14 @@ const Internal = ({
   const fetchData = async () => {
     if (page > 0) {
       try {
+        setCountLoading(true);
         let offset: number = (page - 1) * 10;
         const apiData = await coordinateService.getEventsWithSearchParams({
           offset,
           searchParams: new URLSearchParams(searchParams.toString()),
         });
         if (apiData?.enquiries) {
+          setEventCount(apiData.count);
           if (apiData.enquiries.length === 0 && page === 1) {
             setEventData1([]);
           }
@@ -150,6 +164,7 @@ const Internal = ({
         console.error("Error fetching data:", error);
       } finally {
         setIsLoaded(true);
+        setCountLoading(false);
       }
     }
   };
@@ -195,6 +210,25 @@ const Internal = ({
     router.push("/internal/settings/product");
   }
 
+  const toggleFilterHandler = () => {
+    if (showFilters) {
+      setShowFilter(false);
+    } else {
+      setShowFilter(true);
+    }
+  };
+
+  const searchHandler = useCallback(() => {
+    applyFilters({ resetPage: true });
+  }, []);
+
+  const filterCount = useMemo(() => {
+    const includeFilters = ["eventId", "type", "upvotedBy", "status"];
+    return Object.keys(localFilters).filter(
+      (key) => includeFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
@@ -222,13 +256,13 @@ const Internal = ({
 
   return (
     <>
-      <div className={styles.scrollContainer} ref={divRef}>
+      <div className="h-[calc(100vh-80px)] overflow-y-auto relative w-full" ref={divRef}>
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
-        <div className={styles.container}>
-          <div className={styles.countsContainer}>
+        <div className="flex flex-col w-full gap-4 md:gap-6 px-4 py-3 md:px-10 md:py-5">
+          <div className="gap-4 lg:gap-10 justify-between md:mx-[80px] grid grid-cols-4">
             {coordinateCount && coordinateCount.map((item: any, index: number) => (
-              <div className={`${styles.exhibitorCount}`} key={index}>
-                <div className={styles.count}>
+              <div className="flex flex-col bg-[var(--primary-light-color)] items-center px-6 py-2 lg:py-4 rounded-md md:rounded-xl text-primary justify-center" key={index}>
+                <div className="text-base font-semibold lg:text-[56px] lg:leading-[63px]">
                   {item?.count}
                 </div>
                 <div className="flex items-end cursor-pointer hover:underline relative group" onClick={handleEditAction}>
@@ -240,79 +274,89 @@ const Internal = ({
               </div>
             ))}
           </div>
-          <div className={styles.filters}>
-            {/* <div className={styles.searchContainer}>
-              <div className={styles.searchbar}>
-                <input
-                  type="text"
-                  placeholder="Search by event name"
-                  onChange={handleSearchChange}
-                  value={searchInput}
-                />
-                <span className={`${styles.search_logo} h-[10px] w-[10px]`}>
-                  {eventSearchLoader && searchInput.length > 0 ? (
-                    <div className={styles.loader}></div>
-                  ) : searchInput.length > 0 ? (
-                    <Image
-                      src={CloseIcon}
-                      alt="close"
-                      className={iconClass}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        setSearchInput("");
-                        deleteFilter('eventId')
-                      }}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </span>
-              </div>
-              {
-                <SearchBar
-                  searchInput={searchInput}
-                  setEventSearchLoader={setEventSearchLoader}
-                  handleSelect={handleSelect}
-                  endpoint={endpoints.coordinate.enquiry}
-                />
-              }
-            </div> */}
 
-            <div className="w-1/2">
+          {/* Mobile Filters View */}
+          <div
+            className={`flex flex-col gap-4 sticky top-[117px] md:top-0  bg-background z-10 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+          >
+            <div className="block md:hidden">
               <SearchBar selectedData={eventData1[0]} />
             </div>
+            <div className={`flex justify-between items-center md:mx-[80px]`}>
+              <div className="flex items-center gap-2">
+                {countLoading ? (
+                  <Loader2 className="animate-spin text-primary" />
+                ) : (
+                  <Badge className="bg-primary text-white">
+                    {new Intl.NumberFormat("en", {
+                      notation: "compact",
+                      maximumFractionDigits: 2,
+                    }).format(eventCount || 0)}
+                  </Badge>
+                )}
+                <p className="text-primary font-semibold">Events</p>
+              </div>
 
-            <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestTypeSelector coordinateActions={coordinateActions} />
+              <div className="flex items-center justify-end gap-3">
+
+                {isTentimesUser &&
+                  <AddEventModal />
+                }
+
+                <Button
+                  onClick={toggleFilterHandler}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 border relative"
+                >
+                  <Filter className="w-4 h-4" />
+                  {filterCount > 0 &&
+                    <span className="absolute top-[-12px] right-[-12px] bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">{filterCount}</span>
+                  }
+                </Button>
+              </div>
             </div>
 
-            <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestStatusSelector pipelineConfig={pipelineConfig} />
-            </div>
+            {showFilters &&
+              <>
+                <div className={`block md:hidden`}>
+                  <CoordinateFilters
+                    type={"companies"}
+                    filterCount={filterCount}
+                    createTrackerHandler={() => {}}
+                    searchHandler={searchHandler}
+                    coordinateActions={coordinateActions}
+                    pipelineConfig={pipelineConfig}
+                  />
+                </div>
 
-            <div style={{ width: "25%" }} className={styles.outerDiv}>
-              <DateRangeSelector source="coordinate" />
-            </div>
+                <div className={`hidden md:flex gap-4 items-end md:mx-[80px]`}>
 
-            <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <UpvoteSelector />
-            </div>
-            
-            {user?.accountId &&
-              ((isEventeli &&
-                [
-                  "e485cdd3-0e61-5f36-b896-aed7ba606697",
-                  "a5ea32fb-0c4e-486a-8a2f-81fabc3a87ee",
-                ].includes(user.accountId)) ||
-                (!isEventeli &&
-                  [
-                    "aace9785-9427-4fdd-88c2-2340d30e909c",
-                    "ee24cd48-3274-4df2-bec3-c864fa2d13ae",
-                  ].includes(user.accountId))) && <AddEventModal />
+                  <div className="hidden md:block w-[50%]">
+                    <SearchBar selectedData={eventData1[0]} />
+                  </div>
+
+                  <div style={{ width: "15%" }} className={styles.outerDiv}>
+                    <InterestTypeSelector coordinateActions={coordinateActions} />
+                  </div>
+
+                  <div style={{ width: "20%" }} className={styles.outerDiv}>
+                    <InterestStatusSelector pipelineConfig={pipelineConfig} />
+                  </div>
+
+                  <div style={{ width: "20%" }} className={styles.outerDiv}>
+                    <DateRangeSelector source="coordinate" />
+                  </div>
+
+                  <div style={{ width: "15%" }} className={styles.outerDiv}>
+                    <UpvoteSelector />
+                  </div>
+                </div>
+              </>
             }
           </div>
 
-          <div className={styles.timelineContainer}>
+          <div>
             {eventData1?.map((item, index) => {
               // Check if current event's date is different from previous event's date
               const showDate = item.eventData.startDateTime !== prevDate;

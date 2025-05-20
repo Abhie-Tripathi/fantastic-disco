@@ -66,7 +66,7 @@ const CardTask: React.FC<CardTaskProps> = ({
   return (
     <>
       <div
-        className={`w-full cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3`}
+        className={`w-full cursor-move text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3`}
         draggable={draggable}
         onDragStart={(event) => onDragStart(event, name)}
         onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}

@@ -145,7 +145,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     }
   };
   return (
-    <div className={styles.outerDiv}>
+    <div className="flex justify-end border-l border-primary border-dashed w-[95%] md:w-[85%]">
       <div
         className={`${styles.card} card`}
         onClick={() => {
@@ -160,7 +160,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
         style={{ marginTop: !isDateSame ? "0px" : "25px" }}
       >
         {/* <div className={styles.cardBefore}></div> */}
-        <div className={styles.topContainer} style={{ display: "flex" }}>
+        <div className={`flex pb-3 gap-4 border-b lg:border-none `}>
           {eventImage && (
             <div className={styles.leftContainer}>
               <div className="tablet_view mobile_view">
@@ -188,8 +188,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           <div className={styles.cardDetails}>
             <div className={styles.eventNameComp}>
               <div>
-                <div className={styles.eventName}>{eventName}</div>
-                <div className={styles.company}>{eventCompany}</div>
+                <div className="text-sm lg:text-2xl">{eventName}</div>
+                <div className="text-[var(--tertiary-text-color)] text-xs lg:text-sm leading-5">{eventCompany}</div>
               </div>
               <div className="desktop_view">
                 <StatusChangeDropdown
@@ -206,12 +206,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>
             <div className={styles.locationAndDateContainer}>
               {eventLocation && (
-                <div className={styles.eventLocation}>
+                <div className="flex text-xs gap-2 items-center text-[var(--secondary-text-color)]">
                   <div>
                     <Location
-                      height={"12px"}
-                      width={"12px"}
-                      color="var(--primary-text-color)"
+                      height={"14px"}
+                      width={"14px"}
+                      color="var(--secondary-text-color)"
                       style={{ display: "flex" }}
                     />
                   </div>
@@ -225,11 +225,11 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 </div>
               )}
 
-              <div className={styles.eventDate}>
+              <div className="flex text-xs gap-2 items-center text-[var(--secondary-text-color)]">
                 <Calendar
-                  height={"12px"}
-                  width={"12px"}
-                  color="var(--primary-text-color)"
+                  height={"14px"}
+                  width={"14px"}
+                  color="var(--secondary-text-color)"
                 />
                 <div>
                   {eventStartDate &&
