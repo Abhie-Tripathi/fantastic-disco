@@ -739,7 +739,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   const saveSearchRef = useRef(null);
 
   const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { status, type, step } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       if (typeof window !== "undefined") {
         let walkthroughCompleted: string[] = JSON.parse(
@@ -757,6 +757,18 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
       }
       setRun(false);
     }
+
+    // if (type === "step:after" && step?.target) {
+    //   const targetEl = document.querySelector(step.target as string);
+    //   if (targetEl) {
+    //     const yOffset = -80;
+    //     const y =
+    //       targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    //     setTimeout(() => {
+    //       window.scrollTo({ top: y, behavior: "smooth" });
+    //     }, 2000);
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -766,19 +778,55 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           {
             target: "#research-tabs",
             title: "Research Tabs",
-            content: "Save this search to add it as tracker",
+            content:
+              "Track events, companies, or people to stay on top of what matters most.",
+            disableBeacon: true,
+          },
+          {
+            target: "#basic-filters",
+            title: "Basic Filters",
+            content:
+              "Explore the basic filters to quickly refine your results by category, date, and location.",
+            disableBeacon: true,
+          },
+          {
+            target: "#advanced-details",
+            title: "Advance Details",
+            content: "Unlock advanced filters and drill down into your data.",
+            disableBeacon: true,
+          },
+          {
+            target: "#insights-scores",
+            title: "Insights & Scores",
+            content:
+              "Insight scores include Estimated Visitors, Estimated Exhibitors, and Event Ranking to help you assess each event’s impact.",
+            disableBeacon: true,
+          },
+          {
+            target: "#audience-intel",
+            title: "Audience Intel",
+            content:
+              "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
+            disableBeacon: true,
+          },
+          {
+            target: "#research-view",
+            title: "Table, List, Map and Calendar",
+            content: "Add notes and discussions to keep your team aligned.",
+            disableBeacon: true,
+          },
+          {
+            target: "#sorting-dropdown",
+            title: "Sorting",
+            content:
+              "Sort by date or advanced intel and insights scores to surface your top priorities.",
             disableBeacon: true,
           },
           {
             target: "#save-search-btn",
-            title: "Save Search",
-            content: "Save this search to add it as tracker",
-            disableBeacon: true,
-          },
-          {
-            target: "#save-search-btn",
-            title: "Save Search",
-            content: "Save this search to add it as tracker",
+            title: "Save Search ",
+            content:
+              "Save this search to revisit your filtered results anytime with one click.",
             disableBeacon: true,
           },
         ];
@@ -806,11 +854,12 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           tooltipComponent={(props) => (
             <Tooltip {...props} totalSteps={steps.length} />
           )}
+          continuous={true}
           steps={steps}
           run={run}
           callback={joyrideCallback}
-          scrollToFirstStep={false}
-          disableScrolling={true}
+          scrollToFirstStep={true}
+          disableScrolling={false}
           spotlightPadding={4}
           styles={{
             options: {
@@ -926,6 +975,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             >
               {filters[type].map((section) => (
                 <AccordionItem
+                  id={section.id}
                   key={section.id}
                   value={section.id}
                   className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"

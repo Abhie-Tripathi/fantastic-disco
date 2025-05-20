@@ -132,7 +132,7 @@ const Events = () => {
             <div className="flex items-center gap-2">
               <EventCount view="events" />
             </div>
-            <div className="flex justify-center">
+            <div id="research-view" className="flex justify-center">
               <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
                 <TabsTrigger
                   value="table"
@@ -164,7 +164,7 @@ const Events = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            <div className="flex justify-end gap-2">
+            <div id="sorting-dropdown" className="flex justify-end gap-2">
               {/* <Button
                 variant="outline"
                 className="flex items-center gap-2"
