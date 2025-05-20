@@ -808,7 +808,7 @@ if (!share) {
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount}/>
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount} eventType={active || ""}/>
             </Suspense>
           </div>
         )}

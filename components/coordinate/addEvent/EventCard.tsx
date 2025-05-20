@@ -180,12 +180,12 @@ const EventCard = (eventData: Props) => {
             <div className="text-primary text-sm font-medium pr-2">Added</div>
           ) : (
             <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Cross
+              {/* <Cross
                 className="cursor-pointer"
                 onClick={() => handleReject(event.id)}
                 color="#DA2F35"
                 height="16px"
-              />
+              /> */}
               <Check
                 className="cursor-pointer"
                 onClick={() => handleSelect(event.id, "interestedAction")}
