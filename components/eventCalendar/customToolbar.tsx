@@ -98,7 +98,7 @@ const CustomToolbar = ({
         </Button>
       </div>
       {isEventeli && (
-        <div className="place-self-end col-span-2">
+        <div className="place-self-end col-span-2 hidden md:block">
           <Select
             value={filter}
             onValueChange={onFilterChange}
