@@ -764,7 +764,7 @@ export default function MapComponent({
                   {!isGlobal && (
                     <Button
                       variant="default"
-                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
+                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:transform-none md:left-auto md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
                       onClick={() => setShowEventList("all")}
                     >
                       <AlignLeft className="w-5 h-5" />

@@ -8,23 +8,11 @@ import {
 } from "react";
 import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
-import {
-  ArrowDownUp,
-  ArrowUpRight,
-  CalendarIcon,
-  Globe,
-  Grid,
-  ListIcon,
-  TableIcon,
-  Filter,
-  LayoutGrid,
-} from "lucide-react";
+import { CalendarIcon, Globe, ListIcon, TableIcon, Filter, FilterX } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GAEvent } from "@/utils/GAEvent";
 import EventCount from "@/components/search/eventCount";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -40,7 +28,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import FilterContent from "@/components/search/FilterContent";
-import { useSearchParams } from "next/navigation";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -48,8 +35,7 @@ const Events = () => {
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
-    useFilterContext();
+  const { applyFilters, localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const [showFilters, setShowFilter] = useState<boolean>(false);
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -58,6 +44,7 @@ const Events = () => {
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
+    if (showFilters) setShowFilter(false);
   }, []);
 
   const [steps, setSteps] = useState<Step[]>([]);
@@ -121,7 +108,7 @@ const Events = () => {
   };
 
   const filtersCount = (function () {
-    const excludedFilters = ["view", "sort", "offset", "limit"];
+    const excludedFilters = ["view", "sort", "offset", "limit", "active_gte", "active_lte"];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
@@ -132,7 +119,7 @@ const Events = () => {
   }, [searchParams]);
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1 relative md:w-[62%]">
       <div className={`md:px-6 transition-all duration-300`}>
         <Tabs
           defaultValue="list"
@@ -141,7 +128,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div className="justify-center hidden md:flex">
@@ -254,7 +241,7 @@ const Events = () => {
                 </PopoverContent>
               </Popover>
 
-              {view !== "map" && <SortDropdown compact />}
+              {(view == "list" || view == "table" || view == "") && <SortDropdown compact />}
 
               <Button
                 onClick={toggleFilterHandler}
@@ -272,12 +259,39 @@ const Events = () => {
             </div>
           </div>
           {showFilters ? (
-            <FilterContent
-              type={"events"}
-              filterCount={3}
-              createTrackerHandler={() => {}}
-              searchHandler={searchHandler}
-            />
+            <>
+              <FilterContent
+                type={"events"}
+                filterCount={3}
+                createTrackerHandler={() => {}}
+                searchHandler={searchHandler}
+              />
+              <div className="w-full sticky bottom-0 bg-background z-10">
+                <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        deleteMultipleLocalFilters(
+                          Object.keys(localFilters) as any[]
+                        );
+                      }}
+                      disabled={filtersCount === 0}
+                      className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+                    >
+                      <FilterX className="w-3.5 h-3.5 mr-1" />
+                      Reset all filters
+                    </Button>
+                    <span className="text-xs text-[#6E6F89]">
+                      {filtersCount} filters applied
+                    </span>
+                  </div>
+                  <Button onClick={searchHandler} className="w-full h-10">
+                    Apply Filters
+                  </Button>
+                </div>
+              </div>
+            </>
           ) : (
             <div>
               <TabsContent

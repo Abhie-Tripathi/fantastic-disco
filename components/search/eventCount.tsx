@@ -39,7 +39,7 @@ const EventCount = ({ view }: { view: string }) => {
       {isLoading ? (
         <Loader2 className="animate-spin text-primary w-4 h-4" />
       ) : (
-        <Badge className="bg-primary text-white text-xs sm:text-sm whitespace-nowrap font-medium md:font-semibold">
+        <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
           {new Intl.NumberFormat("en", {
             notation: "compact",
             maximumFractionDigits: 2,

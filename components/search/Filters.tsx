@@ -701,12 +701,20 @@ const Filters = ({
   type,
   children,
 }: FiltersProps) => {
-  const { localFilters, applyFilters } = useFilterContext();
+  const { localFilters, applyFilters, deleteMultipleLocalFilters } =
+    useFilterContext();
   const { getFilterValue } = useFilterState();
   const { theme } = useTheme();
 
   const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
@@ -743,8 +751,8 @@ const Filters = ({
           <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
       </button>
-      <div className="overflow-y-auto md:pt-4 md:pl-6 h-[calc(100vh-60px)] flex flex-col md:pr-6">
-        <div className="sticky top-0 bg-background z-10 p-4">
+      <div className="overflow-y-auto md:pt-4 md:pl-6 h-[calc(100vh-60px)] flex flex-col">
+        <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
           <Tabs defaultValue={type} value={type}>
             <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
               <Link href="/internal/search/events" className="contents">
@@ -780,13 +788,39 @@ const Filters = ({
           </div>
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block overflow-y-scroll">
           <FilterContent
             type={type}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
           />
+        </div>
+
+        <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
+          <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  deleteMultipleLocalFilters(
+                    Object.keys(localFilters) as any[]
+                  );
+                }}
+                disabled={filterCount === 0}
+                className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+              >
+                <FilterX className="w-3.5 h-3.5 mr-1" />
+                Reset all filters
+              </Button>
+              <span className="text-xs text-[#6E6F89]">
+                {filterCount} filters applied
+              </span>
+            </div>
+            <Button onClick={searchHandler} className="w-full h-10">
+              Apply Filters
+            </Button>
+          </div>
         </div>
 
         <div className="md:hidden block">{children}</div>

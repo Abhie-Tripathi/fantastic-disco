@@ -119,29 +119,7 @@ const FilterContent = ({
         </div>
       </div>
 
-      <div className="w-full sticky bottom-0 bg-background z-10">
-        <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
-          <div className="flex items-center justify-between mb-2">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                deleteMultipleLocalFilters(Object.keys(localFilters) as any[]);
-              }}
-              disabled={filterCount === 0}
-              className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
-            >
-              <FilterX className="w-3.5 h-3.5 mr-1" />
-              Reset all filters
-            </Button>
-            <span className="text-xs text-[#6E6F89]">
-              {filterCount} filters applied
-            </span>
-          </div>
-          <Button onClick={searchHandler} className="w-full h-10">
-            Apply Filters
-          </Button>
-        </div>
-      </div>
+  
     </div>
   );
 };
