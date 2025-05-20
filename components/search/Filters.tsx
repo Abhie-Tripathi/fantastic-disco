@@ -746,7 +746,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         const newSteps: Step[] = [
           {
             target: "#research-tabs",
-            title: "",
+            title: "Research",
             content:
               "Track events, companies, or people to stay on top of what matters most.",
             disableBeacon: true,
