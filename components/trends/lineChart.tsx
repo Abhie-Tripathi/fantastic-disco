@@ -45,6 +45,9 @@ import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Button } from "../ui/button";
+
+type ViewType = "day" | "week" | "month";
 
 interface IProps {
   showLegend: boolean;
@@ -62,6 +65,8 @@ const LineChartComponent = ({
   showThresholdLines = true,
 }: IProps) => {
   const [link, setLink] = useState("");
+  const { setFilter, getFilterValue } = useFilterState();
+  const currentView = getFilterValue("dateView") as ViewType || "day";
 
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
@@ -80,26 +85,25 @@ const LineChartComponent = ({
   const [predictedData, setPredictedData] = useState<any>();
 
   const { getEventsWithSearchParams } = useEventsService();
-  const { getFilterValue } = useFilterState();
   const metric = getFilterValue("columns") as
     | "eventCount"
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
 
-  const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
-
   const apiParams = useMemo(() => {
     const params = new URLSearchParams({
       groupBy: "date",
-      dateView: "day",
+      dateView: currentView,
     });
     searchParams.forEach((value, key) => {
-      params.append(key, value);
+      if (key !== "dateView") {
+        params.append(key, value);
+      }
     });
     params.delete("categories");
     return params.toString();
-  }, [stringParams]);
+  }, [currentView, searchParams]);
 
   const previousYearParams = useMemo(() => {
     const currentParams = new URLSearchParams(apiParams);
@@ -272,9 +276,7 @@ const LineChartComponent = ({
     );
 
     // Check if the payload's date matches any of the interval dates
-    const shouldRenderDot = intervalDates.includes(
-      format(new Date(payload.date), "yyyy-MM-dd")
-    );
+    const shouldRenderDot = intervalDates.includes(payload.date);
 
     const hasMatchingHoliday =
       (isEventeli &&
@@ -361,24 +363,6 @@ const LineChartComponent = ({
     }
     if (hasMatchingHoliday) {
       return (
-        // <g>
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={8}
-        //     fill="#e8e8e8"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={4}
-        //     fill="#7D7D7D"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        // </g>
         <g>
           <svg
             x={cx - 10}
@@ -554,111 +538,29 @@ const LineChartComponent = ({
     threshold * 0.5, // 5% below threshold
   ];
 
-  function generateDateIntervals(startDate: any, endDate: any) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const totalDays = differenceInDays(end, start) + 1;
+  const handleViewChange = (view: ViewType) => {
+    setFilter("dateView", view);
+  };
 
-    // For mobile screens, show exactly 6 ticks
-    if (isMobileView) {
-      const dates = [];
-      dates.push(format(start, "yyyy-MM-dd")); // First date
-
-      // Calculate an even interval for 4 middle points
-      const step = Math.max(1, Math.floor(totalDays / 5));
-
-      // Add 4 evenly spaced points (for a total of 6 with start and end)
-      for (let i = 1; i <= 4; i++) {
-        const nextDate = addDays(start, i * step);
-        if (!isAfter(nextDate, end)) {
-          dates.push(format(nextDate, "yyyy-MM-dd"));
-        }
-      }
-
-      // Add end date if not already included
-      const lastDateStr = format(end, "yyyy-MM-dd");
-      if (dates[dates.length - 1] !== lastDateStr) {
-        dates.push(lastDateStr);
-      }
-
-      return dates;
+  const formatDateForWeekView = (dateString: string) => {
+    if (currentView === "month") {
+      return format(new Date(dateString), 'MMM yyyy');
     }
-
-    // Desktop view - improved logic for consistent intervals
-    if (totalDays <= 10) {
-      // For 10 days or less, show all dates
-      const dates = [];
-      for (let i = 0; i < totalDays; i++) {
-        dates.push(format(addDays(start, i), "yyyy-MM-dd"));
-      }
-      return dates;
+    if (currentView === "week" && dateString.includes('_')) {
+      const [startDate, endDate] = dateString.split('_');
+      return `${format(new Date(startDate), 'dd MMM')} - ${format(new Date(endDate), 'dd MMM yyyy')}`;
     }
-
-    // For longer periods, use a fixed number of ticks based on the duration
-    const getTickCount = (days: number) => {
-      if (days <= 30) return 6;      // 6 ticks for up to 1 month
-      if (days <= 90) return 7;      // 7 ticks for up to 3 months
-      if (days <= 180) return 8;     // 8 ticks for up to 6 months
-      if (days <= 365) return 9;     // 9 ticks for up to 1 year
-      return 10;                     // 10 ticks for more than 1 year
-    };
-
-    const tickCount = getTickCount(totalDays);
-    const dates = [];
-    
-    // Always include start date
-    dates.push(format(start, "yyyy-MM-dd"));
-    
-    // Calculate the interval between ticks
-    const interval = Math.floor(totalDays / (tickCount - 1));
-    
-    // Generate intermediate dates
-    for (let i = 1; i < tickCount - 1; i++) {
-      const nextDate = addDays(start, i * interval);
-      if (!isAfter(nextDate, end)) {
-        dates.push(format(nextDate, "yyyy-MM-dd"));
-      }
-    }
-    
-    // Always include end date
-    const lastDateStr = format(end, "yyyy-MM-dd");
-    if (dates[dates.length - 1] !== lastDateStr) {
-      dates.push(lastDateStr);
-    }
-
-    return dates;
-  }
+    return format(new Date(dateString), 'dd MMM yyyy');
+  };
 
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
-    const date = new Date(payload.value);
-
-    if (isMobileView) {
-      // Simplified format for mobile
-      const mobileDateFormat = format(date, "dd MMM");
-
-      return (
-        <g transform={`translate(${x},${y})`}>
-          <text
-            x={0}
-            y={0}
-            dy={16}
-            textAnchor="middle"
-            fill="#615E83"
-            fontSize="12px"
-            fontWeight="500"
-          >
-            <tspan x={0} dy="1em">
-              {mobileDateFormat}
-            </tspan>
-          </text>
-        </g>
-      );
-    }
-
-    // Desktop format with date and year on separate lines
-    const dayMonth = format(date, "dd MMM");
-    const year = format(date, "yyyy");
+    const formattedDate = formatDateForWeekView(payload.value);
+    
+    // Split the date range for week view
+    const dateLines = formattedDate.split(' - ');
+    const isWeekView = currentView === "week" && dateLines.length > 1;
+    const isMonthView = currentView === "month";
 
     return (
       <g transform={`translate(${x},${y})`}>
@@ -672,16 +574,114 @@ const LineChartComponent = ({
           fontWeight="500"
           transform={`${doInvertTicks ? "rotate(-90)" : ""}`}
         >
-          <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
-            {dayMonth}
-          </tspan>
-          <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
-            {year}
-          </tspan>
+          {isWeekView ? (
+            <>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                {dateLines[0]}
+              </tspan>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
+                {dateLines[1]}
+              </tspan>
+            </>
+          ) : isMonthView ? (
+            <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+              {formattedDate}
+            </tspan>
+          ) : (
+            <>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                {formattedDate.split(' ').slice(0, 2).join(' ')}
+              </tspan>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
+                {formattedDate.split(' ')[2]}
+              </tspan>
+            </>
+          )}
         </text>
       </g>
     );
   };
+
+  function generateDateIntervals(startDate: string, endDate: string): string[] {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const totalDays = differenceInDays(end, start) + 1;
+
+    if (currentView === "month") {
+      // For month view, return all month dates from the data
+      return predictedData?.map((data: any) => data.date) || [];
+    }
+
+    if (currentView === "week") {
+      // For week view, limit the number of ticks to avoid overlapping
+      if (!predictedData) return [];
+      
+      const weekData = predictedData.map((data: any) => {
+        // Handle both single dates and date ranges
+        if (data.date.includes('_')) {
+          return data.date;
+        }
+        return data.date;
+      });
+      
+      const totalWeeks = weekData.length;
+      
+      // If 10 or fewer weeks, show all
+      if (totalWeeks <= 10) {
+        return weekData;
+      }
+      
+      // For more weeks, show only 10 ticks
+      const interval = Math.ceil(totalWeeks / 10);
+      const selectedWeeks = weekData.filter((_: string, index: number) => index % interval === 0);
+      
+      // Always include the first and last week
+      if (!selectedWeeks.includes(weekData[0])) {
+        selectedWeeks.unshift(weekData[0]);
+      }
+      if (!selectedWeeks.includes(weekData[weekData.length - 1])) {
+        selectedWeeks.push(weekData[weekData.length - 1]);
+      }
+      
+      return selectedWeeks;
+    }
+
+    // For day view
+    // If range is 10 days or less, show all dates
+    if (totalDays <= 10) {
+      const dates = [];
+      for (let i = 0; i < totalDays; i++) {
+        const currentDate = addDays(start, i);
+        dates.push(format(currentDate, "yyyy-MM-dd"));
+      }
+      return dates;
+    }
+
+    // For more than 10 days, calculate intervals
+    const interval = Math.floor(totalDays / 10);
+    const remainder = totalDays % 10;
+    const dates = [format(start, "yyyy-MM-dd")];
+
+    let currentDate = start;
+
+    // Generate dates based on interval, adjusting for remainder
+    for (let i = 1; i <= 9; i++) {
+      currentDate = addDays(
+        currentDate,
+        interval + (i === 9 && remainder > 0 ? remainder : 0)
+      );
+      if (!isAfter(currentDate, end)) {
+        dates.push(format(currentDate, "yyyy-MM-dd"));
+      }
+    }
+
+    // Ensure the last date is included
+    if (dates[dates.length - 1] !== format(end, "yyyy-MM-dd")) {
+      dates.push(format(end, "yyyy-MM-dd"));
+    }
+
+    return dates;
+  }
 
   const graphData =
     predictedData && predictedData.length > 0
@@ -1166,6 +1166,29 @@ const LineChartComponent = ({
 
   return (
     <div ref={chartRef}>
+      <div className="flex justify-start gap-2 mb-4">
+        <Button
+          variant={currentView === "day" ? "default" : "outline"}
+          onClick={() => handleViewChange("day")}
+          size="sm"
+        >
+          Day
+        </Button>
+        <Button
+          variant={currentView === "week" ? "default" : "outline"}
+          onClick={() => handleViewChange("week")}
+          size="sm"
+        >
+          Week
+        </Button>
+        <Button
+          variant={currentView === "month" ? "default" : "outline"}
+          onClick={() => handleViewChange("month")}
+          size="sm"
+        >
+          Month
+        </Button>
+      </div>
       <ResponsiveContainer width="100%" height={420}>
         <LineChart
           data={graphData}
