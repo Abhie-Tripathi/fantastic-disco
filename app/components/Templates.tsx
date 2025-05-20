@@ -19,6 +19,8 @@ import { suggestionGenerator } from "@/utils/openAI";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
 import {companyData, competitorData, keywordData} from "@/types/trackers";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
 interface TemplateProps{
   isData: boolean;
   hideTemplates: (val: boolean) => void;
@@ -62,7 +64,50 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
   const [inputValue,setInputValue] = useState(aiStatus?.companyData?.domain || "");
   const inputRef = useRef<HTMLInputElement>(null);
+  const stepsConfig = isEventeli?[
+    {
+      key: "geoTemplate",
+      id:"geoTemplate",
+      content: "Select a location to explore events, view insights, and receive location-based alerts.",
+    },
+    {
+      key: "custom",
+      id:"customTracker",
+      content: "Prefer to start fresh? Build your custom tracker from scratch and explore all advanced filters, intel, and insights scores here.",
+    },
+  ]:[
+    {
+      key: "brandBriefRef",
+      id: "brandBrief",
+      content: "Enter your company website, and we’ll generate a tailored list of competitors, key influencers, and top events to follow.",
+    },
+    {
+      key: "prospectTrackerRef",
+      id:"prospectTracker",
+      content:
+        "From networking to results – Capture, track, and convert prospects seamlessly",
+    },
+    {
+      key: "peopleTrackerRef",
+      id:"peopleTracker",
+      content: "Effortlessly track and stay updated on where your people are.",
+    },
+    {
+      key: "purposeTrackerRef",
+      id:"purposeTracker",
+      content: "Track your purpose, maximize impact and make every event count.",
+    },
+    {
+      key: "customTrackerRef",
+      id: "customTracker",
+      content: "Prefer to start fresh? Build your custom tracker from scratch and explore all advanced filters, intel, and insights scores here.",
+    },
+  ] as const;
 
+const { steps, run, setRun } = useWalkthrough({
+  stepsConfig,
+  currentPath: `tracker?showTemplates=true`,
+});
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -350,50 +395,15 @@ Do not include the competitor platform names in the output. Only return publicly
   const EventeliView = useMemo(() => {
     if (!isEventeli) return null;
     return (
-      <div className={`${styles.container}`}>
-        {(data as TemplateItem[]).map((item: any, ind: number) =>
-          item.isEnabled ? (
-            <Link
-              href={`/internal/trackers/create?type=${item?.url}`}
-              key={ind}
-            >
-              <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
-                <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
-                  <div className={styles.account}>
-                    <Image src={item.img} alt="people" width={31} height={31} />
-                  </div>
-                  <div>
-                    <Image src={Template} alt="template" />
-                  </div>
-                </div>
-                <div className="w-full h-[60%] flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    {item?.domain && (
-                      <div
-                        className="badge_primary"
-                        style={{
-                          fontSize: "var(--font-size-label)",
-                          padding: "6px",
-                        }}
-                      >
-                        {item?.domain}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-[16px] font-bold text-[var(--primary-color)]">
-                    {item?.trackerName}
-                  </div>
-                  <div className="font-medium text-[var(--tertiary-text-color)]">
-                    {item?.content}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ) : (
-            <div
-              className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]"
-              key={ind}
-            >
+      <div className="flex gap-2 w-[100%] justify-center items-center" >
+      <div className="flex gap-2" id="geoTemplate">
+      {(data as TemplateItem[]).map((item: any, ind: number) =>
+        item.isEnabled ? (
+          <Link
+            href={`/internal/trackers/create?type=${item?.url}`}
+            key={ind}
+          >
+            <div className="w-[280px] p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" >
               <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                 <div className={styles.account}>
                   <Image src={item.img} alt="people" width={31} height={31} />
@@ -424,18 +434,55 @@ Do not include the competitor platform names in the output. Only return publicly
                 </div>
               </div>
             </div>
-          )
-        )}
-        <div className={styles.innerContainerOne}>
-          <Image src={Add} alt="add" />
-          <Link
-            href="/internal/trackers/create?type=T_CUSTOM"
-            className={styles.createUrl}
-          >
-            <Button className="text-white">Create Custom</Button>
           </Link>
-        </div>
+        ) : (
+          <div
+            className="p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px] bg-red"
+            key={ind}
+          >
+            <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
+              <div className={styles.account}>
+                <Image src={item.img} alt="people" width={31} height={31} />
+              </div>
+              <div>
+                <Image src={Template} alt="template" />
+              </div>
+            </div>
+            <div className="w-full h-[60%] flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                {item?.domain && (
+                  <div
+                    className="badge_primary"
+                    style={{
+                      fontSize: "var(--font-size-label)",
+                      padding: "6px",
+                    }}
+                  >
+                    {item?.domain}
+                  </div>
+                )}
+              </div>
+              <div className="text-[16px] font-bold text-[var(--primary-color)]">
+                {item?.trackerName}
+              </div>
+              <div className="font-medium text-[var(--tertiary-text-color)]">
+                {item?.content}
+              </div>
+            </div>
+          </div>
+        )
+      )}
       </div>
+      <div className={`${styles.innerContainerOne}`} style={{"width":"280px"}}id="customTracker">
+        <Image src={Add} alt="add" />
+        <Link
+          href="/internal/trackers/create?type=T_CUSTOM"
+          className={styles.createUrl}
+        >
+          <Button className="text-white">Create Custom</Button>
+        </Link>
+      </div>
+    </div>
     );
   }, [isEventeli, data]);
 
@@ -603,6 +650,14 @@ Do not include the competitor platform names in the output. Only return publicly
 
   return (
     <div style={{padding:"16px 14px",width:"100%", overflowY:"auto"}}>
+      {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName="tracker?showTemplates=true"
+          />
+          )}
       {(!isData && isEventeli) && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
       {isData && 
         <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center ml-6"
