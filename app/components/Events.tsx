@@ -11,7 +11,14 @@ import EventCalendar from "@/components/eventCalendar";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
-import { CalendarIcon, Globe, ListIcon, TableIcon, Filter, FilterX } from "lucide-react";
+import {
+  CalendarIcon,
+  Globe,
+  ListIcon,
+  TableIcon,
+  Filter,
+  FilterX,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventCount from "@/components/search/eventCount";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
@@ -35,7 +42,8 @@ const Events = () => {
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, deleteMultipleLocalFilters } = useFilterContext();
+  const { applyFilters, localFilters, deleteMultipleLocalFilters } =
+    useFilterContext();
   const [showFilters, setShowFilter] = useState<boolean>(false);
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -44,7 +52,7 @@ const Events = () => {
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
-    if (showFilters) setShowFilter(false);
+    setShowFilter(false);
   }, []);
 
   const [steps, setSteps] = useState<Step[]>([]);
@@ -108,7 +116,14 @@ const Events = () => {
   };
 
   const filtersCount = (function () {
-    const excludedFilters = ["view", "sort", "offset", "limit", "active_gte", "active_lte"];
+    const excludedFilters = [
+      "view",
+      "sort",
+      "offset",
+      "limit",
+      "active_gte",
+      "active_lte",
+    ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
@@ -241,7 +256,9 @@ const Events = () => {
                 </PopoverContent>
               </Popover>
 
-              {(view == "list" || view == "table" || view == "") && <SortDropdown compact />}
+              {(view == "list" || view == "table" || view == "") && (
+                <SortDropdown compact />
+              )}
 
               <Button
                 onClick={toggleFilterHandler}

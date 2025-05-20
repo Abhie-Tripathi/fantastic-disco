@@ -93,9 +93,6 @@ const MobileDateRangePopup: React.FC<MobileDateRangePopupProps> = ({
               checked={compareEnabled}
               onCheckedChange={setCompareEnabled}
             />
-            <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
-              Coming Soon
-            </span>
           </div>
           {compareEnabled &&
             comparisonOptions &&

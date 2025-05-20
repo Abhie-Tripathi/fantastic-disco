@@ -783,9 +783,11 @@ const Filters = ({
               </Link>
             </TabsList>
           </Tabs>
-          <div className="block md:hidden mt-4">
-            <MultiSelectSearchBar varient="medium" />
-          </div>
+          {type == "events" && (
+            <div className="block md:hidden mt-4">
+              <MultiSelectSearchBar varient="medium" />
+            </div>
+          )}
         </div>
 
         <div className="hidden md:block overflow-y-scroll">
