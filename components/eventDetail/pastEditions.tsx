@@ -18,10 +18,10 @@ const take = 10;
 const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   const { getEventEditionDetails } = useEventsService();
   const [ref, inView] = useInView();
-  const [skip, setSkip] = useState<number>(0);
+  const [offset, setoffset] = useState<number>(0);
   const { data: eventEditionData, isLoading } = useQuery<any>({
-    queryKey: ["editionDetails", skip],
-    queryFn: async () => getEventEditionDetails(eventId, take, skip),
+    queryKey: ["editionDetails", offset],
+    queryFn: async () => getEventEditionDetails(eventId, take, offset),
     enabled: inView,
     refetchOnWindowFocus: false,
     gcTime: 0,
@@ -29,7 +29,7 @@ const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   });
   useEffect(() => {
     if (inView) {
-      setSkip((prev) => prev + take);
+      setoffset((prev) => prev + take);
     }
   }, [inView]);
   useEffect(() => {

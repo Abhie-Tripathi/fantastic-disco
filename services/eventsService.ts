@@ -95,11 +95,15 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventEditionDetails = (id: string, take: number, skip: number) => {
+  const getEventEditionDetails = (
+    id: string,
+    limit: number,
+    offset: number
+  ) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
-        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
-      }`,
+      `${endpoints.event.events}/${id}/editions${
+        limit ? `?limit=${limit}` : ""
+      }${offset !== undefined && offset !== null ? `&offset=${offset}` : ""}`,
       {
         method: "GET",
       }
