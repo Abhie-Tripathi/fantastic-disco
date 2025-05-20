@@ -67,6 +67,7 @@ import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/context/theme";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 
 interface FilterSection {
   id: string;
@@ -475,27 +476,6 @@ const geoFilters: {
         },
       ],
     },
-    {
-      id: "audience-intel",
-      label: "Audience Intel",
-      filters: [
-        // {
-        //   id: "audienceSpread",
-        //   component: "AudienceZoneSatusSelector",
-        //   enabled: !isEventeli,
-        // },
-        {
-          id: "designations",
-          component: "AudienceDesAndDep",
-          enabled: true,
-        },
-        // {
-        //   id: "audienceSpreadRegions",
-        //   component: "AudienceSpread",
-        //   enabled: true,
-        // },
-      ],
-    },
   ],
   companies: [
     {
@@ -738,38 +718,27 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
 
   const saveSearchRef = useRef(null);
 
-  const joyrideCallback = (data: CallBackProps) => {
-    const { status, type, step } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      if (typeof window !== "undefined") {
-        let walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
+  // const joyrideCallback = (data: CallBackProps) => {
+  //   const { status, type, step } = data;
+  //   console.log(step, type);
+  //   if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+  //     if (typeof window !== "undefined") {
+  //       let walkthroughCompleted: string[] = JSON.parse(
+  //         localStorage.getItem("walkthroughCompleted") || "[]"
+  //       );
 
-        if (!walkthroughCompleted.includes("research")) {
-          walkthroughCompleted.push("research");
+  //       if (!walkthroughCompleted.includes("research")) {
+  //         walkthroughCompleted.push("research");
 
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(walkthroughCompleted)
-          );
-        }
-      }
-      setRun(false);
-    }
-
-    // if (type === "step:after" && step?.target) {
-    //   const targetEl = document.querySelector(step.target as string);
-    //   if (targetEl) {
-    //     const yOffset = -80;
-    //     const y =
-    //       targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
-    //     setTimeout(() => {
-    //       window.scrollTo({ top: y, behavior: "smooth" });
-    //     }, 2000);
-    //   }
-    // }
-  };
+  //         localStorage.setItem(
+  //           "walkthroughCompleted",
+  //           JSON.stringify(walkthroughCompleted)
+  //         );
+  //       }
+  //     }
+  //     setRun(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (mounted && saveSearchRef.current) {
@@ -777,9 +746,16 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         const newSteps: Step[] = [
           {
             target: "#research-tabs",
-            title: "Research Tabs",
+            title: "",
             content:
               "Track events, companies, or people to stay on top of what matters most.",
+            disableBeacon: true,
+          },
+          {
+            target: "#save-search-btn",
+            title: "Save Search ",
+            content:
+              "Save this search to revisit your filtered results anytime with one click.",
             disableBeacon: true,
           },
           {
@@ -791,28 +767,34 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           },
           {
             target: "#advanced-details",
-            title: "Advance Details",
+            title: "Advanced Details",
             content: "Unlock advanced filters and drill down into your data.",
             disableBeacon: true,
           },
           {
             target: "#insights-scores",
             title: "Insights & Scores",
-            content:
-              "Insight scores include Estimated Visitors, Estimated Exhibitors, and Event Ranking to help you assess each event’s impact.",
+            content: isEventeli
+              ? "Insight scores include estimated visitors, estimated exhibitors, ranking and analytics to help you assess each event’s impact."
+              : "Insight scores include estimated visitors, estimated exhibitors, and ranking to help you assess each event’s impact.",
             disableBeacon: true,
           },
-          {
-            target: "#audience-intel",
-            title: "Audience Intel",
-            content:
-              "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
-            disableBeacon: true,
-          },
+          ...(!isEventeli
+            ? [
+                {
+                  target: "#audience-intel",
+                  title: "Audience Intel",
+                  content:
+                    "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
+                  disableBeacon: true,
+                },
+              ]
+            : []),
           {
             target: "#research-view",
-            title: "Table, List, Map and Calendar",
-            content: "Add notes and discussions to keep your team aligned.",
+            title: "View",
+            content:
+              "Switch between list, table, map, or calendar views to see your tracker data from any angle.",
             disableBeacon: true,
           },
           {
@@ -820,13 +802,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             title: "Sorting",
             content:
               "Sort by date or advanced intel and insights scores to surface your top priorities.",
-            disableBeacon: true,
-          },
-          {
-            target: "#save-search-btn",
-            title: "Save Search ",
-            content:
-              "Save this search to revisit your filtered results anytime with one click.",
             disableBeacon: true,
           },
         ];
@@ -849,7 +824,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
 
   return (
     <div className="w-full flex flex-col h-full bg-background">
-      {steps.length > 0 && (
+      {/* {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
             <Tooltip {...props} totalSteps={steps.length} />
@@ -858,8 +833,9 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           steps={steps}
           run={run}
           callback={joyrideCallback}
-          scrollToFirstStep={true}
-          disableScrolling={false}
+          disableCloseOnEsc
+          scrollToFirstStep={false}
+          disableScrolling={true}
           spotlightPadding={4}
           styles={{
             options: {
@@ -891,6 +867,14 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               margin: "0px",
             },
           }}
+        />
+      )} */}
+      {steps?.length > 0 && (
+        <JoyRideCustom
+          steps={steps}
+          run={run}
+          onFinish={() => setRun(false)}
+          pathName="research"
         />
       )}
       <button
@@ -943,7 +927,11 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
             {type === "events" && filterCount > 0 && (
-              <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
+              <div
+                className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
+                ref={saveSearchRef}
+                id="save-search-btn"
+              >
                 <div className="flex items-center gap-2">
                   <Image
                     src={whrbotlogo}
@@ -956,8 +944,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 </div>
                 <div className=" flex items-center justify-between">
                   <Button
-                    ref={saveSearchRef}
-                    id="save-search-btn"
                     variant="outline"
                     size="sm"
                     onClick={createTrackerHandler}
