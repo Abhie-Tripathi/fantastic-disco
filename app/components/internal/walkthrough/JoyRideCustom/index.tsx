@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import Tooltip from "../Tooltip"; // Your custom tooltip component
+import Tooltip from "../Tooltip";
 
 interface Props {
   steps: Step[];
@@ -68,7 +68,6 @@ const JoyRideCustom: React.FC<Props> = ({
           JSON.stringify([...walkthroughCompleted, pathName])
         );
       }
-  
       setJoyrideRun(false);
       onFinish?.();
     }
@@ -106,6 +105,7 @@ const JoyRideCustom: React.FC<Props> = ({
         },
         tooltipContainer: {
           textAlign: "left",
+          transition: 'opacity 200ms ease-out'
         },
         buttonNext: {
           backgroundColor: "#000",

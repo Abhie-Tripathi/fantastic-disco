@@ -84,6 +84,7 @@ import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { Step } from "react-joyride";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -458,8 +459,8 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
-   const [steps, setSteps] = useState<Step[]>([]);
-    const [run, setRun] = useState(true);
+  //  const [steps, setSteps] = useState<Step[]>([]);
+  //   const [run, setRun] = useState(true);
     const refs = {
       additionalFilterRef: useRef<HTMLDivElement>(null),
       presetRef: useRef<HTMLDivElement>(null),
@@ -468,53 +469,25 @@ const Pages = () => {
       advanceFilterRef: useRef<HTMLDivElement>(null)
     };
   const stepsConfig =[
-      {"key":"templateRef", "content":"Effortlessly track and stay updated on where your people are."},
-      {"key":"additionalFilterRef","content":"Click here to create a custom tracker with advanced filters"},
-      {"key":"presetRef","content":"Click here to create a custom tracker with advanced filters"},
-      {"key":"basicFilterRef","content":"Click on basic filter"},
-      {"key":"advanceFilterRef","content":"Click on advance filter"}
+      {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
+        ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
+        : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
+      {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
+      {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
+      {"key":"advanceFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."}
     ]
-  const updateSteps = useCallback(() => {
-    
-    const newSteps = stepsConfig
-  .filter(({ key }) => refs[key as keyof typeof refs]?.current)
-  .map(({ key, content }) => ({
-    target: refs[key as keyof typeof refs].current!,
-    content,
-    disableBeacon: true,
-  }));
-    setSteps(newSteps);
-  }, []);
-  useEffect(() => {
-    const walkthroughCompleted: string[] = JSON.parse(
-      localStorage.getItem("walkthroughCompleted") || "[]"
-    );
-  
-    if (type==="T_CUSTOM" && walkthroughCompleted.includes("trackers/create?type=custom")) return;
-    else if(type!=="T_CUSTOM" && walkthroughCompleted.includes("trackers/create?type=template")) return;
-    let tries = 0;
-    const maxTries = 10;
-  
-    const keysToCheck = type!=="T_CUSTOM"?["templateRef", "additionalFilterRef", "presetRef"]:["basicFilterRef", "advanceFilterRef"];
-    console.log(keysToCheck);
-    
-
-const checkRefsAndRun = () => {
-  const allReady = keysToCheck.every(
-    (key) => refs[key as keyof typeof refs]?.current
-  );
-
-  if (allReady) {
-    updateSteps();
-    setRun(true);
-  } else if (tries < maxTries) {
-    tries++;
-    requestAnimationFrame(checkRefsAndRun);
-  }
-};
-  
-    checkRefsAndRun();
-  }, [updateSteps]);
+    const { steps, run, setRun } = useWalkthrough({
+      refs,
+      stepsConfig,
+      storageKey: "walkthroughCompleted",
+      currentPath: type==="T_CUSTOM"?"trackers/create?type=T_CUSTOME":`trackers/create?type=${type}`,
+      type: type || "",
+      conditionalKeys: (type) =>
+        type === "T_CUSTOM"
+          ? ["basicFilterRef", "advanceFilterRef"]
+          : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+    });
   
   
   useEffect(() => {
@@ -1337,7 +1310,7 @@ const checkRefsAndRun = () => {
             steps={steps}
             run={run}
             onFinish={() => setRun(false)}
-            pathName={type === "T_CUSTOM" ? "trackers/create?type=custom" : "trackers/create?type=template"}
+            pathName={type === "T_CUSTOM" ? "trackers/create?type=T_CUSTOME" : `trackers/create?type=${type}`}
           />
           )}
           <div
@@ -1410,7 +1383,9 @@ const checkRefsAndRun = () => {
                 onChange={(event) => setTrackerName(event.target.value)}
               />
             </div>
-            <TeliTemplates type={type} isMandatory={isMandatory}/>
+            <div>
+            <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>
+            </div>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
               <div style={{ display: 'flex', gap: '25px' }} >
                 <div className={`card ${styles.competitor}`} ref={refs.templateRef}>
@@ -1694,7 +1669,7 @@ const checkRefsAndRun = () => {
                   <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }} ref={refs.additionalFilterRef}>
                     <div className={styles.hiddenFiltersInnerDiv}>
                       {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
-                      <div className={styles.hiddenFilterHeading}>Additional filters</div>
+                      <div className={styles.hiddenFilterHeading}>Advance filters</div>
                     </div>
                     <div><ChevronDown className="icons" /></div>
                   </div>
@@ -1707,7 +1682,9 @@ const checkRefsAndRun = () => {
                           <EventTypeSelector />
                           <CategorySelector />
                           <EventFormatSelector />
-                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && <LocationSelector isMandatory={isMandatory} />}
+                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && 
+                          <LocationSelector isMandatory={isMandatory} />
+                          }
 
                           {/* <LocationSelector/> */}
                           {type !== "T_GEOTIME" &&
