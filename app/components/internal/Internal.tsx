@@ -398,16 +398,9 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                     />
                     <YourEventCard
                       eventId={item.eventId}
+                      eventData={item.eventData}
                       setSelectedId={setSelectedId}
-                      isDateSame={showDate}
                       enquiryId={item.id}
-                      eventName={item.eventData.name}
-                      eventLocation={item.eventData.eventLocation?.cityName}
-                      eventCountry={item.eventData.eventLocation?.countryName}
-                      eventImage={item.eventData.logoUrl}
-                      eventStartDate={item.eventData.startDateTime}
-                      eventEndDate={item.eventData.endDateTime}
-                      eventCompany={item.eventData.organizer?.name}
                       currentEnquiryStatus={item.status}
                       upvote={item.activityCount} // upvote activity data
                       enquiryActivity={item.myActivity}

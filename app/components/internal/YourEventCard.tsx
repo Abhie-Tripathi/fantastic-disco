@@ -1,31 +1,36 @@
 import React, { useEffect, useState } from "react";
-import styles from "./yourEventCard.style.module.css";
-import Image from "next/image";
-import upArrowLight from "/public/internal/up_arrow_light.svg";
-import { formatEventDates } from "@/utils/dateFormat";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
-import upArrow from "/public/internal/up_arrow.svg";
-import { useTheme } from "@/context";
-import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
-import { Calendar, Location } from "geist-icons";
 import { useCoordinateService } from "@/services/coordinateService";
 import { GAEvent } from "@/utils/GAEvent";
+import { enquiryType } from "@/types/coordinateEventType";
+import { formattedDateRange } from "@/utils/date";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { formatLocationParts } from "@/utils/locationFormat";
+import { Check, ChevronDown, Radio, Triangle } from "lucide-react";
+import { cn, lightenColor } from "@/lib/utils";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { InterestConfiguration } from "@/types/configuration";
 
 interface YourEventCardProps {
   eventId: string;
-  isDateSame?: boolean;
+  eventData: enquiryType["eventData"];
   enquiryId: string;
-  eventName?: string;
-  eventCountry?: string | null;
-  eventLocation?: string | null;
-  eventImage?: string | null;
-  eventStartDate?: string;
-  eventEndDate?: string;
-  eventCompany?: string;
   currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
-  coordinateActions: { [status: string]: string }[];
+  coordinateActions: InterestConfiguration[];
   pipelineConfig: any;
   handleModal?: (id: string, enquiryId: string) => void;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
@@ -38,14 +43,8 @@ interface VoteStatus {
 
 const YourEventCard: React.FC<YourEventCardProps> = ({
   eventId,
+  eventData,
   enquiryId,
-  eventName,
-  eventLocation,
-  eventCountry,
-  eventImage,
-  eventStartDate,
-  eventEndDate,
-  eventCompany,
   currentEnquiryStatus,
   upvote,
   enquiryActivity,
@@ -53,16 +52,33 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   pipelineConfig,
   handleModal,
   handleShortlistModal,
-  isDateSame,
   setSelectedId,
   enquiryStatusUpdate,
 }) => {
-  // const [value,setValue]=useState("");
-  const { theme } = useTheme();
+  const address = eventData.eventLocation ? (
+    eventData.format === "online" ? (
+      <span className="flex items-center">
+        <Radio className="w-4 h-4 mr-1" /> Online
+      </span>
+    ) : eventData.format === "hybrid" ? (
+      <span>
+        <Radio className="w-4 h-4 mr-1 inline-block" />
+        Hybrid&nbsp;-&nbsp;
+        {formatLocationParts(eventData.eventLocation)}
+      </span>
+    ) : (
+      formatLocationParts(eventData.eventLocation)
+    )
+  ) : (
+    "Venue to be announced"
+  );
+
+  const isCancelled = eventData.status === "cancelled";
+  const isPostponed = eventData.status === "postponed";
   const [votesCount, setVotesCount] = useState(0);
   const [voteStatus, setVoteStatus] = useState<VoteStatus>({});
 
-  const [interestedUsers, setInterestedUsers] = useState<any>([]);
+  const [showUpvoteDropdown, setShowUpvoteDropdown] = useState<boolean>(false);
 
   const coordinateService = useCoordinateService();
 
@@ -114,8 +130,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   useEffect(() => {
-    if (interestedUsers.length === 0) fetchInterestedUsers();
-
     setVotesCount(upvote?.total || 0);
 
     setVoteStatus(
@@ -131,23 +145,68 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     );
   }, []);
 
-  const fetchInterestedUsers = async () => {
-    try {
-      const apiData: any = await coordinateService.getInterestedUsers(
-        eventId,
-        enquiryId
-      );
-      if (apiData) {
-        setInterestedUsers(apiData.interestedUsers);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const UpvoteDropdown = () => {
+    return (
+      <Popover open={showUpvoteDropdown} onOpenChange={setShowUpvoteDropdown}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="border px-3 gap-1.5 text-[var(--primary-color)] hover:text-[var(--primary-color)]"
+          >
+            <Triangle
+              strokeWidth={0.5}
+              className="h-3 w-3"
+              color="var(--primary-color)"
+              fill="var(--primary-color)"
+            />
+            <span>{votesCount}</span>
+            Upvotes
+            <ChevronDown className="h-4 w-4" color="var(--primary-color)" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-48 p-2">
+          <div className="flex flex-col space-y-1">
+            {coordinateActions.map((item) => (
+              <Button
+                variant={"ghost"}
+                className="justify-between flex items-center gap-2"
+                onClick={() =>
+                  handleVoteClick(voteStatus[item.status], item.status)
+                }
+              >
+                {/* <span>{item.label}</span> */}
+                <div className="flex items-center gap-2">
+                  {voteStatus[item.status] && (
+                    <Check
+                      strokeWidth={2}
+                      color="#0072F5"
+                      className="h-4 w-4"
+                    />
+                  )}
+                  {item.label}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Triangle
+                    strokeWidth={0.5}
+                    className="h-3 w-3"
+                    color="var(--primary-color)"
+                    fill="var(--primary-color)"
+                  />
+                  {upvote[item.status.toLocaleLowerCase()]}
+                </div>
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
   };
+
   return (
     <div className="flex justify-end border-l border-primary border-dashed w-[95%] md:w-[85%]">
       <div
-        className={`${styles.card} card`}
+        className="bg-background rounded-lg border shadow-sm relative my-6 w-[98%] cursor-pointer"
         onClick={() => {
           handleModalOpen();
           GAEvent(
@@ -157,182 +216,165 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             "Card Clicked | View Detail"
           );
         }}
-        style={{ marginTop: !isDateSame ? "0px" : "25px" }}
       >
-        {/* <div className={styles.cardBefore}></div> */}
-        <div className={`flex pb-3 gap-4 border-b lg:border-none `}>
-          {eventImage && (
-            <div className={styles.leftContainer}>
-              <div className="tablet_view mobile_view">
-                <StatusChangeDropdown
-                  setSelectedId={setSelectedId}
-                  label={statusLabel}
-                  eventId={eventId}
-                  enquiryId={enquiryId}
-                  currentEnquiryStatus={currentEnquiryStatus}
-                  handleShortlistModal={handleShortlistModal}
-                  pipelineConfig={pipelineConfig}
-                  enquiryStatusUpdate={enquiryStatusUpdate}
-                />
+        <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
+          {eventData.logoUrl ? (
+            <img
+              src={eventData.logoUrl || "/placeholder.svg"}
+              alt={`${eventData.name} logo`}
+              className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          ) : eventData.website ? (
+            <div className="w-16 h-16 md:w-24 md:h-24 relative">
+              <img
+                src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${eventData.website}&size=64`}
+                alt={`${eventData.name} website favicon`}
+                className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.dataset.error = "true";
+                }}
+              />
+              {/* Fallback that shows when image errors */}
+              <div
+                className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                style={{ display: "none" }}
+                ref={(el) => {
+                  if (el) {
+                    const img = el.previousSibling as HTMLImageElement;
+                    if (img && img.dataset.error === "true") {
+                      el.style.display = "flex";
+                    }
+                  }
+                }}
+              >
+                <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
+                  {eventData.name.charAt(0)}
+                </span>
               </div>
-
-                <Image
-                  src={eventImage}
-                  alt="eventImage"
-                  width={238}
-                  height={192}
-                  className={`${styles.cardImg} object-contain p-2 border rounded-md bg-white shadow-sm`}
-                />
+            </div>
+          ) : (
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+              <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
+                {eventData.name.charAt(0)}
+              </span>
             </div>
           )}
-          <div className={styles.cardDetails}>
-            <div className={styles.eventNameComp}>
-              <div>
-                <div className="text-sm lg:text-2xl">{eventName}</div>
-                <div className="text-[var(--tertiary-text-color)] text-xs lg:text-sm leading-5">{eventCompany}</div>
-              </div>
-              <div className="desktop_view">
-                <StatusChangeDropdown
-                  setSelectedId={setSelectedId}
-                  label={statusLabel}
-                  eventId={eventId}
-                  enquiryId={enquiryId}
-                  currentEnquiryStatus={currentEnquiryStatus}
-                  handleShortlistModal={handleShortlistModal}
-                  pipelineConfig={pipelineConfig}
-                  enquiryStatusUpdate={enquiryStatusUpdate}
-                />
-              </div>
-            </div>
-            <div className={styles.locationAndDateContainer}>
-              {eventLocation && (
-                <div className="flex text-xs gap-2 items-center text-[var(--secondary-text-color)]">
-                  <div>
-                    <Location
-                      height={"14px"}
-                      width={"14px"}
-                      color="var(--secondary-text-color)"
-                      style={{ display: "flex" }}
-                    />
-                  </div>
-                  <div>
-                    {eventLocation
-                      ? eventLocation === eventCountry
-                        ? eventCountry
-                        : `${eventLocation}, ${eventCountry}`
-                      : ""}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex text-xs gap-2 items-center text-[var(--secondary-text-color)]">
-                <Calendar
-                  height={"14px"}
-                  width={"14px"}
-                  color="var(--secondary-text-color)"
-                />
-                <div>
-                  {eventStartDate &&
-                    eventEndDate &&
-                    formatEventDates(eventStartDate, eventEndDate)}
-                </div>
-              </div>
-            </div>
-
-            <div className="tablet_view mobile_view">
-              <div>
-                <div className={styles.total_upvotes}>
-                  {upvote && votesCount}
-                  <div style={{ display: "flex", paddingTop: "5px" }}>
-                    <Image
-                      src={theme === "light" ? upArrowLight : upArrow}
-                      alt="up"
-                      width={16}
-                      height={16}
-                    />
-                    &nbsp;Upvotes
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="desktop_view">
-              <div
-                className={styles.allTagsOuterContainer}
-                onClick={handleClickEvent}
-              >
-                <div className={styles.allTags} style={{ cursor: "default" }}>
-                  <div
-                    className={styles.total_upvotes}
-                    title={`Total upvotes count of ${coordinateActions
-                      .map((item) => item.label)
-                      .join(", ")}`}
-                  >
-                    {upvote && votesCount}
-                    <div style={{ display: "flex", paddingTop: "10px" }}>
-                      <Image
-                        src={theme === "light" ? upArrowLight : upArrow}
-                        alt="up"
-                        width={16}
-                        height={16}
-                        className="icons"
-                      />
-                      &nbsp;Upvotes
-                    </div>
-                  </div>
-
-                  {coordinateActions.map((item: any) => (
-                    <UpVoteTag
-                      key={item.status}
-                      type={item.status}
-                      label={item.label}
-                      status={voteStatus[item.status] ? "voted" : ""}
-                      myActivityId={voteStatus[item.status]}
-                      handleVoteClick={handleVoteClick}
-                      userList={interestedUsers?.filter(
-                        (users: any) => users.interest === item.status
-                      )}
-                    />
-                  ))}
-                </div>
-                <div className={styles.viewCtas}>
-                  <button
-                    className={styles.notesBtn}
-                    style={{ color: "var(--coordinate-primary-color)" }}
-                    onClick={() => {
-                      handleModalOpen();
-                      GAEvent(
-                        "Coordinate",
-                        "Coordinate",
-                        "Enquiry",
-                        "View Detail"
-                      );
-                    }}
-                  >
-                    View Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-        <div className="tablet_view mobile_view">
-          <div
-          className="pt-3 flex gap-3"
-            onClick={handleClickEvent}
-          >
-            {coordinateActions.map((item: any) => (
-              <UpVoteTag
-                key={item.status}
-                type={item.status}
-                label={item.label}
-                status={voteStatus[item.status] ? "voted" : ""}
-                myActivityId={voteStatus[item.status]}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers?.filter(
-                  (users: any) => users.interest === item.status
-                )}
-              />
-            ))}
+        <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
+          <div className="">
+            <div className="flex flex-col justify-between gap-3">
+              <h2 className="text-xl md:text-2xl font-semibold ">
+                {eventData.name}
+              </h2>
+              <div>
+                <p className="text-sm capitalize">{address}</p>
+                <div className="flex items-center gap-2">
+                  <p
+                    className={cn(
+                      "text-sm text-gray-600 mt-2",
+                      isCancelled || isPostponed ? "line-through" : ""
+                    )}
+                  >
+                    {formattedDateRange(
+                      eventData.startDateTime,
+                      eventData.endDateTime
+                    )}
+                  </p>
+                  {isCancelled && (
+                    <Badge
+                      variant="outline"
+                      className="border-destructive text-destructive mt-2"
+                    >
+                      Cancelled
+                    </Badge>
+                  )}
+                  {isPostponed && (
+                    <Badge
+                      variant="outline"
+                      className="border-[#FF990A] text-[#FF990A] mt-2"
+                    >
+                      Postponed
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between flex-wrap gap-2">
+                  {eventData.primaryEventType && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="secondary"
+                            className={
+                              "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                            }
+                            style={{
+                              color:
+                                eventTypeColors[
+                                  eventData.primaryEventType || ""
+                                ],
+                              backgroundColor: lightenColor(
+                                eventTypeColors[
+                                  eventData.primaryEventType || ""
+                                ],
+                                0.9
+                              ),
+                            }}
+                          >
+                            <span>
+                              {
+                                eventTypeIcons[
+                                  eventData.primaryEventType || "festivals"
+                                ]
+                              }
+                            </span>
+                            <span className="capitalize">
+                              {eventData.primaryEventType.toLowerCase()}
+                            </span>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Event Type</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  <div
+                    className="flex flex-wrap gap-2"
+                    onClick={handleClickEvent}
+                  >
+                    <UpvoteDropdown />
+
+                    <StatusChangeDropdown
+                      setSelectedId={setSelectedId}
+                      label={statusLabel}
+                      eventId={eventId}
+                      enquiryId={enquiryId}
+                      currentEnquiryStatus={currentEnquiryStatus}
+                      handleShortlistModal={handleShortlistModal}
+                      pipelineConfig={pipelineConfig}
+                      enquiryStatusUpdate={enquiryStatusUpdate}
+                    />
+                  </div>
+                </div>
+
+                {/* <div className="flex flex-wrap gap-2" onClick={handleClickEvent} >
+                  <StatusChangeDropdown
+                    setSelectedId={setSelectedId}
+                    label={statusLabel}
+                    eventId={eventId}
+                    enquiryId={enquiryId}
+                    currentEnquiryStatus={currentEnquiryStatus}
+                    handleShortlistModal={handleShortlistModal}
+                    pipelineConfig={pipelineConfig}
+                    enquiryStatusUpdate={enquiryStatusUpdate}
+                  />
+                </div> */}
+              </div>
+            </div>
           </div>
         </div>
       </div>
