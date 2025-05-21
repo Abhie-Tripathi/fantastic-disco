@@ -1,6 +1,6 @@
 
 "use client";
-import React, { lazy, Suspense, useEffect, useState, useRef, useCallback} from "react";
+import React, { lazy, Suspense, useEffect, useState} from "react";
 import Expand from "/public/expand_more.svg";
 import Notes from "@/public/notes.svg"
 import { Button } from "@/components/ui/button";
@@ -513,7 +513,6 @@ if (!share) {
   closeShareModal();
 }
 };
-console.log(refs.eventTypeRef);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">

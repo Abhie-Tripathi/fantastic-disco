@@ -48,8 +48,6 @@ export function useWalkthrough<T extends Record<string, React.RefObject<HTMLElem
         };
       })
       .filter(Boolean) as Step[];
-  
-    console.log("newSteps", newSteps);
     setSteps(newSteps);
   }, [...deps]);
   
@@ -59,7 +57,6 @@ export function useWalkthrough<T extends Record<string, React.RefObject<HTMLElem
       localStorage.getItem(storageKey) || "[]"
     );
     if (currentPath && walkthroughCompleted.includes(currentPath)) {
-      console.log(currentPath);
       
       return;
     }
