@@ -25,7 +25,10 @@ import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibi
 import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
 import FrequencySelector from "@/components/search/advancedFilters/frequency";
 import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
-import { default as KeywordFilter, default as ProductTopics } from "@/components/search/advancedFilters/product&Topics";
+import {
+  default as KeywordFilter,
+  default as ProductTopics,
+} from "@/components/search/advancedFilters/product&Topics";
 import CategorySelector from "@/components/search/categorySelector";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventEntrySelector from "@/components/search/eventEntry";
@@ -57,13 +60,14 @@ import {
   Filter,
   FilterX,
   Lock,
-  UserSearch
+  UserSearch,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
+import FilterContent from "./FilterContent";
 
 interface FilterSection {
   id: string;
@@ -669,17 +673,29 @@ interface FiltersProps {
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
+  children: React.ReactNode;
 }
 
-const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
+const Filters = ({
+  isCollapsed,
+  onToggleCollapse,
+  type,
+  children,
+}: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
-
   const { getFilterValue } = useFilterState();
   const { theme } = useTheme();
 
   const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
@@ -689,7 +705,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
-  }, []);
+  }, [applyFilters]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -711,8 +727,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const saveSearchRef = useRef(null);
 
   // const joyrideCallback = (data: CallBackProps) => {
   //   const { status, type, step } = data;
@@ -737,7 +751,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
   // };
 
   useEffect(() => {
-    if (mounted && saveSearchRef.current) {
+    if (mounted) {
       const handle = requestAnimationFrame(() => {
         const newSteps: Step[] = [
           {
@@ -820,7 +834,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
 
       return () => cancelAnimationFrame(handle);
     }
-  }, [mounted, saveSearchRef.current]);
+  }, [mounted]);
 
   return (
     <div className="w-full flex flex-col h-full bg-background">
@@ -879,7 +893,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
       )}
       <button
         onClick={onToggleCollapse}
-        className="group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+        className="md:flex hidden group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 items-center justify-center transition-all duration-200"
       >
         {isCollapsed ? (
           <ChevronRight className="w-4 h-4 group-hover:text-primary transition-colors" />
@@ -887,8 +901,8 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
       </button>
-      <div className="overflow-y-auto pt-4 pl-6 h-[calc(100vh-60px)] flex flex-col">
-        <div className="pb-3 sticky top-0 bg-background z-10">
+      <div className="overflow-y-auto md:pt-4 md:pl-6 h-[calc(100vh-60px)] flex flex-col">
+        <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
           <Tabs defaultValue={type} value={type}>
             <TabsList
               className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
@@ -922,93 +936,23 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               </Link>
             </TabsList>
           </Tabs>
+          {type == "events" && (
+            <div className="block md:hidden mt-4">
+              <MultiSelectSearchBar varient="medium" />
+            </div>
+          )}
         </div>
 
-        <div className="flex-1 overflow-y-auto w-full mt-0">
-          <div className="p-3 bg-[var(--background-secondary-color)]">
-            {type === "events" && filterCount > 0 && (
-              <div
-                className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
-                ref={saveSearchRef}
-                id="save-search-btn"
-              >
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={whrbotlogo}
-                    alt="WHR bot"
-                    className="w-8 h-8 rounded-full bg-background"
-                  />
-                  <div className="text-sm font-medium text-foreground">
-                    Save this search
-                  </div>
-                </div>
-                <div className=" flex items-center justify-between">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={createTrackerHandler}
-                    className="h-8"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-            )}
-            <Accordion
-              type="multiple"
-              className="space-y-4"
-              defaultValue={[filters[type][0]?.id]}
-            >
-              {filters[type].map((section) => (
-                <AccordionItem
-                  // id={section.id}
-                  key={section.id}
-                  value={section.id}
-                  className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
-                >
-                  <AccordionTrigger
-                    id={section.id}
-                    className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
-                  >
-                    <div className="text-sm flex gap-2 items-center uppercase font-medium">
-                      <Filter className="w-4 h-4" />
-                      {section.label}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="space-y-4 border-t pt-4 mt-1">
-                      {section.filters.map((filter) => {
-                        const Component = getFilterComponent(filter.component);
-                        if (!Component) return null;
-
-                        return (
-                          <div
-                            key={filter.id}
-                            className="flex items-center justify-between group relative transition-opacity duration-200"
-                            style={{ opacity: filter.enabled ? 1 : 0.5 }}
-                          >
-                            <div className="w-full">
-                              <Component
-                                variant="accordion"
-                                disabled={!filter.enabled}
-                                filterName={filter.filterName}
-                              />
-                            </div>
-                            {!filter.enabled && (
-                              <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+        <div className="hidden md:block overflow-y-scroll">
+          <FilterContent
+            type={type}
+            filterCount={filterCount}
+            createTrackerHandler={createTrackerHandler}
+            searchHandler={searchHandler}
+          />
         </div>
 
-        <div className="w-full sticky bottom-0 bg-background z-10">
+        <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
           <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
             <div className="flex items-center justify-between mb-2">
               <Button
@@ -1033,6 +977,8 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </Button>
           </div>
         </div>
+
+        <div className="md:hidden block">{children}</div>
 
         <CreateTrackerDialog
           open={trackerModalOpen}
