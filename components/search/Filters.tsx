@@ -752,13 +752,6 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             disableBeacon: true,
           },
           {
-            target: "#save-search-btn",
-            title: "Save Search ",
-            content:
-              "Save this search to revisit your filtered results anytime with one click.",
-            disableBeacon: true,
-          },
-          {
             target: "#basic-filters",
             title: "Basic Filters",
             content:
@@ -808,6 +801,13 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 },
               ]
             : []),
+          {
+            target: "#save-search-btn",
+            title: "Save Search ",
+            content:
+              "Save this search to revisit your filtered results anytime with one click.",
+            disableBeacon: true,
+          },
         ];
 
         const walkthroughCompleted: string[] = JSON.parse(
