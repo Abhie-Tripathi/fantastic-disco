@@ -529,9 +529,9 @@ const TestPeriodicAnalytics = () => {
                 <TableCell
                   key={key}
                   width={isMobileView ? 140 : 340}
-                  className="text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate"
+                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate ${!comparisonDate ? 'h-[53px]' : ''}`}
                 >
-                  <div className="w-full flex flex-col justify-center px-1">
+                  <div className={`w-full ${!comparisonDate ? 'h-full flex items-center justify-center' : 'flex flex-col justify-center'}`}>
                     <p className="truncate">
                       {format(new Date(data[key]), "dd MMM yyyy")}
                     </p>
