@@ -61,6 +61,11 @@ export interface enquiryType {
         [name: string]: number,
     };
     myActivity: any;
+    owner: {
+        id: string,
+        name: string,
+        imageUrl: string,
+    } | null;
 }
 
 export interface CoordinateListResponse {
