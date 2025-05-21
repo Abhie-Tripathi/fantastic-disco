@@ -96,7 +96,7 @@ export const TrackerContextProvider = ({ children }: any) => {
   ] as const;
   const currentPath =
   pathName.length > 4 && pages.includes(pathName[4])
-    ? `/tracker/trackedEvent`
+    ? `tracker/trackedEvent`
     : "";
   const { steps, run, setRun } = useWalkthrough({
     refs,
