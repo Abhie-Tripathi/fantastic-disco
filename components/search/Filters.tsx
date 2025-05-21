@@ -1,6 +1,40 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import CompanySize from "@/app/components/prospect/Filters/companySize";
+import CompanyType from "@/app/components/prospect/Filters/companyType";
+import Department from "@/app/components/prospect/Filters/department";
+import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
+import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
+import Industry from "@/app/components/prospect/Filters/industryFilter";
+import ParticipationType from "@/app/components/prospect/Filters/participationType";
+import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
+import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
+import Seniority from "@/app/components/prospect/Filters/seniority";
+import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
+import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
+import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
+import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
+import EditionSelector from "@/components/search/advancedFilters/edition";
+import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
+import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
+import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
+import EventAnalyticsSelector from "@/components/search/advancedFilters/eventAnalytics";
+import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
+import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
+import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
+import FrequencySelector from "@/components/search/advancedFilters/frequency";
+import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
+import { default as KeywordFilter, default as ProductTopics } from "@/components/search/advancedFilters/product&Topics";
+import CategorySelector from "@/components/search/categorySelector";
+import DateRangeSelector from "@/components/search/dateRange";
+import EventEntrySelector from "@/components/search/eventEntry";
+import EventFormatSelector from "@/components/search/eventFormat";
+import EventTypeSelector from "@/components/search/eventType";
+import LocationSelector from "@/components/search/location";
+import MultiSelectSearchBar from "@/components/search/searchbar";
+import StatusSelector from "@/components/search/status";
+import UserRatingSelector from "@/components/search/userRatingSelector";
 import {
   Accordion,
   AccordionContent,
@@ -8,66 +42,28 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import { useFilterContext } from "@/context/filterContext";
+import { useTheme } from "@/context/theme";
+import { toast } from "@/hooks/use-toast";
+import { useFilterState } from "@/hooks/useFilterState";
+import whrbotlogo from "@/public/whrbotlogo.svg";
+import { GAEvent } from "@/utils/GAEvent";
 import {
-  FilterX,
+  Calendar1,
   ChevronLeft,
   ChevronRight,
   Filter,
-  Calendar1,
-  Building,
-  UserSearch,
+  FilterX,
   Lock,
+  UserSearch
 } from "lucide-react";
-import { useCallback, useState, useMemo, useEffect, useRef } from "react";
-import Industry from "@/app/components/prospect/Filters/industryFilter";
-import { useFilterContext } from "@/context/filterContext";
-import CompanySize from "@/app/components/prospect/Filters/companySize";
-import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
-import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
-import ParticipationType from "@/app/components/prospect/Filters/participationType";
-import LocationSelector from "@/components/search/location";
-import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
-import { useFilterState } from "@/hooks/useFilterState";
-import EventTypeSelector from "@/components/search/eventType";
-import CategorySelector from "@/components/search/categorySelector";
-import EventFormatSelector from "@/components/search/eventFormat";
-import DateRangeSelector from "@/components/search/dateRange";
-import StatusSelector from "@/components/search/status";
-import EventEntrySelector from "@/components/search/eventEntry";
-import UserRatingSelector from "@/components/search/userRatingSelector";
-import EditionSelector from "@/components/search/advancedFilters/edition";
-import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
-import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
-import FrequencySelector from "@/components/search/advancedFilters/frequency";
-import KeywordFilter from "@/components/search/advancedFilters/product&Topics";
-import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
-import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
-import EventAnalyticsSelector from "@/components/search/advancedFilters/eventAnalytics";
-import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
-import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
-import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
-import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
-import CompanyType from "@/app/components/prospect/Filters/companyType";
-import Seniority from "@/app/components/prospect/Filters/seniority";
-import Department from "@/app/components/prospect/Filters/department";
-import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
-import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
-import ProductTopics from "@/components/search/advancedFilters/product&Topics";
-import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
-import MultiSelectSearchBar from "@/components/search/searchbar";
-import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
-import { Switch } from "@/components/ui/switch";
-import whrbotlogo from "@/public/whrbotlogo.svg";
 import Image from "next/image";
-import { isEventeli } from "@/config";
 import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
-import { GAEvent } from "@/utils/GAEvent";
-import { toast } from "@/hooks/use-toast";
-import { useTheme } from "@/context/theme";
-import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 
 interface FilterSection {
   id: string;

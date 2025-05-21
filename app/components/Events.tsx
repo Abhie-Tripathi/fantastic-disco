@@ -1,35 +1,29 @@
+import Table from "@/app/components/Table/EventTable";
+import EventCalendar from "@/components/eventCalendar";
+import Alerts from "@/components/search/alerts";
+import EventCount from "@/components/search/eventCount";
+import List from "@/components/search/list";
+import SortDropdown from "@/components/search/sortDropdown";
+import Loading from "@/components/ui/Loading";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import { useFilterContext } from "@/context/filterContext";
+import { useToast } from "@/hooks/use-toast";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
+import {
+  CalendarIcon,
+  Globe,
+  ListIcon,
+  TableIcon
+} from "lucide-react";
 import {
   lazy,
   Suspense,
   useCallback,
   useEffect,
-  useRef,
-  useState,
+  useState
 } from "react";
-import Table from "@/app/components/Table/EventTable";
-import EventCalendar from "@/components/eventCalendar";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
-import Loading from "@/components/ui/Loading";
-import { Button } from "@/components/ui/button";
-import List from "@/components/search/list";
-import {
-  ArrowUpRight,
-  CalendarIcon,
-  Globe,
-  ListIcon,
-  TableIcon,
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GAEvent } from "@/utils/GAEvent";
-import EventCount from "@/components/search/eventCount";
-import { useDefaultFilters } from "@/hooks/useDefaultFilters";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useFilterContext } from "@/context/filterContext";
-import { useToast } from "@/hooks/use-toast";
-import Alerts from "@/components/search/alerts";
-import SortDropdown from "@/components/search/sortDropdown";
-import { isEventeli } from "@/config";
-import { CallBackProps, STATUS, Step } from "react-joyride";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -45,53 +39,6 @@ const Events = () => {
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
-  }, []);
-
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [run, setRun] = useState<boolean>(true);
-
-  const saveSearchRef = useRef(null);
-
-  const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      if (typeof window !== "undefined") {
-        let walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
-
-        if (!walkthroughCompleted.includes("research")) {
-          walkthroughCompleted.push("research");
-
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(walkthroughCompleted)
-          );
-        }
-      }
-      setRun(false);
-    }
-  };
-
-  useEffect(() => {
-    const newSteps: Step[] = [
-      {
-        target: saveSearchRef.current || "",
-        title: "Save Search",
-        content: "Save this search to add it as tracker",
-        disableBeacon: true,
-      },
-    ];
-
-    if (typeof window !== "undefined") {
-      const walkthroughCompleted: string[] = JSON.parse(
-        localStorage.getItem("walkthroughCompleted") || "[]"
-      );
-      if (!walkthroughCompleted.includes("research")) {
-        setSteps(newSteps);
-        setRun(true);
-      }
-    }
   }, []);
 
   const onTabsChange = (value: string) => {

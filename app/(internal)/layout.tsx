@@ -1,18 +1,14 @@
 // "use client";
-import { Inter } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
-import "./../globals.css";
-import { AuthContextProvider, ThemeProvider } from "@/context";
-import { Sora } from "next/font/google";
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
-import { GoogleTagManager } from "@next/third-parties/google";
-import { Metadata } from "next";
-import { FilterProvider } from "@/context/filterContext";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
-import { Toast, ToastProvider } from "@/components/ui/toast";
-import { WalkthroughProvider } from "@/context/WalkthroughProvider";
+import { AuthContextProvider, ThemeProvider } from "@/context";
+import { FilterProvider } from "@/context/filterContext";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { Metadata } from "next";
+import { Inter, Sora } from "next/font/google";
+import "./../globals.css";
 
 const sora = Sora({
   subsets: ["latin"],
