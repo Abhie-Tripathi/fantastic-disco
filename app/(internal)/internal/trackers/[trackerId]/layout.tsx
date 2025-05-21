@@ -1,5 +1,5 @@
 "use client"
-import React,{Suspense, useEffect, useState, useCallback, useRef} from "react";
+import React,{Suspense, useEffect, useState} from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
 import Back from '/public/back.svg';
