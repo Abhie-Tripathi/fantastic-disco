@@ -102,18 +102,12 @@ const PipelineCol = ({
               key={index}
               task={task}
               name={task.eventData.name}
-              interests={task.interestedCount}
               draggable={true}
-              eventLocation={""}
-              eventCompany={task.eventData?.organizer?.name ?? ""}
-              eventStartDate={task.eventData.startDateTime}
-              eventEndDate={task.eventData.endDateTime}
               eventId={task.eventId}
               enquiryId={task.id}
               enquiryStatus={task.status}
               onDragStart={(event) => handleDragStart(event, task)}
               handleModal={handleModal}
-              onClick={openAddModalHandler}
             />
           ))}
           {taskDetail[status].noMoreData ? (

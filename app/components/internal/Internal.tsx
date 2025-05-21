@@ -401,7 +401,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
               <div className="flex items-center justify-end gap-3">
                 {isTentimesUser && <AddEventModal />}
 
-                <ViewSelectDropdown />
+                {/* <ViewSelectDropdown /> */}
 
                 <Button
                   onClick={toggleFilterHandler}
