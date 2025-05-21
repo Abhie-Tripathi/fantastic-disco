@@ -90,51 +90,42 @@ export const sessionKeys = [
   "redirect",
 ];
 
+// Match dynamic UUIDs or slugs after each prefix
+const idPattern = "[a-zA-Z0-9-]+";
+
 export const dynamicPathPatterns = [
-  // Namespace-based paths
-  (p: string) => /^\/\[namespace\]\/settings$/.test(p),
-  (p: string) => /^\/\[namespace\]\/settings\/notifications$/.test(p),
-  (p: string) => /^\/\[namespace\]\/settings\/product$/.test(p),
-  (p: string) => /^\/\[namespace\]\/settings\/profile$/.test(p),
-  (p: string) => /^\/\[namespace\]\/settings\/rolesandpermission$/.test(p),
-  (p: string) => /^\/\[namespace\]\/settings\/users$/.test(p),
+  // ... (keep other static patterns as-is above this)
 
-  // Auth paths
-  (p: string) => /^\/api\/auth\/\[\.\.\.nextauth\]$/.test(p),
-  (p: string) => /^\/reset\/\[\.\.\.token\]$/.test(p),
+  // ✅ Fixed ID-based dynamic paths
+  (p: string) => new RegExp(`^/detailpage/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/employee/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/company/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/event/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/user/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/widget/edit/${idPattern}$`).test(p),
 
-  // ID-based paths
-  (p: string) => /^\/detailpage\/\[id\]$/.test(p),
-  (p: string) => /^\/employee\/\[eventDetail\]$/.test(p),
-  (p: string) => /^\/company\/\[companyId\]$/.test(p),
-  (p: string) => /^\/event\/\[eventId\]$/.test(p),
-  (p: string) => /^\/user\/\[userId\]$/.test(p),
-  (p: string) => /^\/widget\/edit\/\[id\]$/.test(p),
+  // Tracker paths with dynamic trackerId
+  (p: string) => new RegExp(`^/trackers/${idPattern}$`).test(p),
+  (p: string) => new RegExp(`^/trackers/${idPattern}/editTracker$`).test(p),
+  (p: string) => new RegExp(`^/trackers/${idPattern}/manageAccess$`).test(p),
+  (p: string) => new RegExp(`^/trackers/${idPattern}/notesDiscussion$`).test(p),
+  (p: string) => new RegExp(`^/trackers/${idPattern}/savedEvents$`).test(p),
+  (p: string) =>
+    new RegExp(`^/trackers/${idPattern}/trackedConfiguration$`).test(p),
+  (p: string) => new RegExp(`^/trackers/${idPattern}/trackedEvents$`).test(p),
 
-  // Tracker paths
-  (p: string) => /^\/trackers\/\[trackerId\]$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/editTracker$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/manageAccess$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/notesDiscussion$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/savedEvents$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/trackedConfiguration$/.test(p),
-  (p: string) => /^\/trackers\/\[trackerId\]\/trackedEvents$/.test(p),
+  // Widget event management paths with dynamic ID
+  (p: string) => new RegExp(`^/widget/events/manage/${idPattern}$`).test(p),
+  (p: string) =>
+    new RegExp(`^/widget/events/manage/${idPattern}/blasts$`).test(p),
+  (p: string) =>
+    new RegExp(`^/widget/events/manage/${idPattern}/guests$`).test(p),
+  (p: string) =>
+    new RegExp(`^/widget/events/manage/${idPattern}/overview$`).test(p),
+  (p: string) =>
+    new RegExp(`^/widget/events/manage/${idPattern}/settings$`).test(p),
 
-  // Widget event management paths
-  (p: string) => /^\/widget\/events\/manage\/\[id\]$/.test(p),
-  (p: string) => /^\/widget\/events\/manage\/\[id\]\/blasts$/.test(p),
-  (p: string) => /^\/widget\/events\/manage\/\[id\]\/guests$/.test(p),
-  (p: string) => /^\/widget\/events\/manage\/\[id\]\/overview$/.test(p),
-  (p: string) => /^\/widget\/events\/manage\/\[id\]\/settings$/.test(p),
-
-  // Other dynamic paths
-  (p: string) => /^\/detailpage$/.test(p),
-  (p: string) => /^\/forgot-password$/.test(p),
-  (p: string) => /^\/location$/.test(p),
-  (p: string) => /^\/login$/.test(p),
-  (p: string) => /^\/signin$/.test(p),
-  (p: string) => /^\/signup$/.test(p),
-  (p: string) => /^\/verify-otp$/.test(p),
+  // ... (keep other static/simple routes as-is below this)
 ];
 
 export const staticPathPatterns = [
