@@ -1269,8 +1269,43 @@ const Pages = () => {
 
   return (
     <>
-      <div>{isLoading ? <Loading /> :
+      <div className="w-full">{isLoading ? <Loading /> :
         <>
+          <div className="flex gap-3 w-full justify-between">
+                {/* <Link
+        href={
+          last === "create"
+            ? "/internal/trackers?showTemplates=true"
+            : `/internal/trackers/${pathName[pathName.length - 2]
+            }/trackedConfiguration?type=${type}`
+        }
+        style={{ display: "flex" }}
+      >
+        <button className={styles.cancel}>Cancel</button>
+        <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+      </Link> */}
+                {/* <button className={styles.save} onClick={saveTrackerHandler}>
+        Save Tracker
+      </button> */}
+        
+                {last === "create" ?
+                  <Link
+                    href={
+                      last === "create"
+                        ? "/internal/trackers?showTemplates=true"
+                        : `/internal/trackers/${pathName[pathName.length - 2]
+                        }/trackedConfiguration?type=${type}`
+                    }
+                    style={{ display: "flex" }}
+                  >
+                    <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+                  </Link> :
+                  <div className={styles.containerTopRightTwo} >
+                    <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+                  </div>
+                }
+                <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+              </div>
           <div
             className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
             style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex: '5' }}

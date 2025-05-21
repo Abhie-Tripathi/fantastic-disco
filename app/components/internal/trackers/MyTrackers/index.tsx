@@ -207,8 +207,17 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {/* )} */}
           </div>
           <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
-            <div className="flex items-center justify-between mb-2">
+          <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
+            <div className="flex items-center justify-between">
+            <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 w-full">
+    <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+    <input
+      className="outline-none w-full bg-transparent"
+      placeholder="Enter tracker name"
+      value={searchValue}
+      onChange={(e) => setSearchValue(e.target.value)}
+    />
+  </div>
               {/* <Button
                 variant="ghost"
                 className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
@@ -220,8 +229,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                 {filterCount} filters applied
               </span> */}
             </div>
-            <Button className="w-full h-10">
-              Apply Filters
+            <Button className="w-full h-10" onClick={()=>hideTemplates(false)}>
+              Create
             </Button>
           </div>
         </div>
