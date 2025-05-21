@@ -797,13 +797,17 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               "Switch between list, table, map, or calendar views to see your tracker data from any angle.",
             disableBeacon: true,
           },
-          {
-            target: "#sorting-dropdown",
-            title: "Sorting",
-            content:
-              "Sort by date or advanced intel and insights scores to surface your top priorities.",
-            disableBeacon: true,
-          },
+          ...(!isEventeli
+            ? [
+                {
+                  target: "#sorting-dropdown",
+                  title: "Sorting",
+                  content:
+                    "Sort by date or advanced intel and insights scores to surface your top priorities.",
+                  disableBeacon: true,
+                },
+              ]
+            : []),
         ];
 
         const walkthroughCompleted: string[] = JSON.parse(
@@ -961,12 +965,15 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             >
               {filters[type].map((section) => (
                 <AccordionItem
-                  id={section.id}
+                  // id={section.id}
                   key={section.id}
                   value={section.id}
                   className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
                 >
-                  <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
+                  <AccordionTrigger
+                    id={section.id}
+                    className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
+                  >
                     <div className="text-sm flex gap-2 items-center uppercase font-medium">
                       <Filter className="w-4 h-4" />
                       {section.label}

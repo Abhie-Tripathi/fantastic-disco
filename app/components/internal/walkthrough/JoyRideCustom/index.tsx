@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import Tooltip from "../Tooltip"; // Your custom tooltip component
+import Tooltip from "../Tooltip";
 
 interface Props {
   steps: Step[];
@@ -68,7 +68,6 @@ const JoyRideCustom: React.FC<Props> = ({
           JSON.stringify([...walkthroughCompleted, pathName])
         );
       }
-
       setJoyrideRun(false);
       onFinish?.();
     }
@@ -83,8 +82,7 @@ const JoyRideCustom: React.FC<Props> = ({
         ...step,
         disableBeacon: true, // Disable beacon for all steps
       }))}
-      scrollToFirstStep={false} // you're already using this — good
-      // scrollDuration={0} // disable Joyride scroll animation
+      scrollToFirstStep={false}
       disableScrollParentFix={true}
       run={joyrideRun}
       callback={joyrideCallback}
@@ -93,8 +91,8 @@ const JoyRideCustom: React.FC<Props> = ({
       showSkipButton
       disableOverlayClose
       spotlightClicks={spotClicksIndex.includes(currIndex)}
-      scrollDuration={800}
-      scrollOffset={150}
+      scrollDuration={300}
+      scrollOffset={150} // Adjust based on your header height
       styles={{
         options: {
           arrowColor: "#ffffff",
@@ -105,12 +103,9 @@ const JoyRideCustom: React.FC<Props> = ({
           width: 400,
           zIndex: 10000, // Make sure it's on top
         },
-        spotlight: {
-          transition: "none !important",
-          animation: "fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-        },
         tooltipContainer: {
           textAlign: "left",
+          transition: "opacity 200ms ease-out",
         },
         buttonNext: {
           backgroundColor: "#000",
