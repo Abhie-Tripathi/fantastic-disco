@@ -481,7 +481,7 @@ const Pages = () => {
       refs,
       stepsConfig,
       storageKey: "walkthroughCompleted",
-      currentPath: type==="T_CUSTOM"?"trackers/create?type=T_CUSTOME":`trackers/create?type=${type}`,
+      currentPath: `trackers/create?type=${type}`,
       type: type || "",
       conditionalKeys: (type) =>
         type === "T_CUSTOM"
@@ -1310,7 +1310,7 @@ const Pages = () => {
             steps={steps}
             run={run}
             onFinish={() => setRun(false)}
-            pathName={type === "T_CUSTOM" ? "trackers/create?type=T_CUSTOME" : `trackers/create?type=${type}`}
+            pathName={`trackers/create?type=${type}`}
           />
           )}
           <div

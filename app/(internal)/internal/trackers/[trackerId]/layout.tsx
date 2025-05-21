@@ -5,12 +5,10 @@ import SideNav from '@/app/components/trackers/sideNav';
 import Back from '/public/back.svg';
 import Link from "next/link";
 import Image from "next/image";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { usePathname } from "next/navigation";
 import Loading from "@/app/components/UI/Loading";
 import { useAuthContext } from "@/context";
 import { useTrackerServices } from '@/services/trackerServices';
-import { useTrackerContext } from "@/context/tracker";
 // import { useTheme } from "@/context/theme";
 // import Image from "next/image";
 // import MoreIcon from "/public/dots.svg";
@@ -26,7 +24,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathName = usePathname().split('/');
   const secondLast = pathName[pathName.length - 2];
   console.log(isVerifiedToken);
-  const {steps, run, setRun} = useTrackerContext();
   const [data, setData] = useState<any>([]);
 //   const fetchData=async()=>{
 //     const result = await getTrackerDetail(secondLast)
