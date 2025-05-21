@@ -183,7 +183,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             {coordinateActions.map((item) => (
               <Button
                 key={item.status}
-                variant={voteStatus[item.status] ? "secondary" : "ghost"}
+                variant={voteStatus[item.status.toLowerCase()]?.myUpvoteId ? "secondary" : "ghost"}
                 className="justify-between flex items-center gap-2"
                 onClick={() =>
                   handleVoteClick(
