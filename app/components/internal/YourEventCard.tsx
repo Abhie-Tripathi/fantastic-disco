@@ -38,7 +38,10 @@ interface YourEventCardProps {
   enquiryStatusUpdate: (eventId: string, status: string) => void;
 }
 interface VoteStatus {
-  [name: string]: string | null;
+  [name: string]: {
+    count: number;
+    myUpvoteId: string | null;
+  };
 }
 
 const YourEventCard: React.FC<YourEventCardProps> = ({
@@ -91,7 +94,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       let payloadData = {
         enquiryId: enquiryId,
         activityType: "UPVOTE",
-        activitySubType: item,
+        activitySubType: item.toUpperCase(),
       };
 
       try {
@@ -99,7 +102,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
         setVoteStatus((prevState) => ({
           ...prevState,
-          [item]: createUpvote?.id,
+          [item]: {
+            count: prevState[item].count + 1,
+            myUpvoteId: createUpvote?.id,
+          },
         }));
         setVotesCount((prev) => prev + 1);
       } catch (error) {
@@ -112,7 +118,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       if (deleteIntent) {
         setVoteStatus((prevState) => ({
           ...prevState,
-          [item]: null,
+          [item]: {
+            count: prevState[item].count - 1,
+            myUpvoteId: null,
+          },
         }));
         setVotesCount((prev) => prev - 1);
       }
@@ -132,22 +141,26 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   useEffect(() => {
     setVotesCount(upvote?.total || 0);
 
-    setVoteStatus(
-      coordinateActions.reduce((acc: any, item: any) => {
-        const temp = enquiryActivity.filter(
-          (myActivity: any) =>
-            myActivity.activityType === "UPVOTE" &&
-            myActivity.activitySubType === item.status
-        );
-        acc[item.status] = temp.length > 0 ? temp[0].id : null;
-        return acc;
-      }, {})
-    );
+    const upvoteData: VoteStatus = {};
+    coordinateActions.map((item) => {
+      const temp = enquiryActivity.filter(
+        (myActivity: any) =>
+          myActivity.activityType === "UPVOTE" &&
+          myActivity.activitySubType === item.status
+      );
+      let upvoteItem = {
+        count: upvote[item.status.toLowerCase()],
+        myUpvoteId: temp.length > 0 ? temp[0].id : null,
+      };
+      upvoteData[item.status.toLowerCase()] = upvoteItem;
+    });
+
+    setVoteStatus(upvoteData);
   }, []);
 
   const UpvoteDropdown = () => {
     return (
-      <Popover open={showUpvoteDropdown} onOpenChange={setShowUpvoteDropdown}>
+      <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
@@ -170,15 +183,17 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             {coordinateActions.map((item) => (
               <Button
                 key={item.status}
-                variant={"ghost"}
+                variant={voteStatus[item.status] ? "secondary" : "ghost"}
                 className="justify-between flex items-center gap-2"
                 onClick={() =>
-                  handleVoteClick(voteStatus[item.status], item.status)
+                  handleVoteClick(
+                    voteStatus[item.status.toLowerCase()]?.myUpvoteId,
+                    item.status.toLowerCase()
+                  )
                 }
               >
-                {/* <span>{item.label}</span> */}
                 <div className="flex items-center gap-2">
-                  {voteStatus[item.status] && (
+                  {voteStatus[item.status.toLowerCase()]?.myUpvoteId && (
                     <Check
                       strokeWidth={2}
                       color="#0072F5"
@@ -194,7 +209,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                     color="var(--primary-color)"
                     fill="var(--primary-color)"
                   />
-                  {upvote[item.status.toLocaleLowerCase()]}
+                  {voteStatus[item.status.toLocaleLowerCase()]?.count}
                 </div>
               </Button>
             ))}

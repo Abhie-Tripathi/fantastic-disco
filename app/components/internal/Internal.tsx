@@ -22,7 +22,7 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useRouter, useSearchParams } from "next/navigation";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
-import { Filter, Loader2, Pencil } from "lucide-react";
+import { CalendarIcon, Filter, Globe, ListIcon, Loader2, Pencil, TableIcon } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
@@ -33,6 +33,12 @@ import CoordinateFilters from "@/components/coordinate/CoordinateFilters";
 import { Badge } from "@/components/ui/badge";
 import { useFilterContext } from "@/context/filterContext";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useFilterState } from "@/hooks/useFilterState";
 
 interface Props {
   coordinateActions: any;
@@ -47,6 +53,8 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const isMobile = useIsMobile();
 
   const { localFilters, applyFilters } = useFilterContext();
+
+  const { setFilter, getFilterValue } = useFilterState();
 
   let prevDate: any = null;
   const [eventData1, setEventData1] = useState<enquiryType[]>([]);
@@ -74,6 +82,9 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const [showFilters, setShowFilter] = useState<boolean>(!isMobile);
   const [eventCount, setEventCount] = useState<number>(0);
   const [countLoading, setCountLoading] = useState<boolean>(false);
+
+  const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
+  const selectedView = getFilterValue("view") || "list";
 
   const handleModal = (eventId: string, enquiryId: string) => {
     setModalOpen(!modalOpen);
@@ -106,7 +117,6 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
     }
   };
 
-  // const { setFilter, deleteFilter } = useFilterState();
   const handleScrollEnd = () => {
     setTimeout(() => {
       if (!noMoreData && !(showFilters && isMobile))
@@ -239,6 +249,11 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
     ).length;
   }, [localFilters]);
 
+  const onTabsChange = (value: string) => {
+    setFilter("view", value);
+    setShowViewDropdown(false);
+  };
+
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
@@ -251,6 +266,66 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
       GAEvent("Coordinate", "Pagination", "Coordinate", `Coordinate | ${page}`);
     }
   }, [page, filtersChanged]);
+
+  const ViewSelectDropdown = () => {
+    return (
+      <Popover
+        open={showViewDropdown}
+        onOpenChange={setShowViewDropdown}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 border"
+          >
+            {selectedView === "list" ? (
+              <ListIcon className="w-4 h-4" />
+            ) : selectedView === "table" ? (
+              <TableIcon className="w-4 h-4" />
+            ) : selectedView === "map" ? (
+              <Globe className="w-4 h-4" />
+            ) : (
+              <CalendarIcon className="w-4 h-4" />
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-48 p-2">
+          <div className="flex flex-col space-y-1">
+            <Button
+              variant={selectedView === "list" ? "secondary" : "ghost"}
+              className="justify-start flex items-center gap-2"
+              onClick={() => onTabsChange("list")}
+            >
+              <ListIcon className="h-4 w-4" />
+              <span>List View</span>
+            </Button>
+            <Button
+              variant={selectedView === "map" ? "secondary" : "ghost"}
+              className="justify-start flex items-center gap-2"
+              onClick={() => onTabsChange("map")}
+              disabled
+            >
+              <Globe className="h-4 w-4" />
+              <span>Map View</span>
+            </Button>
+            <Button
+              variant={
+                selectedView === "calendar" ? "secondary" : "ghost"
+              }
+              className="justify-start flex items-center gap-2"
+              onClick={() => onTabsChange("calendar")}
+              disabled
+            >
+              <CalendarIcon className="h-4 w-4" />
+              <span>Calendar View</span>
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
   if (!isLoaded) {
     return <Loading className="p-12" />;
   } else if (isLoaded && totalCount === 0) {
@@ -325,6 +400,8 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
               <div className="flex items-center justify-end gap-3">
                 {isTentimesUser && <AddEventModal />}
+
+                <ViewSelectDropdown />
 
                 <Button
                   onClick={toggleFilterHandler}
