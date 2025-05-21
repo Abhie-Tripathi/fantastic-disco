@@ -117,9 +117,6 @@ const SortDropdown = ({
           >
             {/* {sortOrder === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />} */}
             <ArrowDownUp className="w-4 h-4" />
-            <span className="text-sm md:block hidden">
-              {getCurrentSortLabel()}
-            </span>
           </Button>
         ) : (
           <Button variant="outline" className="flex items-center gap-2">

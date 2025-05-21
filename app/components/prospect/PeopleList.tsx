@@ -273,7 +273,7 @@ export const PeopleList: React.FC = () => {
   }, []);
 
   const filtersCount = (function () {
-    const excludedFilters = ["view", "sort", "offset", "limit"];
+    const excludedFilters = ["view", "sortBy", "offset", "limit", "show"];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
