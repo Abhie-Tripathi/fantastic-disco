@@ -48,7 +48,6 @@ const Events = () => {
   const { applyFilters, localFilters, deleteMultipleLocalFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState<boolean>(false);
-  const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const { toast } = useToast();
@@ -119,6 +118,12 @@ const Events = () => {
     }
   };
 
+  useEffect(() => {
+    if (isMobile && selectedView == "table") {
+      setFilter("view", "list");
+    }
+  }, [isMobile, searchParams]);
+
   const filtersCount = (function () {
     const excludedFilters = [
       "view",
@@ -127,18 +132,12 @@ const Events = () => {
       "limit",
       "active_gte",
       "active_lte",
-      "show"
+      "show",
     ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
   })();
-
-  useEffect(() => {
-    if (isMobile && searchParams.get("view") == "table") {
-      setFilter("view", "list");
-    }
-  }, [isMobile]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -152,10 +151,6 @@ const Events = () => {
       setTrackerModalOpen(true);
     }
   };
-
-  useEffect(() => {
-    setView(searchParams.get("view") || "");
-  }, [searchParams]);
 
   return (
     <div className="flex-1 relative md:w-[62%]">
@@ -232,7 +227,7 @@ const Events = () => {
                     {selectedView === "list" ? (
                       <ListIcon className="w-4 h-4" />
                     ) : selectedView === "table" ? (
-                      <TableIcon className="w-4 h-4" />
+                      <ListIcon className="w-4 h-4" />
                     ) : selectedView === "map" ? (
                       <Globe className="w-4 h-4" />
                     ) : (
@@ -280,9 +275,9 @@ const Events = () => {
                 </PopoverContent>
               </Popover>
 
-              {(view == "list" || view == "table" || view == "") && (
-                <SortDropdown compact />
-              )}
+              {(selectedView == "list" ||
+                selectedView == "table" ||
+                selectedView == "") && <SortDropdown compact />}
 
               <Button
                 onClick={toggleFilterHandler}
