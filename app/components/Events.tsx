@@ -122,11 +122,12 @@ const Events = () => {
   const filtersCount = (function () {
     const excludedFilters = [
       "view",
-      "sort",
+      "sortBy",
       "offset",
       "limit",
       "active_gte",
       "active_lte",
+      "show"
     ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
@@ -302,7 +303,7 @@ const Events = () => {
             <>
               <FilterContent
                 type={"events"}
-                filterCount={3}
+                filterCount={filtersCount}
                 createTrackerHandler={createTrackerHandler}
                 searchHandler={searchHandler}
               />
