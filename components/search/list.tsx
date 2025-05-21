@@ -399,7 +399,21 @@ const EventListItem = ({
         <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div className="col-span-1 md:col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-xl md:text-2xl font-semibold ">{event.basic.name}</h2>
+              <div className="flex justify-between items-start">
+                <h2 className="text-xl md:text-2xl font-semibold ">{event.basic.name}</h2>
+                {isMobile && global !== "global" && (
+                  <div onClick={(e) => e.preventDefault()}>
+                    <ActionPopover
+                      eventId={event.basic.id}
+                      interests={event.interests}
+                      trackerId={trackerId}
+                      setInterest={setInterest}
+                      setEventId={setEventId}
+                      view={view}
+                    />
+                  </div>
+                )}
+              </div>
               <div>
                 <p className="text-sm capitalize">{address}</p>
                 <div className="flex items-center gap-2">
@@ -809,7 +823,7 @@ const EventListItem = ({
                         </div>
                       )}
                     </div>
-                    {global !== "global" && (
+                    {global !== "global" && !isMobile && (
                       <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
                         <ActionPopover
                           eventId={event.basic.id}
@@ -856,7 +870,7 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                    {global !== "global" && (
+                    {global !== "global" && !isMobile && (
                       <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
                         <ActionPopover
                           eventId={event.basic.id}

@@ -1041,7 +1041,7 @@ const LineChartComponent = ({
       ) || [];
 
     return (
-      <div className="flex flex-col items-end gap-4">
+      <div className={`flex flex-col ${isMobileView ? 'items-start' : 'items-end'} gap-4`}>
         {/* Year entries row */}
         <div className="flex gap-5 items-center">
           {yearEntries.map((entry, index) => {
@@ -1084,7 +1084,7 @@ const LineChartComponent = ({
         </div>
 
         {/* Threshold entries row */}
-        <div className="flex gap-5 items-center">
+        <div className={`flex ${isMobileView ? 'flex-wrap' : ''} gap-5 items-center`}>
           {thresholdEntries.map((entry, index) => (
             <div
               key={`threshold-item-${index}`}
@@ -1463,11 +1463,11 @@ const LineChartComponent = ({
                       width: "100%",
                       position: "relative",
                       bottom: 54,
-                      left: 0,
+                      left: 16,
                       fontSize: "12px",
                       fontWeight: "400",
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }
                   : {
                       width: "auto",
