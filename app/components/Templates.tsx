@@ -21,6 +21,7 @@ import { useFilterContext } from "@/context/filterContext";
 import {companyData, competitorData, keywordData} from "@/types/trackers";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { useWalkthrough } from "@/hooks/useWalkthrough";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 interface TemplateProps{
   isData: boolean;
   hideTemplates: (val: boolean) => void;
@@ -57,6 +58,7 @@ const fetchAISuggestion = async (promptText: string) => {
 
 const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const {comp,setComp, keywordsTracker, setKeywordsTracker, peopleTracker, setPeopleTracker} = useTrackerContext();
+  const isMobile = useIsMobile()
   const {loadingState, setLoadingState, templateView, setTemplateView, showFetchedData, setShowFetchedData} = useFilterContext();
   const {getTrackerCount}=useTrackerServices();
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
@@ -83,18 +85,18 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
     },
     {
       key: "prospectTrackerRef",
-      id:"prospectTracker",
+      id: isMobile ? "mobileProspectTracker" : "prospectTracker",
       content:
         "From networking to results – Capture, track, and convert prospects seamlessly",
     },
     {
       key: "peopleTrackerRef",
-      id:"peopleTracker",
+      id:isMobile?"mobilePeopleTracker":"peopleTracker",
       content: "Effortlessly track and stay updated on where your people are.",
     },
     {
       key: "purposeTrackerRef",
-      id:"purposeTracker",
+      id:isMobile?"mobilePurposeTracker":"purposeTracker",
       content: "Track your purpose, maximize impact and make every event count.",
     },
     {
@@ -537,11 +539,14 @@ Do not include the competitor platform names in the output. Only return publicly
           item.heading === "Prospect" ? "prospectTracker" :
           item.heading === "People" ? "peopleTracker" :
           "purposeTracker";
+          const mobileSectionId=item.heading === "Prospect" ? "mobileProspectTracker" :
+               item.heading === "People" ? "mobilePeopleTracker" :
+               "mobilePurposeTracker";
           return(
           <div key={index} id={sectionId}>
             <div className="flex flex-col sm:flex-row gap-6 sm:gap-0">
               <div className="flex flex-col sm:w-[25%] sm:pr-6 pr-0 gap-2 w-[100%]">
-                <div className="text-2xl flex gap-2 items-center justify-between">
+                <div className="text-2xl flex gap-2 items-center justify-between" id={mobileSectionId}>
                   <div className="flex gap-2 items-center">
                     {item.heading==="Prospect" && <Building2 />}
                     {item.heading==="People" && <Users />}
