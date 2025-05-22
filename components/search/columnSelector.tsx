@@ -37,12 +37,7 @@ export default function ColumnsSelector() {
     let newMetrics: string[];
     
     if (checked) {
-      // If already have 2 metrics, replace the second one
-      if (metrics.length >= 2) {
-        newMetrics = [metrics[0], value];
-      } else {
-        newMetrics = [...metrics, value];
-      }
+      newMetrics = [...metrics, value];
     } else {
       // Remove the metric if unchecked
       newMetrics = metrics.filter(m => m !== value);
@@ -80,9 +75,11 @@ export default function ColumnsSelector() {
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="flex items-center truncate">
-            <span className="mr-2">{metrics.length > 1 ? "Metrics" : "Metric"}</span>
+            <span className="mr-2">
+              {metrics.length > 1 ? `Metrics (${metrics.length})` : "Metric"}
+            </span>
             <div className="flex gap-2">
-              {metrics.map((metric) => (
+              {metrics.length <= 1 ? metrics.map((metric) => (
                 <span
                   key={metric}
                   className="text-xs truncate text-primary font-medium flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded"
@@ -96,7 +93,11 @@ export default function ColumnsSelector() {
                     }}
                   />
                 </span>
-              ))}
+              )) : (
+                <span className="text-xs truncate text-primary font-medium bg-primary/5 px-2 py-0.5 rounded">
+                  {metrics.length} metrics selected
+                </span>
+              )}
             </div>
           </div>
           <ChevronDown
@@ -117,7 +118,6 @@ export default function ColumnsSelector() {
                 id={value}
                 checked={metrics.includes(value)}
                 onCheckedChange={(checked) => handleMetricChange(value, checked as boolean)}
-                disabled={!metrics.includes(value) && metrics.length >= 2}
               />
               <label
                 htmlFor={value}

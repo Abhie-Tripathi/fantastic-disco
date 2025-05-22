@@ -70,25 +70,16 @@ export function aggregateAttendanceData(
  */
 export function morphToGraphData(
   groupedData: GroupedDataByDate,
-  primaryMetric?: string,
-  secondaryMetric?: string
+  metrics: string[]
 ) {
-  if (!primaryMetric) return [];
-  
+  if (!metrics || metrics.length === 0) return [];
+
   return Object.entries(groupedData).map(([date, groupData]) => {
-    const result: any = {
-      date,
-      [primaryMetric]: groupData[primaryMetric as keyof typeof groupData]?.total ?? 0,
-      social: groupData[primaryMetric as keyof typeof groupData]?.byEventTypeGroup?.social ?? 0,
-      business: groupData[primaryMetric as keyof typeof groupData]?.byEventTypeGroup?.business ?? 0,
-    };
-
-    if (secondaryMetric) {
-      result[secondaryMetric] = groupData[secondaryMetric as keyof typeof groupData]?.total ?? 0;
-      result[`social${secondaryMetric}`] = groupData[secondaryMetric as keyof typeof groupData]?.byEventTypeGroup?.social ?? 0;
-      result[`business${secondaryMetric}`] = groupData[secondaryMetric as keyof typeof groupData]?.byEventTypeGroup?.business ?? 0;
-    }
-
+    const result: any = { date };
+    metrics.forEach(metric => {
+      result[metric] = groupData[metric as keyof typeof groupData]?.total ?? 0;
+      // Optionally add social/business splits if needed
+    });
     return result;
   });
 }
