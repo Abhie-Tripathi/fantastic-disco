@@ -46,22 +46,22 @@ const JoyRideCustom: React.FC<Props> = ({
 
   const joyrideCallback = (data: CallBackProps) => {
     const { status, index, type, step } = data;
-  
-    if (type === 'step:before' && step.target) {
+
+    if (type === "step:before" && step.target) {
       // Scroll first with delay before updating current step index
       // setTimeout(() => {
-        scrollToTarget(step.target);
-        setCurrIndex(index); // update step index after scroll starts
+      scrollToTarget(step.target);
+      setCurrIndex(index); // update step index after scroll starts
       // }, 100); // delay in ms (adjust as needed)
     } else {
       setCurrIndex(index);
     }
-  
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED){
+
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       const walkthroughCompleted: string[] = JSON.parse(
         localStorage.getItem("walkthroughCompleted") || "[]"
       );
-  
+
       if (!walkthroughCompleted.includes(pathName)) {
         localStorage.setItem(
           "walkthroughCompleted",
@@ -83,9 +83,11 @@ const JoyRideCustom: React.FC<Props> = ({
         disableBeacon: true, // Disable beacon for all steps
       }))}
       scrollToFirstStep={false}
-      disableScrollParentFix={true}
+      // disableScrollParentFix={pathName === "research" ? false : true}
+      disableScrollParentFix={pathName === "research" ? false : true}
       run={joyrideRun}
       callback={joyrideCallback}
+      disableScrolling={pathName === "research" ? false : true}
       continuous
       showProgress
       showSkipButton
@@ -105,7 +107,7 @@ const JoyRideCustom: React.FC<Props> = ({
         },
         tooltipContainer: {
           textAlign: "left",
-          transition: 'opacity 200ms ease-out'
+          transition: "opacity 200ms ease-out",
         },
         buttonNext: {
           backgroundColor: "#000",

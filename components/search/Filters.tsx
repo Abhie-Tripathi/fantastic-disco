@@ -764,21 +764,6 @@ const Filters = ({
   //   }
   // };
 
-  const stepsConfig = [
-    {
-      key: "viewRef",
-      content:
-        "Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations.",
-    },
-  ];
-
-  // const { steps, run, setRun } = useWalkthrough({
-  //   refs,
-  //   stepsConfig,
-  //   storageKey: "walkthroughCompleted",
-  //   currentPath: `research`,
-  // });
-
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -832,44 +817,11 @@ const Filters = ({
                 {
                   target: "#filters-mobile",
                   title: "Filters",
-                  content: isEventeli
-                    ? "Includes Basic and Advanced Filters"
-                    : "",
+                  content:
+                    "Unlock all basic and advanced filters and save this search.",
                   disableBeacon: true,
                 },
               ]),
-          {
-            target: "#basic-filters",
-            title: "Basic Filters",
-            content:
-              "Explore the basic filters to quickly refine your results by category, date, and location.",
-            disableBeacon: true,
-          },
-          {
-            target: "#advanced-details",
-            title: "Advanced Details",
-            content: "Unlock advanced filters and drill down into your data.",
-            disableBeacon: true,
-          },
-          {
-            target: "#insights-scores",
-            title: "Insights & Scores",
-            content: isEventeli
-              ? "Insight scores include estimated visitors, estimated exhibitors, ranking and analytics to help you assess each event’s impact."
-              : "Insight scores include estimated visitors, estimated exhibitors, and ranking to help you assess each event’s impact.",
-            disableBeacon: true,
-          },
-          ...(!isEventeli
-            ? [
-                {
-                  target: "#audience-intel",
-                  title: "Audience Intel",
-                  content:
-                    "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
-                  disableBeacon: true,
-                },
-              ]
-            : []),
           {
             target: isMobile
               ? "#research-view-mobile"
@@ -896,13 +848,17 @@ const Filters = ({
                 },
               ]
             : []),
-          {
-            target: "#save-search-btn",
-            title: "Save Search ",
-            content:
-              "Save this search to revisit your filtered results anytime with one click.",
-            disableBeacon: true,
-          },
+          ...(!isMobile
+            ? [
+                {
+                  target: "#save-search-btn",
+                  title: "Save Search ",
+                  content:
+                    "Save this search to revisit your filtered results anytime with one click.",
+                  disableBeacon: true,
+                },
+              ]
+            : []),
         ];
 
         const walkthroughCompleted: string[] = JSON.parse(
