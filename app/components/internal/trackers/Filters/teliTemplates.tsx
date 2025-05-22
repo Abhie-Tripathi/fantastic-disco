@@ -9,7 +9,7 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
   return (
     <div>
        {type==="T_LOCATION" &&
-       <div className='flex justify-between' ref={refs.additionalFilterRef}>
+       <div className='flex justify-between' ref={refs.templateRef}>
     <div className="flex gap-2 flex-col border w-[500px]" >
       <LocationTemplate type={type}/>
 
