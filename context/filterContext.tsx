@@ -110,7 +110,9 @@ export interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
   eventType?: string;
-
+   //Preset Filters
+   presetCountry?: string;
+   presetCategory?: string;
   // Coordinate Filters
   eventId?: string;
   type?: string;
@@ -132,6 +134,9 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
+  filter?: string;
+  compare_from?: string;
+  compare_to?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -229,8 +234,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     const [templateView, setTemplateView] = useState(false);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
-      const params = Object.fromEntries(searchParams.entries()) as Filters;
-
+      const params = {
+        ...Object.fromEntries(searchParams.entries()),
+      } as Filters;
       // Set default date range if not present
       if (
         pathname === "/internal/search/events" &&
