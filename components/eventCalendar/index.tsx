@@ -34,6 +34,7 @@ import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -71,6 +72,7 @@ export default function EventCalendar({
   eventType,
 }: EventCalendarProps) {
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams, getEvents } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
@@ -103,7 +105,9 @@ export default function EventCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const filteredParams = new URLSearchParams(searchParams.toString());
 
-  const view = getFilterValue("calendar_type") || ("month" as CustomView);
+  const view =
+    getFilterValue("calendar_type") ||
+    (isMobile ? "year" : ("month" as CustomView));
   const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };
@@ -204,8 +208,6 @@ export default function EventCalendar({
     eventsData,
     filter
   );
-
-  console.log(processedEvents);
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -368,8 +370,7 @@ export default function EventCalendar({
         />
       );
     }
-  
-    
+
     return (
       <Calendar
         localizer={localizer}
@@ -416,7 +417,7 @@ export default function EventCalendar({
       />
     );
   };
-  
+
   return (
     <>
       {shouldShowZeroState ? (

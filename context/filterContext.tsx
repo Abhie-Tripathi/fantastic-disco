@@ -111,10 +111,6 @@ export interface Filters {
   total_attendance_lte?: string;
   eventType?: string;
 
-  //Preset Filters
-  presetCountry?:string;
-  presetCategory?:string;
-
   // Coordinate Filters
   eventId?: string;
   type?: string;
@@ -136,8 +132,6 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
-  compare_from?: string;
-  compare_to?: string;
 }
 type Filter = {
   eventTypes: string;
