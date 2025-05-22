@@ -23,22 +23,44 @@ interface PeopleFilterProps {
   variant?: "accordion" | "popover";
 }
 
-export default function PeopleFilter({ 
+const getLinkedInUsername = (input: string) => {
+  const urlRegex =
+    /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i;
+
+  const match = input.match(urlRegex);
+
+  if (match) {
+    return match[1];
+  } else {
+    return input;
+  }
+};
+
+export default function PeopleFilter({
   filterName,
-  variant = "accordion" 
+  variant = "popover",
 }: PeopleFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { localFilters, setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { localFilters, setLocalFilter, getLocalFilterValue } =
+    useFilterContext();
 
   const placeholder = filterName === "userSocialLink" ? "LinkedIn" : "Name";
 
   const inputValue = useMemo(() => {
-    return getLocalFilterValue(filterName) ?? "";
+    if (filterName === "userSocialLink") {
+      const inputVal = localFilters?.userSocialLink
+        ? JSON.parse(localFilters.userSocialLink)
+        : null;
+      return inputVal ? inputVal.linkedin : "";
+    } else return getLocalFilterValue(filterName) ?? "";
   }, [localFilters?.[filterName]]);
 
   const handleInputChange = (input: string) => {
     if (input.trim()) {
-      setLocalFilter(filterName, input.trim());
+      if (filterName === "userSocialLink") {
+        const input_f = { linkedin: getLinkedInUsername(input.trimStart()) };
+        setLocalFilter(filterName, JSON.stringify(input_f));
+      } else setLocalFilter(filterName, input.trimStart());
     } else {
       setLocalFilter(filterName, "");
     }
@@ -90,7 +112,10 @@ export default function PeopleFilter({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -100,14 +125,15 @@ export default function PeopleFilter({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value={filterName} className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({ variant: "outline" }), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
         >
           {triggerContent}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

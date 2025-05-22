@@ -14,7 +14,7 @@ const Prospect = ({theme} : Props) => {
 
     const router = useRouter();
     const handleRouting = ()=>{
-        router.push("/internal/prospect")
+        router.push("/internal/search/companies")
     }
 
     return (

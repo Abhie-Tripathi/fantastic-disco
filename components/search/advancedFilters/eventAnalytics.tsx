@@ -14,7 +14,11 @@ import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -30,14 +34,20 @@ interface EventAnalyticsSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EventAnalyticsSelector({ variant = "accordion" }: EventAnalyticsSelectorProps) {
+export default function EventAnalyticsSelector({
+  variant = "popover",
+}: EventAnalyticsSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
-    useFilterContext();
+  const {
+    localFilters,
+    setMultipleLocalFilters,
+    getLocalFilterValue,
+    morphedData,
+  } = useFilterContext();
 
   const enabled = morphedData.eventAnalytics.isEnabled;
   const showToogle = morphedData.eventAnalytics.isToogleEnabled;
-  
+
   const showScores = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("scores");
@@ -45,13 +55,6 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
 
   const categories = useMemo(
     () => [
-      {
-        name: "Impact Score",
-        range: [
-          Number(localFilters.impact_score_gte || 0),
-          Number(localFilters.impact_score_lte || 100),
-        ] as [number, number],
-      },
       {
         name: "Inbound Score",
         range: [
@@ -74,14 +77,10 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
     const filters: Record<string, string> = {};
     switch (index) {
       case 0:
-        filters.impact_score_gte = newRange[0].toString();
-        filters.impact_score_lte = newRange[1].toString();
-        break;
-      case 1:
         filters.inbound_score_gte = newRange[0].toString();
         filters.inbound_score_lte = newRange[1].toString();
         break;
-      case 2:
+      case 1:
         filters.international_score_gte = newRange[0].toString();
         filters.international_score_lte = newRange[1].toString();
         break;
@@ -94,19 +93,32 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
     side: "min" | "max",
     value: string
   ) => {
+    if (value === "") {
+      const filters: Record<string, string> = {};
+      switch (index) {
+        case 0:
+          filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] = "";
+          break;
+        case 1:
+          filters[`international_score_${side === "min" ? "gte" : "lte"}`] = "";
+          break;
+      }
+      setMultipleLocalFilters(filters);
+      return;
+    }
+
     const numValue = Math.min(Math.max(parseInt(value, 10), 0), 100);
     if (isNaN(numValue)) return;
 
     const filters: Record<string, string> = {};
     switch (index) {
       case 0:
-        filters[`impact_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
+        filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] =
+          numValue.toString();
         break;
       case 1:
-        filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
-        break;
-      case 2:
-        filters[`international_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
+        filters[`international_score_${side === "min" ? "gte" : "lte"}`] =
+          numValue.toString();
         break;
     }
     setMultipleLocalFilters(filters);
@@ -123,8 +135,6 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
     };
 
     if (!checked) {
-      filters.impact_score_gte = "";
-      filters.impact_score_lte = "";
       filters.inbound_score_gte = "";
       filters.inbound_score_lte = "";
       filters.international_score_gte = "";
@@ -221,7 +231,10 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -231,15 +244,16 @@ export default function EventAnalyticsSelector({ variant = "accordion" }: EventA
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="eventAnalytics" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
           disabled={!enabled}
         >
           {triggerContent}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

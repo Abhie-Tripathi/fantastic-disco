@@ -1,6 +1,5 @@
 "use client";
 
-import { Buildings, LockClosedSmall, Users } from "geist-icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -9,9 +8,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { FilterX, ChevronLeft, ChevronRight } from "lucide-react";
-import { Filter } from "geist-icons";
-import { useCallback, useState } from "react";
+import {
+  FilterX,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Calendar1,
+  Building,
+  UserSearch,
+  Lock,
+} from "lucide-react";
+import { useCallback, useState, useMemo } from "react";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
@@ -41,9 +48,13 @@ import EventRankingSelector from "@/components/search/advancedFilters/eventRanki
 import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
 import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
+import Seniority from "@/app/components/prospect/Filters/seniority";
+import Department from "@/app/components/prospect/Filters/department";
 import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductTopics from "@/components/search/advancedFilters/product&Topics";
+import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
+import MultiSelectSearchBar from "@/components/search/searchbar";
 import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
 import { Switch } from "@/components/ui/switch";
 import whrbotlogo from "@/public/whrbotlogo.svg";
@@ -53,6 +64,8 @@ import Link from "next/link";
 import CreateTrackerDialog from "./createTrackerDialog";
 import { GAEvent } from "@/utils/GAEvent";
 import { toast } from "@/hooks/use-toast";
+import { useTheme } from "@/context/theme";
+import FilterContent from "./FilterContent";
 
 interface FilterSection {
   id: string;
@@ -67,7 +80,7 @@ interface FilterItem {
   filterName?: string;
 }
 
-const filters: {
+const gtmFilters: {
   [key: string]: FilterSection[];
 } = {
   events: [
@@ -75,6 +88,288 @@ const filters: {
       id: "basic-filters",
       label: "Basic Filters",
       filters: [
+        {
+          id: "eventIds",
+          component: "MultiSelectSearchBar",
+          enabled: true,
+        },
+        {
+          id: "eventTypes",
+          component: "EventTypeSelector",
+          enabled: true,
+        },
+        {
+          id: "categories",
+          component: "CategorySelector",
+          enabled: true,
+        },
+        {
+          id: "eventFormats",
+          component: "EventFormatSelector",
+          enabled: true,
+        },
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          enabled: true,
+        },
+        {
+          id: "dateRange",
+          component: "DateRangeSelector",
+          enabled: true,
+        },
+        {
+          id: "status",
+          component: "StatusSelector",
+          enabled: true,
+        },
+        {
+          id: "entryType",
+          component: "EventEntrySelector",
+          enabled: true,
+        },
+        {
+          id: "ratings",
+          component: "UserRatingSelector",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "advanced-details",
+      label: "Advanced Details",
+      filters: [
+        {
+          id: "eventIds",
+          component: "EditionSelector",
+          enabled: true,
+        },
+        {
+          id: "brand",
+          component: "GlobalAndTouringSelector",
+          enabled: true,
+        },
+        {
+          id: "status",
+          component: "ForecastedStatusSelector",
+          enabled: true,
+        },
+        {
+          id: "frequencies",
+          component: "FrequencySelector",
+          enabled: true,
+        },
+        {
+          id: "productTopics",
+          component: "ProductTopics",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "insights-scores",
+      label: "Insights & Scores",
+      filters: [
+        {
+          id: "estimatedVisitors",
+          component: "EstimatedVisitorsSelector",
+          enabled: true,
+        },
+        {
+          id: "estimatedExhibitors",
+          component: "EstimatedExhibitorsSelector",
+          enabled: !isEventeli,
+        },
+        {
+          id: "eventRanking",
+          component: "EventRankingSelector",
+          enabled: true,
+        },
+      ],
+    },
+    {
+      id: "audience-intel",
+      label: "Audience Intel",
+      filters: [
+        {
+          id: "audienceSpread",
+          component: "AudienceZoneSatusSelector",
+          enabled: !isEventeli,
+        },
+        {
+          id: "designations",
+          component: "AudienceDesAndDep",
+          enabled: true,
+        },
+        {
+          id: "audienceSpreadRegions",
+          component: "AudienceSpread",
+          enabled: true,
+        },
+      ],
+    },
+  ],
+  companies: [
+    {
+      id: "all-filters",
+      label: "All Filters",
+      filters: [
+        {
+          id: "category",
+          component: "CategorySelector",
+          filterName: "eventCategorySlugs",
+          enabled: true,
+        },
+        {
+          id: "location",
+          component: "LocationSelector",
+          filterName: "companyLocationIds",
+          enabled: true,
+        },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
+        {
+          id: "companyType",
+          component: "CompanyType",
+          filterName: "eventParticipationType",
+          enabled: true,
+        },
+        {
+          id: "company-followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          filterName: "eventLocationIds",
+          enabled: true,
+        },
+        {
+          id: "event-followers",
+          component: "EventFollowers",
+          enabled: true,
+        },
+        {
+          id: "userNames",
+          component: "PeopleFilter",
+          filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
+      ],
+    },
+  ],
+  people: [
+    {
+      id: "all-filters",
+      label: "Filters",
+      filters: [
+        {
+          id: "userNames",
+          component: "PeopleFilter",
+          filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "category",
+          component: "CategorySelector",
+          filterName: "eventCategorySlugs",
+          enabled: true,
+        },
+        {
+          id: "location",
+          component: "LocationSelector",
+          filterName: "companyLocationIds",
+          enabled: true,
+        },
+        {
+          id: "product-topics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
+          enabled: true,
+        },
+        {
+          id: "people-followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
+        {
+          id: "locationIds",
+          component: "LocationSelector",
+          filterName: "eventLocationIds",
+          enabled: true,
+        },
+        {
+          id: "event-followers",
+          component: "EventFollowers",
+          enabled: true,
+        },
+      ],
+    },
+  ],
+} as const;
+
+const geoFilters: {
+  [key: string]: FilterSection[];
+} = {
+  events: [
+    {
+      id: "basic-filters",
+      label: "Basic Filters",
+      filters: [
+        {
+          id: "eventIds",
+          component: "MultiSelectSearchBar",
+          enabled: true,
+        },
         {
           id: "eventTypes",
           component: "EventTypeSelector",
@@ -183,31 +478,21 @@ const filters: {
       id: "audience-intel",
       label: "Audience Intel",
       filters: [
-        {
-          id: "ratings",
-          component: "AudienceQualitySelector",
-          enabled: true,
-        },
-        {
-          id: "ratings",
-          component: "ExhibitorQualitySelector",
-          enabled: true,
-        },
-        {
-          id: "audienceSpread",
-          component: "AudienceZoneSatusSelector",
-          enabled: !isEventeli,
-        },
+        // {
+        //   id: "audienceSpread",
+        //   component: "AudienceZoneSatusSelector",
+        //   enabled: !isEventeli,
+        // },
         {
           id: "designations",
           component: "AudienceDesAndDep",
           enabled: true,
         },
-        {
-          id: "audienceSpreadRegions",
-          component: "AudienceSpread",
-          enabled: true,
-        },
+        // {
+        //   id: "audienceSpreadRegions",
+        //   component: "AudienceSpread",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -219,7 +504,7 @@ const filters: {
         {
           id: "category",
           component: "CategorySelector",
-          filterName: "companyCategoryIds",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -230,22 +515,22 @@ const filters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
-          filterName: "companyProductIds",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
           id: "companyType",
           component: "CompanyType",
+          filterName: "eventParticipationType",
           enabled: true,
         },
         {
-          id: "followers",
+          id: "company-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
         },
-        
         {
           id: "locationIds",
           component: "LocationSelector",
@@ -253,7 +538,7 @@ const filters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -271,10 +556,22 @@ const filters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
           filterName: "userJobTitle",
           enabled: true,
         },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        // {
+        //   id: "userJobTitle",
+        //   component: "AudienceDesAndDep",
+        //   filterName: "userJobTitle",
+        //   enabled: true,
+        // },
       ],
     },
   ],
@@ -297,13 +594,20 @@ const filters: {
         },
         {
           id: "userJobTitle",
-          component: "AudienceDesAndDep",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
           filterName: "userJobTitle",
           enabled: true,
         },
         {
           id: "category",
           component: "CategorySelector",
+          filterName: "eventCategorySlugs",
           enabled: true,
         },
         {
@@ -314,11 +618,12 @@ const filters: {
         },
         {
           id: "product-topics",
-          component: "ProductTopics",
+          component: "ProductTopicsNew",
+          filterName: "eventProductIds",
           enabled: true,
         },
         {
-          id: "followers",
+          id: "people-followers",
           component: "EventFollowers",
           filterName: "communitySize",
           enabled: true,
@@ -330,7 +635,7 @@ const filters: {
           enabled: true,
         },
         {
-          id: "followers",
+          id: "event-followers",
           component: "EventFollowers",
           enabled: true,
         },
@@ -339,16 +644,20 @@ const filters: {
   ],
 } as const;
 
+const filters = isEventeli ? geoFilters : gtmFilters;
+
 const getFilterComponent = (componentName: string) => {
   const components: { [key: string]: React.ComponentType<any> } = {
     EventTypeSelector,
     CategorySelector,
     EventFormatSelector,
     ProductTopics,
+    ProductTopicsNew,
     LocationSelector,
     DateRangeSelector,
     StatusSelector,
     EventEntrySelector,
+    MultiSelectSearchBar,
     UserRatingSelector,
     EditionSelector,
     GlobalAndTouringSelector,
@@ -372,6 +681,8 @@ const getFilterComponent = (componentName: string) => {
     EstablishedYear,
     Industry,
     CompanyType,
+    Seniority,
+    Department,
   };
 
   return components[componentName];
@@ -382,24 +693,45 @@ interface FiltersProps {
   source?:string;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
+  children: React.ReactNode;
 }
 
-const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) => {
+const Filters = ({
+  isCollapsed,
+  onToggleCollapse,
+  type,
+  children,
+  source,
+}: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
-
   const { getFilterValue } = useFilterState();
-  const filterCount = Object.keys(localFilters).length;
+  const { theme } = useTheme();
+
+  const filterCount = useMemo(() => {
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
-  }, []);
+  }, [applyFilters]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
 
-    if (!getFilterValue("locationIds")) {
+    if (!(getFilterValue("locationIds") || getFilterValue("viewBound"))) {
       toast({
         title: "Please select location",
         variant: "destructive",
@@ -410,136 +742,68 @@ const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) 
   };
 
   return (
-    <div>
+    <div className="w-full flex flex-col h-full bg-background">
       <button
         onClick={onToggleCollapse}
-        className="group absolute -right-4 top-14 z-20 bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+        className="md:flex hidden group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 items-center justify-center transition-all duration-200"
       >
         {isCollapsed ? (
           <ChevronRight className="w-4 h-4 group-hover:text-primary transition-colors" />
         ) : (
-          <ChevronLeft className="w-4 h-4  group-hover:text-primary transition-colors" />
+          <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
       </button>
       <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "pt-4 pl-6 h-[calc(100vh-60px)]" : "h-[calc(100vh-181px)]"}`}>
-        {source!=="tracker" &&
-        <div className="pb-3 sticky top-0 bg-background z-10">
+      {source!=="tracker" &&
+        <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
           <Tabs defaultValue={type} value={type}>
-            <TabsList className="grid grid-cols-3 w-full h-auto bg-[#F8F8FA] p-1 rounded-lg">
+            <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
               <Link href="/internal/search/events" className="contents">
                 <TabsTrigger
                   value="events"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  <Buildings width="16px" height="16px" />
+                  <Calendar1 className="w-4 h-4" />
                   Events
                 </TabsTrigger>
               </Link>
               <Link href="/internal/search/companies" className="contents">
                 <TabsTrigger
                   value="companies"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  <Buildings width="16px" height="16px" />
                   Companies
                 </TabsTrigger>
               </Link>
               <Link href="/internal/search/people" className="contents">
                 <TabsTrigger
                   value="people"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  <Users width="16px" height="16px" />
+                  <UserSearch className="w-4 h-4" />
                   People
                 </TabsTrigger>
               </Link>
             </TabsList>
           </Tabs>
-        </div>
-      }
-        {source!=="tracker" &&
-        <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
-          <div className="flex items-center gap-2">
-            <Image
-              src={whrbotlogo}
-              alt="WHR bot"
-              className="w-8 h-8 rounded-full"
-            />
-            <div className="text-sm font-medium">WHR bot</div>
-          </div>
-          <div className="mt-1 flex items-center justify-between">
-            <div className="text-xs text-[#6E6F89]">
-              Let's save this search and help you track efficiently.
+          {type == "events" && (
+            <div className="block md:hidden mt-4">
+              <MultiSelectSearchBar varient="medium" />
             </div>
-            <div className="flex items-center">
-              <Switch
-                checked={trackerModalOpen}
-                onCheckedChange={createTrackerHandler}
-              />
-            </div>
-          </div>
+          )}
         </div>
-        }   
-        <div className="flex-1 overflow-y-auto w-full mt-0">
-          <div className="p-3 bg-[var(--background-secondary-color)]">
-            <Accordion
-              type="multiple"
-              className="space-y-4"
-              defaultValue={[filters[type][0]?.id]}
-            >
-              {filters[type].map((section) => (
-                <AccordionItem
-                  key={section.id}
-                  value={section.id}
-                  className="border rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
-                >
-                  <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-gray-50">
-                    <div className="text-sm flex gap-2 items-center uppercase font-medium text-gray-700">
-                      <Filter
-                        color="currentColor"
-                        width="14px"
-                        height="14px"
-                        className="text-primary"
-                      />
-                      {section.label}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="space-y-4 border-t pt-4 mt-1">
-                      {section.filters.map((filter) => {
-                        const Component = getFilterComponent(filter.component);
-                        if (!Component) return null;
+        }
+        <div className="hidden md:block overflow-y-scroll">
+          <FilterContent
+            type={type}
+            filterCount={filterCount}
+            createTrackerHandler={createTrackerHandler}
+            searchHandler={searchHandler}
+          />
+        </div>
 
-                        return (
-                          <div
-                            key={filter.id}
-                            className="flex items-center justify-between group relative transition-opacity duration-200"
-                            style={{ opacity: filter.enabled ? 1 : 0.5 }}
-                          >
-                            <div className="w-full">
-                              <Component
-                                disabled={!filter.enabled}
-                                filterName={filter.filterName}
-                              />
-                            </div>
-                            {!filter.enabled && (
-                              <LockClosedSmall 
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" 
-                              />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </div>
-        {source!=="tracker" &&
-        <div className="w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 border-t bg-white/80 backdrop-blur-sm space-y-3 mb-3">
+        <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
+          <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
             <div className="flex items-center justify-between mb-2">
               <Button
                 variant="ghost"
@@ -548,7 +812,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) 
                     Object.keys(localFilters) as any[]
                   );
                 }}
-                disabled={Object.keys(localFilters).length === 0}
+                disabled={filterCount === 0}
                 className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
               >
                 <FilterX className="w-3.5 h-3.5 mr-1" />
@@ -563,7 +827,9 @@ const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) 
             </Button>
           </div>
         </div>
-        }
+
+        <div className="md:hidden block">{children}</div>
+
         <CreateTrackerDialog
           open={trackerModalOpen}
           onOpenChange={setTrackerModalOpen}

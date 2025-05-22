@@ -26,7 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
-import { useFilterContext } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
 
 interface AudienceDesAndDepSelectorProps {
@@ -49,7 +49,7 @@ const useDesignationsAutocomplete = (input: string) => {
 };
 
 export default function AudienceDesAndDepSelector({
-  variant = "accordion",
+  variant = "popover",
   filterName,
 }: AudienceDesAndDepSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,36 +58,37 @@ export default function AudienceDesAndDepSelector({
     useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
   const enabled = morphedData.audienceProfile?.isEnabled;
-
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue(filterName || "designations")
+      getLocalFilterValue(filterName as keyof Filters || "designations")
         ?.split(",")
         .filter(Boolean) || [];
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.slug)
     );
-  }, [localFilters.designations, designations]);
+  }, [localFilters[filterName as keyof Filters || "designations"], designations]);
+
+  console.log("selectedLabels", selectedLabels);
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
-      localFilters.designations?.split(",").filter(Boolean) || [];
+      localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.slug);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.slug)
       : [...currentDesignations, label.slug];
 
-    setLocalFilter(filterName || "designations", newDesignations.join(","));
+    setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.designations
+    const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
       setLocalFilter(
-        filterName || "designations",
+        filterName as keyof Filters || "designations",
         currentDesignations.join(",")
       );
   };

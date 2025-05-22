@@ -140,8 +140,8 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
               ))
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                <CircleSlash width={15} height={15} />
-                No POC found
+                {/* <CircleSlash width={15} height={15} /> */}
+                POC information will appear here
               </p>
             )}
             {pocData?.length > 1 &&

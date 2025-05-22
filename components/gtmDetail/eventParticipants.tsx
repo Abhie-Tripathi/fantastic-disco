@@ -3,27 +3,58 @@ import _ from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import Text from "../new-ui/Text";
+import { Badge } from "../ui/badge";
+
+const sponsorsData = [
+  {
+    id: "516cba2c-169f-46a5-a198-59e17564548f",
+    name: "@ Home Accommodation Services Ltd",
+    logo: "/gtmDetailIcons/home.png",
+    details: "",
+    type: "sponsor",
+  },
+  {
+    id: "51b8de39-81dc-402e-81da-7440c391b50c",
+    name: "RSS EXPRESS LTD T/A Ledbury Fuel Service Station",
+    logo: "/gtmDetailIcons/rss.png",
+    details: "",
+    type: "sponsor",
+  },
+  {
+    id: "2eb8bc9c-29af-4083-96ec-4cd239c6e99d",
+    name: "Women's Association United",
+    logo: "/gtmDetailIcons/women.png",
+    details: "",
+    type: "sponsor",
+  },
+];
 
 const ListCard = ({
   participant,
 }: {
   participant: EventParticipantsDetails;
 }) => {
+  const { logo, name } = participant;
   return (
     <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-20">
       <div className="flex flex-row justify-between">
         <div className="flex gap-4">
-          <img
-            src={
-              participant.logo ||
-              `https://img.10times.com/userimages/${
-                participant.name.match(/[a-zA-Z]/)?.[0]?.toLowerCase() ||
-                "default"
-              }.jpg`
-            }
-            alt="Logo"
-            className="aspect-square rounded-sm w-12 h-12"
-          />
+          {logo ? (
+            <img
+              src={logo}
+              alt="Logo"
+              className="aspect-square rounded-sm w-12 h-12"
+            />
+          ) : (
+            <div
+              className="w-12 h-12 aspect-square rounded-md bg-[#5055A3]/10 border
+             border-[#5055A3]/20 flex items-center justify-center"
+            >
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {name?.replace(/[+*-/"'"]/g, "").charAt(0)}
+              </span>
+            </div>
+          )}
           <div className="flex flex-col justify-between">
             <p className="text-sm line-clamp-2 text-[var(--primary-text-color)] mb-1">
               {participant.name || ""}
@@ -31,12 +62,20 @@ const ListCard = ({
             <p className="text-sm line-clamp-2 text-[var(--secondary-text-color)]">
               {participant.type === "exhibitor"
                 ? participant.details
-                  ? `Stand - ${participant.details}`
+                  ? `Booth - ${participant.details}`
                   : ""
                 : participant.details}
             </p>
           </div>
         </div>
+        {participant.type === "sponsor" && (
+          <Badge
+            variant={"outline"}
+            className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+          >
+            Demo
+          </Badge>
+        )}
       </div>
     </li>
   );
@@ -124,16 +163,17 @@ export const EventParticipants = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
-  eventSponsorData,
-}: {
+}: // eventSponsorData,
+{
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
-  eventSponsorData: EventParticipantsDetails[];
+  // eventSponsorData: EventParticipantsDetails[];
 }) => {
   const { exhibitorsCount, speakersCount, sponsorsCount } =
     (eventDetails && eventDetails.insights) || {};
-  const { eventPageUrl } = (eventDetails && eventDetails.basic) || {};
+  const { "10timesEventPageUrl": eventPageUrl } =
+    (eventDetails && eventDetails.basic) || {};
 
   const participantData = [
     {
@@ -161,7 +201,7 @@ export const EventParticipants = ({
     {
       heading: "Sponsors",
       count: sponsorsCount,
-      data: eventSponsorData,
+      data: sponsorsData,
       nullState: {
         logo: "/sponsorsIcon.svg",
         text: "No Sponsors mapped to this event. Interested in sponsoring this event?",

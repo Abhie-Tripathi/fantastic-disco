@@ -25,7 +25,7 @@ interface FrequencySelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function FrequencySelector({ variant = "accordion" }: FrequencySelectorProps) {
+export default function FrequencySelector({ variant = "popover" }: FrequencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
   const frequencies = morphedData.frequencies.options;

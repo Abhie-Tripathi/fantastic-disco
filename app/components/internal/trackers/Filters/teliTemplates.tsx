@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Text from "@/components/new-ui/Text";
 import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
-const TeliTemplates = ({type}:any) => {
+const TeliTemplates = ({type, isMandatory}:any) => {
   console.log("called multiple time");
   return (
     <div>
@@ -28,7 +28,7 @@ const TeliTemplates = ({type}:any) => {
     {type==="T_VENUE" &&
     <div className='flex justify-between'>
     <div className="flex gap-2 flex-col border w-[500px]">
-      <LocationTemplate type={type} />
+      <LocationTemplate type={type} isMandatory={isMandatory}/>
     </div>
      {/* <span
      className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col items-start h-[200px]"
@@ -47,7 +47,7 @@ const TeliTemplates = ({type}:any) => {
         <div className='flex justify-between w-[100%] gap-2'>
         <div className='flex gap-2 w-[80%]'>
         <div className="flex gap-2 flex-col border w-[50%] h-auto">
-        <LocationTemplate type={type} />
+        <LocationTemplate type={type}/>
       </div>
       <div className="flex justify-between gap-2 flex-col border w-[50%]">
         <DateRangeSelector type={type}/>

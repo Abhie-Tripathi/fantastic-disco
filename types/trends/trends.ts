@@ -97,7 +97,7 @@ export interface BaseFilterValue {
 
 export interface CreateFilterValue extends BaseFilterValue {
   locationIds?: string;
-  viewBound?: string;
+  viewBound?: ViewBound;
   eventTypes: string;
   columns: string;
 }
@@ -128,6 +128,13 @@ export interface GetFilterValue extends BaseFilterValue {
   eventTypes: EventTypes;
   locationIds?: LocationIds;
   viewBound?: string;
+  categories?: {
+    [key: string]: {
+      id: string;
+      slug: string;
+      name: string;
+    };
+  };
 }
 
 export interface TrackerData {

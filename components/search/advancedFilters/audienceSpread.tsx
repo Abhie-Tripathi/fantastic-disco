@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {data} from '@/data/countryData'
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check, X } from "lucide-react";
@@ -21,21 +22,25 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 interface AudienceSpreadSelectorProps {
+  source?: string;
   variant?: "accordion" | "popover";
 }
 
-export default function AudienceSpreadSelector({ variant = "accordion" }: AudienceSpreadSelectorProps) {
+export default function AudienceSpreadSelector({ variant = "popover", source }:AudienceSpreadSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
-  const enabled = morphedData.audienceSpread?.isEnabled;
+  const enabled = morphedData?.audienceSpread?.isEnabled
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-
   const selectedCountries = useMemo(() => 
-    getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || []
-  , [localFilters.audienceSpread]);
+    (source === "preset"
+      ? getLocalFilterValue("presetCountry")?.split(',').filter(Boolean)
+      : getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean)) || [],
+    [localFilters.audienceSpread, source, localFilters?.presetCountry]
+  );
+  
 
   const selectedRegions = useMemo(() => 
     localFilters.audienceSpreadRegions?.split(',').filter(Boolean) || []
@@ -44,7 +49,9 @@ export default function AudienceSpreadSelector({ variant = "accordion" }: Audien
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const countriesResponse = await getCountries();
+        const countriesResponse = source!=="preset"?await getCountries(): data;
+        console.log(countriesResponse);
+        
         setCountries((countriesResponse as any)?.formattedLocations || []);
         const regionsResponse = await getRegions();
         setRegions((regionsResponse as any)?.regions || []);
@@ -60,10 +67,16 @@ export default function AudienceSpreadSelector({ variant = "accordion" }: Audien
   );
 
   const toggleCountry = (code: string) => {
+    
     const newCountries = selectedCountries.includes(code)
       ? selectedCountries.filter(c => c !== code)
       : [...selectedCountries, code];
     
+    if(source==="preset"){
+      setMultipleLocalFilters({
+        presetCountry: newCountries.join(',')
+      });
+    }else
     setMultipleLocalFilters({
       audienceSpread: newCountries.join(',')
     });
@@ -71,6 +84,11 @@ export default function AudienceSpreadSelector({ variant = "accordion" }: Audien
 
   const removeFilter = (code: string) => {
     if (selectedCountries.includes(code)) {
+      if(source==="preset"){
+        setMultipleLocalFilters({
+          presetCountry: selectedCountries.filter(c => c !== code).join(',')
+        });
+      }else
       setMultipleLocalFilters({
         audienceSpread: selectedCountries.filter(c => c !== code).join(',')
       });
@@ -85,7 +103,7 @@ export default function AudienceSpreadSelector({ variant = "accordion" }: Audien
   const triggerContent = (
     <div className="flex items-center">
       {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      <span className="mr-2">Audience Spread</span>
+      <span className="mr-2">{source==="preset"?"Location":"Audience Spread"}</span>
       {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedCountries.length + selectedRegions.length}

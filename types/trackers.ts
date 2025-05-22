@@ -65,7 +65,15 @@ export interface Tracker {
       country?: LocationObject[];  
       zone?: LocationObject[];
     } | string | undefined;
-    
+    viewBound?:{
+      boundType: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+        radius: number;
+      };
+    } | string | undefined;
+    country?:LocationObject[];
     includeKeywords?:string;
     excludeKeywords?:string;
     eventBrand?:string;
@@ -82,8 +90,16 @@ export interface Tracker {
     audienceSpread?: any;
     designation?: any;
 }
-
-
+export interface PresetData{
+  id:string;
+  name:string;
+  totalEvent: number;
+  data: any;
+  newEventCount: number;
+  description: string;
+  trackerType: string[];
+  filterValue?: FilterValue
+}
   export interface Toggle{
     rating?:boolean;
     exhibit?:boolean;
@@ -127,4 +143,23 @@ export interface Tracker {
       id: string;
       name:string;
       type:string
+    }
+    export interface TemplateItem {
+      type: string;
+      domain: string;
+      img: string;
+      url: string;
+      trackerName: string;
+      content: string;
+      isEnabled: boolean;
+    }
+    
+    export interface StandardTemplateGroup {
+      heading: string;
+      subHeading: string;
+      templates: TemplateItem[];
+    }
+    export interface TrackerTypeProp{
+      type:string;
+      count:number;
     }

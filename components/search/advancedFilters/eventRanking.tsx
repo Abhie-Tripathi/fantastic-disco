@@ -28,7 +28,7 @@ interface EventRankingSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EventRankingSelector({ variant = "accordion" }: EventRankingSelectorProps) {
+export default function EventRankingSelector({ variant = "popover" }: EventRankingSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();

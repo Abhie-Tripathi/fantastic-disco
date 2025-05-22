@@ -116,9 +116,9 @@ const CsvUploader = ({
       const excludeKeywords: any=[]
       data.validData.map((data: any) => {
         if (data["Keywords"] && data["Keywords"] !== "")
-          includeKeywords.push(data["Keywords"]);
+          includeKeywords.push(data["Keywords"].split(","));
         if (data["Excluded Keywords"] && data["Excluded Keywords"] !== "")
-          excludeKeywords.push(data["Excluded Keywords"]);
+          excludeKeywords.push(data["Excluded Keywords"].split(","));
       });
       setMultipleLocalFilters({
         includeKeywords: includeKeywords.join(","),

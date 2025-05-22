@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, Focus, X, Star } from "lucide-react";
+import { AlertTriangle, Loader2, Focus, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event } from "@/types/events";
+import { Event, HolidayEventLocation } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -29,21 +29,21 @@ import * as turf from "@turf/turf";
 import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
-import IntelScore from "@/app/components/Table/IntelScore";
+import { viewBound } from "@/types/events/dto/event-query.dto";
+import { formatLocationParts } from "@/utils/locationFormat";
+import { PaginationComponent } from "../pagination";
 
 const EventCard = memo(
   ({
     event,
     mapRef,
     onHover,
-    trackerId,
     onLeave,
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
-    trackerId: string|undefined;
   }) => {
     const [mapZoom, setMapZoom] = useState(0);
 
@@ -56,18 +56,23 @@ const EventCard = memo(
       }
     }, [mapRef]);
 
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : [
-            event.basic.eventLocation?.name || "TBA",
-            event.basic.eventLocation?.cityName,
-            event.basic.eventLocation?.stateName,
-            event.basic.eventLocation?.countryName,
-          ]
-            .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
+    const address = event.basic.eventLocation ? (
+      event.basic.format === "online" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" /> Online
+        </span>
+      ) : event.basic.format === "hybrid" ? (
+        <span>
+          <Radio className="w-4 h-4 mr-1 inline-block" />
+          Hybrid&nbsp;-&nbsp;
+          {formatLocationParts(event.basic.eventLocation)}
+        </span>
+      ) : (
+        formatLocationParts(event.basic.eventLocation)
+      )
+    ) : (
+      "Venue to be announced"
+    );
 
     const handleZoomToLocation = (e: React.MouseEvent) => {
       e.preventDefault();
@@ -88,12 +93,12 @@ const EventCard = memo(
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
           <CardContent className="p-3">
             <div className="flex items-start gap-3">
-            {event.basic.logoUrl ? (
+              {event.basic.logoUrl ? (
                 <img
-                    src={event.basic.logoUrl}
-                    alt={`${event.basic.name} logo`}
-                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
-                  />
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
               ) : event.basic.website ? (
                 <div className="w-12 h-12 relative">
                   <img
@@ -124,7 +129,7 @@ const EventCard = memo(
                   </div>
                 </div>
               ) : event.basic.website ? (
-                <div className="w-12 h-12 relative">
+                <div className="w-16 h-16 relative">
                   <img
                     src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
                     alt={`${event.basic.name} website favicon`}
@@ -152,15 +157,14 @@ const EventCard = memo(
                   </div>
                 </div>
               ) : (
-                <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
                   <span className="text-[#5055A3] text-2xl font-semibold">
                     {event.basic.name.charAt(0)}
                   </span>
                 </div>
               )}
+
               <div className="flex-1 min-w-0">
-              <div className="flex">
-                <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
@@ -195,20 +199,12 @@ const EventCard = memo(
                     </Badge>
                   )}
                 </div>
-                
                 <div className="flex items-center justify-between mb-1.5">
                   <h3 className="font-semibold text-sm line-clamp-2">
                     {event.basic.name}
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
-                </div>
-                {trackerId&&
-                <div>
-                <IntelScore width="85px" height="80px"/>
-                </div>
-                }
-                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-medium text-primary">
                     {formattedDateRange(
@@ -248,48 +244,118 @@ const UnplannedCard = memo(
     onHover: () => void;
     onLeave: () => void;
   }) => {
-    function formatAddress(eventLocation: any): string {
+    function formatAddress(eventLocation: HolidayEventLocation[]): string {
       const addressParts: string[] = [];
-      if (eventLocation.city) addressParts.push(eventLocation.city);
-      if (eventLocation.state && eventLocation.state.length > 0) {
-        const states = eventLocation.state.map((s: any) => s.name).join(", ");
-        addressParts.push(states);
+
+      if (Array.isArray(eventLocation)) {
+        const locations = eventLocation.map((loc) => {
+          const parts: string[] = [];
+          if (loc.displayName) parts.push(loc.displayName);
+
+          return parts.join(", ");
+        });
+        return locations.join("; ");
       }
-      if (eventLocation.country) addressParts.push(eventLocation.country.name);
       return addressParts.join(", ");
     }
 
     return (
       <div>
-        <Card className="mb-4 relative">
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
-            style={{
-              backgroundColor: eventTypeColors.holiday,
-            }}
-          />
-          <CardContent className="p-4">
-            <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.basic.primaryEventType || "festivals"]}
-              <span
-                className="text-xs font-semibold text-primary capitalize ml-2"
-                style={{
-                  color: eventTypeColors[event.basic.primaryEventType || ""],
-                }}
-              >
-                {event.basic.primaryEventType}
-              </span>
-            </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
-            <div className="flex items-center text-xs mb-2">
-              <span>{formatAddress(event.basic.eventLocation)}</span>
-            </div>
-            <div className="flex items-start justify-between mt-2 pt-2 border-t">
-              <div className="text-xs text-[#666666]">
-                {formattedDateRange(
-                  event.basic.startDateTime,
-                  event.basic.endDateTime
-                )}
+        <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
+          <CardContent className="p-3">
+            <div className="flex items-start gap-3">
+              {event.basic.logoUrl ? (
+                <img
+                  src={event.basic.logoUrl}
+                  alt={`${event.basic.name} logo`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                />
+              ) : event.basic.website ? (
+                <div className="w-12 h-12 relative">
+                  <img
+                    src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                    alt={`${event.basic.name} website favicon`}
+                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.dataset.error = "true";
+                    }}
+                  />
+                  <div
+                    className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                    style={{ display: "none" }}
+                    ref={(el) => {
+                      if (el) {
+                        const img = el.previousSibling as HTMLImageElement;
+                        if (img && img.dataset.error === "true") {
+                          el.style.display = "flex";
+                        }
+                      }
+                    }}
+                  >
+                    <span className="text-[#5055A3] text-lg font-semibold">
+                      {event.basic.name.charAt(0)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
+                  <span className="text-[#5055A3] text-lg font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-2 capitalize rounded-sm"
+                    style={{
+                      color:
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                      backgroundColor: lightenColor(
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                        0.9
+                      ),
+                    }}
+                  >
+                    <span>
+                      {
+                        eventTypeIcons[
+                          event.basic.primaryEventType || "festivals"
+                        ]
+                      }
+                    </span>
+                    <span>{event.basic.primaryEventType}</span>
+                  </Badge>
+                  {event.basic.rating > 0 && (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize rounded-sm"
+                    >
+                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                      <span>{event.basic.rating}</span>
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <h3 className="font-semibold text-sm line-clamp-2">
+                    {event.basic.name}
+                  </h3>
+                </div>
+                <div className="text-xs text-gray-600 mb-1">
+                  {formatAddress(
+                    event.basic
+                      .eventLocation as unknown as HolidayEventLocation[]
+                  )}
+                </div>
+                <div className="text-xs font-medium text-primary">
+                  {formattedDateRange(
+                    event.basic.startDateTime,
+                    event.basic.endDateTime
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -311,7 +377,7 @@ function EventList({
   onEventLeave,
   searchParam,
 }: {
-  eventType?:string;
+  eventType?: string;
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
@@ -330,7 +396,7 @@ function EventList({
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
-  const [sortBy, setSortBy] = useState("start");
+  const [sortBy, setSortBy] = useState("-score");
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -344,18 +410,19 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius = Math.max(
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([ne.lng, center.lat]),  // East point
-          { units: "kilometers" }
-        ),
-        turf.distance(
-          turf.point([center.lng, center.lat]),
-          turf.point([center.lng, ne.lat]),  // North point
-          { units: "kilometers" }
-        )
-      ) * Math.sqrt(2);
+      const radius =
+        Math.max(
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([ne.lng, center.lat]), // East point
+            { units: "kilometers" }
+          ),
+          turf.distance(
+            turf.point([center.lng, center.lat]),
+            turf.point([center.lng, ne.lat]), // North point
+            { units: "kilometers" }
+          )
+        ) * Math.sqrt(2);
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);
@@ -384,9 +451,15 @@ function EventList({
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 20));
 
+    if (showEventType == "unAttended") {
+      params.set("eventTypes", "holiday");
+      params.delete("viewBound");
+    }
+    params.set("offset", String((currentPage - 1) * 20));
+    params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
-    if (mapCenter && mapRadius) {
+    if (mapCenter && mapRadius && showEventType != "unAttended") {
       const viewBound = {
         boundType: "point",
         coordinates: {
@@ -396,7 +469,8 @@ function EventList({
         },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
-      params.set("viewBound", JSON.stringify(viewBound));
+      if (!params.get("viewBound"))
+        params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
     }
 
@@ -404,19 +478,27 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", source==="tracker"?eventType:filteredParams.toString(), currentPage, sortBy],
-    queryFn: () =>
-      source === "tracker"
-        ? getTrackerMapEvents(
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryFn: async () => {
+      if (source === "tracker") {
+        if (mapCenter && mapRadius) {
+          return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }&sortBy=${sortBy}`
-          )
-        : eventService.getEventsWithSearchParams(filteredParams.toString()),
+          );
+        } else {
+          return [];
+        }
+      } else {
+        return eventService.getEventsWithSearchParams(filteredParams.toString());
+      }
+    },
   });
-
+  
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -532,12 +614,17 @@ function EventList({
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <p className="text-lg font-semibold text-destructive">
+            {error && (
+              <p className="text-sm font-semibold text-destructive px-2">
+                {error.message}
+              </p>
+            )}
+            {/* <p className="text-lg font-semibold text-destructive">
               Failed to load events
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Please try again later
-            </p>
+            </p> */}
           </div>
         </div>
       );
@@ -555,13 +642,12 @@ function EventList({
         </div>
       );
     }
-    console.log(currentPage);
 
     return (
       <>
         <div className="p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 my-2">
+            <div className="hidden md:flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
               </Badge>
@@ -569,7 +655,7 @@ function EventList({
                 Events Found
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
               <Button
                 variant="ghost"
@@ -597,7 +683,6 @@ function EventList({
             return (
               <EventCard
                 key={event.basic.id}
-                trackerId={trackerId}
                 event={event}
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
@@ -606,6 +691,17 @@ function EventList({
             );
           })}
           {events.length > 0 && (
+            <PaginationComponent
+              showEntriesCount={false}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={20}
+              count={10}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={() => {}}
+            />
+          )}
+          {/* {events.length > 0 && (
             <Pagination>
               <PaginationContent className="flex-wrap">
                 <PaginationItem>
@@ -635,7 +731,7 @@ function EventList({
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          )}
+          )} */}
         </ScrollArea>
       </>
     );
@@ -643,7 +739,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full ${trackerId?"w-[400px]": "w-[345px]"} bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full w-full md:w-[345px] bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       }`}
     >

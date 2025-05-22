@@ -137,7 +137,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       }
     }else{
       try{
-        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2]);
+        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2] === "event" ? "outreach" : path[2]);
         if (data && data.comments) {
           if (data.comments && data.comments?.length > 0){
             setZeroState(false);
@@ -155,11 +155,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   
   const generateFbPath = (): string => {
     if(urlPath === "trackers")
-      return `eventgeni/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
+      return `eventgeni/${user?.accountId}/notes/${urlPath}/${path[path.length-2]}`;
     else if(urlPath === "coordinate" || urlPath === "outreach")
-      return `eventgeni/${user?.companyId}/notes/${urlPath}/${eventId}`;
+      return `eventgeni/${user?.accountId}/notes/${urlPath}/${eventId}`;
     else
-      return `eventgeni/${user?.companyId}/notes/general`;
+      return `eventgeni/${user?.accountId}/notes/general`;
     // return "xyz";
   }
 
@@ -353,7 +353,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
             // const newData = transformData(data);
             
             setNotes(prevNotes => [...prevNotes, data]);
-            createRealtimeAction('add', data.data.id);
+            createRealtimeAction('add', data.id);
             setScrolling(false);
             setZeroState(false);
           }
@@ -737,10 +737,10 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
              zIndex: drop ? 1 : 0,
              opacity: drop ? 0.5 : 0,
            }}
-            onDragEnter={onDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={onDragLeave}
-            onDrop={handleDrop}
+            // onDragEnter={onDragEnter}
+            // onDragOver={handleDragOver}
+            // onDragLeave={onDragLeave}
+            // onDrop={handleDrop}
           ></div>
           <ul className="flex flex-col items-start justify-center gap-6 w-full list-none" ref={commentRef}>
             {notes.map((comment: IComment) => (
@@ -1355,10 +1355,10 @@ const Comment = ({
                                 <span>
                                   {" "}
                                   @
-                                  {`${comment.user.firstname
-                                    }${comment.user.lastname
-                                      .charAt(0)
-                                      .toLowerCase()}${comment.user.lastname.slice(
+                                  {`${comment.user?.firstname
+                                    }${comment.user?.lastname
+                                      ?.charAt(0)
+                                      .toLowerCase()}${comment.user?.lastname?.slice(
                                         1
                                       )}`}
                                 </span>

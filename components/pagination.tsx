@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -39,6 +40,14 @@ export function PaginationComponent({
   showEntriesCount = true,
   paginationItems = ["10", "20"],
 }: PaginationComponentProps) {
+  const pathname = usePathname();
+
+  const hideLastPage =
+    pathname === "/internal/search/companies" ||
+    pathname === "/internal/search/people" ||
+    pathname === "/internal/search/events" ||
+    pathname.includes("/internal/trackers");
+
   const renderPaginationItems = () => {
     const items = [];
     const maxVisiblePages = 5;
@@ -101,40 +110,42 @@ export function PaginationComponent({
         );
       }
 
-      items.push(
-        <PaginationItem key={totalPages}>
-          <PaginationLink
-            href="#"
-            onClick={() => onPageChange(totalPages)}
-            isActive={totalPages === currentPage}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
+      if (!hideLastPage) {
+        items.push(
+          <PaginationItem key={totalPages}>
+            <PaginationLink
+              href="#"
+              onClick={() => onPageChange(totalPages)}
+              isActive={totalPages === currentPage}
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
     }
 
     return items;
   };
 
   return (
-    <div className="flex justify-between items-center gap-4 px-2">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-2">
       {showEntriesCount && (
-        <span className="text-sm text-muted-foreground text-nowrap">
+        <span className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left order-2 sm:order-1">
           Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} -{" "}
           {Math.min(currentPage * itemsPerPage, count)} of {count}
         </span>
       )}
 
-      <Pagination>
-        <PaginationContent className="flex-wrap justify-center">
+      <Pagination className="order-1 sm:order-2 w-full sm:w-auto">
+        <PaginationContent className="flex-wrap justify-center gap-1 sm:gap-0">
           <PaginationItem>
             <PaginationPrevious
               href="#"
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              className={
+              className={`${
                 currentPage === 1 ? "pointer-events-none opacity-50" : ""
-              }
+              } text-xs sm:text-sm`}
             />
           </PaginationItem>
           {renderPaginationItems()}
@@ -144,34 +155,32 @@ export function PaginationComponent({
               onClick={() =>
                 onPageChange(Math.min(totalPages, currentPage + 1))
               }
-              className={
+              className={`${
                 currentPage === totalPages
                   ? "pointer-events-none opacity-50"
                   : ""
-              }
+              } text-xs sm:text-sm`}
             />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
 
       {showEntriesCount && (
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">
-            Results/page 
-          </span>
+        <div className="flex items-center space-x-2 order-3">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">Results/page</span>
           <Select
             value={itemsPerPage.toString()}
             onValueChange={onItemsPerPageChange}
           >
-            <SelectTrigger className="w-[70px]">
+            <SelectTrigger className="w-[60px] sm:w-[70px] h-8 sm:h-10">
               <SelectValue>{itemsPerPage}</SelectValue>
             </SelectTrigger>
             <SelectContent align="end">
-              {paginationItems.map(item =>
-                <SelectItem value={item} key={item}>{item}</SelectItem>
-              )}
-              {/* <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem> */}
+              {paginationItems.map((item) => (
+                <SelectItem value={item} key={item}>
+                  {item}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

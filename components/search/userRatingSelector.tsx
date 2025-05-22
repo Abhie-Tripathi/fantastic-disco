@@ -36,7 +36,7 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function UserRatingSelector({ variant = "accordion" }: FlexibleComponentProps) {
+export default function UserRatingSelector({ variant = "popover" }: FlexibleComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =

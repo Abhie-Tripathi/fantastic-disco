@@ -20,7 +20,7 @@ interface EstimatedVisitorsSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EstimatedVisitorsSelector({ variant = "accordion" }: EstimatedVisitorsSelectorProps) {
+export default function EstimatedVisitorsSelector({ variant = "popover" }: EstimatedVisitorsSelectorProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
   const estimatedVisitorsOptions = morphedData?.estimatedVisitors?.options;
   const enabled = morphedData?.estimatedVisitors?.isEnabled;

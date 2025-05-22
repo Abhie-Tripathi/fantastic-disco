@@ -87,8 +87,8 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
   const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
     []
   );
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
-  const [pastEvents, setPastEvents] = useState<any[]>([]);
+  // const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  // const [pastEvents, setPastEvents] = useState<any[]>([]);
 
   const { getUserDetailById, getUserEvents } = useCompanyService();
 
@@ -113,13 +113,15 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
         const pastEventRes =
           pastEvents.status === "fulfilled" ? pastEvents.value : null;
 
-        setUpcomingEvents(upcomingEventRes?.events || []);
-        setPastEvents(pastEventRes?.events || []);
+        // setUpcomingEvents(upcomingEventRes?.events || []);
+        // setPastEvents(pastEventRes?.events || []);
 
       return {
         userDetails: userResponse?.userData,
         upcomingEventsCount: upcomingEventRes?.count,
+        upcomingEventsData: upcomingEventRes.events || [],
         pastEventsCount: pastEventRes?.count,
+        pastEventsData: pastEventRes.events || [],
       };
     },
     refetchOnWindowFocus: false,
@@ -135,7 +137,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
     );
   }
 
-  const { userDetails, upcomingEventsCount, pastEventsCount } = user;
+  const { userDetails, upcomingEventsCount, pastEventsCount, pastEventsData, upcomingEventsData } = user;
 
   if (!userDetails) {
     return <NotFound />;
@@ -148,23 +150,23 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
     }
   };
 
-  const loadMoreEvents = async (type: string) => {
-    if (type === "past") {
-      const moreEvents = await getUserEvents(
-        params.userId,
-        "past",
-        pastEvents.length
-      );
-      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
-    } else if (type === "upcoming") {
-      const moreEvents = await getUserEvents(
-        params.userId,
-        "upcomming",
-        upcomingEvents.length
-      );
-      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
-    }
-  };
+  // const loadMoreEvents = async (type: string) => {
+  //   if (type === "past") {
+  //     const moreEvents = await getUserEvents(
+  //       params.userId,
+  //       "past",
+  //       pastEvents.length
+  //     );
+  //     setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+  //   } else if (type === "upcoming") {
+  //     const moreEvents = await getUserEvents(
+  //       params.userId,
+  //       "upcomming",
+  //       upcomingEvents.length
+  //     );
+  //     setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
+  //   }
+  // };
 
   return (
     <div className="p-6 pt-0">
@@ -277,7 +279,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
         )}
 
         <div className="flex gap-4 my-6">
-          {userDetails?.user_linkedin && (
+          {/* {userDetails?.user_linkedin && (
             <Link
               href={userDetails?.user_linkedin}
               target="_blank"
@@ -285,7 +287,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
             >
               <Linkedin color="#0077B5" className="cursor-pointer" />
             </Link>
-          )}
+          )} */}
           {userDetails?.user_twitterId && (
             <Link
               href={userDetails?.user_twitterId}
@@ -342,12 +344,11 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
           />
 
           <EventCalendar
-            companyId={params.userId}
-            upcomingEvents={upcomingEvents}
+            userId={params.userId}
+            upcomingEventsData={upcomingEventsData}
             upcomingEventsCount={upcomingEventsCount}
-            pastEvents={pastEvents}
+            pastEventsData={pastEventsData}
             pastEventsCount={pastEventsCount}
-            loadMoreEvents={loadMoreEvents}
           />
         </section>
       </div>

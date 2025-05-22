@@ -4,7 +4,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Loading from "@/app/components/UI/Loading";
 import Image from "next/image";
-import { Bookmark, Location } from "geist-icons";
+import { Bookmark, Buildings, Globe, Location } from "geist-icons";
 import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
@@ -19,12 +19,14 @@ import ShareWidget from "../ShareWidget";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useTrackerContext } from "@/context/tracker";
 import { Button } from "@/components/ui/button";
-import { Share2 } from "lucide-react";
+import { CloudAlert, Share2 } from "lucide-react";
+import { isEventeli } from "@/config";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
   const {data: item}=useTrackerContext();
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
+  const {savedEventCount} = useTrackerContext();
   const pathName = usePathname().split('/');
   const [loading,setLoading]=useState(false);
   const {getTrackerDetail, error}=useTrackerServices();
@@ -224,6 +226,8 @@ const formatCount = (count: number ) => {
           </div>
           <div className="flex w-full pt-1" style={{ height: "auto" }}>
             <div className="flex gap-4 w-full flex-col">
+              { !isEventeli &&
+              <>
               <div className="flex gap-5">
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   {/* <div className={styles.new}>
@@ -262,13 +266,64 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.savedEventsCount)}
+                    {formatCount(savedEventCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
                     Bookmarked</div>
                 </div>
               </div>
+              </>
+              }
+              { isEventeli &&
+              <>
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  {/* <div className={styles.new}>
+                <Image src={Vectore6} alt="newVector" />
+                New
+              </div> */}
+                  <div>
+                    {formatCount(item?.groupedEventsCount?.social?.total)}
+                  </div>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)] items-center" style={{ borderBottom: "0px" }}>
+                  <Globe height="12px" width="12px"/>
+                    <div >Social</div>
+                  </div>
+                </div>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  {/* <div className={styles.new}>
+                <Image src={Vectore7} alt="lucide_timer" />
+                Active
+              </div> */}
+                  <div>
+                    {formatCount(item?.groupedEventsCount?.business?.total)}
+                  </div>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)] items-center" style={{ borderBottom: "0px" }}>
+                    <Buildings height="12px" width="12px"  />
+                    Business</div>
+                </div>
+              </div>
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  <div>
+                    {formatCount(item?.groupedEventsCount?.unattended?.total)}
+                  </div>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <CloudAlert height={12} width={12}/>
+                    Unattended</div>
+                </div>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  <div>
+                    {formatCount(savedEventCount)}
+                  </div>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
+                    Bookmarked</div>
+                </div>
+              </div>
+              </>
+              }
             </div>
             {/* <div className={styles.lineChart}>
             <Line data={lineData} options={lineOptions} />

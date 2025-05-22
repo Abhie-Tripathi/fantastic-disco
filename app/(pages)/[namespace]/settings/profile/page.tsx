@@ -1,28 +1,14 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-} from "@/components/ui/select";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
-import { Search, Upload } from "lucide-react";
-import SendInvite from "@/components/ui/SendInvite";
-import { useAuthContext, useTheme } from "@/context";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { showToast } from "@/utils/showToast";
+import { useAuthContext } from "@/context";
 import { useProfileServices } from "@/services/profileService";
+import { showToast } from "@/utils/showToast";
+import { Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 interface Profile {
   firstname: string;
   lastname: string;
@@ -75,7 +61,6 @@ const Profile = () => {
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const { getMyProfileData, updateMyProfileData, error } = useProfileServices();
-  console.log("dfsdfsdfsdf",profileData,user)
   const fetchData = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
     const data: any = await getMyProfileData();
@@ -87,17 +72,24 @@ const Profile = () => {
 
     if (data) {
       setProfileData(data);
-      if(data.lastname !==null){
+      if (data.lastname !== null) {
         setName(data.firstname + " " + data.lastname);
-      }else{
+      } else {
         setName(data.firstname);
       }
-     
       setMobileNo(data.phoneNumber || "");
       setDept(data.department || "");
       setRole(data.designation || "");
-      setProfilePicture(data.profilePicture || null);
-      setProfilePic(data.profilePicture || null);
+      if (data.imageUrl) {
+        setProfilePicture(data.imageUrl || null);
+      }
+      else if (!data.firstname && !data.lastName ) {
+        setProfilePicture("/defaultProfilePic.png");
+      }
+      else {
+        setProfilePicture(null);
+      }
+      setProfilePic(data.imageUrl || null);
     }
   };
 
@@ -168,18 +160,20 @@ const Profile = () => {
       // Prepare form data
       const formData = new FormData();
 
-      formData.append("firstname", splitName[0]);
+      formData.append("firstname", splitName[0] || "");
       if (splitName[1]) {
         formData.append("lastname", splitName.slice(1).join(" "));
-      }else{
+      } else {
         formData.append("lastname", "");
       }
-      formData.append("phoneNumber", mobileNo);
+      if (mobileNo.length !== 0) {
+        formData.append("phoneNumber", mobileNo);
+      }
       // formData.append("designation", role);
       // formData.append("department", dept);
-      // if (picFile !== null) {
-      //   formData.append("file", picFile);
-      // }
+      if (picFile !== null) {
+        formData.append("file", picFile);
+      }
 
       // Save data
       setIsSaving(true);
@@ -187,14 +181,14 @@ const Profile = () => {
       if (data) {
         showToast("success", "Data saved successfully");
         setProfileData(data.user);
-        fetchData();
+        // setProfilePicture(data.user.imageUrl)
+        // fetchData();
 
         const newUser = {
           ...user,
           firstname: data.user.firstname || "",
           lastname: data.user.lastname || "",
-          profilePicture:data.user.profilePicture
-
+          imageUrl: data.user.imageUrl || null,
         };
         window.localStorage.setItem("user", JSON.stringify(newUser));
         setIsProfileUpdated(true);
@@ -245,18 +239,17 @@ const Profile = () => {
     }
     const splitName = name.split(" ");
     const formData = new FormData();
-    formData.append("firstname", splitName[0]);
-    formData.append("lastname", splitName[1]);
-    formData.append("phoneNumber", mobileNo);
+    // formData.append("firstname", splitName[0] || "");
+    // formData.append("lastname", splitName[1] || "");
+    // formData.append("phoneNumber", mobileNo || "");
     // formData.append("designation", role);
     // formData.append("department", dept);
-    // formData.append("removePicture", "true");
+    formData.append("removePicture", "true");
     const data: any = await updateMyProfileData({ formData });
     if (data) {
       const newUser = {
         ...user,
-        profilePicture:null
-
+        imageUrl: null,
       };
       window.localStorage.setItem("user", JSON.stringify(newUser));
       setIsProfileUpdated(true);
@@ -270,6 +263,19 @@ const Profile = () => {
       showToast("error", error.message);
       return;
     }
+  };
+
+  const generateProfileName = () => {
+    if (profileData) {
+      const { firstname, lastname } = profileData;
+      const initials = [firstname?.[0], lastname?.[0]]
+        .map((char) => char?.toUpperCase())
+        .filter(Boolean)
+        .join("");
+
+      return initials;
+    }
+    return "";
   };
 
   return (
@@ -292,23 +298,14 @@ const Profile = () => {
               >
                 <div className="flex sm:flex-row items-center gap-4">
                   <Avatar className="h-20 w-20 text-3xl">
-                    <AvatarFallback>
-                      {profilePicture === null ? (
-                        <span>
-                          {profileData.firstname[0]}
-                          {profileData.lastname &&
-                          profileData.lastname.trim() !== ""
-                            ? profileData.lastname[0]
-                            : ""}
-                        </span>
-                      ) : (
-                        <Image
-                          src={profilePicture}
-                          alt="ProfilePic"
-                          width={76}
-                          height={76}
-                        />
-                      )}
+                    <AvatarImage
+                      src={profilePicture || ""}
+                      alt="ProfilePic"
+                      width={"76"}
+                      height={"76"}
+                    />
+                    <AvatarFallback className="bg-primary text-white">
+                      {generateProfileName()}
                     </AvatarFallback>
                     <input
                       type="file"
@@ -326,7 +323,7 @@ const Profile = () => {
                         onClick={() => {
                           handleUploadClick();
                         }}
-                        disabled
+                        // disabled
                       >
                         <Upload className="mr-2 h-4 w-4" />
                         Upload Image
@@ -335,7 +332,7 @@ const Profile = () => {
                         variant="outline"
                         size="sm"
                         onClick={handleRemove}
-                        disabled
+                        // disabled
                       >
                         Remove
                       </Button>
@@ -356,7 +353,7 @@ const Profile = () => {
                         setName,
                         e.target.value,
                         // profileData?.firstname,
-                        profileData?.firstname&&profileData.lastname
+                        profileData?.firstname && profileData.lastname
                       )
                     }
                   />

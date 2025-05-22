@@ -36,16 +36,16 @@ export default function KeywordFilter({
   suggestions,
   hideSuggestion,
   setHideSuggestion,
-  variant = "accordion"
+  variant = "popover",
 }: KeywordFilterProps) {
   const {
     getLocalFilterValue,
     setMultipleLocalFilters,
     localFilters,
     searchParams,
-    setLocalFilter
+    setLocalFilter,
   } = useFilterContext();
-  
+
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
@@ -54,18 +54,43 @@ export default function KeywordFilter({
 
   useEffect(() => {
     const includeKeywords = [
-      ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+      ...getLocalFilterValue("includeKeywords")
+        ?.split(",")
+        .filter((keyword) => keyword.trim() !== ""),
     ];
     const excludeKeywords = [
-      ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+      ...getLocalFilterValue("excludeKeywords")
+        ?.split(",")
+        .filter((keyword) => keyword.trim() !== ""),
     ];
-    
-    if (includeKeywords.length > 0 && type === "T_PRODUCT_KEYWORDS" && activeTab === "include" && !hideSuggestion) {
-      fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}...`);
-    } else if (excludeKeywords.length > 0 && type === "T_PRODUCT_KEYWORDS" && activeTab === "exclude" && !hideSuggestion) {
-      fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}...`);
+
+    if (
+      includeKeywords.length > 0 &&
+      type === "T_PRODUCT_KEYWORDS" &&
+      activeTab === "include" &&
+      !hideSuggestion
+    ) {
+      fetchAISuggestion?.(
+        `List top 5 keywords similar to ${
+          includeKeywords[includeKeywords.length - 1]
+        }...`
+      );
+    } else if (
+      excludeKeywords.length > 0 &&
+      type === "T_PRODUCT_KEYWORDS" &&
+      activeTab === "exclude" &&
+      !hideSuggestion
+    ) {
+      fetchAISuggestion?.(
+        `List top 5 keywords similar to ${
+          excludeKeywords[excludeKeywords.length - 1]
+        }...`
+      );
     }
-  }, [getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")]);
+  }, [
+    getLocalFilterValue("includeKeywords"),
+    getLocalFilterValue("excludeKeywords"),
+  ]);
 
   useEffect(() => {
     const savedIncludeKeywords = localFilters?.includeKeywords;
@@ -73,12 +98,12 @@ export default function KeywordFilter({
     setIncludeKeywords(
       savedIncludeKeywords
         ?.split(",")
-        .filter(item => item.trim().length !== 0) || []
+        .filter((item) => item.trim().length !== 0) || []
     );
     setExcludeKeywords(
       savedExcludeKeywords
         ?.split(",")
-        .filter(item => item.trim().length !== 0) || []
+        .filter((item) => item.trim().length !== 0) || []
     );
   }, [searchParams, localFilters]);
 
@@ -88,7 +113,7 @@ export default function KeywordFilter({
       const newKeywords = inputValue
         .trim()
         .split(",")
-        .map((k) => k.trim())
+        .map((k) => k.trim().replace(/ /g, "_"))
         .filter(Boolean);
       addKeywords(newKeywords);
     }
@@ -101,13 +126,19 @@ export default function KeywordFilter({
         (k) => !includeKeywords.includes(k)
       );
       setIncludeKeywords([...includeKeywords, ...uniqueNewKeywords]);
-      setLocalFilter("includeKeywords", [...includeKeywords, ...uniqueNewKeywords].join(","));
+      setLocalFilter(
+        "includeKeywords",
+        [...includeKeywords, ...uniqueNewKeywords].join(",")
+      );
     } else {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !excludeKeywords.includes(k)
       );
       setExcludeKeywords([...excludeKeywords, ...uniqueNewKeywords]);
-      setLocalFilter("excludeKeywords", [...excludeKeywords, ...uniqueNewKeywords].join(","));
+      setLocalFilter(
+        "excludeKeywords",
+        [...excludeKeywords, ...uniqueNewKeywords].join(",")
+      );
     }
     setInputValue("");
   };
@@ -118,10 +149,16 @@ export default function KeywordFilter({
   ) => {
     if (keyType === "include") {
       setIncludeKeywords(includeKeywords.filter((k) => k !== keyword));
-      setLocalFilter("includeKeywords", includeKeywords.filter((k) => k !== keyword).join(","));
+      setLocalFilter(
+        "includeKeywords",
+        includeKeywords.filter((k) => k !== keyword).join(",")
+      );
     } else {
       setExcludeKeywords(excludeKeywords.filter((k) => k !== keyword));
-      setLocalFilter("excludeKeywords", excludeKeywords.filter((k) => k !== keyword).join(","));
+      setLocalFilter(
+        "excludeKeywords",
+        excludeKeywords.filter((k) => k !== keyword).join(",")
+      );
     }
   };
 
@@ -154,15 +191,21 @@ export default function KeywordFilter({
     return (
       <>
         {content}
-        {(activeTab && suggestions && suggestions.length > 0) && (
+        {activeTab && suggestions && suggestions.length > 0 && (
           <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full">
             <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
-              AI SUGGESTIONS {" "}
+              AI SUGGESTIONS{" "}
               <span className={styles.experimental_tag}>Beta</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {suggestions.map((item: string, ind: number) => (
-                <div key={ind} className={styles.suggestion_badge} onClick={() => addKeywords([item])}>{item}</div>
+                <div
+                  key={ind}
+                  className={styles.suggestion_badge}
+                  onClick={() => addKeywords([item])}
+                >
+                  {item}
+                </div>
               ))}
             </div>
           </div>
@@ -191,7 +234,10 @@ export default function KeywordFilter({
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -201,16 +247,17 @@ export default function KeywordFilter({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="productsTopics" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
         >
           <div className="flex items-center justify-between w-full">
             {triggerContent}
           </div>
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

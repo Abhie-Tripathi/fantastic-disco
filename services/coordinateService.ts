@@ -11,7 +11,7 @@ import {
 import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
-import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
+import { Target, Unmask, UnmaskPocApiParamType, Source, Event } from "@/types/events";
 
 interface fnProp {
   offset: number;
@@ -140,9 +140,12 @@ export const useCoordinateService = () => {
   };
 
   const getEventDetailById = (eventId: string) => {
-    return api.request(`${endpoints.coordinate.eventDetail}/${eventId}`, {
-      method: "GET",
-    });
+    return api.request<Event>(
+      `${endpoints.coordinate.eventDetail}/${eventId}`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getEventPOC = (eventId: string) => {
@@ -330,6 +333,60 @@ export const useCoordinateService = () => {
     });
   };
 
+  const fetchEvents = (websiteUrl: string) => {  
+    const data = {
+      events: [],
+      totalCount: 0,
+    }
+    return data;
+  }
+
+  const fetchSimilarEvents = (eventData: any) => {
+    const payload = {
+      query: eventData.name,
+      // active_gte: eventData.startDate,
+      // active_lte: eventData.endDate,
+      limit: 10,
+    }
+    return api.request(
+      `${endpoints.event.events}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
+  }
+
+  const fetchDuplicateEvents = (eventData: any) => {
+    return api.request(
+      endpoints.coordinate.fetchDuplicateEvent,
+      {
+        method: "POST",
+        data: eventData,
+      }
+    );
+
+  }
+
+  const addNewEvent = async(eventData: any) => {
+    return api.request(
+      endpoints.coordinate.addNewEvent,
+      {
+        method: "POST",
+        data: eventData,
+      }
+    );
+  }
+
+  const getEnquiryDetailByEventId = (eventId: string) => {
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?offset=0&eventId=${eventId}`,
+      {
+        method: "GET",
+      }
+    );
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -355,6 +412,11 @@ export const useCoordinateService = () => {
     getEnquiryFollowers,
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
+    fetchEvents,
+    fetchSimilarEvents,
+    fetchDuplicateEvents,
+    addNewEvent,
+    getEnquiryDetailByEventId,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

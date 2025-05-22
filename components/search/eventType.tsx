@@ -26,7 +26,7 @@ interface EventTypeSelectorProps {
 }
 
 export default function EventTypeSelector({
-  variant = "accordion",
+  variant = "popover",
 }: EventTypeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =
@@ -179,7 +179,10 @@ export default function EventTypeSelector({
   );
 
   const content = (
-    <div className="p-4 grid grid-cols-3 gap-4">
+    <div className={cn(
+      "p-4",
+      variant === "accordion" ? "grid grid-cols-1 gap-4" : "grid grid-cols-3 gap-4"
+    )}>
       {isEventeli && renderCategoryGroup("social")}
       {renderCategoryGroup("business")}
       {isEventeli && renderCategoryGroup("unAttended")}
@@ -207,7 +210,7 @@ export default function EventTypeSelector({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
+          className="w-full max-w-lg p-0"
           align="start"
         >
           {content}

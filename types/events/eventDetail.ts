@@ -8,7 +8,7 @@ export interface EventEditionDetailResponse {
 }
 
 export interface EventCoOrganizerDetailResponse {
-  coorganizers: [];
+  coorganizers: EventCoOrganizerDetail[] | [];
 }
 
 export interface EventExhibitorDetailsResponse {
@@ -50,33 +50,50 @@ export interface EventPOCDetails {
   phoneNumber: string | null;
   profilePicture: string | null;
 }
+export interface EventCoOrganizerDetail {
+  id: number | null;
+  name: string | undefined | null;
+  logo: string | undefined | null;
+  city: string | undefined | null;
+  country: string | undefined | null;
+  website: string | undefined | null;
+}
+
+export interface EventCoOrganizerDetail {
+  id: number | null;
+  name: string | undefined | null;
+  logo: string | undefined | null;
+  city: string | undefined | null;
+  country: string | undefined | null;
+  website: string | undefined | null;
+}
 
 export interface OverallRankingsDetail {
-  category: RankingData;
-  category_country: RankingData;
-  country: RankingData;
-  global: RankingData;
+  category: RankingData | null | undefined;
+  category_country: RankingData | null | undefined;
+  country: RankingData | null | undefined;
+  global: RankingData | null | undefined;
 }
 
 export interface RankingData {
-  maxRank: number;
-  precedingEvents: EventRankingDetail[];
-  succeedingEvents: EventRankingDetail[];
-  currentEvent: EventRankingDetail;
+  maxRank: number | null | undefined;
+  precedingEvents: EventRankingDetail[] | [] | null | undefined;
+  succeedingEvents: EventRankingDetail[] | [] | null | undefined;
+  currentEvent: EventRankingDetail | null | undefined;
 }
 
 export interface EventRankingDetail {
-  id: string;
-  name: string;
-  rank: number;
-  startDateTime: string;
-  endDateTime: string;
-  categoryId?: string | null;
+  id: string | null | undefined;
+  name: string | null | undefined;
+  rank: number | null | undefined;
+  startDateTime: string | null | undefined;
+  endDateTime: string | null | undefined;
+  categoryId?: string | null | null | undefined;
   location: {
-    CITY?: EventRankingLocation;
-    STATE?: EventRankingLocation;
-    VENUE?: EventRankingLocation;
-    COUNTRY?: EventRankingLocation;
+    CITY?: EventRankingLocation | null | undefined;
+    STATE?: EventRankingLocation | null | undefined;
+    VENUE?: EventRankingLocation | null | undefined;
+    COUNTRY?: EventRankingLocation | null | undefined;
   };
 }
 
@@ -122,17 +139,17 @@ export interface EventSponsorDetails {
 }
 
 export interface EventParticipantsDetails {
-  id: string;
-  name: string;
-  logo: string;
-  details: string;
-  type: "exhibitor" | "speaker" | "sponsor";
+  id: string | undefined | null;
+  name: string | undefined | null;
+  logo: string | undefined | null;
+  details: string | undefined | null;
+  type: "exhibitor" | "speaker" | "sponsor" | undefined | null;
 }
 
 export interface EventRankingLocation {
-  id: string;
-  name: string;
-  locationType: "CITY" | "STATE" | "VENUE" | "COUNTRY";
+  id: string | null | undefined;
+  name: string | null | undefined;
+  locationType: "CITY" | "STATE" | "VENUE" | "COUNTRY" | null | undefined;
 }
 
 export interface EventDate {

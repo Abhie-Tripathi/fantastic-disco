@@ -10,7 +10,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +22,9 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function StatusSelector({ variant = "accordion" }: FlexibleComponentProps) {
+export default function StatusSelector({
+  variant = "popover",
+}: FlexibleComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
@@ -26,6 +32,7 @@ export default function StatusSelector({ variant = "accordion" }: FlexibleCompon
   const enabled = morphedData.eventStatus.isEnabled;
   const selectedStatuses = getLocalFilterValue("status")
     .split(",")
+    .map((status) => status.toLowerCase())
     .filter(Boolean);
 
   const handleStatusToggle = (statusId: string) => {
@@ -35,7 +42,11 @@ export default function StatusSelector({ variant = "accordion" }: FlexibleCompon
     setLocalFilter("status", newStatuses.join(","));
   };
 
-  const renderTriggerContent = (content: React.ReactNode, isOpen?: boolean, variant?: string) => (
+  const renderTriggerContent = (
+    content: React.ReactNode,
+    isOpen?: boolean,
+    variant?: string
+  ) => (
     <div className="flex items-center justify-between w-full">
       {content}
       {variant === "popover" && (
@@ -70,9 +81,7 @@ export default function StatusSelector({ variant = "accordion" }: FlexibleCompon
             checked={selectedStatuses.includes(status.id)}
             onCheckedChange={() => handleStatusToggle(status.id)}
           />
-          <label htmlFor={status.id}>
-            {status.label}
-          </label>
+          <label htmlFor={status.id}>{status.label}</label>
         </div>
       ))}
     </div>
@@ -91,7 +100,10 @@ export default function StatusSelector({ variant = "accordion" }: FlexibleCompon
             {renderTriggerContent(triggerContent, isOpen, variant)}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -101,12 +113,15 @@ export default function StatusSelector({ variant = "accordion" }: FlexibleCompon
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="status" className="border rounded-md">
-        <AccordionTrigger className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}>
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
+        >
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

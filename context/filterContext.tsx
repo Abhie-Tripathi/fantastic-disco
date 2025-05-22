@@ -70,8 +70,7 @@ export interface Filters {
   // status?: string;
   top?: string;
   locationIds?: string;
-  geoCoordinates?: string;
-  viewBound?:string;
+  viewBound?: string;
   view?: string;
   calendar_type?: string;
   active_lte?: string;
@@ -109,7 +108,11 @@ export interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
-  eventType?:string;
+  eventType?: string;
+
+  //Preset Filters
+  presetCountry?: string;
+  presetCategory?: string;
 
   // Coordinate Filters
   eventId?: string;
@@ -132,6 +135,10 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
+
+  filter?: string;
+  compare_from?: string;
+  compare_to?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -174,7 +181,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
-   const { toast } = useToast();
+  const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
@@ -190,14 +197,25 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
-      const params = Object.fromEntries(searchParams.entries()) as Filters;
-      
+      const params = {
+        ...Object.fromEntries(searchParams.entries()),
+      } as Filters;
+
       // Set default date range if not present
-      if (!params.active_gte || !params.active_lte) {
-        params.active_gte = startOfMonth(new Date()).toISOString();
-        params.active_lte = endOfMonth(addMonths(new Date(), 3)).toISOString();
+      if (
+        pathname === "/internal/search/events" &&
+        !params.active_gte &&
+        !params.active_lte &&
+        !params.eventIds
+      ) {
+        params.active_gte = startOfMonth(new Date())
+          .toISOString()
+          .split("T")[0];
+        params.active_lte = endOfMonth(addMonths(new Date(), 3))
+          .toISOString()
+          .split("T")[0];
       }
-      
+
       setLocalFilters(filterEmptyValues(params));
     }
   }, [filterEmptyValues, searchParams]);
@@ -217,11 +235,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (enabledFilters) {
-     console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
-  
+
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
       console.log(key);
@@ -254,7 +271,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               value.split(",").length <= 1))
         ) {
           console.log(value);
-          
+
           toast({
             title: "Error",
             description: "At least one filter must be selected",
@@ -269,7 +286,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        
+
         return newFilters;
       });
     },
@@ -278,10 +295,15 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const clearLocalFilters = useCallback(() => {
     const params = new URLSearchParams();
-    
-    // Preserve the date range when clearing filters
-    params.set("active_gte", startOfMonth(new Date()).toISOString());
-    params.set("active_lte", endOfMonth(addMonths(new Date(), 3)).toISOString());
+
+    params.set(
+      "active_gte",
+      startOfMonth(new Date()).toISOString().split("T")[0]
+    );
+    params.set(
+      "active_lte",
+      endOfMonth(addMonths(new Date(), 3)).toISOString().split("T")[0]
+    );
 
     // Preserve view if it exists
     const viewValue = searchParams.get("view");
@@ -352,7 +374,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setLocalFilters((prev) => {
         const newFilters = { ...prev };
         // Filter out date range filters to prevent them from being deleted
-        const filteredKeys = keys.filter(key => key !== 'active_gte' && key !== 'active_lte');
+        const filteredKeys = keys.filter(
+          (key) => key !== "active_gte" && key !== "active_lte"
+        );
         filteredKeys.forEach((key) => {
           delete newFilters[key];
         });
@@ -376,8 +400,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     [filterEmptyValues]
   );
 
-  console.log(localFilters);
-  
   const contextValue = useMemo(
     () => ({
       localFilters,
@@ -420,9 +442,3 @@ export const useFilterContext = () => {
   }
   return context;
 };
-
-
-
-
-
-

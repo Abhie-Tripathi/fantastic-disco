@@ -20,18 +20,27 @@ import { Search, X } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
-export default function MultiSelectSearchBar() {
+interface MultiSelectSearchBar {
+  varient?: "small" | "medium" | "large";
+}
+
+export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSearchBar) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
   const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const { getEvents, isLoading} = useEventsService();
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const { getEvents, isLoading } = useEventsService();
+  const isDashboard = pathName == "/internal";
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -40,7 +49,6 @@ export default function MultiSelectSearchBar() {
       );
       try {
         const events = await Promise.all(eventPromises);
-        console.log(events);
         setSelectedItems(events as unknown as Event[]);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -48,7 +56,7 @@ export default function MultiSelectSearchBar() {
     };
 
     const eventIdsString = getLocalFilterValue("eventIds");
-    if (eventIdsString) {
+    if (!isDashboard && eventIdsString) {
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
@@ -58,9 +66,21 @@ export default function MultiSelectSearchBar() {
     debounce(async (value: string) => {
       if (value) {
         try {
-          const response = await getEvents({
-            query: value,
-          });
+          // Cancel any ongoing request
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+          }
+
+          // Create new AbortController for this request
+          abortControllerRef.current = new AbortController();
+
+          const response = await getEvents(
+            {
+              query: value,
+            },
+            abortControllerRef.current.signal
+          );
+
           const filteredResults =
             (response?.events as Event[])?.filter(
               (event) =>
@@ -68,7 +88,10 @@ export default function MultiSelectSearchBar() {
             ) || [];
           setSearchResults(filteredResults);
         } catch (err) {
-          console.error("Error fetching search results:", err);
+          // Only log error if it's not an abort error
+          if (err instanceof Error && err.name !== "AbortError") {
+            console.error("Error fetching search results:", err);
+          }
           setSearchResults([]);
         }
       } else {
@@ -90,7 +113,6 @@ export default function MultiSelectSearchBar() {
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log("Selected items:", selectedItems);
       setOpen(false);
     },
     [selectedItems]
@@ -145,6 +167,10 @@ export default function MultiSelectSearchBar() {
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
+      // Cancel any pending request when component unmounts
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
   }, []);
 
@@ -153,14 +179,30 @@ export default function MultiSelectSearchBar() {
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
-              <Search className="ml-2 text-gray-400" />
+            <div
+              className={`flex items-center flex-wrap bg-background rounded-md shadow-sm border ${
+                isDashboard ? "p-2" : "p-0"
+              }`}
+            >
+              <Search
+                className={`ml-2 text-gray-400 ${isDashboard ? "" : "w-4 h-4"} ${
+                  varient === "small" ? "w-3 h-3" : 
+                  varient === "large" ? "w-5 h-5" : 
+                  "w-4 h-4"
+                }`}
+              />
               {selectedItems.map((item) => (
                 <div
                   key={item.basic.id}
-                  className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+                  className={`flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 ${
+                    varient === "small" ? "text-xs" :
+                    varient === "large" ? "text-base" :
+                    "text-sm"
+                  }`}
                 >
-                  <span className="text-sm">{item.basic.name}</span>
+                  <span className="text-sm text-gray-900 dark:text-gray-100">
+                    {item.basic.name}
+                  </span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -179,7 +221,13 @@ export default function MultiSelectSearchBar() {
                   placeholder={selectedItems.length ? "" : "Search Events"}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
+                  className={`pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none ${
+                    isDashboard ? "text-base" : "text-sm"
+                  } ${
+                    varient === "small" ? "text-xs h-7" :
+                    varient === "large" ? "text-lg h-11" :
+                    "text-sm h-9"
+                  }`}
                 />
               </div>
             </div>
@@ -188,7 +236,7 @@ export default function MultiSelectSearchBar() {
             className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
             align="start"
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
@@ -205,8 +253,21 @@ export default function MultiSelectSearchBar() {
                     <CommandItem
                       key={event.basic.id || index}
                       onSelect={() => handleItemSelect(event)}
+                      className="flex flex-col items-start"
                     >
-                      {event.basic.name}
+                      <div className="font-medium">
+                        <span>{event.basic.name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {formattedDateRange(
+                            event.basic.startDateTime,
+                            event.basic.endDateTime,
+                            false
+                          )}
+                        </span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatLocationParts(event.basic.eventLocation, true)}
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandList>

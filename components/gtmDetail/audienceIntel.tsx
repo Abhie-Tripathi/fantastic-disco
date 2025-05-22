@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { AudienceSpread } from "../eventDetail/audienceSpread";
 import { DesignationSpread } from "../eventDetail/designationSpread";
-import { EventAudienceEstimates } from "../eventDetail/eventAudienceEstimates";
 import { Heading } from "../eventDetail/heading";
 import { EventParticipants } from "./eventParticipants";
 
@@ -13,7 +12,7 @@ interface Props {
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
-  eventSponsorData: EventParticipantsDetails[];
+  // eventSponsorData: EventParticipantsDetails[];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
@@ -22,7 +21,7 @@ export const AudienceIntel = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
-  eventSponsorData,
+  // eventSponsorData,
   scrollSection,
   setActiveTab,
 }: Props) => {
@@ -37,7 +36,7 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
-  const { estimatedAttendance, estimatedExhibitors } =
+  const { estimatedAttendance, estimatedExhibitors, estimatedVisitorRangeTag } =
     (eventDetails && eventDetails.insights) || {};
 
   const [ref, inView] = useInView({
@@ -58,16 +57,6 @@ export const AudienceIntel = ({
         tooltipDescription="Provides insights into exhibitors, speakers, and sponsors."
       />
       <div className="flex flex-col gap-6">
-        <EventAudienceEstimates
-          audienceEstimateData={{
-            estimatedAttendance: estimatedAttendance,
-            estimatedExhibitors: estimatedExhibitors,
-          }}
-          restrictedData={{
-            estimatedVisitors: estimatedVisitors,
-            estimatedExhibitor: estimatedExhibitor,
-          }}
-        />
         <div className="flex gap-6 max-xl:flex-col max-h-full xl:max-h-96">
           <AudienceSpread
             restrictedData={audienceSpreadRestriction}
@@ -82,7 +71,7 @@ export const AudienceIntel = ({
           eventDetails={eventDetails}
           eventExhibitorData={eventExhibitorData}
           eventSpeakerData={eventSpeakerData}
-          eventSponsorData={eventSponsorData}
+          // eventSponsorData={eventSponsorData}
         />
       </div>
     </div>

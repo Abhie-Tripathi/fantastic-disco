@@ -25,7 +25,7 @@ interface GlobalAndTouringSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function GlobalAndTouringSelector({ variant = "accordion" }: GlobalAndTouringSelectorProps) {
+export default function GlobalAndTouringSelector({ variant = "popover" }: GlobalAndTouringSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
   const globalAndTourings = morphedData.globalAndTourings.options;

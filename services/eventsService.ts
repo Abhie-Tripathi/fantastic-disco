@@ -19,6 +19,7 @@ import {
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
+import { isEventeli } from "@/config";
 
 export const useEventsService = () => {
   const api = useApi();
@@ -26,10 +27,34 @@ export const useEventsService = () => {
   const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
     EventParticpantAdapter();
 
-  const getEvents = async (params?: EventQuery) => {
+  const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
+    const tempQuery = params;
+    if (
+      (Object.keys(tempQuery).length === 1 &&
+        Object.keys(tempQuery)[0].toLowerCase() == "view") ||
+      Object.keys(tempQuery).length == 0
+    ) {
+      return {
+        events: [],
+        count: 0,
+        isLoading: false,
+        error: null,
+      };
+    }
+
+    if (
+      isEventeli &&
+      !params.locationIds &&
+      !params.viewBound &&
+      !params.eventIds &&
+      !params.query
+    ) {
+      throw new Error("Location is required");
+    }
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
+      signal,
     });
     return response;
   };
@@ -40,7 +65,21 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventsCount = async (params?: EventQuery) => {
+  const getEventsCount = async (params: EventQuery) => {
+    const tempQuery = params;
+    delete tempQuery.view;
+    if (Object.keys(tempQuery).length === 0) {
+      return {
+        count: 0,
+      };
+    }
+
+    // if (isEventeli && !params.locationIds) {
+    //   return {
+    //     count: 0,
+    //   };
+    // }
+
     return await api.request<EventCount[]>(`${endpoints.event.count}`, {
       method: "GET",
       params,
@@ -56,11 +95,15 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventEditionDetails = (id: string, take: number, skip: number) => {
+  const getEventEditionDetails = (
+    id: string,
+    limit: number,
+    offset: number
+  ) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
-        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
-      }`,
+      `${endpoints.event.events}/${id}/editions${
+        limit ? `?limit=${limit}` : ""
+      }${offset !== undefined && offset !== null ? `&offset=${offset}` : ""}`,
       {
         method: "GET",
       }
@@ -235,6 +278,21 @@ export const useEventsService = () => {
     );
   };
 
+  const getEventCountByCity = async (params: string) => {
+    const response = await api.request<
+      Array<{
+        count: number;
+        id: string;
+        name: string;
+        latitude: string;
+        longitude: string;
+      }>
+    >(`${endpoints.event.events}/count?${params}`, {
+      method: "GET",
+    });
+    return response?.filter((item) => item.name.toLowerCase() !== "online");
+  };
+
   return {
     getEvents,
     saveEvent,
@@ -255,6 +313,7 @@ export const useEventsService = () => {
     getEventCoOrganizerDetails,
     getEventsRankingDetailsById,
     getRecentSearch,
+    getEventCountByCity,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

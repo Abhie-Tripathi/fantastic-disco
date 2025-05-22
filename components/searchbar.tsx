@@ -39,7 +39,6 @@ export default function MultiSelectSearchBar() {
       );
       try {
         const events = await Promise.all(eventPromises);
-        console.log(events);
         setSelectedItems(events as unknown as Event[]);
       } catch (error) {
         console.error("Error fetching event details:", error);

@@ -17,12 +17,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Search, X } from "lucide-react";
-import { useEventsService } from "@/services/eventsService";
-import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCoordinateService } from "@/services/coordinateService";
 import { enquiryType } from "@/types/coordinateEventType";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface Props {
   selectedData: enquiryType;
@@ -30,7 +30,7 @@ interface Props {
 
 export default function MultiSelectSearchBar({ selectedData }: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathName = usePathname();
   const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
@@ -38,14 +38,6 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
   const [selectedItems, setSelectedItems] = useState<enquiryType[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
   const { getEvents, isLoading } = useCoordinateService();
-
-  useEffect(() => {
-    const eventIdsString = getLocalFilterValue("eventId");
-    if (eventIdsString) {
-      const eventIds = eventIdsString.split(",");
-      setSelectedItems([selectedData]);
-    }
-  }, [localFilters]);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
@@ -138,18 +130,27 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    const eventIdsString = getLocalFilterValue("eventId");
+
+    if (eventIdsString) {
+      const eventIds = eventIdsString.split(",");
+      setSelectedItems([selectedData]);
+    }
+  }, [pathName]);
+
   return (
     <form onSubmit={handleSearchSubmit} className="w-full">
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-0.5">
-              <Search className="ml-2 text-gray-400" />
+            <div className="flex items-center bg-background rounded-md shadow-sm border p-0.5">
+              <span><Search className="ml-2 text-gray-400 w-5 h-5" /></span>
               {selectedItems.length > 0 ? (
                 selectedItems.map((item) => (
                   <div
                     key={item.eventId}
-                    className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
+                    className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 max-w-[70%]"
                   >
                     <span className="text-sm line-clamp-1">
                       {item.eventData.name}
@@ -183,7 +184,7 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
             className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
             align="start"
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={searchTerm}
                 onValueChange={handleSearchChange}
@@ -200,8 +201,21 @@ export default function MultiSelectSearchBar({ selectedData }: Props) {
                     <CommandItem
                       key={event.eventId || index}
                       onSelect={() => handleItemSelect(event)}
+                      className="flex flex-col items-start"
                     >
-                      {event.eventData.name}
+                      <div className="font-medium">
+                        <span>{event.eventData.name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {formattedDateRange(
+                            event.eventData.startDateTime,
+                            event.eventData.endDateTime,
+                            false
+                          )}
+                        </span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatLocationParts(event.eventData.eventLocation, true)}
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandList>

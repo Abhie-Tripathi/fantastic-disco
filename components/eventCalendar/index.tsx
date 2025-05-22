@@ -34,6 +34,7 @@ import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -61,14 +62,17 @@ interface EventCalendarProps {
   trackerId?: string;
   date?: any;
   activeVal?: number;
+  eventType?: string;
 }
 export default function EventCalendar({
   source,
   trackerId,
   date: trackerDate,
   activeVal,
+  eventType,
 }: EventCalendarProps) {
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams, getEvents } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
@@ -101,7 +105,9 @@ export default function EventCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const filteredParams = new URLSearchParams(searchParams.toString());
 
-  const view = getFilterValue("calendar_type") || ("month" as CustomView);
+  const view =
+    getFilterValue("calendar_type") ||
+    (isMobile ? "year" : ("month" as CustomView));
   const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };
@@ -119,25 +125,23 @@ export default function EventCalendar({
     queryKey:
       source !== "tracker"
         ? ["events", view, currentDate, searchParams.toString()]
-        : [currentDate, active, view],
+        : ["events", currentDate, active, view],
     queryFn: async () => {
-      setShowEventList(false)
+      setShowEventList(false);
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
-      updatedParams.set("active_gte", moment(start).toISOString());
-      updatedParams.set("active_lte", moment(end).toISOString());
+      updatedParams.set("active_gte", moment(start).format("YYYY-MM-DD"));
+      updatedParams.set("active_lte", moment(end).format("YYYY-MM-DD"));
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerStartDate = `${moment(start).toISOString()}`;
-      const trackerEndDate =`${moment(end).toISOString()}`;
+      const trackerStartDate = `${moment(start).format("YYYY-MM-DD")}`;
+      const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
           : await getCalendarViewEvents(
               trackerId || "",
-              `type=${
-                active
-              }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
+              `type=${active}&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
             );
@@ -153,29 +157,50 @@ export default function EventCalendar({
   }, [searchParams]);
 
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
-    queryKey: ["unattended-events", searchParams.toString()],
+    queryKey: ["unattended-events", searchParams.toString(), trackerId, currentDate],
+   
     queryFn: async () => {
+      let alerts;
+      if(source!=="tracker"){
       const alertSearchParams = new URLSearchParams(searchParams.toString());
       alertSearchParams.set("eventTypes", "alert");
+      alertSearchParams.set("limit", "50");
       const query = Object.fromEntries(alertSearchParams.entries());
-      const alerts = await getEvents(query);
-
+      alerts = await getEvents(query);
+      }
+      const { start, end } = getVisibleDateRange(view, currentDate);
+      const trackerStartDate = `${moment(start).format("YYYY-MM-DD")}`;
+        const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
+      // Fetch holidays
       let holidays: Event[] = [];
-      if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
-        filteredParams.set("eventTypes", "holiday");
-        filteredParams.delete("view");
-        const query = Object.fromEntries(filteredParams.entries());
-        const holidayResponse = await getEvents(query);
-        holidays = (holidayResponse?.events as Event[]) || [];
+      try {
+        const shouldFetchHolidays = filteredParams.get("eventTypes")?.split(",").includes("holiday") || eventType === "unattended";
+        
+        if (shouldFetchHolidays) {
+          filteredParams.set("eventTypes", "holiday");
+          filteredParams.delete("view");
+          const query = Object.fromEntries(filteredParams.entries());
+          
+          const holidayResponse = source === "tracker"
+            ? await getCalendarViewEvents(
+                trackerId || "", 
+                `active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&limit=20&offset=0&type=unattended`, 
+                true
+              )
+            : await getEvents(query);
+          holidays = (holidayResponse?.events || []) as Event[];
+        }
+      } catch (error) {
+        console.error("Error fetching holidays:", error);
       }
 
       return {
         holidays,
-        alerts: (alerts?.events as any[]) || [],
+        alerts: source!=="tracker"?(alerts?.events as any[]) || []:[],
       };
     },
     enabled: !!isEventeli,
-  });
+});
 
   const processedEvents = procesEvents(
     view,
@@ -183,8 +208,6 @@ export default function EventCalendar({
     eventsData,
     filter
   );
-
-  console.log(processedEvents);
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -323,6 +346,16 @@ export default function EventCalendar({
     }
   };
 
+  if (
+    isEventeli &&
+    !searchParams.get("viewBound") &&
+    !searchParams.get("locationIds") &&
+    source !== "tracker" &&
+    !searchParams.get("eventIds")
+  ) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
+
   const renderCalendarContent = () => {
     if (isEventsLoading) {
       return <Loading />;
@@ -337,6 +370,7 @@ export default function EventCalendar({
         />
       );
     }
+
     return (
       <Calendar
         localizer={localizer}
@@ -398,8 +432,8 @@ export default function EventCalendar({
             <ZeroState text={error?.message} />
           )}
         </div>
-      ) : source === "tracker" && eventsData?.count === 0 && activeVal === 0 ? (
-        active === "savedEvent" ? (
+      ) : source === "tracker" && activeVal === 0 ? (
+        active === "bookmarked" ? (
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}

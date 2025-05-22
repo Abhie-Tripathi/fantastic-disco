@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -18,24 +18,34 @@ import { useFilterContext } from "@/context/filterContext";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
-  eventType?:string;
-  view?:string;
+  eventType?: string;
+  view?: string;
 }
-const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
+const EventTable = ({
+  source,
+  trackerId,
+  eventType,
+  view,
+}: EventTableProps) => {
   // const { theme } = useTheme();
-  const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
+  const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
+    useFilterState();
   const { localFilters } = useFilterContext();
-  const {data} = useTrackerContext();
-  const [interest, setInterest]=useState();
+  const { data, editTrue } = useTrackerContext();
+  const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
   console.log(trackerId);
-  let events, totalEvents, isLoading, error;
+  let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
-  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
+    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
+      query,
+      trackerId,
+      view
+    ));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -43,7 +53,8 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
   const mapping = {
     rating: "rating",
     maturity: "maturity",
-    branded: "branded,series",
+    branded: "branded",
+    series:"series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -84,31 +95,35 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     });
   };
   useEffect(() => {
-    if (events?.length>0) {
+    if (events?.length > 0) {
       setUpdatedEvents(events);
     }
   }, [events]);
-
+  
   useEffect(() => {
     if (!events) return;
-  
+    
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
-  
-      if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+
+      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
               interests: interest
-                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                ? (
+                    Object.keys(interest) as Array<keyof typeof event.interests>
+                  ).reduce(
                     (acc, key) => {
                       if (event.interests?.[key]) {
                         delete acc[key];
                       } else {
-                        acc[key] = interest[key]; 
+                        acc[key] = interest[key];
                       }
                       return acc;
                     },
@@ -120,69 +135,65 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
           return event;
         });
       }
-  
+
       return newEvents;
     });
   }, [eventId, interest]);
-  
-  
 
 
-
-  
-  console.log(events); // Now it will print correctly
-  
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
       limit: newItemsPerPage,
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
-    if(source==="tracker"){
-      return( <NullState
-        image={TrackerNullState}
-        title={(error as ApiError).message}
-      />)
-    }else 
-    return <ZeroState text={(error as ApiError).message} />;
+    if (source === "tracker") {
+      return (
+        <NullState
+          image={TrackerNullState}
+          title={(error as ApiError).message}
+        />
+      );
+    } else return <ZeroState text={(error as ApiError).message} />;
   }
 
-  if (events.length === 0) { 
-    if(source==="tracker"){
-      if(query.eventType==="bookmarked"){
-        return( <NullState
-          image={TrackerNullState}
-          title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
-        />)
-      }else
-      return( <NullState
-      image={TrackerNullState}
-      title="We couldn't find any events matching your tracker criteria at the moment."
-      text="Try adjusting your filters or checking back later, as new events are added frequently."
-      buttonText="Manage Configurations"
-      buttonUrl={`/internal/trackers/${
-        trackerId
-      }/editTracker?type=${query.type}`}
-    />)
-    }else 
-    return <ZeroState text="No events found" />;
+  if (events.length === 0) {
+    if (source === "tracker") {
+      if (query.eventType === "bookmarked") {
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
+          />
+        );
+      } else
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="We couldn't find any events matching your tracker criteria at the moment."
+            text="Try adjusting your filters or checking back later, as new events are added frequently."
+            buttonText="Manage Configurations"
+            buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
+          />
+        );
+    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
   }
-console.log(events);
 
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex-1 overflow-hidden rounded-md border bg-background">
-        <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-198px)]"} overflow-auto`}>
+        <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-210px)]"} overflow-auto`}>
           <Table>
             <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
             <TableBody className="overflow-auto">
               {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow
+                  global={view}
                   view={query.eventType}
                   setEventId={setEventId}
                   setInterest={setInterest}

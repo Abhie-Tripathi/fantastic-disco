@@ -10,10 +10,15 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useFilterState } from "@/hooks/useFilterState";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { useFilterContext } from "@/context/filterContext";
 
 const maturityLevels = [
   { id: "new", label: "New" },
@@ -23,7 +28,7 @@ const maturityLevels = [
 ];
 
 interface EditionProps {
-  source: string;
+  source?: string;
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -36,9 +41,10 @@ export default function EditionSelector({
   source,
   selectedStatus: parentSelectedFormats = "",
   setSelectedStatus: parentSetSelectedFormats,
-  variant = "accordion"
+  variant = "popover",
 }: EditionSelectorProps) {
-  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const { getLocalFilterValue, setLocalFilter, searchParams } =
+    useFilterContext();
   const [selectedFormatsLocal, setSelectedFormatsLocal] =
     React.useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -49,16 +55,17 @@ export default function EditionSelector({
     source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
   useEffect(() => {
-    if (source !== "tracker") setSelectedStatus?.(getFilterValue("maturity"));
+    if (source !== "tracker")
+      setSelectedStatus?.(getLocalFilterValue("maturity"));
   }, [searchParams]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
       setSelectedStatus?.("");
-      if (source !== "tracker") setFilter("maturity", "");
+      if (source !== "tracker") setLocalFilter("maturity", "");
     } else {
       setSelectedStatus?.(value);
-      if (source !== "tracker") setFilter("maturity", value);
+      if (source !== "tracker") setLocalFilter("maturity", value);
     }
   };
 
@@ -81,10 +88,7 @@ export default function EditionSelector({
         className="space-y-2"
       >
         {maturityLevels.map((maturityLevel) => (
-          <div
-            key={maturityLevel.id}
-            className="flex items-center space-x-2"
-          >
+          <div key={maturityLevel.id} className="flex items-center space-x-2">
             <RadioGroupItem
               value={maturityLevel.id}
               id={maturityLevel.id}
@@ -95,9 +99,7 @@ export default function EditionSelector({
                 }
               }}
             />
-            <Label htmlFor={maturityLevel.id}>
-              {maturityLevel.label}
-            </Label>
+            <Label htmlFor={maturityLevel.id}>{maturityLevel.label}</Label>
           </div>
         ))}
       </RadioGroup>
@@ -124,7 +126,10 @@ export default function EditionSelector({
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -134,16 +139,17 @@ export default function EditionSelector({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="edition" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
         >
           <div className="flex items-center justify-between w-full">
             {triggerContent}
           </div>
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );
