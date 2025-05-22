@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "@/app/(internal)/internal/trackers/page.style.module.css"
 import { TemplateItem, StandardTemplateGroup, TrackerTypeProp } from '@/types/trackers';
+import { GAEvent } from "@/utils/GAEvent";
+import { useToast } from "@/hooks/use-toast";
 import data from '@/components/templateData'
 import Template from "/public/template.svg";
 import Back from "/public/back.svg";
@@ -64,6 +66,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const [countData,setCountData]=useState<TrackerTypeProp []>([]);
   // const [showFetchedData, setShowFetchedData] = useState(false);
   const aiStatus = JSON.parse(localStorage.getItem("companySuggestion") || "{}");
+  const { toast } = useToast();
   const [inputValue,setInputValue] = useState(aiStatus?.companyData?.domain || "");
   const inputRef = useRef<HTMLInputElement>(null);
   const stepsConfig = isEventeli?[
@@ -204,8 +207,15 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
 
   const fetchData = () => {
     // console.log("templateView", templateView);
-    
+    if(!isValidURL(inputValue)){
+      toast({
+        description: "Please enter valid url",
+        variant: "destructive",
+      });
+      return;
+    }
     if(templateView) setTemplateView(false);
+    GAEvent("Brand Brief", "Tracker", "BrandBrief", `${inputValue} fetch`);
     //Load existing data or use initial state
     let currentData;
     try {
@@ -392,7 +402,33 @@ Do not include the competitor platform names in the output. Only return publicly
     
   }
 
-
+  function isValidURL(url: string): boolean {
+    try {
+      // Prepend http if missing for URL constructor to work properly
+      const hasProtocol = /^(https?:)?\/\//i.test(url);
+      const testUrl = hasProtocol ? url : `http://${url}`;
+      const parsed = new URL(testUrl);
+  
+      // Basic checks
+      if (!parsed.hostname) return false;
+  
+      // Optionally, check for valid TLD or IP format
+      const hostname = parsed.hostname;
+      const tldPattern = /^[a-z]{2,}$/i;
+      const ipPattern =
+        /^(25[0-5]|2[0-4]\d|1?\d{1,2})(\.(25[0-5]|2[0-4]\d|1?\d{1,2})){3}$/;
+  
+      const parts = hostname.split(".");
+      const tld = parts[parts.length - 1];
+  
+      return (
+        ipPattern.test(hostname) || // is IP
+        (parts.length > 1 && tldPattern.test(tld)) // has valid domain and TLD
+      );
+    } catch (e) {
+      return false;
+    }
+  }
 
   const EventeliView = useMemo(() => {
     if (!isEventeli) return null;
@@ -500,7 +536,7 @@ Do not include the competitor platform names in the output. Only return publicly
             <div className="border-[var(--border-color)] rounded-[var(--border-radius-sm)] border flex p-1 w-[80%] sm:w-full hover:border-[var(--primary-color)] focus-within:border-[var(--primary-color)] transition-all duration-200 hover:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)] focus-within:shadow-[0_0_8px_2px_rgba(103,80,164,0.4)]">
                 <input
                   type="text"
-                  ref={inputRef}
+                  // ref={inputRef}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       fetchData() 

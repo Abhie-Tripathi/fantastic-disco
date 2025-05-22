@@ -75,7 +75,7 @@ export const TrackerContextProvider = ({ children }: any) => {
     {
       key: "eventTypeRef",
       content: isEventeli?
-        "Business, Social, Unattended and Bookmarked—to quickly switch between event categories.":"Active, Past, New and Bookmarked—to quickly switch between event categories.",
+        "Social, Business, Unattended and Bookmarked—to quickly switch between event categories.":"Active, Past, New and Bookmarked—to quickly switch between event categories.",
     },
     {
       key: "popularityRef",
