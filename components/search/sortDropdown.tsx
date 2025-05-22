@@ -111,6 +111,7 @@ const SortDropdown = ({
       <PopoverTrigger asChild>
         {compact ? (
           <Button
+            id="sorting-dropdown-mobile"
             variant="ghost"
             size="xs"
             className="h-8 w-8 flex items-center gap-2 border"

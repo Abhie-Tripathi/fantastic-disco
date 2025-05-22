@@ -480,7 +480,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                   </TabsList>
                 </Tabs>
 
-                {isTentimesUser && <AddEventModal />}
+                <AddEventModal />
 
                 {/* <ViewSelectDropdown /> */}
 

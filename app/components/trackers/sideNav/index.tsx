@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import {TableIcon, ListIcon, CalendarIcon, Globe } from "lucide-react";
 import { isEventeli } from '@/config';
 const Index = () => {
+  const {refs, setps} = useTrackerContext();
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
@@ -88,7 +89,7 @@ const Index = () => {
   return (
     <>
       <div className={`fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] ${isEventeli?"top-[61px]": "top-[67px]"} w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-20 text-h6 left-[63px]`}>
-        <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
+        <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold" >
           <Link className='flex gap-1 cursor-pointer' href={
               `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`
           } >
@@ -102,7 +103,7 @@ const Index = () => {
          
           {last==="savedevents"?
           <div className={styles.tooltipContainer}>Saved Events</div>:
-          <div className={styles.tooltipContainer}>
+          <div className={styles.tooltipContainer} >
             {data?.name?.length > 20 ? data?.name?.substring(0, 20) + '...' : data?.name}
             {data?.name?.length > 20 && <span className={styles.tooltipText}>{data?.name}</span>}
 
@@ -114,7 +115,16 @@ const Index = () => {
 
         <>
           <div className="flex justify-center items-center" >
-          <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
+          <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md' 
+          ref={refs.viewsRef}
+          style={{
+            position: 'fixed', // Key change
+            top: isEventeli ? '68px' : '74px', // Custom top (adjust as needed)
+            left: '50%', // Center horizontally (or set specific left)
+            transform: 'translateX(-50%)', // Center-align
+            zIndex: 21, // Above the header (zIndex: 20)
+          }}
+          >
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
             <div onClick={()=>handleClick("table")}>
               <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>
@@ -219,7 +229,15 @@ const Index = () => {
                   "Configuration"
                 )
               }}>
-              <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+              <div style={{
+            position: 'fixed', // Key change
+            top: isEventeli ? '61px' : '67px', // Custom top (adjust as needed)
+            right: '5%', // Center horizontally (or set specific left)
+            transform: 'translateX(-50%)', // Center-align
+            zIndex: 21, // Above the header (zIndex: 20)
+            display: "flex",
+            justifyContent:"center"
+          }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")} ref={refs.configRef}>
                 <SettingsGear width='12px' height='12px' style={{color: trackerSection === "Tracker Configurations" ? "var(--primary-color)" :"var(--tertiary-text-color)"}}/>
                 <span>Configurations</span>
               </div>

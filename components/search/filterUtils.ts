@@ -436,17 +436,17 @@ const geoFilters: {
         },
       ],
     },
-    {
-      id: "audience-intel",
-      label: "Audience Intel",
-      filters: [
-        {
-          id: "designations",
-          component: "AudienceDesAndDep",
-          enabled: true,
-        },
-      ],
-    },
+    // {
+    //   id: "audience-intel",
+    //   label: "Audience Intel",
+    //   filters: [
+    //     {
+    //       id: "designations",
+    //       component: "AudienceDesAndDep",
+    //       enabled: true,
+    //     },
+    //   ],
+    // },
   ],
   companies: [
     {
