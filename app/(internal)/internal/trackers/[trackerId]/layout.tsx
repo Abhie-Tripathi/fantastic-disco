@@ -38,7 +38,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 // fetchData();
 // },[])
   return (
-    <div className={`${styles.container}`} style={{position:"relative"}}>
+    <div className="flex flex-col gap-3 md:gap-6 w-full">
         {/* <div className={styles.bar}>
             <div className={styles.leftNav}>
               <Link href='/internal/trackers'>
@@ -54,16 +54,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
         </div> */}
         {/* {isVerifiedToken===false? <Loading/>: */}
-        <div className={styles.containerBottom}>
-        <div className={styles.containerLeft}>
+        {/* <div className={styles.containerLeft}> */}
           <SideNav/>
-        </div>
-        <div className={styles.containerRight}>
+        {/* </div> */}
+        {/* <div className={styles.containerRight}> */}
         <Suspense fallback={<Loading/>}>
         {children}
         </Suspense>
-        </div>
-      </div>
+        {/* </div> */}
         {/* } */}
         
       

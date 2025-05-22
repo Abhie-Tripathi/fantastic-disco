@@ -1237,13 +1237,15 @@ const deleteTracker = async () => {
   }
 }
 
+if(isLoading) return <Loading/>
+
 return (
-  <>
-  <div>{isLoading?<Loading/>:
+  <div className="w-full px-8">
+
   <>
   <div
-    className="flex fixed z-[11] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
-    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex:'11' }}
+    className="flex z-[11] pt-4 bg-[var(--primary-foreground)] w-full"
+    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "0px", zIndex:'11' }}
   >
     <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
     <div className="flex items-center gap-2">
@@ -1294,7 +1296,7 @@ return (
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className="flex flex-col gap-2 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
+  <div ref={scrollableDivRef} className="flex flex-col gap-2 w-full" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
     <div className="flex gap-4 h-[calc(100vh-174px)]">
@@ -1625,7 +1627,7 @@ return (
   </div>
   </div>
   </>
-  }</div>
+  }
   {del &&
             (
               <div className={styles.shareModal} >
@@ -1653,7 +1655,7 @@ return (
 
 
             )}
-  </>
+  </div>
 );
 };
 
