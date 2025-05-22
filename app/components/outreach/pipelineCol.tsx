@@ -74,7 +74,7 @@ const PipelineCol = ({
 
   return (
     <>
-      <div className={`${styles.outerCard}`}>
+      <div className="min-w-[90%] sm:min-w-[45%] lg:min-w-[30%]">
         <div className="group relative">
           <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t flex items-center justify-between">
             <div>
@@ -102,18 +102,12 @@ const PipelineCol = ({
               key={index}
               task={task}
               name={task.eventData.name}
-              interests={task.interestedCount}
               draggable={true}
-              eventLocation={""}
-              eventCompany={task.eventData?.organizer?.name ?? ""}
-              eventStartDate={task.eventData.startDateTime}
-              eventEndDate={task.eventData.endDateTime}
               eventId={task.eventId}
               enquiryId={task.id}
               enquiryStatus={task.status}
               onDragStart={(event) => handleDragStart(event, task)}
               handleModal={handleModal}
-              onClick={openAddModalHandler}
             />
           ))}
           {taskDetail[status].noMoreData ? (
