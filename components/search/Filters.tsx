@@ -822,8 +822,9 @@ const Filters = ({
                   "#research-view-desktop"
                 )[1] as HTMLElement) ?? "",
             title: "View",
-            content:
-              "Switch between list, table, map, or calendar views to see your tracker data from any angle.",
+            content: `Switch between list, ${
+              !isMobile ? "table," : ""
+            } map, or calendar views to see your tracker data from any angle.`,
             disableBeacon: true,
           },
           ...(!isEventeli
