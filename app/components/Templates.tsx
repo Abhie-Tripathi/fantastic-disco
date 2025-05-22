@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "@/app/(internal)/internal/trackers/page.style.module.css"
 import { TemplateItem, StandardTemplateGroup, TrackerTypeProp } from '@/types/trackers';
+import { GAEvent } from "@/utils/GAEvent";
 import { useToast } from "@/hooks/use-toast";
 import data from '@/components/templateData'
 import Template from "/public/template.svg";
@@ -214,6 +215,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
       return;
     }
     if(templateView) setTemplateView(false);
+    GAEvent("Brand Brief", "Tracker", "BrandBrief", `${inputValue} fetch`);
     //Load existing data or use initial state
     let currentData;
     try {
