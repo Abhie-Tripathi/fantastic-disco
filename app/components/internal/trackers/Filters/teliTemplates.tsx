@@ -6,7 +6,6 @@ import Text from "@/components/new-ui/Text";
 import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
 const TeliTemplates = ({type, isMandatory, refs}:any) => {
-  console.log("called multiple time", refs);
   return (
     <div>
        {type==="T_LOCATION" &&
