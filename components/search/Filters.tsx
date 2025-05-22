@@ -824,7 +824,7 @@ const Filters = ({
             title: "View",
             content: `Switch between list, ${
               !isMobile ? "table," : ""
-            } map, or calendar views to see your tracker data from any angle.`,
+            } map, or calendar views to see data from any angle.`,
             disableBeacon: true,
           },
           ...(!isEventeli
