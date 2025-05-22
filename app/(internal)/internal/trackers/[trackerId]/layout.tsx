@@ -1,5 +1,5 @@
 "use client"
-import React,{Suspense, useEffect, useState} from "react";
+import React,{Suspense, useEffect, useState, useCallback, useRef} from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
 import Back from '/public/back.svg';
@@ -39,6 +39,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 // },[])
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
+      
         {/* <div className={styles.bar}>
             <div className={styles.leftNav}>
               <Link href='/internal/trackers'>

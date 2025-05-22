@@ -6,7 +6,7 @@
   min-width: 810px;
   display: flex;
   flex-direction: column;
-  gap: 35px;
+  /* gap: 35px; */
   align-items: center;
   min-height: calc(100vh - 67px);
   /* background-color: red; */
