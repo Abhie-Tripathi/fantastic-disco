@@ -9,7 +9,7 @@ interface StepConfig {
 
 interface UseWalkthroughProps<T> {
   refs?: T;
-  stepsConfig?: readonly StepConfig[];
+  stepsConfig: readonly StepConfig[];
   deps?: unknown[];
   storageKey?: string;
   currentPath?: string;
@@ -35,10 +35,8 @@ export function useWalkthrough<
   const triesRef = useRef(0);
   const maxTries = 10;
 
-  const stepSource = [...(stepsConfig ?? [])];
-
   const updateSteps = useCallback(() => {
-    const newSteps: Step[] = stepSource
+    const newSteps: Step[] = stepsConfig
       .map(({ key, content, id }) => {
         const el = id
           ? document.getElementById(id)
@@ -61,7 +59,6 @@ export function useWalkthrough<
       localStorage.getItem(storageKey) || "[]"
     );
     if (currentPath && walkthroughCompleted.includes(currentPath)) {
-      
       return;
     }
 
