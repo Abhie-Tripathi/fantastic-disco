@@ -39,7 +39,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 // },[])
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
-      
         {/* <div className={styles.bar}>
             <div className={styles.leftNav}>
               <Link href='/internal/trackers'>

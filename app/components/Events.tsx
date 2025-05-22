@@ -40,13 +40,7 @@ import {
 } from "react";
 const Map = lazy(() => import("@/components/map"));
 
-interface EventsProps {
-  walkThroughRefs?: {
-    [key: string]: RefObject<HTMLElement>;
-  };
-}
-
-const Events = ({ walkThroughRefs }: EventsProps) => {
+const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();

@@ -8,11 +8,6 @@ import { Filter } from "lucide-react";
 interface SearchLayoutProps {
   children: React.ReactNode;
   type: "events" | "companies" | "people";
-  walkThroughRefs?: WalkthroughRefs;
-}
-
-interface WalkthroughRefs {
-  [key: string]: RefObject<HTMLElement>;
 }
 
 const SearchLayout = ({ children, type }: SearchLayoutProps) => {

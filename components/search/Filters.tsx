@@ -699,6 +699,7 @@ const Filters = ({
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
   const { getFilterValue } = useFilterState();
+  const isMobile = useIsMobile();
   const { theme } = useTheme();
 
   const filterCount = useMemo(() => {
@@ -763,8 +764,6 @@ const Filters = ({
   //     setRun(false);
   //   }
   // };
-
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (mounted) {
