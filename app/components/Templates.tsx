@@ -198,7 +198,7 @@ const updateLocalStorage=(key:string, data: companyData| competitorData | keywor
   }, [result]);
 
   const handleTemplateSelect = useCallback((template: any) => {
-    console.log("Selected template:", template);
+    // console.log("Selected template:", template);
     setShowFetchedData(false);
   }, []);
 
