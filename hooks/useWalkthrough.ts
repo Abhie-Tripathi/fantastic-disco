@@ -9,38 +9,43 @@ interface StepConfig {
 
 interface UseWalkthroughProps<T> {
   refs?: T;
-  stepsConfig: readonly StepConfig[];
+  stepsConfig?: readonly StepConfig[];
   deps?: unknown[];
   storageKey?: string;
   currentPath?: string;
-  type?: string; 
-  conditionalKeys?: (type: string) => (keyof T)[]; 
+  type?: string;
+  conditionalKeys?: (type: string) => (keyof T)[];
 }
 
-export function useWalkthrough<T extends Record<string, React.RefObject<HTMLElement>>>({
+export function useWalkthrough<
+  T extends Record<string, React.RefObject<HTMLElement>>
+>({
   refs,
   stepsConfig,
   deps = [],
   storageKey = "walkthroughCompleted",
-  currentPath = typeof window !== "undefined" ? window.location.pathname + window.location.search : "",
+  currentPath = typeof window !== "undefined"
+    ? window.location.pathname + window.location.search
+    : "",
   type,
   conditionalKeys,
 }: UseWalkthroughProps<T>) {
-  
   const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(false);
   const triesRef = useRef(0);
   const maxTries = 10;
 
+  const stepSource = [...(stepsConfig ?? [])];
+
   const updateSteps = useCallback(() => {
-    const newSteps: Step[] = stepsConfig
+    const newSteps: Step[] = stepSource
       .map(({ key, content, id }) => {
         const el = id
           ? document.getElementById(id)
           : refs?.[key as keyof T]?.current;
-  
+
         if (!el || !document.contains(el)) return null;
-  
+
         return {
           target: el,
           content,
@@ -50,19 +55,19 @@ export function useWalkthrough<T extends Record<string, React.RefObject<HTMLElem
       .filter(Boolean) as Step[];
     setSteps(newSteps);
   }, [...deps]);
-  
 
   useEffect(() => {
     const walkthroughCompleted: string[] = JSON.parse(
       localStorage.getItem(storageKey) || "[]"
     );
     if (currentPath && walkthroughCompleted.includes(currentPath)) {
-      
       return;
     }
 
     const requiredKeys: (keyof T)[] =
-      typeof conditionalKeys === "function" && type ? conditionalKeys(type) : [];
+      typeof conditionalKeys === "function" && type
+        ? conditionalKeys(type)
+        : [];
 
     const checkRefsAndRun = () => {
       const allReady = requiredKeys.every((key) => refs?.[key]?.current);

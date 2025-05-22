@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
 import { GAEvent } from "@/utils/GAEvent";
 import {
   CalendarIcon,
@@ -27,18 +28,25 @@ import {
   FilterX,
   Globe,
   ListIcon,
-  TableIcon
+  TableIcon,
 } from "lucide-react";
 import {
   lazy,
+  RefObject,
   Suspense,
   useCallback,
   useEffect,
-  useState
+  useState,
 } from "react";
 const Map = lazy(() => import("@/components/map"));
 
-const Events = () => {
+interface EventsProps {
+  walkThroughRefs?: {
+    [key: string]: RefObject<HTMLElement>;
+  };
+}
+
+const Events = ({ walkThroughRefs }: EventsProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
@@ -116,7 +124,10 @@ const Events = () => {
             className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
-            <div id="research-view" className="justify-center hidden md:flex">
+            <div
+              id="research-view-desktop"
+              className="justify-center hidden md:flex"
+            >
               <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
                 <TabsTrigger
                   value="table"
@@ -148,7 +159,10 @@ const Events = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            <div id="sorting-dropdown" className="hidden md:flex justify-end gap-2 ">
+            <div
+              id="sorting-dropdown-desktop"
+              className="hidden md:flex justify-end gap-2 "
+            >
               {/* <Button
                 variant="outline"
                 className="flex items-center gap-2"
@@ -171,6 +185,7 @@ const Events = () => {
               >
                 <PopoverTrigger asChild>
                   <Button
+                    id="research-view-mobile"
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 border"
@@ -231,6 +246,7 @@ const Events = () => {
                 selectedView == "") && <SortDropdown compact />}
 
               <Button
+                id="filters-mobile"
                 onClick={toggleFilterHandler}
                 variant={filtersCount > 0 ? "secondary" : "ghost"}
                 size="icon"

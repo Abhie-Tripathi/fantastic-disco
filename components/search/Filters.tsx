@@ -64,10 +64,19 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
 import FilterContent from "./FilterContent";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface FilterSection {
   id: string;
@@ -670,10 +679,15 @@ const getFilterComponent = (componentName: string) => {
 };
 
 interface FiltersProps {
+  refs?: WalkthroughRefs;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
   children: React.ReactNode;
+}
+
+interface WalkthroughRefs {
+  [key: string]: RefObject<HTMLElement>;
 }
 
 const Filters = ({
@@ -750,6 +764,23 @@ const Filters = ({
   //   }
   // };
 
+  const stepsConfig = [
+    {
+      key: "viewRef",
+      content:
+        "Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations.",
+    },
+  ];
+
+  // const { steps, run, setRun } = useWalkthrough({
+  //   refs,
+  //   stepsConfig,
+  //   storageKey: "walkthroughCompleted",
+  //   currentPath: `research`,
+  // });
+
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     if (mounted) {
       const handle = requestAnimationFrame(() => {
@@ -761,6 +792,52 @@ const Filters = ({
               "Track events, companies, or people to stay on top of what matters most.",
             disableBeacon: true,
           },
+          ...(!isMobile
+            ? [
+                {
+                  target: "#basic-filters",
+                  title: "Basic Filters",
+                  content:
+                    "Explore the basic filters to quickly refine your results by category, date, and location.",
+                  disableBeacon: true,
+                },
+                {
+                  target: "#advanced-details",
+                  title: "Advanced Details",
+                  content:
+                    "Unlock advanced filters and drill down into your data.",
+                  disableBeacon: true,
+                },
+                {
+                  target: "#insights-scores",
+                  title: "Insights & Scores",
+                  content: isEventeli
+                    ? "Insight scores include estimated visitors, estimated exhibitors, ranking and analytics to help you assess each event’s impact."
+                    : "Insight scores include estimated visitors, estimated exhibitors, and ranking to help you assess each event’s impact.",
+                  disableBeacon: true,
+                },
+                ...(!isEventeli
+                  ? [
+                      {
+                        target: "#audience-intel",
+                        title: "Audience Intel",
+                        content:
+                          "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
+                        disableBeacon: true,
+                      },
+                    ]
+                  : []),
+              ]
+            : [
+                {
+                  target: "#filters-mobile",
+                  title: "Filters",
+                  content: isEventeli
+                    ? "Includes Basic and Advanced Filters"
+                    : "",
+                  disableBeacon: true,
+                },
+              ]),
           {
             target: "#basic-filters",
             title: "Basic Filters",
@@ -794,7 +871,11 @@ const Filters = ({
               ]
             : []),
           {
-            target: "#research-view",
+            target: isMobile
+              ? "#research-view-mobile"
+              : (document.querySelectorAll(
+                  "#research-view-desktop"
+                )[1] as HTMLElement) ?? "",
             title: "View",
             content:
               "Switch between list, table, map, or calendar views to see your tracker data from any angle.",
@@ -803,7 +884,11 @@ const Filters = ({
           ...(!isEventeli
             ? [
                 {
-                  target: "#sorting-dropdown",
+                  target: isMobile
+                    ? "#sorting-dropdown-mobile"
+                    : (document.querySelectorAll(
+                        "#sorting-dropdown-desktop"
+                      )[1] as HTMLElement) ?? "",
                   title: "Sorting",
                   content:
                     "Sort by date or advanced intel and insights scores to surface your top priorities.",
