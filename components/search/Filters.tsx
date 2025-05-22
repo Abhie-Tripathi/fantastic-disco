@@ -679,15 +679,10 @@ const getFilterComponent = (componentName: string) => {
 };
 
 interface FiltersProps {
-  refs?: WalkthroughRefs;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
   children: React.ReactNode;
-}
-
-interface WalkthroughRefs {
-  [key: string]: RefObject<HTMLElement>;
 }
 
 const Filters = ({
