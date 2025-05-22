@@ -1297,7 +1297,7 @@ return (
   <div ref={scrollableDivRef} className="flex flex-col gap-2 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
-    <div className="flex gap-4 h-[calc(100vh-174px)]">
+    <div className={`flex ${!isCollapsed? "gap-4":""}`}>
     {isCollapsed && (
         <div className="fixed left-[82px] top-[84px] z-30 overflow-hidden">
           <button
@@ -1318,9 +1318,9 @@ return (
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>
     </div>
-    <div className={`flex gap-2 flex-col ${isCollapsed ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? 'pl-12' : ''}`}>
+    <div className={`flex gap-2 flex-col items-end ${isCollapsed ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? '' : ''}`}>
     <div
-      className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
+      className={`px-6 py-1 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
       style={{
         border:
           isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
@@ -1336,7 +1336,7 @@ return (
     </div>
     <TeliTemplates type={type} isMandatory={isMandatory}/>
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
-    <div className="flex gap-4 flex-col">
+    <div className="flex gap-4 flex-col w-full">
       <div className={`card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
@@ -1344,9 +1344,20 @@ return (
         </div> */}
         <div className={styles.bar}></div>
         <div>
-        <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+        <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between" style={{fontSize:"var(--font-size-small)"}}>
+          <div className="flex items-center">
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
+          </div>
+          <Button
+                    className="text-white gap-1"
+                    size="sm"
+                    onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
+                  >
+                    <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                    {" "}Upload
+                  </Button>
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
@@ -1482,19 +1493,12 @@ return (
                 }
 
               {/* {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") && */}
-              <div style={{textAlign: 'center'}}>
+              {/* <div style={{textAlign: 'center'}}>
                 <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
                   <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
                   <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
                 </div>
                 <div className="flex flex-col justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
-                {/* <div className={styles.emptyTableText}>
-                Click to browse or drag and drop your files
-                </div> */}
-                {/* <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
-                  <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
-                  <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
-                </div> */}
                   <Button
                     className="text-white gap-1"
                     size="sm"
@@ -1505,7 +1509,7 @@ return (
                     {" "}Upload
                   </Button>
                 </div>
-              </div>
+              </div> */}
               {/* } */}
           </div>
         }
@@ -1561,6 +1565,7 @@ return (
             />
             <div className={styles.emptyTableText}>No data added</div>
             <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+            
           </div>
   )}
 </TabsContent>
@@ -1615,14 +1620,15 @@ return (
       </div>
     </div>
     }
-    {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+    
+
+    </div>
+  </div>
+  {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
     <div className="border-t pt-4 mt-2">
         <Presets template={template} handlePresetClick={handlePresetClick} /> 
     </div>
       }
-
-    </div>
-  </div>
   </div>
   </>
   }</div>

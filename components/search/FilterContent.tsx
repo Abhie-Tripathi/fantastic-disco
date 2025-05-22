@@ -26,6 +26,7 @@ interface FilterItem {
 }
 
 interface FilterContentProps {
+  source?:string;
   type: "events" | "companies" | "people";
   filterCount: number;
   createTrackerHandler?: () => void;
@@ -33,6 +34,7 @@ interface FilterContentProps {
 }
 
 const FilterContent = ({
+  source,
   type,
   filterCount,
   createTrackerHandler,
@@ -45,7 +47,7 @@ const FilterContent = ({
     <div className="flex-1">
       <div className="overflow-y-auto w-full mt-0 flex-1">
         <div className="p-3 bg-[var(--background-secondary-color)] ">
-          {type === "events" && filterCount > 0 && (
+          {type === "events" && source!=="tracker" && filterCount > 0 && (
             <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
               <div className="flex items-center gap-2">
                 <Image
