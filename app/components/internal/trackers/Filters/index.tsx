@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useCallback, useLayoutEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
@@ -82,6 +82,9 @@ import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { Step } from "react-joyride";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -456,6 +459,37 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  //  const [steps, setSteps] = useState<Step[]>([]);
+  //   const [run, setRun] = useState(true);
+    const refs = {
+      additionalFilterRef: useRef<HTMLDivElement>(null),
+      presetRef: useRef<HTMLDivElement>(null),
+      templateRef: useRef<HTMLDivElement>(null),
+      basicFilterRef: useRef<HTMLDivElement>(null),
+      advanceFilterRef: useRef<HTMLDivElement>(null)
+    };
+  const stepsConfig =[
+      {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
+        ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
+        : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
+      {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
+      {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
+      {"key":"advanceFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."}
+    ]
+    const { steps, run, setRun } = useWalkthrough({
+      refs,
+      stepsConfig,
+      storageKey: "walkthroughCompleted",
+      currentPath: `trackers/create?type=${type}`,
+      type: type || "",
+      conditionalKeys: (type) =>
+        type === "T_CUSTOM"
+          ? ["basicFilterRef", "advanceFilterRef"]
+          : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+    });
+  
+  
   useEffect(() => {
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if (customData.length > 0 && Object.values(customData[0])[0]) {
@@ -1271,6 +1305,14 @@ const Pages = () => {
     <>
       <div>{isLoading ? <Loading /> :
         <>
+        {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName={`trackers/create?type=${type}`}
+          />
+          )}
           <div
             className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
             style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex: '5' }}
@@ -1341,15 +1383,18 @@ const Pages = () => {
                 onChange={(event) => setTrackerName(event.target.value)}
               />
             </div>
-            <TeliTemplates type={type} isMandatory={isMandatory}/>
+            <div>
+            <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>
+            </div>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
-              <div style={{ display: 'flex', gap: '25px' }}>
-                <div className={`card ${styles.competitor}`}>
+              <div style={{ display: 'flex', gap: '25px' }} >
+                <div className={`card ${styles.competitor}`} ref={refs.templateRef}>
                   {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
         </div> */}
                   <div className={styles.bar}></div>
+                  <div >
                   <div>
                     <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
                       <InformationFill style={{ marginBottom: "3px" }} color="var(--info-text-color)" height="12px" />
@@ -1511,6 +1556,7 @@ const Pages = () => {
                       {/* } */}
                     </div>
                   }
+                  </div>
                 </div>
                 <div className={`card ${styles.competitor}`} >
                   <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
@@ -1596,7 +1642,7 @@ const Pages = () => {
                     (customData && customData.length > 0 ? (
                       <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
                     ) : (
-                      <div className={styles.emptyTableData}>
+                      <div className={styles.emptyTableData} >
                         <Image
                           src={trackerEmptyTable}
                           alt="table"
@@ -1620,10 +1666,10 @@ const Pages = () => {
             {
               <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
                 {type !== "T_CUSTOM" &&
-                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }}>
+                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }} ref={refs.additionalFilterRef}>
                     <div className={styles.hiddenFiltersInnerDiv}>
                       {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
-                      <div className={styles.hiddenFilterHeading}>Additional filters</div>
+                      <div className={styles.hiddenFilterHeading}>Advance filters</div>
                     </div>
                     <div><ChevronDown className="icons" /></div>
                   </div>
@@ -1632,11 +1678,13 @@ const Pages = () => {
                   <Suspense fallback={<Loading />}>
                     <div className={styles.container}>
                       <div className={styles.sub_container}>
-                        <div className="grid grid-cols-5 gap-3">
+                        <div className="grid grid-cols-5 gap-3" ref={refs.basicFilterRef}>
                           <EventTypeSelector />
                           <CategorySelector />
                           <EventFormatSelector />
-                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && <LocationSelector isMandatory={isMandatory} />}
+                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && 
+                          <LocationSelector isMandatory={isMandatory} />
+                          }
 
                           {/* <LocationSelector/> */}
                           {type !== "T_GEOTIME" &&
@@ -1654,6 +1702,7 @@ const Pages = () => {
                         defaultValue="list"
                         value={selectedAdvancedView}
                         onValueChange={handleTabChange}
+                        ref={refs.advanceFilterRef}
                       >
                         <div className="flex justify-center my-6">
                           <div className="flex justify-center">
@@ -1729,7 +1778,9 @@ const Pages = () => {
               </div>
             }
             {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
+            <div ref={refs.presetRef}>
               <Presets template={template} handlePresetClick={handlePresetClick} />
+            </div>
             }
           </div>
         </>
