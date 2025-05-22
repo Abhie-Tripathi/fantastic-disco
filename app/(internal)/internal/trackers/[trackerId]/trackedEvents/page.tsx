@@ -520,7 +520,7 @@ if (!share) {
     {/* <SideNav/> */}
     {/* {(isLoading && view==="list") && <Loading/>} */}
     <Suspense fallback={<p>Loading feed...</p>}>
-      <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
+      <div className="flex gap-5 mb-[24px] flex-col w-[100%]">
         <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
         {/* <div className={styles.new}></div> */}
           <div className="flex gap-2" ref={refs.eventTypeRef}>

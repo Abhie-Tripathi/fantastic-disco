@@ -415,8 +415,8 @@ const Pages = () => {
   const { searchParams: search } = useDefaultFilters();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall } = useTrackerContext();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters } = useFilterContext();
+  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, suggestion, setSuggestion } = useFilterContext();
   const { enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const { getTrackerDetail, createTracker, editTracker, error, delTracker } = useTrackerServices();
@@ -561,7 +561,7 @@ const Pages = () => {
 
     }
     else if (type === "T_PEOPLE_FINDER") {
-      if (customData.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
+      if (customData?.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -580,15 +580,15 @@ const Pages = () => {
         if (!hideSuggestion)
           fetchAISuggestion(promptText);
       }
-      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userName = customData?.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData
-        .map((item: {}) => Object.values(item)[1])
+        ?.map((item: {}) => Object.values(item)[1])
         .filter((value): value is string => value !== undefined && value !== null)
         .map(value => value.replace(/,/g, ''))
         .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
-      if (userName.length > 0 && userCompany.length > 0) {
+      if (userName?.length > 0 && userCompany?.length > 0) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -664,7 +664,7 @@ const Pages = () => {
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-        console.log(temp);
+      
 
         presetData.push(temp);
       })
@@ -992,17 +992,118 @@ const Pages = () => {
 
     }
   };
-
   useEffect(() => {
-    if (editData && last === "editTracker") {
-      console.log(editData);
+    if (type === "T_COMPETITOR" && suggestion===1) {
+      // setTrackerName(comp?.name || "");
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  
+  useEffect(()=>{
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          // console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+  }
 
+  }, [type])
+  const [inc,setInc]=useState<String[]>([]);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      setSuggestions([]);
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const keywordsArray = parsed?.keywordData?.data;
+          setTrackerName(parsed?.keywordData?.name || "");
+          if (Array.isArray(keywordsArray)) {
+            // console.log("keywordsArray", keywordsArray);
+            const res=keywordsArray.map((item:{"keyword":string})=>item.keyword?.trim?.())
+            // console.log("res", res);
+            
+            setInc(res);
+            setCustomData(
+              keywordsArray.map((item: any) => ({
+                "Competitor Name or Website": item.keyword?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing keywordData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  useEffect(() => { 
+    if(suggestion===2 && inc.length>0){
+      setLocalFilter("includeKeywords", inc?.join(","));
+      fetchAISuggestion?.(
+        `List top 5 keywords similar to ${
+          inc[0]
+        } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+        "data": [
+          ["keyword 1" ],
+          ["keyword 2" ],
+          ["keyword 3" ],
+          ["keyword 4" ],
+          ["keyword 5" ]
+        ]
+      }.`
+      );
+    }
+  },[inc])
+   
+  
+ 
+  useEffect(() => {
+    if ((editData && last === "editTracker")) {
       setTrackerName(editData?.name || "");
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.filterValues?.orgName?.
           split(',');
         const orgWebsites = editData?.filterValues?.orgWebsite?.
           split(',');
+          
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
             ...prevData,
@@ -1044,8 +1145,8 @@ const Pages = () => {
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-        const value = editData.filterValues[key];
-        console.log(typeof value, value);
+        const value = editData?.filterValues[key];
+        // console.log(typeof value, value);
         if (Array.isArray(value)) {
           if (key === "includeKeywords" || key === "excludeKeywords") {
             const updatedValue = value.map((item) => item.replaceAll("_", " "));

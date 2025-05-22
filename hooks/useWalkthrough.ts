@@ -61,6 +61,7 @@ export function useWalkthrough<
       localStorage.getItem(storageKey) || "[]"
     );
     if (currentPath && walkthroughCompleted.includes(currentPath)) {
+      
       return;
     }
 

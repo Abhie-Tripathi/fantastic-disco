@@ -8,6 +8,7 @@ import { FilterProvider } from "@/context/filterContext";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
+import TrackerGlobalModal from "../components/internal/trackers/TrackerGlobalModal";
 import "./../globals.css";
 
 const sora = Sora({
@@ -44,6 +45,7 @@ export default function RootLayout({
                     id="layout-main"
                     className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
                   >
+                    <TrackerGlobalModal />
                     <Toaster />
                     {children}
                   </main>

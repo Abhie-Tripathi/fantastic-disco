@@ -18,6 +18,8 @@ const trackerValues: any = {
   isNewCall: false,
   isLoading: false,
   savedEventCount: 0,
+  // suggestion: 0,
+  // setSuggestion: () => {},
   setSavedEventCount: () => {},
   setIsNewCall: () => {},
   editTrue: false,
@@ -43,6 +45,7 @@ export const TrackerContextProvider = ({ children }: any) => {
   const [savedEventCount, setSavedEventCount] = useState(0);
   const [data, setData] = useState<Tracker | null>(null);
   const pathName = usePathname().split("/");
+  // const [suggestion , setSuggestion] = useState(0);
   const [isNewCall, setIsNewCall] = useState(false);
   const [editTrue, setEditTrue] = useState(false);
   const [trackerId, setTrackerId] = useState("");
@@ -160,6 +163,8 @@ export const TrackerContextProvider = ({ children }: any) => {
     setSkip,
     searchValue,
     setSearchValue,
+    // suggestion,
+    // setSuggestion,
   };
   return (
     <TrackerContext.Provider value={value}>
