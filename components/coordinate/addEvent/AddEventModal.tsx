@@ -210,7 +210,7 @@ export default function AddEventModal() {
   return (
     <div>
       <Button size="sm" className="px-4" onClick={openModal}>
-        Add Event
+        Add
       </Button>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>

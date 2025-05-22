@@ -22,7 +22,15 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useRouter, useSearchParams } from "next/navigation";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
-import { CalendarIcon, Filter, Globe, ListIcon, Loader2, Pencil, TableIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  Filter,
+  Globe,
+  ListIcon,
+  Loader2,
+  Pencil,
+  TableIcon,
+} from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
@@ -39,7 +47,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useFilterState } from "@/hooks/useFilterState";
+import { EventListItem } from "@/components/search/list";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Event } from "@/types/events";
 
+interface BookmarkType {
+  events: Event[];
+  totalEvents: number;
+  isLoading: boolean;
+  error: any | null;
+}
 interface Props {
   coordinateActions: any;
   pipelineConfig: any;
@@ -58,6 +76,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
   let prevDate: any = null;
   const [eventData1, setEventData1] = useState<enquiryType[]>([]);
+  const [bookmarkPage, setBookmarkPage] = useState(1);
   const [page, setPage] = useState(0);
   const divRef: RefObject<HTMLDivElement> = useRef(null);
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
@@ -83,8 +102,33 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const [eventCount, setEventCount] = useState<number>(0);
   const [countLoading, setCountLoading] = useState<boolean>(false);
 
+  const [coordinateView, setCoordinateView] = useState("enquiryEvents"); // "enquiryEvents" | "savedEvents"
+  const [interest, setInterest] = useState();
+  const [eventId, setEventId] = useState();
+
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const selectedView = getFilterValue("view") || "list";
+
+  const [bookmarkData, setBookmarkData] = useState<BookmarkType>({
+    events: [],
+    totalEvents: 0,
+    isLoading: false,
+    error: null,
+  });
+
+  const {
+    events: bookmarkedEvents,
+    totalEvents: totalBookmarkEvents,
+    isLoading,
+    error,
+  } = useTrackerEvents.list(
+    {
+      limit: 10,
+      offset: (bookmarkPage - 1) * 10,
+    },
+    undefined,
+    "global"
+  );
 
   const handleModal = (eventId: string, enquiryId: string) => {
     setModalOpen(!modalOpen);
@@ -119,8 +163,18 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
   const handleScrollEnd = () => {
     setTimeout(() => {
-      if (!noMoreData && !(showFilters && isMobile))
+      if (
+        coordinateView === "enquiryEvents" &&
+        !noMoreData &&
+        !(showFilters && isMobile)
+      )
         setPage((prevPage) => prevPage + 1);
+
+      if (
+        coordinateView === "savedEvents" &&
+        bookmarkData.events.length < bookmarkData.totalEvents
+      )
+        setBookmarkPage((prevPage) => prevPage + 1);
     }, 1000);
   };
 
@@ -238,6 +292,11 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
     }
   };
 
+  const toggleBookmarkView = (view: string) => {
+    setCoordinateView(view);
+    setShowFilter(false);
+  };
+
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
   }, []);
@@ -260,25 +319,30 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (page > 0) {
+    if (page > 0 && coordinateView === "enquiryEvents") {
       setNoMoreData(false);
       fetchData();
       GAEvent("Coordinate", "Pagination", "Coordinate", `Coordinate | ${page}`);
     }
   }, [page, filtersChanged]);
 
+  useEffect(() => {
+    if (!isLoading && bookmarkedEvents.length) {
+      setBookmarkData((prev) => ({
+        ...prev,
+        events: [...prev.events, ...bookmarkedEvents],
+        totalEvents: totalBookmarkEvents,
+        isLoading,
+        error,
+      }));
+    }
+  }, [bookmarkedEvents]);
+
   const ViewSelectDropdown = () => {
     return (
-      <Popover
-        open={showViewDropdown}
-        onOpenChange={setShowViewDropdown}
-      >
+      <Popover open={showViewDropdown} onOpenChange={setShowViewDropdown}>
         <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 border"
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8 border">
             {selectedView === "list" ? (
               <ListIcon className="w-4 h-4" />
             ) : selectedView === "table" ? (
@@ -310,9 +374,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
               <span>Map View</span>
             </Button>
             <Button
-              variant={
-                selectedView === "calendar" ? "secondary" : "ghost"
-              }
+              variant={selectedView === "calendar" ? "secondary" : "ghost"}
               className="justify-start flex items-center gap-2"
               onClick={() => onTabsChange("calendar")}
               disabled
@@ -324,7 +386,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
         </PopoverContent>
       </Popover>
     );
-  }
+  };
 
   if (!isLoaded) {
     return <Loading className="p-12" />;
@@ -392,13 +454,32 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                     {new Intl.NumberFormat("en", {
                       notation: "compact",
                       maximumFractionDigits: 2,
-                    }).format(eventCount || 0)}
+                    }).format(
+                      coordinateView === "savedEvents"
+                        ? bookmarkData.totalEvents || 0
+                        : eventCount || 0
+                    )}
                   </Badge>
                 )}
                 <p className="text-primary font-semibold">Events</p>
               </div>
 
               <div className="flex items-center justify-end gap-3">
+                <Tabs
+                  value={coordinateView}
+                  onValueChange={toggleBookmarkView}
+                  className="w-full"
+                >
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger className="px-2" value="enquiryEvents">
+                      Interested
+                    </TabsTrigger>
+                    <TabsTrigger className="px-2" value="savedEvents">
+                      Bookmarked
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+
                 {isTentimesUser && <AddEventModal />}
 
                 {/* <ViewSelectDropdown /> */}
@@ -461,48 +542,85 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
             )}
           </div>
 
-          <div className={showFilters && isMobile ? "hidden" : "block"}>
+          {coordinateView === "savedEvents" ? (
             <div>
-              {eventData1?.map((item, index) => {
+              {bookmarkData.events?.map((item, index) => {
                 // Check if current event's date is different from previous event's date
-                const showDate = item.eventData.startDateTime !== prevDate;
+                const showDate = item.basic.startDateTime !== prevDate;
                 // Update previous date
-                prevDate = item.eventData.startDateTime;
+                prevDate = item.basic.startDateTime;
                 return (
-                  <div key={item.eventId} className={styles.timeline}>
+                  <div key={item.basic.id} className={styles.timeline}>
                     <TimelineItem
-                      eventDate={showDate ? item.eventData.startDateTime : null}
+                      eventDate={showDate ? item.basic.startDateTime : null}
                     />
-                    <YourEventCard
-                      eventId={item.eventId}
-                      eventData={item.eventData}
-                      setSelectedId={setSelectedId}
-                      enquiryId={item.id}
-                      currentEnquiryStatus={item.status}
-                      upvote={item.activityCount} // upvote activity data
-                      enquiryActivity={item.myActivity}
-                      coordinateActions={coordinateActions}
-                      pipelineConfig={pipelineConfig}
-                      handleModal={handleModal}
-                      handleShortlistModal={handleShortlistModal}
-                      enquiryStatusUpdate={enquiryStatusUpdate}
-                    />
+                    <div className="flex justify-end border-l border-primary border-dashed w-[95%] md:w-[85%] py-6">
+                      <EventListItem
+                        isMobile={isMobile}
+                        global="global"
+                        setEventId={setEventId}
+                        setInterest={setInterest}
+                        key={item.basic.id}
+                        event={item}
+                        showValues={[]}
+                        showMaturity={false}
+                        showMatchKeywords={false}
+                        showaudienceSpread={false}
+                      />
+                    </div>
                   </div>
                 );
               })}
+              {bookmarkData.events.length < bookmarkData.totalEvents && <Loading />}
             </div>
-            {noMoreData ? (
-              eventData1?.length === 0 ? (
-                <div style={{ textAlign: "center" }}>
-                  No results containing all your search terms were found.
-                </div>
+          ) : coordinateView === "enquiryEvents" ? (
+            <div className={showFilters && isMobile ? "hidden" : "block"}>
+              <div>
+                {eventData1?.map((item, index) => {
+                  // Check if current event's date is different from previous event's date
+                  const showDate = item.eventData.startDateTime !== prevDate;
+                  // Update previous date
+                  prevDate = item.eventData.startDateTime;
+                  return (
+                    <div key={item.eventId} className={styles.timeline}>
+                      <TimelineItem
+                        eventDate={
+                          showDate ? item.eventData.startDateTime : null
+                        }
+                      />
+                      <YourEventCard
+                        eventId={item.eventId}
+                        eventData={item.eventData}
+                        setSelectedId={setSelectedId}
+                        enquiryId={item.id}
+                        currentEnquiryStatus={item.status}
+                        upvote={item.activityCount} // upvote activity data
+                        enquiryActivity={item.myActivity}
+                        coordinateActions={coordinateActions}
+                        pipelineConfig={pipelineConfig}
+                        handleModal={handleModal}
+                        handleShortlistModal={handleShortlistModal}
+                        enquiryStatusUpdate={enquiryStatusUpdate}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              {noMoreData ? (
+                eventData1?.length === 0 ? (
+                  <div style={{ textAlign: "center" }}>
+                    No results containing all your search terms were found.
+                  </div>
+                ) : (
+                  <></>
+                )
               ) : (
-                <></>
-              )
-            ) : (
-              <Loading />
-            )}
-          </div>
+                <Loading />
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 

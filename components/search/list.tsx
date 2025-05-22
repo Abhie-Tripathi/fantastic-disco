@@ -273,7 +273,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
   )
 }
 
-const EventListItem = ({
+export const EventListItem = ({
   isMobile,
   global,
   view,
@@ -354,7 +354,7 @@ const EventListItem = ({
   }
 
   return (
-    <div className="bg-background rounded-lg border shadow-sm relative">
+    <div className={`bg-background rounded-lg border shadow-sm relative ${global === "global" && "w-[98%]"}`}>
       <Link href={`/internal/event/${event.basic.id}`} className="block">
         <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
