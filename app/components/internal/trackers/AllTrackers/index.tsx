@@ -167,13 +167,13 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   
   return (
-    <div className="card cursor-pointer h-[160px]" onClick={()=>handleSingleClick(item)}
+    <div className="card cursor-pointer sm:h-[160px] flex-col sm:flex-row" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
-        <div className="flex justify-between gap-2">
-          <div className="flex gap-2 flex-col justify-between w-[40%]">
-            <div className="flex gap-4 flex-col">
+        <div className="flex justify-between gap-2 flex-col sm:flex-row">
+          <div className="flex gap-2 flex-col justify-between w-[100%] sm:w-[40%]">
+            <div className="flex sm:gap-4 flex-col">
             <div className="font-bold break-words leading-none">
               {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
@@ -200,7 +200,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-[92%] sm:w-[100%]">
             <div className="flex w-full h-[100px]">
             <div className="flex gap-2 w-[100%] text-sm font-medium">
             {eventsCount?.map((item,index)=>(

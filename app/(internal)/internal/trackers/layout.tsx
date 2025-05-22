@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme()
 // const [modal,setModal]=useState(false);
   return (
-    <div className={`${styles.container}`}>
+    <div className="md:min-w-[810px] flex flex-col gap-[35px] items-center min-h-[calc(100vh-67px)]">
      
       <TrackerContextProvider>
       {children}

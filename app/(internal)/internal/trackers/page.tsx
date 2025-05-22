@@ -302,11 +302,11 @@ const Trackers = ({ searchParams }: Search) => {
     //   </div>
     // </div>
     <>{isLoading ? <Loading /> : (
-      <div>
+      <div className="w-full">
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 h-[calc(100vh-67px)]">
-    <div className="flex flex-col gap-4 px-5 py-0">
+  <div className="w-full md:w-1/2 h-[calc(100vh-67px)]">
+    <div className="flex-col gap-4 px-5 py-0 hidden md:flex">
       <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
         {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}
         Bookmarked events and tracker lists you have created.
@@ -341,7 +341,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""} hideTemplates={hideTemplates} setSearchValue={setSearchValue}/>
       </div>
   </div>
-  <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
+  <div className="hidden md:block w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
