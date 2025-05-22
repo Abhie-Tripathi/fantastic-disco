@@ -75,7 +75,6 @@ import {
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
 import FilterContent from "./FilterContent";
-import { useWalkthrough } from "@/hooks/useWalkthrough";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface FilterSection {

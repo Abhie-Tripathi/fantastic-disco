@@ -20,7 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import { useWalkthrough } from "@/hooks/useWalkthrough";
 import { GAEvent } from "@/utils/GAEvent";
 import {
   CalendarIcon,
@@ -32,11 +31,10 @@ import {
 } from "lucide-react";
 import {
   lazy,
-  RefObject,
   Suspense,
   useCallback,
   useEffect,
-  useState,
+  useState
 } from "react";
 const Map = lazy(() => import("@/components/map"));
 

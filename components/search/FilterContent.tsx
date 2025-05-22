@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Filter, FilterX, Lock } from "lucide-react";
-import Image from "next/image";
-import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
-import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Filter, Lock } from "lucide-react";
+import Image from "next/image";
 
 interface FilterSection {
   id: string;

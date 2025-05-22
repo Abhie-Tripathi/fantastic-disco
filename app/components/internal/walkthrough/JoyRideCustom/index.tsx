@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "../Tooltip";
 
