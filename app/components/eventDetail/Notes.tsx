@@ -68,7 +68,6 @@ export const Notes = ({
   } = useNotesServices();
   const path = usePathname().split("/");
   const { user, signOut } = useAuthContext();
-  console.log(user);
 
   // const searchParams = useSearchParams();
   const [suggest, setSuggest] = useState();
@@ -135,7 +134,6 @@ export const Notes = ({
         );
         if (data && data.comments) {
           // setNotes([]);
-          console.log(data);
           // setNotes(data.comments.reverse());
           if (data.comments && data.comments?.length > 0) {
             setZeroState(false);
@@ -203,9 +201,6 @@ export const Notes = ({
       const isAtTop = container.scrollTop === 0;
       const scrollBottom =
         container.scrollHeight - container.scrollTop - container.clientHeight;
-      console.log("Client Height:", container.clientHeight);
-      console.log("Scroll Height:", container.scrollHeight);
-      console.log("Scroll Top:", container.scrollTop);
 
       // Your infinite scroll logic here
       if (isAtTop) {
@@ -219,7 +214,6 @@ export const Notes = ({
   useEffect(() => {
     if (note !== null)
       if (isInitialMount.current) {
-        console.log(1111);
 
         // Skip the effect on the initial mount
         isInitialMount.current = false;
@@ -227,7 +221,6 @@ export const Notes = ({
         if (commentRef.current) {
           const height = (commentRef.current as HTMLElement).clientHeight;
           setHeight(height);
-          console.log(111111111);
 
           // scrollToBottom();
           if (scrollPosition)
@@ -241,16 +234,13 @@ export const Notes = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notes?.length]);
 
-  console.log(comments);
   const addNote = async (event: any) => {
     event.preventDefault();
-    console.log(note);
 
     // const { user } = useAuthContext();
     const len = CommentsData?.length;
     const id = Date.now().toString();
     // setNote(note.replace(/\n/g, "<br>"))
-    console.log(11111111 + filePreviews);
     if (filePreviews) console.log("file file");
 
     if (
@@ -259,7 +249,6 @@ export const Notes = ({
       selectedPdfs.length !== 0
     ) {
       event.preventDefault();
-      console.log("number of hits");
 
       // const updatedNotes = [
       //   ...notes,
@@ -292,9 +281,7 @@ export const Notes = ({
       //   },
       // ];
       // setNotes(notes);
-      console.log(selectedPdfs);
 
-      console.log(replyName);
       if (path[path.length - 1] === "notesDiscussion") {
         const dataToSend = {
           commentType: "TEXT",
@@ -326,7 +313,6 @@ export const Notes = ({
       // console.log(dataToSend.files);
 
       // setNotes(updatedNotes);
-      console.log(note);
       // scrollToBottom();
     }
     setNote("");
@@ -410,10 +396,8 @@ export const Notes = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notes?.length]);
 
-  console.log(filePreviews);
   const [files, setFiles] = useState<any | null>(null);
   const handleDragOver = (event: React.DragEvent) => {
-    console.log("HandleDragver", event);
     event.preventDefault();
     setIsDraggingOver(true);
   };
@@ -450,7 +434,6 @@ export const Notes = ({
   useEffect(() => {
     if (!files) return; // Exit early if files is null or undefined
     // setDrop(true);
-    console.log(files);
 
     if (files && files.type === "application/pdf") {
       // console.log(files);
@@ -510,7 +493,7 @@ export const Notes = ({
     setDrop(false);
   };
   setTimeout(() => {
-    console.log(replyId);
+    // console.log(replyId);
   }, 1000);
   const [replyText, setReplyText] = useState<string | undefined>("");
   const [replyName, setReplyName] = useState<string | undefined>("");
@@ -560,7 +543,6 @@ export const Notes = ({
   // 22b0588a-7207-4e25-a0e7-1134c05fdf52
   // up
   const handleDelete = (id: string) => {
-    console.log(id);
 
     const updatedNotes = notes.filter((comment: any) => comment.id !== id);
     if (updatedNotes.length === 0) setZeroState(true);
@@ -656,11 +638,11 @@ export const Notes = ({
 
   // comments = [...notes];
   setTimeout(() => {
-    console.log(selectedPdfs);
+    // console.log(selectedPdfs);
   }, 5000);
   useEffect(() => {
     // const url = `${baseUrl}/auth/users?limit=100`
-    console.log(`${baseUrl}/auth/users?limit=100`);
+    // console.log(`${baseUrl}/auth/users?limit=100`);
     GAEvent(
       "Notes",
       "Notes",
@@ -732,7 +714,7 @@ export const Notes = ({
     // }
     try {
       const result = await getUsers("limit=100");
-      console.log(result);
+      // console.log(result);
       if (result) {
         setUsers(result);
         const newItems = (result?.users || []).map(
@@ -746,7 +728,7 @@ export const Notes = ({
       console.log(error);
     }
   };
-  console.log(notes);
+  // console.log(notes);
   return (
     <div
       className="flex flex-col items-start w-full h-full border rounded-[12px]"
@@ -933,7 +915,7 @@ const Comment = ({
   // console.log(newArr);
   // const [replyId,setReplyId]=useState("");
   const scroll = () => {
-    console.log(document.documentElement.scrollHeight);
+    // console.log(document.documentElement.scrollHeight);
 
     window.scrollTo({
       top: document.documentElement.scrollHeight,
