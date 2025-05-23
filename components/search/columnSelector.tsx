@@ -35,12 +35,12 @@ export default function ColumnsSelector() {
 
   const handleMetricChange = (value: string, checked: boolean) => {
     let newMetrics: string[];
-    
+
     if (checked) {
       newMetrics = [...metrics, value];
     } else {
       // Remove the metric if unchecked
-      newMetrics = metrics.filter(m => m !== value);
+      newMetrics = metrics.filter((m) => m !== value);
     }
 
     // If no metrics selected, default to eventCount
@@ -48,7 +48,10 @@ export default function ColumnsSelector() {
       newMetrics = ["eventCount"];
     }
 
-    if ((activeView === "treemap" || activeView === "") && !newMetrics.includes("eventCount")) {
+    if (
+      (activeView === "treemap" || activeView === "") &&
+      !newMetrics.includes("eventCount")
+    ) {
       setMultipleLocalFilters({ columns: newMetrics.join(","), view: "line" });
     } else {
       setLocalFilter("columns", newMetrics.join(","));
@@ -56,7 +59,7 @@ export default function ColumnsSelector() {
   };
 
   const removeMetric = (metricToRemove: string) => {
-    const newMetrics = metrics.filter(m => m !== metricToRemove);
+    const newMetrics = metrics.filter((m) => m !== metricToRemove);
     if (newMetrics.length === 0) {
       setLocalFilter("columns", "eventCount");
     } else {
@@ -75,30 +78,12 @@ export default function ColumnsSelector() {
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="flex items-center truncate">
-            <span className="mr-2">
-              {metrics.length > 1 ? `Metrics (${metrics.length})` : "Metric"}
-            </span>
-            <div className="flex gap-2">
-              {metrics.length <= 1 ? metrics.map((metric) => (
-                <span
-                  key={metric}
-                  className="text-xs truncate text-primary font-medium flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded"
-                >
-                  {columnsDropdown.find((column) => column.value === metric)?.label}
-                  <X
-                    className="h-3 w-3 cursor-pointer hover:text-primary/70"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeMetric(metric);
-                    }}
-                  />
-                </span>
-              )) : (
-                <span className="text-xs truncate text-primary font-medium bg-primary/5 px-2 py-0.5 rounded">
-                  {metrics.length} metrics selected
-                </span>
-              )}
-            </div>
+            <span className="mr-2">Metric</span>
+            {metrics.length > 0 && (
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+                {metrics.length}
+              </span>
+            )}
           </div>
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -117,7 +102,9 @@ export default function ColumnsSelector() {
               <Checkbox
                 id={value}
                 checked={metrics.includes(value)}
-                onCheckedChange={(checked) => handleMetricChange(value, checked as boolean)}
+                onCheckedChange={(checked) =>
+                  handleMetricChange(value, checked as boolean)
+                }
               />
               <label
                 htmlFor={value}

@@ -741,7 +741,101 @@ const LineChartComponent = ({
       return null;
     }
 
-    const { date } = tooltipPayload;
+    // If there's more than one metric, show simplified tooltip
+    if (metrics.length > 1) {
+      const { date } = tooltipPayload;
+      const matchingHoliday =
+        holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+
+      // Calculate comparison date based on relative position
+      let comparisonDate = new Date(date);
+
+      if (compareFrom && compareTo) {
+        const activeGte = searchParams.get("active_gte");
+        const activeLte = searchParams.get("active_lte");
+        if (!activeGte || !activeLte) return null;
+
+        const mainStartDate = new Date(activeGte);
+        const mainEndDate = new Date(activeLte);
+        const currentDate = new Date(date);
+
+        const mainRangePosition =
+          (currentDate.getTime() - mainStartDate.getTime()) /
+          (mainEndDate.getTime() - mainStartDate.getTime());
+
+        const compareStartDate = new Date(compareFrom);
+        const compareEndDate = new Date(compareTo);
+
+        comparisonDate = new Date(
+          compareStartDate.getTime() +
+            mainRangePosition *
+              (compareEndDate.getTime() - compareStartDate.getTime())
+        );
+      }
+
+      const renderMetricValue = (metric: string, isPreviousYear = false) => {
+        const key = isPreviousYear ? `previousYear${metric}` : metric;
+        const value = tooltipPayload[key];
+        if (value === undefined || !metric) return null;
+
+        const label = columnsDropdown.find((column) => column.value === metric)?.label ?? metric;
+        return (
+          <div key={key} className="flex justify-between">
+            <span className="text-gray-500">{label}</span>
+            <span className="font-medium">{value}</span>
+          </div>
+        );
+      };
+
+      return (
+        <div className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
+          compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
+        }`}>
+          <div className="text-sm font-semibold text-gray-700 mb-2">
+            {format(new Date(date), "d MMM yyyy")}
+          </div>
+          <div className="space-y-2">
+            <div className="text-sm">
+              <div className="font-medium text-gray-600">Current Year</div>
+              <div className="mt-1">
+                {leftAxisMetric && renderMetricValue(leftAxisMetric)}
+                {activeRightAxisMetrics.map((metric) => (
+                  metric && renderMetricValue(metric)
+                ))}
+              </div>
+            </div>
+
+            {compareFrom && compareTo && (
+              <div className="text-sm pt-2 border-t border-gray-200">
+                <div className="font-medium text-gray-600">
+                  Previous Year ({format(comparisonDate, "d MMM yyyy")})
+                </div>
+                <div className="mt-1">
+                  {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
+                  {activeRightAxisMetrics.map((metric) => (
+                    metric && renderMetricValue(metric, true)
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {matchingHoliday && (
+              <div className="text-sm pt-2 border-t border-gray-200">
+                <div className="font-medium text-gray-600">Holiday</div>
+                <div className="mt-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">{matchingHoliday.holidays.join(", ")}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // For single metric, show the original detailed tooltip
+    const { date, total, previousYearTotal } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
 
@@ -749,20 +843,16 @@ const LineChartComponent = ({
     let comparisonDate = new Date(date);
 
     if (compareFrom && compareTo) {
-      const activeGte = searchParams.get("active_gte");
-      const activeLte = searchParams.get("active_lte");
-      if (!activeGte || !activeLte) return null;
-
-      const mainStartDate = new Date(activeGte);
-      const mainEndDate = new Date(activeLte);
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
       const currentDate = new Date(date);
+
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
 
       const mainRangePosition =
         (currentDate.getTime() - mainStartDate.getTime()) /
         (mainEndDate.getTime() - mainStartDate.getTime());
-
-      const compareStartDate = new Date(compareFrom);
-      const compareEndDate = new Date(compareTo);
 
       comparisonDate = new Date(
         compareStartDate.getTime() +
@@ -771,69 +861,275 @@ const LineChartComponent = ({
       );
     }
 
-    const renderMetricValue = (metric: string, isPreviousYear = false) => {
-      const key = isPreviousYear ? `previousYear${metric}` : metric;
-      const value = tooltipPayload[key];
-      if (value === undefined || !metric) return null;
+    const hasSocial = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
+    const hasBusiness = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
 
-      const label = columnsDropdown.find((column) => column.value === metric)?.label ?? metric;
-      return (
-        <div key={key} className="flex justify-between">
-          <span className="text-gray-500">{label}</span>
-          <span className="font-medium">{value}</span>
-        </div>
-      );
-    };
+    // Current year event types
+    const currentYearEventTypes = [];
+    if (hasSocial && tooltipPayload.social !== undefined) {
+      currentYearEventTypes.push({
+        text: "Social",
+        bg: "--social-color",
+        value: tooltipPayload.social,
+      });
+    }
+    if (hasBusiness && tooltipPayload.business !== undefined) {
+      currentYearEventTypes.push({
+        text: "Business",
+        bg: "--business-color",
+        value: tooltipPayload.business,
+      });
+    }
+
+    // Previous year event types
+    const previousYearEventTypes = [];
+    if (compareFrom && compareTo) {
+      if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
+        previousYearEventTypes.push({
+          text: "Social",
+          bg: "--social-color",
+          value: tooltipPayload.previousYearSocial,
+        });
+      }
+      if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
+        previousYearEventTypes.push({
+          text: "Business",
+          bg: "--business-color",
+          value: tooltipPayload.previousYearBusiness,
+        });
+      }
+    }
 
     return (
       <div
-        className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
-          compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
-        }`}
+        className={`border-none shadow-lg bg-background ${
+          compareFrom && compareTo ? "w-[600px]" : "w-[300px]"
+        } z-10`}
       >
-        <div className="text-sm font-semibold text-gray-700 mb-2">
-          {format(new Date(date), "d MMM yyyy")}
+        <div
+          className={`px-4 py-2 flex text-lg font-medium border-b ${
+            compareFrom && compareTo ? "justify-between" : "justify-start"
+          }`}
+        >
+          <span>{format(new Date(date), "d MMM yyyy")}</span>
+          {compareFrom && compareTo && (
+            <span className="text-[#4B9EF4]">
+              {format(comparisonDate, "d MMM yyyy")}
+            </span>
+          )}
         </div>
-        <div className="space-y-2">
-          <div className="text-sm">
-            <div className="font-medium text-gray-600">Current Year</div>
-            <div className="mt-1">
-              {/* Event Count */}
-              {leftAxisMetric && renderMetricValue(leftAxisMetric)}
-              
-              {/* Right Axis Metrics */}
-              {activeRightAxisMetrics.map((metric) => (
-                metric && renderMetricValue(metric)
+        {isEventeli &&
+          matchingHoliday &&
+          matchingHoliday.holidays.length > 0 && (
+            <div className="px-4 py-2 border-b">
+              <p className="font-semibold text-[var(--primary-color)]">
+                Holidays :
+              </p>
+              <ul
+                className={`${
+                  matchingHoliday.holidays.length > 1
+                    ? "list-decimal"
+                    : "list-none"
+                } list-inside text-sm text-gray-600 dark:text-gray-300`}
+              >
+                {matchingHoliday.holidays.map((holidayName, index) => (
+                  <li key={index}>{holidayName}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          {/* Current Year Section */}
+          <div className={compareFrom && compareTo ? "border-r" : ""}>
+            {isEventeli && (
+              <div className="px-4 py-2 border-b">
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="font-semibold text-[#6750a4]">{total}</p>
+                    <Text size="normal" color="secondary" fontWeight="regular">
+                      {columnsDropdown.find((column) => column.value === metrics[0])
+                        ?.label ?? ""}
+                    </Text>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col px-4 py-2 gap-2 border-b">
+              {currentYearEventTypes.map((eventTypesValues) => (
+                <div
+                  key={eventTypesValues.text}
+                  className="flex justify-between"
+                >
+                  <div className="flex gap-2">
+                    <div
+                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                    ></div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.text} Events
+                    </p>
+                  </div>
+                  <p
+                    className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                  >
+                    {eventTypesValues.value}
+                  </p>
+                </div>
               ))}
+            </div>
+            <div className="px-4 py-2">
+              <p className="text-sm font-medium">TOP EVENTS</p>
+              <ul className="flex flex-col gap-2 mt-4">
+                {iseventsLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                ) : eventData && (eventData as any).events.length > 0 ? (
+                  (eventData as any).events
+                    .slice(0, 4)
+                    .map((event: any, index: number) => {
+                      const { basic } = event || {};
+                      const { name, id } = basic || {};
+                      return (
+                        <li key={id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <span className="text-[12px] font-semibold">
+                              {index + 1}.
+                            </span>
+                          </div>
+                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                            {name}
+                          </p>
+                        </li>
+                      );
+                    })
+                ) : (
+                  <p className="text-[#666666] text-sm flex items-center gap-2">
+                    <Image src={Disable} alt="Disable" width={15} height={15} />
+                    No events found.
+                  </p>
+                )}
+              </ul>
             </div>
           </div>
 
+          {/* Comparison Section */}
           {compareFrom && compareTo && (
-            <div className="text-sm pt-2 border-t border-gray-200">
-              <div className="font-medium text-gray-600">
-                Previous Year ({format(comparisonDate, "d MMM yyyy")})
-              </div>
-              <div className="mt-1">
-                {/* Previous Year Event Count */}
-                {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
-                
-                {/* Previous Year Right Axis Metrics */}
-                {activeRightAxisMetrics.map((metric) => (
-                  metric && renderMetricValue(metric, true)
+            <div>
+              {isEventeli && (
+                <div className="px-4 py-2 border-b">
+                  <div className="flex flex-col gap-2">
+                    <div>
+                      <p className="font-semibold text-[#4B9EF4]">
+                        {previousYearTotal}
+                      </p>
+                      <Text
+                        size="normal"
+                        color="secondary"
+                        fontWeight="regular"
+                      >
+                        {columnsDropdown.find(
+                          (column) => column.value === metrics[0]
+                        )?.label ?? ""}
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col px-4 py-2 gap-2 border-b">
+                {previousYearEventTypes.map((eventTypesValues) => (
+                  <div
+                    key={eventTypesValues.text}
+                    className="flex justify-between"
+                  >
+                    <div className="flex gap-2">
+                      <div
+                        className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                      ></div>
+                      <p
+                        className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                      >
+                        {eventTypesValues.text} Events
+                      </p>
+                    </div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.value}
+                    </p>
+                  </div>
                 ))}
+              </div>
+              <div className="px-4 py-2">
+                <p className="text-sm font-medium">TOP EVENTS</p>
+                <ul className="flex flex-col gap-2 mt-4">
+                  {isPreviouseventsLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                  ) : previousYearEventData &&
+                    (previousYearEventData as any).events.length > 0 ? (
+                    (previousYearEventData as any).events
+                      .slice(0, 4)
+                      .map((event: any, index: number) => {
+                        const { basic } = event || {};
+                        const { name, id } = basic || {};
+                        return (
+                          <li key={id} className="flex gap-4">
+                            <div className="flex flex-col items-center">
+                              <span className="text-[12px] font-semibold">
+                                {index + 1}.
+                              </span>
+                            </div>
+                            <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                              {name}
+                            </p>
+                          </li>
+                        );
+                      })
+                  ) : (
+                    <p className="text-[#666666] text-sm flex items-center gap-2">
+                      <Image
+                        src={Disable}
+                        alt="Disable"
+                        width={15}
+                        height={15}
+                      />
+                      No historical events found
+                    </p>
+                  )}
+                </ul>
               </div>
             </div>
           )}
-
-          {matchingHoliday && (
-            <div className="text-sm pt-2 border-t border-gray-200">
-              <div className="font-medium text-gray-600">Holiday</div>
-              <div className="mt-1">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{matchingHoliday.holidays.join(", ")}</span>
-                </div>
-              </div>
-            </div>
+        </div>
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          <Link
+            href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
+            className={`px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer ${
+              compareFrom && compareTo ? "border-r" : ""
+            }`}
+          >
+            VIEW ALL
+            <ArrowUpRight height={18} width={18} stroke="#6750a4" />
+          </Link>
+          {compareFrom && compareTo && (
+            <Link
+              href={`/internal/search/events?${previousYearLink}`}
+              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+            >
+              VIEW ALL
+              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
+            </Link>
           )}
         </div>
       </div>
@@ -1216,7 +1512,7 @@ const LineChartComponent = ({
             trigger="click"
             wrapperStyle={{ pointerEvents: "auto" }}
           />
-          {showThresholdLines && (
+          {showThresholdLines && metrics.length === 1 && (
             <ReferenceArea
               yAxisId="left"
               y1={thresholdArea[0]}
@@ -1224,7 +1520,7 @@ const LineChartComponent = ({
               fill="#FAEFE2"
             />
           )}
-          {threshold && threshold > 0 && showThresholdLines && (
+          {threshold && threshold > 0 && showThresholdLines && metrics.length === 1 && (
             <>
               <ReferenceLine
                 yAxisId="left"
@@ -1287,7 +1583,7 @@ const LineChartComponent = ({
             dot={<CustomDot />}
           />
           {activeRightAxisMetrics.map((metric, index) => {
-            const colors = ["#4B9EF4", "#16A54F", "#FF990A"];
+            const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
             return (
               <Line
                 key={metric}
@@ -1311,13 +1607,13 @@ const LineChartComponent = ({
               name={`Previous Year ${metricLabels[leftAxisMetric]}`}
               stroke="#6750a4"
               strokeWidth={2}
-              strokeOpacity={0.5}
+              strokeDasharray="5 5"
               connectNulls={true}
               dot={false}
             />
           )}
           {compareFrom && compareTo && activeRightAxisMetrics.map((metric, index) => {
-            const colors = ["#4B9EF4", "#16A54F", "#FF990A"];
+            const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
             return (
               <Line
                 key={`previousYear${metric}`}
@@ -1327,7 +1623,7 @@ const LineChartComponent = ({
                 name={`Previous Year ${metricLabels[metric]}`}
                 stroke={colors[index % colors.length]}
                 strokeWidth={2}
-                strokeOpacity={0.5}
+                strokeDasharray="5 5"
                 connectNulls={true}
                 dot={false}
               />
@@ -1345,17 +1641,16 @@ const LineChartComponent = ({
                     color: "#6750a4",
                     tooltipDescription: `Data for ${primaryLabel}`,
                   },
-                  ...(secondaryMetric
-                    ? [
-                        {
-                          value: secondaryLabel,
-                          type: "line",
-                          id: "secondary_metric",
-                          color: "#4B9EF4",
-                          tooltipDescription: `Data for ${secondaryLabel}`,
-                        },
-                      ]
-                    : []),
+                  ...(activeRightAxisMetrics.map((metric, index) => {
+                    const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                    return {
+                      value: metricLabels[metric],
+                      type: "line",
+                      id: `metric_${metric}`,
+                      color: colors[index % colors.length],
+                      tooltipDescription: `Data for ${metricLabels[metric]}`,
+                    };
+                  })),
                   ...(compareFrom && compareTo
                     ? [
                         {
@@ -1364,23 +1659,22 @@ const LineChartComponent = ({
                           id: "previous_year_primary",
                           color: "#6750a4",
                           tooltipDescription: `Previous year data for ${primaryLabel}`,
-                          strokeOpacity: 0.5,
+                          strokeDasharray: "5 5",
                         },
-                        ...(secondaryMetric
-                          ? [
-                              {
-                                value: `Previous Year ${secondaryLabel}`,
-                                type: "line",
-                                id: "previous_year_secondary",
-                                color: "#4B9EF4",
-                                tooltipDescription: `Previous year data for ${secondaryLabel}`,
-                                strokeOpacity: 0.5,
-                              },
-                            ]
-                          : []),
+                        ...activeRightAxisMetrics.map((metric, index) => {
+                          const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                          return {
+                            value: `Previous Year ${metricLabels[metric]}`,
+                            type: "line",
+                            id: `previous_year_${metric}`,
+                            color: colors[index % colors.length],
+                            tooltipDescription: `Previous year data for ${metricLabels[metric]}`,
+                            strokeDasharray: "5 5",
+                          };
+                        }),
                       ]
                     : []),
-                  ...(showThresholdLines
+                  ...(showThresholdLines && metrics.length === 1
                     ? [
                         {
                           value: "Upper Threshold",
