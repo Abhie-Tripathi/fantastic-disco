@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { RefObject, useState } from "react";
 import { useFilterContext } from "@/context/filterContext";
 import Filters from "@/components/search/Filters";
 import { Filter } from "lucide-react";
 
 interface SearchLayoutProps {
   children: React.ReactNode;
-  type: 'events' | 'companies' | 'people';
+  type: "events" | "companies" | "people";
 }
 
 const SearchLayout = ({ children, type }: SearchLayoutProps) => {
@@ -18,7 +18,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
   return (
     <div className="flex relative">
       {isCollapsed && (
-        <div className="fixed left-[82px] top-[84px] z-30">
+        <div className="fixed left-[82px] top-[84px] z-30 md:block hidden">
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -32,16 +32,34 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
           </button>
         </div>
       )}
-      <div className={`transition-all duration-300 sticky top-0 h-[calc(100vh-84px)] overflow-hidden ${isCollapsed ? 'w-0' : 'w-[38%] max-w-[368px]'}`}>
-        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`}>
-          <Filters type={type} isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} />
+      <div
+        className={`transition-all duration-300 sticky top-0 h-[calc(100dvh-84px)] overflow-hidden ${
+          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[368px]"
+        } `}
+      >
+        <div
+          className={`h-full transition-transform duration-300 ${
+            isCollapsed ? "-translate-x-full" : "translate-x-0"
+          }`}
+        >
+          <Filters
+            type={type}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+          >
+            {children}
+          </Filters>
         </div>
       </div>
-      <div className={`flex-1 w-[62%] transition-all duration-300 relative ${isCollapsed ? 'pl-12' : ''}`}>
+      <div
+        className={`hidden md:flex flex-1 w-[62%] transition-all duration-300 relative ${
+          isCollapsed ? "pl-12" : ""
+        }`}
+      >
         {children}
       </div>
     </div>
   );
 };
 
-export default SearchLayout; 
+export default SearchLayout;

@@ -61,7 +61,7 @@ export default function NewVerificationForm() {
     const startDate = formatDateForFilter(startOfMonth(currentDate));
     const endDate = formatDateForFilter(endOfMonth(currentDate));
 
-    params.set("view", "map");
+    params.set("view", "list");
     params.set("status", "active,cancelled,postponed");
     params.set("active_gte", startDate);
     params.set("active_lte", endDate);

@@ -14,7 +14,7 @@
     /* padding: 20px; */
     /* padding-top: 0; */
     top: 67px;
-    z-index: 1;
+    z-index: 20;
     background-color: var(--primary-foreground);
     color: var(--primary-text-color);
     width: calc(100vw - 64px);

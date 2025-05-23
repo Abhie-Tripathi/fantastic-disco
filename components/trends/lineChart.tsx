@@ -596,22 +596,22 @@ const LineChartComponent = ({
 
     // For longer periods, use a fixed number of ticks based on the duration
     const getTickCount = (days: number) => {
-      if (days <= 30) return 6;      // 6 ticks for up to 1 month
-      if (days <= 90) return 7;      // 7 ticks for up to 3 months
-      if (days <= 180) return 8;     // 8 ticks for up to 6 months
-      if (days <= 365) return 9;     // 9 ticks for up to 1 year
-      return 10;                     // 10 ticks for more than 1 year
+      if (days <= 30) return 6; // 6 ticks for up to 1 month
+      if (days <= 90) return 7; // 7 ticks for up to 3 months
+      if (days <= 180) return 8; // 8 ticks for up to 6 months
+      if (days <= 365) return 9; // 9 ticks for up to 1 year
+      return 10; // 10 ticks for more than 1 year
     };
 
     const tickCount = getTickCount(totalDays);
     const dates = [];
-    
+
     // Always include start date
     dates.push(format(start, "yyyy-MM-dd"));
-    
+
     // Calculate the interval between ticks
     const interval = Math.floor(totalDays / (tickCount - 1));
-    
+
     // Generate intermediate dates
     for (let i = 1; i < tickCount - 1; i++) {
       const nextDate = addDays(start, i * interval);
@@ -619,7 +619,7 @@ const LineChartComponent = ({
         dates.push(format(nextDate, "yyyy-MM-dd"));
       }
     }
-    
+
     // Always include end date
     const lastDateStr = format(end, "yyyy-MM-dd");
     if (dates[dates.length - 1] !== lastDateStr) {
@@ -1041,7 +1041,7 @@ const LineChartComponent = ({
       ) || [];
 
     return (
-      <div className="flex flex-col items-end gap-4">
+      <div className={`flex flex-col ${isMobileView ? 'items-start' : 'items-end'} gap-4`}>
         {/* Year entries row */}
         <div className="flex gap-5 items-center">
           {yearEntries.map((entry, index) => {
@@ -1084,7 +1084,7 @@ const LineChartComponent = ({
         </div>
 
         {/* Threshold entries row */}
-        <div className="flex gap-5 items-center">
+        <div className={`flex ${isMobileView ? 'flex-wrap' : ''} gap-5 items-center`}>
           {thresholdEntries.map((entry, index) => (
             <div
               key={`threshold-item-${index}`}
@@ -1462,12 +1462,12 @@ const LineChartComponent = ({
                   ? {
                       width: "100%",
                       position: "relative",
-                      bottom: -5,
-                      left: 0,
+                      bottom: 54,
+                      left: 16,
                       fontSize: "12px",
                       fontWeight: "400",
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }
                   : {
                       width: "auto",

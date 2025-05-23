@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
 export const BREAKPOINTS = {
-  xs: 320,    // Custom breakpoint for extra small devices
-  sm: 640,    // Tailwind sm: 640px
-  md: 768,    // Tailwind md: 768px
-  lg: 1024,   // Tailwind lg: 1024px
-  xl: 1280,   // Tailwind xl: 1280px
-  "2xl": 1536 // Tailwind 2xl: 1536px
+  xs: 320, // Custom breakpoint for extra small devices
+  sm: 640, // Tailwind sm: 640px
+  md: 768, // Tailwind md: 768px
+  lg: 1024, // Tailwind lg: 1024px
+  xl: 1280, // Tailwind xl: 1280px
+  "2xl": 1536, // Tailwind 2xl: 1536px
 } as const;
 
 type BreakpointKey = keyof typeof BREAKPOINTS;
@@ -33,7 +33,8 @@ const isBrowser = typeof window !== "undefined";
 const constructMediaQuery = (options: MediaQueryOptions): string => {
   const { type = "up", start = "xs", end, dimension = "width" } = options;
   const dimensionPrefix = dimension === "height" ? "min-height" : "min-width";
-  const dimensionMaxPrefix = dimension === "height" ? "max-height" : "max-width";
+  const dimensionMaxPrefix =
+    dimension === "height" ? "max-height" : "max-width";
 
   switch (type) {
     case "up":
@@ -43,17 +44,17 @@ const constructMediaQuery = (options: MediaQueryOptions): string => {
       return `(${dimensionMaxPrefix}: ${BREAKPOINTS[start] - 0.02}px)`;
     case "between":
       if (!end) throw new Error("End breakpoint is required for between");
-      return `(${dimensionPrefix}: ${BREAKPOINTS[start]}px) and (${dimensionMaxPrefix}: ${
-        BREAKPOINTS[end] - 0.02
-      }px)`;
+      return `(${dimensionPrefix}: ${
+        BREAKPOINTS[start]
+      }px) and (${dimensionMaxPrefix}: ${BREAKPOINTS[end] - 0.02}px)`;
     case "only":
       const nextBreakpoint =
         Object.keys(BREAKPOINTS).findIndex((b) => b === start) + 1;
       const nextKey = Object.keys(BREAKPOINTS)[nextBreakpoint] as BreakpointKey;
       return nextKey
-        ? `(${dimensionPrefix}: ${BREAKPOINTS[start]}px) and (${dimensionMaxPrefix}: ${
-            BREAKPOINTS[nextKey] - 0.02
-          }px)`
+        ? `(${dimensionPrefix}: ${
+            BREAKPOINTS[start]
+          }px) and (${dimensionMaxPrefix}: ${BREAKPOINTS[nextKey] - 0.02}px)`
         : `(${dimensionPrefix}: ${BREAKPOINTS[start]}px)`;
     default:
       return `(${dimensionPrefix}: ${BREAKPOINTS[start]}px)`;
@@ -118,10 +119,20 @@ export const useIsLargeScreen = (ssrState = false) =>
   useMediaQuery({ type: "up", start: "xl", defaultState: ssrState });
 
 export const useIsShortScreen = (ssrState = false) =>
-  useMediaQuery({ type: "down", start: "md", defaultState: ssrState, dimension: "height" });
+  useMediaQuery({
+    type: "down",
+    start: "md",
+    defaultState: ssrState,
+    dimension: "height",
+  });
 
 export const useIsTallScreen = (ssrState = false) =>
-  useMediaQuery({ type: "up", start: "lg", defaultState: ssrState, dimension: "height" });
+  useMediaQuery({
+    type: "up",
+    start: "lg",
+    defaultState: ssrState,
+    dimension: "height",
+  });
 
 export const useResponsiveValue = <T>(config: {
   mobile: T;
