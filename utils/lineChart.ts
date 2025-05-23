@@ -77,8 +77,17 @@ export function morphToGraphData(
   return Object.entries(groupedData).map(([date, groupData]) => {
     const result: any = { date };
     metrics.forEach(metric => {
-      result[metric] = groupData[metric as keyof typeof groupData]?.total ?? 0;
-      // Optionally add social/business splits if needed
+      const metricData = groupData[metric as keyof typeof groupData];
+      if (metricData) {
+        result[metric] = metricData.total ?? 0;
+        // Add social/business counts from byEventTypeGroup if they exist
+        if (metricData.byEventTypeGroup) {
+          result.social = metricData.byEventTypeGroup.social ?? 0;
+          result.business = metricData.byEventTypeGroup.business ?? 0;
+        }
+      } else {
+        result[metric] = 0;
+      }
     });
     return result;
   });
