@@ -51,7 +51,6 @@ const fetchAISuggestion = async (promptText: string) => {
 
     const temp = JSON.parse(content);
 
-    console.log("AI Parsed Response:", temp);
 
     const res = temp?.data?.companyData || temp?.data?.competitorData;
 

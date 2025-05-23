@@ -103,7 +103,6 @@ const Trackers = ({ searchParams }: Search) => {
 
   const modalOpen = () => {
     setShowModal(true);
-    console.log(document.body.style);
 
     document.body.style.height = "100vh";
 
@@ -190,7 +189,6 @@ const Trackers = ({ searchParams }: Search) => {
         fetchNote(singleTrackerData?.id);
         fetchSavedEvent(singleTrackerData?.id);
       }
-      console.log(singleTrackerData.id);
     }
   }, [singleTrackerData]);
   const fetchNote = async (id: string) => {
@@ -205,7 +203,6 @@ const Trackers = ({ searchParams }: Search) => {
       events: EventTableType[];
       count: number;
     };
-    console.log(result);
 
     if (result && result?.count > 0) {
       setSavedEvents(result);
@@ -250,7 +247,6 @@ const Trackers = ({ searchParams }: Search) => {
       else setActiveType("social");
     } else {
       if ((singleTrackerData?.groupedEventsCount?.active ?? 0) > 0) {
-        console.log(singleTrackerData?.groupedEventsCount?.active);
 
         setActiveType("active");
       } else {
@@ -258,7 +254,6 @@ const Trackers = ({ searchParams }: Search) => {
       }
     }
   }, [singleTrackerData]);
-  console.log(singleTrackerData);
 
   return (
     // <div className={styles.body}>
