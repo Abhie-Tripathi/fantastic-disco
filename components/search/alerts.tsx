@@ -104,62 +104,62 @@ export default function Alerts() {
     <Card className="w-full mb-6 shadow-none border bg-background">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="alerts-overview" className="border-none">
-          <AccordionTrigger className="px-6 py-4 hover:bg-accent/50 transition-colors hover:no-underline">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-3">
+          <AccordionTrigger className="px-4 sm:px-6 py-4 hover:bg-accent/50 transition-colors hover:no-underline">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 sm:gap-0">
+              <div className="flex flex-row items-start sm:items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
                   <TriangleAlert className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Alerts Overview</h2>
+                  <h2 className="text-lg font-semibold text-nowrap">Alerts Overview</h2>
                   <p className="text-sm text-muted-foreground text-left">
                     {isLoadingCounts ? "Loading..." : `${alerts.count} alerts`}
                   </p>
                 </div>
-                <div className="flex items-center gap-4 ml-4">
-                  {isLoadingCounts ? (
-                    <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-md bg-muted animate-pulse" />
-                      <div className="h-5 w-20 rounded bg-muted animate-pulse" />
-                    </div>
-                  ) : (
-                    alertCounts.map(({ alertType, count }, index) => (
-                      <div key={alertType} className="flex items-center">
-                        {index > 0 && (
-                          <Separator
-                            orientation="vertical"
-                            className="mx-4 h-8"
-                          />
-                        )}
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2 rounded-lg bg-background px-3 py-1.5">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-                              {alertIcons[alertType] ||
-                                (alertType.toLowerCase() === "warning" ? (
-                                  <AlertTriangle className="h-4 w-4 text-primary" />
-                                ) : (
-                                  <Info className="h-4 w-4 text-primary" />
-                                ))}
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-sm font-medium capitalize">
-                                {alertType.toLowerCase()}
-                              </span>
-                              <Badge className="h-5 px-2 text-xs font-semibold no-underline">
-                                {count} {count === 1 ? "alert" : "alerts"}
-                              </Badge>
-                            </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-4">
+                {isLoadingCounts ? (
+                  <div className="flex items-center gap-3">
+                    <div className="h-7 w-7 rounded-md bg-muted animate-pulse" />
+                    <div className="h-5 w-20 rounded bg-muted animate-pulse" />
+                  </div>
+                ) : (
+                  alertCounts.map(({ alertType, count }, index) => (
+                    <div key={alertType} className="flex items-center">
+                      {index > 0 && (
+                        <Separator
+                          orientation="vertical"
+                          className="mx-2 sm:mx-4 h-8 hidden sm:block"
+                        />
+                      )}
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 rounded-lg bg-background px-2 sm:px-3 py-1.5">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                            {alertIcons[alertType] ||
+                              (alertType.toLowerCase() === "warning" ? (
+                                <AlertTriangle className="h-4 w-4 text-primary" />
+                              ) : (
+                                <Info className="h-4 w-4 text-primary" />
+                              ))}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium capitalize">
+                              {alertType.toLowerCase()}
+                            </span>
+                            <Badge className="h-5 px-2 text-xs font-semibold no-underline">
+                              {count} {count === 1 ? "alert" : "alerts"}
+                            </Badge>
                           </div>
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="px-4">
-            <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 pt-4">
+          <AccordionContent className="px-2 sm:px-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pt-4">
               {isLoading
                 ? Array.from({ length: itemsPerPage }).map((_, index) => (
                     <Card key={index} className="bg-card border-2">

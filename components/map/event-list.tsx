@@ -647,7 +647,7 @@ function EventList({
       <>
         <div className="p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 my-2">
+            <div className="hidden md:flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
               </Badge>
@@ -655,7 +655,7 @@ function EventList({
                 Events Found
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
               <Button
                 variant="ghost"
@@ -739,7 +739,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full w-full md:w-[345px] bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       }`}
     >

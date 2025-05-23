@@ -119,11 +119,11 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   };
 
   return (
-    <div className="absolute z-10 top-4 right-1/2 translate-x-1/2">
+    <div className="absolute z-10 top-4 right-4 sm:right-1/2 sm:translate-x-1/2 w-[calc(100%-2rem)] sm:w-auto">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           {selectedAlertData ? (
-            <div className="w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
+            <div className="w-full sm:w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
               <AlertItem alert={selectedAlertData} />
             </div>
           ) : (
@@ -138,7 +138,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
             </div>
           )}
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-2">
+        <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80 p-2">
           <ScrollArea className="h-[300px] pr-4">
             <div className="[&>*:not(:last-child)]:border-b">
               {alerts.events.map((alert: Alert) => (

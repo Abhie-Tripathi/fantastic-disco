@@ -20,7 +20,7 @@ interface Props {
   handlePresetClick: any;
 }
 
-const Presets = ({ template, handlePresetClick }: Props) => {
+const Presets = ({ template, handlePresetClick}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
   console.log(template.name);
   
