@@ -84,7 +84,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
     {
       key: "brandBriefRef",
       id: "brandBrief",
-      content: "Enter your company website, and we’ll generate a tailored list of competitors, key influencers, and top events to follow.",
+      content: "Enter your company website, and we'll generate a tailored list of competitors, key influencers, and top events to follow.",
     },
     {
       key: "prospectTrackerRef",
@@ -433,15 +433,15 @@ Do not include the competitor platform names in the output. Only return publicly
   const EventeliView = useMemo(() => {
     if (!isEventeli) return null;
     return (
-      <div className="flex gap-2 w-[100%] justify-center items-center" >
-      <div className="flex gap-2" id="geoTemplate">
+      <div className="flex gap-2 w-full justify-center items-center flex-col sm:flex-row" >
+      <div className="flex gap-2 flex-wrap justify-center" id="geoTemplate">
       {(data as TemplateItem[]).map((item: any, ind: number) =>
         item.isEnabled ? (
           <Link
             href={`/internal/trackers/create?type=${item?.url}`}
             key={ind}
           >
-            <div className="w-[280px] p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" >
+            <div className="w-[280px] sm:w-[250px] lg:w-[280px] p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" >
               <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                 <div className={styles.account}>
                   <Image src={item.img} alt="people" width={31} height={31} />
@@ -475,7 +475,7 @@ Do not include the competitor platform names in the output. Only return publicly
           </Link>
         ) : (
           <div
-            className="p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px] bg-red"
+            className="w-[280px] sm:w-[250px] lg:w-[280px] p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px] bg-red"
             key={ind}
           >
             <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
@@ -511,7 +511,7 @@ Do not include the competitor platform names in the output. Only return publicly
         )
       )}
       </div>
-      <div className={`${styles.innerContainerOne}`} style={{"width":"280px"}}id="customTracker">
+      <div className={`${styles.innerContainerOne} mt-4 sm:mt-0`} style={{"width":"280px"}} id="customTracker">
         <Image src={Add} alt="add" />
         <Link
           href="/internal/trackers/create?type=T_CUSTOM"
