@@ -796,7 +796,7 @@ const LineChartComponent = ({
           </div>
           <div className="space-y-2">
             <div className="text-sm">
-              <div className="font-medium text-gray-600">Current Year</div>
+              <div className="font-medium text-gray-600">Selected Date</div>
               <div className="mt-1">
                 {leftAxisMetric && renderMetricValue(leftAxisMetric)}
                 {activeRightAxisMetrics.map((metric) => (
@@ -808,7 +808,7 @@ const LineChartComponent = ({
             {compareFrom && compareTo && (
               <div className="text-sm pt-2 border-t border-gray-200">
                 <div className="font-medium text-gray-600">
-                  Previous Year ({format(comparisonDate, "d MMM yyyy")})
+                  Compared Date ({format(comparisonDate, "d MMM yyyy")})
                 </div>
                 <div className="mt-1">
                   {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
@@ -1137,54 +1137,184 @@ const LineChartComponent = ({
   };
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
-    // Get the comparison option label - we'll use a generic name regardless of the comparison type
-    const comparisonLabel = "Compared Period";
+    if (!payload) return null;
 
-    // Separate year entries from threshold entries
-    const yearEntries =
-      payload?.filter(
-        (entry) =>
-          entry.id === "current_year" ||
-          (compareFrom && compareTo && entry.id === "previous_year")
-      ) || [];
+    // Filter out entries that aren't selected metrics
+    const filteredPayload = payload.filter(entry => {
+      // Handle metric entries
+      if (entry.id?.startsWith('metric_')) {
+        const metricName = entry.id.replace('metric_', '');
+        return metrics.includes(metricName);
+      }
+      // Handle primary metric
+      if (entry.id === 'primary_metric') {
+        return true;
+      }
+      // Handle previous year entries
+      if (entry.id?.startsWith('previous_year_')) {
+        const metricName = entry.id.replace('previous_year_', '');
+        return metrics.includes(metricName) || metricName === 'primary';
+      }
+      // Handle threshold entries
+      return ['upper_threshold', 'lower_threshold', 'average'].includes(entry.id);
+    });
 
-    const thresholdEntries =
-      payload?.filter(
-        (entry) => entry.id !== "current_year" && entry.id !== "previous_year"
-      ) || [];
+    // Separate threshold entries from metric entries
+    const thresholdEntries = filteredPayload.filter(
+      (entry) => ['upper_threshold', 'lower_threshold', 'average'].includes(entry.id)
+    );
+
+    const metricEntries = filteredPayload.filter(
+      (entry) => !['upper_threshold', 'lower_threshold', 'average'].includes(entry.id)
+    );
+
+    // Split metric entries into rows based on screen size and number of entries
+    const splitMetricEntries = () => {
+      if (isMobileView) {
+        // For mobile, show 2 items per row
+        const rows = [];
+        for (let i = 0; i < metricEntries.length; i += 2) {
+          rows.push(metricEntries.slice(i, i + 2));
+        }
+        return rows;
+      } else {
+        // For desktop, split into 2 rows if more than 2 entries
+        if (metricEntries.length <= 2) return [metricEntries];
+        const midPoint = Math.ceil(metricEntries.length / 2);
+        return [metricEntries.slice(0, midPoint), metricEntries.slice(midPoint)];
+      }
+    };
+
+    // Helper to get proper metric display name
+    const getMetricDisplayName = (entry: any) => {
+      if (entry.id === 'primary_metric') {
+        return entry.value;
+      }
+      if (entry.id?.startsWith('metric_')) {
+        return entry.value;
+      }
+      if (entry.id?.startsWith('previous_year_')) {
+        const baseMetric = entry.value.replace('Previous Year ', '');
+        return `Compared ${baseMetric}`;
+      }
+      return entry.value;
+    };
+
+    const metricRows = splitMetricEntries();
 
     return (
-      <div className="flex flex-col items-end gap-4">
-        {/* Year entries row */}
-        <div className="flex gap-5 items-center">
-          {yearEntries.map((entry, index) => {
-            if (entry.id === "previous_year") {
-              entry.value = comparisonLabel;
-            }
-            return (
+      <div className={`flex flex-col items-end ${isMobileView ? 'gap-1 w-full' : 'gap-2'}`}>
+        {/* Metric entries rows */}
+        {metricRows.map((row, rowIndex) => (
+          <div 
+            key={`row-${rowIndex}`} 
+            className={`flex items-center ${
+              isMobileView 
+                ? 'w-full justify-between gap-2 flex-wrap' 
+                : 'gap-5'
+            }`}
+          >
+            {row.map((entry, index) => {
+              const isComparedMetric = entry.id?.startsWith('previous_year_');
+              return (
+                <div
+                  key={`metric-item-${rowIndex}-${index}`}
+                  className={`flex items-center ${
+                    isMobileView 
+                      ? 'gap-1 flex-1 min-w-[120px] max-w-[160px]' 
+                      : 'gap-2'
+                  }`}
+                >
+                  <div
+                    className={`${isMobileView ? 'w-3' : 'w-4'} h-0 border-t-2`}
+                    style={{
+                      borderColor: entry.color,
+                      borderStyle: isComparedMetric ? 'dashed' : 'solid'
+                    }}
+                  ></div>
+                  <TooltipProvider>
+                    <ShadcnTooltip>
+                      <TooltipTrigger asChild>
+                        <span
+                          className={`cursor-pointer text-xs font-medium truncate block ${
+                            isMobileView ? 'max-w-[120px]' : ''
+                          }`}
+                          style={{
+                            color: entry.color,
+                          }}
+                        >
+                          {getMetricDisplayName(entry)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent 
+                        className={`${
+                          isMobileView ? 'w-48' : 'w-60'
+                        } tooltip-content-styles`}
+                      >
+                        <p className="font-medium text-[var(--secondary-text-color)]">
+                          {entry.tooltipDescription}
+                        </p>
+                      </TooltipContent>
+                    </ShadcnTooltip>
+                  </TooltipProvider>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+
+        {/* Threshold entries row */}
+        {thresholdEntries.length > 0 && (
+          <div className={`flex items-center ${
+            isMobileView 
+              ? 'w-full justify-between gap-2 flex-wrap' 
+              : 'gap-5'
+          }`}>
+            {thresholdEntries.map((entry, index) => (
               <div
-                key={`year-item-${index}`}
-                className="flex items-center gap-2"
+                key={`threshold-item-${index}`}
+                className={`flex items-center ${
+                  isMobileView 
+                    ? 'gap-1 flex-1 min-w-[120px] max-w-[160px]' 
+                    : 'gap-2'
+                }`}
               >
                 <div
-                  className="w-4 h-0 border-t-2"
+                  className={`${isMobileView ? 'w-3' : 'w-4'} h-0 border-t-2`}
                   style={{
                     borderColor: entry.color,
+                    borderStyle:
+                      entry.id === "upper_threshold" ||
+                      entry.id === "lower_threshold"
+                        ? "dashed"
+                        : "solid",
                   }}
                 ></div>
                 <TooltipProvider>
                   <ShadcnTooltip>
                     <TooltipTrigger asChild>
                       <span
-                        className={`cursor-pointer text-sm font-medium`}
+                        className={`cursor-pointer text-xs font-medium truncate block ${
+                          isMobileView ? 'max-w-[120px]' : ''
+                        }`}
                         style={{
                           color: entry.color,
                         }}
                       >
-                        {entry.value}
+                        {isMobileView && entry.value.length > 10
+                          ? entry.value === "Upper Threshold"
+                            ? "Upper"
+                            : entry.value === "Lower Threshold"
+                            ? "Lower"
+                            : entry.value
+                          : entry.value}
                       </span>
                     </TooltipTrigger>
-                    <TooltipContent className="w-60 tooltip-content-styles">
+                    <TooltipContent
+                      className={`${
+                        isMobileView ? 'w-48' : 'w-60'
+                      } tooltip-content-styles`}
+                    >
                       <p className="font-medium text-[var(--secondary-text-color)]">
                         {entry.tooltipDescription}
                       </p>
@@ -1192,60 +1322,9 @@ const LineChartComponent = ({
                   </ShadcnTooltip>
                 </TooltipProvider>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Threshold entries row */}
-        <div className="flex gap-5 items-center">
-          {thresholdEntries.map((entry, index) => (
-            <div
-              key={`threshold-item-${index}`}
-              className="flex items-center gap-2"
-            >
-              <div
-                className="w-4 h-0 border-t-2"
-                style={{
-                  borderColor: entry.color,
-                  borderStyle:
-                    entry.id === "upper_threshold" ||
-                    entry.id === "lower_threshold"
-                      ? "dashed"
-                      : "solid",
-                }}
-              ></div>
-              <TooltipProvider>
-                <ShadcnTooltip>
-                  <TooltipTrigger asChild>
-                    <span
-                      className={`cursor-pointer text-sm font-medium`}
-                      style={{
-                        color: entry.color,
-                      }}
-                    >
-                      {isMobileView && entry.value.length > 10
-                        ? entry.value === "Upper Threshold"
-                          ? "Upper"
-                          : entry.value === "Lower Threshold"
-                          ? "Lower"
-                          : entry.value
-                        : entry.value}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    className={`${
-                      isMobileView ? "w-48" : "w-60"
-                    } tooltip-content-styles`}
-                  >
-                    <p className="font-medium text-[var(--secondary-text-color)]">
-                      {entry.tooltipDescription}
-                    </p>
-                  </TooltipContent>
-                </ShadcnTooltip>
-              </TooltipProvider>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
