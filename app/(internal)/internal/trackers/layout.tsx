@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme()
 // const [modal,setModal]=useState(false);
   return (
-    <div className="flex flex-col gap-[35px] items-center ">
+    <div className="flex flex-col items-center ">
       <TrackerContextProvider>
       {children}
       </TrackerContextProvider>

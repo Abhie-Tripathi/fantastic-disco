@@ -192,13 +192,13 @@ const Index = () => {
             <div
               className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md"
               ref={refs.viewsRef}
-              style={{
-                position: "fixed", // Key change
-                top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
-                left: "50%", // Center horizontally (or set specific left)
-                transform: "translateX(-50%)", // Center-align
-                zIndex: 21, // Above the header (zIndex: 20)
-              }}
+              // style={{
+              //   position: "fixed", // Key change
+              //   top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
+              //   left: "50%", // Center horizontally (or set specific left)
+              //   transform: "translateX(-50%)", // Center-align
+              //   zIndex: 21, // Above the header (zIndex: 20)
+              // }}
             >
               {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
               <div onClick={() => handleClick("table")}>
@@ -326,16 +326,16 @@ const Index = () => {
                   }}
                 >
                   <div
-                    style={{
-                      position: "fixed", // Key change
-                      top: isEventeli ? "61px" : "67px", // Custom top (adjust as needed)
-                      right: "5%", // Center horizontally (or set specific left)
-                      transform: "translateX(-50%)", // Center-align
-                      zIndex: 21, // Above the header (zIndex: 20)
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    className={`${styles.heading} ${styles.tooltipContainer} ${
+                    // style={{
+                    //   position: "fixed", // Key change
+                    //   top: isEventeli ? "61px" : "67px", // Custom top (adjust as needed)
+                    //   right: "5%", // Center horizontally (or set specific left)
+                    //   transform: "translateX(-50%)", // Center-align
+                    //   zIndex: 21, // Above the header (zIndex: 20)
+                    //   display: "flex",
+                    //   justifyContent: "center",
+                    // }}
+                    className={`${styles.heading} ${
                       trackerSection === "Tracker Configurations"
                         ? styles.active
                         : ""
@@ -343,7 +343,7 @@ const Index = () => {
                     onClick={() => setTrackerSection("Tracker Configurations")}
                     ref={refs.configRef}
                   >
-                    <SettingsGear
+                    <Settings
                       width="12px"
                       height="12px"
                       style={{
@@ -398,12 +398,20 @@ const Index = () => {
         {/* Back and Settings */}
         <div className="flex items-center justify-between py-3">
           <Button
-            onClick={() => router.back()}
             variant="ghost"
             className="flex items-center gap-2 text-[var(--primary-color)] p-0 h-auto font-medium text-sm hover:bg-transparent"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <Link
+              className="flex items-center gap-2 text-[var(--primary-color)] p-0 h-auto font-medium text-sm hover:bg-transparent"
+              href={`/internal/trackers?skip=${skip}${
+                searchValue.length > 0
+                  ? `&q=${encodeURIComponent(searchValue)}`
+                  : ""
+              }`}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </Link>
           </Button>
           <div className="flex items-center gap-3">
             <TooltipProvider>
@@ -417,7 +425,7 @@ const Index = () => {
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">Edit Tracker Settings</p>
+                  <p className="text-sm">Configurations</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -427,7 +435,7 @@ const Index = () => {
                   <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">Share Tracker</p>
+                  <p className="text-sm">Share</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

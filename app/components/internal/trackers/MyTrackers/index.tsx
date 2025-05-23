@@ -183,7 +183,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   </div>
 </div>
         <div className={`${
-    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100vh-210px)] md:h-[calc(100vh-252px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
+    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100vh-252px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
