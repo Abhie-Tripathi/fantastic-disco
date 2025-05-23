@@ -57,7 +57,6 @@ const Trackers = ({ searchParams }: Search) => {
     else setType("All Trackers");
   }, [tab]);
   const [locations, setLocations] = useState<any>();
-  const [geoCoordinate, setGeoCoordinate] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
@@ -103,6 +102,7 @@ const Trackers = ({ searchParams }: Search) => {
 
   const modalOpen = () => {
     setShowModal(true);
+    console.log(document.body.style);
 
     document.body.style.height = "100vh";
 
@@ -172,13 +172,6 @@ const Trackers = ({ searchParams }: Search) => {
       // const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
       // const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
       // const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-      if (singleTrackerData?.filterValues?.viewBound) {
-        const ids = singleTrackerData?.filterValues?.viewBound;
-
-        setGeoCoordinate(ids);
-        // setLocalFilter("locationIds", ids.join(","))
-        // console.log(ids);
-      } else setGeoCoordinate({});
       if (singleTrackerData?.filterValues?.locationIds) {
         const ids = Object?.keys(singleTrackerData?.filterValues?.locationIds);
         setLocations(ids);
@@ -189,6 +182,7 @@ const Trackers = ({ searchParams }: Search) => {
         fetchNote(singleTrackerData?.id);
         fetchSavedEvent(singleTrackerData?.id);
       }
+      console.log(singleTrackerData.id);
     }
   }, [singleTrackerData]);
   const fetchNote = async (id: string) => {
@@ -203,6 +197,7 @@ const Trackers = ({ searchParams }: Search) => {
       events: EventTableType[];
       count: number;
     };
+    console.log(result);
 
     if (result && result?.count > 0) {
       setSavedEvents(result);
@@ -215,7 +210,6 @@ const Trackers = ({ searchParams }: Search) => {
       "Saved Tracker | Any Filter Applied",
       "View"
     );
-
     setIsNewCall(true);
     setTrackerId(id);
   };
@@ -247,6 +241,7 @@ const Trackers = ({ searchParams }: Search) => {
       else setActiveType("social");
     } else {
       if ((singleTrackerData?.groupedEventsCount?.active ?? 0) > 0) {
+        console.log(singleTrackerData?.groupedEventsCount?.active);
 
         setActiveType("active");
       } else {
@@ -254,6 +249,7 @@ const Trackers = ({ searchParams }: Search) => {
       }
     }
   }, [singleTrackerData]);
+  console.log(singleTrackerData);
 
   return (
     // <div className={styles.body}>
@@ -278,11 +274,11 @@ const Trackers = ({ searchParams }: Search) => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div>
+        <div className="w-full">
           {isData && (
             <div className="flex flex-row">
-              <div className="w-1/2 h-[calc(100vh-67px)]">
-                <div className="flex flex-col gap-4 px-5 py-0">
+              <div className="w-full md:w-1/2 h-[calc(100vh-67px)]">
+                <div className="flex-col gap-4 px-5 py-0 hidden md:flex">
                   <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
                     {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}
                     Bookmarked events and tracker lists you have created.
@@ -328,7 +324,7 @@ const Trackers = ({ searchParams }: Search) => {
                 </div>
               </div>
               <div
-                className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]"
+                className="hidden md:block w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]"
                 style={{ padding: "20px 0px" }}
               >
                 <div className="flex flex-col gap-4">
@@ -402,11 +398,6 @@ const Trackers = ({ searchParams }: Search) => {
                               source="tracker"
                               eventType={activeType}
                               searchParams="active"
-                              trackerGeoCordinates={
-                                Object.keys(geoCoordinate || {}).length != 0
-                                  ? geoCoordinate
-                                  : {}
-                              }
                               trackerId={singleTrackerData?.id || ""}
                               trackerLoc={
                                 (locations?.length > 0 &&
@@ -561,7 +552,7 @@ const Trackers = ({ searchParams }: Search) => {
           )}
           {(!hideTemplate || !isData) && (
             <div
-              className="absolute  lg:!left-[63px] left-0 top-[67px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px)]"
+              className="absolute  lg:left-[63px] left-0 top-[67px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px)]"
               style={{ zIndex: "11" }}
             >
               <Templates isData={isData} hideTemplates={hideTemplates} />
