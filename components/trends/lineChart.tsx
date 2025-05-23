@@ -45,7 +45,11 @@ import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import { useRouter, useSearchParams, ReadonlyURLSearchParams } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+  ReadonlyURLSearchParams,
+} from "next/navigation";
 
 interface IProps {
   showLegend: boolean;
@@ -83,26 +87,48 @@ const LineChartComponent = ({
   const { getEventsWithSearchParams } = useEventsService();
   const { getFilterValue } = useFilterState();
   const metrics = (getFilterValue("columns") as string)?.split(",") || [];
-  
+
   // Define which metrics share the right axis
-  const rightAxisMetrics = ["predictedAttendance", "inboundEstimate", "internationalEstimate"] as const;
-  type MetricType = typeof rightAxisMetrics[number] | "eventCount";
-  
+  const rightAxisMetrics = [
+    "predictedAttendance",
+    "inboundEstimate",
+    "internationalEstimate",
+  ] as const;
+  type MetricType = (typeof rightAxisMetrics)[number] | "eventCount";
+
   // Separate metrics by axis
-  const leftAxisMetric = metrics.find(m => m === "eventCount") as MetricType | undefined;
-  const activeRightAxisMetrics = metrics.filter(m => rightAxisMetrics.includes(m as typeof rightAxisMetrics[number])) as MetricType[];
+  const leftAxisMetric = metrics.find((m) => m === "eventCount") as
+    | MetricType
+    | undefined;
+  const activeRightAxisMetrics = metrics.filter((m) =>
+    rightAxisMetrics.includes(m as (typeof rightAxisMetrics)[number])
+  ) as MetricType[];
 
   // Get labels for all active metrics
   const metricLabels = metrics.reduce((acc, metric) => {
-    const label = columnsDropdown.find((column) => column.value === metric)?.label ?? metric;
-    if (rightAxisMetrics.includes(metric as typeof rightAxisMetrics[number]) || metric === "eventCount") {
+    const label =
+      columnsDropdown.find((column) => column.value === metric)?.label ??
+      metric;
+    if (
+      rightAxisMetrics.includes(metric as (typeof rightAxisMetrics)[number]) ||
+      metric === "eventCount"
+    ) {
       acc[metric as MetricType] = label;
     }
     return acc;
   }, {} as Record<MetricType, string>);
 
-  const primaryMetric = leftAxisMetric as "eventCount" | "predictedAttendance" | "inboundEstimate" | "internationalEstimate";
-  const secondaryMetric = activeRightAxisMetrics[0] as "eventCount" | "predictedAttendance" | "inboundEstimate" | "internationalEstimate" | undefined;
+  const primaryMetric = leftAxisMetric as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate";
+  const secondaryMetric = activeRightAxisMetrics[0] as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate"
+    | undefined;
 
   const primaryLabel = metricLabels[primaryMetric];
   const secondaryLabel = secondaryMetric ? metricLabels[secondaryMetric] : "";
@@ -241,9 +267,12 @@ const LineChartComponent = ({
             previousYearSocial: comparisonItem.social,
             previousYearBusiness: comparisonItem.business,
             ...(secondaryMetric && {
-              [`previousYear${secondaryMetric}`]: comparisonItem[secondaryMetric],
-              [`previousYearSocial${secondaryMetric}`]: comparisonItem[`social${secondaryMetric}`],
-              [`previousYearBusiness${secondaryMetric}`]: comparisonItem[`business${secondaryMetric}`],
+              [`previousYear${secondaryMetric}`]:
+                comparisonItem[secondaryMetric],
+              [`previousYearSocial${secondaryMetric}`]:
+                comparisonItem[`social${secondaryMetric}`],
+              [`previousYearBusiness${secondaryMetric}`]:
+                comparisonItem[`business${secondaryMetric}`],
             }),
           };
         }
@@ -253,7 +282,15 @@ const LineChartComponent = ({
 
       setPredictedData(combinedData);
     }
-  }, [eventTrendsData, previousYearData, primaryMetric, secondaryMetric, compareFrom, compareTo, searchParams]);
+  }, [
+    eventTrendsData,
+    previousYearData,
+    primaryMetric,
+    secondaryMetric,
+    compareFrom,
+    compareTo,
+    searchParams,
+  ]);
 
   useEffect(() => {
     if (trendsData === undefined) {
@@ -561,7 +598,11 @@ const LineChartComponent = ({
     });
 
   const threshold =
-    (eventTrendsData && eventTrendsData.thresholds[primaryMetric as keyof typeof eventTrendsData.thresholds]) ?? 0;
+    (eventTrendsData &&
+      eventTrendsData.thresholds[
+        primaryMetric as keyof typeof eventTrendsData.thresholds
+      ]) ??
+    0;
   const thresholdArea = [
     threshold * 1.5, // 5% above threshold
     threshold * 0.5, // 5% below threshold
@@ -745,7 +786,8 @@ const LineChartComponent = ({
     if (metrics.length > 1) {
       const { date } = tooltipPayload;
       const matchingHoliday =
-        holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+        holidayByDates &&
+        holidayByDates.find((holiday) => holiday.date === date);
 
       // Calculate comparison date based on relative position
       let comparisonDate = new Date(date);
@@ -778,7 +820,9 @@ const LineChartComponent = ({
         const value = tooltipPayload[key];
         if (value === undefined || !metric) return null;
 
-        const label = columnsDropdown.find((column) => column.value === metric)?.label ?? metric;
+        const label =
+          columnsDropdown.find((column) => column.value === metric)?.label ??
+          metric;
         return (
           <div key={key} className="flex justify-between">
             <span className="text-gray-500">{label}</span>
@@ -788,20 +832,27 @@ const LineChartComponent = ({
       };
 
       return (
-        <div className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
-          compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
-        }`}>
-          <div className="text-sm font-semibold text-gray-700 mb-2">
-            {format(new Date(date), "d MMM yyyy")}
-          </div>
+        <div
+          className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
+            compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
+          }`}
+        >
           <div className="space-y-2">
             <div className="text-sm">
-              <div className="font-medium text-gray-600">Selected Date</div>
+              {compareFrom && compareTo ? (
+                <div className="font-medium text-gray-600">
+                  Selected Date ({format(new Date(date), "d MMM yyyy")})
+                </div>
+              ) : (
+                <div className="font-medium text-gray-600">
+                  {format(new Date(date), "d MMM yyyy")}
+                </div>
+              )}
               <div className="mt-1">
                 {leftAxisMetric && renderMetricValue(leftAxisMetric)}
-                {activeRightAxisMetrics.map((metric) => (
-                  metric && renderMetricValue(metric)
-                ))}
+                {activeRightAxisMetrics.map(
+                  (metric) => metric && renderMetricValue(metric)
+                )}
               </div>
             </div>
 
@@ -812,9 +863,9 @@ const LineChartComponent = ({
                 </div>
                 <div className="mt-1">
                   {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
-                  {activeRightAxisMetrics.map((metric) => (
-                    metric && renderMetricValue(metric, true)
-                  ))}
+                  {activeRightAxisMetrics.map(
+                    (metric) => metric && renderMetricValue(metric, true)
+                  )}
                 </div>
               </div>
             )}
@@ -824,7 +875,9 @@ const LineChartComponent = ({
                 <div className="font-medium text-gray-600">Holiday</div>
                 <div className="mt-1">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">{matchingHoliday.holidays.join(", ")}</span>
+                    <span className="text-gray-500">
+                      {matchingHoliday.holidays.join(", ")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -955,8 +1008,9 @@ const LineChartComponent = ({
                   <div>
                     <p className="font-semibold text-[#6750a4]">{total}</p>
                     <Text size="normal" color="secondary" fontWeight="regular">
-                      {columnsDropdown.find((column) => column.value === metrics[0])
-                        ?.label ?? ""}
+                      {columnsDropdown.find(
+                        (column) => column.value === metrics[0]
+                      )?.label ?? ""}
                     </Text>
                   </div>
                 </div>
@@ -1140,32 +1194,35 @@ const LineChartComponent = ({
     if (!payload) return null;
 
     // Filter out entries that aren't selected metrics
-    const filteredPayload = payload.filter(entry => {
+    const filteredPayload = payload.filter((entry) => {
       // Handle metric entries
-      if (entry.id?.startsWith('metric_')) {
-        const metricName = entry.id.replace('metric_', '');
+      if (entry.id?.startsWith("metric_")) {
+        const metricName = entry.id.replace("metric_", "");
         return metrics.includes(metricName);
       }
       // Handle primary metric
-      if (entry.id === 'primary_metric') {
+      if (entry.id === "primary_metric") {
         return true;
       }
       // Handle previous year entries
-      if (entry.id?.startsWith('previous_year_')) {
-        const metricName = entry.id.replace('previous_year_', '');
-        return metrics.includes(metricName) || metricName === 'primary';
+      if (entry.id?.startsWith("previous_year_")) {
+        const metricName = entry.id.replace("previous_year_", "");
+        return metrics.includes(metricName) || metricName === "primary";
       }
       // Handle threshold entries
-      return ['upper_threshold', 'lower_threshold', 'average'].includes(entry.id);
+      return ["upper_threshold", "lower_threshold", "average"].includes(
+        entry.id
+      );
     });
 
     // Separate threshold entries from metric entries
-    const thresholdEntries = filteredPayload.filter(
-      (entry) => ['upper_threshold', 'lower_threshold', 'average'].includes(entry.id)
+    const thresholdEntries = filteredPayload.filter((entry) =>
+      ["upper_threshold", "lower_threshold", "average"].includes(entry.id)
     );
 
     const metricEntries = filteredPayload.filter(
-      (entry) => !['upper_threshold', 'lower_threshold', 'average'].includes(entry.id)
+      (entry) =>
+        !["upper_threshold", "lower_threshold", "average"].includes(entry.id)
     );
 
     // Split metric entries into rows based on screen size and number of entries
@@ -1181,20 +1238,23 @@ const LineChartComponent = ({
         // For desktop, split into 2 rows if more than 2 entries
         if (metricEntries.length <= 2) return [metricEntries];
         const midPoint = Math.ceil(metricEntries.length / 2);
-        return [metricEntries.slice(0, midPoint), metricEntries.slice(midPoint)];
+        return [
+          metricEntries.slice(0, midPoint),
+          metricEntries.slice(midPoint),
+        ];
       }
     };
 
     // Helper to get proper metric display name
     const getMetricDisplayName = (entry: any) => {
-      if (entry.id === 'primary_metric') {
+      if (entry.id === "primary_metric") {
         return entry.value;
       }
-      if (entry.id?.startsWith('metric_')) {
+      if (entry.id?.startsWith("metric_")) {
         return entry.value;
       }
-      if (entry.id?.startsWith('previous_year_')) {
-        const baseMetric = entry.value.replace('Previous Year ', '');
+      if (entry.id?.startsWith("previous_year_")) {
+        const baseMetric = entry.value.replace("Previous Year ", "");
         return `Compared ${baseMetric}`;
       }
       return entry.value;
@@ -1203,33 +1263,35 @@ const LineChartComponent = ({
     const metricRows = splitMetricEntries();
 
     return (
-      <div className={`flex flex-col items-end ${isMobileView ? 'gap-1 w-full' : 'gap-2'}`}>
+      <div
+        className={`flex flex-col items-end ${
+          isMobileView ? "gap-1 w-full" : "gap-2"
+        }`}
+      >
         {/* Metric entries rows */}
         {metricRows.map((row, rowIndex) => (
-          <div 
-            key={`row-${rowIndex}`} 
+          <div
+            key={`row-${rowIndex}`}
             className={`flex items-center ${
-              isMobileView 
-                ? 'w-full justify-between gap-2 flex-wrap' 
-                : 'gap-5'
+              isMobileView ? "w-full justify-between gap-2 flex-wrap" : "gap-5"
             }`}
           >
             {row.map((entry, index) => {
-              const isComparedMetric = entry.id?.startsWith('previous_year_');
+              const isComparedMetric = entry.id?.startsWith("previous_year_");
               return (
                 <div
                   key={`metric-item-${rowIndex}-${index}`}
                   className={`flex items-center ${
-                    isMobileView 
-                      ? 'gap-1 flex-1 min-w-[120px] max-w-[160px]' 
-                      : 'gap-2'
+                    isMobileView
+                      ? "gap-1 flex-1 min-w-[120px] max-w-[160px]"
+                      : "gap-2"
                   }`}
                 >
                   <div
-                    className={`${isMobileView ? 'w-3' : 'w-4'} h-0 border-t-2`}
+                    className={`${isMobileView ? "w-3" : "w-4"} h-0 border-t-2`}
                     style={{
                       borderColor: entry.color,
-                      borderStyle: isComparedMetric ? 'dashed' : 'solid'
+                      borderStyle: isComparedMetric ? "dashed" : "solid",
                     }}
                   ></div>
                   <TooltipProvider>
@@ -1237,7 +1299,7 @@ const LineChartComponent = ({
                       <TooltipTrigger asChild>
                         <span
                           className={`cursor-pointer text-xs font-medium truncate block ${
-                            isMobileView ? 'max-w-[120px]' : ''
+                            isMobileView ? "max-w-[120px]" : ""
                           }`}
                           style={{
                             color: entry.color,
@@ -1246,9 +1308,9 @@ const LineChartComponent = ({
                           {getMetricDisplayName(entry)}
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent 
+                      <TooltipContent
                         className={`${
-                          isMobileView ? 'w-48' : 'w-60'
+                          isMobileView ? "w-48" : "w-60"
                         } tooltip-content-styles`}
                       >
                         <p className="font-medium text-[var(--secondary-text-color)]">
@@ -1265,22 +1327,22 @@ const LineChartComponent = ({
 
         {/* Threshold entries row */}
         {thresholdEntries.length > 0 && (
-          <div className={`flex items-center ${
-            isMobileView 
-              ? 'w-full justify-between gap-2 flex-wrap' 
-              : 'gap-5'
-          }`}>
+          <div
+            className={`flex items-center ${
+              isMobileView ? "w-full justify-between gap-2 flex-wrap" : "gap-5"
+            }`}
+          >
             {thresholdEntries.map((entry, index) => (
               <div
                 key={`threshold-item-${index}`}
                 className={`flex items-center ${
-                  isMobileView 
-                    ? 'gap-1 flex-1 min-w-[120px] max-w-[160px]' 
-                    : 'gap-2'
+                  isMobileView
+                    ? "gap-1 flex-1 min-w-[120px] max-w-[160px]"
+                    : "gap-2"
                 }`}
               >
                 <div
-                  className={`${isMobileView ? 'w-3' : 'w-4'} h-0 border-t-2`}
+                  className={`${isMobileView ? "w-3" : "w-4"} h-0 border-t-2`}
                   style={{
                     borderColor: entry.color,
                     borderStyle:
@@ -1295,7 +1357,7 @@ const LineChartComponent = ({
                     <TooltipTrigger asChild>
                       <span
                         className={`cursor-pointer text-xs font-medium truncate block ${
-                          isMobileView ? 'max-w-[120px]' : ''
+                          isMobileView ? "max-w-[120px]" : ""
                         }`}
                         style={{
                           color: entry.color,
@@ -1312,7 +1374,7 @@ const LineChartComponent = ({
                     </TooltipTrigger>
                     <TooltipContent
                       className={`${
-                        isMobileView ? 'w-48' : 'w-60'
+                        isMobileView ? "w-48" : "w-60"
                       } tooltip-content-styles`}
                     >
                       <p className="font-medium text-[var(--secondary-text-color)]">
@@ -1339,8 +1401,14 @@ const LineChartComponent = ({
     return (
       <div className="flex flex-wrap gap-4 justify-center">
         {payload.map((entry, index) => {
-          const isPreviousYear = entry.dataKey?.toString().startsWith("previousYear");
-          const isSecondaryMetric = entry.dataKey === secondaryMetric || entry.dataKey?.toString().startsWith(`previousYear${secondaryMetric}`);
+          const isPreviousYear = entry.dataKey
+            ?.toString()
+            .startsWith("previousYear");
+          const isSecondaryMetric =
+            entry.dataKey === secondaryMetric ||
+            entry.dataKey
+              ?.toString()
+              .startsWith(`previousYear${secondaryMetric}`);
           const color = isSecondaryMetric ? "#9333ea" : "#615E83";
           const label = isPreviousYear
             ? `${entry.value} (Previous Year)`
@@ -1441,48 +1509,80 @@ const LineChartComponent = ({
                 if (!graphData || graphData.length === 0) return 0;
                 const validTotals = graphData
                   .map((item: any) => item[primaryMetric])
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
                 const validPrevYears = graphData
                   .map((item: any) => item[`previousYear${primaryMetric}`])
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
-                if (validTotals.length === 0 && validPrevYears.length === 0) return 0;
-                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 0;
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
                 const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
                 const paddedMax = overallMax * 1.1;
                 const range = Math.max(paddedMax - minValue, 1);
                 const idealTickSize = range / 4;
-                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
                 return Math.floor(minValue / roundedTickSize) * roundedTickSize;
               },
               () => {
                 if (!graphData || graphData.length === 0) return 100;
                 const validTotals = graphData
                   .map((item: any) => item[primaryMetric])
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
                 const validPrevYears = graphData
                   .map((item: any) => item[`previousYear${primaryMetric}`])
-                  .filter((val: any) => val !== undefined && val !== null && !isNaN(val));
-                if (validTotals.length === 0 && validPrevYears.length === 0) return 100;
-                const minTotal = validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear = validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 100;
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
                 const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal = validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear = validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
                 const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
                 const paddedMax = overallMax * 1.1;
                 const range = Math.max(paddedMax - minValue, 1);
                 const idealTickSize = range / 4;
-                const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
                 let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
                 return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
               },
             ]}
@@ -1517,51 +1617,71 @@ const LineChartComponent = ({
               domain={[
                 () => {
                   if (!graphData || graphData.length === 0) return 0;
-                  const allValues = activeRightAxisMetrics.flatMap(metric => 
+                  const allValues = activeRightAxisMetrics.flatMap((metric) =>
                     graphData
                       .map((item: any) => [
                         item[metric],
-                        item[`previousYear${metric}`]
+                        item[`previousYear${metric}`],
                       ])
                       .flat()
-                      .filter((val: any) => val !== undefined && val !== null && !isNaN(val))
+                      .filter(
+                        (val: any) =>
+                          val !== undefined && val !== null && !isNaN(val)
+                      )
                   );
-                  
+
                   if (allValues.length === 0) return 0;
                   const minValue = Math.min(...allValues, 0);
                   const maxValue = Math.max(...allValues, 1);
                   const paddedMax = maxValue * 1.1;
                   const range = Math.max(paddedMax - minValue, 1);
                   const idealTickSize = range / 4;
-                  const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
+                  );
                   let roundedTickSize = magnitude;
-                  if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                  else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
-                  return Math.floor(minValue / roundedTickSize) * roundedTickSize;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.floor(minValue / roundedTickSize) * roundedTickSize
+                  );
                 },
                 () => {
                   if (!graphData || graphData.length === 0) return 100;
-                  const allValues = activeRightAxisMetrics.flatMap(metric => 
+                  const allValues = activeRightAxisMetrics.flatMap((metric) =>
                     graphData
                       .map((item: any) => [
                         item[metric],
-                        item[`previousYear${metric}`]
+                        item[`previousYear${metric}`],
                       ])
                       .flat()
-                      .filter((val: any) => val !== undefined && val !== null && !isNaN(val))
+                      .filter(
+                        (val: any) =>
+                          val !== undefined && val !== null && !isNaN(val)
+                      )
                   );
-                  
+
                   if (allValues.length === 0) return 100;
                   const minValue = Math.min(...allValues, 0);
                   const maxValue = Math.max(...allValues, 1);
                   const paddedMax = maxValue * 1.1;
                   const range = Math.max(paddedMax - minValue, 1);
                   const idealTickSize = range / 4;
-                  const magnitude = Math.pow(10, Math.floor(Math.log10(idealTickSize)));
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
+                  );
                   let roundedTickSize = magnitude;
-                  if (idealTickSize / magnitude >= 5) roundedTickSize = magnitude * 5;
-                  else if (idealTickSize / magnitude >= 2) roundedTickSize = magnitude * 2;
-                  return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.ceil(paddedMax / roundedTickSize) * roundedTickSize
+                  );
                 },
               ]}
               tickCount={5}
@@ -1587,7 +1707,14 @@ const LineChartComponent = ({
             />
           )}
           <Tooltip
-            content={<CustomToolTip holidayByDates={holidayByDates} compareFrom={compareFrom ?? undefined} compareTo={compareTo ?? undefined} searchParams={searchParams} />}
+            content={
+              <CustomToolTip
+                holidayByDates={holidayByDates}
+                compareFrom={compareFrom ?? undefined}
+                compareTo={compareTo ?? undefined}
+                searchParams={searchParams}
+              />
+            }
             trigger="click"
             wrapperStyle={{ pointerEvents: "auto" }}
           />
@@ -1599,62 +1726,65 @@ const LineChartComponent = ({
               fill="#FAEFE2"
             />
           )}
-          {threshold && threshold > 0 && showThresholdLines && metrics.length === 1 && (
-            <>
-              <ReferenceLine
-                yAxisId="left"
-                y={thresholdArea[0]}
-                stroke="#398E4A"
-                strokeDasharray="12 12"
-                label={{
-                  position: "insideBottomRight",
-                  className: "text-[#398E4A]",
-                  style: {
-                    fill: "#398E4A",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: -8,
-                }}
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={threshold}
-                stroke="#DF2670"
-                label={{
-                  position: "insideTopRight",
-                  className: "text-[#DF2670]",
-                  style: {
-                    fill: "#DF2670",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: 0,
-                }}
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={thresholdArea[1]}
-                stroke="#FF990A"
-                strokeDasharray="12 12"
-                label={{
-                  position: "insideTopRight",
-                  className: "text-[#FF990A]",
-                  style: {
-                    fill: "#FF990A",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: 8,
-                }}
-              />
-            </>
-          )}
+          {threshold &&
+            threshold > 0 &&
+            showThresholdLines &&
+            metrics.length === 1 && (
+              <>
+                <ReferenceLine
+                  yAxisId="left"
+                  y={thresholdArea[0]}
+                  stroke="#398E4A"
+                  strokeDasharray="12 12"
+                  label={{
+                    position: "insideBottomRight",
+                    className: "text-[#398E4A]",
+                    style: {
+                      fill: "#398E4A",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    },
+                    dy: -8,
+                  }}
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={threshold}
+                  stroke="#DF2670"
+                  label={{
+                    position: "insideTopRight",
+                    className: "text-[#DF2670]",
+                    style: {
+                      fill: "#DF2670",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    },
+                    dy: 0,
+                  }}
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={thresholdArea[1]}
+                  stroke="#FF990A"
+                  strokeDasharray="12 12"
+                  label={{
+                    position: "insideTopRight",
+                    className: "text-[#FF990A]",
+                    style: {
+                      fill: "#FF990A",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    },
+                    dy: 8,
+                  }}
+                />
+              </>
+            )}
           <Line
             yAxisId="left"
             type="linear"
             dataKey={leftAxisMetric}
-            name={leftAxisMetric ? metricLabels[leftAxisMetric] : 'Event Count'}
+            name={leftAxisMetric ? metricLabels[leftAxisMetric] : "Event Count"}
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
@@ -1691,23 +1821,25 @@ const LineChartComponent = ({
               dot={false}
             />
           )}
-          {compareFrom && compareTo && activeRightAxisMetrics.map((metric, index) => {
-            const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
-            return (
-              <Line
-                key={`previousYear${metric}`}
-                yAxisId="right"
-                type="linear"
-                dataKey={`previousYear${metric}`}
-                name={`Previous Year ${metricLabels[metric]}`}
-                stroke={colors[index % colors.length]}
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                connectNulls={true}
-                dot={false}
-              />
-            );
-          })}
+          {compareFrom &&
+            compareTo &&
+            activeRightAxisMetrics.map((metric, index) => {
+              const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+              return (
+                <Line
+                  key={`previousYear${metric}`}
+                  yAxisId="right"
+                  type="linear"
+                  dataKey={`previousYear${metric}`}
+                  name={`Previous Year ${metricLabels[metric]}`}
+                  stroke={colors[index % colors.length]}
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  connectNulls={true}
+                  dot={false}
+                />
+              );
+            })}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
@@ -1720,7 +1852,7 @@ const LineChartComponent = ({
                     color: "#6750a4",
                     tooltipDescription: `Data for ${primaryLabel}`,
                   },
-                  ...(activeRightAxisMetrics.map((metric, index) => {
+                  ...activeRightAxisMetrics.map((metric, index) => {
                     const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
                     return {
                       value: metricLabels[metric],
@@ -1729,7 +1861,7 @@ const LineChartComponent = ({
                       color: colors[index % colors.length],
                       tooltipDescription: `Data for ${metricLabels[metric]}`,
                     };
-                  })),
+                  }),
                   ...(compareFrom && compareTo
                     ? [
                         {
