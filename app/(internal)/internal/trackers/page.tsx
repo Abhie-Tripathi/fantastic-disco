@@ -28,7 +28,6 @@ import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import { MoveUpRight } from "lucide-react";
-
 interface Search {
   searchParams: {
     tab:string;
@@ -53,13 +52,7 @@ const Trackers = ({ searchParams }: Search) => {
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const searchParam=useSearchParams();
-  // WalkThrough
-  const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(true);
-  const allTrackerRef = useRef(null);
-  const createTrackerRef = useState(null);
-  const customTrackerRef = useRef(null);
-  const savedEventRef = useRef(null);
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -152,47 +145,6 @@ const Trackers = ({ searchParams }: Search) => {
   //   }
   // }, [type]);
   
-  
-  // const updateSteps = useCallback(() => {
-  //   const newSteps: Step[] = [];
-  //   if (allTrackerRef && allTrackerRef.current) {
-  //     newSteps.push({
-  //       target: allTrackerRef.current,
-  //       title: "Create Tracker",
-  //       content: "Discover insights on business trends filtered by geography and category, all in one glance.",
-  //       disableBeacon: true,
-  //     });
-  //   }
-  //   // if (customTrackerRef.current) {
-  //   //   newSteps.push({
-  //   //     target: customTrackerRef.current,
-  //   //     // title: "Search Intel",
-  //   //     content: "Search for relevant events happening in any location",
-  //   //     disableBeacon: true,
-  //   //   });
-  //   // }
-  //   if (savedEventRef.current) {
-  //     newSteps.push({
-  //       target: savedEventRef.current,
-  //       // title: "Search Intel",
-  //       content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
-  //       disableBeacon: true,
-  //     });
-  //   }
-
-  //   setSteps(newSteps);
-  // }, [ customTrackerRef.current, savedEventRef.current]);
-
-  // useEffect(() => {
-  //   const walkthroughCompleted: string[] = JSON.parse(
-  //     localStorage.getItem("walkthroughCompleted") || "[]"
-  //   );
-
-  //   if (!walkthroughCompleted.includes("tracker")) {
-  //     updateSteps();
-  //     setRun(true);
-  //   }
-  // }, [updateSteps]);
   
   const [note,setNote]=useState<any>(null);
   const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);

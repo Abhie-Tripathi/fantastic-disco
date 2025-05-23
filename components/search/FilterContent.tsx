@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Filter, FilterX, Lock } from "lucide-react";
-import Image from "next/image";
-import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
-import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Filter, Lock } from "lucide-react";
+import Image from "next/image";
 
 interface FilterSection {
   id: string;
@@ -46,7 +46,10 @@ const FilterContent = ({
       <div className="overflow-y-auto w-full mt-0 flex-1">
         <div className="p-3 bg-[var(--background-secondary-color)] ">
           {type === "events" && filterCount > 0 && (
-            <div className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border">
+            <div
+              id="save-search-btn"
+              className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
+            >
               <div className="flex items-center gap-2">
                 <Image
                   src={whrbotlogo}
@@ -82,7 +85,7 @@ const FilterContent = ({
                 value={section.id}
                 className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
               >
-                <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
+                <AccordionTrigger id={section.id} className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
                   <div className="text-sm flex gap-2 items-center uppercase font-medium">
                     <Filter className="w-4 h-4" />
                     {section.label}

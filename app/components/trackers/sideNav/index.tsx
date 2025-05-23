@@ -38,6 +38,7 @@ import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 
 const Index = () => {
+  const { refs, setps } = useTrackerContext();
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
@@ -188,7 +189,17 @@ const Index = () => {
 
         <>
           <div className="flex justify-center items-center">
-            <div className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md">
+            <div
+              className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md"
+              ref={refs.viewsRef}
+              style={{
+                position: "fixed", // Key change
+                top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
+                left: "50%", // Center horizontally (or set specific left)
+                transform: "translateX(-50%)", // Center-align
+                zIndex: 21, // Above the header (zIndex: 20)
+              }}
+            >
               {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
               <div onClick={() => handleClick("table")}>
                 <div
@@ -315,13 +326,22 @@ const Index = () => {
                   }}
                 >
                   <div
-                    style={{ padding: "10px 5px", display: "flex" }}
+                    style={{
+                      position: "fixed", // Key change
+                      top: isEventeli ? "61px" : "67px", // Custom top (adjust as needed)
+                      right: "5%", // Center horizontally (or set specific left)
+                      transform: "translateX(-50%)", // Center-align
+                      zIndex: 21, // Above the header (zIndex: 20)
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
                     className={`${styles.heading} ${styles.tooltipContainer} ${
                       trackerSection === "Tracker Configurations"
                         ? styles.active
                         : ""
                     }`}
                     onClick={() => setTrackerSection("Tracker Configurations")}
+                    ref={refs.configRef}
                   >
                     <SettingsGear
                       width="12px"
