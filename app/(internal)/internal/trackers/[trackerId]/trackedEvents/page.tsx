@@ -100,6 +100,7 @@ const Page = ({ params }: { params: any }) => {
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
   const [activeCount,setActiveCount]=useState<number>(0);
+  const {refs} = useTrackerContext();
   useEffect(() => {
     if (editTrue)
       setIsNewCall(true);
@@ -512,17 +513,17 @@ if (!share) {
   closeShareModal();
 }
 };
-// console.log(activeCount);
 
   return (
     <div className="flex w-[calc(100vw-134px)]">
+    
     {/* <SideNav/> */}
     {/* {(isLoading && view==="list") && <Loading/>} */}
     <Suspense fallback={<p>Loading feed...</p>}>
-      <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
+      <div className="flex gap-5 mb-[24px] flex-col w-[100%]">
         <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
         {/* <div className={styles.new}></div> */}
-          <div className="flex gap-2">
+          <div className="flex gap-2" ref={refs.eventTypeRef}>
             {/* <button
                className={`${styles.eventStatusBtn} ${
                 active === "Active Events" ? styles.active : ""
@@ -663,7 +664,7 @@ if (!share) {
             ))}
           </div>
           <div className="flex gap-2">
-          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)} ref={refs.shareRef}>
           <Share2 width={16} height={16}/>
           Share 
           </Button>
@@ -678,7 +679,7 @@ if (!share) {
             }}
             className="flex items-center"
           >
-          <Button variant="outline" className="flex gap-1">
+          <Button variant="outline" className="flex gap-1" ref={refs.notesRef}>
           <NotebookPen width={16} height={16}/>
           Notes 
             {/* <ListUnordered
@@ -705,7 +706,9 @@ if (!share) {
             /> */}
           </Button>
           </Link>
-          <SortDropdown />
+          <div ref={refs.popularityRef}>
+          <SortDropdown/>
+          </div>
           </div>
         </div>
 

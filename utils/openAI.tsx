@@ -8,7 +8,7 @@ export const suggestionGenerator = async (prompt: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: "o4-mini",
       messages: [{role: "user", content: prompt}],
     }),
   });
@@ -16,3 +16,5 @@ export const suggestionGenerator = async (prompt: string) => {
   const data = await response.json();
   return data;
 };
+
+

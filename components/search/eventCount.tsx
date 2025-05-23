@@ -27,26 +27,28 @@ const EventCount = ({ view }: { view: string }) => {
 
   if (error) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <Badge className="bg-red-100 text-red-500">!</Badge>
-        <p className="text-red-500 font-semibold">Error loading count</p>
+        <p className="text-red-500 font-semibold text-sm sm:text-base">Error</p>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 min-w-fit">
       {isLoading ? (
-        <Loader2 className="animate-spin text-primary" />
+        <Loader2 className="animate-spin text-primary w-4 h-4" />
       ) : (
-        <Badge className="bg-primary text-white">
+        <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
           {new Intl.NumberFormat("en", {
             notation: "compact",
             maximumFractionDigits: 2,
           }).format((data as any)?.count || 0)}
         </Badge>
       )}
-      <p className="text-primary font-semibold">{label[view]}</p>
+      <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+        {label[view]}
+      </p>
     </div>
   );
 };
