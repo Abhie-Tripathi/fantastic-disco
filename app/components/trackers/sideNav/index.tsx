@@ -10,7 +10,7 @@ import Image from "next/image";
 import styles from "./sideNav.style.module.css";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
-import { Settings, User } from "lucide-react";
+import { Settings, Share, Share2, User } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useTrackerContext } from "@/context/tracker";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ShareModal from "../../internal/trackers/shareModal";
+import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 
 const Index = () => {
   const pathName = usePathname().split("/");
@@ -62,6 +64,8 @@ const Index = () => {
   const { data, skip, searchValue } = useTrackerContext();
   const { getTrackerDetail, error } = useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
+  const [share, setShare] = useState(false);
+
   useEffect(() => {
     if (last === "trackedEvents") setTrackerSection("Tracked Events");
     if (last === "trackedConfiguration" || last === "editTracker") {
@@ -118,6 +122,30 @@ const Index = () => {
   //       console.error('Error fetching data:', error);
   //     }
   // }
+
+  const closeShareModal = () => {
+    if (share === true) setShare(false);
+    document.body.style.height = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+  };
+  const closeModal = (e: any) => {
+    const targetElement = e.target;
+    if (targetElement.classList.contains(styles.shareModal)) {
+      closeShareModal();
+    }
+  };
+  const shareFunction = () => {
+    if (!share) {
+      window.history.pushState({ shareOpen: true }, "");
+      setShare(true);
+      document.body.style.height = "100vh";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      closeShareModal();
+    }
+  };
 
   return (
     <>
@@ -357,21 +385,33 @@ const Index = () => {
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </Button>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
-                  className="flex items-center"
-                >
-                  <Settings className="w-4 h-4 text-[var(--primary-color)]" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-sm">Edit Tracker Settings</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className="flex items-center gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
+                    className="flex items-center"
+                  >
+                    <Settings className="w-4 h-4 text-[var(--primary-color)]" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Edit Tracker Settings</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger onClick={() => setShare(!share)}>
+                  <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Share Tracker</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
         {/* Title */}
         <div className="font-medium text-base mb-3 text-[var(--primary-text-color)]">
@@ -391,7 +431,9 @@ const Index = () => {
               <TabsTrigger
                 value="events"
                 className={`text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-black ${
-                  last === "trackedEvents" ? "bg-background shadow-sm text-black" : ""
+                  last === "trackedEvents"
+                    ? "bg-background shadow-sm text-black dark:text-white"
+                    : ""
                 }`}
               >
                 <Calendar1 className="w-4 h-4" />
@@ -405,7 +447,9 @@ const Index = () => {
               <TabsTrigger
                 value="notes"
                 className={`text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-black ${
-                  last === "notesDiscussion" ? "bg-background shadow-sm text-black" : ""
+                  last === "notesDiscussion"
+                    ? "bg-background shadow-sm text-black dark:text-white"
+                    : ""
                 }`}
               >
                 <NotepadText className="w-4 h-4" />
@@ -419,7 +463,9 @@ const Index = () => {
               <TabsTrigger
                 value="manage"
                 className={`text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-black ${
-                  last === "manageAccess" ? "bg-background shadow-sm text-black" : ""
+                  last === "manageAccess"
+                    ? "bg-background shadow-sm text-black dark:text-white"
+                    : ""
                 }`}
               >
                 <UserRound className="w-4 h-4" />
@@ -429,6 +475,20 @@ const Index = () => {
           </TabsList>
         </Tabs>
       </div>
+      {share && (
+        <div className={modalstyles.shareModal} onClick={closeModal}>
+          {share && (
+            <div className={modalstyles.shareModal} onClick={closeModal}>
+              <ShareModal
+                closeShareModal={closeShareModal}
+                share={share}
+                setShare={setShare}
+                shareFunction={shareFunction}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

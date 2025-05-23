@@ -761,7 +761,7 @@ const Page = ({ params }: { params: any }) => {
                 }).format(activeCount)}
               </Badge>
               <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
-                Events Found
+                Events
               </p>
             </div>
             {/* Event type select */}
@@ -773,13 +773,13 @@ const Page = ({ params }: { params: any }) => {
                 addQueryString(val);
               }}
             >
-              <SelectTrigger className="w-full max-w-[140px] border-gray-300">
+              <SelectTrigger className="w-full max-w-[130px] border-gray-300">
                 <SelectValue placeholder="Select event type" />
               </SelectTrigger>
               <SelectContent>
                 {eventCount?.map((item) => (
                   <SelectItem key={item.type} value={item.type.toLowerCase()}>
-                    {item.type} Events
+                    {item.type}
                   </SelectItem>
                 ))}
               </SelectContent>
