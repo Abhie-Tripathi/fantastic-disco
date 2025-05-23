@@ -57,6 +57,7 @@ interface BookmarkType {
   totalEvents: number;
   isLoading: boolean;
   error: any | null;
+  noMoreData: boolean;
 }
 interface Props {
   coordinateActions: any;
@@ -73,6 +74,8 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const { localFilters, applyFilters } = useFilterContext();
 
   const { setFilter, getFilterValue } = useFilterState();
+
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   let prevDate: any = null;
   const [eventData1, setEventData1] = useState<enquiryType[]>([]);
@@ -114,6 +117,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
     totalEvents: 0,
     isLoading: false,
     error: null,
+    noMoreData: false,
   });
 
   const {
@@ -162,7 +166,11 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   };
 
   const handleScrollEnd = () => {
-    setTimeout(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
       if (
         coordinateView === "enquiryEvents" &&
         !noMoreData &&
@@ -172,7 +180,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
       if (
         coordinateView === "savedEvents" &&
-        bookmarkData.events.length < bookmarkData.totalEvents
+        !bookmarkData.noMoreData
       )
         setBookmarkPage((prevPage) => prevPage + 1);
     }, 1000);
@@ -334,6 +342,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
         totalEvents: totalBookmarkEvents,
         isLoading,
         error,
+        noMoreData: bookmarkedEvents.length < 10,
       }));
     }
   }, [bookmarkedEvents]);
@@ -472,7 +481,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                 >
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger className="px-2" value="enquiryEvents">
-                      Interested
+                      Shortlisted
                     </TabsTrigger>
                     <TabsTrigger className="px-2" value="savedEvents">
                       Bookmarked
@@ -571,7 +580,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                   </div>
                 );
               })}
-              {bookmarkData.events.length < bookmarkData.totalEvents && <Loading />}
+              {!bookmarkData.noMoreData && <Loading />}
             </div>
           ) : coordinateView === "enquiryEvents" ? (
             <div className={showFilters && isMobile ? "hidden" : "block"}>
