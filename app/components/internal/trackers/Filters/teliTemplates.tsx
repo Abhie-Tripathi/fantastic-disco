@@ -8,9 +8,9 @@ import streetAddressRadius from "/public/streetAddressRadius.svg";
 const TeliTemplates = ({type, isMandatory}:any) => {
   console.log("called multiple time");
   return (
-    <div>
+    <div className='flex justify-center w-full bg-[var(--background-secondary-color)] h-full pt-5'>
        {type==="T_LOCATION" &&
-       <div className='flex justify-between'>
+       <div className='flex justify-between h-fit'>
     <div className="flex gap-2 flex-col border w-[500px]">
       <LocationTemplate type={type} />
       </div>
@@ -45,11 +45,11 @@ const TeliTemplates = ({type, isMandatory}:any) => {
     {type==="T_GEOTIME" &&
 
         <div className='flex justify-between w-[100%] gap-2'>
-        <div className='flex gap-2 w-[80%]'>
-        <div className="flex gap-2 flex-col border w-[50%] h-auto">
+        <div className='flex gap-2 w-[100%] h-fit'>
+        <div className="flex gap-2 flex-col border w-[40%] h-auto">
         <LocationTemplate type={type}/>
       </div>
-      <div className="flex justify-between gap-2 flex-col border w-[50%]">
+      <div className="flex justify-between gap-2 flex-col border w-[60%]">
         <DateRangeSelector type={type}/>
       </div>
       </div>

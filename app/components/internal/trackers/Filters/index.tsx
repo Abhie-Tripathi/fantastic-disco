@@ -2,7 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Filter } from "lucide-react";
+import { ArrowLeft, Filter, LayoutGrid } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -40,6 +40,7 @@ import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 import EventStatusData from "@/public/data/eventType.json";
@@ -83,6 +84,7 @@ import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
+import FilterContent from "@/components/search/FilterContent";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -413,9 +415,12 @@ const Pages = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
+  const isMobile = useIsMobile();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
+  const [showTemplate,setShowTemplate] = useState(false);
+  const [showFilters, setShowFilters]=useState(false);
   const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
@@ -605,28 +610,46 @@ const Pages = () => {
     }
   }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
+  const scrollablePresetRef = useRef<HTMLDivElement>(null);
+  function transformedData(data: Record<string, any[]>, val: string[]) {
+    if (!val.length || !data[val[0]]) return []; // Handle empty cases
 
-  const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
+    const result = data[val[0]].map((_, index) =>
+      val.map(key => data[key]?.[index]) // Optional chaining for safety
+    );
+
+    return result;
+  }
+  const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+    let finalResult;
     setHideSuggestion(false);
-    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
-    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType==="T_BRAND_BUILDING") {
-      const presetData: any = [];
+    setShowTemplate(false);
+    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
-      presetItem?.data.map((item: any) => {
+    // presetItem[]
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType === "T_BRAND_BUILDING") {
+      if (trackerType === 'T_COMPETITOR') {
+        finalResult = transformedData(presetItem.data, ["organizations"])
+      }
+      if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
+        finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
+      }
+      const presetData: any = [];
+      finalResult?.map((item: any) => {
         const temp: any = {};
-        template?.inputAreas?.map((field: InputArea, index: number)=>(
+        template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-        console.log(temp);
-        
+      
+
         presetData.push(temp);
-      })      
+      })
       setCustomData(presetData);
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setLocalFilter("includeKeywords",presetItem?.data?.[0]?.join(","));
-      setLocalFilter("excludeKeywords",presetItem?.data?.[1]?.join(","))
+      setLocalFilter("includeKeywords", presetItem?.data?.includeKeywords?.join(","));
+      setLocalFilter("excludeKeywords", presetItem?.data?.excludeKeywords?.join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -1236,15 +1259,59 @@ const deleteTracker = async () => {
     router.replace(`/internal/trackers`);
   }
 }
-
+const handleShowTemplate=()=>{
+  if (scrollablePresetRef.current) {
+    scrollablePresetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
 if(isLoading) return <Loading/>
 
 return (
-  <div className="w-full px-8">
+  <div className="w-full md:flex md:items-center md:justify-center">
 
-  <>
+  <div className="w-full md:w-[calc(100vw-134px)]">
+  <div className="flex mt-6 justify-between md:hidden px-6">
+  {last==="create"?
+      <Link
+      href={
+        last === "create"
+          ? "/internal/trackers?showTemplates=true"
+          : `/internal/trackers/${pathName[pathName.length - 2]
+          }/trackedConfiguration?type=${type}`
+      }
+      style={{ display: "flex" }}
+    >
+      <div className="flex gap-0.5 items-center text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">
+      <ArrowLeft width={14} height={18}/>
+        Back</div>
+      </Link>:
+      <div className={styles.containerTopRightTwo} >
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+        </div>
+      }
+      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+  </div>
+  <div className="flex md:hidden flex-col gap-2 px-6 py-6 mt-3 bg-[var(--background-secondary-color)]">
+    <div>{template?.templateName}</div>
+    <div className="text-[var(--secondary-text-color)]" style={{"fontSize":"12px"}}>{template?.description}</div>
+    <div
+      className={`p-2 bg-background border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
+      style={{
+        border:
+          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+      }}
+    >
+      <input
+        className="bg-inherit text-inherit outline-none border-none w-full"
+        type="text"
+        placeholder="Enter Tracker Name"
+        value={trackerName}
+        onChange={(event) => setTrackerName(event.target.value)}
+      />
+    </div>
+  </div>
   <div
-    className="flex z-[11] pt-4 bg-[var(--primary-foreground)] w-full"
+    className="z-[11] pt-4 bg-[var(--primary-foreground)] w-full hidden md:flex"
     style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "0px", zIndex:'11' }}
   >
     <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
@@ -1299,9 +1366,9 @@ return (
   <div ref={scrollableDivRef} className="flex flex-col gap-2 w-full" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
-    <div className={`flex ${!isCollapsed? "gap-4":""}`}>
+    <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
     {isCollapsed && (
-        <div className="fixed left-[82px] top-[84px] z-30 overflow-hidden">
+        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 overflow-hidden`}>
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -1315,51 +1382,62 @@ return (
           </button>
         </div>
       )}
-    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'}`}>
+    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`}>
         <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`}>
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>
     </div>
-    <div className={`flex gap-2 flex-col items-end ${isCollapsed ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? '' : ''}`}>
+    <div className={`flex gap-2 flex-col items-end ${(isCollapsed || isMobile) ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? '' : ''} px-6 md:px-0 mb-6 md:mb-0`}>
     <div
-      className={`px-6 py-1 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
+      className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`}
       style={{
         border:
           isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
-        className="bg-inherit text-inherit outline-none p-[10px] px-0 border-none w-full"
+        className="bg-inherit text-inherit outline-none border-none w-full"
         type="text"
         placeholder="Enter Tracker Name"
         value={trackerName}
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    <TeliTemplates type={type} isMandatory={isMandatory}/>
+    {isEventeli && 
+    <TeliTemplates type={type} isMandatory={isMandatory}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div className="flex gap-4 flex-col w-full">
-      <div className={`card ${styles.competitor}`}>
+      <div className={`!hidden md:!flex card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
         </div> */}
         <div className={styles.bar}></div>
-        <div>
-        <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between" style={{fontSize:"var(--font-size-small)"}}>
+        <div className="flex justify-center gap-[4px] h-auto flex-col">
+        <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between w-full" style={{fontSize:"var(--font-size-small)"}}>
           <div className="flex items-center">
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
           </div>
+          <div className="flex gap-1">
           <Button
-                    className="text-white gap-1"
-                    size="sm"
+                    variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
+                    onClick={handleShowTemplate}
+                      disabled={!template?.isUploadEnable}
+                  >
+                    <LayoutGrid height="15px" width="15px" />
+                    {" "}Pre-sets
+          </Button>
+          <Button
+                  variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
+                    // size="sm"
                     onClick={handleUploadEnable}
                       disabled={!template?.isUploadEnable}
                   >
-                    <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                    <Share height="15px" width="15px" />
                     {" "}Upload
-                  </Button>
+          </Button>
+          </div>
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
@@ -1516,11 +1594,19 @@ return (
           </div>
         }
       </div>
-      <div className={`card ${styles.competitor}`} >
-        <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+      <div className={`card ${styles.competitor} min-h-[398px]`} >
+        {/* <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
+          {(customData && customData.length > 0)&&
+          <div className="text-sm text-[var(--secondary-text-color)] font-medium" >
+          {selectedPresetName &&
+            <span title={selectedPresetName} className="mr-3 p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs rounded-md text-[var(--primary-color)]" >Preset Selected</span>
+          }
+          Total {customData.length} records
         </div>
+          }
+        </div> */}
         {/* {type==="T_PRODUCT_KEYWORDS" && 
            <Tabs className="pb-2">
            <TabsList className="grid w-full grid-cols-2">
@@ -1599,7 +1685,9 @@ return (
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
+    <>
     <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+    </>
   ) : (
     <div className={styles.emptyTableData}>
       <Image
@@ -1627,13 +1715,223 @@ return (
     </div>
   </div>
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
-    <div className="border-t pt-4 mt-2">
+    <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
         <Presets template={template} handlePresetClick={handlePresetClick} /> 
     </div>
       }
   </div>
-  </>
-  }
+  
+  </div>
+  <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
+ {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
+        {/* <div className={styles.competitorHead}>
+          <div className={styles.competitorHeading}>Upload custom data </div>
+          {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
+        </div> */}
+        <div className={styles.bar}></div>
+        <div>
+        <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between" style={{fontSize:"var(--font-size-small)"}}>
+          <div className="flex items-center">
+          <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+          {" "} Add manually or choose a pre-set
+          </div>
+          <div className="flex gap-1.5">
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
+          <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
+          </Button>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
+          <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
+          </Button>
+          </div>
+          {/* <Button
+                    className="text-white gap-1"
+                    size="sm"
+                    onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
+                  >
+                    <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                    {" "}Upload
+                  </Button> */}
+        </div>
+        {type==="T_PRODUCT_KEYWORDS" && 
+          <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
+        }
+        {((type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") && template) ?
+          (uploadEnabled && 
+            <CsvUploader
+              templateData={template}
+              customData={customData}
+              handleCustomData={handleCustomData}
+              setUploadEnabled={setUploadEnabled}
+            />) :
+            <></>
+        }
+        </div>
+        {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
+                <div>
+                {type!=="T_PRODUCT_KEYWORDS"&&
+                  <div className="flex items-stretch gap-2.5 flex-col">
+                    {template?.inputAreas?.map((inputArea: any, index: number) => (
+                      <>
+                        <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          <input
+                            className={styles.textArea}
+                            type="text"
+                            placeholder={inputArea.placeholder}
+                            value={inputValues[index] || ''}
+                            onChange={(e) => handleInput(index, e.target.value)}
+                            onKeyPress={handleKeyDown}
+                          />
+                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                    <div className={styles.loader}></div>
+                    ) : (
+                      inputValues[0]?.length > 0 ? (
+                      <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+                      ...prevValues,
+                      [index]: ""
+                      }))}} />
+                    ) : (
+                    ""
+                    )
+                    )}
+                          {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                            <div className={styles.suggestionBox}>
+                              <Suggestion
+                                websiteData={websiteSuggestion}
+                                addCompany={addCompany}
+                              />
+                            </div>
+                          } */}
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        }
+                        </div>
+
+                      </>
+                    ))}
+                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    >Add
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
+                    </div>
+                    {/* <div className="flex items-center w-full gap-2">
+                    <div className="flex-1 h-px bg-gray-400"></div>
+                    <span className="font-semibold">OR</span>
+                      <div className="flex-1 h-px bg-gray-400"></div>
+                      </div> */}
+
+                  </div>
+                }
+                  {/* {customData.map((item:any, index:number) => (
+    // <div key={index} className={styles.customDataOuterDiv}>
+    // <div className={styles.singleInputBox}>{item.name}</div>
+    // <div className={styles.singleInputBox}>{item.companyName}</div>
+    // </div>
+    {Object.entries(item).map(([key, value]) => (
+      <div key={key} className="data-field">
+        <strong>{key}:</strong> {value}
+      </div>
+    ))}
+  ))} */}
+  {!valid && (
+              <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
+            )}
+            {(suggestions && suggestions.length > 0 && type!=="T_PRODUCT_KEYWORDS") &&
+              <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
+                <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
+                  {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
+                  AI SUGGESTIONS {" "}
+                  <span className={styles.experimental_tag} >Beta</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                    {suggestions.map((item: any, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                    ))} 
+                </div>
+              </div>
+            }
+            {/* {customData && customData.length >0 &&
+              <div className={styles.allCompetitors}>
+                <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
+                  Remove All
+                </div>
+                <div className="max-h-[300px] overflow-y-auto">
+                <table className={`border border-[var(--border-color)] border-collapse w-[calc(50%-45px)] ${styles.allCustomData}`}>
+                  <tbody>
+                    {expandTable ? customData.map((item: any, index: number) => (
+                        <tr key={index}>
+                          <td>
+                            <div className="w-[15px] h-[15px] flex items-center justify-center text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item, index)}>-</div>
+                          </td>
+                          {Object.entries(item)
+                            .map(([entryKey, value]) => 
+                              <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                            )
+                          }
+                        </tr>
+                      )) :
+                      customData.slice(0, 5).map((item: any, index: number) => (
+                        <tr key={index}>
+                          <td>
+                            <div className="w-[15px] h-[15px] flex items-center justify-center text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item, index)}>-</div>
+                          </td>
+                          {Object.entries(item)
+                            .map(([entryKey, value]) => 
+                              <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                            )
+                          }
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
+                </div>
+                {customData.length > 5 &&
+                  <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
+                }
+
+              {/* {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") && */}
+              {/* <div style={{textAlign: 'center'}}>
+                <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
+                  <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
+                  <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
+                </div>
+                <div className="flex flex-col justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
+                  <Button
+                    className="text-white gap-1"
+                    size="sm"
+                    onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
+                  >
+                    <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                    {" "}Upload
+                  </Button>
+                </div>
+              </div> */}
+              {/* } */}
+          </div>
+        }
+  </div>}
+    {showFilters && 
+    <div className={`card ${styles.competitor} max-h-[80vh] overflow-scroll`}>
+    <FilterContent
+    source="tracker"
+    type={"events"}
+    filterCount={0}
+    createTrackerHandler={saveTrackerHandler}
+    closeHandler={setShowFilters}
+    // searchHandler={searchHandler}
+  />
+  </div>
+    }
+    {showTemplate &&
+    <div className={`card ${styles.competitor} max-h-[80vh]`}>
+      <Presets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
+    </div>
+    }
+  </div>
+  
   {del &&
             (
               <div className={styles.shareModal} >

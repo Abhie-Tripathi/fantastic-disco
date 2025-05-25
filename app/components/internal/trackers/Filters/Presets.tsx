@@ -14,14 +14,17 @@ import CategorySelector from "@/components/search/categorySelector";
 import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import { useFilterContext } from "@/context/filterContext";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Props {
   template: any;
   handlePresetClick: any;
+  setShowTemplate?:any;
 }
 
-const Presets = ({ template, handlePresetClick }: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate }: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
+  const isMobile= useIsMobile();
   console.log(template.name);
   
   const {getLocalFilterValue, localFilters}=useFilterContext();
@@ -165,15 +168,18 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   };
   return (
     <div>
-      <div className="flex justify-center gap-2 items-center font-semibold">
+      <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
+        <div className="flex items-center gap-1">
         <span className="text-lg">Get Started with Pre-sets</span>
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">
           {totalCount}
         </span>
+        </div>
+        <div className="block md:hidden" onClick={()=>setShowTemplate(false)}>X</div>
       </div>
       
-      <div className="flex gap-2 mt-4 mx-auto w-[95%]">
-        <div className="w-[50%]">
+      <div className="flex gap-2 mt-4 mx-auto w-full md:w-[95%]">
+        <div className="w-full md:w-1/2 bg-background">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
@@ -185,7 +191,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
           </div>
         </div>
         {template.name === "T_COMPETITOR" &&
-        <div className="w-[20%]">
+        <div className="hidden md:w-[20%] md:block">
         <AudienceSpreadSelector source="preset"/>
         </div>
         }
@@ -202,9 +208,9 @@ const Presets = ({ template, handlePresetClick }: Props) => {
       </div>
 
       <div
-        className="h-[calc(100vh-260px)] overflow-y-auto mt-6"
-        ref={containerRef}
-      >
+      className="h-[calc(100vh-313px)] pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-6"
+      ref={containerRef}
+          >
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (
             <div
