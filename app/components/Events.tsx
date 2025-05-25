@@ -73,7 +73,7 @@ const Events = () => {
     if (isMobile && selectedView == "table") {
       setFilter("view", "list");
     }
-  }, [isMobile, searchParams]);
+  }, [isMobile, searchParams, selectedView]);
 
   const filtersCount = (function () {
     const excludedFilters = [

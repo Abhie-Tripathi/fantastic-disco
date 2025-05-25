@@ -213,7 +213,7 @@ export default function AddEventModal() {
         Add Event
       </Button>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isModalOpen} onClose={closeModal} className="w-[100vw] sm:w-[70vw] md:w-[50vw]">
         <div className="flex flex-col gap-4 h-full">
           <div className="flex justify-between items-center h-10 px-6">
             <h2 className="text-lg font-medium leading-6">Add Event</h2>
