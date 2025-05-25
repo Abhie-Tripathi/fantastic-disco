@@ -923,8 +923,12 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
+      
+      console.log(getLocalFilterValue("locationIds").length, trackerName.length === 0, type === defaultType);
+      
       try{
         const data= await createTracker(formData)
+        // const data="hg"
         if (error) {
           // console.log(error);
           setIsCreating(false);

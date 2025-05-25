@@ -20,6 +20,7 @@ import {
 import { convertISOToOriginalFormat } from "@/utils/date";
 
 interface FlexibleComponentProps {
+  source?:string;
   variant?: "accordion" | "popover";
   filterName?: string;
   disabled?: boolean;
@@ -27,15 +28,17 @@ interface FlexibleComponentProps {
 }
 
 export default function CategorySelector({
-  variant = "popover",
+  variant = "accordion",
   filterName,
   disabled,
   maxCategories,
+  source,
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const categories = morphedData?.categories?.options || [];
-  const selectedCategories = (getLocalFilterValue(filterName as keyof Filters || "categories")
+  const selectedCategories = source==="preset"?getLocalFilterValue("presetCategory").split(",")
+  .filter(Boolean):(getLocalFilterValue(filterName as keyof Filters || "categories")
     ?.split(",")
     ?.filter(Boolean)) || [];
   const [isOpen, setIsOpen] = useState(false);
@@ -65,6 +68,9 @@ export default function CategorySelector({
       }
       
       const filterValue = newCategories.length > 0 ? newCategories.join(",") : "";
+      if(source==="preset"){
+        setLocalFilter("presetCategory", newCategories.join(","))
+      }else
       setLocalFilter(filterName as keyof Filters || "categories", filterValue);
     },
     [selectedCategories, setLocalFilter, filterName, maxCategories]
@@ -103,7 +109,8 @@ export default function CategorySelector({
     
     const columnCount = 3;
     const allCategories = [
-      ...(maxCategories ? [] : [{ id: "all", name: "Select All", slug: "all", isEnabled: true }]),
+      source!=="preset" &&
+      { id: "all", name: "Select All", slug: "all", isEnabled: true },
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
@@ -230,10 +237,60 @@ export default function CategorySelector({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-full p-0"
+        className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        <div className="p-4">{renderCategories()}</div>
+        <Command>
+          <CommandInput 
+            placeholder="Search categories..." 
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            className="border-none focus:ring-0"
+          />
+          <CommandEmpty>No categories found.</CommandEmpty>
+          <CommandGroup className="max-h-[300px] overflow-auto p-2">
+            {source !== "preset" && (
+              <CommandItem
+                key="select-all"
+                onSelect={() => handleSelectAll(!isAllSelected)}
+                className="flex items-center gap-2"
+              >
+                <Checkbox
+                  checked={Boolean(isAllSelected)}
+                  disabled={Boolean(isAnyDisabled || disabled)}
+                  className="rounded-none"
+                />
+                <span>Select All</span>
+              </CommandItem>
+            )}
+            {filteredCategories.map((category: any) => (
+              <CommandItem
+                key={category.slug}
+                onSelect={() => handleCategoryToggle(category.slug)}
+                className={cn(
+                  "flex items-center gap-2",
+                  !category.isEnabled && "opacity-50"
+                )}
+              >
+                <Checkbox
+                  checked={Boolean(selectedCategories.includes(category.slug))}
+                  disabled={Boolean(
+                    !category.isEnabled || 
+                    disabled || 
+                    (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
+                  )}
+                  className="rounded-none"
+                />
+                <span>{category.name}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          {maxCategories && selectedCategories.length >= maxCategories && (
+            <div className="text-sm text-muted-foreground p-2 border-t">
+              Maximum of {maxCategories} categories can be selected
+            </div>
+          )}
+        </Command>
       </PopoverContent>
     </Popover>
   );

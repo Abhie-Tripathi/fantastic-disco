@@ -36,7 +36,7 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<any>();
+  const [modalContent, setModalContent] = useState<enquiryType>();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
@@ -283,10 +283,19 @@ const Page: React.FC = () => {
     const eventenquiryStatus = searchParams.get("status");
   
     if (modalValue === "true" && eventEnquiryId && eventId && eventenquiryStatus) {
-      setEnquiryId(eventEnquiryId);
-      setSingleEventId(eventId);
-      setModalOpen(true);
-      setCurrentEnquiryStatus(eventenquiryStatus);
+      const enquiryData = await fetchEnquiryData(eventId);
+      if (enquiryData) handleModal(eventId, eventEnquiryId, eventenquiryStatus, enquiryData);
+    }
+  };
+
+  const fetchEnquiryData = async (eventId: string) => {
+    try {
+      const data = await coordinateService.getEnquiryDetailByEventId(eventId);
+      if (data && data?.enquiries.length > 0) {
+        return data.enquiries[0];
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
   

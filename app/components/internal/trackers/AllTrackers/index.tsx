@@ -95,11 +95,19 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   };
   useEffect(() => {
     
-    const eventLocation =
-      Object.values(item?.filterValues?.locationIds || {}).map((location: any) => {
-        return location?.displayName;
-      });
-    setLocations(eventLocation);
+    const eventLocation = Object.values(item?.filterValues?.locationIds || {}).map(
+      (location: any) => location?.displayName
+    );
+    
+    const zoneLocation = item?.filterValues?.viewBound?.properties?.name;
+    
+    // Build the final array before updating the state
+    const updatedLocations = zoneLocation
+      ? [...eventLocation, zoneLocation]
+      : eventLocation;
+    
+    setLocations(updatedLocations);
+    
     const CountValues = {
       geo : ['social','business','unattended'],
       gtm : ['active','past', 'new']
@@ -157,16 +165,15 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
          id: item.id,
       })
   }
-  console.log(eventsCount);
   
   return (
-    <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
+    <div className="card cursor-pointer sm:h-[160px] flex-col sm:flex-row" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
-        <div className="flex justify-between gap-2">
-          <div className="flex gap-2 flex-col justify-between w-[40%]">
-            <div className="flex gap-4 flex-col">
+        <div className="flex justify-between gap-2 flex-col sm:flex-row">
+          <div className="flex gap-2 flex-col justify-between w-[100%] sm:w-[40%]">
+            <div className="flex sm:gap-4 flex-col">
             <div className="font-bold break-words leading-none">
               {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
@@ -181,7 +188,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
           {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
           <div  className={`${
             locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations && locations[0]}</div>
+            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<40 &&locations[0]}
+            {locations?.length > 0 && locations[0].length>40 &&`${locations[0].substring(0,40)}...`} </div>
           {locations?.length > 1 &&  (
             <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}
@@ -192,7 +200,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-[92%] sm:w-[100%]">
             <div className="flex w-full h-[100px]">
             <div className="flex gap-2 w-[100%] text-sm font-medium">
             {eventsCount?.map((item,index)=>(

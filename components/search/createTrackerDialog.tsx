@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useFilterState } from "@/hooks/useFilterState";
 interface CreateTrackerDialog {
   open: boolean;
   onOpenChange: (value: boolean) => void;
@@ -31,6 +32,7 @@ export default function CreateTrackerDialog({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { localFilters, getLocalFilterValue } = useFilterContext();
+  const { getFilterValue } = useFilterState();
 
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
@@ -57,7 +59,7 @@ export default function CreateTrackerDialog({
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings"
+    rankings: "rankings",
   };
   const adaptedParams = searchParams;
   const filters = getLocalFilterValue("show").split(",");
@@ -66,7 +68,7 @@ export default function CreateTrackerDialog({
       showsData.push(value);
     }
   });
-  
+
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {
@@ -77,10 +79,14 @@ export default function CreateTrackerDialog({
       delete adaptedParams.groupBy;
     }
     setIsLoading(true);
+
+    const locationIds = getFilterValue("locationIds");
+    const viewBound = getFilterValue("viewBound");
     const formData = {
       name: trackerName,
       filterValues: {
-        locationIds: localFilters.locationIds,
+        ...(locationIds && { locationIds: locationIds }),
+        ...(viewBound && { viewBound: viewBound }),
         status: localFilters.status,
         eventTypes: localFilters.eventTypes,
         active_gte: localFilters.active_gte,
@@ -107,7 +113,7 @@ export default function CreateTrackerDialog({
         audienceSpread: localFilters.audienceSpread,
         ...(showsData.length > 0 && { show: showsData.join(",") }),
       },
-      type: "T_CUSTOM",
+      type: locationIds ? "T_CUSTOM" : "T_VENUE",
     };
 
     try {

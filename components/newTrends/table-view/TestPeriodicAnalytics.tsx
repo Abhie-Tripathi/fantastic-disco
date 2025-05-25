@@ -1,5 +1,5 @@
 "use client";
-import { TemplateType } from "@/app/components/trends/templates-modal";
+import Loading from "@/components/ui/Loading";
 import {
   Pagination,
   PaginationContent,
@@ -31,9 +31,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
-import { Filters, useFilterContext } from "@/context/filterContext";
-import { useTheme } from "@/context/theme";
-import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -46,8 +43,6 @@ import {
   TableGroupedHoliday,
 } from "@/types";
 import { EventResponse } from "@/types/events";
-import { GetSaveTrendData } from "@/types/trends/trends";
-import { HierarchyLevel } from "@/utils/chart-options";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import {
   generateTrendsTableColumnHeaders,
@@ -63,19 +58,17 @@ import {
   ArrowDownWideNarrow,
   ArrowUp,
   ArrowUpNarrowWide,
-  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import Loading from "@/components/ui/Loading";
 import { useEffect, useMemo, useState } from "react";
-import styles from "./TableAnalytics.module.css";
 import CollapseIcon from "/public/collapse.svg";
 import HolidayIcon from "/public/eventType/holiday.svg";
 import ExpandIcon from "/public/expandColumn.svg";
 import SmartInsights from "/public/smartInsights.svg";
 import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 function convertToLongDate(isoDateString: string): string {
   const date = new Date(isoDateString);
@@ -120,6 +113,17 @@ const safelyAccessTableData = (
   }
 };
 
+const calculatePercentageChange = (
+  current: number,
+  comparison: number
+): string | null => {
+  if (comparison === 0) return null;
+  const change = ((current - comparison) / comparison) * 100;
+  if (change === 0) return null;
+  const sign = change > 0 ? "+" : "";
+  return `${sign}${change.toFixed(1)}%`;
+};
+
 const TestPeriodicAnalytics = () => {
   const params = useSearchParams();
   const router = useRouter();
@@ -131,22 +135,15 @@ const TestPeriodicAnalytics = () => {
     eventType: keyof TableData | null;
   }>({ order: "asc", eventType: null });
   const { searchParams } = useDefaultFilters();
-  const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    setLocalFilter,
-    getLocalFilterValue,
-    setMultipleLocalFilters,
-    deleteMultipleLocalFilters,
-    localFilters,
-  } = useFilterContext();
+  const { getEventTrends } = useTrendsService();
   const columns = searchParams.get("columns");
-  const editTrend = searchParams.get("editTrend");
   const eventTypes = searchParams.get("eventTypes");
+  const compareFrom = searchParams.get("compare_from");
+  const compareTo = searchParams.get("compare_to");
+  const isMobileView = useIsMobile();
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
-  const enableEditTrend = editTrend ? Boolean(editTrend) : false;
   const columnsData = (columns && columns.split(",")) || [];
   const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
     useState<boolean>(false);
@@ -163,7 +160,6 @@ const TestPeriodicAnalytics = () => {
   const [eventTrendsData, setEventTrendsData] = useState<
     EventTrendsResponse | undefined
   >();
-  const [graphData, setGraphData] = useState<any>();
   const [tableColumns, setTableColumns] = useState<ExtendedNewColumn[]>();
   const { getEventsWithSearchParams } = useEventsService();
   const metric = getFilterValue("columns") as
@@ -171,37 +167,9 @@ const TestPeriodicAnalytics = () => {
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
-  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
-    ? (getFilterValue("view") as "line" | "treemap" | "table")
-    : "treemap";
-  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
-    { id: "location", label: "Location", value: "location" },
-    { id: "category", label: "Category", value: "category" },
-  ]);
-  const [showTemplates, setShowTemplates] = useState(false);
-  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
-    null
-  );
-  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
-  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
-  const categories = getLocalFilterValue("categories");
-  type FilterKey =
-    | "location"
-    | "eventTypes"
-    | "dateRange"
-    | "categories"
-    | "metrics";
 
-  const [visibleFilters, setVisibleFilters] = useState<
-    Record<FilterKey, boolean>
-  >({
-    location: true,
-    eventTypes: true,
-    dateRange: true,
-    categories: true,
-    metrics: true,
-  });
+  // Add state for comparison data
+  const [comparisonData, setComparisonData] = useState<TableData[] | []>();
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -210,7 +178,7 @@ const TestPeriodicAnalytics = () => {
       groupBy: "date",
       dateView: "day",
     });
-    
+
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
@@ -224,6 +192,16 @@ const TestPeriodicAnalytics = () => {
     updatedSearchParams.delete("skip");
     return updatedSearchParams.toString();
   }, [searchParams]);
+
+  // Create comparison params
+  const comparisonParams = useMemo(() => {
+    if (!compareFrom || !compareTo) return "";
+
+    const params = new URLSearchParams(apiParams);
+    params.set("active_gte", compareFrom);
+    params.set("active_lte", compareTo);
+    return params.toString();
+  }, [apiParams, compareFrom, compareTo]);
 
   const {
     data: trendsData,
@@ -247,14 +225,16 @@ const TestPeriodicAnalytics = () => {
     staleTime: 0,
   });
 
-  const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
-    queryKey: ["getSavedTrends"],
-    queryFn: async () => {
-      const result = await getSavedTrends();
-      if (!result) throw new Error("Failed to fetch saved trends");
-      return result;
-    },
-  });
+  // Add query for comparison data
+  const { data: comparisonTrendsData, isLoading: isComparisonLoading } =
+    useQuery<EventTrendsResponse | undefined>({
+      queryKey: ["trends-comparison", comparisonParams],
+      queryFn: () => getEventTrends(comparisonParams),
+      enabled: !!comparisonParams,
+      refetchOnWindowFocus: false,
+      gcTime: 0,
+      staleTime: 0,
+    });
 
   const groupedData = (holdiayData as EventResponse)?.events.reduce<
     Record<string, TableGroupedHoliday>
@@ -267,13 +247,6 @@ const TestPeriodicAnalytics = () => {
     acc[startDateTime].holidays.push(name);
     return acc;
   }, {});
-
-  const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  }, [localFilters]);
 
   const holidaysByDate =
     (groupedData &&
@@ -331,16 +304,16 @@ const TestPeriodicAnalytics = () => {
     });
   }, [isSmartInsightsEnabled]);
 
+  // Update useEffect to process comparison data
   useEffect(() => {
     const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
     const columns = searchParams.get("columns")?.split(",") || [];
+
     if (eventTrendsData && eventTrendsData.groupedData) {
       const tableColumns = generateTrendsTableColumnHeaders(
         eventTypes,
         columns
       );
-
-      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
 
       const tableData = morphToTrendsTableData(
         eventTrendsData.thresholds,
@@ -349,131 +322,19 @@ const TestPeriodicAnalytics = () => {
       );
 
       const smartInsightsData = morphToSmartInsightsData(tableData);
-
-      setGraphData(graphData);
       setTableData(smartInsightsData);
       setTableColumns(tableColumns);
     }
-  }, [eventTrendsData, metric]);
 
-  useEffect(() => {
-    if (trendsData === undefined) {
-      setGraphData(undefined);
+    if (comparisonTrendsData && comparisonTrendsData.groupedData) {
+      const comparisonTableData = morphToTrendsTableData(
+        comparisonTrendsData.thresholds,
+        comparisonTrendsData.groupedData,
+        eventTypes
+      );
+      setComparisonData(comparisonTableData);
     }
-  }, [trendsData]);
-
-  const applyHandler = () => {
-    const columnsValue = columnsDropdown
-      .filter(
-        (dropdown) =>
-          dropdown.value !== "impactScore" &&
-          dropdown.value !== "economicImpact"
-      )
-      .map((filteredValue) => filteredValue.value)
-      .join(",");
-    if (getLocalFilterValue("eventTypes").length > 0) {
-      setLocalFilter("columns", columnsValue);
-      setLocalFilter("status", "active,cancelled,postponed");
-      setLocalFilter("show", "alerts,scores,economicImpact");
-    }
-    applyFilters({ resetPage: true });
-  };
-
-  const handleViewChange = (view: "line" | "treemap" | "table") => {
-    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
-      return; // Don't change view if not supported by template
-    }
-    if (view === "treemap") {
-      if (categories.length === 0) {
-        const defaultCategories = "technology,medical-pharma";
-        setMultipleLocalFilters({ categories: defaultCategories, view: view });
-      }
-      setMultipleLocalFilters({ columns: "eventCount", view: view });
-    }
-    setLocalFilter("view", view);
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateSelect = (template: TemplateType) => {
-    // Set visualization type - use first available visualization
-    const defaultView = template.visualization[0] as
-      | "line"
-      | "treemap"
-      | "table";
-    handleViewChange(defaultView);
-
-    // Update visible filters - ensure all properties are set
-    const newVisibleFilters: Record<FilterKey, boolean> = {
-      location: template.visibleFilters.location ?? true,
-      eventTypes: template.visibleFilters.eventTypes ?? true,
-      dateRange: template.visibleFilters.dateRange ?? true,
-      categories: template.visibleFilters.categories ?? true,
-      metrics: template.visibleFilters.metrics ?? true,
-    };
-    setVisibleFilters(newVisibleFilters);
-
-    // Set hierarchy levels if provided in template
-    if (template.hierarchy) {
-      setHierarchyLevels(template.hierarchy);
-    } else {
-      // Set default hierarchy levels
-      setHierarchyLevels([
-        { id: "location", label: "Location", value: "location" },
-        { id: "category", label: "Category", value: "category" },
-      ]);
-    }
-
-    // Set active template and update history
-    setActiveTemplate(template);
-    setTemplateHistory((prev) => {
-      const filtered = prev.filter((t) => t.id !== template.id);
-      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
-    });
-    setHasModifiedFilters(false);
-
-    // Close modal and templates view
-    setShowTemplatesModal(false);
-    setShowTemplates(false);
-
-    // Apply filters
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateRemove = () => {
-    setActiveTemplate(null);
-    // Reset visible filters to show all
-    const defaultFilters: Record<FilterKey, boolean> = {
-      location: true,
-      eventTypes: true,
-      dateRange: true,
-      categories: true,
-      metrics: true,
-    };
-    setVisibleFilters(defaultFilters);
-    applyFilters({ resetPage: true });
-    setHasModifiedFilters(false);
-  };
-
-  // Track filter changes
-  useEffect(() => {
-    if (!activeTemplate) return;
-
-    // Track filter changes by comparing current filter values with template's visible filters
-    const hasChanged = Object.entries(visibleFilters).some(
-      ([key, isVisible]) => {
-        if (!isVisible) return false;
-        // Only check filters that are visible
-        const filterKey = key as keyof typeof visibleFilters;
-        if (!activeTemplate.visibleFilters[filterKey]) return false;
-
-        // Check if the filter has a value
-        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
-        return currentValue && currentValue.length > 0;
-      }
-    );
-
-    setHasModifiedFilters(hasChanged);
-  }, [localFilters, activeTemplate, visibleFilters]);
+  }, [eventTrendsData, comparisonTrendsData, metric]);
 
   useEffect(() => {
     if (tableData && tableData.length > 0 && sortingColumnOrder.eventType) {
@@ -502,7 +363,6 @@ const TestPeriodicAnalytics = () => {
   const startDate =
     (tableData && tableData[0] && convertToLongDate(tableData[0].date ?? "")) ||
     "";
-  // const startDate = data && data[0] && formatDate(new Date(data[0]), "dd MMM yyyy");
   const endDate =
     (tableData &&
       tableData[tableData.length - 1] &&
@@ -624,9 +484,385 @@ const TestPeriodicAnalytics = () => {
     router.push(`${url}?${queryString}`);
   };
 
-  const { theme } = useTheme();
+  // Move renderTableRow function declaration here, before any blocks
+  const renderTableRow = (data: TableData, rowIndex: number) => {
+    // Find corresponding comparison data
+    const comparisonDate = comparisonData?.find((item) => {
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const currentDate = new Date(data.date);
+      const compareStartDate = new Date(compareFrom || "");
+      const compareEndDate = new Date(compareTo || "");
 
-  if (isLoading) {
+      // Calculate relative position in the main range (0 to 1)
+      const mainRangePosition =
+        (currentDate.getTime() - mainStartDate.getTime()) /
+        (mainEndDate.getTime() - mainStartDate.getTime());
+
+      // Find the corresponding date in comparison range
+      const targetCompareDate = new Date(
+        compareStartDate.getTime() +
+          mainRangePosition *
+            (compareEndDate.getTime() - compareStartDate.getTime())
+      );
+
+      // Match with a small tolerance (same day)
+      return (
+        Math.abs(new Date(item.date).getTime() - targetCompareDate.getTime()) <
+        24 * 60 * 60 * 1000
+      );
+    });
+
+    return (
+      <TableRow
+        key={`row-${rowIndex}`}
+        className="cursor-pointer"
+        onClick={() =>
+          redirectTo("/internal/search/events", data["date"], data["date"])
+        }
+      >
+        {tableColumns &&
+          tableColumns.map((trends) => {
+            const key = (trends.slug as keyof TableData) || "";
+            if (key === "date") {
+              return (
+                <TableCell
+                  key={key}
+                  width={isMobileView ? 140 : 340}
+                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate ${!comparisonDate ? 'h-[53px]' : ''}`}
+                >
+                  <div className={`w-full ${!comparisonDate ? 'h-full flex items-center justify-center' : 'flex flex-col justify-center'}`}>
+                    <p className="truncate">
+                      {format(new Date(data[key]), "dd MMM yyyy")}
+                    </p>
+                    {comparisonDate && (
+                      <p className="truncate text-[#4B9EF4]">
+                        {format(new Date(comparisonDate.date), "dd MMM yyyy")}
+                      </p>
+                    )}
+                  </div>
+                </TableCell>
+              );
+            }
+
+            // Rest of your existing cell rendering logic, but add comparison values
+            const cellData = data[key];
+            const comparisonCellData = comparisonDate?.[key];
+            const isSmartInsightEnabledForColumn =
+              smartInsightState[trends.slug ?? ""];
+            const isOpenState = openState[trends.slug ?? ""];
+            const subHeading = trends.subHeading;
+
+            if (cellData) {
+              if (!isSmartInsightEnabledForColumn && !isOpenState) {
+                const currentValue = cellData["value"] ?? 0;
+                const comparisonValue = comparisonCellData?.["value"] ?? 0;
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
+
+                return (
+                  <TableCell
+                    key={key}
+                    width={100}
+                    className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
+                  >
+                    {isSmartInsightEnabledForColumn && (
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
+                    )}
+                    <div className="flex flex-col items-center justify-center relative h-full gap-1">
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-1">
+                          <span>{currentValue}</span>
+                          {comparisonCellData && percentageChange && (
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              ({percentageChange})
+                            </span>
+                          )}
+                        </div>
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
+                      </div>
+                      {comparisonCellData && (
+                        <span className="min-w-[100px] text-start">
+                          {comparisonValue}
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
+                );
+              }
+
+              if (isSmartInsightEnabledForColumn && !isOpenState) {
+                const currentValue = cellData["value"] ?? 0;
+                const comparisonValue = comparisonCellData?.["value"] ?? 0;
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
+
+                return (
+                  <TableCell
+                    key={key}
+                    width={100}
+                    className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
+                  >
+                    {isSmartInsightEnabledForColumn && (
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
+                    )}
+                    <div className="flex flex-col items-center justify-center relative h-full gap-1">
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-1">
+                          <span>{currentValue}</span>
+                          {comparisonCellData && percentageChange && (
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              ({percentageChange})
+                            </span>
+                          )}
+                        </div>
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
+                      </div>
+                      {comparisonCellData && <span>{comparisonValue}</span>}
+                    </div>
+                  </TableCell>
+                );
+              }
+
+              if (
+                subHeading &&
+                !isSmartInsightEnabledForColumn &&
+                isOpenState
+              ) {
+                return subHeading
+                  .filter((heading) => heading.slug !== "avg")
+                  .map((subCol) => {
+                    const currentValue =
+                      cellData[subCol.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[subCol.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
+
+                    return (
+                      <TableCell
+                        key={subCol.slug}
+                        width={100}
+                        className="p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]"
+                      >
+                        <div className="flex flex-col items-center w-full">
+                          <div
+                            className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}
+                          >
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
+                              <span>{currentValue}</span>
+                              {comparisonCellData && percentageChange && (
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
+                                  ({percentageChange})
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {comparisonCellData && (
+                            <div className="font-semibold min-w-[100px] text-start ">
+                              {comparisonValue}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    );
+                  });
+              }
+
+              if (subHeading && isSmartInsightEnabledForColumn && isOpenState) {
+                return subHeading
+                  .filter((heading) => heading.slug !== "avg")
+                  .map((subCol) => {
+                    const currentValue =
+                      cellData[subCol.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[subCol.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
+
+                    return (
+                      <TableCell
+                        key={subCol.slug}
+                        width={100}
+                        className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)] relative`}
+                      >
+                        {isSmartInsightEnabledForColumn && (
+                          <div
+                            className={`absolute top-0 left-0 right-0 ${
+                              comparisonCellData ? "h-1/2" : "h-full"
+                            } 
+                            ${
+                              subCol.slug === "avg"
+                                ? "bg-[#DA2F35] bg-opacity-5"
+                                : ""
+                            }
+                            ${
+                              cellData["maxRow"] &&
+                              subCol.slug !== "avg" &&
+                              subCol.slug !== "value" &&
+                              cellData["maxRow"] ===
+                                cellData[subCol.slug as keyof EventTypeData]
+                                ? cellData["thresholdHighlightRow"]
+                                : ""
+                            }
+                            ${
+                              subCol.slug === "value"
+                                ? cellData["thresholdHighlightCol"]
+                                : ""
+                            }
+                            ${
+                              subCol.slug === "value" &&
+                              cellData["maxCol"] === cellData["value"]
+                                ? "border-2 border-[var(--negative-color)]"
+                                : ""
+                            }`}
+                          />
+                        )}
+                        <div className="flex flex-col items-center justify-center w-full h-full relative gap-1">
+                          <div className="text-center w-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]">
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
+                              <span>{currentValue}</span>
+                              {comparisonCellData && percentageChange && (
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
+                                  ({percentageChange})
+                                </span>
+                              )}
+                            </div>
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                              subCol.slug === "value" && (
+                                <ArrowUp width={15} height={15} />
+                              )}
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                              subCol.slug === "value" && (
+                                <ArrowDown
+                                  width={15}
+                                  height={15}
+                                  color="#E1313A"
+                                />
+                              )}
+                          </div>
+                          {comparisonCellData && (
+                            <div className="font-semibold">
+                              {comparisonValue}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    );
+                  });
+              }
+            }
+
+            return (
+              <TableCell
+                key={key}
+                width={100}
+                className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
+              >
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`flex items-center gap-1 ${
+                      comparisonCellData ? "min-w-[100px]" : ""
+                    }`}
+                  >
+                    <span>0</span>
+                  </div>
+                  {comparisonCellData && <span>0</span>}
+                </div>
+              </TableCell>
+            );
+          })}
+      </TableRow>
+    );
+  };
+
+  if (isLoading || (compareFrom && compareTo && isComparisonLoading)) {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
         <Loading />
@@ -655,21 +891,55 @@ const TestPeriodicAnalytics = () => {
 
   return (
     <>
-      <div className={styles.analytics_header}>
-        <div className={styles.analytics_header_title}>
-          {`FOR THE SELECTED TIME PERIODS (${renderFormattedDates(
-            startDate,
-            endDate
-          )})`}
+      <div
+        className={`flex px-4 md:px-0 ${
+          isMobileView ? "flex-col gap-2" : "justify-between items-center"
+        } py-2 md:py-4`}
+      >
+        <div
+          className={`font-medium ${isMobileView ? "text-sm" : "text-base"}`}
+        >
+          {compareFrom && compareTo
+            ? `Comparing ${renderFormattedDates(
+                startDate,
+                endDate
+              )} with ${renderFormattedDates(
+                format(new Date(compareFrom), "dd MMM yyyy"),
+                format(new Date(compareTo), "dd MMM yyyy")
+              )}`
+            : `For the selected time period (${renderFormattedDates(
+                startDate,
+                endDate
+              )})`}
         </div>
-        <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
-          {/* <Image src={SmartInsights} width={18} height={18} alt={""} /> */}
+        <div
+          className={`px-2 py-2 md:px-3 md:py-3 border border-[var(--neutral-light-color)] rounded-sm max-w-fit ${
+            isMobileView ? "text-xs" : ""
+          }`}
+        >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex gap-2 cursor-pointer">
-                  <Image src={SmartInsights} width={18} height={18} alt={""} />
-                  <p className="text-primary m-0 font-normal">Smart Insights</p>
+                <div className="flex gap-2 cursor-pointer items-center">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={SmartInsights}
+                      width={16}
+                      height={16}
+                      alt={""}
+                      className="w-[16px] h-[16px] md:w-[18px] md:h-[18px]"
+                    />
+                    <p className="text-primary m-0 font-normal text-xs md:text-sm">
+                      Smart Insights
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isSmartInsightsEnabled}
+                    onCheckedChange={() =>
+                      setIsSmartInsightsEnabled((prev) => !prev)
+                    }
+                    disabled={Object.keys(smartInsightState).length === 0}
+                  />
                 </div>
               </TooltipTrigger>
               <TooltipContent className="w-64 tooltip-content-styles ">
@@ -680,18 +950,17 @@ const TestPeriodicAnalytics = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Switch
-            checked={isSmartInsightsEnabled}
-            onCheckedChange={() => setIsSmartInsightsEnabled((prev) => !prev)}
-            disabled={Object.keys(smartInsightState).length === 0}
-          ></Switch>
         </div>
       </div>
-      <div className={styles.table_container}>
-        <div className="w-full">
-          <Table className="border border-[var(--neutral-light-color) w-[98%] mx-auto relative">
+      <div className="mt-4 md:mt-6 overflow-x-auto px-4 md:px-0">
+        <div className="w-full overflow-x-auto">
+          <Table
+            className={`border border-[var(--neutral-light-color)] ${
+              isMobileView ? "w-full text-xs" : "w-[98%] text-sm"
+            } mx-auto relative`}
+          >
             <TableHeader>
-              <TableRow>
+              <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                 {tableColumns &&
                   tableColumns.map((trends) => {
                     const colSpan = openState[trends.slug ?? ""]
@@ -706,25 +975,36 @@ const TestPeriodicAnalytics = () => {
                         key={trends.columnName}
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
-                        style={{ width: 1000 }}
+                        style={{
+                          width:
+                            trends.slug === "date"
+                              ? isMobileView
+                                ? "100px"
+                                : "340px"
+                              : "1000px",
+                        }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
-                          trends.slug === "date" ? "sticky left-0 z-30" : ""
-                        }`}
+                          trends.slug === "date"
+                            ? "sticky left-0 z-30 max-w-[100px] md:max-w-[340px]"
+                            : ""
+                        } ${isMobileView ? "text-xs px-1 py-1" : "px-2 py-2"}`}
                       >
                         {trends.slug === "date" &&
                           trends.columnName.toUpperCase()}
                         {trends.slug !== "date" && (
-                          <div className="flex items-center justify-center mx-auto gap-4 h-inherit w-60">
+                          <div
+                            className={`flex items-center justify-center mx-auto gap-2 md:gap-4 h-inherit w-32 md:w-60`}
+                          >
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span
-                                    className={`cursor-pointer text-sm font-medium`}
+                                    className={`cursor-pointer text-xs md:text-sm font-medium`}
                                   >
                                     {trends.columnName.toUpperCase()}
                                   </span>
                                 </TooltipTrigger>
-                                <TooltipContent className="w-64 tooltip-content-styles ">
+                                <TooltipContent className="w-64 tooltip-content-styles">
                                   <p className="font-medium text-left text-[var(--secondary-text-color)]">
                                     {trends.tooltipDescription ||
                                       trends.columnName}
@@ -735,11 +1015,13 @@ const TestPeriodicAnalytics = () => {
                             <Select>
                               <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
-                                <SelectGroup className="flex flex-col gap-4 p-4">
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">SORT BY</p>
+                                <SelectGroup className="flex flex-col gap-2 md:gap-4 p-2 md:p-4">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
+                                      SORT BY
+                                    </p>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "asc"
@@ -749,7 +1031,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowUpNarrowWide
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -759,7 +1041,7 @@ const TestPeriodicAnalytics = () => {
                                       />
                                     </button>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "desc"
@@ -769,7 +1051,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowDownWideNarrow
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -780,10 +1062,10 @@ const TestPeriodicAnalytics = () => {
                                     </button>
                                   </div>
 
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
                                       {`Turn
-                                    ${
+                                    $${
                                       smartInsightState[trends.slug ?? ""]
                                         ? "off"
                                         : "on"
@@ -797,8 +1079,8 @@ const TestPeriodicAnalytics = () => {
                                           : EnableSmartInsights
                                       }
                                       className="cursor-pointer"
-                                      width={30}
-                                      height={30}
+                                      width={24}
+                                      height={24}
                                       alt={"Disable Smart Insights"}
                                       onClick={() =>
                                         toggleSmartInsightState(trends.slug)
@@ -826,8 +1108,8 @@ const TestPeriodicAnalytics = () => {
                                         : ExpandIcon
                                     }
                                     alt="TableIcons"
-                                    width={25}
-                                    height={25}
+                                    width={20}
+                                    height={20}
                                   />
                                 </button>
                               </TooltipTrigger>
@@ -845,7 +1127,7 @@ const TestPeriodicAnalytics = () => {
               </TableRow>
               {(Object.values(openState).some((state) => state) ||
                 Object.values(smartInsightState).some((state) => state)) && (
-                <TableRow>
+                <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                   {tableColumns &&
                     tableColumns.map((trends) => {
                       const subHeading = trends.subHeading ?? [];
@@ -867,9 +1149,7 @@ const TestPeriodicAnalytics = () => {
                                 <div
                                   className={`flex items-center w-20 mx-auto font-${
                                     cell.fontWeight ?? "normal"
-                                  } justify-center text-[var(${
-                                    cell.color
-                                  })] gap-2`}
+                                  } justify-center text-[var(--primary-text-color)] gap-2`}
                                 >
                                   {cell.icon && (
                                     <Image
@@ -895,17 +1175,34 @@ const TestPeriodicAnalytics = () => {
                                   </div>
                                 </div>
                                 {cell.slug === "value" && (
-                                  <div className="flex justify-center gap-1 text-[var(--negative-color)] font-medium items-center border-t mt-1 pt-2">
-                                    <p>AVG</p> {":"}
-                                    <span>
-                                      {tableData &&
-                                        tableData.length > 0 &&
-                                        safelyAccessTableData(
-                                          tableData[0],
-                                          trends.slug,
-                                          "avg"
-                                        )}
-                                    </span>
+                                  <div className="flex flex-col justify-center gap-1 text-[var(--negative-color)] font-medium items-center border-t mt-1 pt-2">
+                                    <div className="flex gap-1">
+                                      <p>AVG</p> {":"}
+                                      <span>
+                                        {tableData &&
+                                          tableData.length > 0 &&
+                                          safelyAccessTableData(
+                                            tableData[0],
+                                            trends.slug,
+                                            "avg"
+                                          )}
+                                      </span>
+                                    </div>
+                                    {compareFrom &&
+                                      compareTo &&
+                                      comparisonData &&
+                                      comparisonData.length > 0 && (
+                                        <div className="flex gap-1 text-[#4B9EF4]">
+                                          <p>AVG</p> {":"}
+                                          <span>
+                                            {safelyAccessTableData(
+                                              comparisonData[0],
+                                              trends.slug,
+                                              "avg"
+                                            )}
+                                          </span>
+                                        </div>
+                                      )}
                                   </div>
                                 )}
                               </TableHead>
@@ -927,33 +1224,50 @@ const TestPeriodicAnalytics = () => {
                                 .map((cell) => (
                                   <div
                                     key={cell.subColumnName}
-                                    className={`flex items-center justify-center text-center
+                                    className={`flex flex-col items-center justify-center text-center
                     border-x border-[var(--neutral-light-color)]
-                    font-${cell.fontWeight ?? "normal"} text-[var(${
-                                      cell.color
-                                    })] gap-2`}
+                    font-${
+                      cell.fontWeight ?? "normal"
+                    } text-[var(--primary-text-color)] gap-2`}
                                   >
-                                    <p
-                                      className="text-center truncate max-w-[80px] relative group text-[var(--negative-color)] font-medium"
-                                      style={{
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                      }}
-                                      title={cell.subColumnName}
-                                    >
-                                      {cell.subColumnName.toUpperCase()} {":"}
-                                    </p>
+                                    <div className="flex items-center gap-2">
+                                      <p
+                                        className="text-center truncate max-w-[80px] relative group text-[var(--negative-color)] font-medium"
+                                        style={{
+                                          whiteSpace: "nowrap",
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis",
+                                        }}
+                                        title={cell.subColumnName}
+                                      >
+                                        {cell.subColumnName.toUpperCase()} {":"}
+                                      </p>
 
-                                    <p className="text-[var(--negative-color)] font-medium">
-                                      {tableData &&
-                                        tableData.length > 0 &&
-                                        safelyAccessTableData(
-                                          tableData[0],
-                                          trends.slug,
-                                          "avg"
-                                        )}
-                                    </p>
+                                      <p className="text-[var(--negative-color)] font-medium">
+                                        {tableData &&
+                                          tableData.length > 0 &&
+                                          safelyAccessTableData(
+                                            tableData[0],
+                                            trends.slug,
+                                            "avg"
+                                          )}
+                                      </p>
+                                    </div>
+                                    {compareFrom &&
+                                      compareTo &&
+                                      comparisonData &&
+                                      comparisonData.length > 0 && (
+                                        <div className="flex items-center gap-2 text-[#4B9EF4]">
+                                          <p className="font-medium">AVG :</p>
+                                          <p className="font-medium">
+                                            {safelyAccessTableData(
+                                              comparisonData[0],
+                                              trends.slug,
+                                              "avg"
+                                            )}
+                                          </p>
+                                        </div>
+                                      )}
                                   </div>
                                 ))}
                             </div>
@@ -974,340 +1288,97 @@ const TestPeriodicAnalytics = () => {
               {tableData &&
                 tableData
                   .slice(startingLimit, endingLimit + 1)
-                  .map((data, rowIndex) => {
-                    return (
-                      <TableRow
-                        key={`row-${rowIndex}`}
-                        className="cursor-pointer"
-                        onClick={() =>
-                          redirectTo(
-                            "/internal/search/events",
-                            data["date"],
-                            data["date"]
-                          )
-                        }
-                      >
-                        {tableColumns &&
-                          tableColumns.map((trends) => {
-                            const key = (trends.slug as keyof TableData) || "";
-                            if (key === "date") {
-                              const isHoliday =
-                                holidaysByDate &&
-                                holidaysByDate.length > 0 &&
-                                holidaysByDate.some(
-                                  (holiday) => holiday.date === data[key]
-                                );
-                              const holidayMatch = holidaysByDate?.find(
-                                (holiday) => holiday.date === data[key]
-                              );
-                              const count = holidayMatch?.count || 0;
-                              const holidays = holidayMatch?.holidays || [];
-
-                              return (
-                                <TableCell
-                                  key={key}
-                                  width={100}
-                                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center w-full sticky left-0 z-30 bg-background`}
-                                >
-                                  {isEventeli ? (
-                                    isHoliday ? (
-                                      <TooltipProvider>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <div className="flex">
-                                              <Image
-                                                width={20}
-                                                height={20}
-                                                className="cursor-pointer"
-                                                src={HolidayIcon}
-                                                alt="Holiday Icon"
-                                              />
-                                              {count && count > 1 && (
-                                                <sup className="w-2 h-2">
-                                                  {count}
-                                                </sup>
-                                              )}
-                                            </div>
-                                          </TooltipTrigger>
-                                          <TooltipContent
-                                            asChild
-                                            className="w-fit tooltip-content-styles"
-                                            side="right"
-                                          >
-                                            <ul
-                                              className={`flex flex-col gap-2 ${
-                                                holidays && holidays.length > 1
-                                                  ? "list-disc pl-6"
-                                                  : "list-none pl-4"
-                                              } pt-2 pr-4`}
-                                            >
-                                              {holidays &&
-                                                holidays.length > 0 &&
-                                                holidays.map((holidayName) => (
-                                                  <li
-                                                    className="font-medium"
-                                                    key={`holiday-${holidayName}`}
-                                                  >
-                                                    {holidayName}
-                                                  </li>
-                                                ))}
-                                            </ul>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                    ) : (
-                                      <div className="flex items-center opacity-0">
-                                        <Image
-                                          width={20}
-                                          height={20}
-                                          src={HolidayIcon}
-                                          alt="Holiday Icon"
-                                        />
-                                        <sup className="w-2 h-2">{count}</sup>
-                                      </div>
-                                    )
-                                  ) : null}
-                                  <div className="w-40 flex justify-center">
-                                    <p>
-                                      {key !== undefined &&
-                                        format(
-                                          new Date(data[key]),
-                                          "dd MMM yyyy"
-                                        )}
-                                    </p>
-                                  </div>
-                                </TableCell>
-                              );
-                            }
-                            const cellData = data[key];
-                            const isSmartInsightEnabledForColumn =
-                              smartInsightState[trends.slug ?? ""];
-                            const isOpenState = openState[trends.slug ?? ""];
-                            const subHeading = trends.subHeading;
-                            if (cellData) {
-                              return subHeading &&
-                                isSmartInsightEnabledForColumn &&
-                                isOpenState ? (
-                                subHeading
-                                  .filter((heading) => heading.slug !== "avg")
-                                  .map((subCol) => (
-                                    <TableCell
-                                      key={subCol.slug}
-                                      width={100}
-                                      className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]`}
-                                    >
-                                      <div
-                                        className={`text-center w-full h-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]
-                                ${
-                                  subCol.slug === "avg" &&
-                                  isSmartInsightEnabledForColumn
-                                    ? "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
-                                    : ""
-                                }
-                                ${
-                                  isSmartInsightEnabledForColumn &&
-                                  cellData["maxRow"] &&
-                                  subCol.slug !== "avg" &&
-                                  subCol.slug !== "value" &&
-                                  cellData["maxRow"] ===
-                                    cellData[subCol.slug as keyof EventTypeData]
-                                    ? cellData["thresholdHighlightRow"]
-                                    : ""
-                                }
-                                ${
-                                  isSmartInsightEnabledForColumn &&
-                                  subCol.slug === "value"
-                                    ? cellData["thresholdHighlightCol"]
-                                    : ""
-                                }
-                                  ${
-                                    isSmartInsightEnabledForColumn &&
-                                    subCol.slug === "value" &&
-                                    cellData["maxCol"] === cellData["value"]
-                                      ? "border-2 border-[var(--negative-color)]"
-                                      : ""
-                                  }`}
-                                      >
-                                        {
-                                          cellData[
-                                            subCol.slug as keyof EventTypeData
-                                          ]
-                                        }
-                                        {cellData["thresholdHighlightCol"] ===
-                                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
-                                          subCol.slug === "value" && (
-                                            <ArrowUp width={15} height={15} />
-                                          )}
-                                        {cellData["thresholdHighlightCol"] ===
-                                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
-                                          subCol.slug === "value" && (
-                                            <ArrowDown
-                                              width={15}
-                                              height={15}
-                                              color="#E1313A"
-                                            />
-                                          )}
-                                      </div>
-                                    </TableCell>
-                                  ))
-                              ) : !isSmartInsightEnabledForColumn &&
-                                !isOpenState ? (
-                                <TableCell
-                                  key={key}
-                                  width={100}
-                                  className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] ${
-                                    isSmartInsightEnabledForColumn
-                                      ? `${cellData["thresholdHighlightCol"]} ${
-                                          cellData["maxCol"] ===
-                                            cellData["value"] &&
-                                          "border-2 border-[var(--negative-color)]"
-                                        }`
-                                      : ""
-                                  }`}
-                                >
-                                  {cellData["value"] ?? 0}
-                                </TableCell>
-                              ) : subHeading &&
-                                isSmartInsightEnabledForColumn &&
-                                !isOpenState ? (
-                                <TableCell
-                                  key={key}
-                                  width={1000}
-                                  className={`w-[1000px] h-[52px] p-0 ${
-                                    cellData["maxCol"] === cellData["value"]
-                                      ? "border-2 border-[var(--negative-color)]"
-                                      : "border-[var(--neutral-light-color)]"
-                                  }`}
-                                >
-                                  <div className="grid grid-cols-1 w-full h-full">
-                                    {subHeading
-                                      .filter(
-                                        (subCol) => subCol.slug === "value"
-                                      )
-                                      .map((subCol, index) => {
-                                        return (
-                                          <div
-                                            key={subCol.slug}
-                                            className={`h-full text-center gap-2 justify-center font-semibold text-[var(--primary-text-color)] flex items-center ${
-                                              subCol.slug === "avg" &&
-                                              isSmartInsightEnabledForColumn &&
-                                              "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
-                                            }   ${
-                                              isSmartInsightEnabledForColumn &&
-                                              subCol.slug === "value" &&
-                                              cellData["thresholdHighlightCol"]
-                                            }`}
-                                          >
-                                            <p>
-                                              {subCol.slug === "avg"
-                                                ? cellData["avg"]
-                                                : subCol.slug === "value"
-                                                ? cellData["value"]
-                                                : null}
-                                            </p>
-
-                                            {cellData[
-                                              "thresholdHighlightCol"
-                                            ] ===
-                                              "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
-                                              subCol.slug === "value" && (
-                                                <ArrowUp
-                                                  width={15}
-                                                  height={15}
-                                                />
-                                              )}
-                                            {cellData[
-                                              "thresholdHighlightCol"
-                                            ] ===
-                                              "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
-                                              subCol.slug === "value" && (
-                                                <ArrowDown
-                                                  width={15}
-                                                  height={15}
-                                                  color="#E1313A"
-                                                />
-                                              )}
-                                          </div>
-                                        );
-                                      })}
-                                  </div>
-                                </TableCell>
-                              ) : subHeading &&
-                                !isSmartInsightEnabledForColumn &&
-                                isOpenState ? (
-                                subHeading
-                                  .filter((heading) => heading.slug !== "avg")
-                                  .map((subCol) => (
-                                    <TableCell
-                                      key={subCol.slug}
-                                      width={100}
-                                      className="p-0 h-[52px] w-32 border border-[var(--neutral-light-color)]"
-                                    >
-                                      <div
-                                        className={`flex text-center items-center justify-center w-full h-full font-semibold text-[var(--primary-text-color)]`}
-                                      >
-                                        {
-                                          cellData[
-                                            subCol.slug as keyof EventTypeData
-                                          ]
-                                        }
-                                      </div>
-                                    </TableCell>
-                                  ))
-                              ) : null;
-                            } else {
-                              return (
-                                <TableCell
-                                  key={key}
-                                  width={100}
-                                  className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
-                                >
-                                  0
-                                </TableCell>
-                              );
-                            }
-                          })}
-                      </TableRow>
-                    );
-                  })}
+                  .map((data, rowIndex) => renderTableRow(data, rowIndex))}
             </TableBody>
           </Table>
-          {totalPages > 1 && (
-            <div className="mt-4 sticky bottom-0 bg-background py-4">
-              <Pagination>
-                <PaginationContent className="flex-wrap justify-center">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                  {renderPaginationItems()}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
         </div>
+        {totalPages > 1 && (
+          <div
+            className={`mt-2 md:mt-4 sticky bottom-0 bg-background py-2 md:py-4 ${
+              isMobileView ? "overflow-x-auto" : ""
+            }`}
+          >
+            <Pagination>
+              <PaginationContent
+                className={`flex-wrap justify-center ${
+                  isMobileView ? "text-xs gap-1" : ""
+                }`}
+              >
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
+                </PaginationItem>
+                {isMobileView ? (
+                  <>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#"
+                        onClick={() => handlePageChange(1)}
+                        isActive={1 === currentPage}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    {currentPage > 3 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {currentPage > 1 && currentPage < totalPages && (
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(currentPage)}
+                          isActive={true}
+                        >
+                          {currentPage}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+                    {currentPage < totalPages - 2 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    {totalPages > 1 && (
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => handlePageChange(totalPages)}
+                          isActive={totalPages === currentPage}
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+                  </>
+                ) : (
+                  renderPaginationItems()
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </>
   );

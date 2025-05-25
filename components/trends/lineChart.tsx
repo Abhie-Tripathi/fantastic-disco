@@ -1,5 +1,4 @@
 "use client";
-import { TemplateType } from "@/app/components/trends/templates-modal";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -7,27 +6,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
-import { Filters, useFilterContext } from "@/context/filterContext";
 import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
-import { NewColumn } from "@/data/trendsTableColHead";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { useTrendsService } from "@/services/trendsService";
 import { TableGroupedHoliday } from "@/types";
 import { EventResponse } from "@/types/events";
-import {
-  EventTrendsResponse,
-  GetSaveTrendData,
-  TableData,
-} from "@/types/trends/trends";
-import { HierarchyLevel } from "@/utils/chart-options";
+import { EventTrendsResponse } from "@/types/trends/trends";
 import {
   generateDatesArray,
   generateTrendsTableColumnHeaders,
   morphToGraphData,
-  morphToSmartInsightsData,
-  morphToTrendsTableData,
   toMidnightISOString,
 } from "@/utils/lineChart";
 import { useQuery } from "@tanstack/react-query";
@@ -35,14 +25,13 @@ import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Loading from "../ui/Loading";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Area,
-  AreaChart,
   CartesianGrid,
   Legend,
   LegendProps,
+  Line,
+  LineChart,
   ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
@@ -52,8 +41,10 @@ import {
   YAxis,
 } from "recharts";
 import { CategoricalChartState } from "recharts/types/chart/types";
-import Text from "../new-ui/Text";
+import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
+import Text from "../new-ui/Text";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface IProps {
   showLegend: boolean;
@@ -74,44 +65,20 @@ const LineChartComponent = ({
 
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
-
-  const [dragging, setDragging] = useState(false);
-  const [linePosition, setLinePosition] = useState(300); // Initial Y position of the line
   const { searchParams } = useDefaultFilters();
-
-  const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    setLocalFilter,
-    getLocalFilterValue,
-    setMultipleLocalFilters,
-    deleteMultipleLocalFilters,
-    localFilters,
-  } = useFilterContext();
-  const columns = searchParams.get("columns");
+  const { getEventTrends } = useTrendsService();
+  const compareFrom = searchParams.get("compare_from");
+  const compareTo = searchParams.get("compare_to");
+  const isMobileView = useIsMobile();
   const eventTypes = searchParams.get("eventTypes");
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
-  const columnsData = (columns && columns.split(",")) || [];
-  const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
-    useState<boolean>(false);
-  const [smartInsightState, setSmartInsightState] = useState<{
-    [key: string]: boolean;
-  }>(
-    columnsData.length > 0
-      ? columnsData.reduce((acc, key) => {
-          acc[key] = false;
-          return acc;
-        }, {} as { [key: string]: boolean })
-      : {}
-  );
   const [eventTrendsData, setEventTrendsData] = useState<
     EventTrendsResponse | undefined
   >();
   const [predictedData, setPredictedData] = useState<any>();
-  const [tableData, setTableData] = useState<TableData[] | []>();
-  const [tableColumns, setTableColumns] = useState<NewColumn[]>();
+
   const { getEventsWithSearchParams } = useEventsService();
   const { getFilterValue } = useFilterState();
   const metric = getFilterValue("columns") as
@@ -119,37 +86,6 @@ const LineChartComponent = ({
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
-  const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
-    ? (getFilterValue("view") as "line" | "treemap" | "table")
-    : "treemap";
-  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([
-    { id: "location", label: "Location", value: "location" },
-    { id: "category", label: "Category", value: "category" },
-  ]);
-  const [showTemplates, setShowTemplates] = useState(false);
-  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<TemplateType | null>(
-    null
-  );
-  const [templateHistory, setTemplateHistory] = useState<TemplateType[]>([]);
-  const [hasModifiedFilters, setHasModifiedFilters] = useState(false);
-  const categories = getLocalFilterValue("categories");
-  type FilterKey =
-    | "location"
-    | "eventTypes"
-    | "dateRange"
-    | "categories"
-    | "metrics";
-
-  const [visibleFilters, setVisibleFilters] = useState<
-    Record<FilterKey, boolean>
-  >({
-    location: true,
-    eventTypes: true,
-    dateRange: true,
-    categories: true,
-    metrics: true,
-  });
 
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
@@ -164,6 +100,17 @@ const LineChartComponent = ({
     params.delete("categories");
     return params.toString();
   }, [stringParams]);
+
+  const previousYearParams = useMemo(() => {
+    const currentParams = new URLSearchParams(apiParams);
+
+    if (compareFrom && compareTo) {
+      currentParams.set("active_gte", compareFrom);
+      currentParams.set("active_lte", compareTo);
+      return currentParams.toString();
+    }
+    return "";
+  }, [apiParams, compareFrom, compareTo]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -180,6 +127,19 @@ const LineChartComponent = ({
     queryKey: ["trends", apiParams.toString()],
     queryFn: () => getEventTrends(apiParams.toString()),
     enabled: !!apiParams.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const {
+    data: previousYearData,
+    error: previousYearError,
+    isLoading: previousYearLoading,
+  } = useQuery<EventTrendsResponse | undefined>({
+    queryKey: ["trends-previous-year", previousYearParams],
+    queryFn: () => getEventTrends(previousYearParams),
+    enabled: !!previousYearParams && !!compareFrom && !!compareTo,
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -206,19 +166,6 @@ const LineChartComponent = ({
     return acc;
   }, {});
 
-  const filterCount = useMemo(() => {
-    const excludedFilters = ["active_gte", "active_lte"];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  }, [localFilters]);
-
-  const holidaysByDate =
-    (groupedData &&
-      Object.values(groupedData).length > 0 &&
-      Object.values(groupedData)) ||
-    [];
-
   useEffect(() => {
     if (trendsData !== undefined) {
       setEventTrendsData(trendsData);
@@ -226,73 +173,74 @@ const LineChartComponent = ({
   }, [trendsData]);
 
   useEffect(() => {
-    const skip = searchParams.get("skip");
-
-    if (!skip) {
-      setIsSmartInsightsEnabled(false);
-
-      setSmartInsightState((prev) => {
-        const updatedState = columnsData.reduce((acc, key) => {
-          acc[key] = false;
-          return acc;
-        }, {} as { [key: string]: boolean });
-
-        return updatedState;
-      });
-    }
-  }, [trendsData, searchParams]);
-
-  useEffect(() => {
-    if (Object.keys(smartInsightState).length > 0) {
-      const allFalse = Object.values(smartInsightState).every(
-        (value) => value === false
-      );
-      const allTrue = Object.values(smartInsightState).every(
-        (value) => value === true
-      );
-      if (allFalse) {
-        setIsSmartInsightsEnabled(false);
-      }
-      if (allTrue) {
-        setIsSmartInsightsEnabled(true);
-      }
-    }
-  }, [smartInsightState]);
-
-  useEffect(() => {
-    setSmartInsightState((prevState) => {
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = isSmartInsightsEnabled;
-        return acc;
-      }, {} as { [key: string]: boolean });
-      return newState;
-    });
-  }, [isSmartInsightsEnabled]);
-
-  useEffect(() => {
-    const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
-    const columns = searchParams.get("columns")?.split(",") || [];
     if (eventTrendsData && eventTrendsData.groupedData) {
-      const tableColumns = generateTrendsTableColumnHeaders(
-        eventTypes,
-        columns
-      );
-
       const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+      const previousYearGraphData = previousYearData
+        ? morphToGraphData(previousYearData.groupedData, metric)
+        : [];
 
-      const tableData = morphToTrendsTableData(
-        eventTrendsData.thresholds,
-        eventTrendsData.groupedData,
-        eventTypes
-      );
+      // Combine current and previous year data with proper date alignment
+      const combinedData = graphData.map((currentItem, index) => {
+        if (!compareFrom || !compareTo) {
+          return currentItem;
+        }
 
-      const smartInsightsData = morphToSmartInsightsData(tableData);
+        // Calculate the relative position (0 to 1) of the current date in the main range
+        const mainStartDate = new Date(searchParams.get("active_gte") || "");
+        const mainEndDate = new Date(searchParams.get("active_lte") || "");
+        const currentDate = new Date(currentItem.date);
 
-      setPredictedData(graphData);
-      setTableData(smartInsightsData);
-      setTableColumns(tableColumns);
+        const compareStartDate = new Date(compareFrom);
+        const compareEndDate = new Date(compareTo);
+
+        const mainRangePosition =
+          (currentDate.getTime() - mainStartDate.getTime()) /
+          (mainEndDate.getTime() - mainStartDate.getTime());
+
+        // Find the corresponding date in the comparison range
+        const targetCompareDate = new Date(
+          compareStartDate.getTime() +
+            mainRangePosition *
+              (compareEndDate.getTime() - compareStartDate.getTime())
+        );
+
+        // Find the closest date in previousYearGraphData
+        const comparisonItem = previousYearGraphData.find((item) => {
+          const itemDate = new Date(item.date);
+          // Allow for a small tolerance (same day)
+          return (
+            Math.abs(itemDate.getTime() - targetCompareDate.getTime()) <
+            24 * 60 * 60 * 1000
+          );
+        });
+
+        if (comparisonItem) {
+          return {
+            ...currentItem,
+            previousYearTotal: comparisonItem.total,
+            previousYearSocial: comparisonItem.social,
+            previousYearBusiness: comparisonItem.business,
+          };
+        }
+
+        return {
+          ...currentItem,
+          previousYearTotal: undefined,
+          previousYearSocial: undefined,
+          previousYearBusiness: undefined,
+        };
+      });
+
+      setPredictedData(combinedData);
     }
-  }, [eventTrendsData, metric]);
+  }, [
+    eventTrendsData,
+    previousYearData,
+    metric,
+    searchParams,
+    compareFrom,
+    compareTo,
+  ]);
 
   useEffect(() => {
     if (trendsData === undefined) {
@@ -300,145 +248,18 @@ const LineChartComponent = ({
     }
   }, [trendsData]);
 
-  const handleViewChange = (view: "line" | "treemap" | "table") => {
-    if (activeTemplate && !activeTemplate.visualization.includes(view)) {
-      return; // Don't change view if not supported by template
-    }
-    if (view === "treemap") {
-      if (categories.length === 0) {
-        const defaultCategories = "technology,medical-pharma";
-        setMultipleLocalFilters({ categories: defaultCategories, view: view });
-      }
-      setMultipleLocalFilters({ columns: "eventCount", view: view });
-    }
-    setLocalFilter("view", view);
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateSelect = (template: TemplateType) => {
-    // Set visualization type - use first available visualization
-    const defaultView = template.visualization[0] as
-      | "line"
-      | "treemap"
-      | "table";
-    handleViewChange(defaultView);
-
-    // Update visible filters - ensure all properties are set
-    const newVisibleFilters: Record<FilterKey, boolean> = {
-      location: template.visibleFilters.location ?? true,
-      eventTypes: template.visibleFilters.eventTypes ?? true,
-      dateRange: template.visibleFilters.dateRange ?? true,
-      categories: template.visibleFilters.categories ?? true,
-      metrics: template.visibleFilters.metrics ?? true,
-    };
-    setVisibleFilters(newVisibleFilters);
-
-    // Set hierarchy levels if provided in template
-    if (template.hierarchy) {
-      setHierarchyLevels(template.hierarchy);
-    } else {
-      // Set default hierarchy levels
-      setHierarchyLevels([
-        { id: "location", label: "Location", value: "location" },
-        { id: "category", label: "Category", value: "category" },
-      ]);
-    }
-
-    // Set active template and update history
-    setActiveTemplate(template);
-    setTemplateHistory((prev) => {
-      const filtered = prev.filter((t) => t.id !== template.id);
-      return [template, ...filtered].slice(0, 10); // Keep last 10 templates
-    });
-    setHasModifiedFilters(false);
-
-    // Close modal and templates view
-    setShowTemplatesModal(false);
-    setShowTemplates(false);
-
-    // Apply filters
-    applyFilters({ resetPage: true });
-  };
-
-  const handleTemplateRemove = () => {
-    setActiveTemplate(null);
-    // Reset visible filters to show all
-    const defaultFilters: Record<FilterKey, boolean> = {
-      location: true,
-      eventTypes: true,
-      dateRange: true,
-      categories: true,
-      metrics: true,
-    };
-    setVisibleFilters(defaultFilters);
-    applyFilters({ resetPage: true });
-    setHasModifiedFilters(false);
-  };
-
-  // Track filter changes
-  useEffect(() => {
-    if (!activeTemplate) return;
-
-    // Track filter changes by comparing current filter values with template's visible filters
-    const hasChanged = Object.entries(visibleFilters).some(
-      ([key, isVisible]) => {
-        if (!isVisible) return false;
-        // Only check filters that are visible
-        const filterKey = key as keyof typeof visibleFilters;
-        if (!activeTemplate.visibleFilters[filterKey]) return false;
-
-        // Check if the filter has a value
-        const currentValue = getLocalFilterValue(filterKey as keyof Filters);
-        return currentValue && currentValue.length > 0;
-      }
-    );
-
-    setHasModifiedFilters(hasChanged);
-  }, [localFilters, activeTemplate, visibleFilters]);
-
-  // Handle drag start
-  const handleDragStart = (e: any) => {
-    setDragging(true);
-  };
-
-  // Handle drag move
-  const handleDrag = (e: any) => {
-    if (dragging) {
-      const chartHeight = e.currentTarget.getBoundingClientRect().height;
-      const mouseY = e.clientY - e.currentTarget.getBoundingClientRect().top;
-
-      // Calculate the new value based on the chart height
-      const newValue = Math.max(
-        0,
-        Math.min((1 - mouseY / chartHeight) * 500, 500)
-      ); // Adjust min/max values as per your data
-      setLinePosition(newValue);
-    }
-  };
-
-  // Handle drag end
-  const handleDragEnd = () => {
-    setDragging(false);
-  };
-
-  // const tickFormatter = (value: any) => {
-  //   if (value >= 1000) {
-  //     return Math.round(value / 1000) + "k";
-  //   }
-  //   return String(Math.round(value));
-  // };
-
   const tickFormatter = (value: any) => {
-    if (value >= 1e9) {
-      return `${value / 1e9}B`;
-      // return `${Math.round(value / 1e9)}B`;
-    } else if (value >= 1e6) {
-      return `${value / 1e6}M`;
-      // return `${Math.round(value / 1e6)}M`;
-    } else if (value >= 1e3) {
-      return `${Math.round(value / 1e3)}k`;
-    }
-    return value.toString();
+    if (typeof value !== "number" || isNaN(value)) return "";
+
+    const absValue = Math.abs(value);
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+      compactDisplay: "short",
+    });
+
+    return formatter.format(value);
   };
 
   const CustomDot = (props: any) => {
@@ -611,7 +432,7 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = searchParams.get("viewBound");
+    const viewBound = searchParams.get("viewBound");
     const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
@@ -625,6 +446,52 @@ const LineChartComponent = ({
     if (locationIds) {
       searchEventParams.set("locationIds", locationIds);
     }
+    if (viewBound) {
+      searchEventParams.set("viewBound", viewBound);
+    }
+    if (eventTypes && eventTypes.length > 0) {
+      searchEventParams.set("eventTypes", eventTypes);
+    }
+    return searchEventParams.toString();
+  };
+
+  const generatePreviousYearParams = (date: string): string => {
+    const searchEventParams = new URLSearchParams({
+      status: "active,cancelled,postponed",
+      sortBy: "-visitors",
+    });
+
+    if (compareFrom && compareTo) {
+      // Calculate the relative position of the date within the main date range
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const currentDate = new Date(date);
+
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
+
+      // Calculate the relative position (0 to 1) of the current date in the main range
+      const mainRangePosition =
+        (currentDate.getTime() - mainStartDate.getTime()) /
+        (mainEndDate.getTime() - mainStartDate.getTime());
+
+      // Use this position to find the corresponding date in the comparison range
+      const compareDate = new Date(
+        compareStartDate.getTime() +
+          mainRangePosition *
+            (compareEndDate.getTime() - compareStartDate.getTime())
+      );
+
+      searchEventParams.set("active_gte", format(compareDate, "yyyy-MM-dd"));
+      searchEventParams.set("active_lte", format(compareDate, "yyyy-MM-dd"));
+    }
+
+    const locationIds = searchParams.get("locationIds");
+    const geoCoordinates = searchParams.get("viewBound");
+
+    if (locationIds) {
+      searchEventParams.set("locationIds", locationIds);
+    }
     if (geoCoordinates) {
       searchEventParams.set("geoCoordinates", geoCoordinates);
     }
@@ -634,11 +501,15 @@ const LineChartComponent = ({
     return searchEventParams.toString();
   };
 
+  const [previousYearLink, setPreviousYearLink] = useState("");
+
   const handleChartClick = (e: CategoricalChartState) => {
     if (e.activeLabel) {
       const utcDate = new Date(e.activeLabel).toISOString();
       const link = setRedirectionLinkOnDate(utcDate);
+      const prevYearLink = generatePreviousYearParams(e.activeLabel);
       setLink(link);
+      setPreviousYearLink(prevYearLink);
       if (e.activePayload && e.activePayload.length > 0) {
         const { payload } = e.activePayload[0];
         setTooltipData(payload);
@@ -657,7 +528,7 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
-  const { data: eventData, refetch } = useQuery({
+  const { data: eventData, isLoading: iseventsLoading } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
@@ -665,6 +536,16 @@ const LineChartComponent = ({
     gcTime: 0,
     staleTime: 0,
   });
+
+  const { data: previousYearEventData, isLoading: isPreviouseventsLoading } =
+    useQuery({
+      queryKey: ["previous-year-events", previousYearLink],
+      queryFn: () => eventService.getEventsWithSearchParams(previousYearLink),
+      enabled: !!previousYearLink,
+      refetchOnWindowFocus: false,
+      gcTime: 0,
+      staleTime: 0,
+    });
 
   const threshold =
     (eventTrendsData && eventTrendsData.thresholds[metric]) ?? 0;
@@ -678,8 +559,34 @@ const LineChartComponent = ({
     const end = new Date(endDate);
     const totalDays = differenceInDays(end, start) + 1;
 
-    // If range is 10 days or less, show all dates
+    // For mobile screens, show exactly 6 ticks
+    if (isMobileView) {
+      const dates = [];
+      dates.push(format(start, "yyyy-MM-dd")); // First date
+
+      // Calculate an even interval for 4 middle points
+      const step = Math.max(1, Math.floor(totalDays / 5));
+
+      // Add 4 evenly spaced points (for a total of 6 with start and end)
+      for (let i = 1; i <= 4; i++) {
+        const nextDate = addDays(start, i * step);
+        if (!isAfter(nextDate, end)) {
+          dates.push(format(nextDate, "yyyy-MM-dd"));
+        }
+      }
+
+      // Add end date if not already included
+      const lastDateStr = format(end, "yyyy-MM-dd");
+      if (dates[dates.length - 1] !== lastDateStr) {
+        dates.push(lastDateStr);
+      }
+
+      return dates;
+    }
+
+    // Desktop view - improved logic for consistent intervals
     if (totalDays <= 10) {
+      // For 10 days or less, show all dates
       const dates = [];
       for (let i = 0; i < totalDays; i++) {
         dates.push(format(addDays(start, i), "yyyy-MM-dd"));
@@ -687,27 +594,36 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // For more than 10 days, calculate intervals
-    const interval = Math.floor(totalDays / 10);
-    const remainder = totalDays % 10;
-    const dates = [format(start, "yyyy-MM-dd")];
+    // For longer periods, use a fixed number of ticks based on the duration
+    const getTickCount = (days: number) => {
+      if (days <= 30) return 6; // 6 ticks for up to 1 month
+      if (days <= 90) return 7; // 7 ticks for up to 3 months
+      if (days <= 180) return 8; // 8 ticks for up to 6 months
+      if (days <= 365) return 9; // 9 ticks for up to 1 year
+      return 10; // 10 ticks for more than 1 year
+    };
 
-    let currentDate = start;
+    const tickCount = getTickCount(totalDays);
+    const dates = [];
 
-    // Generate dates based on interval, adjusting for remainder
-    for (let i = 1; i <= 9; i++) {
-      currentDate = addDays(
-        currentDate,
-        interval + (i === 9 && remainder > 0 ? remainder : 0)
-      );
-      if (!isAfter(currentDate, end)) {
-        dates.push(format(currentDate, "yyyy-MM-dd"));
+    // Always include start date
+    dates.push(format(start, "yyyy-MM-dd"));
+
+    // Calculate the interval between ticks
+    const interval = Math.floor(totalDays / (tickCount - 1));
+
+    // Generate intermediate dates
+    for (let i = 1; i < tickCount - 1; i++) {
+      const nextDate = addDays(start, i * interval);
+      if (!isAfter(nextDate, end)) {
+        dates.push(format(nextDate, "yyyy-MM-dd"));
       }
     }
 
-    // Ensure the last date is included
-    if (dates[dates.length - 1] !== format(end, "yyyy-MM-dd")) {
-      dates.push(format(end, "yyyy-MM-dd"));
+    // Always include end date
+    const lastDateStr = format(end, "yyyy-MM-dd");
+    if (dates[dates.length - 1] !== lastDateStr) {
+      dates.push(lastDateStr);
     }
 
     return dates;
@@ -716,6 +632,31 @@ const LineChartComponent = ({
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
     const date = new Date(payload.value);
+
+    if (isMobileView) {
+      // Simplified format for mobile
+      const mobileDateFormat = format(date, "dd MMM");
+
+      return (
+        <g transform={`translate(${x},${y})`}>
+          <text
+            x={0}
+            y={0}
+            dy={16}
+            textAnchor="middle"
+            fill="#615E83"
+            fontSize="12px"
+            fontWeight="500"
+          >
+            <tspan x={0} dy="1em">
+              {mobileDateFormat}
+            </tspan>
+          </text>
+        </g>
+      );
+    }
+
+    // Desktop format with date and year on separate lines
     const dayMonth = format(date, "dd MMM");
     const year = format(date, "yyyy");
 
@@ -765,16 +706,48 @@ const LineChartComponent = ({
     payload,
     label,
   }: TooltipProps<number, string>) => {
-    if (payload && payload.length === 0) {
-      return;
-    }
-    if (!isTooltipVisible) {
+    if (
+      !payload ||
+      !Array.isArray(payload) ||
+      payload.length === 0 ||
+      !isTooltipVisible
+    ) {
       return null;
     }
-    const showEventTypesValueByMetric = [];
-    const { date, total, social, business } = payload && payload[0].payload;
+
+    const tooltipPayload = payload[0]?.payload;
+    if (!tooltipPayload) {
+      return null;
+    }
+
+    const { date, total, previousYearTotal } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+
+    // Calculate comparison date based on relative position
+    let comparisonDate = new Date(date);
+
+    if (compareFrom && compareTo) {
+      const mainStartDate = new Date(searchParams.get("active_gte") || "");
+      const mainEndDate = new Date(searchParams.get("active_lte") || "");
+      const currentDate = new Date(date);
+
+      const compareStartDate = new Date(compareFrom);
+      const compareEndDate = new Date(compareTo);
+
+      // Calculate the relative position (0 to 1) of the current date in the main range
+      const mainRangePosition =
+        (currentDate.getTime() - mainStartDate.getTime()) /
+        (mainEndDate.getTime() - mainStartDate.getTime());
+
+      // Find the corresponding date in the comparison range
+      comparisonDate = new Date(
+        compareStartDate.getTime() +
+          mainRangePosition *
+            (compareEndDate.getTime() - compareStartDate.getTime())
+      );
+    }
+
     const hasSocial = eventTypes
       ?.split(",")
       .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
@@ -782,25 +755,59 @@ const LineChartComponent = ({
       ?.split(",")
       .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
 
-    if (hasSocial) {
-      showEventTypesValueByMetric.push({
+    // Current year event types
+    const currentYearEventTypes = [];
+    if (hasSocial && tooltipPayload.social !== undefined) {
+      currentYearEventTypes.push({
         text: "Social",
         bg: "--social-color",
-        value: social,
+        value: tooltipPayload.social,
       });
     }
-    if (hasBusiness) {
-      showEventTypesValueByMetric.push({
+    if (hasBusiness && tooltipPayload.business !== undefined) {
+      currentYearEventTypes.push({
         text: "Business",
         bg: "--business-color",
-        value: business,
+        value: tooltipPayload.business,
       });
     }
 
+    // Previous year event types
+    const previousYearEventTypes = [];
+    if (compareFrom && compareTo) {
+      if (hasSocial && tooltipPayload.previousYearSocial !== undefined) {
+        previousYearEventTypes.push({
+          text: "Social",
+          bg: "--social-color",
+          value: tooltipPayload.previousYearSocial,
+        });
+      }
+      if (hasBusiness && tooltipPayload.previousYearBusiness !== undefined) {
+        previousYearEventTypes.push({
+          text: "Business",
+          bg: "--business-color",
+          value: tooltipPayload.previousYearBusiness,
+        });
+      }
+    }
+
     return (
-      <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
-        <div className="px-4 py-2 flex text-lg font-medium border-b">
-          {format(date, "d MMM yyyy")}
+      <div
+        className={`border-none shadow-lg bg-background ${
+          compareFrom && compareTo ? "w-[600px]" : "w-[300px]"
+        } z-10`}
+      >
+        <div
+          className={`px-4 py-2 flex text-lg font-medium border-b ${
+            compareFrom && compareTo ? "justify-between" : "justify-start"
+          }`}
+        >
+          <span>{format(new Date(date), "d MMM yyyy")}</span>
+          {compareFrom && compareTo && (
+            <span className="text-[#4B9EF4]">
+              {format(comparisonDate, "d MMM yyyy")}
+            </span>
+          )}
         </div>
         {isEventeli &&
           matchingHoliday &&
@@ -814,7 +821,7 @@ const LineChartComponent = ({
                   matchingHoliday.holidays.length > 1
                     ? "list-decimal"
                     : "list-none"
-                } list-inside text-sm text-gray-600`}
+                } list-inside text-sm text-gray-600 dark:text-gray-300`}
               >
                 {matchingHoliday.holidays.map((holidayName, index) => (
                   <li key={index}>{holidayName}</li>
@@ -822,106 +829,301 @@ const LineChartComponent = ({
               </ul>
             </div>
           )}
-        <div className="px-4 py-2 border-b">
-          <p className="font-semibold text-[var(--primary-color)]">{total}</p>
-          <Text size="normal" color="secondary" fontWeight="regular">
-            {columnsDropdown.find((column) => column.value === metric)?.label ??
-              ""}
-          </Text>
-        </div>
-        <div className="flex flex-col px-4 py-2 gap-2 border-b">
-          {showEventTypesValueByMetric.map((eventTypesValues) => (
-            <div key={eventTypesValues.text} className="flex justify-between">
-              <div className="flex gap-2">
-                <div
-                  className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
-                ></div>
-                <p
-                  className={`font-semibold text-[var(${eventTypesValues.bg})]`}
-                >
-                  {eventTypesValues.text} Events
-                </p>
-              </div>
-              <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
-                {eventTypesValues.value}
-              </p>
-            </div>
-          ))}
-        </div>
-        <div className="px-4 py-2">
-          <p className="text-sm font-medium">TOP EVENTS</p>
-          <ul className="flex flex-col gap-2 mt-4">
-            {isLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
-            ) : eventData && (eventData as any).events.length > 0 ? (
-              (eventData as any).events
-                .slice(0, 4)
-                .map((event: any, index: number) => {
-                  const { basic } = event || {};
-                  const { name, id } = basic || {};
-                  return (
-                    <li key={id} className="flex gap-4">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[12px] font-semibold">
-                          {index + 1}.
-                        </span>
-                      </div>
-                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                        {name}
-                      </p>
-                    </li>
-                  );
-                })
-            ) : (
-              <p className="text-[#666666] text-sm flex items-center gap-2">
-                <Image src={Disable} alt="Disable" width={15} height={15} />
-                No events found. Try expanding your preferences by selecting
-                more categories, products, or topics.
-              </p>
-            )}
-          </ul>
-        </div>
-        <Link
-          href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
-          className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
         >
-          VIEW ALL
-          <ArrowUpRight height={18} width={18} stroke="#6750a4" />
-        </Link>
+          {/* Current Year Section */}
+          <div className={compareFrom && compareTo ? "border-r" : ""}>
+            {isEventeli && (
+              <div className="px-4 py-2 border-b">
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="font-semibold text-[#6750a4]">{total}</p>
+                    <Text size="normal" color="secondary" fontWeight="regular">
+                      {columnsDropdown.find((column) => column.value === metric)
+                        ?.label ?? ""}
+                    </Text>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col px-4 py-2 gap-2 border-b">
+              {currentYearEventTypes.map((eventTypesValues) => (
+                <div
+                  key={eventTypesValues.text}
+                  className="flex justify-between"
+                >
+                  <div className="flex gap-2">
+                    <div
+                      className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                    ></div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.text} Events
+                    </p>
+                  </div>
+                  <p
+                    className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                  >
+                    {eventTypesValues.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-2">
+              <p className="text-sm font-medium">TOP EVENTS</p>
+              <ul className="flex flex-col gap-2 mt-4">
+                {iseventsLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                ) : eventData && (eventData as any).events.length > 0 ? (
+                  (eventData as any).events
+                    .slice(0, 4)
+                    .map((event: any, index: number) => {
+                      const { basic } = event || {};
+                      const { name, id } = basic || {};
+                      return (
+                        <li key={id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <span className="text-[12px] font-semibold">
+                              {index + 1}.
+                            </span>
+                          </div>
+                          <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                            {name}
+                          </p>
+                        </li>
+                      );
+                    })
+                ) : (
+                  <p className="text-[#666666] text-sm flex items-center gap-2">
+                    <Image src={Disable} alt="Disable" width={15} height={15} />
+                    No events found.
+                  </p>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Comparison Section */}
+          {compareFrom && compareTo && (
+            <div>
+              {isEventeli && (
+                <div className="px-4 py-2 border-b">
+                  <div className="flex flex-col gap-2">
+                    <div>
+                      <p className="font-semibold text-[#4B9EF4]">
+                        {previousYearTotal}
+                      </p>
+                      <Text
+                        size="normal"
+                        color="secondary"
+                        fontWeight="regular"
+                      >
+                        {columnsDropdown.find(
+                          (column) => column.value === metric
+                        )?.label ?? ""}
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col px-4 py-2 gap-2 border-b">
+                {previousYearEventTypes.map((eventTypesValues) => (
+                  <div
+                    key={eventTypesValues.text}
+                    className="flex justify-between"
+                  >
+                    <div className="flex gap-2">
+                      <div
+                        className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                      ></div>
+                      <p
+                        className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                      >
+                        {eventTypesValues.text} Events
+                      </p>
+                    </div>
+                    <p
+                      className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                    >
+                      {eventTypesValues.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="px-4 py-2">
+                <p className="text-sm font-medium">TOP EVENTS</p>
+                <ul className="flex flex-col gap-2 mt-4">
+                  {isPreviouseventsLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
+                  ) : previousYearEventData &&
+                    (previousYearEventData as any).events.length > 0 ? (
+                    (previousYearEventData as any).events
+                      .slice(0, 4)
+                      .map((event: any, index: number) => {
+                        const { basic } = event || {};
+                        const { name, id } = basic || {};
+                        return (
+                          <li key={id} className="flex gap-4">
+                            <div className="flex flex-col items-center">
+                              <span className="text-[12px] font-semibold">
+                                {index + 1}.
+                              </span>
+                            </div>
+                            <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                              {name}
+                            </p>
+                          </li>
+                        );
+                      })
+                  ) : (
+                    <p className="text-[#666666] text-sm flex items-center gap-2">
+                      <Image
+                        src={Disable}
+                        alt="Disable"
+                        width={15}
+                        height={15}
+                      />
+                      No historical events found
+                    </p>
+                  )}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+        <div
+          className={`grid ${
+            compareFrom && compareTo ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          <Link
+            href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
+            className={`px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer ${
+              compareFrom && compareTo ? "border-r" : ""
+            }`}
+          >
+            VIEW ALL
+            <ArrowUpRight height={18} width={18} stroke="#6750a4" />
+          </Link>
+          {compareFrom && compareTo && (
+            <Link
+              href={`/internal/search/events?${previousYearLink}`}
+              className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+            >
+              VIEW ALL
+              <ArrowUpRight height={18} width={18} stroke="#4B9EF4" />
+            </Link>
+          )}
+        </div>
       </div>
     );
   };
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
+    // Get the comparison option label - we'll use a generic name regardless of the comparison type
+    const comparisonLabel = "Compared Period";
+
+    // Separate year entries from threshold entries
+    const yearEntries =
+      payload?.filter(
+        (entry) =>
+          entry.id === "current_year" ||
+          (compareFrom && compareTo && entry.id === "previous_year")
+      ) || [];
+
+    const thresholdEntries =
+      payload?.filter(
+        (entry) => entry.id !== "current_year" && entry.id !== "previous_year"
+      ) || [];
+
     return (
-      <div className="flex gap-5 items-center justify-end w-fit">
-        {payload &&
-          payload.map((entry, index) => (
+      <div className={`flex flex-col ${isMobileView ? 'items-start' : 'items-end'} gap-4`}>
+        {/* Year entries row */}
+        <div className="flex gap-5 items-center">
+          {yearEntries.map((entry, index) => {
+            if (entry.id === "previous_year") {
+              entry.value = comparisonLabel;
+            }
+            return (
+              <div
+                key={`year-item-${index}`}
+                className="flex items-center gap-2"
+              >
+                <div
+                  className="w-4 h-0 border-t-2"
+                  style={{
+                    borderColor: entry.color,
+                  }}
+                ></div>
+                <TooltipProvider>
+                  <ShadcnTooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className={`cursor-pointer text-sm font-medium`}
+                        style={{
+                          color: entry.color,
+                        }}
+                      >
+                        {entry.value}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="w-60 tooltip-content-styles">
+                      <p className="font-medium text-[var(--secondary-text-color)]">
+                        {entry.tooltipDescription}
+                      </p>
+                    </TooltipContent>
+                  </ShadcnTooltip>
+                </TooltipProvider>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Threshold entries row */}
+        <div className={`flex ${isMobileView ? 'flex-wrap' : ''} gap-5 items-center`}>
+          {thresholdEntries.map((entry, index) => (
             <div
-              key={`legend-item-${index}`}
+              key={`threshold-item-${index}`}
               className="flex items-center gap-2"
             >
               <div
-                className={`w-2 h-2 rounded-full`}
+                className="w-4 h-0 border-t-2"
                 style={{
-                  backgroundColor: entry.color,
+                  borderColor: entry.color,
+                  borderStyle:
+                    entry.id === "upper_threshold" ||
+                    entry.id === "lower_threshold"
+                      ? "dashed"
+                      : "solid",
                 }}
               ></div>
-              {/* <span
-                className={`text-sm font-medium ${`text-[${entry.color}]`}`}
-              >
-                {entry.value}
-              </span> */}
               <TooltipProvider>
                 <ShadcnTooltip>
                   <TooltipTrigger asChild>
                     <span
-                      className={`cursor-pointer text-sm font-medium ${`text-[${entry.color}]`}`}
+                      className={`cursor-pointer text-sm font-medium`}
+                      style={{
+                        color: entry.color,
+                      }}
                     >
-                      {entry.value}
+                      {isMobileView && entry.value.length > 10
+                        ? entry.value === "Upper Threshold"
+                          ? "Upper"
+                          : entry.value === "Lower Threshold"
+                          ? "Lower"
+                          : entry.value
+                        : entry.value}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="w-60 tooltip-content-styles">
+                  <TooltipContent
+                    className={`${
+                      isMobileView ? "w-48" : "w-60"
+                    } tooltip-content-styles`}
+                  >
                     <p className="font-medium text-[var(--secondary-text-color)]">
                       {entry.tooltipDescription}
                     </p>
@@ -930,11 +1132,12 @@ const LineChartComponent = ({
               </TooltipProvider>
             </div>
           ))}
+        </div>
       </div>
     );
   };
 
-  if (isLoading) {
+  if (isLoading || (compareFrom && compareTo && previousYearLoading)) {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
         <Loading />
@@ -964,13 +1167,13 @@ const LineChartComponent = ({
   return (
     <div ref={chartRef}>
       <ResponsiveContainer width="100%" height={420}>
-        <AreaChart
+        <LineChart
           data={graphData}
           margin={{
-            left: 10,
-            right: 30,
-            top: 40,
-            bottom: doInvertTicks ? 30 : 0,
+            left: isMobileView ? -10 : 10,
+            right: isMobileView ? 0 : 30,
+            top: isMobileView ? 20 : 40,
+            bottom: isMobileView ? 40 : doInvertTicks ? 30 : 0,
           }}
           onClick={(e) => handleChartClick(e)}
         >
@@ -983,8 +1186,8 @@ const LineChartComponent = ({
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
-            fontSize="12px"
-            height={40}
+            fontSize={isMobileView ? "10px" : "12px"}
+            height={isMobileView ? 30 : 40}
             tick={<CustomTick />}
             ticks={generateDateIntervals(
               graphData[0].date,
@@ -993,7 +1196,11 @@ const LineChartComponent = ({
             interval={0}
             width={10}
             axisLine={false}
-            tickLine={true}
+            tickLine={isMobileView ? false : true}
+            padding={{
+              left: isMobileView ? 0 : 10,
+              right: isMobileView ? 0 : 10,
+            }}
             label={{
               style: { fill: "#615E83" },
             }}
@@ -1001,23 +1208,120 @@ const LineChartComponent = ({
           <YAxis
             dataKey="total"
             fontSize="12px"
-            width={70}
-            domain={["auto", "auto"]}
+            width={isMobileView ? 50 : 70}
+            domain={[
+              () => {
+                if (!graphData || graphData.length === 0) return 0;
+
+                const validTotals = graphData
+                  .map((item: any) => item.total)
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+                const validPrevYears = graphData
+                  .map((item: any) => item.previousYearTotal)
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 0;
+
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minValue = Math.min(minTotal, minPreviousYear, 0);
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
+                const paddedMax = overallMax * 1.1; // Add 10% padding
+
+                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const idealTickSize = range / 4;
+
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
+                let roundedTickSize = magnitude;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
+
+                return Math.floor(minValue / roundedTickSize) * roundedTickSize;
+              },
+              () => {
+                if (!graphData || graphData.length === 0) return 100;
+
+                const validTotals = graphData
+                  .map((item: any) => item.total)
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+                const validPrevYears = graphData
+                  .map((item: any) => item.previousYearTotal)
+                  .filter(
+                    (val: any) =>
+                      val !== undefined && val !== null && !isNaN(val)
+                  );
+
+                if (validTotals.length === 0 && validPrevYears.length === 0)
+                  return 100;
+
+                const minTotal =
+                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                const minPreviousYear =
+                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                const minValue = Math.min(minTotal, minPreviousYear, 0);
+                const maxTotal =
+                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                const maxPreviousYear =
+                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
+                const paddedMax = overallMax * 1.1; // Add 10% padding
+
+                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
+                const idealTickSize = range / 4;
+
+                const magnitude = Math.pow(
+                  10,
+                  Math.floor(Math.log10(idealTickSize))
+                );
+                let roundedTickSize = magnitude;
+                if (idealTickSize / magnitude >= 5)
+                  roundedTickSize = magnitude * 5;
+                else if (idealTickSize / magnitude >= 2)
+                  roundedTickSize = magnitude * 2;
+
+                return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
+              },
+            ]}
             tickCount={5}
             tickFormatter={tickFormatter}
-            label={{
-              value: label,
-              angle: -90,
-              position: "insideLeft",
-              style: { textAnchor: "middle", fill: "#7D7D7D" },
-              fontSize: "14px",
-            }}
+            label={
+              isMobileView
+                ? undefined
+                : {
+                    value: label,
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { textAnchor: "middle", fill: "#7D7D7D" },
+                    fontSize: "14px",
+                  }
+            }
             axisLine={false}
             tickLine={false}
             tick={{
               fill: "#615E83",
-              fontSize: "14px",
-              fontWeight: "500",
+              fontSize: isMobileView ? "10px" : "14px",
+              fontWeight: isMobileView ? "400" : "500",
             }}
           />
           <Tooltip
@@ -1033,129 +1337,151 @@ const LineChartComponent = ({
             />
           )}
           {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={thresholdArea[0]}
-              stroke="#398E4A"
-              strokeDasharray="12 12"
-              label={{
-                position: "insideBottomRight",
-                className: "text-[#398E4A]",
-                // value: "UPPER THRESHOLD",
-                style: {
-                  fill: "#398E4A",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: -8,
-              }}
-            />
+            <>
+              <ReferenceLine
+                y={thresholdArea[0]}
+                stroke="#398E4A"
+                strokeDasharray="12 12"
+                label={{
+                  position: "insideBottomRight",
+                  className: "text-[#398E4A]",
+                  style: {
+                    fill: "#398E4A",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: -8,
+                }}
+              />
+              <ReferenceLine
+                y={threshold}
+                stroke="#DF2670"
+                label={{
+                  position: "insideTopRight",
+                  className: "text-[#DF2670]",
+                  style: {
+                    fill: "#DF2670",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: 0,
+                }}
+              />
+              <ReferenceLine
+                y={thresholdArea[1]}
+                stroke="#FF990A"
+                strokeDasharray="12 12"
+                label={{
+                  position: "insideTopRight",
+                  className: "text-[#FF990A]",
+                  style: {
+                    fill: "#FF990A",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  },
+                  dy: 8,
+                }}
+              />
+            </>
           )}
-
-          {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={threshold}
-              stroke="#DF2670"
-              label={{
-                position: "insideTopRight",
-                className: "text-[#DF2670]",
-                // value: "AVERAGE",
-                style: {
-                  fill: "#DF2670",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: 0,
-              }}
-            />
-          )}
-          {/* <svg
-            x="800" // Adjust X position
-            y={400 - linePosition - 1} // Adjust Y position based on line
-            onMouseDown={handleDragStart}
-            onMouseMove={handleDrag}
-            onMouseUp={handleDragEnd}
-          >
-            <circle
-              cx="10"
-              cy="10"
-              r="8"
-              fill="steelblue"
-              stroke="white"
-              strokeWidth="2"
-              cursor="pointer"
-              z={200}
-            />
-          </svg> */}
-          {threshold && threshold > 0 && showThresholdLines && (
-            <ReferenceLine
-              y={thresholdArea[1]}
-              stroke="#FF990A"
-              strokeDasharray="12 12"
-              label={{
-                position: "insideTopRight",
-                className: "text-[#FF990A]",
-                // value: "LOWER THRESHOLD",
-                style: {
-                  fill: "#FF990A",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                },
-                dy: 8,
-              }}
-            />
-          )}
-          <Area
+          <Line
             type="linear"
             dataKey="total"
+            name="Selected Period"
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
-            fillOpacity={0.2}
             connectNulls={true}
-            fill="#8884d8"
             dot={<CustomDot />}
           />
+          {compareFrom && compareTo && (
+            <Line
+              type="linear"
+              dataKey="previousYearTotal"
+              name="Compared Period"
+              stroke="#4B9EF4"
+              strokeWidth={2}
+              strokeOpacity={1}
+              connectNulls={true}
+              dot={false}
+            />
+          )}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
               payload={
                 [
                   {
-                    value: "Upper Threshold",
-                    type: "circle",
-                    id: "upper_threshold",
-                    color: "#398E4A",
-                    tooltipDescription:
-                      "Represents the maximum boundary relative to the average value for this trend.",
+                    value: "Selected Period",
+                    type: "line",
+                    id: "current_year",
+                    color: "#6750a4",
+                    tooltipDescription: "Data for the current selected period",
                   },
                   {
-                    value: "Average",
-                    type: "circle",
-                    id: "average",
-                    color: "#DF2670",
-                    tooltipDescription:
-                      "The unique average value for the trend based on the selected location.",
+                    value: "Compared Period",
+                    type: "line",
+                    id: "previous_year",
+                    color: "#4B9EF4",
+                    tooltipDescription: "Data for the comparison period",
                   },
-                  {
-                    value: "Lower Threshold",
-                    type: "circle",
-                    id: "lower_threshold",
-                    color: "#FF990A",
-                    tooltipDescription:
-                      "Represents the minimum boundary relative to the average value for this trend.",
-                  },
+                  ...(showThresholdLines
+                    ? [
+                        {
+                          value: "Upper Threshold",
+                          type: "line",
+                          id: "upper_threshold",
+                          color: "#398E4A",
+                          tooltipDescription:
+                            "Represents the maximum boundary relative to the average value for this trend.",
+                          strokeDasharray: "12 12",
+                        },
+                        {
+                          value: "Average",
+                          type: "circle",
+                          id: "average",
+                          color: "#DF2670",
+                          tooltipDescription:
+                            "The unique average value for the trend based on the selected location.",
+                        },
+                        {
+                          value: "Lower Threshold",
+                          type: "line",
+                          id: "lower_threshold",
+                          color: "#FF990A",
+                          tooltipDescription:
+                            "Represents the minimum boundary relative to the average value for this trend.",
+                          strokeDasharray: "12 12",
+                        },
+                      ]
+                    : []),
                 ] as CustomPayload
               }
-              wrapperStyle={{
-                width: "auto",
-                top: -30,
-                right: 0,
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
+              wrapperStyle={
+                isMobileView
+                  ? {
+                      width: "100%",
+                      position: "relative",
+                      bottom: 54,
+                      left: 16,
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                    }
+                  : {
+                      width: "auto",
+                      top: -30,
+                      right: 0,
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }
+              }
+              verticalAlign={isMobileView ? "bottom" : "top"}
+              align={isMobileView ? "center" : "right"}
             />
           )}
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
