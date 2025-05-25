@@ -862,7 +862,7 @@ Do not include the competitor platform names in the output. Only return publicly
           <div className="flex justify-center flex-col gap-2 sm:flex-row items-center rounded-lg w-[100%] sm:w-[75%]">
             <div
               id="customTracker"
-              className="flex justify-center items-center gap-2"
+              className="flex justify-center items-center gap-2 flex-col md:flex-row"
             >
               <div>Or start from scratch</div>
               <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
