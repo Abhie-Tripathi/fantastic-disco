@@ -8,6 +8,7 @@ import { formatEventDates } from "@/utils/dateFormat";
 import { Calendar, Location } from "geist-icons";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
+import { Event } from '@/types/events';
 interface EventSuggestionItem {
   key: string | number;
   id?:any;
@@ -44,7 +45,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         // }else 
-        url=`${baseUrl}/${endpoint}?query=${searchInput}&{type==="T_EVENT_PARTICIPATIONS"?"limit=10":"limit=5"}&offset=0`;
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATIONS"?"limit=10":"limit=5"}&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -67,6 +68,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 
                 setEventSuggestion(data.companies);
               }else if(type === "T_EVENT_PARTICIPATIONS"){
+                console.log("data.events",data.events);
+                
                 setEventSuggestion(data.events)
               }
               else
@@ -134,13 +137,13 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       : item.name
                 }));
                 } else if (type === "T_EVENT_PARTICIPATIONS") {
-                  updatedData = eventSuggestion.map((item) => {
+                  updatedData = eventSuggestion.map((item:Event) => {
                     return {
                       key: item.basic.id,
-                      eventLocation:item.basic.eventLocation.city.name,
-                      eventCountry:item.basic.eventLocation.country.name,
+                      eventLocation:item?.basic?.eventLocation?.cityName,
+                      eventCountry:item?.basic?.eventLocation?.countryName,
                       name: item.basic.name || '',
-                      tableEntry: `${item.basic.name}, ${item.basic.eventLocation.city.name}, ${item.basic.eventLocation.country.name}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
+                      tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
                       eventStartDate: item.basic.startDateTime,
                       eventEndDate: item.basic.endDateTime
                     };
