@@ -5,8 +5,7 @@ import Image from 'next/image';
 import Text from "@/components/new-ui/Text";
 import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
-const TeliTemplates = ({type, isMandatory}:any) => {
-  console.log("called multiple time");
+const TeliTemplates = ({type, isMandatory, refs}:any) => {
   return (
     <div className='flex justify-center w-full bg-[var(--background-secondary-color)] h-full p-5'>
        {type==="T_LOCATION" &&

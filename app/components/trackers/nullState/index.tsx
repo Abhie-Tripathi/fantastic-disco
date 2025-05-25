@@ -17,31 +17,32 @@ const NullState = ({
   buttonUrl?: string;
 }) => {
   return (
-    <div className="flex flex-col h-full min-h-[300px] items-center justify-center gap-4 p-4 md:p-6 lg:p-8">
-      <div className="max-w-[90%] md:max-w-[80%] lg:max-w-[70%] space-y-3">
+    <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4">
+      <div className="max-w-[90%] md:max-w-[80%] lg:max-w-[70%] flex flex-col items-center gap-3">
         {title && (
-          <div className="font-semibold text-center text-sm sm:text-base lg:text-lg text-[var(--secondary-text-color)]">
+          <div className="font-semibold text-center text-xs sm:text-sm md:text-base text-[var(--secondary-text-color)]">
             {title}
           </div>
         )}
         {text && (
-          <div className="text-xs sm:text-sm text-center text-[var(--tertiary-text-color)]">
+          <div className="text-[11px] sm:text-xs md:text-sm text-center text-[var(--tertiary-text-color)]">
             {text}
           </div>
         )}
-        <div className="relative w-full aspect-square max-w-[200px] mx-auto">
+        <div className="relative w-full aspect-[4/3] max-w-[160px] mx-auto">
           <Image 
             src={image} 
             alt="zerostate" 
             className="object-contain"
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="160px"
+            priority
           />
         </div>
         {buttonText && buttonText.length > 0 && (
-          <div className="text-center pt-4">
+          <div className="text-center">
             <Link href={`${buttonUrl}`}>
-              <Button className="text-white w-auto px-6 py-2 text-sm sm:text-base">
+              <Button className="text-white w-auto px-4 py-1 text-xs sm:text-sm">
                 {buttonText}
               </Button>
             </Link>

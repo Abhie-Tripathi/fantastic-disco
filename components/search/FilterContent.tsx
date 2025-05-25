@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Filter, FilterX, Lock } from "lucide-react";
-import Image from "next/image";
-import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
-import { filters, getFilterComponent } from "@/components/search/filterUtils";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import whrbotlogo from "@/public/whrbotlogo.svg";
+import { Filter, Lock } from "lucide-react";
+import Image from "next/image";
 
 interface FilterSection {
   id: string;
@@ -32,6 +32,7 @@ interface FilterContentProps {
   createTrackerHandler?: () => void;
   searchHandler?: () => void;
   closeHandler?: (value: boolean) => void;
+  refs?:any;
 }
 
 const FilterContent = ({
@@ -40,7 +41,8 @@ const FilterContent = ({
   filterCount,
   createTrackerHandler,
   searchHandler,
-  closeHandler
+  closeHandler,
+  refs
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();
@@ -91,14 +93,14 @@ const FilterContent = ({
                 value={section.id}
                 className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
               >
-                <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
+                <AccordionTrigger id={section.id} className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
                   <div className="text-sm flex gap-2 items-center uppercase font-medium">
-                    <Filter className="w-4 h-4" />
+                    <Filter className="w-4 h-4" ref={refs?.basicFilterRef}/>
                     {section.label}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
-                  <div className="space-y-4 border-t pt-4 mt-1">
+                  <div className="space-y-4 border-t pt-4 mt-1" ref={refs?.advanceFilterRef}>
                     {section.filters
                       .filter(
                         (filter: FilterItem) =>

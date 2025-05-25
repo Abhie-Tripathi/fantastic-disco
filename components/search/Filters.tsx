@@ -1,6 +1,43 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import CompanySize from "@/app/components/prospect/Filters/companySize";
+import CompanyType from "@/app/components/prospect/Filters/companyType";
+import Department from "@/app/components/prospect/Filters/department";
+import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
+import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
+import Industry from "@/app/components/prospect/Filters/industryFilter";
+import ParticipationType from "@/app/components/prospect/Filters/participationType";
+import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
+import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
+import Seniority from "@/app/components/prospect/Filters/seniority";
+import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
+import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
+import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
+import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
+import EditionSelector from "@/components/search/advancedFilters/edition";
+import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
+import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
+import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
+import EventAnalyticsSelector from "@/components/search/advancedFilters/eventAnalytics";
+import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
+import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
+import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
+import FrequencySelector from "@/components/search/advancedFilters/frequency";
+import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
+import {
+  default as KeywordFilter,
+  default as ProductTopics,
+} from "@/components/search/advancedFilters/product&Topics";
+import CategorySelector from "@/components/search/categorySelector";
+import DateRangeSelector from "@/components/search/dateRange";
+import EventEntrySelector from "@/components/search/eventEntry";
+import EventFormatSelector from "@/components/search/eventFormat";
+import EventTypeSelector from "@/components/search/eventType";
+import LocationSelector from "@/components/search/location";
+import MultiSelectSearchBar from "@/components/search/searchbar";
+import StatusSelector from "@/components/search/status";
+import UserRatingSelector from "@/components/search/userRatingSelector";
 import {
   Accordion,
   AccordionContent,
@@ -8,65 +45,38 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import { useFilterContext } from "@/context/filterContext";
+import { useTheme } from "@/context/theme";
+import { toast } from "@/hooks/use-toast";
+import { useFilterState } from "@/hooks/useFilterState";
+import whrbotlogo from "@/public/whrbotlogo.svg";
+import { GAEvent } from "@/utils/GAEvent";
 import {
-  FilterX,
+  Calendar1,
   ChevronLeft,
   ChevronRight,
   Filter,
-  Calendar1,
-  Building,
-  UserSearch,
+  FilterX,
   Lock,
+  UserSearch,
 } from "lucide-react";
-import { useCallback, useState, useMemo } from "react";
-import Industry from "@/app/components/prospect/Filters/industryFilter";
-import { useFilterContext } from "@/context/filterContext";
-import CompanySize from "@/app/components/prospect/Filters/companySize";
-import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
-import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
-import ParticipationType from "@/app/components/prospect/Filters/participationType";
-import LocationSelector from "@/components/search/location";
-import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
-import { useFilterState } from "@/hooks/useFilterState";
-import EventTypeSelector from "@/components/search/eventType";
-import CategorySelector from "@/components/search/categorySelector";
-import EventFormatSelector from "@/components/search/eventFormat";
-import DateRangeSelector from "@/components/search/dateRange";
-import StatusSelector from "@/components/search/status";
-import EventEntrySelector from "@/components/search/eventEntry";
-import UserRatingSelector from "@/components/search/userRatingSelector";
-import EditionSelector from "@/components/search/advancedFilters/edition";
-import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
-import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
-import FrequencySelector from "@/components/search/advancedFilters/frequency";
-import KeywordFilter from "@/components/search/advancedFilters/product&Topics";
-import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
-import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
-import EventAnalyticsSelector from "@/components/search/advancedFilters/eventAnalytics";
-import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
-import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
-import AudienceQualitySelector from "@/components/search/advancedFilters/audienceQualityScores";
-import ExhibitorQualitySelector from "@/components/search/advancedFilters/exhibitorQualityScores";
-import CompanyType from "@/app/components/prospect/Filters/companyType";
-import Seniority from "@/app/components/prospect/Filters/seniority";
-import Department from "@/app/components/prospect/Filters/department";
-import AudienceZoneSatusSelector from "@/components/search/advancedFilters/audienceZone";
-import AudienceDesAndDep from "@/components/search/advancedFilters/audienceDes&Dep";
-import ProductTopics from "@/components/search/advancedFilters/product&Topics";
-import ProductTopicsNew from "@/app/components/prospect/Filters/productTopicsNew";
-import MultiSelectSearchBar from "@/components/search/searchbar";
-import AudienceSpread from "@/components/search/advancedFilters/audienceSpread";
-import { Switch } from "@/components/ui/switch";
-import whrbotlogo from "@/public/whrbotlogo.svg";
 import Image from "next/image";
-import { isEventeli } from "@/config";
 import Link from "next/link";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
-import { GAEvent } from "@/utils/GAEvent";
-import { toast } from "@/hooks/use-toast";
-import { useTheme } from "@/context/theme";
 import FilterContent from "./FilterContent";
 import { useSearchParams } from 'next/navigation';
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface FilterSection {
   id: string;
@@ -475,27 +485,6 @@ const geoFilters: {
         },
       ],
     },
-    {
-      id: "audience-intel",
-      label: "Audience Intel",
-      filters: [
-        // {
-        //   id: "audienceSpread",
-        //   component: "AudienceZoneSatusSelector",
-        //   enabled: !isEventeli,
-        // },
-        {
-          id: "designations",
-          component: "AudienceDesAndDep",
-          enabled: true,
-        },
-        // {
-        //   id: "audienceSpreadRegions",
-        //   component: "AudienceSpread",
-        //   enabled: true,
-        // },
-      ],
-    },
   ],
   companies: [
     {
@@ -695,6 +684,7 @@ interface FiltersProps {
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
   children?: React.ReactNode;
+  refs?:any
 }
 
 const Filters = ({
@@ -703,10 +693,12 @@ const Filters = ({
   type,
   children,
   source,
+  refs
 }: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
   const { getFilterValue } = useFilterState();
+  const isMobile = useIsMobile();
   const { theme } = useTheme();
   const path=useSearchParams();
   const filterCount = useMemo(() => {
@@ -742,6 +734,148 @@ const Filters = ({
     }
   };
 
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState<boolean>(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // const joyrideCallback = (data: CallBackProps) => {
+  //   const { status, type, step } = data;
+  //   console.log(step, type);
+  //   if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+  //     if (typeof window !== "undefined") {
+  //       let walkthroughCompleted: string[] = JSON.parse(
+  //         localStorage.getItem("walkthroughCompleted") || "[]"
+  //       );
+
+  //       if (!walkthroughCompleted.includes("research")) {
+  //         walkthroughCompleted.push("research");
+
+  //         localStorage.setItem(
+  //           "walkthroughCompleted",
+  //           JSON.stringify(walkthroughCompleted)
+  //         );
+  //       }
+  //     }
+  //     setRun(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (mounted) {
+      const handle = requestAnimationFrame(() => {
+        const newSteps: Step[] = [
+          {
+            target: "#research-tabs",
+            title: "Research",
+            content:
+              "Track events, companies, or people to stay on top of what matters most.",
+            disableBeacon: true,
+          },
+          ...(!isMobile
+            ? [
+                {
+                  target: "#basic-filters",
+                  title: "Basic Filters",
+                  content:
+                    "Explore the basic filters to quickly refine your results by category, date, and location.",
+                  disableBeacon: true,
+                },
+                {
+                  target: "#advanced-details",
+                  title: "Advanced Details",
+                  content:
+                    "Unlock advanced filters and drill down into your data.",
+                  disableBeacon: true,
+                },
+                {
+                  target: "#insights-scores",
+                  title: "Insights & Scores",
+                  content: isEventeli
+                    ? "Insight scores include estimated visitors, estimated exhibitors, ranking and analytics to help you assess each event’s impact."
+                    : "Insight scores include estimated visitors, estimated exhibitors, and ranking to help you assess each event’s impact.",
+                  disableBeacon: true,
+                },
+                ...(!isEventeli
+                  ? [
+                      {
+                        target: "#audience-intel",
+                        title: "Audience Intel",
+                        content:
+                          "Audience Intel gives you the where, who, and how of your audience for informed targeting.",
+                        disableBeacon: true,
+                      },
+                    ]
+                  : []),
+              ]
+            : [
+                {
+                  target: "#filters-mobile",
+                  title: "Filters",
+                  content:
+                    "Unlock all basic and advanced filters and save this search.",
+                  disableBeacon: true,
+                },
+              ]),
+          {
+            target: isMobile
+              ? "#research-view-mobile"
+              : (document.querySelectorAll(
+                  "#research-view-desktop"
+                )[1] as HTMLElement) ?? "",
+            title: "View",
+            content: `Switch between list, ${
+              !isMobile ? "table," : ""
+            } map, or calendar views to see data from any angle.`,
+            disableBeacon: true,
+          },
+          ...(!isEventeli
+            ? [
+                {
+                  target: isMobile
+                    ? "#sorting-dropdown-mobile"
+                    : (document.querySelectorAll(
+                        "#sorting-dropdown-desktop"
+                      )[1] as HTMLElement) ?? "",
+                  title: "Sorting",
+                  content:
+                    "Sort by date or advanced intel and insights scores to surface your top priorities.",
+                  disableBeacon: true,
+                },
+              ]
+            : []),
+          ...(!isMobile
+            ? [
+                {
+                  target: "#save-search-btn",
+                  title: "Save Search ",
+                  content:
+                    "Save this search to revisit your filtered results anytime with one click.",
+                  disableBeacon: true,
+                },
+              ]
+            : []),
+        ];
+
+        const walkthroughCompleted: string[] = JSON.parse(
+          localStorage.getItem("walkthroughCompleted") || "[]"
+        );
+
+        if (!walkthroughCompleted.includes("research")) {
+          setTimeout(() => {
+            setSteps(newSteps);
+            setRun(true);
+          }, 2000);
+        }
+      });
+
+      return () => cancelAnimationFrame(handle);
+    }
+  }, [mounted]);
+
   return (
     <div className="w-full flex flex-col h-full bg-background">
       {path?.get('type')!=="T_CUSTOM" &&
@@ -759,7 +893,10 @@ const Filters = ({
       {source!=="tracker" &&
         <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
           <Tabs defaultValue={type} value={type}>
-            <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
+            <TabsList
+              className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
+              id="research-tabs"
+            >
               <Link href="/internal/search/events" className="contents">
                 <TabsTrigger
                   value="events"
@@ -802,6 +939,7 @@ const Filters = ({
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
+            refs={refs}
           />
         </div>
         {source!=="tracker" &&

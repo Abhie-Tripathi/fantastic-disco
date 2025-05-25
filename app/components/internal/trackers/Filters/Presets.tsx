@@ -14,17 +14,15 @@ import CategorySelector from "@/components/search/categorySelector";
 import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import { useFilterContext } from "@/context/filterContext";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Props {
   template: any;
   handlePresetClick: any;
-  setShowTemplate?:any;
+  setShowTemplate?:(val:boolean)=>void;
 }
 
-const Presets = ({ template, handlePresetClick, setShowTemplate }: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-  const isMobile= useIsMobile();
   console.log(template.name);
   
   const {getLocalFilterValue, localFilters}=useFilterContext();
@@ -175,7 +173,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate }: Props) => {
           {totalCount}
         </span>
         </div>
-        <div className="block md:hidden" onClick={()=>setShowTemplate(false)}>X</div>
+        <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
       </div>
       
       <div className="flex gap-2 mt-4 mx-auto w-full md:w-[95%]">

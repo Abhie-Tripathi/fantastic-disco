@@ -317,7 +317,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signOut = useCallback(async () => {
     setUser(null);
     deleteLocalStorage();
-    localStorage.removeItem("walkthroughCompleted");
+    // localStorage.removeItem("walkthroughCompleted");
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     await request(endpoints.auth.logout, {
       method: "POST",
@@ -346,14 +346,14 @@ export const AuthContextProvider = ({ children }: any) => {
         }
 
         if (!result.user.isNewUser) {
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(["research"])
-          );
+          // localStorage.setItem(
+          //   "walkthroughCompleted",
+          //   JSON.stringify(["research"])
+          // );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           router.push("/internal");
         } else {
-          localStorage.removeItem("walkthroughCompleted");
+          // localStorage.removeItem("walkthroughCompleted");
           router.push("/signup");
         }
       }
@@ -388,10 +388,10 @@ export const AuthContextProvider = ({ children }: any) => {
           }
 
           if (!result.user.isNewUser) {
-            localStorage.setItem(
-              "walkthroughCompleted",
-              JSON.stringify(["research"])
-            );
+            // localStorage.setItem(
+            //   "walkthroughCompleted",
+            //   JSON.stringify(["research"])
+            // );
             if (redirectPath) router.push(redirectPath);
             else router.push("/internal/search/events");
           } else {
@@ -442,7 +442,7 @@ export const AuthContextProvider = ({ children }: any) => {
   };
 
   const signInActions = (redirectTo: string | undefined) => {
-    localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
+    // localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     router.push(redirectTo || "/internal");
   };

@@ -10,6 +10,9 @@ import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
+import { PresetData } from '@/types/trackers';
 import EventTypeSelector from "@/components/search/eventType";
 import CategorySelector from "@/components/search/categorySelector";
 import EventFormatSelector from '@/components/search/eventFormat';
@@ -37,7 +40,6 @@ import Speaking from "/public/speaking.svg";
 import Keywords from "/public/keywords.svg";
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
-import { PresetData } from '@/types/trackers';
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
@@ -471,6 +473,33 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
   const filterCount = Object.keys(localFilters).length;
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const refs = {
+    additionalFilterRef: useRef<HTMLDivElement>(null),
+    presetRef: useRef<HTMLDivElement>(null),
+    templateRef: useRef<HTMLDivElement>(null),
+    basicFilterRef: useRef<HTMLDivElement>(null),
+    advanceFilterRef: useRef<HTMLDivElement>(null)
+  };
+const stepsConfig =[
+    {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
+      ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
+      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+    {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
+    {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
+    {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
+    {"key":"advanceFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."}
+  ]
+  const { steps, run, setRun } = useWalkthrough({
+    refs,
+    stepsConfig,
+    storageKey: "walkthroughCompleted",
+    currentPath: `trackers/create?type=${type}`,
+    type: type || "",
+    conditionalKeys: (type) =>
+      type === "T_CUSTOM"
+        ? ["basicFilterRef", "advanceFilterRef"]
+        : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+  });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
@@ -1275,8 +1304,18 @@ const handleShowTemplate=()=>{
   }
 }
 if(isLoading) return <Loading/>
+console.log(refs);
 
 return (
+  <>
+  {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName={`trackers/create?type=${type}`}
+          />
+          )}
   <div className="w-full md:flex md:items-center md:justify-center">
 
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
@@ -1404,7 +1443,7 @@ return (
         </div>
       )}
     <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`}>
-        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`}>
+        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} ref={refs.additionalFilterRef}>
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>
     </div>
@@ -1425,10 +1464,10 @@ return (
       />
     </div>
     {(isEventeli && type!=="T_CUSTOM")&&
-    <TeliTemplates type={type} isMandatory={isMandatory}/>}
+    <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div className="flex gap-4 flex-col w-full">
-      <div className={`!hidden md:!flex card ${styles.competitor}`}>
+      <div className={`!hidden md:!flex card ${styles.competitor}`} ref={refs.templateRef}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -1736,9 +1775,11 @@ return (
 
     </div>
   </div>
-  {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+  {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
-        <Presets template={template} handlePresetClick={handlePresetClick} /> 
+      <div ref={refs.presetRef}>
+        <Presets template={template} handlePresetClick={handlePresetClick}/> 
+        </div>
     </div>
       }
   </div>
@@ -1759,10 +1800,9 @@ return (
           {" "} Add manually or choose a pre-set
           </div>
           <div className="flex gap-1.5">
-          {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type))&&
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
-          </Button>}
+          </Button>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
           <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
           </Button>
@@ -1985,6 +2025,7 @@ return (
 
             )}
   </div>
+  </>
 );
 };
 

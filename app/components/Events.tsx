@@ -1,43 +1,41 @@
-import {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
 import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
+import FilterContent from "@/components/search/FilterContent";
+import Alerts from "@/components/search/alerts";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import EventCount from "@/components/search/eventCount";
+import List from "@/components/search/list";
+import SortDropdown from "@/components/search/sortDropdown";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
-import List from "@/components/search/list";
-import {
-  CalendarIcon,
-  Globe,
-  ListIcon,
-  TableIcon,
-  Filter,
-  FilterX,
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EventCount from "@/components/search/eventCount";
-import { useDefaultFilters } from "@/hooks/useDefaultFilters";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useFilterContext } from "@/context/filterContext";
-import { useToast } from "@/hooks/use-toast";
-import Alerts from "@/components/search/alerts";
-import SortDropdown from "@/components/search/sortDropdown";
-import { isEventeli } from "@/config";
-import { CallBackProps, STATUS, Step } from "react-joyride";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import FilterContent from "@/components/search/FilterContent";
-import { GAEvent } from "@/utils/GAEvent";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import { useFilterContext } from "@/context/filterContext";
+import { useToast } from "@/hooks/use-toast";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { GAEvent } from "@/utils/GAEvent";
+import {
+  CalendarIcon,
+  Filter,
+  FilterX,
+  Globe,
+  ListIcon,
+  TableIcon,
+} from "lucide-react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -58,53 +56,6 @@ const Events = () => {
     setShowFilter(false);
   }, []);
 
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [run, setRun] = useState<boolean>(true);
-
-  const saveSearchRef = useRef(null);
-
-  const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      if (typeof window !== "undefined") {
-        let walkthroughCompleted: string[] = JSON.parse(
-          localStorage.getItem("walkthroughCompleted") || "[]"
-        );
-
-        if (!walkthroughCompleted.includes("research")) {
-          walkthroughCompleted.push("research");
-
-          localStorage.setItem(
-            "walkthroughCompleted",
-            JSON.stringify(walkthroughCompleted)
-          );
-        }
-      }
-      setRun(false);
-    }
-  };
-
-  useEffect(() => {
-    const newSteps: Step[] = [
-      {
-        target: saveSearchRef.current || "",
-        title: "Save Search",
-        content: "Save this search to add it as tracker",
-        disableBeacon: true,
-      },
-    ];
-
-    if (typeof window !== "undefined") {
-      const walkthroughCompleted: string[] = JSON.parse(
-        localStorage.getItem("walkthroughCompleted") || "[]"
-      );
-      if (!walkthroughCompleted.includes("research")) {
-        setSteps(newSteps);
-        setRun(true);
-      }
-    }
-  }, []);
-
   const onTabsChange = (value: string) => {
     setFilter("view", value);
     setShowViewDropdown(false);
@@ -122,7 +73,7 @@ const Events = () => {
     if (isMobile && selectedView == "table") {
       setFilter("view", "list");
     }
-  }, [isMobile, searchParams]);
+  }, [isMobile, searchParams, selectedView]);
 
   const filtersCount = (function () {
     const excludedFilters = [
@@ -165,7 +116,10 @@ const Events = () => {
             className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
-            <div className="justify-center hidden md:flex">
+            <div
+              id="research-view-desktop"
+              className="justify-center hidden md:flex"
+            >
               <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
                 <TabsTrigger
                   value="table"
@@ -197,7 +151,10 @@ const Events = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            <div className="hidden md:flex justify-end gap-2 ">
+            <div
+              id="sorting-dropdown-desktop"
+              className="hidden md:flex justify-end gap-2 "
+            >
               {/* <Button
                 variant="outline"
                 className="flex items-center gap-2"
@@ -220,6 +177,7 @@ const Events = () => {
               >
                 <PopoverTrigger asChild>
                   <Button
+                    id="research-view-mobile"
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 border"
@@ -280,6 +238,7 @@ const Events = () => {
                 selectedView == "") && <SortDropdown compact />}
 
               <Button
+                id="filters-mobile"
                 onClick={toggleFilterHandler}
                 variant={filtersCount > 0 ? "secondary" : "ghost"}
                 size="icon"
