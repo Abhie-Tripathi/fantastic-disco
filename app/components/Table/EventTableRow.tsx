@@ -718,7 +718,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         <TooltipProvider>
           <Tooltip>
           <TooltipTrigger>
-              {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")?.[0].split("_")[0]}
+              {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")?.[0]?.split("_")[0]}
           </TooltipTrigger>
           <TooltipContent>
             {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")?.map((item:string, index:number)=>(
