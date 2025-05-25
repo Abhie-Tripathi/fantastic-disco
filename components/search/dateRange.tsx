@@ -309,7 +309,8 @@ export default function DateRangeSelector({
         </PopoverTrigger>
       )}
       {type === "T_GEOTIME" ? (
-        <DateRangePopup
+        !isMobile ?
+        (<DateRangePopup
           type={type}
           presets={presets}
           handlePresetChange={handlePresetChange}
@@ -319,7 +320,18 @@ export default function DateRangeSelector({
           calendarDate={calendarDate}
           setCalendarDate={setCalendarDate}
           enableCompareOptions={false}
-        />
+        />):(
+          <MobileDateRangePopup
+                presets={presets}
+                handlePresetChange={handlePresetChange}
+                selectedPreset={selectedPreset}
+                dateRange={dateRange}
+                handleDateSelect={handleDateSelect}
+                calendarDate={calendarDate}
+                setCalendarDate={setCalendarDate}
+                enableCompareOptions={enableCompareOptions}
+              />
+        )
       ) : (
         <>
           {!isMobile ? (

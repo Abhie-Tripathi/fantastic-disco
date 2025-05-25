@@ -152,7 +152,8 @@ const Index = () => {
       <div
         className={`sticky h-[60px] px-[10px] hidden md:flex justify-between border-b border-b-[var(--border-color)] ${
           isEventeli ? "top-[61px]" : "top-[67px]"
-        } bg-[var(--primary-foreground)] z-20  top-[67px]`}
+        } bg-[var(--primary-foreground)] top-[67px]`}
+        style={{"zIndex":"21"}}
       >
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link

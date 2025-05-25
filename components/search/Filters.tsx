@@ -66,6 +66,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/context/theme";
 import FilterContent from "./FilterContent";
+import { useSearchParams } from 'next/navigation';
 
 interface FilterSection {
   id: string;
@@ -693,7 +694,7 @@ interface FiltersProps {
   source?:string;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Filters = ({
@@ -707,7 +708,7 @@ const Filters = ({
     useFilterContext();
   const { getFilterValue } = useFilterState();
   const { theme } = useTheme();
-
+  const path=useSearchParams();
   const filterCount = useMemo(() => {
     const excludedFilters = [
       "active_gte",
@@ -743,6 +744,7 @@ const Filters = ({
 
   return (
     <div className="w-full flex flex-col h-full bg-background">
+      {path?.get('type')!=="T_CUSTOM" &&
       <button
         onClick={onToggleCollapse}
         className="md:flex hidden group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 items-center justify-center transition-all duration-200"
@@ -752,7 +754,7 @@ const Filters = ({
         ) : (
           <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
-      </button>
+      </button>}
       <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "pt-4 pl-6 h-[calc(100vh-60px)]" : "h-full"}`}>
       {source!=="tracker" &&
         <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">

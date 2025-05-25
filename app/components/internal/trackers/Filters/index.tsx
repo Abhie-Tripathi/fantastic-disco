@@ -37,6 +37,7 @@ import Speaking from "/public/speaking.svg";
 import Keywords from "/public/keywords.svg";
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
+import { PresetData } from '@/types/trackers';
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
@@ -398,14 +399,22 @@ const templates = [
   {
     name: "T_VENUE",
     templateName: "Venue",
+    description:"Define a specific venue's latitude and longitude, and track events within a set radius to capture nearby activity."
   },
   {
     name: "T_LOCATION",
+    description:"Keep a close eye on event activity within a specific city, state, or country to identify trends in new or canceled events.",
     templateName: "Location",
   },
   {
     name: "T_GEOTIME",
-    templateName:"Geo-Time"
+    templateName:"Geo-Time",
+    description:"Track events happening at a specific location over a defined date range to analyze both geographical and temporal trends."
+  },
+  {
+    name:"T_CUSTOM",
+    templateName:"Custom",
+    description:"Select from the available data filters to create a tracker."
   }
 ]
 
@@ -420,10 +429,11 @@ const Pages = () => {
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [showTemplate,setShowTemplate] = useState(false);
-  const [showFilters, setShowFilters]=useState(false);
+
   const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
+  const [showFilters, setShowFilters]=useState(false);
   const defaultType="T_CUSTOM";
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [opend,setOpend]=useState(false);
@@ -1269,7 +1279,7 @@ if(isLoading) return <Loading/>
 return (
   <div className="w-full md:flex md:items-center md:justify-center">
 
-  <div className="w-full md:w-[calc(100vw-134px)]">
+  <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
       <Link
@@ -1310,8 +1320,19 @@ return (
       />
     </div>
   </div>
+  {type==="T_CUSTOM"&&
+  <div className="block md:hidden mt-6">
+    <FilterContent
+    type={"events"}
+    filterCount={0}
+    createTrackerHandler={saveTrackerHandler}
+    closeHandler={setShowFilters}
+    // searchHandler={searchHandler}
+  />
+  </div>
+    }
   <div
-    className="z-[11] pt-4 bg-[var(--primary-foreground)] w-full hidden md:flex"
+    className={`z-[11]  bg-[var(--primary-foreground)] w-full hidden md:flex ${pathName[pathName.length - 1] === "create" ? 'pt-4':'pt-0'}`}
     style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "0px", zIndex:'11' }}
   >
     <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
@@ -1403,7 +1424,7 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    {isEventeli && 
+    {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div className="flex gap-4 flex-col w-full">
@@ -1420,6 +1441,7 @@ return (
           {" "} Please upload or manually enter the information
           </div>
           <div className="flex gap-1">
+          
           <Button
                     variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
                     onClick={handleShowTemplate}
@@ -1722,6 +1744,7 @@ return (
   </div>
   
   </div>
+  {type!=="T_CUSTOM"&&
   <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
  {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
         {/* <div className={styles.competitorHead}>
@@ -1736,9 +1759,10 @@ return (
           {" "} Add manually or choose a pre-set
           </div>
           <div className="flex gap-1.5">
+          {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type))&&
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
-          </Button>
+          </Button>}
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
           <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
           </Button>
@@ -1912,7 +1936,8 @@ return (
               {/* } */}
           </div>
         }
-  </div>}
+  </div>} 
+    
     {showFilters && 
     <div className={`card ${styles.competitor} max-h-[80vh] overflow-scroll`}>
     <FilterContent
@@ -1931,7 +1956,7 @@ return (
     </div>
     }
   </div>
-  
+  }
   {del &&
             (
               <div className={styles.shareModal} >
