@@ -456,38 +456,35 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
             </div>
             <div className={`flex justify-between items-center md:mx-[80px]`}>
               <div className="flex items-center gap-2">
-                {countLoading ? (
-                  <Loader2 className="animate-spin text-primary" />
-                ) : (
-                  <Badge className="bg-primary text-white">
-                    {new Intl.NumberFormat("en", {
-                      notation: "compact",
-                      maximumFractionDigits: 2,
-                    }).format(
-                      coordinateView === "savedEvents"
-                        ? bookmarkData.totalEvents || 0
-                        : eventCount || 0
-                    )}
-                  </Badge>
-                )}
-                <p className="text-primary font-semibold">Events</p>
-              </div>
-
-              <div className="flex items-center justify-end gap-3">
                 <Tabs
                   value={coordinateView}
                   onValueChange={toggleBookmarkView}
                   className="w-full"
                 >
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger className="px-2" value="enquiryEvents">
-                      Shortlisted
+                    <TabsTrigger className="px-2 gap-2" value="enquiryEvents">
+                      All Events
+                      <Badge className="bg-primary text-white px-1 py-0">
+                        {new Intl.NumberFormat("en", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(eventCount || 0)}
+                      </Badge>
                     </TabsTrigger>
-                    <TabsTrigger className="px-2" value="savedEvents">
-                      Bookmarked
+                    <TabsTrigger className="px-2 gap-2" value="savedEvents">
+                      My Events
+                      <Badge className="bg-primary text-white px-1 py-0">
+                        {new Intl.NumberFormat("en", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(bookmarkData.totalEvents || 0)}
+                      </Badge>
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
+              </div>
+
+              <div className="flex items-center justify-end gap-3">
 
                 <AddEventModal />
 
