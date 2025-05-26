@@ -985,7 +985,7 @@ const TestPeriodicAnalytics = () => {
                         }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
                           trends.slug === "date"
-                            ? "sticky left-0 z-30 max-w-[100px] md:max-w-[340px]"
+                            ? "sticky left-0 !z-50 max-w-[100px] md:max-w-[340px]"
                             : ""
                         } ${isMobileView ? "text-xs px-1 py-1" : "px-2 py-2"}`}
                       >
