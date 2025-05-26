@@ -73,15 +73,13 @@ export default function KeywordFilter({
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
           includeKeywords[0]
-        }.Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
-        "data": [
-          ["keyword 1" ],
-          ["keyword 2" ],
-          ["keyword 3" ],
-          ["keyword 4" ],
-          ["keyword 5" ]
-        ]
-      }.`
+        }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+          "data": [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ]
+      }.  Do not show example values and don't include [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ] in response. If no data is found, respond in this format: {\"data\": []}`
       );
     } else if (
       excludeKeywords.length > 0 &&
@@ -93,14 +91,12 @@ export default function KeywordFilter({
         `List top 5 keywords similar to ${
           excludeKeywords[0]
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
-        "data": [
-          ["keyword 1" ],
-          ["keyword 2" ],
-          ["keyword 3" ],
-          ["keyword 4" ],
-          ["keyword 5" ]
-        ]
-      }.`
+          "data": [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ]
+      }.  Do not show example values and don't include [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ] in response. If no data is found, respond in this format: {\"data\": []}`
       );
     }
   }, [
