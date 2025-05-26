@@ -155,11 +155,7 @@ const EventTrends = () => {
   const { getFilterValue } = useFilterState();
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const metric = getFilterValue("columns") as
-    | "eventCount"
-    | "predictedAttendance"
-    | "inboundEstimate"
-    | "internationalEstimate";
+  const metric = getFilterValue("columns").split(",")
   const ViewTemplates = isEventeli ? geoViewTemplates : gtmViewTemplates;
 
   const activeView = (getFilterValue("view") as "line" | "treemap" | "table")

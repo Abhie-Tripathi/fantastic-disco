@@ -50,6 +50,7 @@ import {
   useSearchParams,
   ReadonlyURLSearchParams,
 } from "next/navigation";
+import React from "react";
 
 interface IProps {
   showLegend: boolean;
@@ -261,37 +262,52 @@ const LineChartComponent = ({
         });
 
         if (comparisonItem) {
-          return {
-            ...currentItem,
-            [`previousYear${primaryMetric}`]: comparisonItem[primaryMetric],
-            previousYearSocial: comparisonItem.social,
-            previousYearBusiness: comparisonItem.business,
-            ...(secondaryMetric && {
-              [`previousYear${secondaryMetric}`]:
-                comparisonItem[secondaryMetric],
-              [`previousYearSocial${secondaryMetric}`]:
-                comparisonItem[`social${secondaryMetric}`],
-              [`previousYearBusiness${secondaryMetric}`]:
-                comparisonItem[`business${secondaryMetric}`],
-            }),
-          };
+          // Create a new object with all current metrics
+          const result = { ...currentItem };
+
+          // Add previous year data for all metrics
+          metrics.forEach(metric => {
+            result[`previousYear${metric}`] = comparisonItem[metric];
+            
+            // Handle social and business breakdowns if they exist
+            if (comparisonItem[`social${metric}`] !== undefined) {
+              result[`previousYearSocial${metric}`] = comparisonItem[`social${metric}`];
+            }
+            if (comparisonItem[`business${metric}`] !== undefined) {
+              result[`previousYearBusiness${metric}`] = comparisonItem[`business${metric}`];
+            }
+          });
+
+          // Add general social and business data if they exist
+          if (comparisonItem.social !== undefined) {
+            result.previousYearSocial = comparisonItem.social;
+          }
+          if (comparisonItem.business !== undefined) {
+            result.previousYearBusiness = comparisonItem.business;
+          }
+
+          return result;
         }
 
         return currentItem;
       });
 
-      setPredictedData(combinedData);
+      // Only update state if the data has actually changed
+      if (JSON.stringify(combinedData) !== JSON.stringify(predictedData)) {
+        setPredictedData(combinedData);
+      }
     }
   }, [
-    eventTrendsData,
-    previousYearData,
-    primaryMetric,
-    secondaryMetric,
+    eventTrendsData?.groupedData,
+    previousYearData?.groupedData,
+    metrics,
     compareFrom,
     compareTo,
-    searchParams,
+    searchParams.get("active_gte"),
+    searchParams.get("active_lte"),
   ]);
 
+  // Remove the separate useEffect for trendsData
   useEffect(() => {
     if (trendsData === undefined) {
       setPredictedData(undefined);
@@ -823,10 +839,18 @@ const LineChartComponent = ({
         const label =
           columnsDropdown.find((column) => column.value === metric)?.label ??
           metric;
+
+        // Format the number to be more readable
+        const formattedValue = new Intl.NumberFormat('en-US', {
+          notation: 'compact',
+          maximumFractionDigits: 1,
+          compactDisplay: 'short'
+        }).format(value);
+
         return (
           <div key={key} className="flex justify-between">
             <span className="text-gray-500">{label}</span>
-            <span className="font-medium">{value}</span>
+            <span className="font-medium">{formattedValue}</span>
           </div>
         );
       };
@@ -839,15 +863,24 @@ const LineChartComponent = ({
         >
           <div className="space-y-2">
             <div className="text-sm">
-              {compareFrom && compareTo ? (
-                <div className="font-medium text-gray-600">
-                  Selected Date ({format(new Date(date), "d MMM yyyy")})
-                </div>
-              ) : (
-                <div className="font-medium text-gray-600">
-                  {format(new Date(date), "d MMM yyyy")}
-                </div>
-              )}
+              <div className="flex justify-between items-center">
+                {compareFrom && compareTo ? (
+                  <div className="font-medium text-gray-600">
+                    Selected Date ({format(new Date(date), "d MMM yyyy")})
+                  </div>
+                ) : (
+                  <div className="font-medium text-gray-600">
+                    {format(new Date(date), "d MMM yyyy")}
+                  </div>
+                )}
+                <Link
+                  href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
+                  className="flex items-center gap-1 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
+                >
+                  View All
+                  <ArrowUpRight height={16} width={16} stroke="#6750a4" />
+                </Link>
+              </div>
               <div className="mt-1">
                 {leftAxisMetric && renderMetricValue(leftAxisMetric)}
                 {activeRightAxisMetrics.map(
@@ -858,8 +891,17 @@ const LineChartComponent = ({
 
             {compareFrom && compareTo && (
               <div className="text-sm pt-2 border-t border-gray-200">
-                <div className="font-medium text-gray-600">
-                  Compared Date ({format(comparisonDate, "d MMM yyyy")})
+                <div className="flex justify-between items-center">
+                  <div className="font-medium text-gray-600">
+                    Compared Date ({format(comparisonDate, "d MMM yyyy")})
+                  </div>
+                  <Link
+                    href={`/internal/search/events?${previousYearLink}`}
+                    className="flex items-center gap-1 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+                  >
+                    View All
+                    <ArrowUpRight height={16} width={16} stroke="#4B9EF4" />
+                  </Link>
                 </div>
                 <div className="mt-1">
                   {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
@@ -956,6 +998,8 @@ const LineChartComponent = ({
         });
       }
     }
+
+    console.log(tooltipPayload);
 
     return (
       <div
@@ -1499,118 +1543,119 @@ const LineChartComponent = ({
               style: { fill: "#615E83" },
             }}
           />
-          <YAxis
-            yAxisId="left"
-            dataKey={primaryMetric}
-            fontSize="12px"
-            width={isMobileView ? 50 : 70}
-            domain={[
-              () => {
-                if (!graphData || graphData.length === 0) return 0;
-                const validTotals = graphData
-                  .map((item: any) => item[primaryMetric])
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+          {leftAxisMetric && (
+            <YAxis
+              yAxisId="left"
+              dataKey={primaryMetric}
+              fontSize="12px"
+              width={isMobileView ? 55 : 70}
+              domain={[
+                () => {
+                  if (!graphData || graphData.length === 0) return 0;
+                  const validTotals = graphData
+                    .map((item: any) => item[primaryMetric])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${primaryMetric}`])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  if (validTotals.length === 0 && validPrevYears.length === 0)
+                    return 0;
+                  const minTotal =
+                    validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear =
+                    validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal =
+                    validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear =
+                    validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
                   );
-                const validPrevYears = graphData
-                  .map((item: any) => item[`previousYear${primaryMetric}`])
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return Math.floor(minValue / roundedTickSize) * roundedTickSize;
+                },
+                () => {
+                  if (!graphData || graphData.length === 0) return 100;
+                  const validTotals = graphData
+                    .map((item: any) => item[primaryMetric])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${primaryMetric}`])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  if (validTotals.length === 0 && validPrevYears.length === 0)
+                    return 100;
+                  const minTotal =
+                    validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear =
+                    validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal =
+                    validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear =
+                    validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
                   );
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 0;
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
-                const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
-                const paddedMax = overallMax * 1.1;
-                const range = Math.max(paddedMax - minValue, 1);
-                const idealTickSize = range / 4;
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
-                let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-                return Math.floor(minValue / roundedTickSize) * roundedTickSize;
-              },
-              () => {
-                if (!graphData || graphData.length === 0) return 100;
-                const validTotals = graphData
-                  .map((item: any) => item[primaryMetric])
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
-                const validPrevYears = graphData
-                  .map((item: any) => item[`previousYear${primaryMetric}`])
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
-                  );
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 100;
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
-                const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
-                const paddedMax = overallMax * 1.1;
-                const range = Math.max(paddedMax - minValue, 1);
-                const idealTickSize = range / 4;
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
-                let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-                return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
-              },
-            ]}
-            tickCount={5}
-            tickFormatter={tickFormatter}
-            label={
-              isMobileView
-                ? undefined
-                : {
-                    value: primaryLabel,
-                    angle: -90,
-                    position: "insideLeft",
-                    style: { textAnchor: "middle", fill: "#7D7D7D" },
-                    fontSize: "14px",
-                  }
-            }
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#615E83",
-              fontSize: isMobileView ? "10px" : "14px",
-              fontWeight: isMobileView ? "400" : "500",
-            }}
-          />
-          {secondaryMetric && (
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
+                },
+              ]}
+              tickCount={5}
+              tickFormatter={tickFormatter}
+              label={
+                {
+                  value: primaryLabel,
+                  angle: -90,
+                  position: "insideLeft",
+                  style: { textAnchor: "middle", fill: "#7D7D7D" },
+                  fontSize: isMobileView ? "12px" : "14px",
+                  offset: isMobileView ? 15 : 0
+                }
+              }
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#615E83",
+                fontSize: isMobileView ? "10px" : "14px",
+                fontWeight: isMobileView ? "400" : "500",
+              }}
+            />
+          )}
+          {activeRightAxisMetrics.length > 0 && (
             <YAxis
               yAxisId="right"
-              orientation="right"
+              orientation={leftAxisMetric ? "right" : "left"}
               dataKey={secondaryMetric}
               fontSize="12px"
               width={isMobileView ? 50 : 70}
@@ -1687,15 +1732,33 @@ const LineChartComponent = ({
               tickCount={5}
               tickFormatter={tickFormatter}
               label={
-                isMobileView
-                  ? undefined
-                  : {
-                      value: "Attendance & Estimates",
-                      angle: 90,
-                      position: "insideRight",
-                      style: { textAnchor: "middle", fill: "#7D7D7D" },
-                      fontSize: "14px",
+                {
+                  value: (() => {
+                    if (activeRightAxisMetrics.length === 0) return "Attendance & Estimates";
+                    if (activeRightAxisMetrics.length === 1) return metricLabels[activeRightAxisMetrics[0]];
+                    
+                    // Check if both attendance and estimate are selected
+                    const hasAttendance = activeRightAxisMetrics.includes("predictedAttendance");
+                    const hasEstimate = activeRightAxisMetrics.includes("inboundEstimate") || 
+                                      activeRightAxisMetrics.includes("internationalEstimate");
+                    
+                    if (hasAttendance && hasEstimate) return "Attendance & Estimates";
+                    
+                    // For inbound and international estimates
+                    const hasInbound = activeRightAxisMetrics.includes("inboundEstimate");
+                    const hasInternational = activeRightAxisMetrics.includes("internationalEstimate");
+                    if (hasInbound && hasInternational) {
+                      return "Inbound & International Estimates";
                     }
+                    
+                    // For any other combination, join with &
+                    return activeRightAxisMetrics.map(metric => metricLabels[metric]).join(" & ");
+                  })(),
+                  angle: leftAxisMetric ? 90 : -90,
+                  position: leftAxisMetric ? "insideRight" : "insideLeft",
+                  style: { textAnchor: "middle", fill: "#7D7D7D" },
+                  fontSize: isMobileView ? "12px" : "14px",
+                }
               }
               axisLine={false}
               tickLine={false}
@@ -1719,69 +1782,79 @@ const LineChartComponent = ({
             wrapperStyle={{ pointerEvents: "auto" }}
           />
           {showThresholdLines && metrics.length === 1 && (
-            <ReferenceArea
-              yAxisId="left"
-              y1={thresholdArea[0]}
-              y2={thresholdArea[1]}
-              fill="#FAEFE2"
-            />
+            <>
+              {(() => {
+                const metric = metrics[0];
+                const metricThreshold = eventTrendsData?.thresholds[metric as keyof typeof eventTrendsData.thresholds];
+                if (!metricThreshold) return null;
+
+                const thresholdArea = [
+                  metricThreshold * 1.5, // 50% above threshold
+                  metricThreshold * 0.5, // 50% below threshold
+                ];
+
+                return (
+                  <>
+                    <ReferenceArea
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y1={thresholdArea[0]}
+                      y2={thresholdArea[1]}
+                      fill="#FAEFE2"
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={thresholdArea[0]}
+                      stroke="#398E4A"
+                      strokeDasharray="12 12"
+                      label={{
+                        position: "insideBottomRight",
+                        className: "text-[#398E4A]",
+                        style: {
+                          fill: "#398E4A",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: -8,
+                      }}
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={metricThreshold}
+                      stroke="#DF2670"
+                      label={{
+                        position: "insideTopRight",
+                        className: "text-[#DF2670]",
+                        style: {
+                          fill: "#DF2670",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: 0,
+                      }}
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={thresholdArea[1]}
+                      stroke="#FF990A"
+                      strokeDasharray="12 12"
+                      label={{
+                        position: "insideTopRight",
+                        className: "text-[#FF990A]",
+                        style: {
+                          fill: "#FF990A",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: 8,
+                      }}
+                    />
+                  </>
+                );
+              })()}
+            </>
           )}
-          {threshold &&
-            threshold > 0 &&
-            showThresholdLines &&
-            metrics.length === 1 && (
-              <>
-                <ReferenceLine
-                  yAxisId="left"
-                  y={thresholdArea[0]}
-                  stroke="#398E4A"
-                  strokeDasharray="12 12"
-                  label={{
-                    position: "insideBottomRight",
-                    className: "text-[#398E4A]",
-                    style: {
-                      fill: "#398E4A",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    },
-                    dy: -8,
-                  }}
-                />
-                <ReferenceLine
-                  yAxisId="left"
-                  y={threshold}
-                  stroke="#DF2670"
-                  label={{
-                    position: "insideTopRight",
-                    className: "text-[#DF2670]",
-                    style: {
-                      fill: "#DF2670",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    },
-                    dy: 0,
-                  }}
-                />
-                <ReferenceLine
-                  yAxisId="left"
-                  y={thresholdArea[1]}
-                  stroke="#FF990A"
-                  strokeDasharray="12 12"
-                  label={{
-                    position: "insideTopRight",
-                    className: "text-[#FF990A]",
-                    style: {
-                      fill: "#FF990A",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    },
-                    dy: 8,
-                  }}
-                />
-              </>
-            )}
           <Line
-            yAxisId="left"
+            yAxisId={leftAxisMetric ? "left" : "right"}
             type="linear"
             dataKey={leftAxisMetric}
             name={leftAxisMetric ? metricLabels[leftAxisMetric] : "Event Count"}
@@ -1796,7 +1869,7 @@ const LineChartComponent = ({
             return (
               <Line
                 key={metric}
-                yAxisId="right"
+                yAxisId={leftAxisMetric ? "right" : "right"}
                 type="linear"
                 dataKey={metric}
                 name={metricLabels[metric]}
@@ -1808,50 +1881,53 @@ const LineChartComponent = ({
               />
             );
           })}
-          {compareFrom && compareTo && leftAxisMetric && (
-            <Line
-              yAxisId="left"
-              type="linear"
-              dataKey={`previousYear${leftAxisMetric}`}
-              name={`Previous Year ${metricLabels[leftAxisMetric]}`}
-              stroke="#6750a4"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              connectNulls={true}
-              dot={false}
-            />
-          )}
-          {compareFrom &&
-            compareTo &&
-            activeRightAxisMetrics.map((metric, index) => {
-              const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
-              return (
+          {compareFrom && compareTo && (
+            <>
+              {leftAxisMetric && (
                 <Line
-                  key={`previousYear${metric}`}
-                  yAxisId="right"
+                  key={`previousYear-${leftAxisMetric}`}
+                  yAxisId={leftAxisMetric ? "left" : "right"}
                   type="linear"
-                  dataKey={`previousYear${metric}`}
-                  name={`Previous Year ${metricLabels[metric]}`}
-                  stroke={colors[index % colors.length]}
+                  dataKey={`previousYear${leftAxisMetric}`}
+                  name={`Previous Year ${metricLabels[leftAxisMetric]}`}
+                  stroke="#6750a4"
                   strokeWidth={2}
                   strokeDasharray="5 5"
                   connectNulls={true}
                   dot={false}
                 />
-              );
-            })}
+              )}
+              {activeRightAxisMetrics.map((metric, index) => {
+                const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                return (
+                  <Line
+                    key={`previousYear-${metric}`}
+                    yAxisId={leftAxisMetric ? "right" : "right"}
+                    type="linear"
+                    dataKey={`previousYear${metric}`}
+                    name={`Previous Year ${metricLabels[metric]}`}
+                    stroke={colors[index % colors.length]}
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    connectNulls={true}
+                    dot={false}
+                  />
+                );
+              })}
+            </>
+          )}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
               payload={
                 [
-                  {
+                  ...(leftAxisMetric ? [{
                     value: primaryLabel,
                     type: "line",
                     id: "primary_metric",
                     color: "#6750a4",
                     tooltipDescription: `Data for ${primaryLabel}`,
-                  },
+                  }] : []),
                   ...activeRightAxisMetrics.map((metric, index) => {
                     const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
                     return {
@@ -1864,14 +1940,14 @@ const LineChartComponent = ({
                   }),
                   ...(compareFrom && compareTo
                     ? [
-                        {
+                        ...(leftAxisMetric ? [{
                           value: `Previous Year ${primaryLabel}`,
                           type: "line",
                           id: "previous_year_primary",
                           color: "#6750a4",
                           tooltipDescription: `Previous year data for ${primaryLabel}`,
                           strokeDasharray: "5 5",
-                        },
+                        }] : []),
                         ...activeRightAxisMetrics.map((metric, index) => {
                           const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
                           return {

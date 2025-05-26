@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -16,9 +16,9 @@ import { isEventeli } from "@/config";
 export default function ColumnsSelector() {
   const { setLocalFilter, getLocalFilterValue, setMultipleLocalFilters } =
     useFilterContext();
-  const { getFilterValue } = useFilterState();
+  const { getFilterValue, setFilter } = useFilterState();
   const activeView = getFilterValue("view");
-  const metrics = (getLocalFilterValue("columns") as string)?.split(",") || [];
+  const metrics = (getLocalFilterValue("columns") as string)?.split(",").filter(Boolean) || [];
   const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -41,12 +41,15 @@ export default function ColumnsSelector() {
 
     if (checked) {
       newMetrics = [...metrics, value];
+      const selectedColumn = columns.find(col => col.value === value);
+      if (selectedColumn && !selectedColumn.enable) {
+        setMultipleLocalFilters({ columns: newMetrics.join(","), view: "line" });
+        return;
+      }
     } else {
-      // Remove the metric if unchecked
       newMetrics = metrics.filter((m) => m !== value);
     }
 
-    // If no metrics selected, default to eventCount
     if (newMetrics.length === 0) {
       newMetrics = ["eventCount"];
     }
@@ -56,15 +59,6 @@ export default function ColumnsSelector() {
       !newMetrics.includes("eventCount")
     ) {
       setMultipleLocalFilters({ columns: newMetrics.join(","), view: "line" });
-    } else {
-      setLocalFilter("columns", newMetrics.join(","));
-    }
-  };
-
-  const removeMetric = (metricToRemove: string) => {
-    const newMetrics = metrics.filter((m) => m !== metricToRemove);
-    if (newMetrics.length === 0) {
-      setLocalFilter("columns", "eventCount");
     } else {
       setLocalFilter("columns", newMetrics.join(","));
     }
@@ -102,23 +96,18 @@ export default function ColumnsSelector() {
               key={value}
               className={cn(
                 "flex items-center space-x-2",
-                !enable && "opacity-50 cursor-not-allowed"
               )}
             >
               <Checkbox
                 id={value}
                 checked={metrics.includes(value)}
                 onCheckedChange={(checked) =>
-                  enable && handleMetricChange(value, checked as boolean)
+                  handleMetricChange(value, checked as boolean)
                 }
-                disabled={!enable}
               />
               <label
                 htmlFor={value}
-                className={cn(
-                  "text-sm font-medium leading-none",
-                  !enable && "cursor-not-allowed"
-                )}
+                className="text-sm font-medium leading-none"
               >
                 {label}
               </label>
