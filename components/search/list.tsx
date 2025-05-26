@@ -1,6 +1,7 @@
 "use client";
 
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
+import BulkActionPopover from "@/app/components/Table/BulkActionPopover";
 import NullState from "@/app/components/trackers/nullState";
 import Loading from "@/app/components/UI/Loading";
 import ZeroState from "@/app/components/zerostate";
@@ -14,22 +15,26 @@ import {
   getAlertLevelBorderColor,
 } from "@/constants/eventTypes";
 import { useTrackerContext } from "@/context/tracker";
+import { useConfiguration } from "@/hooks/useConfiguration";
 import { useEvents } from "@/hooks/useEvents";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useIntent } from "@/hooks/useIntent";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { cn, lightenColor } from "@/lib/utils";
 import TrackerNullState from "@/public/trackerNullState.svg";
+import { useTrackerServices } from "@/services/trackerServices";
 import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Event, HolidayEventLocation } from "@/types/events/events";
 import { formattedDateRange } from "@/utils/date";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { formatLocationParts } from "@/utils/locationFormat";
+import { CheckedState } from "@radix-ui/react-checkbox";
 import * as Flags from "country-flag-icons/react/3x2";
 import { format } from "date-fns";
 import { Radio, Star, TicketPercent } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, {
   Dispatch,
   SetStateAction,
@@ -38,22 +43,14 @@ import React, {
   useState,
 } from "react";
 import { PaginationComponent } from "../pagination";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import holiday from "/public/eventType/holiday.svg";
-import { Button } from "../ui/button";
-import BulkActionPopover from "@/app/components/Table/BulkActionPopover";
-import { useConfiguration } from "@/hooks/useConfiguration";
-import { Checkbox } from "../ui/checkbox";
-import { CheckedState } from "@radix-ui/react-checkbox";
-import { useTrackerServices } from "@/services/trackerServices";
-import { useIntent } from "@/hooks/useIntent";
 
 interface CircularProgressProps {
   value: number | null;
@@ -237,8 +234,11 @@ export default function EventAccordion({
                 },
               });
             }
+            return response;
           });
-        await Promise.all(bookmarkPromises);
+        if (bookmarkPromises && bookmarkPromises.length > 0) {
+          await Promise.all(bookmarkPromises);
+        }
       } else {
         filteredIds =
           updatedEvents
@@ -284,6 +284,8 @@ export default function EventAccordion({
         );
         await Promise.all(interestPromises);
       }
+      setShowCheckBox?.(false);
+      setTotalChecked([]);
     } catch (error) {
       console.error("Error in bulk submission:", error);
     }
@@ -386,11 +388,30 @@ export default function EventAccordion({
     });
   }
 
-  // function handleSelectAll(checked:boolean){
-  //   if(checked){
+  function handleSelectAll(checked: boolean) {
+    if (checked) {
+      setTotalChecked((prev) => {
+        const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+        return [...prev, ...newIds];
+      });
+    } else {
+      setTotalChecked((prev) => {
+        return prev.filter(
+          (eventId) =>
+            !updatedEvents?.map((event) => event.basic.id).includes(eventId)
+        );
+      });
+    }
+  }
 
-  //   }
-  // }
+  const isAllChecked = useMemo(() => {
+    return (
+      updatedEvents &&
+      updatedEvents.length > 0 &&
+      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
+    );
+  }, [totalChecked, updatedEvents]);
+
   const actions = [
     ...(interestConfiguration?.interest || []),
     ...[{ label: "Bookmark", status: "BOOKMARK" }],
@@ -463,14 +484,6 @@ export default function EventAccordion({
     });
   };
 
-  const isAllChecked = useMemo(() => {
-    return (
-      updatedEvents &&
-      updatedEvents.length > 0 &&
-      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
-    );
-  }, [totalChecked, updatedEvents]);
-
   if (isLoading) {
     return <Loading className="h-24 text-primary" />;
   }
@@ -520,8 +533,8 @@ export default function EventAccordion({
           {showCheckBox && (
             <div className="flex gap-2 items-center">
               <Checkbox
-                checked={isChecked}
-                onCheckedChange={handleCheckboxChange}
+                checked={isAllChecked}
+                onCheckedChange={handleSelectAll}
               />
               <div>Select events to perform action</div>
             </div>
@@ -701,16 +714,15 @@ const EventListItem = ({
     }
   };
 
+  console.log(event.interests);
+
   return (
     <div className="flex gap-4 items-center w-full">
       {showCheckBox && (
         <div className="flex pl-4">
           <Checkbox
             checked={totalChecked.includes(event.basic.id)}
-            onCheckedChange={(checked) => {
-              handleCheckboxChange(checked, event.basic.id);
-              toggleSelection(event.basic.id);
-            }}
+            onCheckedChange={() => toggleSelection(event.basic.id)}
           />
         </div>
       )}

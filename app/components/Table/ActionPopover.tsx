@@ -1,24 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Bookmark, BookmarkCheck, BookmarkIcon, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Interest } from "@/types/events";
-import { useConfiguration } from "@/hooks/useConfiguration";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useIntent } from "@/hooks/useIntent";
-import { useToast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { eventsKeys } from "@/hooks/useEvents";
 import { useTrackerContext } from "@/context/tracker";
+import { useToast } from "@/hooks/use-toast";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { useIntent } from "@/hooks/useIntent";
 import { useTrackerServices } from "@/services/trackerServices";
+import { Interest } from "@/types/events";
+import { useQueryClient } from "@tanstack/react-query";
+import { Bookmark, BookmarkCheck, X } from "lucide-react";
+import { useState } from "react";
 
 interface ActionPopoverProps {
   eventId: string;
@@ -37,6 +36,7 @@ export function ActionPopover({
   setEventId,
   view,
 }: ActionPopoverProps) {
+  console.log(eventId, interests);
   const { removeBookmark } = useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -82,66 +82,66 @@ export function ActionPopover({
     //   setEventId(response?.eventId);
     //   setIsOpen(false);
     // } else if (selectedAction) {
-      if (selectedAction === "UN-BOOKMARK") {
-        const response = await removeBookmark(
-          interests?.bookmark?.interestId || ""
-        );
-        if (response?.interest && setInterest) {
-          if(selectedAction === "UN-BOOKMARK")
+    if (selectedAction === "UN-BOOKMARK") {
+      const response = await removeBookmark(
+        interests?.bookmark?.interestId || ""
+      );
+      if (response?.interest && setInterest) {
+        if (selectedAction === "UN-BOOKMARK")
           setSavedEventCount(savedEventCount - 1);
-          setInterest({
-            [response.interest.toLowerCase()]: {
-              interestId: response.id,
-            },
-          });
-        }
-        
-        toast({
-          title: "Success",
-          description: "Your interest has been recorded",
-          variant: "default",
-        });
-        setEventId(response?.eventId);
-        setIsOpen(false);
-      } else {
-        createUserEventInterest(
-          {
-            eventId,
-            interest: selectedAction || '',
-            sourceModule: trackerId ? "TRACKER" : "RESEARCH",
-            ...(trackerId && { sourceId: trackerId }),
+        setInterest({
+          [response.interest.toLowerCase()]: {
+            interestId: response.id,
           },
-          {
-            onSuccess: (response: any) => {
-              if (response?.interest) {
-                setInterest({
-                  [response.interest.toLowerCase()]: {
-                    interestId: response.id,
-                  },
-                });
-              }
-              if (response?.eventId && setEventId) {
-                setEventId(response?.eventId);
-              }
-              if(selectedAction === "BOOKMARK")
-              setSavedEventCount(savedEventCount + 1);
-              setIsOpen(false);
-              toast({
-                title: "Success",
-                description: "Your interest has been recorded",
-                variant: "default",
-              });
-            },
-            onError: (error) => {
-              toast({
-                title: "Error",
-                description: error.message,
-                variant: "destructive",
-              });
-            },
-          }
-        );
+        });
       }
+
+      toast({
+        title: "Success",
+        description: "Your interest has been recorded",
+        variant: "default",
+      });
+      setEventId(response?.eventId);
+      setIsOpen(false);
+    } else {
+      createUserEventInterest(
+        {
+          eventId,
+          interest: selectedAction || "",
+          sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+          ...(trackerId && { sourceId: trackerId }),
+        },
+        {
+          onSuccess: (response: any) => {
+            if (response?.interest) {
+              setInterest({
+                [response.interest.toLowerCase()]: {
+                  interestId: response.id,
+                },
+              });
+            }
+            if (response?.eventId && setEventId) {
+              setEventId(response?.eventId);
+            }
+            if (selectedAction === "BOOKMARK")
+              setSavedEventCount(savedEventCount + 1);
+            setIsOpen(false);
+            toast({
+              title: "Success",
+              description: "Your interest has been recorded",
+              variant: "default",
+            });
+          },
+          onError: (error) => {
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          },
+        }
+      );
+    }
     // }
   };
 

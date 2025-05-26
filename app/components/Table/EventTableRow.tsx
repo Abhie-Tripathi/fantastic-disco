@@ -1,33 +1,31 @@
-import type React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDate, getEventRating } from "@/utils/eventHelpers";
-import Link from "next/link";
-import { ArrowUp, ArrowDown, Star } from "lucide-react";
-import { Event } from "@/types/events";
-import Image from "next/image";
-import { ActionPopover } from "./ActionPopover";
-import { Show } from "@/types/events/dto/event-query.dto";
-import { Badge } from "@/components/ui/badge";
-import { formatEstimatedSpend } from "@/utils/formater";
-import { lightenColor } from "@/lib/utils";
-import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { Filters } from "@/context/filterContext";
-import * as Flags from "country-flag-icons/react/3x2";
-import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import { groupedEventTypes } from "@/constants";
-import { Checkbox } from "@/components/ui/checkbox";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { Filters } from "@/context/filterContext";
+import { useFilterState } from "@/hooks/useFilterState";
+import { lightenColor } from "@/lib/utils";
+import { Event } from "@/types/events";
+import { Show } from "@/types/events/dto/event-query.dto";
+import { formatDate } from "@/utils/eventHelpers";
+import { formatEstimatedSpend } from "@/utils/formater";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import * as Flags from "country-flag-icons/react/3x2";
+import { ArrowDown, ArrowUp, Star } from "lucide-react";
+import Link from "next/link";
+import type React from "react";
+import { ActionPopover } from "./ActionPopover";
 
 interface EventTableRowProps {
+  toggleSelection: (id: string) => void;
   event: Event;
   trackerId?: string;
   show: Show[];
@@ -122,6 +120,7 @@ function getAssociationColor(value: string) {
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
+  toggleSelection,
   event,
   show,
   localFilters,
@@ -137,7 +136,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setIsChecked,
   setTotalChecked,
 }) => {
-  console.log("event table row called");
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -176,9 +174,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <Checkbox
               className=""
               checked={totalChecked.includes(event.basic.id)}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange(checked, event.basic.id)
-              }
+              onCheckedChange={() => toggleSelection(event.basic.id)}
             />
           )}
           {/* Logo Section */}

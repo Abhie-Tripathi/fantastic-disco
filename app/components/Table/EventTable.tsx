@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -61,7 +67,6 @@ const EventTable = ({
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
-  console.log(trackerId);
   let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
 
@@ -76,7 +81,6 @@ const EventTable = ({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-  // console.log(isLoading);
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -95,20 +99,18 @@ const EventTable = ({
       showsData.push(value);
     }
   });
-  // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
   // setFilter("show",showsData?.join(","));
   // }
-  // console.log(data.filterValues.show);
-  console.log(eventType);
 
   const actions = [
     ...(interestConfiguration?.interest || []),
-    // ...([{ label: "Bookmark", status: "BOOKMARK" }])
-    ...(eventType !== "bookmarked"
-      ? [{ label: "Bookmark", status: "BOOKMARK" }]
-      : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+    ...[{ label: "Bookmark", status: "BOOKMARK" }],
+    ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
+    // ...(eventType !== "bookmarked"
+    //   ? [{ label: "Bookmark", status: "BOOKMARK" }]
+    //   : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
   useEffect(() => {
     if (actions.length > 0 && !action) {
@@ -117,28 +119,51 @@ const EventTable = ({
   }, [actions]);
   const bulkSubmit = async () => {
     try {
-      if (eventType === "bookmarked") {
-        const bookmarkPromises = totalChecked.map((id) => {
-          console.log(id);
-
-          const unBookmarkEvent = events.find((event) => event.basic.id === id);
-          console.log(unBookmarkEvent);
-
-          const response = removeBookmark(
-            unBookmarkEvent?.interests?.bookmark?.interestId
-          );
-          if (response?.interest && setInterest) {
-            setInterest({
-              [response.interest.toLowerCase()]: {
-                interestId: response.id,
-              },
-            });
-          }
-        });
-
-        await Promise.all(bookmarkPromises);
+      let filteredIds = [];
+      if (action.status === "UN-BOOKMARK") {
+        filteredIds =
+          updatedEvents
+            ?.filter(
+              (event) =>
+                totalChecked.includes(event.basic.id) &&
+                event.interests &&
+                Object.keys(event.interests).includes("bookmark")
+            )
+            .map(
+              (filteredEvent) => filteredEvent.interests?.bookmark?.interestId
+            ) || [];
+        const bookmarkPromises =
+          filteredIds &&
+          filteredIds.length > 0 &&
+          filteredIds.map((id) => {
+            const response = removeBookmark(id);
+            if (response?.interest && setInterest) {
+              setInterest({
+                [response.interest.toLowerCase()]: {
+                  interestId: response.id,
+                },
+              });
+            }
+            return response;
+          });
+        if (bookmarkPromises && bookmarkPromises.length > 0) {
+          await Promise.all(bookmarkPromises);
+        }
       } else {
-        const interestPromises = totalChecked.map((id) =>
+        filteredIds =
+          updatedEvents
+            ?.filter(
+              (event) =>
+                totalChecked.includes(event.basic.id) &&
+                ((event.interests &&
+                  !Object.keys(event.interests).includes(
+                    action.status.toLowerCase()
+                  )) ||
+                  event.interests === undefined)
+            )
+            .map((filteredEvent) => filteredEvent.basic.id) || [];
+
+        const interestPromises = filteredIds.map((id) =>
           createUserEventInterest(
             {
               eventId: id,
@@ -167,16 +192,70 @@ const EventTable = ({
             }
           )
         );
-
         await Promise.all(interestPromises);
       }
-
+      setShowCheckBox?.(false);
+      setTotalChecked([]);
       // toast({ title: "Success", description: "Done!", variant: "default" });
     } catch (error) {
       console.error("Error in bulk submission:", error);
       // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
     }
   };
+
+  //  try {
+  //     if (eventType === "bookmarked") {
+  //       const bookmarkPromises = totalChecked.map((id) => {
+  //         const unBookmarkEvent = events.find((event) => event.basic.id === id);
+
+  //         const response = removeBookmark(
+  //           unBookmarkEvent?.interests?.bookmark?.interestId
+  //         );
+  //         if (response?.interest && setInterest) {
+  //           setInterest({
+  //             [response.interest.toLowerCase()]: {
+  //               interestId: response.id,
+  //             },
+  //           });
+  //         }
+  //       });
+
+  //       await Promise.all(bookmarkPromises);
+  //     } else {
+  //       const interestPromises = totalChecked.map((id) =>
+  //         createUserEventInterest(
+  //           {
+  //             eventId: id,
+  //             interest: action?.status,
+  //             sourceModule: sourceModule,
+  //             ...(trackerId && { sourceId: trackerId }),
+  //           },
+  //           {
+  //             onSuccess: (response: any) => {
+  //               if (response?.interest) {
+  //                 setInterest((prev) => ({
+  //                   ...prev,
+  //                   [response.interest.toLowerCase()]: {
+  //                     interestId: response.id,
+  //                   },
+  //                 }));
+  //               }
+  //               if (response?.eventId && setEventId) {
+  //                 setEventId(response?.eventId);
+  //               }
+  //               setSavedEventCount((prev) => prev + 1);
+  //             },
+  //             onError: (error) => {
+  //               console.error("Error while submitting interest:", error);
+  //             },
+  //           }
+  //         )
+  //       );
+
+  //       await Promise.all(interestPromises);
+  //     }
+  //     // toast({ title: "Success", description: "Done!", variant: "default" });
+  //   }
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -199,7 +278,7 @@ const EventTable = ({
   };
   useEffect(() => {
     if (events?.length > 0) {
-      setTotalChecked([]);
+      // setTotalChecked([]);
       setIsChecked(false);
       setUpdatedEvents(events);
     }
@@ -213,17 +292,57 @@ const EventTable = ({
     }
     setIsChecked(checked);
   };
+
+  function toggleSelection(id: string) {
+    setTotalChecked((prev) => {
+      if (prev.includes(id)) {
+        // Remove the id
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        // Add the id
+        return [...prev, id];
+      }
+    });
+  }
+
+  function handleSelectAll(checked: boolean) {
+    if (checked) {
+      setTotalChecked((prev) => {
+        const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+        return [...prev, ...newIds];
+      });
+    } else {
+      setTotalChecked((prev) => {
+        return prev.filter(
+          (eventId) =>
+            !updatedEvents?.map((event) => event.basic.id).includes(eventId)
+        );
+      });
+    }
+  }
+
+  const isAllChecked = useMemo(() => {
+    return (
+      updatedEvents &&
+      updatedEvents.length > 0 &&
+      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
+    );
+  }, [totalChecked, updatedEvents]);
+
   useEffect(() => {
     if (!events) return;
-    
+
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
+      if (
+        query.eventType === "bookmarked" &&
+        interest &&
+        "bookmark" in interest
+      ) {
         newEvents = newEvents.filter(
           (event: Event) => event.basic.id !== eventId
         );
-        console.log(newEvents);
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
@@ -316,8 +435,8 @@ const EventTable = ({
           {showCheckBox && (
             <div className="flex gap-2 items-center">
               <Checkbox
-                checked={isChecked}
-                onCheckedChange={handleCheckboxChange}
+                checked={isAllChecked}
+                onCheckedChange={handleSelectAll}
               />
               <div>Select events to perform action</div>
             </div>
@@ -338,7 +457,7 @@ const EventTable = ({
               <Button
                 type="submit"
                 className="w-30 self-center"
-                disabled={isLoading}
+                disabled={isLoading || totalChecked.length === 0}
                 onClick={() => bulkSubmit()}
               >
                 Submit
@@ -374,6 +493,7 @@ const EventTable = ({
               {updatedEvents &&
                 updatedEvents.map((event: Event) => (
                   <EventTableRow
+                    toggleSelection={toggleSelection}
                     totalChecked={totalChecked}
                     isChecked={isChecked}
                     setIsChecked={setIsChecked}
