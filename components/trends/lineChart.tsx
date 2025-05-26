@@ -333,6 +333,11 @@ const LineChartComponent = ({
   const CustomDot = (props: any) => {
     const { cx, cy, payload, index } = props;
 
+    // Don't render custom dot if multiple metrics are selected or comparison is enabled
+    if (metrics.length > 1 || (compareFrom && compareTo)) {
+      return null;
+    }
+
     // Get the interval dates
     const intervalDates = generateDateIntervals(
       graphData[0].date,
@@ -431,24 +436,6 @@ const LineChartComponent = ({
     }
     if (hasMatchingHoliday) {
       return (
-        // <g>
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={8}
-        //     fill="#e8e8e8"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={4}
-        //     fill="#7D7D7D"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        // </g>
         <g>
           <svg
             x={cx - 10}
