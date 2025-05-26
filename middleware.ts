@@ -10,22 +10,20 @@ export function middleware(request: NextRequest) {
     ? `${process.env.NEXT_COOKIE_PREFIX}-token`
     : "dev-token";
   const cookie = request.cookies.get(key)?.value;
-
-  const redirectParam = request.nextUrl.searchParams.get("redirect");
+ 
+  const pathName = request.nextUrl.pathname + request.nextUrl.search || "";
 
   if (!cookie) {
-    if (redirectParam) {
+    if (pathName) {
       return NextResponse.redirect(
-        new URL(`/signin?redirect=${redirectParam}`, request.url)
+        new URL(`/signin?redirect=${encodeURIComponent(pathName)}`, request.url)
       );
     }
     return NextResponse.redirect(new URL("/signin", request.url));
   } else {
     if (request.nextUrl.pathname == "/") {
-      if (redirectParam) {
-        return NextResponse.redirect(
-          new URL(`/internal/${redirectParam}`, request.url)
-        );
+      if (pathName) {
+        return NextResponse.redirect(new URL(`${pathName}`, request.url));
       }
       return NextResponse.redirect(new URL("/internal", request.url));
     }
@@ -42,6 +40,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|login|location|category|verify-otp).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|login|location|category|verify-otp|.well-known).*)",
   ],
 };
