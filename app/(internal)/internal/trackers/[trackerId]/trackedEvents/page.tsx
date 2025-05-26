@@ -105,6 +105,7 @@ const Page = ({ params }: { params: any }) => {
       setIsNewCall(true);
   }, [editTrue])
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
+  const [intelIds,setIntelIds]=useState([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
   const [sendInvite,setSendInvite]=useState(false);

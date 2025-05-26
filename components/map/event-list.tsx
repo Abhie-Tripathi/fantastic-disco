@@ -33,6 +33,7 @@ import { lightenColor } from "@/lib/utils";
 import IntelScore from "@/app/components/Table/IntelScore";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import { PaginationComponent } from "../pagination";
+import { useIntelData } from "@/hooks/useIntelData";
 
 const EventCard = memo(
   ({
@@ -434,7 +435,7 @@ function EventList({
       }
     },
   });
-  
+
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -445,6 +446,14 @@ function EventList({
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : []
+  );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 

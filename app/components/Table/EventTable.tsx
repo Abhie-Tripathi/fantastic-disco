@@ -15,6 +15,8 @@ import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useIntelData } from "@/hooks/useIntelData";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -49,6 +51,14 @@ const EventTable = ({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : []
+    );
   // console.log(isLoading);
   const mapping = {
     rating: "rating",
@@ -99,6 +109,7 @@ const EventTable = ({
       setUpdatedEvents(events);
     }
   }, [events]);
+  
   
   useEffect(() => {
     if (!events) return;
@@ -203,6 +214,7 @@ const EventTable = ({
                   show={showValues}
                   localFilters={localFilters}
                   trackerId={trackerId}
+                  intelScoreData={intelScoreData}
                 />
               ))}
             </TableBody>

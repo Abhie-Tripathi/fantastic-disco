@@ -285,6 +285,7 @@ export const useTrackerServices = () => {
           }
         )
     }
+    
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
       console.log(type.toString());
       const eventType = type;
@@ -355,10 +356,14 @@ export const useTrackerServices = () => {
     
       return response as PresetDataResponse;
     };
+    const getIntelData = async (trackerId:string, eventIds: string)=> {
+      // const urlParams = new URLSearchParams(data).toString();
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/intelScore?eventIds=${eventIds}`, {
+        method: "GET",
+      });
     
-    
-    
-    
+      return response;
+    };
     
     return {
       getTrackerCount,
@@ -386,6 +391,7 @@ export const useTrackerServices = () => {
       getTrackerDetail,
       getTrackerEvents,
       presetData,
+      getIntelData,
       isLoading: api.isLoading,
       error: api.error,
     };

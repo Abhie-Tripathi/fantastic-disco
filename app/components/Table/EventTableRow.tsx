@@ -124,7 +124,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setEventId,
   setInterest,
   view,
-  global,
+  global
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");

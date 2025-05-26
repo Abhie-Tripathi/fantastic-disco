@@ -29,6 +29,7 @@ import { formattedDateRange } from "@/utils/date";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { PaginationComponent } from "../pagination";
+import { useIntelData } from "@/hooks/useIntelData";
 export default function EventList({
   eventDate,
   onClose,
@@ -94,6 +95,14 @@ export default function EventList({
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : []
+    );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 

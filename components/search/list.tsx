@@ -44,6 +44,8 @@ import { isEventeli } from "@/config";
 import { Button } from "../ui/button";
 import * as Flags from "country-flag-icons/react/3x2";
 import { groupedEventTypes } from "@/constants";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useIntelData } from "@/hooks/useIntelData";
 
 interface CircularProgressProps {
   value: number | null;
@@ -148,6 +150,7 @@ export default function EventAccordion({
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
+  
   const { data } = useTrackerContext();
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
@@ -158,6 +161,14 @@ export default function EventAccordion({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : []
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -192,6 +203,9 @@ export default function EventAccordion({
   }
   useEffect(() => {
     if (events?.length > 0) {
+     
+      console.log(intelScoreData);
+      
       setUpdatedEvents(events);
     }
   }, [events]);
