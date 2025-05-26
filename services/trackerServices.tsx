@@ -397,11 +397,8 @@ export const useTrackerServices = () => {
       getTrackerDetail,
       getTrackerEvents,
       presetData,
-<<<<<<< HEAD
       getIntelData,
-=======
       fetchCompanyData,
->>>>>>> 6574e8beba096571d0053ac7bb5a4ae1437c646e
       isLoading: api.isLoading,
       error: api.error,
     };
