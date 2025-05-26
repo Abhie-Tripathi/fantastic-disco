@@ -20,7 +20,7 @@ interface Props {
   handlePresetClick: any;
 }
 
-const Presets = ({ template, handlePresetClick }: Props) => {
+const Presets = ({ template, handlePresetClick}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
   console.log(template.name);
   
@@ -63,7 +63,7 @@ const Presets = ({ template, handlePresetClick }: Props) => {
     
     try {
       const data = {
-        trackerType: template?.name || "",
+        trackerType: template?.name==="T_PEOPLE_FINDER"?"T_SPEAKING_OPPORTUNITY":template?.name || "",
         offset: filterChanged ? 0 : page * limit,
         limit: limit,
         ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),

@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useCallback, useLayoutEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
@@ -82,6 +82,9 @@ import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import { Step } from "react-joyride";
+import { useWalkthrough } from "@/hooks/useWalkthrough";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -412,8 +415,8 @@ const Pages = () => {
   const { searchParams: search } = useDefaultFilters();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall } = useTrackerContext();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters } = useFilterContext();
+  const { data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, suggestion, setSuggestion } = useFilterContext();
   const { enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const { getTrackerDetail, createTracker, editTracker, error, delTracker } = useTrackerServices();
@@ -456,6 +459,37 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  //  const [steps, setSteps] = useState<Step[]>([]);
+  //   const [run, setRun] = useState(true);
+    const refs = {
+      additionalFilterRef: useRef<HTMLDivElement>(null),
+      presetRef: useRef<HTMLDivElement>(null),
+      templateRef: useRef<HTMLDivElement>(null),
+      basicFilterRef: useRef<HTMLDivElement>(null),
+      advanceFilterRef: useRef<HTMLDivElement>(null)
+    };
+  const stepsConfig =[
+      {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
+        ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
+        : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
+      {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
+      {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
+      {"key":"advanceFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."}
+    ]
+    const { steps, run, setRun } = useWalkthrough({
+      refs,
+      stepsConfig,
+      storageKey: "walkthroughCompleted",
+      currentPath: `trackers/create?type=${type}`,
+      type: type || "",
+      conditionalKeys: (type) =>
+        type === "T_CUSTOM"
+          ? ["basicFilterRef", "advanceFilterRef"]
+          : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+    });
+  
+  
   useEffect(() => {
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if (customData.length > 0 && Object.values(customData[0])[0]) {
@@ -527,7 +561,7 @@ const Pages = () => {
 
     }
     else if (type === "T_PEOPLE_FINDER") {
-      if (customData.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
+      if (customData?.length > 0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -546,15 +580,15 @@ const Pages = () => {
         if (!hideSuggestion)
           fetchAISuggestion(promptText);
       }
-      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userName = customData?.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData
-        .map((item: {}) => Object.values(item)[1])
+        ?.map((item: {}) => Object.values(item)[1])
         .filter((value): value is string => value !== undefined && value !== null)
         .map(value => value.replace(/,/g, ''))
         .join(',');
       setUserName(userName)
       setUserCompany(userCompany)
-      if (userName.length > 0 && userCompany.length > 0) {
+      if (userName?.length > 0 && userCompany?.length > 0) {
         const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
@@ -624,18 +658,13 @@ const Pages = () => {
       if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
         finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
       }
-      // const getLocationIds = (presetItem?.filterValue?.country || [])
-      //   .map((loc) => loc.id).join(",");
-      // const getCategoriesSlug = (presetItem?.filterValue?.category || []).map((cat: { slug: string }) => cat.slug).join(",");
-      // setLocalFilter("categories", getCategoriesSlug)
-      // setLocalFilter("locationIds", getLocationIds)
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-        console.log(temp);
+      
 
         presetData.push(temp);
       })
@@ -693,6 +722,15 @@ const Pages = () => {
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings"
+  };
+  const isViewBoundEmpty = (value: string | null) => {
+    if (!value) return true;
+    try {
+      const parsed = JSON.parse(value);
+      return Object.keys(parsed).length === 0;
+    } catch {
+      return true;
+    }
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -764,16 +802,15 @@ const Pages = () => {
 
 
     const secondLast = pathName[pathName.length - 2];
-
-    if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
+    if (type === "T_PRODUCT_KEYWORDS" && (trackerName.trim().length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
       setIsCreating(false);
       setIsMandatory(true);
       return;
     }
-    else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+    else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.trim().length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
       setIsCreating(false);
       setIsMandatory(true);
-      if (trackerName.length !== 0)
+      if (trackerName.trim().length !== 0)
         toast({
           title: "Error",
           description: "Location must be selected.",
@@ -784,7 +821,7 @@ const Pages = () => {
     else if (
       type === "T_GEOTIME" &&
       (
-        trackerName.length === 0 ||
+        trackerName.trim().length === 0 ||
         (
           getLocalFilterValue("locationIds").length === 0 &&
           !getLocalFilterValue("viewBound")
@@ -795,7 +832,7 @@ const Pages = () => {
     ) {
       setIsCreating(false);
       setIsMandatory(true);
-      if (trackerName.length !== 0)
+      if (trackerName.trim().length !== 0)
         toast({
           title: "Error",
           description: "Location and Date must be selected.",
@@ -809,14 +846,22 @@ const Pages = () => {
       type !== defaultType &&
       type !== "T_PRODUCT_KEYWORDS" &&
       type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME" &&
-      (trackerName.length === 0 || customData.length === 0)
+      (trackerName.trim().length === 0 || customData.length === 0)
     ) {
       console.log("Please, Fill all the details");
       setIsCreating(false);
       setIsMandatory(true);
       return;
     }
-    else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+    else if (
+      type === defaultType &&
+      (
+        (getLocalFilterValue("locationIds")?.length===0 &&
+          isViewBoundEmpty(getLocalFilterValue("viewBound")))
+        ||
+        trackerName.trim().length === 0
+      )
+    ) {
       console.log("Please, Fill all the details");
       setIsCreating(false);
       setIsMandatory(true);
@@ -855,12 +900,12 @@ const Pages = () => {
     } else {
       // console.log(formData);
 
-      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
+      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.trim().length === 0 || (getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length === 0))) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+      else if ((type === "T_LOCATION" || type === "T_VENUE") && (trackerName.trim().length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
         toast({
@@ -873,7 +918,7 @@ const Pages = () => {
       else if (
         type === "T_GEOTIME" &&
         (
-          trackerName.length === 0 ||
+          trackerName.trim().length === 0 ||
           (
             getLocalFilterValue("locationIds").length === 0 &&
             !getLocalFilterValue("viewBound")
@@ -895,21 +940,30 @@ const Pages = () => {
         type !== defaultType &&
         type !== "T_PRODUCT_KEYWORDS" &&
         type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME" &&
-        (trackerName.length === 0 || customData.length === 0)
+        (trackerName.trim().length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)) {
+      else if (
+        type === defaultType &&
+        (
+          (getLocalFilterValue("locationIds")?.length===0 &&
+            isViewBoundEmpty(getLocalFilterValue("viewBound")))
+          ||
+          trackerName.trim().length === 0
+        )
+      ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      try {
-        const data = await createTracker(formData)
+      
+      try{
+        const data= await createTracker(formData)
         if (error) {
           // console.log(error);
           setIsCreating(false);
@@ -938,17 +992,118 @@ const Pages = () => {
 
     }
   };
-
   useEffect(() => {
-    if (editData && last === "editTracker") {
-      console.log(editData);
+    if (type === "T_COMPETITOR" && suggestion===1) {
+      // setTrackerName(comp?.name || "");
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  
+  useEffect(()=>{
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          // console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+  }
 
+  }, [type])
+  const [inc,setInc]=useState<String[]>([]);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      setSuggestions([]);
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const keywordsArray = parsed?.keywordData?.data;
+          setTrackerName(parsed?.keywordData?.name || "");
+          if (Array.isArray(keywordsArray)) {
+            // console.log("keywordsArray", keywordsArray);
+            const res=keywordsArray.map((item:{"keyword":string})=>item.keyword?.trim?.())
+            // console.log("res", res);
+            
+            setInc(res);
+            setCustomData(
+              keywordsArray.map((item: any) => ({
+                "Competitor Name or Website": item.keyword?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing keywordData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  useEffect(() => { 
+    if(suggestion===2 && inc.length>0){
+      setLocalFilter("includeKeywords", inc?.join(","));
+      fetchAISuggestion?.(
+        `List top 5 keywords similar to ${
+          inc[0]
+        } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+        "data": [
+          ["keyword 1" ],
+          ["keyword 2" ],
+          ["keyword 3" ],
+          ["keyword 4" ],
+          ["keyword 5" ]
+        ]
+      }.`
+      );
+    }
+  },[inc])
+   
+  
+ 
+  useEffect(() => {
+    if ((editData && last === "editTracker")) {
       setTrackerName(editData?.name || "");
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.filterValues?.orgName?.
           split(',');
         const orgWebsites = editData?.filterValues?.orgWebsite?.
           split(',');
+          
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
             ...prevData,
@@ -990,8 +1145,8 @@ const Pages = () => {
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-        const value = editData.filterValues[key];
-        console.log(typeof value, value);
+        const value = editData?.filterValues[key];
+        // console.log(typeof value, value);
         if (Array.isArray(value)) {
           if (key === "includeKeywords" || key === "excludeKeywords") {
             const updatedValue = value.map((item) => item.replaceAll("_", " "));
@@ -1035,7 +1190,7 @@ const Pages = () => {
       if (editData?.filterValues?.locationIds) {
         const ids = Object?.keys(editData?.filterValues?.locationIds);
         setLocalFilter("locationIds", ids.join(","))
-        console.log(ids);
+        // console.log(ids);
       }
       if (editData?.filterValues?.categories) {
         const categories = Object.values(editData?.filterValues?.categories || {}).map((category: any) => {
@@ -1251,6 +1406,14 @@ const Pages = () => {
     <>
       <div>{isLoading ? <Loading /> :
         <>
+        {steps?.length > 0 && (
+            <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName={`trackers/create?type=${type}`}
+          />
+          )}
           <div
             className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
             style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex: '5' }}
@@ -1310,7 +1473,7 @@ const Pages = () => {
               className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
               style={{
                 border:
-                  isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+                  isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
               }}
             >
               <input
@@ -1321,15 +1484,18 @@ const Pages = () => {
                 onChange={(event) => setTrackerName(event.target.value)}
               />
             </div>
-            <TeliTemplates type={type} isMandatory={isMandatory} />
+            <div>
+            <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>
+            </div>
             {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS") &&
-              <div style={{ display: 'flex', gap: '25px' }}>
-                <div className={`card ${styles.competitor}`}>
+              <div style={{ display: 'flex', gap: '25px' }} >
+                <div className={`card ${styles.competitor}`} ref={refs.templateRef}>
                   {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
         </div> */}
                   <div className={styles.bar}></div>
+                  <div >
                   <div>
                     <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
                       <InformationFill style={{ marginBottom: "3px" }} color="var(--info-text-color)" height="12px" />
@@ -1491,6 +1657,7 @@ const Pages = () => {
                       {/* } */}
                     </div>
                   }
+                  </div>
                 </div>
                 <div className={`card ${styles.competitor}`} >
                   <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{ fontSize: "var(--font-size-small)" }}>
@@ -1576,7 +1743,7 @@ const Pages = () => {
                     (customData && customData.length > 0 ? (
                       <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
                     ) : (
-                      <div className={styles.emptyTableData}>
+                      <div className={styles.emptyTableData} >
                         <Image
                           src={trackerEmptyTable}
                           alt="table"
@@ -1600,10 +1767,10 @@ const Pages = () => {
             {
               <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
                 {type !== "T_CUSTOM" &&
-                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }}>
+                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }} ref={refs.additionalFilterRef}>
                     <div className={styles.hiddenFiltersInnerDiv}>
                       {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
-                      <div className={styles.hiddenFilterHeading}>Additional filters</div>
+                      <div className={styles.hiddenFilterHeading}>Advance filters</div>
                     </div>
                     <div><ChevronDown className="icons" /></div>
                   </div>
@@ -1612,11 +1779,13 @@ const Pages = () => {
                   <Suspense fallback={<Loading />}>
                     <div className={styles.container}>
                       <div className={styles.sub_container}>
-                        <div className="grid grid-cols-5 gap-3">
+                        <div className="grid grid-cols-5 gap-3" ref={refs.basicFilterRef}>
                           <EventTypeSelector />
                           <CategorySelector />
                           <EventFormatSelector />
-                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && <LocationSelector isMandatory={isMandatory} />}
+                          {(type !== "T_LOCATION" && type !== "T_VENUE" && type !== "T_GEOTIME") && 
+                          <LocationSelector isMandatory={isMandatory} />
+                          }
 
                           {/* <LocationSelector/> */}
                           {type !== "T_GEOTIME" &&
@@ -1634,6 +1803,7 @@ const Pages = () => {
                         defaultValue="list"
                         value={selectedAdvancedView}
                         onValueChange={handleTabChange}
+                        ref={refs.advanceFilterRef}
                       >
                         <div className="flex justify-center my-6">
                           <div className="flex justify-center">
@@ -1708,8 +1878,10 @@ const Pages = () => {
 
               </div>
             }
-            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+            {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
+            <div ref={refs.presetRef}>
               <Presets template={template} handlePresetClick={handlePresetClick} />
+            </div>
             }
           </div>
         </>

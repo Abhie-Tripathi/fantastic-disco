@@ -74,7 +74,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
     verifyAccess: `${BASE_URL}/auth/verify-access`,
-    templatePreset: `${BASE_URL}/others/preset`
+    templatePreset: `${BASE_URL}/others/preset`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,
@@ -85,6 +85,8 @@ export const endpoints = {
     latestComment: `${BASE_URL}/me/account/latest-comment`,
     createIntent: `${BASE_URL}/intents/user-event-interest`,
     eventDetail: `${BASE_URL}/events`,
+    fetchDuplicateEvent: `${BASE_URL}/promot-event/find-duplicates`,
+    addNewEvent: `${BASE_URL}/promot-event`,
   },
   intent: {
     userEventInterest: `${BASE_URL}/intents/user-event-interest`,

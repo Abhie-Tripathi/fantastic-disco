@@ -1,13 +1,18 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Cross } from "geist-icons";
+import { X } from "lucide-react";
 import React, { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode; // This will accept any React elements passed from the parent
+  className?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) => {
   return (
     <>
       {/* Overlay */}
@@ -17,18 +22,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           onClick={onClose}
         ></div>
       )}
-
       {/* Modal content */}
       <div
-        className={`fixed top-0 right-0 w-1/2 h-full bg-background z-50 transform transition-all duration-500 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={cn(
+          "fixed top-0 right-0 w-1/2 h-full bg-background z-50 transform transition-all duration-500 ease-in-out",
+          isOpen ? "translate-x-0" : "translate-x-full",
+          className
+        )}
       >
-        <div className="p-6 h-full">
-          {/* Render the children content passed from the parent */}
-          {/* <div>{children}</div> */}
-          {children}
-        </div>
+        <div className="py-6 h-full">{children}</div>
       </div>
     </>
   );

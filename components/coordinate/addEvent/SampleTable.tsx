@@ -3,12 +3,13 @@ import { CheckCircle, CrossCircle } from "geist-icons";
 interface Props {
   mappedHeaders: any;
   isSampleTable?: boolean;
+  csvData?: any[];
 }
 
-const SampleTable = ({ mappedHeaders, isSampleTable }: Props) => {
+const SampleTable = ({ mappedHeaders, isSampleTable, csvData }: Props) => {
   return (
-    <div className="overflow-x-auto pb-1 min-h-32">
-      <table className={`w-[100%] bg-[var(--primary-foreground)]`}>
+    // <div className="overflow-x-auto pb-1 min-h-48">
+      <table className={`bg-[var(--primary-foreground)]`}>
         <thead>
           <tr>
             <th className="border border-collapse bg-[var(--accent-color)] p-2.5">
@@ -26,7 +27,7 @@ const SampleTable = ({ mappedHeaders, isSampleTable }: Props) => {
                   }`}
                   key={entryKey.defaultName}
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 whitespace-nowrap">
                     {entryKey.defaultName}
                     {!isSampleTable &&
                       (entryKey.isMatch ? (
@@ -41,6 +42,9 @@ const SampleTable = ({ mappedHeaders, isSampleTable }: Props) => {
                         />
                       ))}
                   </div>
+                  {entryKey.subHeading && (
+                    <div className="text-[var(--tertiary-text-color)] text-[10px] font-medium leading-3 line-clamp-1" title={entryKey.subHeading}>{entryKey.subHeading}</div>
+                  )}
                 </th>
               ))}
           </tr>
@@ -52,9 +56,15 @@ const SampleTable = ({ mappedHeaders, isSampleTable }: Props) => {
             </td>
             {mappedHeaders.map((entryKey: any, index: number) => (
               <td
-                className="p-2.5 font-medium text-sm text-start border border-collapse"
+                className="p-2.5 text-sm text-start border border-collapse"
                 key={index}
-              ></td>
+              >
+                {!isSampleTable && csvData &&
+                  <span className="line-clamp-2">
+                    {csvData[0]?.[index]}
+                  </span>
+                }
+              </td>
             ))}
           </tr>
           <tr>
@@ -63,14 +73,20 @@ const SampleTable = ({ mappedHeaders, isSampleTable }: Props) => {
             </td>
             {mappedHeaders.map((entryKey: any, index: number) => (
               <td
-                className="p-2.5 font-medium text-sm text-start border border-collapse"
+                className="p-2.5 text-sm text-start border border-collapse"
                 key={index}
-              ></td>
+              >
+                {!isSampleTable && csvData &&
+                  <span className="line-clamp-2">
+                    {csvData[1]?.[index]}
+                  </span>
+                }
+              </td>
             ))}
           </tr>
         </tbody>
       </table>
-    </div>
+    // </div>
   );
 };
 

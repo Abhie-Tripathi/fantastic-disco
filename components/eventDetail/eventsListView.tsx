@@ -44,14 +44,8 @@ const EventsListView: React.FC<MapProps> = ({
     tradeshows: "/eventType/expo.png",
   };
 
-  const latitude =
-    eventLocation?.venue?.latitude ??
-    eventLocation?.city?.latitude ??
-    eventLocation?.state?.latitude;
-  const longitude =
-    eventLocation?.venue?.longitude ??
-    eventLocation?.city?.longitude ??
-    eventLocation?.state?.longitude;
+  const latitude = eventLocation?.latitude;
+  const longitude = eventLocation?.longitude;
 
   const viewBound = {
     boundType: "point",

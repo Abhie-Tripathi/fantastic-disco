@@ -5,14 +5,14 @@ import Image from 'next/image';
 import Text from "@/components/new-ui/Text";
 import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
-const TeliTemplates = ({type, isMandatory}:any) => {
-  console.log("called multiple time");
+const TeliTemplates = ({type, isMandatory, refs}:any) => {
   return (
     <div>
        {type==="T_LOCATION" &&
-       <div className='flex justify-between'>
-    <div className="flex gap-2 flex-col border w-[500px]">
-      <LocationTemplate type={type} />
+       <div className='flex justify-between' ref={refs.templateRef}>
+    <div className="flex gap-2 flex-col border w-[500px]" >
+      <LocationTemplate type={type}/>
+
       </div>
       {/* <span
             className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col h-[200px]"
@@ -27,7 +27,9 @@ const TeliTemplates = ({type, isMandatory}:any) => {
     }
     {type==="T_VENUE" &&
     <div className='flex justify-between'>
-    <div className="flex gap-2 flex-col border w-[500px]">
+    <div className="flex gap-2 flex-col border w-[500px]" ref={refs.templateRef}
+    data-tour="templateRef"
+    >
       <LocationTemplate type={type} isMandatory={isMandatory}/>
     </div>
      {/* <span
@@ -46,8 +48,8 @@ const TeliTemplates = ({type, isMandatory}:any) => {
 
         <div className='flex justify-between w-[100%] gap-2'>
         <div className='flex gap-2 w-[80%]'>
-        <div className="flex gap-2 flex-col border w-[50%] h-auto">
-        <LocationTemplate type={type} />
+        <div className="flex gap-2 flex-col border w-[50%] h-auto" ref={refs.templateRef}>
+        <LocationTemplate type={type}/>
       </div>
       <div className="flex justify-between gap-2 flex-col border w-[50%]">
         <DateRangeSelector type={type}/>

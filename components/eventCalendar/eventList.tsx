@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import IntelScore from "@/app/components/Table/IntelScore";
-import { AlertTriangle, Loader2, X, Star } from "lucide-react";
+import { AlertTriangle, Loader2, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -19,6 +19,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { isEventeli } from "@/config";
+import { formatLocationParts } from "@/utils/locationFormat";
+
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { useFilterState } from "@/hooks/useFilterState";
 import { lightenColor } from "@/lib/utils";
@@ -85,48 +87,45 @@ export default function EventList({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
- 
+
   const handleSort = (newSortValue: string) => {
     setSortBy(newSortValue);
   };
-
+  const type=getFilterValue("type");
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: event?.intelScore || 0,
+      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+    }
+  ];
   function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
-  const {
-      intelScoreData,
-      loading: intelLoading,
-      error: intelError,
-    } = useIntelData(
-      trackerId || "",
-      events?.length > 0 ? events : []
-    );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
-    const address = event.basic.eventLocation
-      ? event.basic.format === "online"
-        ? "Online"
-        : [
-            event.basic.eventLocation?.venue?.name || "TBA",
-            event.basic.eventLocation?.city?.name,
-            event.basic.eventLocation?.state?.name,
-            event.basic.eventLocation?.country?.name,
-          ]
-            .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
-      const type=getFilterValue("type");
-      const intelScoreData = [
-        {
-          name: "Total",
-          value: event?.intelScore || 0,
-          fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
-        }
-      ];
+    const address = event.basic.eventLocation ? (
+      event.basic.format === "online" ? (
+        <span className="flex items-center">
+          <Radio className="w-4 h-4 mr-1" /> Online
+        </span>
+      ) : event.basic.format === "hybrid" ? (
+        <span>
+          <Radio className="w-4 h-4 mr-1 inline-block" />
+          Hybrid&nbsp;-&nbsp;
+          {formatLocationParts(event.basic.eventLocation)}
+        </span>
+      ) : (
+        formatLocationParts(event.basic.eventLocation)
+      )
+    ) : (
+      "Venue to be announced"
+    );
+
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -168,7 +167,7 @@ export default function EventList({
                   </div>
                 </div>
               ) : event.basic.website ? (
-                <div className="w-12 h-12 relative">
+                <div className="w-16 h-16 relative">
                   <img
                     src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
                     alt={`${event.basic.name} website favicon`}
@@ -196,7 +195,7 @@ export default function EventList({
                   </div>
                 </div>
               ) : (
-                <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
                   <span className="text-[#5055A3] text-2xl font-semibold">
                     {event.basic.name.charAt(0)}
                   </span>
@@ -204,8 +203,6 @@ export default function EventList({
               )}
 
               <div className="flex-1 min-w-0">
-              <div className="flex">
-                <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
@@ -246,13 +243,11 @@ export default function EventList({
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
-                </div>
                 {trackerId&&
                 <div>
                 <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
                 </div>
                 }
-                </div>
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,
@@ -462,7 +457,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] ${trackerId?"w-[400px]": "w-[345px]"} mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>

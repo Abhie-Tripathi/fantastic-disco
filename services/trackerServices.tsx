@@ -70,6 +70,12 @@ export const useTrackerServices = () => {
       `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
     )
   }
+  const fetchCompanyData = (query: string, offset: number, limit:number):Promise<{ companyName: string } | undefined> => { 
+    return api.request(
+      `${endpoints.tracker.suggestion}?query=${query}&offset=${offset}&limit=${limit}`,
+    )
+
+  }
     const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
@@ -347,7 +353,7 @@ export const useTrackerServices = () => {
     //     }
     //   );
     //   return EventsAdapter.adaptEventCountResponse(response);
-    // };
+    // };  
     const presetData = async (data: any): Promise<PresetDataResponse> => {
       const urlParams = new URLSearchParams(data).toString();
       const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`, {
@@ -391,7 +397,11 @@ export const useTrackerServices = () => {
       getTrackerDetail,
       getTrackerEvents,
       presetData,
+<<<<<<< HEAD
       getIntelData,
+=======
+      fetchCompanyData,
+>>>>>>> 6574e8beba096571d0053ac7bb5a4ae1437c646e
       isLoading: api.isLoading,
       error: api.error,
     };

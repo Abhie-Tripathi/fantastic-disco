@@ -30,8 +30,9 @@ export const useEventsService = () => {
   const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
     const tempQuery = params;
     if (
-      Object.keys(tempQuery).length === 1 &&
-      Object.keys(tempQuery)[0].toLowerCase() == "view"
+      (Object.keys(tempQuery).length === 1 &&
+        Object.keys(tempQuery)[0].toLowerCase() == "view") ||
+      Object.keys(tempQuery).length == 0
     ) {
       return {
         events: [],
@@ -94,11 +95,15 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventEditionDetails = (id: string, take: number, skip: number) => {
+  const getEventEditionDetails = (
+    id: string,
+    limit: number,
+    offset: number
+  ) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
-        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
-      }`,
+      `${endpoints.event.events}/${id}/editions${
+        limit ? `?limit=${limit}` : ""
+      }${offset !== undefined && offset !== null ? `&offset=${offset}` : ""}`,
       {
         method: "GET",
       }

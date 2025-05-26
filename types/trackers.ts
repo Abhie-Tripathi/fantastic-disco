@@ -65,6 +65,14 @@ export interface Tracker {
       country?: LocationObject[];  
       zone?: LocationObject[];
     } | string | undefined;
+    viewBound?:{
+      boundType: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+        radius: number;
+      };
+    } | string | undefined;
     country?:LocationObject[];
     includeKeywords?:string;
     excludeKeywords?:string;
@@ -154,4 +162,28 @@ export interface PresetData{
     export interface TrackerTypeProp{
       type:string;
       count:number;
+    }
+    export interface TrackerAIResponse {
+      companyData: companyData;
+      competitorData: competitorData;
+      keywordData: keywordData;
+    }
+    
+    export interface companyData{
+      status: number;
+      data: any[]; 
+      name: string;
+      domain: string;
+    };
+    
+    export interface competitorData{
+     
+        status: number;
+        name: string;
+        data: { domain: string }[];
+    };
+    export interface keywordData{
+        status: number;
+        name: string;
+        data: string[][];
     }

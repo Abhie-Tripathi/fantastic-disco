@@ -11,7 +11,7 @@ import {
 import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
-import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
+import { Target, Unmask, UnmaskPocApiParamType, Source, Event } from "@/types/events";
 
 interface fnProp {
   offset: number;
@@ -140,9 +140,12 @@ export const useCoordinateService = () => {
   };
 
   const getEventDetailById = (eventId: string) => {
-    return api.request(`${endpoints.coordinate.eventDetail}/${eventId}`, {
-      method: "GET",
-    });
+    return api.request<Event>(
+      `${endpoints.coordinate.eventDetail}/${eventId}`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getEventPOC = (eventId: string) => {
@@ -354,14 +357,34 @@ export const useCoordinateService = () => {
     );
   }
 
-  const addNewEvent = async(formData: any) => {
-    const data = await externalAxios.post<any>(
-      `https://stg-board.10times.com/enquiry/submit`,
+  const fetchDuplicateEvents = (eventData: any) => {
+    return api.request(
+      endpoints.coordinate.fetchDuplicateEvent,
       {
-        data: formData,
+        method: "POST",
+        data: eventData,
       }
     );
-    return data.data;
+
+  }
+
+  const addNewEvent = async(eventData: any) => {
+    return api.request(
+      endpoints.coordinate.addNewEvent,
+      {
+        method: "POST",
+        data: eventData,
+      }
+    );
+  }
+
+  const getEnquiryDetailByEventId = (eventId: string) => {
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?offset=0&eventId=${eventId}`,
+      {
+        method: "GET",
+      }
+    );
   }
 
   return {
@@ -391,7 +414,9 @@ export const useCoordinateService = () => {
     deleteEnquiryActivityIntent,
     fetchEvents,
     fetchSimilarEvents,
+    fetchDuplicateEvents,
     addNewEvent,
+    getEnquiryDetailByEventId,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };
