@@ -11,6 +11,7 @@ import { Checkbox } from "../ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 
 export default function ColumnsSelector() {
   const { setLocalFilter, getLocalFilterValue, setMultipleLocalFilters } =
@@ -31,7 +32,9 @@ export default function ColumnsSelector() {
   };
 
   const columns =
-    activeView === "treemap" ? treemapColumnsDropdown : columnsDropdown;
+    activeView === "treemap" || (!isEventeli && activeView == "")
+      ? treemapColumnsDropdown
+      : columnsDropdown;
 
   const handleMetricChange = (value: string, checked: boolean) => {
     let newMetrics: string[];
@@ -97,18 +100,25 @@ export default function ColumnsSelector() {
           {columns.map(({ label, value, enable }) => (
             <div
               key={value}
-              className="flex items-center space-x-2 cursor-pointer"
+              className={cn(
+                "flex items-center space-x-2",
+                !enable && "opacity-50 cursor-not-allowed"
+              )}
             >
               <Checkbox
                 id={value}
                 checked={metrics.includes(value)}
                 onCheckedChange={(checked) =>
-                  handleMetricChange(value, checked as boolean)
+                  enable && handleMetricChange(value, checked as boolean)
                 }
+                disabled={!enable}
               />
               <label
                 htmlFor={value}
-                className={cn("text-sm font-medium leading-none")}
+                className={cn(
+                  "text-sm font-medium leading-none",
+                  !enable && "cursor-not-allowed"
+                )}
               >
                 {label}
               </label>
