@@ -889,7 +889,7 @@ const Filters = ({
           <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
         )}
       </button>}
-      <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "pt-4 pl-6 h-[calc(100vh-60px)]" : "h-full"}`}>
+      <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]" : "h-full"}`}>
       {source!=="tracker" &&
         <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
           <Tabs defaultValue={type} value={type}>

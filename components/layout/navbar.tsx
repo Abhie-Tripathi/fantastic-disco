@@ -12,6 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
 import {
@@ -71,7 +72,11 @@ export default function Navbar() {
   // const { theme, toggleTheme } = useTheme();
 
   function getRoute(path: string | undefined): string {
-    return gtmroutes[path || ""];
+    const route = gtmroutes[path || ""];
+    if (path === "trends") {
+      return route;
+    }
+    return route;
   }
   const router = useRouter();
   const handleRoute = (route: string) => {
@@ -185,7 +190,14 @@ export default function Navbar() {
           </div>
           <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
-              ? getRoute(pathname.split("/")[2])
+              ? (
+                <div className="flex items-center">
+                  {getRoute(pathname.split("/")[2])}
+                  {pathname.split("/")[2] === "trends" && (
+                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
+                  )}
+                </div>
+              )
               : pathname.split("/").slice(-2)[0] === "edit"
               ? "Edit Widget"
               : geniroutes[pathname.split("/").slice(-1)[0]]}
