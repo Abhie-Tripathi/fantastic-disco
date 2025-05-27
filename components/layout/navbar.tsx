@@ -72,11 +72,7 @@ export default function Navbar() {
   // const { theme, toggleTheme } = useTheme();
 
   function getRoute(path: string | undefined): string {
-    const route = gtmroutes[path || ""];
-    if (path === "trends") {
-      return route;
-    }
-    return route;
+    return gtmroutes[path || ""];
   }
   const router = useRouter();
   const handleRoute = (route: string) => {
