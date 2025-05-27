@@ -89,7 +89,7 @@ import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
-import CustomTrackerNUllState from "./customTrackerNullState";
+import CustomTrackerNullState from "./customTrackerNullState";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -1077,19 +1077,6 @@ const stepsConfig =[
     if(suggestion===2 && inc.length>0){
       setSuggestions([]);
       setLocalFilter("includeKeywords", inc?.join(","));
-      fetchAISuggestion?.(
-        `List top 5 keywords similar to ${
-          inc[0]
-        } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
-        "data": [
-          ["keyword 1" ],
-          ["keyword 2" ],
-          ["keyword 3" ],
-          ["keyword 4" ],
-          ["keyword 5" ]
-        ]
-      }.`
-      );
     }
   },[inc])
   useEffect(() => {
@@ -1565,10 +1552,10 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-full">
-    <div className="hidden md:flex w-full h-full justify-center items-center">
+    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-auto pt-10">
+    <div className="hidden md:flex w-full justify-center items-center">
     {type==="T_CUSTOM"&&
-    <CustomTrackerNUllState/>}
+    <CustomTrackerNullState/>}
     </div>
     </div>
     {(isEventeli && type!=="T_CUSTOM")&&

@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import ZeroStateIcon from "/public/zero_state.svg";
 
-const CustomTrackerNUllState = () => {
+const CustomTrackerNullState = () => {
   return (
     <div className="flex items-center justify-center flex-col gap-2 w-full">
       
@@ -22,4 +22,4 @@ const CustomTrackerNUllState = () => {
   );
 };
 
-export default CustomTrackerNUllState;
+export default CustomTrackerNullState;
