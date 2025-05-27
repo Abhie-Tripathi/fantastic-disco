@@ -1463,6 +1463,10 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
+    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)]">
+    {type==="T_CUSTOM"&&(!isEventeli ?
+    "Refine your results with basic (category, date, location) and advanced filters, assess event impact using insight scores—estimated visitors, exhibitors, ranking—and harness Audience Intel’s where, who, and how for precise targeting.":"Drill into your data with basic and advanced filters, and evaluate each event’s impact using insight scores—estimated visitors, exhibitors, ranking, and analytics.")}
+    </div>
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
@@ -1775,6 +1779,7 @@ return (
 
     </div>
   </div>
+  
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
       <div ref={refs.presetRef}>
