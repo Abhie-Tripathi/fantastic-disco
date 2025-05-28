@@ -900,7 +900,7 @@ const Filters = ({
       )}
       <div
         className={`overflow-y-auto flex flex-col ${
-          source !== "tracker" ? "pt-4 pl-6 h-[calc(100vh-60px)]" : "h-full"
+          source !== "tracker" ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]" : "h-full"
         }`}
       >
         {source !== "tracker" && (
