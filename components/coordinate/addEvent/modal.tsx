@@ -25,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) =
       {/* Modal content */}
       <div
         className={cn(
-          "fixed top-0 right-0 w-1/2 h-full bg-background z-50 transform transition-all duration-500 ease-in-out",
+          "fixed top-0 bottom-0 right-0 w-1/2 min-h-screen bg-background z-50 transform transition-all duration-500 ease-in-out",
           isOpen ? "translate-x-0" : "translate-x-full",
           className
         )}
