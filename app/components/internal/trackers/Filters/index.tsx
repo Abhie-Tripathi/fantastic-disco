@@ -1366,6 +1366,7 @@ return (
     filterCount={0}
     createTrackerHandler={saveTrackerHandler}
     closeHandler={setShowFilters}
+    refs={refs}
     // searchHandler={searchHandler}
   />
   </div>
@@ -1442,7 +1443,7 @@ return (
           </button>
         </div>
       )}
-    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`} ref={!isMobile?refs.additionalFilterRef:null}>
+    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`} ref={(!isMobile && type!=="T_CUSTOM")?refs.additionalFilterRef:null}>
         <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} >
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>

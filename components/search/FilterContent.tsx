@@ -99,10 +99,11 @@ const FilterContent = ({
               >
                 <AccordionTrigger
                   id={section.id}
+                  // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
                   className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
                 >
                   <div className="text-sm flex gap-2 items-center uppercase font-medium">
-                    <Filter className="w-4 h-4" ref={refs?.basicFilterRef} />
+                    <Filter className="w-4 h-4"/>
                     {section.label}
                   </div>
                 </AccordionTrigger>
