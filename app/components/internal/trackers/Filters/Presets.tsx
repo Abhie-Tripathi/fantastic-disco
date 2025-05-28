@@ -165,7 +165,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
     return count;
   };
   return (
-    <div>
+    <div className="w-full">
       <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
         <div className="flex items-center gap-1">
         <span className="text-lg">Get Started with Pre-sets</span>
