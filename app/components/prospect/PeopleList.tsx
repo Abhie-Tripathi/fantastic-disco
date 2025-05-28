@@ -331,7 +331,7 @@ export const PeopleList: React.FC = () => {
             }).format(count)}
           </Badge>
           <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
-            People Found
+            People
           </p>
         </div>
         <div className="flex justify-center"></div>
