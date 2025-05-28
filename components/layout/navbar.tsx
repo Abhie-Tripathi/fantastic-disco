@@ -40,6 +40,7 @@ import Link from "next/link";
 import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
+import VideoModal from "@/components/layout/videoModal";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -188,7 +189,9 @@ export default function Navbar() {
             {pathname.split("/")[1] === "internal"
               ? (
                 <div className="flex items-center">
-                  {getRoute(pathname.split("/")[2])}
+                  <div className="ml-2 " >
+                    <VideoModal source={pathname.split("/")[2]} />
+                  </div>
                   {pathname.split("/")[2] === "trends" && (
                     <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
                   )}

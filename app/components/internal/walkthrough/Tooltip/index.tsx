@@ -3,9 +3,11 @@ import { TooltipRenderProps } from "react-joyride";
 import styles from "./tooltip.module.css";
 import LeftArrow from "/public/internal/go_to_circle.svg";
 import Image from "next/image";
+import VideoModal from "@/components/layout/videoModal";
 
 interface CustomTooltipProps extends TooltipRenderProps {
   totalSteps: number;
+  pathName: string;
 }
 
 const Tooltip = ({
@@ -18,6 +20,7 @@ const Tooltip = ({
   tooltipProps,
   skipProps,
   totalSteps,
+  pathName,
 }: CustomTooltipProps) => (
   <div className={styles.container} {...tooltipProps}>
     <nav>
@@ -27,6 +30,11 @@ const Tooltip = ({
     </nav>
     <div className={styles.content}>{step.content}</div>
     <footer>
+      {pathName === "research" &&
+        <div className="absolute left-5">
+          <VideoModal source="search" />
+        </div>
+      }
       {index > 0 && (
         <button {...backProps}>
           <Image src={LeftArrow} alt="left arrow" />
