@@ -45,10 +45,11 @@ export default function InterestSelector({
       <PopoverTrigger asChild disabled={disabledDropdown}>
         <Button
           variant="outline"
-          className={`w-1/3 justify-between px-3 py-0 text-sm h-8 font-medium rounded-sm border-input`}
+          className="px-2"
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
+          size="sm"
         >
           <div className="flex items-center">
             <span className="mr-2">
