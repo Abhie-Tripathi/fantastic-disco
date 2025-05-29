@@ -43,12 +43,14 @@ const EventCard = memo(
     onHover,
     onLeave,
     trackerId,
+    inetialIntelScoreData,
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
     trackerId: string|undefined;
+    inetialIntelScoreData: any;
   }) => {
     const [mapZoom, setMapZoom] = useState(0);
     const {getFilterValue} = useFilterState();
@@ -96,7 +98,7 @@ const EventCard = memo(
     const intelScoreData = [
       {
         name: "Total",
-        value: event?.intelScore || 0,
+        value: inetialIntelScoreData?.alltrackers_score || 0,
         fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
       }
     ];
@@ -531,7 +533,8 @@ function EventList({
     error: intelError,
   } = useIntelData(
     trackerId || "",
-    events?.length > 0 ? events : []
+    events?.length > 0 ? events : [],
+    eventType || ""
   );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
@@ -713,6 +716,11 @@ function EventList({
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
                 onLeave={handleEventLeave}
+                inetialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item) => item.event === event.basic.id
+) || null
+}
               />
             );
           })}

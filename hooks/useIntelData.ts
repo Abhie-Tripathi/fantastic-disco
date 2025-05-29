@@ -2,7 +2,9 @@
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
-export const useIntelData = (trackerId: string | null, events: any[]) => {
+export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null) => {
+  console.log("eventType", eventType);
+  
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ export const useIntelData = (trackerId: string | null, events: any[]) => {
         try {
           setLoading(true);
           const eventIds = events.map((event) => event.basic.id).join(",");
-          const response = await getIntelData(trackerId || "", eventIds);
+          const response = await getIntelData(trackerId || "", eventIds, eventType||"");
           setIntelScoreData(response);
         } catch (err) {
           setError(err);

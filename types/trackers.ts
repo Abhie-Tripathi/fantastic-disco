@@ -187,3 +187,15 @@ export interface PresetData{
         name: string;
         data: string[][];
     }
+
+    export interface intelScore {
+      alltrackers: number;
+      alltrackers_score: number;
+      event: string;
+      people?: number;
+      people_score?: number;
+      prospect?: number;
+      prospect_score?: number;
+      purpose_score?: number;
+      purpose?: number;
+    }

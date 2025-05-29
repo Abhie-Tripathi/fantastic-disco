@@ -23,24 +23,24 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
     ]
   
   useEffect(() => {  
-    // const fetchIntelScore = async () => {
-    //   try {
-    //     const data = await getEventIntelScore(eventId);
-    //     if(data){
-    //     console.log(data);
-    //     setIntelData(data);
-    //     setIsLoading(false);
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to fetch event intel score:', error);
-    //   }
-    // };
+    const fetchIntelScore = async () => {
+      try {
+        const data = await getEventIntelScore(eventId);
+        if(data){
+        console.log(Object.values(data.intelScore)[0]);
+        setIntelData(Object.values(data.intelScore)[0]);
+        setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch event intel score:', error);
+      }
+    };
   
-    // fetchIntelScore();
-    setInterval(() => {
-      setIntelData(data);
-      setIsLoading(false);
-    }, 2000);
+    fetchIntelScore();
+    // setInterval(() => {
+    //   setIntelData(data);
+    //   setIsLoading(false);
+    // }, 2000);
   },[])
   
   return (
@@ -61,12 +61,12 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
       {isLoading ? <IntelSkeleton /> : 
       <>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <CircularProgress percentages={[intelData?.[0]?.people_score ?? 0, intelData?.[0]?.purpose_score ?? 0, intelData?.[0]?.prospect_score ?? 0]} relevanceScore={intelData?.[0]?.alltrackers_score} />
+        <CircularProgress percentages={[intelData?.people_score ?? 0, intelData?.purpose_score ?? 0, intelData?.prospect_score ?? 0]} relevanceScore={intelData?.alltrackers_score} />
       </div>
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.people_score ?? "--"}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.people_score ?? "--"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -76,7 +76,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             People
           </div>
-          <Slider width={intelData?.[0]?.people_score ?? 0} color="#646BDC"/>
+          <Slider width={intelData?.people_score ?? 0} color="#646BDC"/>
           {/* <div
             style={{
               height: "13px",
@@ -86,7 +86,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.purpose_score ?? "--"}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.purpose_score ?? "--"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -96,7 +96,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             Purpose
           </div>
-          <Slider width={intelData?.[0]?.purpose_score ?? "--"} color="#E99CD4"/>
+          <Slider width={intelData?.purpose_score ?? "--"} color="#E99CD4"/>
           {/* <div
             style={{
               height: "13px",
@@ -106,7 +106,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           ></div> */}
         </div>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.[0]?.prospect_score ?? "-"}</div>
+          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.prospect_score ?? "-"}</div>
           <div
             style={{
               fontSize: "var(--font-size-default)",
@@ -116,7 +116,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           >
             Prospect
           </div>
-          <Slider width={intelData?.[0]?.prospect_score ?? 0} color="#9B86D4"/>
+          <Slider width={intelData?.prospect_score ?? 0} color="#9B86D4"/>
           {/* <div
             style={{
               height: "13px",

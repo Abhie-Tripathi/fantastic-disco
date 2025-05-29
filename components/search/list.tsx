@@ -32,6 +32,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { useIsMobile } from "@/hooks/useMediaQuery"
 import IntelScore from '@/app/components/Table/IntelScore'
 import { useIntelData } from "@/hooks/useIntelData"
+import { intelScore } from "@/types/trackers"
 interface CircularProgressProps {
   value: number | null
   label: string
@@ -95,9 +96,10 @@ interface EventListProps {
   trackerId?: string
   source?: string
   view?: string
+  eventType?: string
 }
 
-export default function EventAccordion({ source, trackerId, view }: EventListProps) {
+export default function EventAccordion({ source, trackerId, view, eventType }: EventListProps) {
   const isMobile = useIsMobile()
   const searchParams = useSearchParams()
   const { data: trackerData, setIsNewCall } = useTrackerContext()
@@ -125,7 +127,8 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
     error: intelError,
   } = useIntelData(
     trackerId || "",
-    events?.length > 0 ? events : []
+    events?.length > 0 ? events : [],
+    "past"
   );
   const mapping = {
     rating: "rating",
@@ -264,6 +267,12 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
               showMaturity={showMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
+              intelLoading={intelLoading}
+               initialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item: intelScore) => item.event === event.basic.id
+) || null
+}
             />
           ))}
         </ul>
@@ -294,6 +303,8 @@ const EventListItem = ({
   showMatchKeywords,
   showaudienceSpread,
   showMaturity,
+  initialIntelScoreData,
+  intelLoading
 }: {
   isMobile: boolean
   trackerId?: string
@@ -305,7 +316,9 @@ const EventListItem = ({
   showMatchKeywords: boolean
   showaudienceSpread: boolean
   showMaturity: boolean
-  global?: string
+  global?: string,
+  initialIntelScoreData?: intelScore,
+  intelLoading?: boolean
 }) => {
   const {getFilterValue} = useFilterState();
   const address = event.basic.eventLocation ? (
@@ -366,7 +379,7 @@ const EventListItem = ({
   const intelScoreData = [
     {
       name: "Total",
-      value: event?.intelScore || 0,
+      value: initialIntelScoreData?.alltrackers_score || 0,
       fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
     }
   ];
@@ -840,14 +853,7 @@ const EventListItem = ({
                         </div>
                       )}
                     </div>
-                    {trackerId && 
-                    <div className="space-y-4">
-                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 min-h-[196px]">
-                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
-                      <div>Relevance Score</div>
-                      </div>
-                    </div>
-                    }  
+                    
                     {global !== "global" && !isMobile && (
                       <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
                         <ActionPopover
@@ -895,6 +901,15 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                   {trackerId && 
+                    <div className="space-y-4">
+                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 min-h-[196px]">
+                      
+                      <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>
+                      <div>Relevance Score</div>
+                      </div>
+                    </div>
+                    }  
                     {global !== "global" && !isMobile && (
                       <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
                         <ActionPopover

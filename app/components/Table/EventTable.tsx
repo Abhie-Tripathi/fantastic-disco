@@ -17,6 +17,7 @@ import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -57,9 +58,10 @@ const EventTable = ({
       error: intelError,
     } = useIntelData(
       trackerId || "",
-      events?.length > 0 ? events : []
+      events?.length > 0 ? events : [],
+      eventType || ""
     );
-  // console.log(isLoading);
+  console.log(intelScoreData);
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -214,7 +216,13 @@ const EventTable = ({
                   show={showValues}
                   localFilters={localFilters}
                   trackerId={trackerId}
-                  intelScoreData={intelScoreData}
+                  intelLoading={intelLoading}
+                  initialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item:intelScore) => item.event === event.basic.id
+) || null
+}
+
                 />
               ))}
             </TableBody>

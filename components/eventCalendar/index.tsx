@@ -35,6 +35,7 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
+import { useIntelData } from "@/hooks/useIntelData";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;

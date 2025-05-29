@@ -123,7 +123,7 @@ export default function PieChartComponent({
             fontSize="14px"
             fontWeight="bold"
           >
-            {intelScore?.reduce((sum:number, item:IntelValue) => sum + item.value, 0)}
+            {intelScore?.reduce((sum:number, item:IntelValue) => sum + item.value,0)>0?intelScore?.reduce((sum:number, item:IntelValue) => sum + item.value,0):"-"}
           </text>
         </PieChart>
       </ResponsiveContainer>

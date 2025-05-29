@@ -894,7 +894,7 @@ const Page = ({ params }: { params: any }) => {
     ) : ( */}
               <>
                 {/* <Alerts /> */}
-                <List source="tracker" trackerId={params.trackerId} />
+                <List source="tracker" trackerId={params.trackerId} evntType={params.eventType}/>
               </>
               {/* )} */}
             </div>

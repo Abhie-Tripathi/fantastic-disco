@@ -92,22 +92,25 @@ export default function EventList({
     setSortBy(newSortValue);
   };
   const type=getFilterValue("type");
-  const intelScoreData = [
-    {
-      name: "Total",
-      value: event?.intelScore || 0,
-      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
-    }
-  ];
+  
   function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      "active" || ""
+    );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
-  const EventCard = ({ event }: { event: Event }) => {
+  const EventCard = ({ event, inetialIntelScoreData }: { event: Event }) => {
     const address = event.basic.eventLocation ? (
       event.basic.format === "online" ? (
         <span className="flex items-center">
@@ -125,7 +128,13 @@ export default function EventList({
     ) : (
       "Venue to be announced"
     );
-
+    const intelScoreData = [
+    {
+      name: "Total",
+      value: inetialIntelScoreData?.alltrackers_score || 0,
+      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+    }
+  ];
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -406,7 +415,11 @@ export default function EventList({
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => (
-            <EventCard key={event.basic.id} event={event} />
+            <EventCard key={event.basic.id} event={event} inetialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item) => item.event === event.basic.id
+) || null
+}/>
           ))}
           {events.length > 0 && (
             <PaginationComponent

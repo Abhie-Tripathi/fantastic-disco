@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { intelScore } from "@/types/trackers";
 import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
@@ -25,7 +26,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import IntelScore from "./IntelScore";
 import { groupedEventTypes } from "@/constants";
-
+import { Skeleton } from "@/components/ui/skeleton";
 interface EventTableRowProps {
   event: Event;
   trackerId?: string;
@@ -36,6 +37,8 @@ interface EventTableRowProps {
   global?: string;
   view?: string;
   localFilters: Filters;
+  initialIntelScoreData?: intelScore;
+  intelLoading?: boolean;
 }
 
 function getForecastedStatus(data: any) {
@@ -125,7 +128,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setInterest,
   view,
   global,
+  initialIntelScoreData,
+  intelLoading
 }) => {
+  
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -144,7 +150,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     const intelScoreData = [
       {
         name: "Total",
-        value: event?.intelScore || 0,
+        value: initialIntelScoreData?.alltrackers_score || 0,
         fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
       }
     ];
@@ -838,7 +844,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>
+                {intelLoading ? <Skeleton className="h-16 w-1/3 rounded-md" />
+                :
+                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
           )}
