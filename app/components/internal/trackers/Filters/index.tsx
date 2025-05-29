@@ -1806,11 +1806,13 @@ return (
           {" "} Add manually or choose a pre-set
           </div>
           <div className="flex gap-1.5">
+          {!isEventeli &&
           <div ref={isMobile?refs.presetRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
           </div>
+          }
           <div ref={isMobile?refs.additionalFilterRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
           <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
