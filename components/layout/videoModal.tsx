@@ -67,12 +67,11 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
       )}
 
       <Dialog open={showVideoModal} onOpenChange={setShowVideoModal}>
-        <DialogContent className="max-w-4xl  p-0 gap-0 z-[11000]">
+        <DialogContent className="p-0 gap-0 z-[11000] max-w-3xl">
           <DialogHeader className="px-6 pt-6"></DialogHeader>
-          <div className="h-full p-2 pt-5">
+          <div className="w-full h-full p-2 pt-5">
             <video
-              className="object-cover rounded-md border-none"
-              width="100%"
+              className="max-h-[80vh] w-full object-contain rounded-md border-none"
               autoPlay
               controls
             >
