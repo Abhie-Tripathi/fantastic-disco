@@ -35,7 +35,9 @@ import { formatLocationParts } from "@/utils/locationFormat";
 import { PaginationComponent } from "../pagination";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIntelData } from "@/hooks/useIntelData";
-
+import { intelScore } from "@/types/trackers";
+import { Skeleton } from "../ui/skeleton";
+import { isEventeli } from "@/config";
 const EventCard = memo(
   ({
     event,
@@ -43,14 +45,16 @@ const EventCard = memo(
     onHover,
     onLeave,
     trackerId,
-    inetialIntelScoreData,
+    initialIntelScoreData,
+    intelLoading
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
     trackerId: string|undefined;
-    inetialIntelScoreData: any;
+    initialIntelScoreData: intelScore;
+    intelLoading?: boolean;
   }) => {
     const [mapZoom, setMapZoom] = useState(0);
     const {getFilterValue} = useFilterState();
@@ -98,7 +102,7 @@ const EventCard = memo(
     const intelScoreData = [
       {
         name: "Total",
-        value: inetialIntelScoreData?.alltrackers_score || 0,
+        value: initialIntelScoreData?.alltrackers_score || 0,
         fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
       }
     ];
@@ -219,11 +223,6 @@ const EventCard = memo(
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
-                {trackerId&&
-                <div>
-                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
-                </div>
-                }
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-medium text-primary">
                     {formattedDateRange(
@@ -242,6 +241,11 @@ const EventCard = memo(
                   </Button>
                 </div>
               </div>
+              {(trackerId && !isEventeli && type!=="T_CUSTOM")&&
+                (intelLoading?<Skeleton className="h-16 w-16 rounded-md" />:<div>
+                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
+                </div>)
+                }
             </div>
           </CardContent>
         </Card>
@@ -416,7 +420,8 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
-
+  console.log("searchParam", searchParam?.toString());
+  
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -716,9 +721,10 @@ function EventList({
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
                 onLeave={handleEventLeave}
-                inetialIntelScoreData = {
+                intelLoading={intelLoading}
+                initialIntelScoreData = {
   intelScoreData?.trackerEventsIntelScore?.find(
-  (item) => item.event === event.basic.id
+  (item:intelScore) => item.event === event.basic.id
 ) || null
 }
               />
@@ -773,9 +779,9 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-full md:w-[345px] bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
-      }`}
+      } ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli) ? "w-full md:w-[420px]" : "w-full md:w-[345px]"}`}
     >
       {renderContent()}
       {hoveredPopupInfo && (

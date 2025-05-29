@@ -1,4 +1,5 @@
 // hooks/useIntelData.ts
+import { isEventeli } from "@/config";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
@@ -11,7 +12,7 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
-    if (events?.length > 0) {
+    if (events?.length > 0 && !isEventeli) {
       const fetchIntelData = async () => {
         try {
           setLoading(true);

@@ -724,21 +724,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                <span
-                  className={getAssociationColor(
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "peopleFinderPersonAssociationPercentage"
-                    )[0]
-                  )}
-                >
-                  {
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "peopleFinderPersonAssociationPercentage"
-                    )[0]
-                  }
-                </span>
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
           )}
@@ -774,7 +763,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-              <TableCell
+             <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
                   zIndex: 0,
@@ -783,19 +772,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                <span
-                  className={getAssociationColor(
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "speakerPersonAssociationPercentage"
-                    )[0]
-                  )}
-                >
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "speakerPersonAssociationPercentage"
-                  )[0] ?? "-"}
-                </span>
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
           )}
@@ -844,7 +824,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                {intelLoading ? <Skeleton className="h-16 w-1/3 rounded-md" />
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
                 :
                 <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
@@ -886,28 +866,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                {(() => {
-                  const percentage =
-                    event.basic.matchedKeywordsPercentage ?? null;
-
-                  if (percentage === null) return "-";
-                  if (percentage > 20)
-                    return (
-                      <span className={getAssociationColor("high")}>High</span>
-                    );
-                  if (percentage >= 10 && percentage <= 20)
-                    return (
-                      <span className={getAssociationColor("medium")}>
-                        Medium
-                      </span>
-                    );
-                  if (percentage > 0 && percentage < 10)
-                    return (
-                      <span className={getAssociationColor("low")}>Low</span>
-                    );
-
-                  return "-";
-                })()}
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
           )}

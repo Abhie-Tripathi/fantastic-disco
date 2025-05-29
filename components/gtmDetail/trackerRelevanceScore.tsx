@@ -24,17 +24,18 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   
   useEffect(() => {  
     const fetchIntelScore = async () => {
-      try {
-        const data = await getEventIntelScore(eventId);
-        if(data){
-        console.log(Object.values(data.intelScore)[0]);
-        setIntelData(Object.values(data.intelScore)[0]);
-        setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to fetch event intel score:', error);
-      }
-    };
+  try {
+    const data = await getEventIntelScore(eventId);
+    if (data?.intelScore) {
+      const firstIntel = Object.values(data.intelScore)[0];
+      setIntelData(firstIntel);
+      setIsLoading(false);
+    }
+  } catch (error) {
+    console.error("Failed to fetch event intel score:", error);
+  }
+};
+
   
     fetchIntelScore();
     // setInterval(() => {
@@ -50,12 +51,12 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           Tracker Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        <Badge
+        {/* <Badge
           variant={"outline"}
           className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
         >
           Demo
-        </Badge>
+        </Badge> */}
       </div>
       <>
       {isLoading ? <IntelSkeleton /> : 

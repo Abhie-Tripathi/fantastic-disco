@@ -199,3 +199,9 @@ export interface PresetData{
       purpose_score?: number;
       purpose?: number;
     }
+
+    export interface IntelScoreResponse {
+  intelScore: {
+    [eventId: string]: intelScore;
+  };
+}

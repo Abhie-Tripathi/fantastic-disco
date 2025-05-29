@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import IntelScore from "@/app/components/Table/IntelScore";
+import { intelScore } from "@/types/trackers";
 import { AlertTriangle, Loader2, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
@@ -32,6 +33,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { PaginationComponent } from "../pagination";
 import { useIntelData } from "@/hooks/useIntelData";
+import { Skeleton } from "../ui/skeleton";
 export default function EventList({
   eventDate,
   onClose,
@@ -105,12 +107,12 @@ export default function EventList({
     } = useIntelData(
       trackerId || "",
       events?.length > 0 ? events : [],
-      "active" || ""
+      searchParams.get("eventType") || ""
     );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
-  const EventCard = ({ event, inetialIntelScoreData }: { event: Event }) => {
+  const EventCard = ({ event, initialIntelScoreData, intelLoading }: { event: Event,initialIntelScoreData?:intelScore, intelLoading?:boolean}) => {
     const address = event.basic.eventLocation ? (
       event.basic.format === "online" ? (
         <span className="flex items-center">
@@ -131,7 +133,7 @@ export default function EventList({
     const intelScoreData = [
     {
       name: "Total",
-      value: inetialIntelScoreData?.alltrackers_score || 0,
+      value: initialIntelScoreData?.alltrackers_score || 0,
       fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
     }
   ];
@@ -252,11 +254,6 @@ export default function EventList({
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
-                {trackerId&&
-                <div>
-                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
-                </div>
-                }
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,
@@ -264,6 +261,11 @@ export default function EventList({
                   )}
                 </div>
               </div>
+              {(trackerId && !isEventeli && type!=="T_CUSTOM")&&
+                (intelLoading?<Skeleton className="h-16 w-16 rounded-md" />:<div>
+                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
+                </div>)
+                }
             </div>
           </CardContent>
         </Card>
@@ -415,11 +417,11 @@ export default function EventList({
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => (
-            <EventCard key={event.basic.id} event={event} inetialIntelScoreData = {
+            <EventCard key={event.basic.id} event={event} initialIntelScoreData = {
   intelScoreData?.trackerEventsIntelScore?.find(
-  (item) => item.event === event.basic.id
+  (item:intelScore) => item.event === event.basic.id
 ) || null
-}/>
+} intelLoading={intelLoading}/>
           ))}
           {events.length > 0 && (
             <PaginationComponent
@@ -470,7 +472,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && type!=="T_CUSTOM") ? "w-[420px]" : "w-[345px]"}`}
     >
       {renderContent()}
     </div>
