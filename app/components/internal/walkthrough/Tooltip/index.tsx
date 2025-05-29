@@ -30,11 +30,23 @@ const Tooltip = ({
     </nav>
     <div className={styles.content}>{step.content}</div>
     <footer>
-      {pathName === "research" &&
+      {pathName === "research" ? (
         <div className="absolute left-5">
-          <VideoModal source="search" />
+          <VideoModal
+            source={index === 0 ? "search" : "eventSearch"}
+            variant="text"
+          />
         </div>
-      }
+      ) : pathName === "tracker?showTemplates=true" && index === 0 ? (
+        <div className="absolute left-5">
+          <VideoModal
+            source="trackers"
+            variant="text"
+          />
+        </div>
+      ) : (
+        <></>
+      )}
       {index > 0 && (
         <button {...backProps}>
           <Image src={LeftArrow} alt="left arrow" />

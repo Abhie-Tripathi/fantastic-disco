@@ -189,6 +189,7 @@ export default function Navbar() {
             {pathname.split("/")[1] === "internal"
               ? (
                 <div className="flex items-center">
+                  {getRoute(pathname.split("/")[2])}
                   <div className="ml-2 " >
                     <VideoModal source={pathname.split("/")[2]} />
                   </div>
