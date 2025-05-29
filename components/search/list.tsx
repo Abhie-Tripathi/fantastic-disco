@@ -33,7 +33,7 @@ import { useIsMobile } from "@/hooks/useMediaQuery"
 import IntelScore from '@/app/components/Table/IntelScore'
 import { useIntelData } from "@/hooks/useIntelData"
 import { intelScore } from "@/types/trackers"
-import { Skeleton } from "../ui/skeleton"
+import { Skeleton } from "../ui/skeleton";
 interface CircularProgressProps {
   value: number | null
   label: string
@@ -902,15 +902,26 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                   {(trackerId && !isMobile && !isEventeli)&&
-                    <div className="space-y-4">
-                    <div className="grid grid-rows-1 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
-                      {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />: <IntelScore width="80px" height="70px" intelScore={intelScoreData}/>}
-                      {/* <Skeleton className="h-16 w-full rounded-md" />  */}
-                      <div className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm" style={{fontSize:"10px"}}>Relevance Score</div>
-                      </div>
-                    </div>
-                    }  
+                    <Skeleton className="h-16 w-17 rounded-md" />
+                      {/* {(trackerId && !isEventeli) && (
+                        !intelLoading ? ( */}
+                          <Skeleton className="h-16 w-17 rounded-md" />
+                        {/* ) : (
+                          <div className="space-y-4">
+                            <div className="grid grid-rows-1 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
+                              <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
+                              <div
+                                className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                                style={{ fontSize: "10px" }}
+                              >
+                                Relevance Score
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )} */}
+
+                  
                     {global !== "global" && !isMobile && (
                       <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
                         <ActionPopover

@@ -241,11 +241,18 @@ const EventCard = memo(
                   </Button>
                 </div>
               </div>
-              {(trackerId && !isEventeli && type!=="T_CUSTOM")&&
-                (intelLoading?<Skeleton className="h-16 w-16 rounded-md" />:<div>
-                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
-                </div>)
-                }
+              {trackerId && !isEventeli && type !== "T_CUSTOM" &&
+                (intelLoading ? (
+                  <Skeleton className="h-16 w-16 rounded-md" />
+                ) : (
+                  intelScoreData[0]?.value > 0 && (
+                    <div>
+                      <IntelScore width="85px" height="70px" intelScore={intelScoreData} />
+                    </div>
+                  )
+                ))
+              }
+
             </div>
           </CardContent>
         </Card>
