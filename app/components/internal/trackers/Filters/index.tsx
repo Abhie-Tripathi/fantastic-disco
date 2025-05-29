@@ -498,7 +498,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
