@@ -6,13 +6,18 @@ import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
 import Slider from "../slider";
 import IntelSkeleton from "@/app/components/Skeleton/dashboardskeleton/IntelSkeleton";
+import { useTrackerServices } from "@/services/trackerServices";
+import { Button } from "../ui/button";
+import Link from "next/link";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
 const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
+  const {getTrackers} = useTrackerServices();
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
+  const [isData, setIsData] = useState(false);
   const data=[
       {
         people_score: 90,
@@ -35,9 +40,20 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
     console.error("Failed to fetch event intel score:", error);
   }
 };
+     const fetchData = async () => {
+      const data = await getTrackers(`offset=0&limit=0&type=trackers`);
 
+      if (data) setIsLoading(false);
+      if (data?.count) {
+        // setHideTemplate(false);
+        setIsData(true);
+      }
+    };
+
+    fetchData();
   
     fetchIntelScore();
+    
     // setInterval(() => {
     //   setIntelData(data);
     //   setIsLoading(false);
@@ -48,7 +64,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
     <div className={"gap-8 flex flex-col"}>
       <div className={"flex justify-between items-center"}>
         <span style={{ fontSize: "var(--font-size-default)" }}>
-          Tracker Relevance Score
+          Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
         {/* <Badge
@@ -58,77 +74,75 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           Demo
         </Badge> */}
       </div>
-      <>
-      {isLoading ? <IntelSkeleton /> : 
-      <>
+     <>
+  {isLoading ? (
+    <IntelSkeleton />
+  ) : !isData ? (
+    <div className="flex flex-col items-center justify-center h-full gap-2">
+      Some Content
+      <Link href="/internal/trackers?tab=allTrackers">
+      <Button className="text-white">Create</Button>
+      </Link>
+    </div>
+  ) : (
+    <>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <CircularProgress percentages={[intelData?.people_score ?? 0, intelData?.purpose_score ?? 0, intelData?.prospect_score ?? 0]} relevanceScore={intelData?.alltrackers_score} />
+        <CircularProgress 
+          percentages={[
+            intelData?.people_score ?? 0, 
+            intelData?.purpose_score ?? 0, 
+            intelData?.prospect_score ?? 0
+          ]} 
+          relevanceScore={intelData?.alltrackers_score} 
+        />
       </div>
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.people_score ?? "--"}</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#646BDC",
-            }}
-          >
+          <div style={{ fontSize: "var(--font-size-large)" }}>
+            {intelData?.people_score ?? "--"}
+          </div>
+          <div style={{
+            fontSize: "var(--font-size-default)",
+            padding: "4px 0",
+            color: "#646BDC",
+          }}>
             People
           </div>
-          <Slider width={intelData?.people_score ?? 0} color="#646BDC"/>
-          {/* <div
-            style={{
-              height: "13px",
-              background: "#646BDC",
-              borderRadius: "4px",
-            }}
-          ></div> */}
+          <Slider width={intelData?.people_score ?? 0} color="#646BDC" />
         </div>
+
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.purpose_score ?? "--"}</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#E99CD4",
-            }}
-          >
+          <div style={{ fontSize: "var(--font-size-large)" }}>
+            {intelData?.purpose_score ?? "--"}
+          </div>
+          <div style={{
+            fontSize: "var(--font-size-default)",
+            padding: "4px 0",
+            color: "#E99CD4",
+          }}>
             Purpose
           </div>
-          <Slider width={intelData?.purpose_score ?? "--"} color="#E99CD4"/>
-          {/* <div
-            style={{
-              height: "13px",
-              background: "#E99CD4",
-              borderRadius: "4px",
-            }}
-          ></div> */}
+          <Slider width={intelData?.purpose_score ?? 0} color="#E99CD4" />
         </div>
+
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>{intelData?.prospect_score ?? "-"}</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#9B86D4",
-            }}
-          >
+          <div style={{ fontSize: "var(--font-size-large)" }}>
+            {intelData?.prospect_score ?? "--"}
+          </div>
+          <div style={{
+            fontSize: "var(--font-size-default)",
+            padding: "4px 0",
+            color: "#9B86D4",
+          }}>
             Prospect
           </div>
-          <Slider width={intelData?.prospect_score ?? 0} color="#9B86D4"/>
-          {/* <div
-            style={{
-              height: "13px",
-              background: "#9B86D4",
-              borderRadius: "4px",
-            }}
-          ></div> */}
+          <Slider width={intelData?.prospect_score ?? 0} color="#9B86D4" />
         </div>
       </div>
-      </>}
-      </>
+    </>
+  )}
+</>
     </div>
   );
 };

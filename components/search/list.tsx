@@ -813,7 +813,7 @@ const EventListItem = ({
                 </div>
               )}
 
-              <div className="flex items-start justify-end h-full">
+              <div className="flex items-start justify-start md:justify-end h-full">
                 {showValues.includes(Show.scores) &&
                 event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null || event.insights?.scores.internationalScore !== null) ? (
@@ -868,7 +868,7 @@ const EventListItem = ({
                     )}
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full gap-6">
+                  <div className="flex justify-start md:justify-end w-full gap-6">
                     <div className="hidden md:grid grid-row-2 items-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
@@ -902,24 +902,25 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                    <Skeleton className="h-16 w-17 rounded-md" />
-                      {/* {(trackerId && !isEventeli) && (
-                        !intelLoading ? ( */}
-                          <Skeleton className="h-16 w-17 rounded-md" />
-                        {/* ) : (
+                    {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                      {(trackerId && !isEventeli && !intelLoading) ? (
+                        (intelScoreData?.[0]?.value>0 &&
                           <div className="space-y-4">
-                            <div className="grid grid-rows-1 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
-                              <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
-                              <div
-                                className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
-                                style={{ fontSize: "10px" }}
-                              >
-                                Relevance Score
-                              </div>
+                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
+                            <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
+                            <div
+                              className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                              style={{ fontSize: "10px" }}
+                            >
+                              Relevance Score
                             </div>
                           </div>
+                        </div>
                         )
-                      )} */}
+                        
+                      ) : (
+                        <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                      )}
 
                   
                     {global !== "global" && !isMobile && (

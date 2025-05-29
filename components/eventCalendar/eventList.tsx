@@ -214,7 +214,9 @@ export default function EventList({
               )}
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex justify-between mb-1">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
                     className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
@@ -254,18 +256,29 @@ export default function EventList({
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
+                  </div>
+                  {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
+                    (intelLoading ? (
+                      <Skeleton className="h-16 w-16 rounded-md" />
+                    ) : (
+                      intelScoreData[0]?.value > 0 && (
+                        <div>
+                          <IntelScore width="85px" height="70px" intelScore={intelScoreData} />
+                        </div>
+                      )
+                    ))
+                  }
+                  </div>
+                <div>
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,
                     event.basic.endDateTime
                   )}
                 </div>
+                </div>
               </div>
-              {(trackerId && !isEventeli && type!=="T_CUSTOM")&&
-                (intelLoading?<Skeleton className="h-16 w-16 rounded-md" />:<div>
-                <IntelScore width="85px" height="70px" intelScore={intelScoreData}/>
-                </div>)
-                }
+              
             </div>
           </CardContent>
         </Card>
