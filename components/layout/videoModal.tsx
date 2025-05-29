@@ -14,14 +14,16 @@ type VideoModalProps = {
   variant?: "icon" | "text";
 };
 
+const cdnLink = "https://c1.10times.com";
+
 const videoLinks: Record<string, string> = {
-  coordinate: "/walkthrough/coordinate-gtm.mp4",
-  eventSearch: "/walkthrough/event-search.mp4",
-  companies: "/walkthrough/company-search.mp4",
-  trackers: "/walkthrough/tracker-gtm.mp4",
-  trends: "/walkthrough/trends-gtm.mp4",
-  intelScore: "/walkthrough/intel-score.mp4",
-  search: "/walkthrough/search-combined.mp4",
+  coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
+  eventSearch: cdnLink + "/walkthrough/event-search.mp4",
+  companies: cdnLink + "/walkthrough/company-search.mp4",
+  trackers: cdnLink + "/walkthrough/tracker-gtm.mp4",
+  trends: cdnLink + "/walkthrough/trends-gtm.mp4",
+  intelScore: cdnLink + "/walkthrough/intel-score.mp4",
+  search: cdnLink + "/walkthrough/search-combined.mp4",
 };
 
 const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
