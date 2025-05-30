@@ -51,6 +51,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
 interface CircularProgressProps {
   value: number | null;
@@ -130,6 +131,14 @@ interface EventListProps {
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
+interface Interest {
+  [eventKey: string]: {
+    [actionKey: string]: {
+      interestId: string;
+    };
+  };
+}
+
 export default function EventAccordion({
   source,
   eventType,
@@ -143,6 +152,7 @@ export default function EventAccordion({
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
   const [action, setAction] = useState();
+  const { toast } = useToast();
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -170,7 +180,8 @@ export default function EventAccordion({
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
-  const [interest, setInterest] = useState();
+  // const [interest, setInterest] = useState();
+  const [interest, setInterest] = useState<Record<string, Interest>>({});
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
@@ -222,23 +233,26 @@ export default function EventAccordion({
             .map(
               (filteredEvent) => filteredEvent.interests?.bookmark?.interestId
             ) || [];
-        const bookmarkPromises =
-          filteredIds &&
-          filteredIds.length > 0 &&
-          filteredIds.map((id) => {
-            const response = removeBookmark(id);
-            if (response?.interest && setInterest) {
-              setInterest({
-                [response.interest.toLowerCase()]: {
-                  interestId: response.id,
-                },
-              });
-            }
-            return response;
-          });
-        if (bookmarkPromises && bookmarkPromises.length > 0) {
-          await Promise.all(bookmarkPromises);
-        }
+
+        const responses = await Promise.all(
+          filteredIds.map((id) => removeBookmark(id))
+        );
+        const newInterests: Record<string, Interest> = {};
+        responses.forEach((response) => {
+          if (response?.interest && response?.eventId) {
+            newInterests[response.eventId] = {
+              ...(newInterests[response.eventId] || {}),
+              [response.interest.toLowerCase()]: {
+                interestId: response.id,
+              },
+            };
+          }
+        });
+
+        setInterest((prev) => ({
+          ...prev,
+          ...newInterests,
+        }));
       } else {
         filteredIds =
           updatedEvents
@@ -252,40 +266,60 @@ export default function EventAccordion({
                   event.interests === undefined)
             )
             .map((filteredEvent) => filteredEvent.basic.id) || [];
-
-        const interestPromises = filteredIds.map((id) =>
-          createUserEventInterest(
-            {
-              eventId: id,
-              interest: action?.status,
-              sourceModule: sourceModule,
-              ...(trackerId && { sourceId: trackerId }),
-            },
-            {
-              onSuccess: (response: any) => {
-                if (response?.interest) {
-                  setInterest((prev) => ({
-                    ...prev,
-                    [response.interest.toLowerCase()]: {
-                      interestId: response.id,
+        const responses = await Promise.all(
+          filteredIds.map(
+            (id) =>
+              new Promise((resolve) => {
+                createUserEventInterest(
+                  {
+                    eventId: id,
+                    interest: action?.status,
+                    sourceModule: sourceModule,
+                    ...(trackerId && { sourceId: trackerId }),
+                  },
+                  {
+                    onSuccess: (response: any) => resolve(response),
+                    onError: (error) => {
+                      console.error("Error while submitting interest:", error);
+                      resolve(null);
                     },
-                  }));
-                }
-                if (response?.eventId && setEventId) {
-                  setEventId(response?.eventId);
-                }
-                setSavedEventCount((prev) => prev + 1);
-              },
-              onError: (error) => {
-                console.error("Error while submitting interest:", error);
-              },
-            }
+                  }
+                );
+              })
           )
         );
-        await Promise.all(interestPromises);
+
+        // Collect all interests into a grouped structure
+        const newInterests: Record<string, Interest> = {};
+        let count = 0;
+        responses.forEach((response: any) => {
+          if (response?.interest && response?.eventId) {
+            const interestType = response.interest.toLowerCase();
+            newInterests[response.eventId] = {
+              ...(newInterests[response.eventId] || {}),
+              [interestType]: {
+                interestId: response.id,
+              },
+            };
+            count++;
+          }
+        });
+
+        setInterest((prev) => ({
+          ...prev,
+          ...newInterests,
+        }));
+
+        setSavedEventCount((prev) => prev + count);
       }
+
       setShowCheckBox?.(false);
       setTotalChecked([]);
+      toast({
+        title: "Success",
+        description: "Interests have been updated successfully.",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Error in bulk submission:", error);
     }
@@ -574,6 +608,7 @@ export default function EventAccordion({
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              interest={interest}
               toggleSelection={toggleSelection}
               totalChecked={totalChecked}
               isChecked={isChecked}
@@ -611,6 +646,7 @@ export default function EventAccordion({
 }
 
 const EventListItem = ({
+  interest,
   toggleSelection,
   global,
   view,
@@ -629,6 +665,7 @@ const EventListItem = ({
   itemsPerPage,
   showMaturity,
 }: {
+  interest: Record<string, Interest>;
   toggleSelection: (id: string) => void;
   trackerId?: string;
   view?: string;
@@ -714,7 +751,13 @@ const EventListItem = ({
     }
   };
 
-  console.log(event.interests);
+  console.log(
+    event.basic.id,
+    interest && Object.keys(interest).length > 0
+      ? interest[event.basic.id]
+      : "empty",
+    event.interests
+  );
 
   return (
     <div className="flex gap-4 items-center w-full">
@@ -1315,7 +1358,13 @@ const EventListItem = ({
                         >
                           <ActionPopover
                             eventId={event.basic.id}
-                            interests={event.interests}
+                            interests={
+                              interest &&
+                              Object.keys(interest).length > 0 &&
+                              interest[event.basic.id]
+                                ? interest[event.basic.id]
+                                : event.interests
+                            }
                             trackerId={trackerId}
                             setInterest={setInterest}
                             setEventId={setEventId}
@@ -1377,7 +1426,13 @@ const EventListItem = ({
                         >
                           <ActionPopover
                             eventId={event.basic.id}
-                            interests={event.interests}
+                            interests={
+                              interest &&
+                              Object.keys(interest).length > 0 &&
+                              interest[event.basic.id]
+                                ? interest[event.basic.id]
+                                : event.interests
+                            }
                             trackerId={trackerId}
                             setInterest={setInterest}
                             setEventId={setEventId}

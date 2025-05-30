@@ -36,7 +36,7 @@ export function ActionPopover({
   setEventId,
   view,
 }: ActionPopoverProps) {
-  console.log(eventId, interests);
+  console.log("Action Popover -> ",interests);
   const { removeBookmark } = useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
