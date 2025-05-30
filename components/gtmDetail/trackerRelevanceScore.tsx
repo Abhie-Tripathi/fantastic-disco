@@ -61,9 +61,9 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   },[])
   
   return (
-    <div className={"gap-8 flex flex-col"}>
+    <div className={"gap-8 flex flex-col h-full justify-between"}>
       <div className={"flex justify-between items-center"}>
-        <span style={{ fontSize: "var(--font-size-default)" }}>
+        <span className="text-[1rem] mb-2 font-medium">
           Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
@@ -79,7 +79,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
     <IntelSkeleton />
   ) : !isData ? (
     <div className="flex flex-col items-center justify-center h-full gap-2">
-      Some Content
+      <div className="font-bold">Hello! Here’s your quick-start guide:</div>
+      <div className={`w-full text-[#666666] text-sm text-center`}>Set up your tracker, and we’ll surface your most relevant insights.</div>
       <Link href="/internal/trackers?tab=allTrackers">
       <Button className="text-white">Create</Button>
       </Link>

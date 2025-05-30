@@ -219,7 +219,7 @@ const EventTable = ({
                   intelLoading={intelLoading}
                   initialIntelScoreData = {
   intelScoreData?.trackerEventsIntelScore?.find(
-  (item:intelScore) => item.event === event.basic.id
+  (item:intelScore) => item?.event === event.basic.id
 ) || null
 }
 

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer, Tooltip } from "recharts";
-
+import { useSearchParams } from "next/navigation";
 // Sample Data with Fixed Fill Colors
 const data = [
   { name: "Total", value: 0, fill: "#646BDC" },
@@ -35,7 +35,7 @@ const renderActiveShape = (props: any) => {
 };
 
 // Custom Tooltip
-const CustomTooltip = ({ active, payload, coordinate }: any) => {
+const CustomTooltip = ({ active, payload, coordinate, briefType  }: any) => {
   if (!active || !payload || !payload.length) return null;
 
   return (
@@ -55,7 +55,7 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
   }}
 >
-  Relevance Score
+  {`Relevance Score (${briefType})`}
 </div>
 
   );
@@ -80,6 +80,15 @@ export default function PieChartComponent({
   //     fill: "#646BDC",
   //   }
   // ];
+   const path=useSearchParams();
+  const type = path.get("type") || "";
+  const types={
+    "Prospect":["T_COMPETITOR"],
+    "People":["T_PEOPLE_FINDER","T_SPEAKING_OPPORTUNITY"],
+    "Purpose":["T_PRODUCT_KEYWORDS"]
+  }
+  const briefType = Object.entries(types).find(([_, values]) => values.includes(type))?.[0];
+  console.log("brief",briefType);
   const onPieEnter = useCallback((_: unknown, index: number) => {
     setActiveIndex(index);
   }, []);
@@ -113,13 +122,13 @@ export default function PieChartComponent({
               strokeWidth={2}
             />
           )}
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip briefType={briefType}/>} />
           <text
             x="50%"
             y="50%"
             dy={5}
             textAnchor="middle"
-            fill="#333"
+            fill="var(--secondary-text-color)"
             fontSize="14px"
             fontWeight="bold"
           >

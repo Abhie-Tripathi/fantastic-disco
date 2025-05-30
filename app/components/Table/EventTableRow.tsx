@@ -826,9 +826,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                {intelLoading ? <Skeleton className="h-16 w-25 rounded-md" />
                 :
-                (intelScoreData[0]?.value > 0 &&(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>))}
+                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>

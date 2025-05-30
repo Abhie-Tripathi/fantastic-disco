@@ -106,7 +106,7 @@ export const Overview = ({
   const height = !isEventeli
     ? format === "online"
       ? "h-[486px]"
-      : "h-[831px]"
+      : "h-full"
     : isEventeli
     ? format === "online"
       ? ""
@@ -275,14 +275,18 @@ export const Overview = ({
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm h-full">
+        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] h-full">
+          <div className="border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-6 h-full">
           {!isEventeli && <TrackerRelevanceScore eventId={eventDetails.basic.id}/>}
+          </div>
+          <div className="flex flex-col border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-6 gap-8">
           <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={eventLocation}
             startDateTime={startDateTime}
             endDateTime={endDateTime}
           />
+          
           {!isEventeli && (
             <SearchEventsCTAButton
               categories={categories}
@@ -290,6 +294,7 @@ export const Overview = ({
               eventLocation={eventLocation}
             />
           )}
+          </div>
         </div>
       </div>
     </div>
