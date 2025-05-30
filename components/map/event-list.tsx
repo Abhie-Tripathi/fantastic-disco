@@ -432,7 +432,6 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
-  console.log("searchParam", searchParam?.toString());
   
   useEffect(() => {
     if (!mapRef.current) return;

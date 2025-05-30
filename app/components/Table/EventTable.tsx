@@ -61,7 +61,6 @@ const EventTable = ({
       events?.length > 0 ? events : [],
       eventType || ""
     );
-  console.log(intelScoreData);
   const mapping = {
     rating: "rating",
     maturity: "maturity",

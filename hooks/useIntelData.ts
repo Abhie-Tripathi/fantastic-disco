@@ -4,7 +4,6 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
 export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null) => {
-  console.log("eventType", eventType);
   
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();

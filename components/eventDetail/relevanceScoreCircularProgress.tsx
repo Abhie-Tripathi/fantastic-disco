@@ -9,7 +9,6 @@ const CircularProgress = ({
   percentages,
   relevanceScore,
 }: CircularProgressProps) => {
-  console.log(percentages, relevanceScore);
   
   const colors = ["#646BDC", "#E99CD4", "#9B86D4"];
   const baseRadius = 22;

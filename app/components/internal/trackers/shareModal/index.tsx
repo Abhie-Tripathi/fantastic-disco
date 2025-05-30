@@ -156,15 +156,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
         useEffect(() => {
             
             if (isClicked) {
-                if(!filter || filter.length===0){
-                    setIsClicked(false);
-                    toast({
-                        title: "Error",
-                        description: "Please enter a valid email.",
-                        variant: "destructive",
-                      });
-                    return;
-                }
                 shareInvite();
                 if(closeShareModal)
                 closeShareModal();

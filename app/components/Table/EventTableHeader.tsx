@@ -9,7 +9,6 @@ interface EventTableHeaderProps {
   type?: string;
   view?: string;
   localFilters: Filters;
-  trackerId?:string;
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({

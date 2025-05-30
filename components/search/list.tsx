@@ -100,7 +100,7 @@ interface EventListProps {
   eventType?: string
 }
 
-export default function EventAccordion({ source, trackerId, view, eventType }: EventListProps) {
+export default function EventAccordion({ source, trackerId, view}: EventListProps) {
   const isMobile = useIsMobile()
   const searchParams = useSearchParams()
   const { data: trackerData, setIsNewCall } = useTrackerContext()

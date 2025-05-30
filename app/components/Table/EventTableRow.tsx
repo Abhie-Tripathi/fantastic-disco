@@ -155,7 +155,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
       }
     ];
-     console.log('intelScoreData',intelScoreData);
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -718,7 +717,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </TooltipProvider>
               </TableCell>
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -728,7 +727,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               >
                 {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
                 :
-                (intelScoreData[0]?.value > 0 &&(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>))}
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
@@ -766,7 +765,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </TooltipProvider>
               </TableCell>
              <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -776,7 +775,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               >
                 {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
                 :
-                (intelScoreData[0]?.value > 0 &&(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>))}
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
@@ -818,7 +817,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </TooltipProvider>
               </TableCell>
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -828,7 +827,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               >
                 {intelLoading ? <Skeleton className="h-16 w-25 rounded-md" />
                 :
-                <IntelScore width="100%" height="70px" intelScore={intelScoreData}/>}
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>
@@ -860,7 +859,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               </TableCell>
 
             <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -870,7 +869,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               >
                 {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
                 :
-                (intelScoreData[0]?.value > 0 &&(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>))}
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             </>

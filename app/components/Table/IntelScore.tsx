@@ -88,7 +88,6 @@ export default function PieChartComponent({
     "Purpose":["T_PRODUCT_KEYWORDS"]
   }
   const briefType = Object.entries(types).find(([_, values]) => values.includes(type))?.[0];
-  console.log("brief",briefType);
   const onPieEnter = useCallback((_: unknown, index: number) => {
     setActiveIndex(index);
   }, []);
@@ -97,8 +96,7 @@ export default function PieChartComponent({
     <div style={{ width, height }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-        {totalValue > 0 ? (
-            // Render Pie if values exist
+       {totalValue > 0 ? (
             <Pie
               activeIndex={activeIndex}
               activeShape={renderActiveShape}
@@ -111,12 +109,10 @@ export default function PieChartComponent({
               onMouseEnter={onPieEnter}
             />
           ) : (
-            // Render Empty Circle if total value is 0
             <circle
-            cx="50%"
-            cy="50%"
-            innerRadius="80%"
-            outerRadius="100%"
+              cx="50%"
+              cy="50%"
+              r="40%"
               stroke="#E0E0E0"
               fill="none"
               strokeWidth={2}

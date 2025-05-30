@@ -432,7 +432,7 @@ export default function EventList({
           {events.map((event: Event) => (
             <EventCard key={event.basic.id} event={event} initialIntelScoreData = {
   intelScoreData?.trackerEventsIntelScore?.find(
-  (item:intelScore) => item.event === event.basic.id
+  (item:intelScore) => item?.event === event.basic.id
 ) || null
 } intelLoading={intelLoading}/>
           ))}
