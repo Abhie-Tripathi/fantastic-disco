@@ -88,6 +88,8 @@ import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
+import ZeroState from "@/components/zerostate";
+import CustomTrackerNullState from "./customTrackerNullState";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -427,7 +429,7 @@ const Pages = () => {
   const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
   const isMobile = useIsMobile();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters} = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [showTemplate,setShowTemplate] = useState(false);
@@ -989,7 +991,94 @@ const stepsConfig =[
 
     }
   };
+  useEffect(() => {
+    if (type === "T_COMPETITOR" && suggestion===1) {
+      // setTrackerName(comp?.name || "");
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  
+  useEffect(()=>{
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          // console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+  }
 
+  }, [type])
+  const [inc,setInc]=useState<String[]>([]);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      setSuggestions([]);
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const keywordsArray = parsed?.keywordData?.data;
+          setTrackerName(parsed?.keywordData?.name || "");
+          if (Array.isArray(keywordsArray)) {
+            // console.log("keywordsArray", keywordsArray);
+            const res=keywordsArray.map((item:{"keyword":string})=>item.keyword?.trim?.())
+            // console.log("res", res);
+            
+            setInc(res);
+            setCustomData(
+              keywordsArray.map((item: any) => ({
+                "Competitor Name or Website": item.keyword?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing keywordData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  useEffect(() => { 
+    if(suggestion===2 && inc.length>0){
+      setSuggestions([]);
+      setLocalFilter("includeKeywords", inc?.join(","));
+    }
+  },[inc])
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
@@ -1463,9 +1552,11 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)]">
-    {type==="T_CUSTOM"&&(!isEventeli ?
-    "Refine your results with basic (category, date, location) and advanced filters, assess event impact using insight scores—estimated visitors, exhibitors, ranking—and harness Audience Intel’s where, who, and how for precise targeting.":"Drill into your data with basic and advanced filters, and evaluate each event’s impact using insight scores—estimated visitors, exhibitors, ranking, and analytics.")}
+    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-auto pt-10">
+    <div className="hidden md:flex w-full justify-center items-center">
+    {type==="T_CUSTOM"&&
+    <CustomTrackerNullState/>}
+    </div>
     </div>
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}

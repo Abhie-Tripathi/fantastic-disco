@@ -50,8 +50,8 @@ const CitySelector = ({ formState, handleChange, locationType }: Props) => {
       handleChange("cityName", suggestion.city.name);
       handleChange("latitude", suggestion.city.latitude);
       handleChange("longitude", suggestion.city.longitude);
-      handleChange("stateId", suggestion.state.id);
-      handleChange("stateName", suggestion.state.name);
+      handleChange("stateId", suggestion.state?.id);
+      handleChange("stateName", suggestion.state?.name);
       handleChange("countryId", suggestion.country.id);
       handleChange("countryCode", suggestion.country.iso);
       handleChange("countryName", suggestion.country.name);
@@ -65,8 +65,8 @@ const CitySelector = ({ formState, handleChange, locationType }: Props) => {
       handleChange("cityName", suggestion.name);
       handleChange("latitude", suggestion.latitude);
       handleChange("longitude", suggestion.longitude);
-      handleChange("stateId", suggestion.state.id);
-      handleChange("stateName", suggestion.state.name);
+      handleChange("stateId", suggestion.state?.id);
+      handleChange("stateName", suggestion.state?.name);
       handleChange("countryId", suggestion.country.id);
       handleChange("countryCode", suggestion.country.iso);
       handleChange("countryName", suggestion.country.name);
