@@ -9,12 +9,14 @@ import IntelSkeleton from "@/app/components/Skeleton/dashboardskeleton/IntelSkel
 import { useTrackerServices } from "@/services/trackerServices";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useAuthContext } from "@/context";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
 const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const {getTrackers} = useTrackerServices();
+  const {isTentimesUser} = useAuthContext();
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
   const [isData, setIsData] = useState(false);
@@ -61,7 +63,9 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   },[])
   
   return (
-    <div className={"gap-8 flex flex-col h-full justify-between"}>
+    <>
+    {isTentimesUser?
+      <div className={"gap-8 flex flex-col h-full justify-between"}>
       <div className={"flex justify-between items-center"}>
         <span className="text-[1rem] mb-2 font-medium">
           Relevance Score
@@ -145,6 +149,84 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   )}
 </>
     </div>
+      : <div className={"gap-8 flex flex-col"}>
+      <div className={"flex justify-between items-center"}>
+        <span style={{ fontSize: "var(--font-size-default)" }}>
+          Tracker Relevance Score
+        </span>
+        {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
+        <Badge
+          variant={"outline"}
+          className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+        >
+          Demo
+        </Badge>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <CircularProgress percentages={[80, 50, 70]} relevanceScore={"89"} />
+      </div>
+
+      <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ width: "100%" }}>
+          <div style={{ fontSize: "var(--font-size-large)" }}>80</div>
+          <div
+            style={{
+              fontSize: "var(--font-size-default)",
+              padding: "4px 0",
+              color: "#646BDC",
+            }}
+          >
+            People
+          </div>
+          <div
+            style={{
+              height: "13px",
+              background: "#646BDC",
+              borderRadius: "4px",
+            }}
+          ></div>
+        </div>
+        <div style={{ width: "100%" }}>
+          <div style={{ fontSize: "var(--font-size-large)" }}>50</div>
+          <div
+            style={{
+              fontSize: "var(--font-size-default)",
+              padding: "4px 0",
+              color: "#E99CD4",
+            }}
+          >
+            Purpose
+          </div>
+          <div
+            style={{
+              height: "13px",
+              background: "#E99CD4",
+              borderRadius: "4px",
+            }}
+          ></div>
+        </div>
+        <div style={{ width: "100%" }}>
+          <div style={{ fontSize: "var(--font-size-large)" }}>70</div>
+          <div
+            style={{
+              fontSize: "var(--font-size-default)",
+              padding: "4px 0",
+              color: "#9B86D4",
+            }}
+          >
+            Prospect
+          </div>
+          <div
+            style={{
+              height: "13px",
+              background: "#9B86D4",
+              borderRadius: "4px",
+            }}
+          ></div>
+        </div>
+      </div>
+    </div>} 
+  </>
   );
 };
 export default TrackerRelevanceScore;
