@@ -699,11 +699,12 @@ const Page = ({ params }: { params: any }) => {
                 </button>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2" >
               <Button
                 variant="outline"
                 className="flex gap-1"
                 onClick={() => setShare(!share)}
+                ref={refs.shareRef}
               >
                 <Share2 width={16} height={16} />
                 Share
@@ -720,7 +721,7 @@ const Page = ({ params }: { params: any }) => {
                 }}
                 className="flex items-center"
               >
-                <Button variant="outline" className="flex gap-1">
+                <Button variant="outline" className="flex gap-1" ref={refs.notesRef}>
                   <NotebookPen width={16} height={16} />
                   Notes
                   {/* <ListUnordered
@@ -747,7 +748,9 @@ const Page = ({ params }: { params: any }) => {
             /> */}
                 </Button>
               </Link>
-              <SortDropdown />
+              <div ref={refs.popularityRef}>
+              <SortDropdown/>
+              </div>
             </div>
           </div>
 

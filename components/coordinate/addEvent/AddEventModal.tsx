@@ -156,6 +156,13 @@ export default function AddEventModal() {
         //   email: item['Email'],
         // }));
 
+        if (result.data.length <= 1) {
+          toast({
+            description: "Please upload a valid csv file with data",
+            variant: "destructive",
+          });
+          return;
+        }
         setCsvData(result.data.slice(1)); // Skip the header row
 
         const colHeader = result.data[0] ? result.data[0] : [];
