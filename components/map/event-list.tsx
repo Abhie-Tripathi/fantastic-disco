@@ -38,6 +38,7 @@ import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
 import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context";
 const EventCard = memo(
   ({
     event,
@@ -56,6 +57,7 @@ const EventCard = memo(
     initialIntelScoreData: intelScore;
     intelLoading?: boolean;
   }) => {
+    const {isTentimesUser} = useAuthContext();
     const [mapZoom, setMapZoom] = useState(0);
     const {getFilterValue} = useFilterState();
     useEffect(() => {
@@ -226,7 +228,9 @@ const EventCard = memo(
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
                 </div>
-              {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
+              {isTentimesUser &&(
+                <>
+                {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
                 (intelLoading ? (
                   <Skeleton className="h-16 w-16 rounded-md" />
                 ) : (
@@ -237,6 +241,9 @@ const EventCard = memo(
                   )
                 ))
               }
+                </>
+              )}
+              
               </div>
               <div>
                 <div className="flex items-center justify-between">

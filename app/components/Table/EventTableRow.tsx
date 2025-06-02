@@ -27,6 +27,7 @@ import { isEventeli } from "@/config";
 import IntelScore from "./IntelScore";
 import { groupedEventTypes } from "@/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthContext } from "@/context/auth";
 interface EventTableRowProps {
   event: Event;
   trackerId?: string;
@@ -132,7 +133,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading
 }) => {
  
-  
+  const {isTentimesUser} = useAuthContext();
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -716,6 +717,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser ?
               <TableCell
                 className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
@@ -729,7 +731,33 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:
+               <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
+                  )}
+                >
+                  {
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
+                  }
+                </span>
               </TableCell>
+              }
             </>
           )}
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
@@ -764,6 +792,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser?
              <TableCell
                 className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
@@ -777,7 +806,30 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>
+              </TableCell>:  
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "speakerPersonAssociationPercentage"
+                    )[0]
+                  )}
+                >
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "speakerPersonAssociationPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>}
             </>
           )}
           {type === "T_COMPETITOR" && view !== "bookmarked" && (
@@ -816,6 +868,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser?
               <TableCell
                 className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
@@ -829,7 +882,30 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>
+              </TableCell>:    
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "competitorPercentage"
+                    )[0]
+                  )}
+                >
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "competitorPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>}
             </>
           )}
           {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
@@ -857,7 +933,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-
+            {isTentimesUser?
             <TableCell
                 className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
@@ -872,6 +948,39 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
+            : <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {(() => {
+                  const percentage =
+                    event.basic.matchedKeywordsPercentage ?? null;
+
+                  if (percentage === null) return "-";
+                  if (percentage > 20)
+                    return (
+                      <span className={getAssociationColor("high")}>High</span>
+                    );
+                  if (percentage >= 10 && percentage <= 20)
+                    return (
+                      <span className={getAssociationColor("medium")}>
+                        Medium
+                      </span>
+                    );
+                  if (percentage > 0 && percentage < 10)
+                    return (
+                      <span className={getAssociationColor("low")}>Low</span>
+                    );
+
+                  return "-";
+                })()}
+              </TableCell>}
+            
             </>
           )}
         </>

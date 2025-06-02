@@ -17,6 +17,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const {getTrackers} = useTrackerServices();
   const {isTentimesUser} = useAuthContext();
+  console.log(isTentimesUser, "isTentimesUser");
+  
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
   const [isData, setIsData] = useState(false);
@@ -51,11 +53,11 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         setIsData(true);
       }
     };
-
+    if(isTentimesUser) {
     fetchData();
   
     fetchIntelScore();
-    
+    }
     // setInterval(() => {
     //   setIntelData(data);
     //   setIsLoading(false);

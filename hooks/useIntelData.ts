@@ -1,10 +1,11 @@
 // hooks/useIntelData.ts
 import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context/auth";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
 export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null) => {
-  
+  const {isTentimesUser} = useAuthContext();
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
           setLoading(false);
         }
       };
-
+      if(isTentimesUser)
       fetchIntelData();
     }
   }, [events, trackerId]);

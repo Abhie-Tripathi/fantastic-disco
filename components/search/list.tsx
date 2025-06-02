@@ -34,6 +34,7 @@ import IntelScore from '@/app/components/Table/IntelScore'
 import { useIntelData } from "@/hooks/useIntelData"
 import { intelScore } from "@/types/trackers"
 import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context/auth"
 interface CircularProgressProps {
   value: number | null
   label: string
@@ -322,6 +323,7 @@ const EventListItem = ({
   intelLoading?: boolean
 }) => {
   const {getFilterValue} = useFilterState();
+  const {isTentimesUser} = useAuthContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -903,10 +905,12 @@ const EventListItem = ({
                         )}
                     </div>
                     {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                    {isTentimesUser && (
+                      <>
                       {(trackerId && !isEventeli && !intelLoading) ? (
                         (intelScoreData?.[0]?.value>0 &&
                           <div className="space-y-4">
-                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[#FAFAFA] rounded-[4px] p-2 place-items-center">
+                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center">
                             <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
                             <div
                               className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
@@ -921,6 +925,9 @@ const EventListItem = ({
                       ) : (
                         <Skeleton className="h-[132px] w-[98px] rounded-md" />
                       )}
+                      </>
+                    )}
+                      
 
                   
                     {global !== "global" && !isMobile && (

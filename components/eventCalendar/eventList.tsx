@@ -34,6 +34,7 @@ import Link from "next/link";
 import { PaginationComponent } from "../pagination";
 import { useIntelData } from "@/hooks/useIntelData";
 import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context";
 export default function EventList({
   eventDate,
   onClose,
@@ -113,6 +114,7 @@ export default function EventList({
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event, initialIntelScoreData, intelLoading }: { event: Event,initialIntelScoreData?:intelScore, intelLoading?:boolean}) => {
+    const {isTentimesUser} = useAuthContext();
     const address = event.basic.eventLocation ? (
       event.basic.format === "online" ? (
         <span className="flex items-center">
@@ -257,7 +259,9 @@ export default function EventList({
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
                   </div>
-                  {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
+                  {isTentimesUser && (
+                    <>
+                    {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
                     (intelLoading ? (
                       <Skeleton className="h-16 w-16 rounded-md" />
                     ) : (
@@ -268,6 +272,9 @@ export default function EventList({
                       )
                     ))
                   }
+                    </>
+                  )}
+                  
                   </div>
                 <div>
                 <div className="text-xs font-medium text-primary">
