@@ -279,14 +279,16 @@ const Events = () => {
                   <Button onClick={searchHandler} className="w-full h-10">
                     Apply Filters
                   </Button>
-                  <Button
-                    onClick={createTrackerHandler}
-                    variant="outline"
-                    className="w-full h-10"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Search
-                  </Button>
+                  {filtersCount > 0 && (
+                    <Button
+                      onClick={createTrackerHandler}
+                      variant="outline"
+                      className="w-full h-10"
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Search
+                    </Button>
+                  )}
                 </div>
               </div>
             </>
