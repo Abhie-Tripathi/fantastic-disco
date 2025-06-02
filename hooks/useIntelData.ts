@@ -25,7 +25,7 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
           setLoading(false);
         }
       };
-      if(isTentimesUser)
+      if(isTentimesUser && trackerId && trackerId.length > 0)
       fetchIntelData();
     }
   }, [events, trackerId]);

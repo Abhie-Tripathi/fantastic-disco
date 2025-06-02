@@ -251,6 +251,8 @@ export default function EventAccordion({ source, trackerId, view}: EventListProp
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       )
   }
+  console.log("trackerId", trackerId);
+  
   return (
     <div className="flex flex-col h-full px-4 md:px-0">
       <div className="flex-grow overflow-y-auto">
@@ -905,9 +907,9 @@ const EventListItem = ({
                         )}
                     </div>
                     {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
-                    {(isTentimesUser && !isMobile) && (
+                    {(trackerId && isTentimesUser && !isMobile) && (
                       <>
-                      {(trackerId && !isEventeli && !intelLoading) ? (
+                      {(!isEventeli && !intelLoading) ? (
                         (intelScoreData?.[0]?.value>0 &&
                           <div className="space-y-4">
                           <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center">
@@ -949,9 +951,9 @@ const EventListItem = ({
           </div>
         </div>
         {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
-                    {(isTentimesUser && isMobile) && (
+                    {(trackerId && isTentimesUser && isMobile) && (
                       <>
-                      {(trackerId && !isEventeli && !intelLoading) ? (
+                      {(!isEventeli && !intelLoading) ? (
                         (intelScoreData?.[0]?.value>0 &&
                           <div className="space-y-4">
                           <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center mt-[-38px]">

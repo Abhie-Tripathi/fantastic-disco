@@ -799,7 +799,7 @@ function EventList({
     <div
       className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
-      } ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli) ? "w-full md:w-[420px]" : "w-full md:w-[345px]"}`}
+      } ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && trackerId && trackerId.length>0) ? "w-full md:w-[420px]" : "w-full md:w-[345px]"}`}
     >
       {renderContent()}
       {hoveredPopupInfo && (
