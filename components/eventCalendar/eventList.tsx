@@ -492,7 +492,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && type!=="T_CUSTOM") ? "w-[420px]" : "w-[345px]"}`}
+      className={`h-[800px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && trackerId && trackerId.length>0) ? "w-[420px]" : "w-[345px]"}`}
     >
       {renderContent()}
     </div>
