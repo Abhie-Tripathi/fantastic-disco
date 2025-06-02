@@ -20,7 +20,7 @@ import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 import { isEventeli } from "@/config";
-
+import { IntelScoreResponse} from "@/types/trackers";
 export const useEventsService = () => {
   const api = useApi();
 
@@ -292,8 +292,13 @@ export const useEventsService = () => {
     });
     return response?.filter((item) => item.name.toLowerCase() !== "online");
   };
-
+  const getEventIntelScore = async (eventId: string): Promise<IntelScoreResponse | undefined> => {
+    return api.request<IntelScoreResponse>(
+      `${endpoints.event.getIntelScore}/${eventId}/intelScore`
+    );
+  };
   return {
+    getEventIntelScore,
     getEvents,
     saveEvent,
     getAlertPolygon,

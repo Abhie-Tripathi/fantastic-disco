@@ -30,23 +30,36 @@ import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import IntelScore from "@/app/components/Table/IntelScore";
 import { formatLocationParts } from "@/utils/locationFormat";
 import { PaginationComponent } from "../pagination";
-
+import { useFilterState } from "@/hooks/useFilterState";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
+import { Skeleton } from "../ui/skeleton";
+import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context/auth"
 const EventCard = memo(
   ({
     event,
     mapRef,
     onHover,
     onLeave,
+    trackerId,
+    initialIntelScoreData,
+    intelLoading
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
+    trackerId: string|undefined;
+    initialIntelScoreData: intelScore;
+    intelLoading?: boolean;
   }) => {
+    const {isTentimesUser} = useAuthContext();
     const [mapZoom, setMapZoom] = useState(0);
-
+    const {getFilterValue} = useFilterState();
     useEffect(() => {
       if (mapRef.current) {
         setMapZoom(mapRef.current.getZoom());
@@ -87,7 +100,14 @@ const EventCard = memo(
       }
       onHover();
     };
-
+    const type=getFilterValue("type");
+    const intelScoreData = [
+      {
+        name: "Total",
+        value: initialIntelScoreData?.alltrackers_score || 0,
+        fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+      }
+    ];
     return (
       <Link href={`/internal/event/${event.basic.id}`}>
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -165,6 +185,8 @@ const EventCard = memo(
               )}
 
               <div className="flex-1 min-w-0">
+                <div className="flex justify-between mb-1">
+                  <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
@@ -205,6 +227,25 @@ const EventCard = memo(
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
+                </div>
+              {isTentimesUser &&(
+                <>
+                {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
+                (intelLoading ? (
+                  <Skeleton className="h-16 w-16 rounded-md" />
+                ) : (
+                  intelScoreData[0]?.value > 0 && (
+                    <div>
+                      <IntelScore width="85px" height="70px" intelScore={intelScoreData} />
+                    </div>
+                  )
+                ))
+              }
+                </>
+              )}
+              
+              </div>
+              <div>
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-medium text-primary">
                     {formattedDateRange(
@@ -222,6 +263,7 @@ const EventCard = memo(
                     Zoom
                   </Button>
                 </div>
+              </div>
               </div>
             </div>
           </CardContent>
@@ -397,7 +439,7 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
-
+  
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -508,6 +550,15 @@ function EventList({
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    eventType || ""
+  );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
@@ -682,11 +733,18 @@ function EventList({
               );
             return (
               <EventCard
+                trackerId={trackerId}
                 key={event.basic.id}
                 event={event}
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
                 onLeave={handleEventLeave}
+                intelLoading={intelLoading}
+                initialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item:intelScore) => item?.event === event?.basic?.id
+) || null
+}
               />
             );
           })}
@@ -739,9 +797,9 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-full md:w-[345px] bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
-      }`}
+      } ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli) ? "w-full md:w-[420px]" : "w-full md:w-[345px]"}`}
     >
       {renderContent()}
       {hoveredPopupInfo && (
