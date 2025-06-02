@@ -45,7 +45,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         // }else 
-        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATIONS"?"limit=10":"limit=5"}&offset=0`;
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATION"?"limit=10":"limit=5"}&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -67,7 +67,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               else if(type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"){
                 
                 setEventSuggestion(data.companies);
-              }else if(type === "T_EVENT_PARTICIPATIONS"){
+              }else if(type === "T_EVENT_PARTICIPATION"){
                 console.log("data.events",data.events);
                 
                 setEventSuggestion(data.events)
@@ -136,7 +136,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       ? getDomain(item.website) 
                       : item.name
                 }));
-                } else if (type === "T_EVENT_PARTICIPATIONS") {
+                } else if (type === "T_EVENT_PARTICIPATION") {
                   updatedData = eventSuggestion.map((item:Event) => {
                     return {
                       key: item.basic.id,
@@ -179,7 +179,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
           <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 
-  {type==="T_EVENT_PARTICIPATIONS" &&
+  {type==="T_EVENT_PARTICIPATION" &&
   <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>
   {item.eventStartDate && item.eventEndDate &&
     formatEventDates(item.eventStartDate, item.eventEndDate).split(",")[1]}

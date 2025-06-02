@@ -368,7 +368,7 @@ const templates = [
     isUploadEnable: true,
   },
   {
-    name: "T_EVENT_PARTICIPATIONS",
+    name: "T_EVENT_PARTICIPATION",
     templateName: "Event Participation",
     type: "enabled",
     description: "Input team members and their details to keep track of the events with speaking opportunities",
@@ -508,7 +508,7 @@ const Pages = () => {
       setWebsites(urls);
       setOrg(orgNames);
     }
-    else if (type === "T_EVENT_PARTICIPATIONS") {
+    else if (type === "T_EVENT_PARTICIPATION") {
       console.log(customData);
 
       const lastEntry = customData.length > 0 ? Object.values(customData[0])[0] : "";
@@ -762,6 +762,9 @@ const Pages = () => {
     }
     if (userCompany.length > 0) {
       filterValues.userOrgWebsite = userCompany;
+    }
+    if(eventSuggestion.length > 0) {
+      filterValues.eventIds = eventSuggestion.join(",");
     }
     console.log(filterValues, showsData);
     const formData = {
@@ -1097,7 +1100,7 @@ const Pages = () => {
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATIONS") {
+    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION") {
       addNew();
     }
   }
@@ -1187,7 +1190,7 @@ const Pages = () => {
   const addCompany = (id: number, val: any) => {
     console.log(eventSuggestion, id);
 
-    if (type === "T_EVENT_PARTICIPATIONS") {
+    if (type === "T_EVENT_PARTICIPATION") {
       setEventSuggestion((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString());
         console.log("already exist", alreadyExists);
@@ -1206,7 +1209,7 @@ const Pages = () => {
     }
 
     setSelected(true);
-    if (type !== "T_EVENT_PARTICIPATIONS") {
+    if (type !== "T_EVENT_PARTICIPATION") {
       if (!Array.isArray(val)) {
         setInputValues(prevValues => ({
           ...prevValues,
@@ -1364,7 +1367,7 @@ const Pages = () => {
               />
             </div>
             <TeliTemplates type={type} isMandatory={isMandatory} />
-            {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATIONS") &&
+            {((template && template.inputAreas) || type === "T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATION") &&
               <div style={{ display: 'flex', gap: '25px' }}>
                 <div className={`card ${styles.competitor}`}>
                   {/* <div className={styles.competitorHead}>
@@ -1391,7 +1394,7 @@ const Pages = () => {
                       <></>
                     }
                   </div>
-                  {(template?.inputAreas || type === "T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATIONS") &&
+                  {(template?.inputAreas || type === "T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATION") &&
                     <div>
                       {type !== "T_PRODUCT_KEYWORDS" &&
                         <div className="flex items-stretch gap-2.5">
@@ -1429,8 +1432,8 @@ const Pages = () => {
                               />
                             </div>
                           } */}
-                                {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type === "T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATIONS") && inputValues[0]?.length > 0 &&
-                                  <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATIONS" ? 'events' : 'suggestions/companies'} type={type} />
+                                {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type === "T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0 &&
+                                  <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type} />
                                 }
                               </div>
 

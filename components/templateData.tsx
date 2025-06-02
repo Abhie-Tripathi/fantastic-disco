@@ -140,7 +140,7 @@ const data: TemplateData = isEventeli ?
                 domain: "Market Research",
                 isEnabled: true,
                 img: PeopleFinder,
-                url: "T_EVENT_PARTICIPATIONS",
+                url: "T_EVENT_PARTICIPATION",
                 trackerName: "Event Participation",
                 content:
                   "Effortlessly track & Identify events similar to ones you already attend",
