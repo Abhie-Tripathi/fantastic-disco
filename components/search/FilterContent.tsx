@@ -57,35 +57,6 @@ const FilterContent = ({
           </div>
         )}
         <div className="p-3 bg-[var(--background-secondary-color)] ">
-          {type === "events" && source !== "tracker" && filterCount > 0 && (
-            <div
-              id="save-search-btn"
-              className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
-            >
-              <div className="flex items-center gap-2">
-                <Image
-                  src={whrbotlogo}
-                  alt="WHR bot"
-                  className="w-8 h-8 rounded-full bg-background"
-                />
-                <div className="text-sm font-medium text-foreground">
-                  Save this search
-                </div>
-              </div>
-              {createTrackerHandler && (
-                <div className=" flex items-center justify-between">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={createTrackerHandler}
-                    className="h-8"
-                  >
-                    Save
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
           <Accordion
             type="multiple"
             className="space-y-4"

@@ -35,6 +35,7 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -157,37 +158,45 @@ export default function EventCalendar({
   }, [searchParams]);
 
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
-    queryKey: ["unattended-events", searchParams.toString(), trackerId, currentDate],
-   
+    queryKey: [
+      "unattended-events",
+      searchParams.toString(),
+      trackerId,
+      currentDate,
+    ],
+
     queryFn: async () => {
       let alerts;
-      if(source!=="tracker"){
-      const alertSearchParams = new URLSearchParams(searchParams.toString());
-      alertSearchParams.set("eventTypes", "alert");
-      alertSearchParams.set("limit", "50");
-      const query = Object.fromEntries(alertSearchParams.entries());
-      alerts = await getEvents(query);
+      if (source !== "tracker") {
+        const alertSearchParams = new URLSearchParams(searchParams.toString());
+        alertSearchParams.set("eventTypes", "alert");
+        alertSearchParams.set("limit", "50");
+        const query = Object.fromEntries(alertSearchParams.entries());
+        alerts = await getEvents(query);
       }
       const { start, end } = getVisibleDateRange(view, currentDate);
       const trackerStartDate = `${moment(start).format("YYYY-MM-DD")}`;
-        const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
+      const trackerEndDate = `${moment(end).format("YYYY-MM-DD")}`;
       // Fetch holidays
       let holidays: Event[] = [];
       try {
-        const shouldFetchHolidays = filteredParams.get("eventTypes")?.split(",").includes("holiday") || eventType === "unattended";
-        
+        const shouldFetchHolidays =
+          filteredParams.get("eventTypes")?.split(",").includes("holiday") ||
+          eventType === "unattended";
+
         if (shouldFetchHolidays) {
           filteredParams.set("eventTypes", "holiday");
           filteredParams.delete("view");
           const query = Object.fromEntries(filteredParams.entries());
-          
-          const holidayResponse = source === "tracker"
-            ? await getCalendarViewEvents(
-                trackerId || "", 
-                `active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&limit=20&offset=0&type=unattended`, 
-                true
-              )
-            : await getEvents(query);
+
+          const holidayResponse =
+            source === "tracker"
+              ? await getCalendarViewEvents(
+                  trackerId || "",
+                  `active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&limit=20&offset=0&type=unattended`,
+                  true
+                )
+              : await getEvents(query);
           holidays = (holidayResponse?.events || []) as Event[];
         }
       } catch (error) {
@@ -196,11 +205,11 @@ export default function EventCalendar({
 
       return {
         holidays,
-        alerts: source!=="tracker"?(alerts?.events as any[]) || []:[],
+        alerts: source !== "tracker" ? (alerts?.events as any[]) || [] : [],
       };
     },
     enabled: !!isEventeli,
-});
+  });
 
   const processedEvents = procesEvents(
     view,
@@ -417,6 +426,17 @@ export default function EventCalendar({
       />
     );
   };
+
+  if (
+    searchParams.size === 0 ||
+    (searchParams.size == 1 && searchParams.has("view"))
+  ) {
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />;
+      </div>
+    );
+  }
 
   return (
     <>

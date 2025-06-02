@@ -6,7 +6,7 @@ const CustomTrackerNullState = () => {
   return (
     <div className="flex items-center justify-center flex-col gap-2 w-full">
       
-      <div className="font-bold">Hello! Here’s your quick-start guide:</div>
+      <div className="font-bold text-center">Hello! Here’s your quick-start guide:</div>
       <div className={`w-full text-[#666666] text-sm text-center`}>
         <span className="font-bold">Apply Filters - </span>
       <span className={`w-full text-center text-[#666666] text-sm`}>Explore the basic filters to quickly refine your results by category, date, and location.</span>
