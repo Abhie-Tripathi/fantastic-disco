@@ -905,7 +905,7 @@ const EventListItem = ({
                         )}
                     </div>
                     {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
-                    {isTentimesUser && (
+                    {(isTentimesUser && !isMobile) && (
                       <>
                       {(trackerId && !isEventeli && !intelLoading) ? (
                         (intelScoreData?.[0]?.value>0 &&
@@ -948,6 +948,29 @@ const EventListItem = ({
             </div>
           </div>
         </div>
+        {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                    {(isTentimesUser && isMobile) && (
+                      <>
+                      {(trackerId && !isEventeli && !intelLoading) ? (
+                        (intelScoreData?.[0]?.value>0 &&
+                          <div className="space-y-4">
+                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center mt-[-38px]">
+                            <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
+                            <div
+                              className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                              style={{ fontSize: "10px" }}
+                            >
+                              Relevance Score
+                            </div>
+                          </div>
+                        </div>
+                        )
+                        
+                      ) : (
+                        <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                      )}
+                      </>
+                    )}
       </Link>
     </div>
   )
