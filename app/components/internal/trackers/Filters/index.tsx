@@ -1553,12 +1553,12 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
+    {type==="T_CUSTOM"&&
     <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-auto pt-10">
     <div className="hidden md:flex w-full justify-center items-center">
-    {type==="T_CUSTOM"&&
-    <CustomTrackerNullState/>}
+    <CustomTrackerNullState/>
     </div>
-    </div>
+    </div>}
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
