@@ -149,13 +149,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-    const intelScoreData = [
-      {
-        name: "Total",
-        value: initialIntelScoreData?.alltrackers_score || 0,
-        fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
-      }
-    ];
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill: type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY" ? "#646BDC" : (type === "T_PRODUCT_KEYWORDS") ? "#E99CD4" : "#9B86D4",
+    }
+  ];
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}

@@ -216,12 +216,11 @@ const EventTable = ({
                   localFilters={localFilters}
                   trackerId={trackerId}
                   intelLoading={intelLoading}
-                  initialIntelScoreData = {
-  intelScoreData?.trackerEventsIntelScore?.find(
-  (item:intelScore) => item?.event === event.basic.id
-) || null
-}
-
+                  initialIntelScoreData={
+                    intelScoreData?.trackerEventsIntelScore?.find(
+                      (item: intelScore) => item?.event === event.basic.id
+                    ) || null
+                  }
                 />
               ))}
             </TableBody>

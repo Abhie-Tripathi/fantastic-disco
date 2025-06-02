@@ -38,7 +38,7 @@ import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
 import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
-import { useAuthContext } from "@/context";
+import { useAuthContext } from "@/context/auth"
 const EventCard = memo(
   ({
     event,
