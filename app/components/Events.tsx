@@ -281,6 +281,7 @@ const Events = () => {
                   </Button>
                   {filtersCount > 0 && (
                     <Button
+                      id="save-search-btn"
                       onClick={createTrackerHandler}
                       variant="outline"
                       className="w-full h-10"
