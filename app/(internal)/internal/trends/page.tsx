@@ -504,6 +504,11 @@ const EventTrends = () => {
     });
   };
 
+  const handleToggleSavedTrends = () => {
+    if (showFilters) setShowFilters(false);
+    setShowSavedTrends(!showSavedTrends);
+  };
+
   return (
     <div
       className={`${isMobileView ? "relative" : "flex h-[calc(100vh-60px)]"} ${
@@ -990,7 +995,12 @@ const EventTrends = () => {
                 <span className="text-primary text-xs font-medium">
                   Trends Visualisations
                 </span>
-                <Badge variant="default" className="text-xs font-medium px-2 py-0.5 h-5">Beta</Badge>
+                <Badge
+                  variant="default"
+                  className="text-xs font-medium px-2 py-0.5 h-5"
+                >
+                  Beta
+                </Badge>
               </div>
               <button
                 className="text-primary text-xs font-medium"
@@ -1052,7 +1062,7 @@ const EventTrends = () => {
                 </Select>
                 {/* Bookmark Button */}
                 <button
-                  onClick={() => setShowSavedTrends(!showSavedTrends)}
+                  onClick={handleToggleSavedTrends}
                   className="relative bg-white rounded-lg border border-gray-200 shadow px-2 py-2 flex items-center justify-center"
                 >
                   <Bookmark className="w-5 h-5 text-primary" />
