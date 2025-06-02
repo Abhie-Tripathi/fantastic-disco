@@ -276,9 +276,10 @@ export const Overview = ({
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] h-full">
+          {!isEventeli &&
           <div className="border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-6 h-full">
-          {!isEventeli && <TrackerRelevanceScore eventId={eventDetails.basic.id}/>}
-          </div>
+           <TrackerRelevanceScore eventId={eventDetails.basic.id}/>
+          </div>}
           <div className="flex flex-col border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-6 gap-8">
           <DetailMapComponent
             eventDetails={eventDetails}
