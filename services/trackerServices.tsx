@@ -292,12 +292,12 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
-      console.log(type.toString());
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
+      console.log(trackerType);
       const eventType = type;
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
-          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" && '/similar'}/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
+          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION" && '/similar'}/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }

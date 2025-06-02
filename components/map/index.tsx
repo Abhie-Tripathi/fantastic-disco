@@ -179,7 +179,7 @@ export default function MapComponent({
         : ["eventCounts", currentZoomGroup, searchParams.toString(), location],
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
-        const response = await getMapViewData(trackerId, "city", eventType);
+        const response = await getMapViewData(trackerId, "city", trackerType);
         return response || [];
       } else {
         const response = await getEventsCount({
