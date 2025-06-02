@@ -16,6 +16,9 @@ import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
 import CustomTrackerNullState from "../internal/trackers/Filters/customTrackerNullState";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -47,7 +50,15 @@ const EventTable = ({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-  // console.log(isLoading);
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      eventType || ""
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -98,6 +109,8 @@ const EventTable = ({
     }
   }, [events]);
 
+  
+  
   useEffect(() => {
     if (!events) return;
 
@@ -217,21 +230,26 @@ const EventTable = ({
               localFilters={localFilters}
             />
             <TableBody className="overflow-auto">
-              {updatedEvents &&
-                updatedEvents.map((event: Event) => (
-                  <EventTableRow
-                    global={view}
-                    view={query.eventType}
-                    setEventId={setEventId}
-                    setInterest={setInterest}
-                    type={query.type}
-                    key={event.basic.id}
-                    event={event}
-                    show={showValues}
-                    localFilters={localFilters}
-                    trackerId={trackerId}
-                  />
-                ))}
+              {updatedEvents && updatedEvents.map((event: Event) => (
+                <EventTableRow
+                  global={view}
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
+                  type={query.type}
+                  key={event.basic.id}
+                  event={event}
+                  show={showValues}
+                  localFilters={localFilters}
+                  trackerId={trackerId}
+                  intelLoading={intelLoading}
+                  initialIntelScoreData={
+                    intelScoreData?.trackerEventsIntelScore?.find(
+                      (item: intelScore) => item?.event === event.basic.id
+                    ) || null
+                  }
+                />
+              ))}
             </TableBody>
           </Table>
         </div>
