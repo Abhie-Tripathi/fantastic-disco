@@ -18,7 +18,6 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const {getTrackers} = useTrackerServices();
   const {isTentimesUser} = useAuthContext();
-  console.log(isTentimesUser, "isTentimesUser");
   
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
@@ -74,12 +73,12 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        {/* <Badge
+        <Badge
           variant={"outline"}
           className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
         >
           Demo
-        </Badge> */}
+        </Badge>
       </div>
      <>
   {isLoading ? (
