@@ -989,6 +989,7 @@ const EventListItem = ({
                         </div>
                       )}
                       {isEventeli &&
+                        showValues.includes(Show.economicImpact) &&
                         event.insights?.economicImpact !== undefined && (
                           <div>
                             <p className="text-xs md:text-sm text-gray-600 font-medium">
