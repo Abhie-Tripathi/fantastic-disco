@@ -21,6 +21,8 @@ import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { useConfigurationService } from "@/services/configurationService";
 import { TrackerAIResponse } from "@/types/trackers";
+import recentSearchService from "@/services/recentSearchService";
+
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -384,7 +386,23 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         const currentPathname = window.location.pathname;
-        router.push(`${currentPathname}?${params.toString()}`, {
+        const searchString = params.toString();
+        
+        // Save to recent searches
+        const searchEvent = {
+          date: new Date().toISOString(),
+          fullPath: `${currentPathname}?${searchString}`,
+          path: currentPathname,
+          params: Object.fromEntries(params.entries()),
+        };
+
+        recentSearchService.addToSearchHistory(
+          searchString, // Using the search string as the query
+          searchEvent,
+          filteredFilters // Passing the filters as metadata
+        );
+
+        router.push(`${currentPathname}?${searchString}`, {
           scroll: false,
         });
         return filteredFilters;
