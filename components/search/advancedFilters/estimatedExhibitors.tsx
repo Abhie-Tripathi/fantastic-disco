@@ -19,16 +19,18 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
+import { LockClosedSmall } from "geist-icons";
 
 interface EstimatedExhibitorsSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EstimatedExhibitorsSelector({ 
-  variant = "popover" 
+export default function EstimatedExhibitorsSelector({
+  variant = "popover",
 }: EstimatedExhibitorsSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, morphedData } =
+    useFilterContext();
   const exhibitorOptions = morphedData.estimatedExhibitor.options;
   const enabled = morphedData.estimatedExhibitor.isEnabled;
   const showToogle = morphedData.estimatedExhibitor.isToogleEnabled;
@@ -60,8 +62,9 @@ export default function EstimatedExhibitorsSelector({
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      <span className="flex items-center gap-2">
-        Estimated Exhibitors
+      <span className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="mr-2">Estimated Exhibitors</span>
         {selectedRanges.length > 0 && (
           <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
             {selectedRanges.length}
@@ -98,6 +101,7 @@ export default function EstimatedExhibitorsSelector({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!enabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -111,7 +115,10 @@ export default function EstimatedExhibitorsSelector({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -121,14 +128,16 @@ export default function EstimatedExhibitorsSelector({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="estimatedExhibitors" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({ variant: "outline" }), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          disabled={!enabled}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
         >
           {triggerContent}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

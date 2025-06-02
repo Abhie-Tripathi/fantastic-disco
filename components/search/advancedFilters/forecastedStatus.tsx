@@ -29,11 +29,10 @@ export default function ForecastedStatusSelector() {
   };
 
   return (
-    <div
-      className={cn(
-        buttonVariants({ variant: "outline" }),
-        "w-full justify-between px-3 py-5 text-base font-normal"
-      )}
+    <Button
+      disabled={!enabled}
+      variant="outline"
+      className="w-full justify-between px-3 py-5 text-base font-normal"
     >
       <div className="flex items-center">
         {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
@@ -45,6 +44,6 @@ export default function ForecastedStatusSelector() {
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />
-    </div>
+    </Button>
   );
 }

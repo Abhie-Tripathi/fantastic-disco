@@ -15,6 +15,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LockClosedSmall } from "geist-icons";
 
 interface EstimatedVisitorsSelectorProps {
   variant?: "accordion" | "popover";
@@ -40,8 +41,9 @@ export default function EstimatedVisitorsSelector({ variant = "popover" }: Estim
   };
 
   const triggerContent = (
-    <span className="flex items-center gap-2">
-      Estimated Visitors
+    <span className="flex items-center">
+      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+      <span className="mr-2">Estimated Visitors</span>
       {selectedRanges.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedRanges.length}
@@ -73,6 +75,7 @@ export default function EstimatedVisitorsSelector({ variant = "popover" }: Estim
           <Button
             variant="outline"
             role="combobox"
+            disabled={!enabled}
             aria-expanded={isOpen}
             className="w-full justify-between px-3 py-5 text-base font-normal"
           >
@@ -97,6 +100,7 @@ export default function EstimatedVisitorsSelector({ variant = "popover" }: Estim
     <Accordion type="single" collapsible>
       <AccordionItem value="estimatedVisitors" className="border rounded-md">
         <AccordionTrigger 
+          disabled={!enabled}
           className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
         >
           <div className="flex items-center justify-between w-full">
