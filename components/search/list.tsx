@@ -259,8 +259,6 @@ export default function EventAccordion({
     });
   };
 
-  console.log(inTransition)
-
   if (isLoading || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
