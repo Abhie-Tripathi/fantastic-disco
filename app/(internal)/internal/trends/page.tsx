@@ -69,6 +69,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 const gtmViewTemplates = [
   {
@@ -495,6 +496,11 @@ const EventTrends = () => {
       description: "Link copied to clipboard",
       duration: 2000,
     });
+  };
+
+  const handleToggleSavedTrends = () => {
+    if (showFilters) setShowFilters(false);
+    setShowSavedTrends(!showSavedTrends);
   };
 
   return (
@@ -979,9 +985,17 @@ const EventTrends = () => {
 
             {/* Trends Visualisations & Templates */}
             <div className="flex justify-between items-center px-4 py-3">
-              <span className="text-primary text-xs font-medium">
-                Trends Visualisations
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-primary text-xs font-medium">
+                  Trends Visualisations
+                </span>
+                <Badge
+                  variant="default"
+                  className="text-xs font-medium px-2 py-0.5 h-5"
+                >
+                  Beta
+                </Badge>
+              </div>
               <button
                 className="text-primary text-xs font-medium"
                 onClick={() => setShowTemplatesModal(true)}
@@ -1042,7 +1056,7 @@ const EventTrends = () => {
                 </Select>
                 {/* Bookmark Button */}
                 <button
-                  onClick={() => setShowSavedTrends(!showSavedTrends)}
+                  onClick={handleToggleSavedTrends}
                   className="relative bg-white rounded-lg border border-gray-200 shadow px-2 py-2 flex items-center justify-center"
                 >
                   <Bookmark className="w-5 h-5 text-primary" />

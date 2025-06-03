@@ -402,7 +402,8 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm");
+        const fallbackPage = `https://whr.ai/${isEventeli ? 'geo' : 'gtm'}`;
+        router.push(fallbackPage);
       }
     },
     [request, router]
