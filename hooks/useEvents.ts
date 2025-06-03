@@ -8,13 +8,15 @@ export const eventsKeys = {
 };
 
 export const useEvents = {
-  list: (query: EventQuery) => {
+  list: (query: EventQuery, inTransition?: boolean) => {
     const eventsService = useEventsService();
 
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(query),
       queryFn: () => eventsService.getEvents(query),
       staleTime: 5 * 60 * 1000,
+      enabled: !inTransition,
+      retry: false
     });
 
     return {

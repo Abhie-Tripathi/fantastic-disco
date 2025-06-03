@@ -29,6 +29,7 @@ import {
   ListIcon,
   TableIcon,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import {
   lazy,
   Suspense,

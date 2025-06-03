@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge";
 import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { isEventeli } from "@/config";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
@@ -17,6 +18,12 @@ const EventCount = ({ view }: { view: string }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
+    enabled: isEventeli
+      ? !!(
+          isEventeli &&
+          (searchParams.get("locationIds") || searchParams.get("viewBound"))
+        )
+      : true,
   });
 
   const label: Record<string, string> = {

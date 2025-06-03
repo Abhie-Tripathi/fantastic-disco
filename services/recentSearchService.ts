@@ -1,14 +1,9 @@
 import { localStorage } from './storageService';
+import { isEventeli } from '@/config';
 
 type ModuleType = 'trends' | 'search';
 
 interface SearchParams {
-  'impact.industry'?: string;
-  'impact.gte'?: string;
-  'impact.lte'?: string;
-  'impact.tz'?: string;
-  'deleted_reason'?: string;
-  'state'?: string;
   [key: string]: string | undefined;
 }
 
@@ -41,7 +36,8 @@ const DEFAULT_OPTIONS: Required<RecentSearchOptions> = {
 };
 
 const generateStorageKey = (module: ModuleType): string => {
-  return `whr.history.${module}`;
+  const platform = isEventeli ? 'geo' : 'gtm';
+  return `whr.${platform}.history.${module}`;
 };
 
 const generateId = (): string => {

@@ -41,6 +41,7 @@ import {
 } from "../ui/tooltip";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
 
 interface CircularProgressProps {
   value: number | null;
@@ -124,6 +125,7 @@ export default function EventAccordion({
 }: EventListProps) {
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
+  const {inTransition} = useTransition()
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const showMaturity = !!getFilterValue("maturity");
@@ -154,7 +156,7 @@ export default function EventAccordion({
       view
     ));
   } else {
-    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+    ({ events, totalEvents, isLoading, error } = useEvents.list(query, inTransition));
   }
   const mapping = {
     rating: "rating",
@@ -252,7 +254,9 @@ export default function EventAccordion({
     });
   };
 
-  if (isLoading) {
+  console.log(inTransition)
+
+  if (isLoading || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
 

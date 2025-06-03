@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { PaginationComponent } from "@/components/pagination";
+import { useTransition } from "@/context/transition";
 
 export default function Alerts() {
   const searchParams = useSearchParams();
@@ -33,9 +34,11 @@ export default function Alerts() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCounts, setIsLoadingCounts] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const { inTransition } = useTransition();
 
   useEffect(() => {
     const fetchAlertCounts = async () => {
+      if (!inTransition) return;
       setIsLoadingCounts(true);
       try {
         const alertCounts = (await getEventsCount({
@@ -45,10 +48,12 @@ export default function Alerts() {
         })) as unknown as AlertCount;
 
         if (alertCounts?.count) {
-          setAlertCounts(Object.entries(alertCounts.count).map(([alertType, count]) => ({
-            alertType,
-            count: count as number
-          })));
+          setAlertCounts(
+            Object.entries(alertCounts.count).map(([alertType, count]) => ({
+              alertType,
+              count: count as number,
+            }))
+          );
         }
       } finally {
         setIsLoadingCounts(false);
@@ -56,10 +61,11 @@ export default function Alerts() {
     };
 
     fetchAlertCounts();
-  }, [searchParams]);
+  }, [searchParams, inTransition]);
 
   useEffect(() => {
     const fetchAlerts = async () => {
+      if (!inTransition) return;
       setIsLoading(true);
       try {
         const filteredParams = new URLSearchParams(searchParams.toString());
@@ -111,7 +117,9 @@ export default function Alerts() {
                   <TriangleAlert className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-nowrap">Alerts Overview</h2>
+                  <h2 className="text-lg font-semibold text-nowrap">
+                    Alerts Overview
+                  </h2>
                   <p className="text-sm text-muted-foreground text-left">
                     {isLoadingCounts ? "Loading..." : `${alerts.count} alerts`}
                   </p>

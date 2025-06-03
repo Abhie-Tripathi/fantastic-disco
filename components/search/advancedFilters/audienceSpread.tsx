@@ -32,7 +32,7 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
-  const enabled = morphedData?.audienceSpread?.isEnabled
+  const enabled = morphedData?.audienceSpread?.isAudienceEnabled
   const { getCountries, getRegions, isLoading, error } = useMiscService();
   const selectedCountries = useMemo(() => 
     (source === "preset"

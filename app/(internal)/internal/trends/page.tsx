@@ -15,7 +15,6 @@ import TreemapView from "@/components/trends/treemap-view";
 import { ChartFilters } from "@/components/trendsChart/chart-filters";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
@@ -735,7 +734,7 @@ const EventTrends = () => {
               isFiltersCollapsed ? "" : "border-r"
             }`}
           >
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-auto">
               <div className="space-y-4 p-4">
                 <Tabs defaultValue="events" className="w-full">
                   <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
@@ -805,7 +804,7 @@ const EventTrends = () => {
                   </div>
                 </Tabs>
               </div>
-            </ScrollArea>
+            </div>
 
             <div
               className={`w-full bg-background z-10 transition-all duration-300 ${

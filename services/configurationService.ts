@@ -6,12 +6,13 @@ import {
   OutreachConfigurationResponse,
 } from "@/types/configuration";
 import { sessionStorage } from "./storageService";
+import { isEventeli } from "@/config";
 
 export const useConfigurationService = () => {
   const api = useApi();
-
-  const CONFIG_CACHE_KEY = "filter_configuration";
-  const CONFIG_CACHE_TTL = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  const platform = isEventeli ? "geo" : "gtm";
+  const CONFIG_CACHE_KEY = `whr.${platform}.config.filter`;
+  const CONFIG_CACHE_TTL = 24 * 60 * 60 * 1000;
 
   const getFilterConfiguration = async () => {
     const cachedConfig = sessionStorage.get<{ filter: FilterConfiguration }>(

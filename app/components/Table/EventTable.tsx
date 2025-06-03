@@ -16,6 +16,7 @@ import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
 import CustomTrackerNullState from "../internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -31,6 +32,7 @@ const EventTable = ({
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
+  const {inTransition} = useTransition()
   const { localFilters } = useFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
@@ -148,7 +150,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
 
