@@ -29,12 +29,12 @@ interface EditionSelectorProps {
 export default function EditionSelector({
   variant = "popover",
 }: EditionSelectorProps) {
-  const { getLocalFilterValue, setLocalFilter, morphedData } = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, morphedData } =
+    useFilterContext();
   const [isOpen, setIsOpen] = useState(false);
 
-  const maturityLevels = morphedData.maturity.options;
-  const showToogle = morphedData.maturity.isToogleEnabled;
-  const enabled = morphedData.maturity.isEnabled;
+  const maturityLevels = morphedData.maturityLevels.options;
+  const enabled = morphedData.maturityLevels.isEnabled;
 
   const selectedStatus = useMemo(
     () => getLocalFilterValue("maturity"),
