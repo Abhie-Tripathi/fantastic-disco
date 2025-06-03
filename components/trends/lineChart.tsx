@@ -266,15 +266,17 @@ const LineChartComponent = ({
           const result = { ...currentItem };
 
           // Add previous year data for all metrics
-          metrics.forEach(metric => {
+          metrics.forEach((metric) => {
             result[`previousYear${metric}`] = comparisonItem[metric];
-            
+
             // Handle social and business breakdowns if they exist
             if (comparisonItem[`social${metric}`] !== undefined) {
-              result[`previousYearSocial${metric}`] = comparisonItem[`social${metric}`];
+              result[`previousYearSocial${metric}`] =
+                comparisonItem[`social${metric}`];
             }
             if (comparisonItem[`business${metric}`] !== undefined) {
-              result[`previousYearBusiness${metric}`] = comparisonItem[`business${metric}`];
+              result[`previousYearBusiness${metric}`] =
+                comparisonItem[`business${metric}`];
             }
           });
 
@@ -331,6 +333,11 @@ const LineChartComponent = ({
   const CustomDot = (props: any) => {
     const { cx, cy, payload, index } = props;
 
+    // Don't render custom dot if multiple metrics are selected or comparison is enabled
+    if (metrics.length > 1 || (compareFrom && compareTo)) {
+      return null;
+    }
+
     // Get the interval dates
     const intervalDates = generateDateIntervals(
       graphData[0].date,
@@ -349,7 +356,9 @@ const LineChartComponent = ({
         holidayByDates?.some((holiday) => holiday.date === payload.date)) ||
       false;
 
-    if (shouldRenderDot && payload.total < thresholdArea[1]) {
+    const total = payload.business + payload.social;
+
+    if (shouldRenderDot && total < thresholdArea[1]) {
       return (
         <g>
           <circle
@@ -387,7 +396,7 @@ const LineChartComponent = ({
         </g>
       );
     }
-    if (shouldRenderDot && payload.total > thresholdArea[0]) {
+    if (shouldRenderDot && total > thresholdArea[0]) {
       return (
         <g>
           <circle
@@ -427,24 +436,6 @@ const LineChartComponent = ({
     }
     if (hasMatchingHoliday) {
       return (
-        // <g>
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={8}
-        //     fill="#e8e8e8"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        //   <circle
-        //     cx={cx}
-        //     cy={cy}
-        //     r={4}
-        //     fill="#7D7D7D"
-        //     stroke="#7D7D7D"
-        //     strokeWidth={2}
-        //   />
-        // </g>
         <g>
           <svg
             x={cx - 10}
@@ -841,10 +832,10 @@ const LineChartComponent = ({
           metric;
 
         // Format the number to be more readable
-        const formattedValue = new Intl.NumberFormat('en-US', {
-          notation: 'compact',
+        const formattedValue = new Intl.NumberFormat("en-US", {
+          notation: "compact",
           maximumFractionDigits: 1,
-          compactDisplay: 'short'
+          compactDisplay: "short",
         }).format(value);
 
         return (
@@ -1588,7 +1579,9 @@ const LineChartComponent = ({
                     roundedTickSize = magnitude * 5;
                   else if (idealTickSize / magnitude >= 2)
                     roundedTickSize = magnitude * 2;
-                  return Math.floor(minValue / roundedTickSize) * roundedTickSize;
+                  return (
+                    Math.floor(minValue / roundedTickSize) * roundedTickSize
+                  );
                 },
                 () => {
                   if (!graphData || graphData.length === 0) return 100;
@@ -1628,21 +1621,21 @@ const LineChartComponent = ({
                     roundedTickSize = magnitude * 5;
                   else if (idealTickSize / magnitude >= 2)
                     roundedTickSize = magnitude * 2;
-                  return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
+                  return (
+                    Math.ceil(paddedMax / roundedTickSize) * roundedTickSize
+                  );
                 },
               ]}
               tickCount={5}
               tickFormatter={tickFormatter}
-              label={
-                {
-                  value: primaryLabel,
-                  angle: -90,
-                  position: "insideLeft",
-                  style: { textAnchor: "middle", fill: "#7D7D7D" },
-                  fontSize: isMobileView ? "12px" : "14px",
-                  offset: isMobileView ? 15 : 0
-                }
-              }
+              label={{
+                value: primaryLabel,
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle", fill: "#7D7D7D" },
+                fontSize: isMobileView ? "12px" : "14px",
+                offset: isMobileView ? 15 : 0,
+              }}
               axisLine={false}
               tickLine={false}
               tick={{
@@ -1731,35 +1724,44 @@ const LineChartComponent = ({
               ]}
               tickCount={5}
               tickFormatter={tickFormatter}
-              label={
-                {
-                  value: (() => {
-                    if (activeRightAxisMetrics.length === 0) return "Attendance & Estimates";
-                    if (activeRightAxisMetrics.length === 1) return metricLabels[activeRightAxisMetrics[0]];
-                    
-                    // Check if both attendance and estimate are selected
-                    const hasAttendance = activeRightAxisMetrics.includes("predictedAttendance");
-                    const hasEstimate = activeRightAxisMetrics.includes("inboundEstimate") || 
-                                      activeRightAxisMetrics.includes("internationalEstimate");
-                    
-                    if (hasAttendance && hasEstimate) return "Attendance & Estimates";
-                    
-                    // For inbound and international estimates
-                    const hasInbound = activeRightAxisMetrics.includes("inboundEstimate");
-                    const hasInternational = activeRightAxisMetrics.includes("internationalEstimate");
-                    if (hasInbound && hasInternational) {
-                      return "Inbound & International Estimates";
-                    }
-                    
-                    // For any other combination, join with &
-                    return activeRightAxisMetrics.map(metric => metricLabels[metric]).join(" & ");
-                  })(),
-                  angle: leftAxisMetric ? 90 : -90,
-                  position: leftAxisMetric ? "insideRight" : "insideLeft",
-                  style: { textAnchor: "middle", fill: "#7D7D7D" },
-                  fontSize: isMobileView ? "12px" : "14px",
-                }
-              }
+              label={{
+                value: (() => {
+                  if (activeRightAxisMetrics.length === 0)
+                    return "Attendance & Estimates";
+                  if (activeRightAxisMetrics.length === 1)
+                    return metricLabels[activeRightAxisMetrics[0]];
+
+                  // Check if both attendance and estimate are selected
+                  const hasAttendance = activeRightAxisMetrics.includes(
+                    "predictedAttendance"
+                  );
+                  const hasEstimate =
+                    activeRightAxisMetrics.includes("inboundEstimate") ||
+                    activeRightAxisMetrics.includes("internationalEstimate");
+
+                  if (hasAttendance && hasEstimate)
+                    return "Attendance & Estimates";
+
+                  // For inbound and international estimates
+                  const hasInbound =
+                    activeRightAxisMetrics.includes("inboundEstimate");
+                  const hasInternational = activeRightAxisMetrics.includes(
+                    "internationalEstimate"
+                  );
+                  if (hasInbound && hasInternational) {
+                    return "Inbound & International Estimates";
+                  }
+
+                  // For any other combination, join with &
+                  return activeRightAxisMetrics
+                    .map((metric) => metricLabels[metric])
+                    .join(" & ");
+                })(),
+                angle: leftAxisMetric ? 90 : -90,
+                position: leftAxisMetric ? "insideRight" : "insideLeft",
+                style: { textAnchor: "middle", fill: "#7D7D7D" },
+                fontSize: isMobileView ? "12px" : "14px",
+              }}
               axisLine={false}
               tickLine={false}
               tick={{
@@ -1785,7 +1787,10 @@ const LineChartComponent = ({
             <>
               {(() => {
                 const metric = metrics[0];
-                const metricThreshold = eventTrendsData?.thresholds[metric as keyof typeof eventTrendsData.thresholds];
+                const metricThreshold =
+                  eventTrendsData?.thresholds[
+                    metric as keyof typeof eventTrendsData.thresholds
+                  ];
                 if (!metricThreshold) return null;
 
                 const thresholdArea = [
@@ -1921,13 +1926,17 @@ const LineChartComponent = ({
               content={<CustomLegend />}
               payload={
                 [
-                  ...(leftAxisMetric ? [{
-                    value: primaryLabel,
-                    type: "line",
-                    id: "primary_metric",
-                    color: "#6750a4",
-                    tooltipDescription: `Data for ${primaryLabel}`,
-                  }] : []),
+                  ...(leftAxisMetric
+                    ? [
+                        {
+                          value: primaryLabel,
+                          type: "line",
+                          id: "primary_metric",
+                          color: "#6750a4",
+                          tooltipDescription: `Data for ${primaryLabel}`,
+                        },
+                      ]
+                    : []),
                   ...activeRightAxisMetrics.map((metric, index) => {
                     const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
                     return {
@@ -1940,14 +1949,18 @@ const LineChartComponent = ({
                   }),
                   ...(compareFrom && compareTo
                     ? [
-                        ...(leftAxisMetric ? [{
-                          value: `Previous Year ${primaryLabel}`,
-                          type: "line",
-                          id: "previous_year_primary",
-                          color: "#6750a4",
-                          tooltipDescription: `Previous year data for ${primaryLabel}`,
-                          strokeDasharray: "5 5",
-                        }] : []),
+                        ...(leftAxisMetric
+                          ? [
+                              {
+                                value: `Previous Year ${primaryLabel}`,
+                                type: "line",
+                                id: "previous_year_primary",
+                                color: "#6750a4",
+                                tooltipDescription: `Previous year data for ${primaryLabel}`,
+                                strokeDasharray: "5 5",
+                              },
+                            ]
+                          : []),
                         ...activeRightAxisMetrics.map((metric, index) => {
                           const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
                           return {
