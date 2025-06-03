@@ -62,9 +62,9 @@ export default function EstimatedExhibitorsSelector({
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      <span className="flex items-center gap-2">
+      <span className="flex items-center">
         {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-        Estimated Exhibitors
+        <span className="mr-2">Estimated Exhibitors</span>
         {selectedRanges.length > 0 && (
           <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
             {selectedRanges.length}

@@ -51,9 +51,9 @@ export default function EstimatedVisitorsSelector({
   };
 
   const triggerContent = (
-    <span className="flex items-center gap-2">
+    <span className="flex items-center">
       {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      Estimated Visitors
+      <span className="mr-2">Estimated Visitors</span>
       {selectedRanges.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedRanges.length}
@@ -112,12 +112,9 @@ export default function EstimatedVisitorsSelector({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="estimatedVisitors" className="border rounded-md">
-        <AccordionTrigger
+        <AccordionTrigger 
           disabled={!enabled}
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
-          )}
+          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
         >
           <div className="flex items-center justify-between w-full">
             {triggerContent}

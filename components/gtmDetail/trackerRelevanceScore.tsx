@@ -1,22 +1,24 @@
 "use client";
 
 import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
+import VideoModal from "@/components/layout/videoModal";
 import { Badge } from "../ui/badge";
 
 const TrackerRelevanceScore = () => {
   return (
     <div className={"gap-8 flex flex-col"}>
       <div className={"flex justify-between items-center"}>
-        <span style={{ fontSize: "var(--font-size-default)" }}>
+        <div className="text-sm flex gap-2 items-center">
           Tracker Relevance Score
-        </span>
+          <Badge
+            variant={"outline"}
+            className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+          >
+            Demo
+          </Badge>
+        </div>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        <Badge
-          variant={"outline"}
-          className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-        >
-          Demo
-        </Badge>
+        <VideoModal source="intelScore" />
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <CircularProgress percentages={[80, 50, 70]} relevanceScore={"89"} />

@@ -388,10 +388,7 @@ function EventList({
   searchParam?: string | undefined;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [mapCenter, setMapCenter] = useState<
-    { lat: number; lng: number } | undefined
-  >();
-  const [mapRadius, setMapRadius] = useState<number | undefined>();
+  const [mapBounds, setMapBounds] = useState<(number | undefined)[]>();
   const { getTrackerMapEvents } = useTrackerServices();
   const searchParams = useSearchParams();
   const eventService = useEventsService();
@@ -410,22 +407,27 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius =
-        Math.max(
-          turf.distance(
-            turf.point([center.lng, center.lat]),
-            turf.point([ne.lng, center.lat]), // East point
-            { units: "kilometers" }
-          ),
-          turf.distance(
-            turf.point([center.lng, center.lat]),
-            turf.point([center.lng, ne.lat]), // North point
-            { units: "kilometers" }
-          )
-        ) * Math.sqrt(2);
+      const boundingBox = [
+        bounds?.getWest(),
+        bounds?.getSouth(),
+        bounds?.getEast(),
+        bounds?.getNorth(),
+      ];
+      // const radius =
+      //   Math.max(
+      //     turf.distance(
+      //       turf.point([center.lng, center.lat]),
+      //       turf.point([ne.lng, center.lat]), // East point
+      //       { units: "kilometers" }
+      //     ),
+      //     turf.distance(
+      //       turf.point([center.lng, center.lat]),
+      //       turf.point([center.lng, ne.lat]), // North point
+      //       { units: "kilometers" }
+      //     )
+      //   ) * Math.sqrt(2);
 
-      setMapCenter({ lat: center.lat, lng: center.lng });
-      setMapRadius(radius);
+      setMapBounds(boundingBox);
       setCurrentPage(1);
     };
 
@@ -459,14 +461,10 @@ function EventList({
     params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
-    if (mapCenter && mapRadius && showEventType != "unAttended") {
+    if (mapBounds && showEventType != "unAttended") {
       const viewBound = {
-        boundType: "point",
-        coordinates: {
-          latitude: mapCenter.lat,
-          longitude: mapCenter.lng,
-          radius: mapRadius,
-        },
+        boundType: "box",
+        coordinates: mapBounds,
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       if (!params.get("viewBound"))
@@ -475,13 +473,19 @@ function EventList({
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
+  }, [searchParams, currentPage, showEventType, mapBounds, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryKey: [
+      "events",
+      filteredParams.toString(),
+      currentPage,
+      sortBy,
+      eventType,
+    ],
     queryFn: async () => {
       if (source === "tracker") {
-        if (mapCenter && mapRadius) {
+        if (mapBounds) {
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
@@ -493,12 +497,13 @@ function EventList({
           return [];
         }
       } else {
-        return eventService.getEventsWithSearchParams(filteredParams.toString());
+        return eventService.getEventsWithSearchParams(
+          filteredParams.toString()
+        );
       }
     },
   });
-  
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -647,14 +652,18 @@ function EventList({
       <>
         <div className="p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <div className="hidden md:flex items-center gap-2 my-2">
+            <div className="flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
               </Badge>
               <span className="text-xs font-semibold text-primary">
-                Events Found
+                <div>Events</div>
+                <div className="text-muted-foreground">
+                  within the selected map area
+                </div>
               </span>
             </div>
+
             <div className="flex items-center gap-2 ml-auto">
               <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
               <Button
