@@ -1,45 +1,40 @@
 "use client";
 
-import { ActionPopover } from "@/app/components/Table/ActionPopover";
-import NullState from "@/app/components/trackers/nullState";
-import Loading from "@/app/components/UI/Loading";
-import ZeroState from "@/app/components/zerostate";
-import { Badge } from "@/components/ui/badge";
-import { isEventeli } from "@/config";
-import { groupedEventTypes } from "@/constants";
-import {
-  alertIcons,
-  eventTypeColors,
-  eventTypeIcons,
-  getAlertLevelBorderColor,
-} from "@/constants/eventTypes";
-import { useTrackerContext } from "@/context/tracker";
-import { useEvents } from "@/hooks/useEvents";
-import { useFilterState } from "@/hooks/useFilterState";
-import { useTrackerEvents } from "@/hooks/useTrackerEvents";
-import { cn, lightenColor } from "@/lib/utils";
-import trackerNullState from "@/public/trackerNullState.svg";
-import type { ApiError } from "@/types/api";
-import { Show } from "@/types/events/dto/event-query.dto";
-import type { Event, HolidayEventLocation } from "@/types/events/events";
-import { formattedDateRange } from "@/utils/date";
-import { formatEstimatedSpend } from "@/utils/formater";
-import { formatLocationParts } from "@/utils/locationFormat";
-import * as Flags from "country-flag-icons/react/3x2";
-import { format } from "date-fns";
-import { Radio, Star, TicketPercent } from "lucide-react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import type React from "react";
-import { useEffect, useState } from "react";
-import { PaginationComponent } from "../pagination";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { useIsMobile } from "@/hooks/useMediaQuery";
+import { ActionPopover } from "@/app/components/Table/ActionPopover"
+import NullState from "@/app/components/trackers/nullState"
+import Loading from "@/app/components/UI/Loading"
+import ZeroState from "@/app/components/zerostate"
+import { Badge } from "@/components/ui/badge"
+import { isEventeli } from "@/config"
+import { groupedEventTypes } from "@/constants"
+import { alertIcons, eventTypeColors, eventTypeIcons, getAlertLevelBorderColor } from "@/constants/eventTypes"
+import { useTrackerContext } from "@/context/tracker"
+import { useEvents } from "@/hooks/useEvents"
+import { useFilterState } from "@/hooks/useFilterState"
+import { useTrackerEvents } from "@/hooks/useTrackerEvents"
+import { cn, lightenColor } from "@/lib/utils"
+import trackerNullState from "@/public/trackerNullState.svg"
+import type { ApiError } from "@/types/api"
+import { Show } from "@/types/events/dto/event-query.dto"
+import type { Event, HolidayEventLocation } from "@/types/events/events"
+import { formattedDateRange } from "@/utils/date"
+import { formatEstimatedSpend } from "@/utils/formater"
+import { formatLocationParts } from "@/utils/locationFormat"
+import * as Flags from "country-flag-icons/react/3x2"
+import { format } from "date-fns"
+import { Radio, Star, TicketPercent } from "lucide-react"
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { PaginationComponent } from "../pagination"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
+import { useIsMobile } from "@/hooks/useMediaQuery"
+import IntelScore from '@/app/components/Table/IntelScore'
+import { useIntelData } from "@/hooks/useIntelData"
+import { intelScore } from "@/types/trackers"
+import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context/auth"
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 import { useTransition } from "@/context/transition";
 
@@ -113,9 +108,10 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 };
 
 interface EventListProps {
-  trackerId?: string;
-  source?: string;
-  view?: string;
+  trackerId?: string
+  source?: string
+  view?: string
+  eventType?: string
 }
 
 export default function EventAccordion({
@@ -158,6 +154,15 @@ export default function EventAccordion({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query, inTransition));
   }
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    "past"
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -306,6 +311,8 @@ export default function EventAccordion({
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
+  console.log("trackerId", trackerId);
+  
   return (
     <div className="flex flex-col h-full px-4 md:px-0">
       <div className="flex-grow overflow-y-auto">
@@ -324,6 +331,12 @@ export default function EventAccordion({
               showMaturity={showMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
+              intelLoading={intelLoading}
+               initialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item: intelScore) => item?.event === event.basic.id
+) || null
+}
             />
           ))}
         </ul>
@@ -354,19 +367,25 @@ const EventListItem = ({
   showMatchKeywords,
   showaudienceSpread,
   showMaturity,
+  initialIntelScoreData,
+  intelLoading
 }: {
-  isMobile: boolean;
-  trackerId?: string;
-  view?: string;
-  setEventId: any;
-  setInterest: any;
-  event: Event;
-  showValues: Show[];
-  showMatchKeywords: boolean;
-  showaudienceSpread: boolean;
-  showMaturity: boolean;
-  global?: string;
+  isMobile: boolean
+  trackerId?: string
+  view?: string
+  setEventId: any
+  setInterest: any
+  event: Event
+  showValues: Show[]
+  showMatchKeywords: boolean
+  showaudienceSpread: boolean
+  showMaturity: boolean
+  global?: string,
+  initialIntelScoreData?: intelScore,
+  intelLoading?: boolean
 }) => {
+  const {getFilterValue} = useFilterState();
+  const {isTentimesUser} = useAuthContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -424,7 +443,14 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-
+  const type=getFilterValue("type")
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+    }
+  ];
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
@@ -960,7 +986,7 @@ const EventListItem = ({
                 </div>
               )}
 
-              <div className="flex items-start justify-end h-full">
+              <div className="flex items-start justify-start md:justify-end h-full">
                 {showValues.includes(Show.scores) &&
                 event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null ||
@@ -1024,6 +1050,7 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                    
                     {global !== "global" && !isMobile && (
                       <div
                         className="flex items-start justify-end"
@@ -1040,7 +1067,7 @@ const EventListItem = ({
                     )}
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full gap-6">
+                  <div className="flex justify-start md:justify-end w-full gap-6">
                     <div className="hidden md:grid grid-row-2 items-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
@@ -1086,6 +1113,32 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                    {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                    {(trackerId && trackerId.length>0 && isTentimesUser && !isMobile) && (
+                      <>
+                      {(!isEventeli && !intelLoading) ? (
+                        (intelScoreData?.[0]?.value>0 &&
+                          <div className="space-y-4">
+                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center">
+                            <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
+                            <div
+                              className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                              style={{ fontSize: "10px" }}
+                            >
+                              Relevance Score
+                            </div>
+                          </div>
+                        </div>
+                        )
+                        
+                      ) : (
+                        <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                      )}
+                      </>
+                    )}
+                      
+
+                  
                     {global !== "global" && !isMobile && (
                       <div
                         className="flex items-start justify-end"
@@ -1107,6 +1160,29 @@ const EventListItem = ({
             </div>
           </div>
         </div>
+        {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                    {(trackerId && trackerId.length>0 && isTentimesUser && isMobile) && (
+                      <>
+                      {(!isEventeli && !intelLoading) ? (
+                        (intelScoreData?.[0]?.value>0 &&
+                          <div className="space-y-4">
+                          <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center mt-[-38px]">
+                            <IntelScore width="80px" height="70px" intelScore={intelScoreData} />
+                            <div
+                              className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                              style={{ fontSize: "10px" }}
+                            >
+                              Relevance Score
+                            </div>
+                          </div>
+                        </div>
+                        )
+                        
+                      ) : (
+                        <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                      )}
+                      </>
+                    )}
       </Link>
     </div>
   );

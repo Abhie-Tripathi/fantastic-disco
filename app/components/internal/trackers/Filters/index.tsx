@@ -500,7 +500,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -1455,6 +1455,7 @@ return (
     filterCount={0}
     createTrackerHandler={saveTrackerHandler}
     closeHandler={setShowFilters}
+    refs={refs}
     // searchHandler={searchHandler}
   />
   </div>
@@ -1512,7 +1513,7 @@ return (
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className="flex flex-col gap-2 w-full" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
+  <div ref={scrollableDivRef} className={`${type==="T_CUSTOM"?"hidden":"flex"} flex-col gap-2 w-full`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
@@ -1531,8 +1532,8 @@ return (
           </button>
         </div>
       )}
-    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`}>
-        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} ref={refs.additionalFilterRef}>
+    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`} ref={(!isMobile && type!=="T_CUSTOM")?refs.additionalFilterRef:null}>
+        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} >
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>
     </div>
@@ -1552,17 +1553,17 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
+    {type==="T_CUSTOM"&&
     <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-auto pt-10">
     <div className="hidden md:flex w-full justify-center items-center">
-    {type==="T_CUSTOM"&&
-    <CustomTrackerNullState/>}
+    <CustomTrackerNullState/>
     </div>
-    </div>
+    </div>}
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div className="flex gap-4 flex-col w-full">
-      <div className={`!hidden md:!flex card ${styles.competitor}`} ref={refs.templateRef}>
+      <div className={`!hidden md:!flex card ${styles.competitor}`} ref={!isMobile ? refs.templateRef : null}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -1873,7 +1874,7 @@ return (
   
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
-      <div ref={refs.presetRef}>
+      <div ref={!isMobile?refs.presetRef: null} className="flex items-center justify-between mb-4">
         <Presets template={template} handlePresetClick={handlePresetClick}/> 
         </div>
     </div>
@@ -1896,12 +1897,18 @@ return (
           {" "} Add manually or choose a pre-set
           </div>
           <div className="flex gap-1.5">
+          {!isEventeli &&
+          <div ref={isMobile?refs.presetRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
+          </div>
+          }
+          <div ref={isMobile?refs.additionalFilterRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
           <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
           </Button>
+          </div>
           </div>
           {/* <Button
                     className="text-white gap-1"
@@ -1928,7 +1935,7 @@ return (
         }
         </div>
         {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
-                <div>
+                <div ref={isMobile ? refs.templateRef : null}>
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5 flex-col">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (

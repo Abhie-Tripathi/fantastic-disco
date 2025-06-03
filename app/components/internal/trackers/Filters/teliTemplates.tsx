@@ -10,7 +10,7 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
     <div className='flex justify-center w-full bg-[var(--background-secondary-color)] h-full p-5'>
        {type==="T_LOCATION" &&
        <div className='flex justify-between h-fit'>
-    <div className="flex gap-2 flex-col border w-full md:w-[500px]">
+    <div className="flex gap-2 flex-col border w-full md:w-[500px]" ref={refs.templateRef}>
       <LocationTemplate type={type} />
       </div>
       {/* <span
@@ -26,7 +26,7 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
     }
     {type==="T_VENUE" &&
     <div className='flex justify-between'>
-    <div className="flex gap-2 flex-col border md:w-[500px]">
+    <div className="flex gap-2 flex-col border md:w-[500px]" ref={refs.templateRef}>
       <LocationTemplate type={type} isMandatory={isMandatory}/>
     </div>
      {/* <span
@@ -44,7 +44,7 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
     {type==="T_GEOTIME" &&
 
         <div className='flex justify-between w-[100%] gap-2'>
-        <div className='flex gap-2 w-[100%] h-fit flex-col md:flex-row'>
+        <div className='flex gap-2 w-[100%] h-fit flex-col md:flex-row' ref={refs.templateRef}>
         <div className="flex gap-2 flex-col border w-[100%] md:w-[40%] h-auto">
         <LocationTemplate type={type}/>
       </div>
