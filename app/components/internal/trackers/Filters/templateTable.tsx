@@ -43,9 +43,8 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
     if (selectedIdArray.length == customData.length) setSelectedIdArray([]);
     else setSelectedIdArray(customData.map((_, index) => index));
   };
-  const deleteSingleEntry = (index: number) => {
+ const deleteSingleEntry = (index: number) => {
     const filteredData = customData.filter((_, i) => i !== index);
-    setEventSuggestion(eventSuggestion.filter((item: any, i: number) => i !== eventSuggestion.length-index-1));
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };

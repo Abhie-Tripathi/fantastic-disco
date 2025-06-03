@@ -1022,7 +1022,58 @@ const stepsConfig =[
 
     }
   };
+  useEffect(() => {
+    if (type === "T_COMPETITOR" && suggestion===1) {
+      // setTrackerName(comp?.name || "");
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+    useEffect(()=>{
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          // console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+  }
 
+  }, [type])
+   const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
       const localData = localStorage.getItem("companySuggestion");
@@ -1052,7 +1103,7 @@ const stepsConfig =[
       setSuggestion(0);
     }
   }, [type]);
-  const [inc,setInc]=useState<String[]>([]);
+ 
   useEffect(() => { 
     if(suggestion===2 && inc.length>0){
       setSuggestions([]);
@@ -1116,7 +1167,7 @@ const stepsConfig =[
           updatedData.push({ "Event Name": `${Object.values(item)[0]?.basic?.name}, ${Object.values(item)[0]?.basic?.eventLocation?.cityName}, ${Object.values(item)[0]?.basic?.eventLocation?.countryName}, ${Object.values(item)[0]?.basic?.startDateTime}, ${Object.values(item)[0]?.basic?.endDateTime}` });
         });
         setEventSuggestion(editData?.filterValues?.eventIds);
-        // console.log(updatedData);
+        console.log(editData?.filterValues?.eventIds);
 
         setCustomData(updatedData);
         // console.log(Object.values(editData?.filterValues?.eventIdsFilter[0])[0]?.basic);
@@ -1410,7 +1461,7 @@ const handleShowTemplate=()=>{
   }
 }
 if(isLoading) return <Loading/>
-console.log(refs);
+console.log(eventSuggestion);
 
 
  return (
@@ -1424,7 +1475,6 @@ console.log(refs);
           />
           )}
   <div className="w-full md:flex md:items-center md:justify-center">
-
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
