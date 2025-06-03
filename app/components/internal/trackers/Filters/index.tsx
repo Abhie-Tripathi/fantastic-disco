@@ -1007,6 +1007,19 @@ const Pages = () => {
         }));
         setCustomData(presentCustomData);
       }
+      if (type === "T_EVENT_PARTICIPATION") {
+        // console.log(1111111111111);
+        let updatedData = [];
+        editData?.filterValues?.eventIdsFilter?.map((item, ind) => {
+          console.log("item basic:", Object.values(item)[0]?.basic);
+          updatedData.push({ "Event Name": `${Object.values(item)[0]?.basic?.name}, ${Object.values(item)[0]?.basic?.eventLocation?.cityName}, ${Object.values(item)[0]?.basic?.eventLocation?.countryName}, ${Object.values(item)[0]?.basic?.startDateTime}, ${Object.values(item)[0]?.basic?.endDateTime}` });
+        });
+        setEventSuggestion(editData?.filterValues?.eventIds);
+        // console.log(updatedData);
+
+        setCustomData(updatedData);
+        // console.log(Object.values(editData?.filterValues?.eventIdsFilter[0])[0]?.basic);
+      }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
