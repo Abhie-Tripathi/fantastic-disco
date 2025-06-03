@@ -1162,7 +1162,7 @@ const stepsConfig =[
       if (type === "T_EVENT_PARTICIPATION") {
         // console.log(1111111111111);
         let updatedData = [];
-        editData?.filterValues?.eventIdsFilter?.map((item, ind) => {
+        editData?.filterValues?.eventIdsFilter?.map((item) => {
           console.log("item basic:", Object.values(item)[0]?.basic);
           updatedData.push({ "Event Name": `${Object.values(item)[0]?.basic?.name}, ${Object.values(item)[0]?.basic?.eventLocation?.cityName}, ${Object.values(item)[0]?.basic?.eventLocation?.countryName}, ${Object.values(item)[0]?.basic?.startDateTime}, ${Object.values(item)[0]?.basic?.endDateTime}` });
         });
