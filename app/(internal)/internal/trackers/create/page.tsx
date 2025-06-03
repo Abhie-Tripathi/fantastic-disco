@@ -16,7 +16,7 @@ const Page = () => {
   }, []);
   
   return (
-    <div className="flex flex-col gap-6 items-center mb-6 w-full">
+    <div className="flex flex-col items-center md:mb-6 w-full">
       
       <Filters/>
       {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto rerum tempore cumque a, cum, qui omnis totam beatae esse laboriosam nisi aut fugit officia quasi dolore sed cupiditate obcaecati nulla.

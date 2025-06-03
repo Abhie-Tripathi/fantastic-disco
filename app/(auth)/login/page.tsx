@@ -1,5 +1,6 @@
 "use client";
 import { LoadingPage } from "@/components/auth/loadingPage";
+import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,6 +10,8 @@ export default function Page() {
   const router = useRouter();
   const { signUpSSO10times } = useAuthContext();
   const { verifyAccess } = useTrackerServices();
+
+  const fallbackPage = `https://whr.ai/${isEventeli ? 'geo' : 'gtm'}`;
 
   // Get query params safely
   const email = searchParams.get("email") || "";
@@ -30,7 +33,7 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm");
+        router.push(fallbackPage);
       }
     };
 
@@ -41,7 +44,7 @@ export default function Page() {
       verify();
     }
     else {
-      router.push("https://whr.ai/gtm");
+      router.push(fallbackPage);
     }
   }, [email, otp, target, targetId, router]);
 

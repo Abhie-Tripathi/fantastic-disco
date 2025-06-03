@@ -6,7 +6,7 @@
     max-height: 300px;
     overflow-y: auto;
     background-color: var(--background-secondary-color);
-    top: 40px;
+    /* top: 40px; */
     /* background-color: var(--background-secondary-color); */
     flex-wrap: nowrap;
     display: flex;

@@ -1,7 +1,7 @@
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import styles from "./templatetable.style.module.css";
 import { useState } from "react";
-import { Trash } from "geist-icons";
+import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
 
 interface Props {
@@ -54,11 +54,17 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
       
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <div className="text-sm text-[var(--secondary-text-color)] font-medium" >
-          {presetName &&
+        <div className="flex items-center gap-1 text-sm text-[var(--secondary-text-color)] font-medium" >
+        <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+          <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+          {" "} You can edit or remove unwanted entries from here.
+          </div>
+          {/* {presetName &&
             <span title={presetName} className="mr-3 p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs rounded-md text-[var(--primary-color)]" >Preset Selected</span>
-          }
+          } */}
+          <span className="hidden md:block">
           Total {customData.length} records
+          </span>
         </div>
         {selectedIdArray.length > 0 && (
           <div className="cursor-pointer text-xs text-[var(--danger-text-color)] font-medium" onClick={removeCustomData}>
@@ -158,10 +164,11 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
       </div>
       {customData.length > 5 && (
         <div
-          className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer"
+          className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer flex gap-1"
           onClick={() => setExpandTable((prev) => !prev)}
         >
           {expandTable ? "Show Less" : "Show All"}
+          <span className="block md:hidden">({customData.length})</span>
         </div>
       )}
     </div>

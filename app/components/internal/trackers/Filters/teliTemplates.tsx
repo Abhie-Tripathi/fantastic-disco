@@ -7,12 +7,11 @@ import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
 const TeliTemplates = ({type, isMandatory, refs}:any) => {
   return (
-    <div>
+    <div className='flex justify-center w-full bg-[var(--background-secondary-color)] h-full p-5'>
        {type==="T_LOCATION" &&
-       <div className='flex justify-between' ref={refs.templateRef}>
-    <div className="flex gap-2 flex-col border w-[500px]" >
-      <LocationTemplate type={type}/>
-
+       <div className='flex justify-between h-fit'>
+    <div className="flex gap-2 flex-col border w-full md:w-[500px]" ref={refs.templateRef}>
+      <LocationTemplate type={type} />
       </div>
       {/* <span
             className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col h-[200px]"
@@ -27,9 +26,7 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
     }
     {type==="T_VENUE" &&
     <div className='flex justify-between'>
-    <div className="flex gap-2 flex-col border w-[500px]" ref={refs.templateRef}
-    data-tour="templateRef"
-    >
+    <div className="flex gap-2 flex-col border md:w-[500px]" ref={refs.templateRef}>
       <LocationTemplate type={type} isMandatory={isMandatory}/>
     </div>
      {/* <span
@@ -47,11 +44,11 @@ const TeliTemplates = ({type, isMandatory, refs}:any) => {
     {type==="T_GEOTIME" &&
 
         <div className='flex justify-between w-[100%] gap-2'>
-        <div className='flex gap-2 w-[80%]'>
-        <div className="flex gap-2 flex-col border w-[50%] h-auto" ref={refs.templateRef}>
+        <div className='flex gap-2 w-[100%] h-fit flex-col md:flex-row' ref={refs.templateRef}>
+        <div className="flex gap-2 flex-col border w-[100%] md:w-[40%] h-auto">
         <LocationTemplate type={type}/>
       </div>
-      <div className="flex justify-between gap-2 flex-col border w-[50%]">
+      <div className="flex justify-between gap-2 flex-col border w-[100%] md:w-[60%]">
         <DateRangeSelector type={type}/>
       </div>
       </div>

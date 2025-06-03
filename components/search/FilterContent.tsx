@@ -26,17 +26,23 @@ interface FilterItem {
 }
 
 interface FilterContentProps {
+  source?: string;
   type: "events" | "companies" | "people";
   filterCount: number;
   createTrackerHandler?: () => void;
-  searchHandler: () => void;
+  searchHandler?: () => void;
+  closeHandler?: (value: boolean) => void;
+  refs?: any;
 }
 
 const FilterContent = ({
+  source,
   type,
   filterCount,
   createTrackerHandler,
   searchHandler,
+  closeHandler,
+  refs,
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();
@@ -44,36 +50,13 @@ const FilterContent = ({
   return (
     <div className="flex-1">
       <div className="overflow-y-auto w-full mt-0 flex-1">
+        {source === "tracker" && isMobile && (
+          <div className="flex items-center justify-between">
+            <div>FILTERS</div>
+            <div onClick={() => closeHandler?.(false)}>X</div>
+          </div>
+        )}
         <div className="p-3 bg-[var(--background-secondary-color)] ">
-          {type === "events" && filterCount > 0 && (
-            <div
-              id="save-search-btn"
-              className="mb-3 bg-[#F7F7FF] flex justify-between items-center dark:bg-accent/10 rounded-xl p-4 border border-border"
-            >
-              <div className="flex items-center gap-2">
-                <Image
-                  src={whrbotlogo}
-                  alt="WHR bot"
-                  className="w-8 h-8 rounded-full bg-background"
-                />
-                <div className="text-sm font-medium text-foreground">
-                  Save this search
-                </div>
-              </div>
-              {createTrackerHandler && (
-                <div className=" flex items-center justify-between">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={createTrackerHandler}
-                    className="h-8"
-                  >
-                    Save
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
           <Accordion
             type="multiple"
             className="space-y-4"
@@ -85,14 +68,21 @@ const FilterContent = ({
                 value={section.id}
                 className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
               >
-                <AccordionTrigger id={section.id} className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted">
+                <AccordionTrigger
+                  id={section.id}
+                  // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
+                  className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
+                >
                   <div className="text-sm flex gap-2 items-center uppercase font-medium">
-                    <Filter className="w-4 h-4" />
+                    <Filter className="w-4 h-4"/>
                     {section.label}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
-                  <div className="space-y-4 border-t pt-4 mt-1">
+                  <div
+                    className="space-y-4 border-t pt-4 mt-1"
+                    ref={refs?.advanceFilterRef}
+                  >
                     {section.filters
                       .filter(
                         (filter: FilterItem) =>
@@ -100,7 +90,11 @@ const FilterContent = ({
                       )
                       .map((filter: FilterItem) => {
                         const Component = getFilterComponent(filter.component);
-                        if (!Component) return null;
+                        if (
+                          !Component ||
+                          (source === "tracker" && filter.id === "eventIds")
+                        )
+                          return null;
 
                         return (
                           <div

@@ -362,10 +362,14 @@ export const useTrackerServices = () => {
     
       return response as PresetDataResponse;
     };
+    const getIntelData = async (trackerId:string, eventIds: string, eventType:string)=> {
+      // const urlParams = new URLSearchParams(data).toString();
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/intelScore?eventIds=${eventIds}&type=${eventType}`, {
+        method: "GET",
+      });
     
-    
-    
-    
+      return response;
+    };
     
     return {
       getTrackerCount,
@@ -393,6 +397,7 @@ export const useTrackerServices = () => {
       getTrackerDetail,
       getTrackerEvents,
       presetData,
+      getIntelData,
       fetchCompanyData,
       isLoading: api.isLoading,
       error: api.error,

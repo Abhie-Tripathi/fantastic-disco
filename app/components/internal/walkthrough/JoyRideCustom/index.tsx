@@ -76,7 +76,7 @@ const JoyRideCustom: React.FC<Props> = ({
   return (
     <Joyride
       tooltipComponent={(props) => (
-        <Tooltip {...props} totalSteps={steps.length} />
+        <Tooltip {...props} totalSteps={steps.length} pathName={pathName} />
       )}
       steps={steps.map((step) => ({
         ...step,

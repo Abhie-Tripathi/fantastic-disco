@@ -60,6 +60,7 @@ import {
   Filter,
   FilterX,
   Lock,
+  Save,
   UserSearch,
 } from "lucide-react";
 import Image from "next/image";
@@ -75,6 +76,7 @@ import {
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
 import FilterContent from "./FilterContent";
+import { useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface FilterSection {
@@ -679,10 +681,11 @@ const getFilterComponent = (componentName: string) => {
 
 interface FiltersProps {
   isCollapsed?: boolean;
-  source?:string;
+  source?: string;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  refs?: any;
 }
 
 const Filters = ({
@@ -691,13 +694,14 @@ const Filters = ({
   type,
   children,
   source,
+  refs,
 }: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
   const { getFilterValue } = useFilterState();
   const isMobile = useIsMobile();
   const { theme } = useTheme();
-
+  const path = useSearchParams();
   const filterCount = useMemo(() => {
     const excludedFilters = [
       "active_gte",
@@ -875,51 +879,6 @@ const Filters = ({
 
   return (
     <div className="w-full flex flex-col h-full bg-background">
-      {/* {steps.length > 0 && (
-        <Joyride
-          tooltipComponent={(props) => (
-            <Tooltip {...props} totalSteps={steps.length} />
-          )}
-          continuous={true}
-          steps={steps}
-          run={run}
-          callback={joyrideCallback}
-          disableCloseOnEsc
-          scrollToFirstStep={false}
-          disableScrolling={true}
-          spotlightPadding={4}
-          styles={{
-            options: {
-              zIndex: 10000,
-              primaryColor: "#6750a4",
-              textColor: "#333",
-              backgroundColor: "#fff",
-              arrowColor: "#fff",
-            },
-            tooltip: {
-              borderRadius: "8px",
-              padding: "10px",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
-              fontSize: "13px",
-              lineHeight: "1.4",
-              width: "auto",
-            },
-            tooltipContent: {
-              display: "flex",
-              justifyContent: "center",
-              padding: "10px 5px",
-            },
-            tooltipFooter: {
-              margin: "5px 0px",
-            },
-            buttonClose: {
-              color: "#999",
-              fontSize: "10px",
-              margin: "0px",
-            },
-          }}
-        />
-      )} */}
       {steps?.length > 0 && (
         <JoyRideCustom
           steps={steps}
@@ -928,94 +887,115 @@ const Filters = ({
           pathName="research"
         />
       )}
-      <button
-        onClick={onToggleCollapse}
-        className="md:flex hidden group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 items-center justify-center transition-all duration-200"
-      >
-        {isCollapsed ? (
-          <ChevronRight className="w-4 h-4 group-hover:text-primary transition-colors" />
-        ) : (
-          <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
-        )}
-      </button>
-      <div className={`overflow-y-auto flex flex-col ${source !== "tracker" ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]" : "h-[calc(100vh-181px)]"}`}>
-      {source!=="tracker" &&
-        <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
-          <Tabs defaultValue={type} value={type}>
-            <TabsList
-              className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
-              id="research-tabs"
-            >
-              <Link href="/internal/search/events" className="contents">
-                <TabsTrigger
-                  value="events"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                >
-                  <Calendar1 className="w-4 h-4" />
-                  Events
-                </TabsTrigger>
-              </Link>
-              <Link href="/internal/search/companies" className="contents">
-                <TabsTrigger
-                  value="companies"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                >
-                  Companies
-                </TabsTrigger>
-              </Link>
-              <Link href="/internal/search/people" className="contents">
-                <TabsTrigger
-                  value="people"
-                  className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
-                >
-                  <UserSearch className="w-4 h-4" />
-                  People
-                </TabsTrigger>
-              </Link>
-            </TabsList>
-          </Tabs>
-          {type == "events" && (
-            <div className="block md:hidden mt-4">
-              <MultiSelectSearchBar varient="medium" />
-            </div>
+      {path?.get("type") !== "T_CUSTOM" && (
+        <button
+          onClick={onToggleCollapse}
+          className="md:flex hidden group absolute -right-4 top-14 z-20 bg-background hover:bg-muted border border-border shadow-sm rounded-full w-9 h-9 items-center justify-center transition-all duration-200"
+        >
+          {isCollapsed ? (
+            <ChevronRight className="w-4 h-4 group-hover:text-primary transition-colors" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 group-hover:text-primary transition-colors" />
           )}
-        </div>
-        }
+        </button>
+      )}
+      <div
+        className={`overflow-y-auto flex flex-col ${
+          source !== "tracker"
+            ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]"
+            : "h-full"
+        }`}
+      >
+        {source !== "tracker" && (
+          <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
+            <Tabs defaultValue={type} value={type}>
+              <TabsList
+                className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
+                id="research-tabs"
+              >
+                <Link href="/internal/search/events" className="contents">
+                  <TabsTrigger
+                    value="events"
+                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Calendar1 className="w-4 h-4" />
+                    Events
+                  </TabsTrigger>
+                </Link>
+                <Link href="/internal/search/companies" className="contents">
+                  <TabsTrigger
+                    value="companies"
+                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    Companies
+                  </TabsTrigger>
+                </Link>
+                <Link href="/internal/search/people" className="contents">
+                  <TabsTrigger
+                    value="people"
+                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <UserSearch className="w-4 h-4" />
+                    People
+                  </TabsTrigger>
+                </Link>
+              </TabsList>
+            </Tabs>
+            {type == "events" && (
+              <div className="block md:hidden mt-4">
+                <MultiSelectSearchBar varient="medium" />
+              </div>
+            )}
+          </div>
+        )}
         <div className="hidden md:block overflow-y-scroll">
           <FilterContent
+            source={source}
             type={type}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
+            refs={refs}
           />
         </div>
-
-        <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
-            <div className="flex items-center justify-between mb-2">
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  deleteMultipleLocalFilters(
-                    Object.keys(localFilters) as any[]
-                  );
-                }}
-                disabled={filterCount === 0}
-                className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
-              >
-                <FilterX className="w-3.5 h-3.5 mr-1" />
-                Reset all filters
+        {source !== "tracker" && (
+          <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
+            <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+              <div className="flex items-center justify-between mb-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    deleteMultipleLocalFilters(
+                      Object.keys(localFilters) as any[]
+                    );
+                  }}
+                  disabled={filterCount === 0}
+                  className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+                >
+                  <FilterX className="w-3.5 h-3.5 mr-1" />
+                  Reset all filters
+                </Button>
+                <span className="text-xs text-[#6E6F89]">
+                  {filterCount} filters applied
+                </span>
+              </div>
+              <Button onClick={searchHandler} className="w-full h-10">
+                Apply Filters
               </Button>
-              <span className="text-xs text-[#6E6F89]">
-                {filterCount} filters applied
-              </span>
+              {filterCount > 0 && (
+                <Button
+                  id="save-search-btn"
+                  onClick={createTrackerHandler}
+                  variant="outline"
+                  className="w-full h-10"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Search
+                </Button>
+              )}
             </div>
-            <Button onClick={searchHandler} className="w-full h-10">
-              Apply Filters
-            </Button>
           </div>
-        </div>
-
+        )}
         <div className="md:hidden block">{children}</div>
 
         <CreateTrackerDialog
