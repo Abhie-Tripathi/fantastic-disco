@@ -921,7 +921,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               setInterest={setInterest}
               trackerId={trackerId}
               eventId={event.basic.id}
-              interests={event.interests}
+              interests={event?.interests}
             />
           )}
         </TableCell>

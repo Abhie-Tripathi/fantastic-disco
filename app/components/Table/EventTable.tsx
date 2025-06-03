@@ -120,14 +120,14 @@ const EventTable = ({
                     Object.keys(interest) as Array<keyof typeof event.interests>
                   ).reduce(
                     (acc, key) => {
-                      if (event.interests?.[key]) {
+                      if (event?.interests?.[key]) {
                         delete acc[key];
                       } else {
                         acc[key] = interest[key];
                       }
                       return acc;
                     },
-                    { ...event.interests }
+                    { ...event?.interests }
                   )
                 : {},
             };

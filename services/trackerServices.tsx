@@ -210,7 +210,7 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" && '/similar'}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(
@@ -228,7 +228,7 @@ export const useTrackerServices = () => {
     // console.log(adaptedParams);
       const activeTab= !params?isEventeli?"business":"active":params;
       const response:any= await api.request(
-        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" && '/similar'}?type=${activeTab}`,
+        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?type=${activeTab}`,
         {
           method: "GET",
           signal: abortSignal,
@@ -293,11 +293,11 @@ export const useTrackerServices = () => {
         )
     }
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
-      console.log(trackerType);
+      console.log(type);
       const eventType = type;
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
-          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION" && '/similar'}/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
+          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION" ? '/similar':""}/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
@@ -328,7 +328,7 @@ export const useTrackerServices = () => {
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
       // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
-      const response: OriginalResponse | undefined = await api.request(type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+      const response: OriginalResponse | undefined = await api.request(type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION"?"/similar":""}?${searchParams}`, {
         method: "GET",
       });
       
