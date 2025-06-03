@@ -1581,7 +1581,7 @@ console.log(eventSuggestion);
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className={`${type==="T_CUSTOM"?"hidden":"flex"} flex-col gap-2 w-full`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
+  <div ref={scrollableDivRef} className={`${(type==="T_CUSTOM" && isMobile)?"hidden":"flex"} flex-col gap-2 w-full`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
