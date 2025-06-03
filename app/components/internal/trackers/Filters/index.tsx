@@ -1513,7 +1513,7 @@ return (
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
+  <div ref={scrollableDivRef} className={`${(type==="T_CUSTOM" && isMobile)?"hidden":"flex"} flex-col gap-2 w-full`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
@@ -1539,7 +1539,7 @@ return (
     </div>
     <div className={`flex gap-2 flex-col items-end ${(isCollapsed || isMobile) ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? '' : ''} px-6 md:px-0 mb-6 md:mb-0`}>
     <div
-      className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} block`}
+      className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`}
       style={{
         border:
           isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
