@@ -145,7 +145,8 @@ export default function EventAccordion({ source, trackerId, view}: EventListProp
   } = useIntelData(
     trackerId || "",
     events?.length > 0 ? events : [],
-    "past"
+    "past",
+    query.type
   );
   const mapping = {
     rating: "rating",

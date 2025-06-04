@@ -4,13 +4,14 @@ import { useAuthContext } from "@/context/auth";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
-export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null) => {
+export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null, trackerType?:string) => {
   const {isTentimesUser} = useAuthContext();
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
-
+  console.log("trackerType", trackerType);
+  
   useEffect(() => {
     if (events?.length > 0 && !isEventeli) {
       const fetchIntelData = async () => {
@@ -25,7 +26,7 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
           setLoading(false);
         }
       };
-      if(isTentimesUser && trackerId && trackerId.length > 0)
+      if(isTentimesUser && trackerId && trackerId.length > 0 && trackerType!=="T_EVENT_PARTICIPATION")
       fetchIntelData();
     }
   }, [events, trackerId]);

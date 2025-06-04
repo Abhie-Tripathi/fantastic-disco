@@ -33,6 +33,7 @@ interface FilterContentProps {
   searchHandler?: () => void;
   closeHandler?: (value: boolean) => void;
   refs?: any;
+  trackerType?: string;
 }
 
 const FilterContent = ({
@@ -43,6 +44,7 @@ const FilterContent = ({
   searchHandler,
   closeHandler,
   refs,
+  trackerType
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();

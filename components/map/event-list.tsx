@@ -562,7 +562,8 @@ function EventList({
   } = useIntelData(
     trackerId || "",
     events?.length > 0 ? events : [],
-    eventType || ""
+    eventType || "",
+    searchParams.get("type")||""
   );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;

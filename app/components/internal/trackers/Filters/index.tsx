@@ -6,6 +6,7 @@ import { ArrowLeft, Filter, LayoutGrid } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Event } from "@/types/events";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
@@ -90,6 +91,8 @@ import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -390,7 +393,7 @@ const templates = [
         example: "facebook.com",
       }
     ],
-    isUploadEnable: true,
+    isUploadEnable: false,
   },
   {
     name: "T_SOCIAL_CAUSE",
@@ -502,7 +505,7 @@ const Pages = () => {
 const stepsConfig =[
     {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
       ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
-      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":type==="T_EVENT_PARTICIPATION"?"Enter one or more event names to generate a tracker of similar events, industry trends, and strategic opportunities.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
     {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
     {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
     {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
@@ -517,7 +520,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP" || type==="T_EVENT_PARTICIPATION")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -561,23 +564,6 @@ const stepsConfig =[
     setWebsites(urls);
     setOrg(orgNames);
     }
-    else if (type === "T_EVENT_PARTICIPATION") {
-      console.log(customData);
-
-      const lastEntry = customData.length > 0 ? Object.values(customData[0])[0] : "";
-
-      // if (typeof lastEntry === 'string' && lastEntry.trim() !== '') {
-      //   setEventSuggestion(prev => {
-      //     const alreadyExists = prev.find(entry => entry === lastEntry);
-
-      //     if (alreadyExists) {
-      //       return prev; 
-      //     }
-      //     return [...prev, lastEntry]; 
-      //   });
-      // }
-    }
-
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
         const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
@@ -709,7 +695,6 @@ const stepsConfig =[
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-        console.log(temp);
 
         presetData.push(temp);
       })
@@ -717,8 +702,8 @@ const stepsConfig =[
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setLocalFilter("includeKeywords", presetItem?.data?.[0]?.join(","));
-      setLocalFilter("excludeKeywords", presetItem?.data?.[1]?.join(","))
+      setLocalFilter("includeKeywords", presetItem?.data?.includeKeywords?.join(","));
+      setLocalFilter("excludeKeywords", presetItem?.data?.excludeKeywords?.join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -849,6 +834,10 @@ const stepsConfig =[
         setIsCreating(false);
         setIsMandatory(true);
         return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
       }
       else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
@@ -936,6 +925,10 @@ const stepsConfig =[
       // console.log(formData);
       
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1160,17 +1153,14 @@ const stepsConfig =[
         setCustomData(presentCustomData);
       }
       if (type === "T_EVENT_PARTICIPATION") {
-        // console.log(1111111111111);
-        let updatedData = [];
-        editData?.filterValues?.eventIdsFilter?.map((item) => {
-          console.log("item basic:", Object.values(item)[0]?.basic);
-          updatedData.push({ "Event Name": `${Object.values(item)[0]?.basic?.name}, ${Object.values(item)[0]?.basic?.eventLocation?.cityName}, ${Object.values(item)[0]?.basic?.eventLocation?.countryName}, ${Object.values(item)[0]?.basic?.startDateTime}, ${Object.values(item)[0]?.basic?.endDateTime}` });
+        let updatedData: { "Event Name": string }[] = [];
+        editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
+          const event = Object.values(item)[0];
+          updatedData.push({ "Event Name": `${event?.basic?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.startDateTime}, ${event?.basic?.endDateTime}` });
         });
         setEventSuggestion(editData?.filterValues?.eventIds);
-        console.log(editData?.filterValues?.eventIds);
 
         setCustomData(updatedData);
-        // console.log(Object.values(editData?.filterValues?.eventIdsFilter[0])[0]?.basic);
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
@@ -1353,12 +1343,10 @@ const stepsConfig =[
   }, [inputValues])
   const [selected, setSelected] = useState(false);
   const addCompany = (id: number, val: any) => {
-    console.log(eventSuggestion, id);
 
     if (type === "T_EVENT_PARTICIPATION") {
       setEventSuggestion((prev: string[]) => {
-        const alreadyExists = prev.find(entry => entry === id.toString());
-        console.log("already exist", alreadyExists);
+        const alreadyExists = prev.find(entry => entry === id.toString())
 
         if (alreadyExists) {
           setInputValues({});
@@ -1385,7 +1373,6 @@ const stepsConfig =[
       }
     }
   }
-  console.log(inputValues);
 
   useEffect(() => {
     if (selected) {
@@ -1434,7 +1421,7 @@ useEffect(()=>{
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
-console.log(type);
+
 const [del, setDel] = useState(false);
 const closeShareModal = () => {
   setDel(false);
@@ -1645,23 +1632,71 @@ console.log(eventSuggestion);
           </div>
           <div className="flex gap-1">
           
-          <Button
-                    variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    onClick={handleShowTemplate}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <LayoutGrid height="15px" width="15px" />
-                    {" "}Pre-sets
-          </Button>
-          <Button
-                  variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    // size="sm"
-                    onClick={handleUploadEnable}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <Share height="15px" width="15px" />
-                    {" "}Upload
-          </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 h-9"
+                             onClick={handleShowTemplate}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <LayoutGrid height="15px" width="15px" />
+                                     {" "}Pre-sets
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
+                             // size="sm"
+                             onClick={handleUploadEnable}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <Share height="15px" width="15px" />
+                                     {" "}Upload
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
           </div>
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
@@ -1911,7 +1946,7 @@ console.log(eventSuggestion);
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setEventSuggestion} eventSuggestion={eventSuggestion} />
     </>
   ) : (
     <div className={styles.emptyTableData}>
@@ -1966,8 +2001,8 @@ console.log(eventSuggestion);
           </div>
           <div className="flex gap-1.5">
           {!isEventeli &&
-          <div ref={isMobile?refs.presetRef:null}>
-          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
+          <div ref={(isMobile && template?.isUploadEnable)?refs.presetRef:null}>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)} disabled={!template?.isUploadEnable}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
           </div>
@@ -2038,8 +2073,8 @@ console.log(eventSuggestion);
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
         }
                         </div>
 

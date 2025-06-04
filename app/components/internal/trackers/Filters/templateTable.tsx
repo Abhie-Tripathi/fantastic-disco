@@ -5,15 +5,14 @@ import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
 
 interface Props {
-  eventSuggestion?: any;
-  setEventSuggestion?:any;
+  eventSuggestion?: string[];
+  setEventSuggestion?: (value: string[]) => void;
   customData: any[];
   handleCustomData: (data: any) => void;
   presetName?: string;
 }
 
 const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion }: Props) => { 
-  console.log(customData, "customData in TemplateTable");
   
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
@@ -29,12 +28,14 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
     }
   };
 
-  const removeCustomData = () => {
+   const removeCustomData = () => {
     const filteredData = customData.filter(
       (item, index) => !selectedIdArray.includes(index)
     );
+    if(eventSuggestion && setEventSuggestion){
     const filteredEventSuggestion = eventSuggestion.filter((item: any, i: number) => !selectedIdArray.includes(eventSuggestion.length-i-1));
     setEventSuggestion(filteredEventSuggestion);
+    }
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };
@@ -43,8 +44,10 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
     if (selectedIdArray.length == customData.length) setSelectedIdArray([]);
     else setSelectedIdArray(customData.map((_, index) => index));
   };
- const deleteSingleEntry = (index: number) => {
+  const deleteSingleEntry = (index: number) => {
     const filteredData = customData.filter((_, i) => i !== index);
+    if(eventSuggestion && setEventSuggestion)
+    setEventSuggestion(eventSuggestion.filter((item: any, i: number) => i !== eventSuggestion.length-index-1));
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };

@@ -952,6 +952,7 @@ const Filters = ({
           <FilterContent
             source={source}
             type={type}
+            trackerType={path?.get("type")|| ""}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}

@@ -5,7 +5,6 @@ import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
 import { formatEventDates } from "@/utils/dateFormat";
-import { Calendar, Location } from "geist-icons";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
 import { Event } from '@/types/events';
@@ -68,8 +67,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 
                 setEventSuggestion(data.companies);
               }else if(type === "T_EVENT_PARTICIPATION"){
-                console.log("data.events",data.events);
-                
                 setEventSuggestion(data.events)
               }
               else
@@ -172,7 +169,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   return (
         <>
          {searchInput.length > 0 && isOpen && (
-  <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-154px] md:top-[40px]`}
+  <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-304px] md:top-[40px]`}
 >
     {restructureData && restructureData.length > 0  ? (
       restructureData.map((item:any) => (
