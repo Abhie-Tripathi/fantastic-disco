@@ -105,6 +105,7 @@ export const TrackerContextProvider = ({ children }: any) => {
     storageKey: "walkthroughCompleted",
     currentPath: currentPath, 
   });
+  // console.log("refs",refs);
   
   
   useEffect(() => {

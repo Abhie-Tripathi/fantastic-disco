@@ -156,11 +156,7 @@ const EventTrends = () => {
   const { getFilterValue } = useFilterState();
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const metric = getFilterValue("columns") as
-    | "eventCount"
-    | "predictedAttendance"
-    | "inboundEstimate"
-    | "internationalEstimate";
+  const metric = getFilterValue("columns").split(",");
   const ViewTemplates = isEventeli ? geoViewTemplates : gtmViewTemplates;
 
   const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
@@ -494,14 +490,17 @@ const EventTrends = () => {
 
   const handleShare = () => {
     const currentUrl = window.location.href;
-    const url = currentUrl.replace("/internal/", "redirect=");
-
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(currentUrl);
     toast({
       title: "URL Copied",
       description: "Link copied to clipboard",
       duration: 2000,
     });
+  };
+
+  const handleToggleSavedTrends = () => {
+    if (showFilters) setShowFilters(false);
+    setShowSavedTrends(!showSavedTrends);
   };
 
   return (
@@ -990,7 +989,12 @@ const EventTrends = () => {
                 <span className="text-primary text-xs font-medium">
                   Trends Visualisations
                 </span>
-                <Badge variant="default" className="text-xs font-medium px-2 py-0.5 h-5">Beta</Badge>
+                <Badge
+                  variant="default"
+                  className="text-xs font-medium px-2 py-0.5 h-5"
+                >
+                  Beta
+                </Badge>
               </div>
               <button
                 className="text-primary text-xs font-medium"
@@ -1052,7 +1056,7 @@ const EventTrends = () => {
                 </Select>
                 {/* Bookmark Button */}
                 <button
-                  onClick={() => setShowSavedTrends(!showSavedTrends)}
+                  onClick={handleToggleSavedTrends}
                   className="relative bg-white rounded-lg border border-gray-200 shadow px-2 py-2 flex items-center justify-center"
                 >
                   <Bookmark className="w-5 h-5 text-primary" />
@@ -1189,8 +1193,21 @@ const EventTrends = () => {
                   Apply Filters
                 </button>
               )}
-              <div className="w-full">
-                <SaveTrend searchParams={searchParams} isLoading={isLoading} />
+              <div className="flex gap-2 flex-col">
+                {!showFilters && (
+                  <SaveTrend
+                    searchParams={searchParams}
+                    isLoading={isLoading}
+                  />
+                )}
+                <Button
+                  variant="outline"
+                  className="w-full h-10"
+                  onClick={handleShare}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share Trend
+                </Button>
               </div>
             </div>
           </>
@@ -1282,7 +1299,7 @@ const EventTrends = () => {
                           Browse Templates
                         </Button>
 
-                        {/* <TooltipProvider>
+                        <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
@@ -1298,7 +1315,7 @@ const EventTrends = () => {
                               <p>Copy URL to clipboard</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider> */}
+                        </TooltipProvider>
                       </>
                     )}
                   </div>

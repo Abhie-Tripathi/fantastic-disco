@@ -20,9 +20,9 @@ const EventCount = ({ view }: { view: string }) => {
   });
 
   const label: Record<string, string> = {
-    events: "Events Found",
-    people: "People Found",
-    companies: "Companies Found",
+    events: "Events",
+    people: "People",
+    companies: "Companies",
   };
 
   if (error) {

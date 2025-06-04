@@ -60,6 +60,7 @@ import {
   Filter,
   FilterX,
   Lock,
+  Save,
   UserSearch,
 } from "lucide-react";
 import Image from "next/image";
@@ -900,7 +901,9 @@ const Filters = ({
       )}
       <div
         className={`overflow-y-auto flex flex-col ${
-          source !== "tracker" ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]" : "h-full"
+          source !== "tracker"
+            ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]"
+            : "h-full"
         }`}
       >
         {source !== "tracker" && (
@@ -979,6 +982,17 @@ const Filters = ({
               <Button onClick={searchHandler} className="w-full h-10">
                 Apply Filters
               </Button>
+              {filterCount > 0 && (
+                <Button
+                  id="save-search-btn"
+                  onClick={createTrackerHandler}
+                  variant="outline"
+                  className="w-full h-10"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Search
+                </Button>
+              )}
             </div>
           </div>
         )}

@@ -146,7 +146,7 @@ const gtmFilters: {
         {
           id: "estimatedExhibitors",
           component: "EstimatedExhibitorsSelector",
-          enabled: !isEventeli,
+          enabled: true,
         },
         {
           id: "eventRanking",
@@ -162,7 +162,7 @@ const gtmFilters: {
         {
           id: "audienceSpread",
           component: "AudienceZoneSatusSelector",
-          enabled: !isEventeli,
+          enabled: true,
         },
         {
           id: "designations",
@@ -417,7 +417,7 @@ const geoFilters: {
         {
           id: "estimatedExhibitors",
           component: "EstimatedExhibitorsSelector",
-          enabled: !isEventeli,
+          enabled: true,
         },
         {
           id: "eventAnalytics",

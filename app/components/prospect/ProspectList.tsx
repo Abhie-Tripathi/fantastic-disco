@@ -303,7 +303,7 @@ export const ProspectList: React.FC = () => {
             }).format(count)}
           </Badge>
           <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
-            Companies Found
+            Companies
           </p>
         </div>
         <div className="flex justify-center"></div>
