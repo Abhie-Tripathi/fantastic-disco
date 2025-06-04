@@ -108,7 +108,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
+            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div
@@ -257,7 +257,7 @@ const Events = () => {
                 searchHandler={searchHandler}
               />
               <div className="w-full sticky bottom-0 bg-background z-10">
-                <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+                <div className="p-4 pt-2 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
                   <div className="flex items-center justify-between mb-2">
                     <Button
                       variant="ghost"

@@ -38,7 +38,7 @@ export default function Alerts() {
 
   useEffect(() => {
     const fetchAlertCounts = async () => {
-      if (!inTransition) return;
+      if (inTransition) return;
       setIsLoadingCounts(true);
       try {
         const alertCounts = (await getEventsCount({
@@ -65,7 +65,7 @@ export default function Alerts() {
 
   useEffect(() => {
     const fetchAlerts = async () => {
-      if (!inTransition) return;
+      if (inTransition) return;
       setIsLoading(true);
       try {
         const filteredParams = new URLSearchParams(searchParams.toString());
@@ -102,6 +102,8 @@ export default function Alerts() {
   }, [searchParams, offset, itemsPerPage]);
 
   if (!alerts || !alerts.events || alerts.events.length === 0) return null;
+
+  if(isLoading || inTransition) return
 
   const totalPages = Math.ceil(alerts.count / itemsPerPage);
   const currentPage = Math.floor(offset / itemsPerPage) + 1;

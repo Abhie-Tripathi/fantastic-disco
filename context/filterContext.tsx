@@ -112,9 +112,9 @@ export interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
   eventType?: string;
-   //Preset Filters
-   presetCountry?: string;
-   presetCategory?: string;
+  //Preset Filters
+  presetCountry?: string;
+  presetCategory?: string;
   // Coordinate Filters
   eventId?: string;
   type?: string;
@@ -189,8 +189,8 @@ type FilterContextType = {
     newValue: string
   ) => void;
   enabledFilters: EventFilterData | null;
-  showFetchedData:any;
-  setShowFetchedData:(val:boolean) => void;
+  showFetchedData: any;
+  setShowFetchedData: (val: boolean) => void;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -204,16 +204,16 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const [morphedData, setMorphedData] = useState(searchFilters);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
-  const [suggestion , setSuggestion] = useState<number>(0);
+  const [suggestion, setSuggestion] = useState<number>(0);
   const [localFilters, setLocalFilters] = useState<Filters>({});
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
   const getCompanySuggestion = () => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {};
     }
-  
+
     try {
       const item = localStorage.getItem("companySuggestion");
       return item ? JSON.parse(item) : {};
@@ -228,12 +228,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       Object.entries(filters).filter(([_, value]) => value !== "")
     ) as Filters;
   }, []);
-    const [loadingState, setLoadingState] = useState({
-      isKeywordsLoading:  aiStatus?.keywordData?.status === 1 || false,
-      isCompetitorsLoading: aiStatus?.competitorData?.status===1 || false,
-      isPeopleLoading: aiStatus?.companyData?.status===1 || false,
-    });
-    const [templateView, setTemplateView] = useState(false);
+  const [loadingState, setLoadingState] = useState({
+    isKeywordsLoading: aiStatus?.keywordData?.status === 1 || false,
+    isCompetitorsLoading: aiStatus?.competitorData?.status === 1 || false,
+    isPeopleLoading: aiStatus?.companyData?.status === 1 || false,
+  });
+  const [templateView, setTemplateView] = useState(false);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
       const params = {
@@ -387,7 +387,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
         const currentPathname = window.location.pathname;
         const searchString = params.toString();
-        
+
         // Save to recent searches
         const searchEvent = {
           date: new Date().toISOString(),
@@ -396,11 +396,21 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
           params: Object.fromEntries(params.entries()),
         };
 
-        recentSearchService.addToSearchHistory(
-          searchString, // Using the search string as the query
-          searchEvent,
-          filteredFilters // Passing the filters as metadata
-        );
+        const isTrends = currentPathname.includes("/internal/trends");
+
+        if (isTrends) {
+          recentSearchService.addToTrendsHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        } else {
+          recentSearchService.addToSearchHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        }
 
         router.push(`${currentPathname}?${searchString}`, {
           scroll: false,
@@ -456,7 +466,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
-      suggestion, 
+      suggestion,
       setSuggestion,
       showFetchedData,
       setShowFetchedData,
