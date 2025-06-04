@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { isEventeli } from "@/config";
 
 type VideoModalProps = {
   source: string;
@@ -16,7 +17,7 @@ type VideoModalProps = {
 
 const cdnLink = "https://c1.10times.com";
 
-const videoLinks: Record<string, string> = {
+const gtmVideoLinks: Record<string, string> = {
   coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
   eventSearch: cdnLink + "/walkthrough/event-search.mp4",
   companies: cdnLink + "/walkthrough/company-search.mp4",
@@ -26,8 +27,20 @@ const videoLinks: Record<string, string> = {
   search: cdnLink + "/walkthrough/search-combined.mp4",
 };
 
+const geoVideoLinks: Record<string, string> = {
+    coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
+    eventSearch: cdnLink + "/walkthrough/event-search.mp4",
+    companies: cdnLink + "/walkthrough/company-search.mp4",
+    // trackers: cdnLink + "/walkthrough/tracker-gtm.mp4",
+    trends: cdnLink + "/walkthrough/trends-gtm.mp4",
+    intelScore: cdnLink + "/walkthrough/intel-score.mp4",
+    search: cdnLink + "/walkthrough/search-combined.mp4",
+  };
+
 const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
+
+  const videoLinks = isEventeli ? geoVideoLinks : gtmVideoLinks;
 
   const handleVideoModal = () => {
     setShowVideoModal(true);

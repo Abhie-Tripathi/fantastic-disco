@@ -159,7 +159,7 @@ const EventTable = ({
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else return <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />;
   }
 
   if (events.length === 0) {
