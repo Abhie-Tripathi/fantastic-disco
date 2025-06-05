@@ -4,6 +4,8 @@ import styles from "./tooltip.module.css";
 import LeftArrow from "/public/internal/go_to_circle.svg";
 import Image from "next/image";
 import VideoModal from "@/components/layout/videoModal";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface CustomTooltipProps extends TooltipRenderProps {
   totalSteps: number;
@@ -25,8 +27,10 @@ const Tooltip = ({
   <div className={styles.container} {...tooltipProps}>
     <nav>
       <h2>{step.title}</h2>
-      {index !== totalSteps - 1 && <button {...skipProps}>Skip</button>}
-      {index === totalSteps - 1 && <button {...closeProps}>Close</button>}
+      {index !== totalSteps - 1 && <Button {...skipProps} variant="outline"
+    className="flex items-center justify-center gap-1 p-2 w-7 h-7 rounded-full"><X className="text-[var(--secondary-text-color)]" width={14} height={14} /></Button>}
+      {index === totalSteps - 1 && <Button {...closeProps} variant="outline"
+    className="flex items-center justify-center gap-1 p-2 w-7 h-7 rounded-full"><X className="text-[var(--secondary-text-color)]" width={14} height={14} /></Button>}
     </nav>
     <div className={styles.content}>{step.content}</div>
     <footer>
@@ -49,16 +53,18 @@ const Tooltip = ({
       )}
       {index > 0 && (
         <button {...backProps}>
-          <Image src={LeftArrow} alt="left arrow" />
+          {/* <Image src={LeftArrow} alt="left arrow" /> */}
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]">Prev</Button>
         </button>
       )}
       {continuous && index < totalSteps - 1 && (
         <button {...primaryProps}>
-          <Image
+          {/* <Image
             src={LeftArrow}
             alt="left arrow"
             style={{ transform: "rotate(180deg)" }}
-          />
+          /> */}
+          <Button>Next</Button>
         </button>
       )}
     </footer>
