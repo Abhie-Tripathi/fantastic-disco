@@ -388,7 +388,7 @@ const templates = [
       {
         img: Url,
         type: "text",
-        placeholder: "Event Name",
+        placeholder: "Search By Event Name",
         required: true,
         example: "facebook.com",
       }
@@ -1153,10 +1153,10 @@ const stepsConfig =[
         setCustomData(presentCustomData);
       }
       if (type === "T_EVENT_PARTICIPATION") {
-        let updatedData: { "Event Name": string }[] = [];
+        let updatedData: { "Search By Event Name": string }[] = [];
         editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
           const event = Object.values(item)[0];
-          updatedData.push({ "Event Name": `${event?.basic?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.startDateTime}, ${event?.basic?.endDateTime}` });
+          updatedData.push({ "Search By Event Name": `${event?.basic?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.startDateTime}, ${event?.basic?.endDateTime}` });
         });
         setEventSuggestion(editData?.filterValues?.eventIds);
 

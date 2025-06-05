@@ -92,7 +92,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
               </th>
               {customData?.length > 0 && Object?.entries(customData[0]).map(([entryKey, value]) => (
                 <th key={entryKey} className={styles.dataColoumn}>
-                  {entryKey as string}
+                  {entryKey==="Search By Event Name"?"Event Name":entryKey as string}
                 </th>
               ))}
               <th></th>
