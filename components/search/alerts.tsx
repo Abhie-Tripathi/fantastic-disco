@@ -34,13 +34,12 @@ export default function Alerts() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCounts, setIsLoadingCounts] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const { inTransition } = useTransition();
 
   useEffect(() => {
     const fetchAlertCounts = async () => {
-      if (inTransition) return;
       setIsLoadingCounts(true);
       try {
+        if (!(searchParams.has("active_gte") || searchParams.has("active_lte"))) return;
         const alertCounts = (await getEventsCount({
           ...Object.fromEntries(searchParams.entries()),
           eventTypes: "alert",
@@ -61,13 +60,13 @@ export default function Alerts() {
     };
 
     fetchAlertCounts();
-  }, [searchParams, inTransition]);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchAlerts = async () => {
-      if (inTransition) return;
       setIsLoading(true);
       try {
+        if (!(searchParams.has("active_gte") || searchParams.has("active_lte"))) return;
         const filteredParams = new URLSearchParams(searchParams.toString());
         filteredParams.set("eventTypes", "alert");
         filteredParams.set("view", "list");
@@ -103,7 +102,7 @@ export default function Alerts() {
 
   if (!alerts || !alerts.events || alerts.events.length === 0) return null;
 
-  if(isLoading || inTransition) return
+  // if(isLoading || inTransition) return
 
   const totalPages = Math.ceil(alerts.count / itemsPerPage);
   const currentPage = Math.floor(offset / itemsPerPage) + 1;
