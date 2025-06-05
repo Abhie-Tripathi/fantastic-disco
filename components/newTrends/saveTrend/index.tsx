@@ -107,7 +107,7 @@ const SaveTrendModal = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full h-10" disabled={isLoading}>
+        <Button variant="outline" className="w-full h-10 text-primary border-primary" disabled={isLoading}>
           <Save className="w-4 h-4 mr-2" />
           Save Trend
         </Button>
