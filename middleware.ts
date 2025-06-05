@@ -10,11 +10,11 @@ export function middleware(request: NextRequest) {
     ? `${process.env.NEXT_COOKIE_PREFIX}-token`
     : "dev-token";
   const cookie = request.cookies.get(key)?.value;
- 
+
   const pathName = request.nextUrl.pathname + request.nextUrl.search || "";
 
   if (!cookie) {
-    if (pathName) {
+    if (pathName && pathName != "/") {
       return NextResponse.redirect(
         new URL(`/signin?redirect=${encodeURIComponent(pathName)}`, request.url)
       );
