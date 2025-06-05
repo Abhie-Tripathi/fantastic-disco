@@ -2,9 +2,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // if (process.env.IS_LOCAL) {
-  //   return NextResponse.next();
-  // }
+  if (process.env.IS_LOCAL) {
+    return NextResponse.next();
+  }
 
   const key = process.env.NEXT_COOKIE_PREFIX
     ? `${process.env.NEXT_COOKIE_PREFIX}-token`
