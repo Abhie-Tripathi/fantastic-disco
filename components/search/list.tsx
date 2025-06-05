@@ -255,7 +255,7 @@ export default function EventAccordion({ source, trackerId, view}: EventListProp
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else return <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />;
   }
 
   if (
