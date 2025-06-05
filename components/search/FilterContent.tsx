@@ -65,6 +65,9 @@ const FilterContent = ({
             defaultValue={[filters[type][0]?.id]}
           >
             {filters[type].map((section: FilterSection) => (
+              <>
+              {(section.id==="advanced-details" && trackerType==="T_EVENT_PARTICIPATION")&&
+                      <div className="ml-1 font-bold text-[12px]">* Filters restricted for this template</div>}
               <AccordionItem
                 key={section.id}
                 value={section.id}
@@ -120,6 +123,7 @@ const FilterContent = ({
                   </div>
                 </AccordionContent>
               </AccordionItem>
+              </>
             ))}
           </Accordion>
         </div>

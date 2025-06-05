@@ -46,7 +46,7 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
           onClick={handleVideoModal}
         >
           <Play className="h-3 w-3" />
-          Quick Video Walkthrough
+          Video Walkthrough
         </div>
       ) : (
         <TooltipProvider>
