@@ -3,8 +3,12 @@ import Image from "next/image";
 import ZeroStateIcon from "@/public/zero_state.svg";
 import Link from "next/link";
 import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 const ZeroState = ({ title, text, errorStatusCode }: { title?: string, text?: string, errorStatusCode?: number; }) => {
+  const handleUpgradeClick = () => {
+    GAEvent("", "Plan Upgrade", "Research", `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`);
+  }
   return (
     <div className="flex flex-col items-center justify-center gap-4 [color:var(--primary-color)] font-medium p-6 min-h-[300px] animate-fadeIn">
       {title && (
@@ -23,6 +27,7 @@ const ZeroState = ({ title, text, errorStatusCode }: { title?: string, text?: st
                   isEventeli ? "geo" : "gtm"
                 }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
                 className="text-primary cursor-pointer font-medium"
+                onClick={handleUpgradeClick}
               >
                 Please Upgrade.
               </Link>
