@@ -46,20 +46,22 @@ export function useApi<T>() {
           ...config,
         });
 
-        if (response.data?.data) {
+        if ("data" in response.data) {
           setState({
-            data: response.data.data as unknown as T,
+            data: response.data as unknown as T,
             error: null,
             isLoading: false,
           });
           return response.data.data;
-        } else if (response.data?.error) {
+        } else if ("error" in response.data) {
+          const error = response.data.error;
           setState({
             data: undefined,
             error: response.data.error,
             isLoading: false,
           });
-          throw response.data.error;
+          console.log("i am here");
+          throw error;
         } else {
           const unknownError = {
             issues: [],
@@ -78,18 +80,17 @@ export function useApi<T>() {
           });
           throw error;
         }
-
         setState({
           data: undefined,
           error: {
             message:
-              "We're currently experiencing technical difficulties. Please try again in a few minutes.",
+              "We’re currently experiencing technical difficulties. Please try again in a few minutes.",
           } as any,
           isLoading: false,
         });
         throw {
           message:
-            "We're currently experiencing technical difficulties. Please try again in a few minutes.",
+            "We’re currently experiencing technical difficulties. Please try again in a few minutes.",
         };
       }
     },
