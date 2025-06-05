@@ -446,7 +446,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     
     return {
       eventTypes: {
-        isEnabled: Boolean(data?.eventTypes?.enabledValue?.length),
+        isEnabled: data?.eventTypes?.enabledValue?.length ?? true,
         options: Object.fromEntries(
             Object.entries(searchFilters?.eventTypes?.options ?? {}).map(([key, group]) => {
               const updatedGroup = group.map((format) => ({
@@ -473,7 +473,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       },
   
       categories: {
-        isEnabled: Boolean(data?.categories?.enabledValue?.length),
+        isEnabled: data?.categories?.enabledValue?.length ?? true,
         options: searchFilters?.categories?.options?.map((category) => ({
           ...category,
           isEnabled: data?.categories?.enabledValue?.some(
@@ -483,7 +483,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventStatus: {
-      isEnabled: Boolean(data?.status?.enabledValue?.length),
+      isEnabled: data?.status?.enabledValue?.length ?? true,
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled:
@@ -502,7 +502,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventEntries: {
-      isEnabled: Boolean(data?.entryType?.enabledValue?.length),
+      isEnabled: data?.entryType?.enabledValue?.length ?? true,
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled:
@@ -572,7 +572,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     estimatedVisitors: {
-      isEnabled: Boolean(data?.eventSize?.enabledValue?.length),
+      isEnabled: data?.eventSize?.enabledValue?.length ?? true,
       options: searchFilters.estimatedVisitors.options.map((visitor) => {
         return {
           ...visitor,
