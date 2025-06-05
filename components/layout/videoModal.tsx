@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 type VideoModalProps = {
   source: string;
@@ -45,6 +46,7 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
 
   const handleVideoModal = () => {
     setShowVideoModal(true);
+    GAEvent("", "Video Walkthrough", `Opened`, `${isEventeli ? "geo" : "gtm"} | ${source} | ${variant}`);
   };
 
   if (!videoLinks[source]) {
