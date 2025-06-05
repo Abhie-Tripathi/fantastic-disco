@@ -291,6 +291,7 @@ export default function Navbar() {
                     </div>
                   </PopoverContent>
                 </Popover>
+                <VideoModal source={pathname.split("/")[2]} />
               </div>
             </>
           )}

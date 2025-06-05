@@ -1,3 +1,4 @@
+"use client";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
@@ -28,14 +29,14 @@ const gtmVideoLinks: Record<string, string> = {
 };
 
 const geoVideoLinks: Record<string, string> = {
-    coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
-    eventSearch: cdnLink + "/walkthrough/event-search.mp4",
-    companies: cdnLink + "/walkthrough/company-search.mp4",
-    // trackers: cdnLink + "/walkthrough/tracker-gtm.mp4",
-    trends: cdnLink + "/walkthrough/trends-gtm.mp4",
-    intelScore: cdnLink + "/walkthrough/intel-score.mp4",
-    search: cdnLink + "/walkthrough/search-combined.mp4",
-  };
+  coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
+  eventSearch: cdnLink + "/walkthrough/event-search.mp4",
+  companies: cdnLink + "/walkthrough/company-search.mp4",
+  // trackers: cdnLink + "/walkthrough/tracker-gtm.mp4",
+  trends: cdnLink + "/walkthrough/trends-gtm.mp4",
+  intelScore: cdnLink + "/walkthrough/intel-score.mp4",
+  search: cdnLink + "/walkthrough/search-combined.mp4",
+};
 
 const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -47,7 +48,6 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
   };
 
   if (!videoLinks[source]) {
-    console.log("path not found!!");
     return <></>;
   }
 
@@ -65,14 +65,12 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
         <TooltipProvider>
           <Tooltip delayDuration={0}>
             <TooltipTrigger>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="px-2 py-0"
+              <div
+                className="bg-secondary rounded-md px-2 h-8 inline-flex items-center"
                 onClick={handleVideoModal}
               >
                 <Play className="h-4 w-4" />
-              </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
               <p>Video Walkthrough</p>
