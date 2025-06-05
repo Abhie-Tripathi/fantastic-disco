@@ -5,10 +5,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from "@/public/trackerNullState.svg";
-import { Suspense, lazy } from "react";
-const Map = lazy(() => import("@/components/map"));
 import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
@@ -33,10 +29,8 @@ interface MyTrackersProps {
   trackerId: string;
   setSearchValue:any;
   hideTemplates: any;
-  eventType?: string;
-  locations?: string[];
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId, hideTemplates, setSearchValue, eventType, locations}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId, hideTemplates, setSearchValue}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
@@ -157,32 +151,18 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       </div>
           
         <div>
-        <div className="flex items-center p-6">
-            {/* <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
+        <div className="flex items-center justify-between pr-6">
+            <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
               <div className="font-medium">Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
               </span>
-            </div> */}
-          <div className="hidden sm:flex items-center gap-2 w-full">
-            <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden max-h-20 opacity-100 scale-y-100 w-full bg-white
-                `}
-            >
-              <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2">
-                <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
-                <input
-                  className="outline-none w-full bg-transparent"
-                  placeholder="Enter tracker name"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
             </div>
-            <Button className="h-[42px]" variant="default" onClick={()=>hideTemplates(false)}>Create</Button>
-            {/* <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
+            <div className="hidden sm:flex items-center gap-2">
+            <Button variant="default" onClick={()=>hideTemplates(false)}>Create</Button>
+            <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
-            </Button> */}
+            </Button>
             </div>
           </div>
           <div
@@ -211,45 +191,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
-            allTracker.map((item, id) => (
-            <div className="flex">
-            <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
-            <Suspense
-                        fallback={
-                          <div className="h-[300px] w-[100%] items-center justify-center">
-                            <Loading />
-                          </div>
-                        }
-                      >
-            <div className="h-[300px]">
-                          {!singleTrackerData && searchValue.length < 3 ? (
-                            <Loading />
-                          ) : !singleTrackerData ? (
-                            <NullState
-                              image={TrackerNullState}
-                              title="No tracker selected."
-                            />
-                          ) : (
-                            // <NullState image={TrackerNullState}  title="Some issue with map view."/>
-                            <Map
-                              isGlobal={true}
-                              source="tracker"
-                              eventType={eventType}
-                              searchParams="active"
-                              trackerId={singleTrackerData?.id || ""}
-                              trackerLoc={
-                                (locations?.length > 0 &&
-                                  locations?.join(",")) ||
-                                ""
-                              }
-                              trackerType={singleTrackerData?.type || ""}
-                            />
-                          )}
-                        </div>
-            </Suspense>
-            </div>
-            
-            ))}
+            allTracker.map((item, id) => <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>)}
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}
