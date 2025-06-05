@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { Badge } from "../ui/badge";
 import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";

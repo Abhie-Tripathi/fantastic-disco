@@ -13,7 +13,7 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
 import { ApiError } from "@/types/api";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { Buildings, Location } from "geist-icons";
 import { Filter, FilterX } from "lucide-react";
 import Image from "next/image";

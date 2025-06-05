@@ -51,7 +51,7 @@ import {
   morphToTrendsTableData,
   sortingTableData,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
 import {
   ArrowDown,

@@ -5,7 +5,7 @@ import { useTheme } from "@/context";
 import { useEventsService } from "@/services/eventsService";
 import { MapEvents } from "@/types/events";
 import { Event } from "@/types/events/events";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { Map, Marker } from "react-map-gl";
