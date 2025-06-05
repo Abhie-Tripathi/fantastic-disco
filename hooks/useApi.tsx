@@ -60,7 +60,6 @@ export function useApi<T>() {
             error: response.data.error,
             isLoading: false,
           });
-          console.log("i am here");
           throw error;
         } else {
           const unknownError = {
