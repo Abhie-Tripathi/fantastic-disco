@@ -2,19 +2,19 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  if (process.env.IS_LOCAL) {
-    return NextResponse.next();
-  }
+  // if (process.env.IS_LOCAL) {
+  //   return NextResponse.next();
+  // }
 
   const key = process.env.NEXT_COOKIE_PREFIX
     ? `${process.env.NEXT_COOKIE_PREFIX}-token`
     : "dev-token";
   const cookie = request.cookies.get(key)?.value;
- 
+
   const pathName = request.nextUrl.pathname + request.nextUrl.search || "";
 
   if (!cookie) {
-    if (pathName) {
+    if (pathName && pathName != "/") {
       return NextResponse.redirect(
         new URL(`/signin?redirect=${encodeURIComponent(pathName)}`, request.url)
       );
