@@ -72,7 +72,7 @@ const Research = ({ theme }: Props) => {
     };
 
     return (
-        <div className={`w-full h-auto bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden gap-[40px]`}
+        <div className={`w-full h-auto bg-cover bg-center border border-[#E6E6F9] dark:border-[#292929] rounded-xl flex items-end overflow-hidden gap-[40px]`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
             <div className={`m-5 gap-5 w-[60%] max-[1100px]:w-full flex flex-col`}>
                 <div className={`flex flex-col`}>
