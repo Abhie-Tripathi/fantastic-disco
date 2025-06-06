@@ -36,6 +36,7 @@ import { intelScore } from "@/types/trackers"
 import { Skeleton } from "../ui/skeleton";
 import { useAuthContext } from "@/context/auth"
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { useFilterContext } from "@/context/filterContext";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -367,7 +368,7 @@ const EventListItem = ({
   intelLoading?: boolean
 }) => {
   const {getFilterValue} = useFilterState();
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
