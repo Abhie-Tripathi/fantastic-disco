@@ -60,7 +60,7 @@ export default function EventEntrySelector({
   );
 
   const triggerContent = (
-    <span className="flex items-center gap-2">
+    <span className="flex items-center">
       {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
       <span className="mr-2">Event Entry</span>
       {selectedStatuses.length > 0 && (
