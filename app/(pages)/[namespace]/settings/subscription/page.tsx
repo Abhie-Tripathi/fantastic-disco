@@ -16,10 +16,10 @@ const Subscription = () => {
 
   const { membership, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
-  const formattedMembershipEndDate = format(
-    new Date("2026-01-01T00:00:00.000Z"),
-    "dd MMM, yyyy"
-  );
+//   const formattedMembershipEndDate = format(
+//     new Date("2026-01-01T00:00:00.000Z"),
+//     "dd MMM, yyyy"
+//   );
 
   const handleUpgradeClick = () => {
     window.open(
@@ -79,21 +79,21 @@ const Subscription = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-3 items-center">
+        {/* <div className="grid grid-cols-3 items-center">
           <div className="font-medium col-span-1">Next renewal date</div>
           <div className="flex col-span-1">
             <span className="text-sm font-semibold">
               {formattedMembershipEndDate}
             </span>
           </div>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-3 items-center">
           <div className="font-medium col-span-1">Payment related queries</div>
           <div className="flex col-span-1">
             <Link
               className="text-primary text-sm font-semibold"
-              href="mailto:someone@example.com"
+              href="mailto:be@whr.ai"
             >
               Contact Us
             </Link>
