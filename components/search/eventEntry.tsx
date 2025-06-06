@@ -17,16 +17,19 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LockClosedSmall } from "geist-icons";
 
 interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function EventEntrySelector({ variant = "popover" }: FlexibleComponentProps) {
+export default function EventEntrySelector({
+  variant = "popover",
+}: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const eventEntries = morphedData?.eventEntries?.options;
-  const enabled = morphedData?.eventEntries?.isEnabled || [];
+  const enabled = morphedData?.eventEntries?.isEnabled;
   const selectedStatuses = getLocalFilterValue("entryType")
     ?.split(",")
     ?.filter(Boolean);
@@ -39,7 +42,11 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
     setLocalFilter("entryType", newStatuses.join(","));
   };
 
-  const renderTriggerContent = (content: React.ReactNode, isOpen?: boolean, variant?: string) => (
+  const renderTriggerContent = (
+    content: React.ReactNode,
+    isOpen?: boolean,
+    variant?: string
+  ) => (
     <div className="flex items-center justify-between w-full">
       {content}
       {variant === "popover" && (
@@ -54,7 +61,8 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
 
   const triggerContent = (
     <span className="flex items-center gap-2">
-      Event Entry
+      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+      <span className="mr-2">Event Entry</span>
       {selectedStatuses.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedStatuses.length}
@@ -79,9 +87,7 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
             onCheckedChange={() => handleStatusToggle(eventEntry.id)}
             disabled={!eventEntry.isEnabled}
           />
-          <label htmlFor={eventEntry.id}>
-            {eventEntry.label}
-          </label>
+          <label htmlFor={eventEntry.id}>{eventEntry.label}</label>
         </div>
       ))}
     </div>
@@ -92,6 +98,7 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!enabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -100,7 +107,10 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
             {renderTriggerContent(triggerContent, isOpen, variant)}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -110,12 +120,16 @@ export default function EventEntrySelector({ variant = "popover" }: FlexibleComp
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="eventEntry" className="border rounded-md">
-        <AccordionTrigger className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}>
+        <AccordionTrigger
+          disabled={!enabled}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
+        >
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

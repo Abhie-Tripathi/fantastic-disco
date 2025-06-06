@@ -18,6 +18,7 @@ import { isEventeli } from "@/config";
 import { EventType } from "@/public/data/searchFilters";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LockClosedSmall } from "geist-icons";
 
 type EventGroupType = "social" | "business" | "unAttended";
 
@@ -165,6 +166,7 @@ export default function EventTypeSelector({
 
   const triggerContent = (
     <div className="flex items-center">
+      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
       <span className="mr-2">Event Type</span>
       {(selectedCategories.social.length > 0 ||
         selectedCategories.business.length > 0 ||
@@ -179,10 +181,14 @@ export default function EventTypeSelector({
   );
 
   const content = (
-    <div className={cn(
-      "p-4",
-      variant === "accordion" ? "grid grid-cols-1 gap-4" : "grid grid-cols-3 gap-4"
-    )}>
+    <div
+      className={cn(
+        "p-4",
+        variant === "accordion"
+          ? "grid grid-cols-1 gap-4"
+          : "grid grid-cols-3 gap-4"
+      )}
+    >
       {isEventeli && renderCategoryGroup("social")}
       {renderCategoryGroup("business")}
       {isEventeli && renderCategoryGroup("unAttended")}
@@ -194,6 +200,7 @@ export default function EventTypeSelector({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!enabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -209,10 +216,7 @@ export default function EventTypeSelector({
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-full max-w-lg p-0"
-          align="start"
-        >
+        <PopoverContent className="w-full max-w-lg p-0" align="start">
           {content}
         </PopoverContent>
       </Popover>
@@ -223,6 +227,7 @@ export default function EventTypeSelector({
     <Accordion type="single" collapsible>
       <AccordionItem value="eventType" className="border rounded-md">
         <AccordionTrigger
+          disabled={!enabled}
           className={cn(
             buttonVariants({ variant: "outline" }),
             "no-underline border-none justify-between px-3 py-5 text-base font-normal"
