@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { intelScore } from "@/types/trackers";
 import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
@@ -19,12 +20,14 @@ import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { Filters } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
+import IntelScore from "./IntelScore";
 import { groupedEventTypes } from "@/constants";
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthContext } from "@/context/auth";
 interface EventTableRowProps {
   event: Event;
   trackerId?: string;
@@ -35,6 +38,8 @@ interface EventTableRowProps {
   global?: string;
   view?: string;
   localFilters: Filters;
+  initialIntelScoreData?: intelScore;
+  intelLoading?: boolean;
 }
 
 function getForecastedStatus(data: any) {
@@ -89,7 +94,7 @@ function getOrdinalSuffix(number: number): string {
 }
 
 function formatExhibitorCount(value: string | number | null): string {
-  if (value === null || value === undefined) return "-";
+  if (value === "0-0" || value === null || value === undefined) return "-";
 
   const stringValue = String(value);
   const values = stringValue.split("-");
@@ -124,8 +129,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setInterest,
   view,
   global,
+  initialIntelScoreData,
+  intelLoading
 }) => {
+ 
+  const {isTentimesUser} = useFilterContext();
   const { getFilterValue } = useFilterState();
+  const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -139,7 +149,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill: type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY" ? "#646BDC" : (type === "T_PRODUCT_KEYWORDS") ? "#E99CD4" : "#9B86D4",
+    }
+  ];
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -298,23 +314,50 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.primaryEventType === "holiday" ? (
-            "-"
-          ) : (
-            event.basic.eventLocation?.venue?.name ||
-            (event.basic.format === "online" ? "Online" : "TBA")
-          )}
+          {event.basic.primaryEventType === "holiday"
+            ? Array.isArray(event.basic.eventLocation)
+              ? event.basic.eventLocation.map((loc) => loc.name).join(", ")
+              : event.basic.eventLocation?.name || "-"
+            : event.basic.format === "online"
+            ? "Online"
+            : Array.isArray(event.basic.eventLocation)
+            ? "-"
+            : event.basic.eventLocation?.locationType === "VENUE"
+            ? event.basic.eventLocation.name
+            : "TBA"}
         </div>
       </TableCell>
 
       {/* City Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.city?.name)}
+        {event.basic.primaryEventType === "holiday"
+          ? Array.isArray(event.basic.eventLocation)
+            ? event.basic.eventLocation
+                .map((loc) => loc.cityName)
+                .filter(Boolean)
+                .join(", ")
+            : displayValue(event.basic.eventLocation?.cityName)
+          : displayValue(
+              event.basic.eventLocation?.locationType === "CITY"
+                ? event.basic.eventLocation.name
+                : event.basic.eventLocation?.cityName
+            )}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation?.country?.name)}
+        {event.basic.primaryEventType === "holiday"
+          ? Array.isArray(event.basic.eventLocation)
+            ? event.basic.eventLocation
+                .map((loc) => loc.countryName)
+                .filter(Boolean)
+                .join(", ")
+            : displayValue(event.basic.eventLocation?.countryName)
+          : displayValue(
+              Array.isArray(event.basic.eventLocation)
+                ? "-"
+                : event.basic.eventLocation?.countryName
+            )}
       </TableCell>
 
       {/* Keywords Column - if enabled */}
@@ -348,20 +391,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <span className="flex items-center gap-1">
-                  {event.basic.primaryEventType === "holiday" 
+                  {event.basic.primaryEventType === "holiday"
                     ? event.basic.eventTypes[0]?.name
                     : event.basic.categories[0]?.name}
-                  {event.basic.primaryEventType === "holiday" 
-                    ? (event.basic.eventTypes.length > 1 && (
+                  {event.basic.primaryEventType === "holiday"
+                    ? event.basic.eventTypes.length > 1 && (
                         <span className="text-xs font-bold text-muted-foreground">
                           +{event.basic.eventTypes.length - 1}
                         </span>
-                      ))
-                    : (event.basic.categories.length > 1 && (
+                      )
+                    : event.basic.categories.length > 1 && (
                         <span className="text-xs font-bold text-muted-foreground">
                           +{event.basic.categories.length - 1}
                         </span>
-                      ))}
+                      )}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
@@ -451,7 +494,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.rankings) &&
         event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.trustScore !== null && event.insights?.trustScore !== 0 ? (
+            {event.insights?.trustScore !== null &&
+            event.insights?.trustScore !== 0 ? (
               event.insights?.trustChangePercentage > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
                   {event.insights?.trustScore}%
@@ -542,18 +586,17 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Maturity Column */}
-      {show.includes(Show.maturity) &&
-        event.advance?.maturity !== undefined && (
-          <TableCell className="text-center">
-            {event.advance?.maturity ? (
-              <span className="badge_primary capitalize">
-                {event.advance?.maturity}
-              </span>
-            ) : (
-              "-"
-            )}
-          </TableCell>
-        )}
+      {maturity && event.advance?.maturity !== undefined && (
+        <TableCell className="text-center">
+          {event.advance?.maturity ? (
+            <span className="badge_primary capitalize">
+              {event.advance?.maturity}
+            </span>
+          ) : (
+            "-"
+          )}
+        </TableCell>
+      )}
 
       {/* Impact Score Column */}
       {/* {show.includes(Show.scores) &&
@@ -674,7 +717,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser ?
               <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:
+               <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
                   zIndex: 0,
@@ -699,6 +757,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   }
                 </span>
               </TableCell>
+              }
             </>
           )}
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
@@ -733,6 +792,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser?
+             <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:  
               <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
@@ -755,7 +829,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     "speakerPersonAssociationPercentage"
                   )[0] ?? "-"}
                 </span>
-              </TableCell>
+              </TableCell>}
             </>
           )}
           {type === "T_COMPETITOR" && view !== "bookmarked" && (
@@ -794,6 +868,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
+              {isTentimesUser?
+              <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-25 rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:    
               <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
@@ -816,7 +905,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     "competitorPercentage"
                   )[0] ?? "-"}
                 </span>
-              </TableCell>
+              </TableCell>}
             </>
           )}
           {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
@@ -844,8 +933,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-
-              <TableCell
+            {isTentimesUser?
+            <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>
+            : <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
                   zIndex: 0,
@@ -876,7 +979,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
                   return "-";
                 })()}
-              </TableCell>
+              </TableCell>}
+            
             </>
           )}
         </>

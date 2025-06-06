@@ -51,16 +51,8 @@ export const DetailMapComponent = ({
     startDate: string;
     endDate: string;
   }>({ startDate: startDateTime, endDate: endDateTime });
-  const latitude =
-    venueLocation?.venue?.latitude ??
-    venueLocation?.city?.latitude ??
-    venueLocation?.state?.latitude ??
-    "";
-  const longitude =
-    venueLocation?.venue?.longitude ??
-    venueLocation?.city?.longitude ??
-    venueLocation?.state?.longitude ??
-    "";
+  const latitude = venueLocation?.latitude ?? "";
+  const longitude = venueLocation?.longitude ?? "";
 
   useMemo(() => {
     const generateEventDates = (
@@ -226,7 +218,7 @@ export const DetailMapComponent = ({
           ? typeOfEvent !== "online" && (
               <div className="flex justify-between border-t-2 pt-4">
                 <Text color="secondary">
-                  {[venueLocation?.city?.name, venueLocation?.country?.name]
+                  {[venueLocation?.cityName, venueLocation?.countryName]
                     .filter(Boolean)
                     .join(", ")}
                 </Text>

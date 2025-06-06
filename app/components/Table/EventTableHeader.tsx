@@ -18,9 +18,18 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   localFilters,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean);
-  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean);
-  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
+  const maturity = getFilterValue("maturity");
+  const includeKeywords = getFilterValue("includeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread")
+    .split(",")
+    .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
@@ -57,7 +66,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
-        {view !== "bookmarked" && (
+        {(
           <>
             {show.includes(Show.estimatedExhibitors) && (
               <TableHead className="min-w-[132px] h-10">
@@ -104,7 +113,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
 
-            {show.includes(Show.maturity) && (
+            {maturity && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Maturity</div>
               </TableHead>
@@ -114,7 +123,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             <div className="font-medium text-foreground ">Impact</div>
           </TableHead>
         )} */}
-            {isEventeli &&show.includes(Show.scores) && (
+            {isEventeli && show.includes(Show.scores) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Inbound</div>
               </TableHead>
@@ -149,33 +158,36 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             )}
           </>
         )}
-        {!isEventeli && type && type !== "T_CUSTOM" && view !== "bookmarked" && (
-          <>
-            <TableHead
-              className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
-              style={{ zIndex: 0 }}
-            >
-              <div className="font-medium text-foreground text-center">
-                Matched
-              </div>
-            </TableHead>
+        {!isEventeli &&
+          type &&
+          type !== "T_CUSTOM" &&
+          view !== "bookmarked" && (
+            <>
+              <TableHead
+                className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
+                style={{ zIndex: 0 }}
+              >
+                <div className="font-medium text-foreground text-center">
+                  Matched
+                </div>
+              </TableHead>
 
-            <TableHead
-              className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]"
-              style={{ zIndex: 0 }}
-            >
-              <div className="font-medium text-foreground text-center">
-                Score
-              </div>
-            </TableHead>
-            <TableHead
-              className="sticky right-0 bg-[var(--heading-background-color)]/50 z-40 h-12"
-              style={{ zIndex: 0 }}
-            >
-              {/* Actions */}
-            </TableHead>
-          </>
-        )}
+              <TableHead
+                className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]"
+                style={{ zIndex: 0 }}
+              >
+                <div className="font-medium text-foreground text-center">
+                  Score
+                </div>
+              </TableHead>
+              <TableHead
+                className="sticky right-0 bg-[var(--heading-background-color)]/50 z-40 h-12"
+                style={{ zIndex: 0 }}
+              >
+                {/* Actions */}
+              </TableHead>
+            </>
+          )}
       </TableRow>
     </TableHeader>
   );

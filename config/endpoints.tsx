@@ -33,6 +33,7 @@ export const endpoints = {
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
     recentSearch: `${BASE_URL}/me/recent-searches`,
+    getIntelScore: `${BASE_URL}/events`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -50,7 +51,6 @@ export const endpoints = {
   //     predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
-  locations: `${BASE_URL}/location/country`,
   savedLocations: `${BASE_URL}/me/saved-locations`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
@@ -74,6 +74,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
     verifyAccess: `${BASE_URL}/auth/verify-access`,
+    templatePreset: `${BASE_URL}/others/preset`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,
@@ -84,6 +85,8 @@ export const endpoints = {
     latestComment: `${BASE_URL}/me/account/latest-comment`,
     createIntent: `${BASE_URL}/intents/user-event-interest`,
     eventDetail: `${BASE_URL}/events`,
+    fetchDuplicateEvent: `${BASE_URL}/promot-event/find-duplicates`,
+    addNewEvent: `${BASE_URL}/promot-event`,
   },
   intent: {
     userEventInterest: `${BASE_URL}/intents/user-event-interest`,

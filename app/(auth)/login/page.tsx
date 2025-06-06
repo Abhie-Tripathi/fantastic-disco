@@ -1,5 +1,6 @@
 "use client";
 import { LoadingPage } from "@/components/auth/loadingPage";
+import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,12 +11,13 @@ export default function Page() {
   const { signUpSSO10times } = useAuthContext();
   const { verifyAccess } = useTrackerServices();
 
+  const fallbackPage = `https://whr.ai/${isEventeli ? 'geo' : 'gtm'}`;
+
   // Get query params safely
   const email = searchParams.get("email") || "";
   const otp = searchParams.get("otp") || "";
   const target = searchParams.get("target") || "";
   const targetId = searchParams.get("targetId") || "";
-  const source = searchParams.get("utm_source") || "";
   const token = searchParams.get("hash") || "";
   const userId = Number(searchParams.get("uid") || "");
   const redirectPath = searchParams.get("redirect") || "";
@@ -31,17 +33,18 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm");
+        router.push(fallbackPage);
       }
     };
 
-    if (source === "10times") {
-      if (!source || !token || !userId) router.push("https://whr.ai/gtm");
-      else signUpSSO10times(token, userId, redirectPath);
-    } else {
-      if (!email || !otp || !target || !targetId)
-        router.push("https://whr.ai/gtm");
-      else verify();
+    if (token && userId) {
+      signUpSSO10times(token, userId, redirectPath);
+    }
+    else if (email && otp && target && targetId) {
+      verify();
+    }
+    else {
+      router.push(fallbackPage);
     }
   }, [email, otp, target, targetId, router]);
 

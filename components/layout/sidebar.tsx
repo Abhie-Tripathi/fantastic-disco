@@ -1,56 +1,42 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import HeroLogo from "/public/HeroLogo.svg";
-import HeroText from "/public/whrai.svg";
-import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard";
 import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit";
+import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard";
 import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2";
 import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3";
-import { Step } from "react-joyride";
-import { isEventeli } from "@/config";
-import {
-  MagnifyingGlass,
-  BookOpen,
-  ChartBarRandom,
-  LineChart,
-  GridMasonry,
-  RefreshClockwise,
-  Users,
-  Wrench,
-} from "geist-icons";
-import {
-  BriefcaseBusiness,
-  Moon,
-  Sun,
-  UserSearch,
-  Settings,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/context";
-import { useAuthContext } from "@/context/auth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-import { endOfMonth } from "date-fns";
-import { startOfMonth } from "date-fns";
-import { addMonths } from "date-fns";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { isEventeli } from "@/config";
+import { useTheme } from "@/context";
+import { useAuthContext } from "@/context/auth";
+import { UserResponse } from "@/types/user";
+import {
+  ChartBarRandom,
+  GridMasonry,
+  LineChart,
+  MagnifyingGlass,
+} from "geist-icons";
+import {
+  LogOut,
+  MessageCircleMore,
+  Moon,
+  Settings,
+  Sun,
+  UserSearch,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
+import HeroLogo from "/public/HeroLogo.svg";
+import HeroText from "/public/whrai.svg";
+import { GAEvent } from "@/utils/GAEvent";
 
 function Coordinate() {
   return (
@@ -95,7 +81,7 @@ const Sidebar = () => {
   const router = useRouter();
   const { user, signOut } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [storedUser, setStoredUser] = useState<any>(null);
+  const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
 
   useEffect(() => {
     if (user) setStoredUser(user);
@@ -119,9 +105,13 @@ const Sidebar = () => {
 
   const generateProfileName = () => {
     if (storedUser) {
-      const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
-      const lastNameInitial = storedUser?.lastname?.[0]?.toUpperCase() || "";
-      return `${firstNameInitial}${lastNameInitial}`;
+      const { firstname, lastname } = storedUser;
+      const initials = [firstname?.[0], lastname?.[0]]
+        .map((char) => char?.toUpperCase())
+        .filter(Boolean)
+        .join("");
+
+      return initials;
     }
     return "";
   };
@@ -147,14 +137,14 @@ const Sidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search",
-      href: `/internal/search/events`,
-      icon: MagnifyingGlass,
-    },
-    {
       name: "Tracker",
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
+    },
+    {
+      name: "Search",
+      href: `/internal/search/events`,
+      icon: MagnifyingGlass,
     },
     { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
@@ -270,7 +260,8 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
+      className={`fixed z-50 top-0 left-0 h-full bg-background 
+      transition-all duration-300 ease-in-out flex flex-col border-r ${
         isHovered ? "w-56" : "w-16"
       } hidden lg:flex`}
       onMouseEnter={handleMouseEnter}
@@ -385,13 +376,35 @@ const Sidebar = () => {
                 } hover:bg-muted/50 rounded-md transition-colors py-0`}
               >
                 <div className="flex items-center gap-2">
-                  <div className="bg-primary flex items-center justify-center text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm">
-                    {generateProfileName()}
-                  </div>
+                  {storedUser ? (
+                    storedUser.imageUrl ? (
+                      <img
+                        src={storedUser.imageUrl}
+                        alt="user image"
+                        className="w-10 h-10 rounded-full"
+                      />
+                    ) : storedUser?.firstname || storedUser?.lastname ? (
+                      <div
+                        className="bg-primary flex items-center justify-center
+                      text-primary-foreground rounded-full w-10 h-10 font-medium text-sm shadow-sm"
+                      >
+                        {generateProfileName()}
+                      </div>
+                    ) : (
+                      <img
+                        src="/defaultProfilePic.png"
+                        alt="user image"
+                        className="w-10 h-10 rounded-full"
+                      />
+                    )
+                  ) : (
+                    <Skeleton className="w-10 h-10 rounded-full" />
+                  )}
                   {isHovered && (
                     <div className="flex flex-col items-start">
                       <span className="text-sm font-medium">
-                        {storedUser?.firstname} {storedUser?.lastname}
+                        {storedUser?.firstname && storedUser?.firstname}{" "}
+                        {storedUser?.lastname && storedUser?.lastname}
                       </span>
                       {/* <span className="text-xs text-muted-foreground">
                         {storedUser?.email}
@@ -422,7 +435,8 @@ const Sidebar = () => {
                     <div className="h-px bg-border my-1" />
                     <Button
                       variant="ghost"
-                      className="w-full justify-start gap-2 h-9 hover:bg-destructive/10 hover:text-destructive rounded-md transition-colors"
+                      className="w-full justify-start gap-2 h-9 hover:bg-destructive/10
+                      hover:text-destructive rounded-md transition-colors"
                       onClick={() => signOut()}
                     >
                       <LogOut className="h-4 w-4" />
@@ -460,6 +474,24 @@ const Sidebar = () => {
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
+          <Button
+            className={`w-full hover:bg-muted ${
+              isHovered ? "justify-start px-3" : "justify-center px-0"
+            }`}
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              window.open("https://whr.canny.io/feature-request", "_blank");
+              GAEvent("", "Feature Request", "Desktop Sidebar", `${isEventeli ? "geo" : "gtm"} | feature_request`);
+            }}
+          >
+            <MessageCircleMore className="h-5 w-5 transition-all" />
+            {isHovered && (
+              <span className="ml-3.5 text-sm">
+                Feature Request
+              </span>
+            )}
+          </Button>
           <span className="text-xs text-muted-foreground px-1">
             {isHovered ? "Version 1.0.0" : "v1.0.0"}
           </span>

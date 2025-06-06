@@ -65,7 +65,15 @@ export interface Tracker {
       country?: LocationObject[];  
       zone?: LocationObject[];
     } | string | undefined;
-    
+    viewBound?:{
+      boundType: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+        radius: number;
+      };
+    } | string | undefined;
+    country?:LocationObject[];
     includeKeywords?:string;
     excludeKeywords?:string;
     eventBrand?:string;
@@ -82,8 +90,16 @@ export interface Tracker {
     audienceSpread?: any;
     designation?: any;
 }
-
-
+export interface PresetData{
+  id:string;
+  name:string;
+  totalEvent: number;
+  data: any;
+  newEventCount: number;
+  description: string;
+  trackerType: string[];
+  filterValue?: FilterValue
+}
   export interface Toggle{
     rating?:boolean;
     exhibit?:boolean;
@@ -147,3 +163,45 @@ export interface Tracker {
       type:string;
       count:number;
     }
+    export interface TrackerAIResponse {
+      companyData: companyData;
+      competitorData: competitorData;
+      keywordData: keywordData;
+    }
+    
+    export interface companyData{
+      status: number;
+      data: any[]; 
+      name: string;
+      domain: string;
+    };
+    
+    export interface competitorData{
+     
+        status: number;
+        name: string;
+        data: { domain: string }[];
+    };
+    export interface keywordData{
+        status: number;
+        name: string;
+        data: string[][];
+    }
+
+    export interface intelScore {
+      alltrackers: number;
+      alltrackers_score: number;
+      event: string;
+      people?: number;
+      people_score?: number;
+      prospect?: number;
+      prospect_score?: number;
+      purpose_score?: number;
+      purpose?: number;
+    }
+
+    export interface IntelScoreResponse {
+  intelScore: {
+    [eventId: string]: intelScore;
+  };
+}

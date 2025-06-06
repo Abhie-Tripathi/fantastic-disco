@@ -1,7 +1,7 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
@@ -30,6 +30,11 @@ interface UserAccessData {
   superAdmin: UserAccess[];
   others: UserAccess[];
 }
+interface PresetDataResponse {
+  count: number;
+  trackers: PresetData[];
+}
+
 type GetSavedEventsResponse =
 
   | { result: EventTableType[]; count: number }
@@ -64,6 +69,12 @@ export const useTrackerServices = () => {
     return api.request(
       `${endpoints.tracker.getTrackers}/count?groupBy=trackerType`,
     )
+  }
+  const fetchCompanyData = (query: string, offset: number, limit:number):Promise<{ companyName: string } | undefined> => { 
+    return api.request(
+      `${endpoints.tracker.suggestion}?query=${query}&offset=${offset}&limit=${limit}`,
+    )
+
   }
     const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
@@ -280,8 +291,8 @@ export const useTrackerServices = () => {
           }
         )
     }
+    
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
-      console.log(type.toString());
       const eventType = type;
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
@@ -341,7 +352,24 @@ export const useTrackerServices = () => {
     //     }
     //   );
     //   return EventsAdapter.adaptEventCountResponse(response);
-    // };
+    // };  
+    const presetData = async (data: any): Promise<PresetDataResponse> => {
+      const urlParams = new URLSearchParams(data).toString();
+      const response = await api.request(`${endpoints.tracker.templatePreset}?${urlParams}`, {
+        method: "GET",
+      });
+    
+      return response as PresetDataResponse;
+    };
+    const getIntelData = async (trackerId:string, eventIds: string, eventType:string)=> {
+      // const urlParams = new URLSearchParams(data).toString();
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/intelScore?eventIds=${eventIds}&type=${eventType}`, {
+        method: "GET",
+      });
+    
+      return response;
+    };
+    
     return {
       getTrackerCount,
       removeBookmark,
@@ -367,6 +395,9 @@ export const useTrackerServices = () => {
       getSavedEvents,
       getTrackerDetail,
       getTrackerEvents,
+      presetData,
+      getIntelData,
+      fetchCompanyData,
       isLoading: api.isLoading,
       error: api.error,
     };

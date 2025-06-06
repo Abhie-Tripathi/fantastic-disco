@@ -20,7 +20,7 @@ import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 import { isEventeli } from "@/config";
-
+import { IntelScoreResponse} from "@/types/trackers";
 export const useEventsService = () => {
   const api = useApi();
 
@@ -29,8 +29,11 @@ export const useEventsService = () => {
 
   const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
     const tempQuery = params;
-    delete tempQuery.view;
-    if (Object.keys(tempQuery).length === 0) {
+    if (
+      (Object.keys(tempQuery).length === 1 &&
+        Object.keys(tempQuery)[0].toLowerCase() == "view") ||
+      Object.keys(tempQuery).length == 0
+    ) {
       return {
         events: [],
         count: 0,
@@ -39,7 +42,13 @@ export const useEventsService = () => {
       };
     }
 
-    if (isEventeli && (!params.locationIds && !params.viewBound) && !params.eventIds && !params.query) {
+    if (
+      isEventeli &&
+      !params.locationIds &&
+      !params.viewBound &&
+      !params.eventIds &&
+      !params.query
+    ) {
       throw new Error("Location is required");
     }
     const response = await api.request<EventResponse>(endpoints.event.events, {
@@ -86,11 +95,15 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventEditionDetails = (id: string, take: number, skip: number) => {
+  const getEventEditionDetails = (
+    id: string,
+    limit: number,
+    offset: number
+  ) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
-        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
-      }`,
+      `${endpoints.event.events}/${id}/editions${
+        limit ? `?limit=${limit}` : ""
+      }${offset !== undefined && offset !== null ? `&offset=${offset}` : ""}`,
       {
         method: "GET",
       }
@@ -266,18 +279,26 @@ export const useEventsService = () => {
   };
 
   const getEventCountByCity = async (params: string) => {
-    const response = await api.request<Array<{ count: number; id: string; name: string; latitude: string; longitude: string }>>(
-      `${endpoints.event.events}/count?${params}`,
-      {
-        method: "GET",
-      }
-    );
-    return response?.filter(item => item.name.toLowerCase() !== "online");
-
-
+    const response = await api.request<
+      Array<{
+        count: number;
+        id: string;
+        name: string;
+        latitude: string;
+        longitude: string;
+      }>
+    >(`${endpoints.event.events}/count?${params}`, {
+      method: "GET",
+    });
+    return response?.filter((item) => item.name.toLowerCase() !== "online");
   };
-
+  const getEventIntelScore = async (eventId: string): Promise<IntelScoreResponse | undefined> => {
+    return api.request<IntelScoreResponse>(
+      `${endpoints.event.getIntelScore}/${eventId}/intelScore`
+    );
+  };
   return {
+    getEventIntelScore,
     getEvents,
     saveEvent,
     getAlertPolygon,

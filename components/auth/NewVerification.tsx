@@ -39,7 +39,9 @@ type OTPData = z.infer<typeof otpSchema>;
 export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
-  const { verifyOtp, error, signin, setError, isLoading } = useAuthContext();
+  const [showResendOtpMessage, setShowResendOtpMessage] = useState(false);
+  const { verifyOtp, error, signin, setError, isLoading, showOTPMessage } =
+    useAuthContext();
   const searchParams = useSearchParams();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
@@ -47,6 +49,7 @@ export default function NewVerificationForm() {
   const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
   const categories = sessionCategories && JSON.parse(sessionCategories);
+  const redirectPath = sessionStorage.getItem("redirect");
 
   const formatDateForFilter = (date: Date) => {
     return format(date, "yyyy-MM-dd");
@@ -58,7 +61,7 @@ export default function NewVerificationForm() {
     const startDate = formatDateForFilter(startOfMonth(currentDate));
     const endDate = formatDateForFilter(endOfMonth(currentDate));
 
-    params.set("view", "map");
+    params.set("view", "list");
     params.set("status", "active,cancelled,postponed");
     params.set("active_gte", startDate);
     params.set("active_lte", endDate);
@@ -79,11 +82,13 @@ export default function NewVerificationForm() {
           (industryItem) => industryItem.slug === industry
         )?.subCategory;
         if (isCategoryMapped) {
-          return `/internal/search/events?${urlParams}`;
+          return redirectPath
+            ? `/internal/${redirectPath}`
+            : `/internal/search/events?${urlParams}`;
         }
       }
     }
-    return "/";
+    return redirectPath ? `/internal/${redirectPath}` : "/";
   }, [flow, industry]);
 
   const form = useForm<OTPData>({
@@ -126,6 +131,7 @@ export default function NewVerificationForm() {
 
   const resendOTP = async (email: string) => {
     setTime(30);
+    setShowResendOtpMessage(true);
     await signin({ email });
   };
 
@@ -177,6 +183,16 @@ export default function NewVerificationForm() {
               <ArrowLeft width={18} height={18} />
               <span>Back</span>
             </p>
+            {showOTPMessage && (
+              <p className="text-sm text-center">
+                {showResendOtpMessage
+                  ? "A new 6 digit OTP has been resent to your email"
+                  : showOTPMessage
+                  ? "We have sent a 6 digit OTP to your email"
+                  : ""}
+              </p>
+            )}
+
             <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
             <FormField
               control={form.control}
@@ -252,6 +268,9 @@ export default function NewVerificationForm() {
             00 : {time > 9 ? time : `0${time}`}
           </span>
         )}
+        <span className="text-gray-400 text-xs">
+          {"Didn’t find the OTP? Check your spam box"}
+        </span>
       </div>
     </div>
   );
