@@ -749,7 +749,7 @@ const Page = ({ params }: { params: any }) => {
                 </Button>
               </Link>
               <div ref={!isMobile?refs.popularityRef:null}>
-              <SortDropdown/>
+              <SortDropdown />
               </div>
             </div>
           </div>
@@ -849,8 +849,8 @@ const Page = ({ params }: { params: any }) => {
                 </div>
               </PopoverContent>
             </Popover>
+            {view==="list" && <SortDropdown compact/>}
           </div>
-
           {view === "table" && (
             <div className="flex-grow overflow-hidden">
               <Suspense fallback={<Loading />}>
