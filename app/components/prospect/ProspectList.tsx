@@ -291,7 +291,7 @@ export const ProspectList: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <div
         className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
       >
@@ -303,7 +303,7 @@ export const ProspectList: React.FC = () => {
             }).format(count)}
           </Badge>
           <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
-            Companies Found
+            Companies
           </p>
         </div>
         <div className="flex justify-center"></div>

@@ -8,19 +8,17 @@ import { useAuthContext } from "@/context/auth";
 import { sessionKeys } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
 import { useToast } from "@/hooks/use-toast";
+import { getValidPath } from "@/lib/utils";
 import { SignUpDTO } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import IndustryCards from "./IndustryCards";
-import GoogleIcon from "/public/google.svg";
-import LinkedinIcon from "/public/linkedin.svg";
 
 const signUpSchema = z.object({
   email: z
@@ -36,6 +34,9 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const {
     isLoading,
     signup,
@@ -85,7 +86,11 @@ export default function TeliSignUpForm() {
         variant: "default",
       });
     }
-  }, [user, isAuthenticating]);
+  }, [user]);
+
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -111,6 +116,7 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
+      redirectParams && sessionStorage.setItem("redirect", redirectParams);
       if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {
@@ -142,19 +148,19 @@ export default function TeliSignUpForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3">
+    <div className="flex flex-col justify-center items-center w-full space-y-4">
       {signUpFlow === "default" && (
         <>
-          <p className="font-semibold text-lg leading-6 text-center">
+          <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {status === "unauthenticated" && (
+          {/* {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto justify-center">
+              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
                   <Image
                     src={GoogleIcon}
@@ -166,7 +172,7 @@ export default function TeliSignUpForm() {
                 <Button
                   onClick={() => signIn("linkedin")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
                   <Image
                     src={LinkedinIcon}
@@ -177,15 +183,15 @@ export default function TeliSignUpForm() {
                 </Button>
               </div>
               <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
-                Or
+                OR
               </p>
             </>
-          )}
+          )} */}
         </>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-5 w-full"
+        className="flex flex-col space-y-6 w-full"
       >
         {signUpFlow === "default" && (
           <Controller
@@ -275,7 +281,7 @@ export default function TeliSignUpForm() {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center text-sm">
+          <div className="text-center py-2 text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}

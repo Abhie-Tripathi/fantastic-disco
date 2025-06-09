@@ -175,11 +175,11 @@ const EventCard = (eventData: Props) => {
           />
 
           {isSubmitting ? (
-            <Loader2 className="mr-2 animate-spin text-primary" />
+            <Loader2 className="animate-spin text-primary" />
           ) : eventAdded ? (
             <div className="text-primary text-sm font-medium pr-2">Added</div>
           ) : (
-            <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className={`flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity ${selectedAction.status ? "opacity-100" : ""}`}>
               {/* <Cross
                 className="cursor-pointer"
                 onClick={() => handleReject(event.id)}

@@ -136,6 +136,10 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
 
+  const searchParams = useSearchParams();
+
+  const token = searchParams.get("token");
+
   const categories = useMemo(() => {
     if (typeof window === "undefined") return null;
     try {
@@ -323,16 +327,12 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [request, router]);
 
   const signInSSO = useCallback(async () => {
-    const isNewUser = JSON.parse(sessionStorage.getItem("newUser") || "false");
-
-    if (isNewUser) {
-      return;
-    }
     setIsAuthenticating(true);
     try {
       const origin = window.location.origin;
       const res = await fetch(`${origin}/api/auth/session`);
       const session = await res.json();
+      const redirectPath = sessionStorage.getItem("redirect");
       const result = await request<{ user: UserResponse }>(
         endpoints.auth.ssoSignIn(session.user.provider),
         {
@@ -345,13 +345,14 @@ export const AuthContextProvider = ({ children }: any) => {
           window.localStorage.setItem("user", JSON.stringify(result.user));
           setUser(result.user);
         }
+
         if (!result.user.isNewUser) {
           // localStorage.setItem(
           //   "walkthroughCompleted",
           //   JSON.stringify(["research"])
           // );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          router.push("/internal");
+          router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
         } else {
           sessionStorage.setItem("newUser", JSON.stringify(true));
           // localStorage.removeItem("walkthroughCompleted");
@@ -402,7 +403,8 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        router.push("https://whr.ai/gtm");
+        const fallbackPage = `https://whr.ai/${isEventeli ? 'geo' : 'gtm'}`;
+        router.push(fallbackPage);
       }
     },
     [request, router]
@@ -415,6 +417,7 @@ export const AuthContextProvider = ({ children }: any) => {
         const response = (await updateMyProfileData({ formData })) as {
           user: UserResponse;
         };
+        const redirectPath = sessionStorage.getItem("redirect");
         window.localStorage.setItem("user", JSON.stringify(response.user));
         setUser(response.user);
         const categories = sessionStorage.getItem("categories");
@@ -425,7 +428,11 @@ export const AuthContextProvider = ({ children }: any) => {
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(`/internal/search/events?${modifiedParams.toString()}`);
+          router.push(
+            redirectPath
+              ? `/internal/${redirectPath}`
+              : `/internal/search/events?${modifiedParams.toString()}`
+          );
         }
       } catch (error) {
         console.log("Error", error);
@@ -455,7 +462,7 @@ export const AuthContextProvider = ({ children }: any) => {
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
     const duplicateSessionKeys = sessionKeys.filter(
-      (key) => key !== "industry" && key !== "subIndustry"
+      (key) => key !== "industry" && key !== "subIndustry" && key !== "redirect"
     );
     if (isEventeli) {
       duplicateSessionKeys.forEach((key) => sessionStorage.removeItem(key));

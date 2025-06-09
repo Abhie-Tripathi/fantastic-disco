@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { MembershipData } from "@/types/user";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { format } from "date-fns";
+import Link from "next/link";
+import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface Props {
   membershipData: MembershipData | undefined;
@@ -19,6 +22,10 @@ const Pricing = ({ membershipData }: Props) => {
     new Date("2026-01-01T00:00:00.000Z"),
     "dd MMM, yyyy"
   );
+
+  const handleUpgradeClick = () => {
+    GAEvent("", "Plan Upgrade", "Dashboard", `${isEventeli ? "geo" : "gtm"} | pricing | web | dashboard_upgrade_plan`);
+  }
 
   return (
     <div className="max-w-[320px] h-fit rounded-[12px] border border-[var(--border-color)] p-4">
@@ -41,13 +48,14 @@ const Pricing = ({ membershipData }: Props) => {
         {membershipPlan && (
           <div className="w-full mt-auto">
             {membershipPlan === MembershipPlan[0] ? (
-              <Button
-                variant="outline"
-                className="py-2 text-xs w-full mx-auto border-primary text-primary hover:bg-white"
-                onClick={() => router.push("https://whr.ai/demo")}
-              >
-                Upgrade Plan
-              </Button>
+              <Link
+                className="py-2 text-sm w-full mx-auto border border-primary text-primary bg-background flex items-center justify-center rounded-md font-medium"
+                target="_blank"
+                href={`https://whr.ai/pricing?utm_source=${
+                  isEventeli ? "geo" : "gtm"
+                }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                onClick={handleUpgradeClick}
+              >Upgrade Plan</Link>
             ) : (
               <div className="flex justify-between w-full">
                 <p className="text-sm text-[var(--secondary-text-color)] font-semibold">

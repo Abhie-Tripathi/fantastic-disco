@@ -88,6 +88,8 @@ import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
+import ZeroState from "@/components/zerostate";
+import CustomTrackerNullState from "./customTrackerNullState";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -427,7 +429,7 @@ const Pages = () => {
   const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
   const isMobile = useIsMobile();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters} = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [showTemplate,setShowTemplate] = useState(false);
@@ -498,7 +500,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : isEventeli?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -989,7 +991,94 @@ const stepsConfig =[
 
     }
   };
+  useEffect(() => {
+    if (type === "T_COMPETITOR" && suggestion===1) {
+      // setTrackerName(comp?.name || "");
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const competitorArray = parsed?.competitorData?.data;
+          setTrackerName(parsed?.competitorData?.name || "");
+          if (Array.isArray(competitorArray)) {
+            setCustomData(
+              competitorArray.map((item: any) => ({
+                "Competitor Name or Website": item.domain?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  
+  useEffect(()=>{
+    if(type === "T_PEOPLE_FINDER" && suggestion ===3){
+      setSuggestions([]);
+      const localData = localStorage.getItem("companySuggestion");
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          setTrackerName(parsed?.companyData?.name || "");
+          const speakerNames = parsed?.companyData?.data.pocs.map((item: any)=>item.name);
+          const speakerOrgs = parsed?.companyData?.data.pocs.map((item: any)=>item.customerCompanyName);
+          const presentCustomData = speakerNames?.map((speakerName: string, index: number) => ({
+            "Name": speakerName.trim(),
+            "Company Name": speakerOrgs[index]?.trim()
+          }));
+          // console.log(presentCustomData);
+          
+          setCustomData(presentCustomData);
+        } catch (error) {
+          console.error("Error parsing competitorData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+  }
 
+  }, [type])
+  const [inc,setInc]=useState<String[]>([]);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
+      const localData = localStorage.getItem("companySuggestion");
+      // console.log("localData", localData);
+      setSuggestions([]);
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          const keywordsArray = parsed?.keywordData?.data;
+          setTrackerName(parsed?.keywordData?.name || "");
+          if (Array.isArray(keywordsArray)) {
+            // console.log("keywordsArray", keywordsArray);
+            const res=keywordsArray.map((item:{"keyword":string})=>item.keyword?.trim?.())
+            // console.log("res", res);
+            
+            setInc(res);
+            setCustomData(
+              keywordsArray.map((item: any) => ({
+                "Competitor Name or Website": item.keyword?.trim?.()
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing keywordData from localStorage", error);
+        }
+      }
+      setSuggestion(0);
+    }
+  }, [type]);
+  useEffect(() => { 
+    if(suggestion===2 && inc.length>0){
+      setSuggestions([]);
+      setLocalFilter("includeKeywords", inc?.join(","));
+    }
+  },[inc])
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
@@ -1366,6 +1455,7 @@ return (
     filterCount={0}
     createTrackerHandler={saveTrackerHandler}
     closeHandler={setShowFilters}
+    refs={refs}
     // searchHandler={searchHandler}
   />
   </div>
@@ -1423,7 +1513,7 @@ return (
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className="flex flex-col gap-2 w-full" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
+  <div ref={scrollableDivRef} className={`${(type==="T_CUSTOM" && isMobile)?"hidden":"flex"} flex-col gap-2 w-full`} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "16px" : "16px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
@@ -1442,8 +1532,8 @@ return (
           </button>
         </div>
       )}
-    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`}>
-        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} ref={refs.additionalFilterRef}>
+    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'} ${isMobile?'hidden':'block'}`} ref={(!isMobile && type!=="T_CUSTOM")?refs.additionalFilterRef:null}>
+        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`} >
     <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
     </div>
     </div>
@@ -1463,11 +1553,17 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
+    {type==="T_CUSTOM"&&
+    <div className="w-full flex items-center text-justify content-start p-[6px] text-[var(--secondary-text-color)] h-auto pt-10">
+    <div className="hidden md:flex w-full justify-center items-center">
+    <CustomTrackerNullState/>
+    </div>
+    </div>}
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div className="flex gap-4 flex-col w-full">
-      <div className={`!hidden md:!flex card ${styles.competitor}`} ref={refs.templateRef}>
+      <div className={`!hidden md:!flex card ${styles.competitor}`} ref={!isMobile ? refs.templateRef : null}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -1775,9 +1871,10 @@ return (
 
     </div>
   </div>
+  
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
-      <div ref={refs.presetRef}>
+      <div ref={!isMobile?refs.presetRef: null} className="flex items-center justify-between mb-4">
         <Presets template={template} handlePresetClick={handlePresetClick}/> 
         </div>
     </div>
@@ -1800,12 +1897,18 @@ return (
           {" "} Add manually or choose a pre-set
           </div>
           <div className="flex gap-1.5">
+          {!isEventeli &&
+          <div ref={isMobile?refs.presetRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
+          </div>
+          }
+          <div ref={isMobile?refs.additionalFilterRef:null}>
           <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2">
           <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" onClick={()=>setShowFilters(true)}/>
           </Button>
+          </div>
           </div>
           {/* <Button
                     className="text-white gap-1"
@@ -1832,7 +1935,7 @@ return (
         }
         </div>
         {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
-                <div>
+                <div ref={isMobile ? refs.templateRef : null}>
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5 flex-col">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (

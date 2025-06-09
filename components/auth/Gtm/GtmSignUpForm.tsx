@@ -8,24 +8,26 @@ import { newCategories } from "@/data/categories";
 import { industryData, sessionKeys } from "@/data/onboarding";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
+import { getValidPath } from "@/lib/utils";
 import { SignUpFormSchema } from "@/types/signup";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
-import GoogleIcon from "/public/google.svg";
-import LinkedinIcon from "/public/linkedin.svg";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const {
     signup,
     error,
@@ -38,6 +40,7 @@ const GtmSignUpForm = () => {
   } = useAuthContext();
 
   const { getFilterValue, deleteFilter } = useFilterState();
+  const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
   const { toast } = useToast();
   const [categories, setCategories] = useState<string[]>([]);
@@ -83,6 +86,7 @@ const GtmSignUpForm = () => {
       sessionStorage.setItem("industry", signUpDTOData.industry);
     }
     sessionStorage.setItem("flow", "signUp");
+    redirectParams && sessionStorage.setItem("redirect", redirectParams);
 
     try {
       if (signUpFlow === "sso") {
@@ -94,6 +98,10 @@ const GtmSignUpForm = () => {
       console.error("Signup error:", error);
     }
   };
+
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
 
   useEffect(() => {
     const isMappedCategory = industryData.find(
@@ -142,11 +150,18 @@ const GtmSignUpForm = () => {
         variant: "default",
       });
     }
-  }, [user, isAuthenticating]);
+  }, [user]);
 
   const isCategoryMapped = industryData.find(
     (industryItem) => industryItem.slug === industry
   )?.subCategory;
+
+  const obj = {
+    email: email,
+    industry: industry,
+    categories: categories,
+    path: "signup",
+  };
 
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
@@ -191,19 +206,19 @@ const GtmSignUpForm = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center my-4 w-full space-y-3">
+    <div className="flex flex-col justify-center items-center w-full space-y-4">
       {signUpFlow === "default" && (
         <>
-          <p className="font-semibold text-lg leading-6 text-center">
+          <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {status === "unauthenticated" && (
+          {/* {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto justify-center">
+              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
                   <Image
                     src={GoogleIcon}
@@ -215,7 +230,7 @@ const GtmSignUpForm = () => {
                 <Button
                   onClick={() => signIn("linkedin")}
                   variant={"outline"}
-                  className="flex items-center h-11 w-auto gap-3 px-6 sm:px-8"
+                  className="flex items-center h-11 w-auto gap-3 px-8"
                 >
                   <Image
                     src={LinkedinIcon}
@@ -226,15 +241,15 @@ const GtmSignUpForm = () => {
                 </Button>
               </div>
               <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
-                Or
+                OR
               </p>
             </>
-          )}
+          )} */}
         </>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-5 w-full mt-4"
+        className="flex flex-col space-y-6 w-full mt-4"
       >
         {signUpFlow === "default" && (
           <Controller
@@ -328,7 +343,7 @@ const GtmSignUpForm = () => {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center text-sm">
+          <div className="text-center py-2 text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}

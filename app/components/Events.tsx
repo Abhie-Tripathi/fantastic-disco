@@ -27,15 +27,10 @@ import {
   FilterX,
   Globe,
   ListIcon,
+  Save,
   TableIcon,
 } from "lucide-react";
-import {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useState
-} from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -284,6 +279,17 @@ const Events = () => {
                   <Button onClick={searchHandler} className="w-full h-10">
                     Apply Filters
                   </Button>
+                  {filtersCount > 0 && (
+                    <Button
+                      id="save-search-btn"
+                      onClick={createTrackerHandler}
+                      variant="outline"
+                      className="w-full h-10"
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Search
+                    </Button>
+                  )}
                 </div>
               </div>
             </>

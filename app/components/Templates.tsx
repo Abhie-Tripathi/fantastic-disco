@@ -95,6 +95,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   const [inputValue, setInputValue] = useState(
     aiStatus?.companyData?.domain || ""
   );
+  const [isLoaded,setIsLoaded] = useState(!!aiStatus?.companyData?.domain?.length);
   const inputRef = useRef<HTMLInputElement>(null);
   const stepsConfig = isEventeli
     ? [
@@ -262,7 +263,9 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
   }, []);
 
   const fetchData = () => {
+    setIsLoaded(true);
     // console.log("templateView", templateView);
+    setTemplateView(false);
     if (!isValidURL(inputValue)) {
       toast({
         description: "Please enter valid url",
@@ -621,12 +624,13 @@ Do not include the competitor platform names in the output. Only return publicly
                   placeholder="Enter Web URL"
                   className="border-none outline-none bg-transparent w-full"
                   value={inputValue}
+                  disabled={isLoaded}
                   onChange={(e) => setInputValue(e.target.value)}
                 />
               </div>
               <Button
                 className={`w-[20%] sm:w-[20%] ${
-                  inputValue.length > 0
+                  inputValue?.length > 0
                     ? "bg-[var(--primary-color)]"
                     : "bg-[var(--dashboard-brandkit-subtext)]"
                 } text-white rounded-[var(--border-radius-sm)] flex items-center justify-center gap-2`}

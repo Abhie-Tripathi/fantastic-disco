@@ -36,9 +36,11 @@ import {
 } from "@/components/ui/tooltip";
 import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 const Index = () => {
   const { refs, setps } = useTrackerContext();
+  const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
@@ -192,7 +194,7 @@ const Index = () => {
           <div className="flex justify-center items-center">
             <div
               className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md"
-              ref={refs.viewsRef}
+              ref={!isMobile?refs.viewsRef:null}
               // style={{
               //   position: "fixed", // Key change
               //   top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
@@ -342,7 +344,7 @@ const Index = () => {
                         : ""
                     }`}
                     onClick={() => setTrackerSection("Tracker Configurations")}
-                    ref={refs.configRef}
+                    ref={!isMobile?refs.configRef:null}
                   >
                     <Settings
                       width="12px"
@@ -421,6 +423,7 @@ const Index = () => {
                   <Link
                     href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
                     className="flex items-center"
+                    ref={isMobile?refs.configRef:null}
                   >
                     <Settings className="w-4 h-4 text-[var(--primary-color)]" />
                   </Link>
@@ -432,7 +435,7 @@ const Index = () => {
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger onClick={() => setShare(!share)}>
+                <TooltipTrigger onClick={() => setShare(!share)} >
                   <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -480,6 +483,7 @@ const Index = () => {
                     ? "bg-background shadow-sm text-black dark:text-white"
                     : ""
                 }`}
+                ref={isMobile?refs.notesRef:null}
               >
                 <NotepadText className="w-4 h-4" />
                 Notes
@@ -496,6 +500,7 @@ const Index = () => {
                     ? "bg-background shadow-sm text-black dark:text-white"
                     : ""
                 }`}
+                ref={isMobile?refs.shareRef:null}
               >
                 <UserRound className="w-4 h-4" />
                 Manage

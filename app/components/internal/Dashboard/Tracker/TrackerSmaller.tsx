@@ -32,7 +32,7 @@ const TrackerSmaller = ({trackers} : Props) => {
     }
 
     return (
-        <div className={`w-full h-[240px] items-start border border-[var(--border-color)] rounded-xl p-4 relative overflow-hidden`}>
+        <div className={`w-full h-[240px] items-start border rounded-xl p-4 relative overflow-hidden bg-[#F6FAFF] dark:bg-[#12233C] border-[#E0F0FF] dark:border-[#292929]`}>
             <div className={`flex flex-col ${trackers.length === 0 ? "gap-4" : "gap-2"} w-[100%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
