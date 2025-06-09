@@ -236,7 +236,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                               source="tracker"
                               eventType={eventType}
                               searchParams="active"
-                              trackerId={singleTrackerData?.id || ""}
+                              trackerId={item?.id || ""}
                               trackerLoc={
                                 (locations?.length > 0 &&
                                   locations?.join(",")) ||
