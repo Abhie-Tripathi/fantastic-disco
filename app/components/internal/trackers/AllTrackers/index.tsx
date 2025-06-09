@@ -18,6 +18,13 @@ import { CloudAlert, NotebookPen, Settings, Share2 } from 'lucide-react';
 import { useTrackerServices } from "@/services/trackerServices";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
+  const mapping = {
+    "T_COMPETITOR":"Companies",
+    "T_PRODUCT_KEYWORDS":"Keywords",
+    "T_PEOPLE_FINDER": "Profiles",
+    "T_SPEAKING_OPPORTUNITY": "Profiles"
+  }
+  const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {getShareAccess, error}=useTrackerServices();
@@ -185,7 +192,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   
   return (
     
-    <div className="card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-[70%]" onClick={()=>handleSingleClick(item)}
+    <div className="card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-[100%]" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
@@ -227,7 +234,9 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
               <div>{userAccessData?.superAdmin[0]?.name}</div>
               {/* <div>{userAccessData?.others?.length} Followers</div> */}
               {/* <Link></Link> */}
+              <Link href={`/internal/trackers/${item.id}/manageAccess?type=${item.type}`}>
               <div className="hover:border-b hover:border-[var(--primary-color)] text-[var(--primary-color)]">Manage</div>
+              </Link> 
             </div>
              
             </div>
@@ -266,16 +275,20 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             ))}
           </div>
-            <div className="flex justify-between">
-              <div className="flex gap-2 items-center">
+            <div className="flex justify-end">
+              
+              <div className="flex items-center justify-center text-[12px] text-[var(--primary-color)] gap-1 cursor-pointer">
+                <div className="flex gap-2 items-center">
+                <Link href={`/internal/trackers/${item.id}/notesDiscussion?type=${item.type}`}>
                 <NotebookPen width={14} height={14} />
-                <Settings
+                </Link>
+                <Link href={`/internal/trackers/${item.id}/editTracker?type=${item.type}`}>
+                 <Settings
                       width={14}
                       height={14}
                     />
+                </Link>
               </div>
-              <div className="flex items-center justify-center text-[12px] text-[var(--primary-color)] gap-1 hover:border-b hover:border-[var(--primary-color)] cursor-pointer">
-                Share
                 <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
               </div>
             </div>

@@ -23,6 +23,8 @@ import {
  
 } from "geist-icons";
 import SortDropdown from "@/components/search/sortDropdown";
+import Link from "next/link";
+import { isEventeli } from "@/config";
 interface MyTrackersProps {
   searchValue:string;
   dataPresent: boolean;
@@ -213,7 +215,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => (
             <div className="flex gap-6">
-            <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+            <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`}className="w-[100%] md:w-[70%]">
+             <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+            </Link>
             <Suspense
                         fallback={
                           <div className="h-[300px] w-[100%] items-center justify-center">
@@ -237,11 +241,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                               eventType={eventType}
                               searchParams="active"
                               trackerId={item?.id || ""}
-                              trackerLoc={
-                                (locations?.length > 0 &&
-                                  locations?.join(",")) ||
-                                ""
-                              }
+                            trackerLoc={
+                              (Object.keys(item?.filterValues?.locationIds || {}).length > 0 &&
+                                Object.keys(item?.filterValues?.locationIds || {}).join(",")) ||
+                              ""
+                            }
+
                               trackerType={singleTrackerData?.type || ""}
                             />
                           )}
