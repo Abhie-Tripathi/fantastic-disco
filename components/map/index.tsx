@@ -665,7 +665,7 @@ export default function MapComponent({
     return <ZeroState text="Location is Mandatory" />;
   }
   return (
-    <div className="relative px-4 md:px-0">
+    <div className="relative px-4 md:px-0 w-full">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
         <Loading />
       ) : eventCountsQuery.error ? (

@@ -188,8 +188,18 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
       fetchAccess();
     }
   }, [singleTrackerData?.id]);
-  console.log(eventsCount, "eventsCount");
-  
+ 
+  useEffect(() => {
+    if(item?.type === "T_COMPETITOR"){
+        setEntryCount(item?.filterValues.orgWebsite.split(',').length)
+        console.log(item?.filterValues.orgWebsite.split(","), "entryCount");
+        
+      }else if(item?.type === "T_PRODUCT_KEYWORDS"){
+        const keywordsLen = item?.filterValues?.includeKeywords?.length + item?.filterValues?.excludeKeywords?.length;
+        setEntryCount(keywordsLen)
+      }
+  }, []);
+   console.log(entryCount, "entryCount");
   return (
     
     <div className="card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-[100%]" onClick={()=>handleSingleClick(item)}
@@ -226,7 +236,9 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <div className="flex gap-2 text-xs">
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
             {formatType(item.type)}</div>
-            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>xyz</div>
+            {entryCount>0 &&
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{entryCount} {mapping[`${item.type}`]}</div>
+            }
             </div>
             <div className="flex gap-2 text-xs items-center"> 
               <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div>

@@ -166,7 +166,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                {totalCount}
               </span>
             </div> */}
-          <div className="hidden sm:flex items-center gap-2 w-full">
+          <div className="flex items-center gap-2 w-full">
             <div
               className={`transition-all duration-300 ease-in-out overflow-hidden max-h-20 opacity-100 scale-y-100 w-full bg-white
                 `}
@@ -225,7 +225,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                           </div>
                         }
                       >
-            <div className="h-[180px] w-[30%]">
+            <div className="h-[180px] w-0 hidden md:flex md:w-[30%]">
                           {!singleTrackerData && searchValue.length < 3 ? (
                             <Loading />
                           ) : !singleTrackerData ? (
@@ -269,34 +269,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             </div>
           {/* )} */}
           </div>
-          <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
-            <div className="flex items-center justify-between">
-            <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 w-full">
-    <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
-    <input
-      className="outline-none w-full bg-transparent"
-      placeholder="Enter tracker name"
-      value={searchValue}
-      onChange={(e) => setSearchValue(e.target.value)}
-    />
-  </div>
-              {/* <Button
-                variant="ghost"
-                className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
-              > */}
-                {/* <FilterX className="w-3.5 h-3.5 mr-1" />
-                Reset all filters
-              </Button>
-              <span className="text-xs text-[#6E6F89]">
-                {filterCount} filters applied
-              </span> */}
-            </div>
-            <Button className="w-full h-10" onClick={()=>hideTemplates(false)}>
-              Create
-            </Button>
-          </div>
-        </div>
+          
           </div>
     </div>
   );
