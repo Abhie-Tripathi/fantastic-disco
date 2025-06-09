@@ -40,7 +40,7 @@ import {
   morphToSmartInsightsData,
   morphToTrendsTableData,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import {
   Calendar1,
   ChevronLeft,

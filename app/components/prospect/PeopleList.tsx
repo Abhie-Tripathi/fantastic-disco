@@ -9,7 +9,7 @@ import { useCompanyService } from "@/services/companyService";
 import { Location } from "geist-icons";
 import { Badge } from "@/components/ui/badge";
 import { CompanyListResponse, userListData } from "@/types/prospect";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useSearchParams } from "next/navigation";
 import Loading from "@/components/ui/Loading";
 import NullState from "@/app/components/trackers/nullState";

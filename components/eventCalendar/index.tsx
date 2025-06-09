@@ -26,7 +26,7 @@ import ZeroState from "@/app/components/zerostate";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEventsService } from "@/services/eventsService";
 import { useFilterContext } from "@/context/filterContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
 import { useTrackerServices } from "@/services/trackerServices";
