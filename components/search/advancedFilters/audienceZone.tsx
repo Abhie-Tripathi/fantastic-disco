@@ -32,7 +32,7 @@ export default function AudienceZoneSatusSelector() {
       className={cn(
         buttonVariants({ variant: "outline" }),
         "w-full justify-between px-3 py-5 text-base font-normal",
-        !isEnabled && "opacity-50"
+        !enabled && "opacity-50"
       )}
     >
       <div className="flex items-center">
