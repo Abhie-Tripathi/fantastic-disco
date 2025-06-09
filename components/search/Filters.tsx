@@ -979,20 +979,22 @@ const Filters = ({
                   {filterCount} filters applied
                 </span>
               </div>
-              <Button onClick={searchHandler} className="w-full h-10">
-                Apply Filters
-              </Button>
-              {filterCount > 0 && (
-                <Button
-                  id="save-search-btn"
-                  onClick={createTrackerHandler}
-                  variant="outline"
-                  className="w-full h-10"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Search
+              <div className="flex gap-2">
+                {filterCount > 0 && (
+                  <Button
+                    id="save-search-btn"
+                    onClick={createTrackerHandler}
+                    variant="outline"
+                    className="w-full h-10"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Search
+                  </Button>
+                )}
+                <Button onClick={searchHandler} className="w-full h-10">
+                  Apply Filters
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         )}
