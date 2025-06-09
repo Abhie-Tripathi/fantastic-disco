@@ -155,11 +155,7 @@ const EventTrends = () => {
   const { getFilterValue } = useFilterState();
   const [isFiltersCollapsed, setIsFiltersCollapsed] = useState(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const metric = getFilterValue("columns") as
-    | "eventCount"
-    | "predictedAttendance"
-    | "inboundEstimate"
-    | "internationalEstimate";
+  const metric = getFilterValue("columns").split(",");
   const ViewTemplates = isEventeli ? geoViewTemplates : gtmViewTemplates;
 
   const activeView = (getFilterValue("view") as "line" | "treemap" | "table")
@@ -493,9 +489,7 @@ const EventTrends = () => {
 
   const handleShare = () => {
     const currentUrl = window.location.href;
-    const url = currentUrl.replace("/internal/", "redirect=");
-
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(currentUrl);
     toast({
       title: "URL Copied",
       description: "Link copied to clipboard",
@@ -1198,8 +1192,21 @@ const EventTrends = () => {
                   Apply Filters
                 </button>
               )}
-              <div className="w-full">
-                <SaveTrend searchParams={searchParams} isLoading={isLoading} />
+              <div className="flex gap-2 flex-col">
+                {!showFilters && (
+                  <SaveTrend
+                    searchParams={searchParams}
+                    isLoading={isLoading}
+                  />
+                )}
+                <Button
+                  variant="outline"
+                  className="w-full h-10"
+                  onClick={handleShare}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share Trend
+                </Button>
               </div>
             </div>
           </>
@@ -1291,7 +1298,7 @@ const EventTrends = () => {
                           Browse Templates
                         </Button>
 
-                        {/* <TooltipProvider>
+                        <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
@@ -1307,7 +1314,7 @@ const EventTrends = () => {
                               <p>Copy URL to clipboard</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider> */}
+                        </TooltipProvider>
                       </>
                     )}
                   </div>

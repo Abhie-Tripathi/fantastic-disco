@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { Filters } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
@@ -133,7 +133,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading
 }) => {
  
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")

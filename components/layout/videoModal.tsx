@@ -1,3 +1,4 @@
+"use client";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
@@ -8,6 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 type VideoModalProps = {
   source: string;
@@ -16,7 +19,7 @@ type VideoModalProps = {
 
 const cdnLink = "https://c1.10times.com";
 
-const videoLinks: Record<string, string> = {
+const gtmVideoLinks: Record<string, string> = {
   coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
   eventSearch: cdnLink + "/walkthrough/event-search.mp4",
   companies: cdnLink + "/walkthrough/company-search.mp4",
@@ -26,15 +29,27 @@ const videoLinks: Record<string, string> = {
   search: cdnLink + "/walkthrough/search-combined.mp4",
 };
 
+const geoVideoLinks: Record<string, string> = {
+  coordinate: cdnLink + "/walkthrough/coordinate-gtm.mp4",
+  eventSearch: cdnLink + "/walkthrough/event-search.mp4",
+  companies: cdnLink + "/walkthrough/company-search.mp4",
+  // trackers: cdnLink + "/walkthrough/tracker-gtm.mp4",
+  trends: cdnLink + "/walkthrough/trends-gtm.mp4",
+  intelScore: cdnLink + "/walkthrough/intel-score.mp4",
+  search: cdnLink + "/walkthrough/search-combined.mp4",
+};
+
 const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
+  const videoLinks = isEventeli ? geoVideoLinks : gtmVideoLinks;
+
   const handleVideoModal = () => {
     setShowVideoModal(true);
+    GAEvent("", "Video Walkthrough", `Opened`, `${isEventeli ? "geo" : "gtm"} | ${source} | ${variant}`);
   };
 
   if (!videoLinks[source]) {
-    console.log("path not found!!");
     return <></>;
   }
 
@@ -46,20 +61,18 @@ const VideoModal = ({ source, variant = "icon" }: VideoModalProps) => {
           onClick={handleVideoModal}
         >
           <Play className="h-3 w-3" />
-          Video Walkthrough
+          Quick Video Walkthrough
         </div>
       ) : (
         <TooltipProvider>
           <Tooltip delayDuration={0}>
             <TooltipTrigger>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="px-2 py-0"
+              <div
+                className="bg-secondary rounded-md px-2 h-8 inline-flex items-center"
                 onClick={handleVideoModal}
               >
                 <Play className="h-4 w-4" />
-              </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
               <p>Video Walkthrough</p>

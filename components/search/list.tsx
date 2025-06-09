@@ -38,6 +38,7 @@ import { useAuthContext } from "@/context/auth"
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 import { useTransition } from "@/context/transition";
 
+import { useFilterContext } from "@/context/filterContext";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -271,7 +272,7 @@ export default function EventAccordion({
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else return <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />;
   }
 
   if (
@@ -383,7 +384,7 @@ const EventListItem = ({
   intelLoading?: boolean
 }) => {
   const {getFilterValue} = useFilterState();
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">

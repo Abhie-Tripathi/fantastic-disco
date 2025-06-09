@@ -189,10 +189,11 @@ type FilterContextType = {
     newValue: string
   ) => void;
   enabledFilters: EventFilterData | null;
-  showFetchedData: any;
-  setShowFetchedData: (val: boolean) => void;
+  showFetchedData:any;
+  setShowFetchedData:(val:boolean) => void;
+  isTentimesUser: boolean;
 };
-
+const isTentimesUser=false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -485,8 +486,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
+      isTentimesUser
     }),
     [
+      isTentimesUser,
       suggestion,
       showFetchedData,
       templateView,

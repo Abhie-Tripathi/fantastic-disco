@@ -37,7 +37,7 @@ const PromoteOne = ({ values, theme }: Props) => {
     }
 
     return (
-        <div className={`flex flex-col ${isEmpty ? "items-center bg-[var(--background-secondary-color)]" : "items-start"} justify-start h-[271px] overflow-hidden w-full`}>
+        <div className={`flex flex-col ${isEmpty ? "items-center" : "items-start"} justify-start h-[271px] overflow-hidden w-full`}>
             <div className={`flex flex-col ${isEmpty ? "items-center" : "items-start"} justify-center p-4`}>
                 <div className={`flex items-center gap-2 ${!isEmpty && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
                     <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Smart Promote</span>
