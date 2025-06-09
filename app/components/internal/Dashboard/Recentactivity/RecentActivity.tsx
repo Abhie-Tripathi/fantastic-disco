@@ -16,7 +16,7 @@ interface ProfileData {
     email: string;
     phoneNumber: string;
     profilePicture: string;
-    department: string;
+    // department: string;
 }
 interface Props {
     profileData: ProfileData
@@ -51,7 +51,7 @@ const RecentActivity = ({ profileData, value }: Props) => {
 
 
     return (
-        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden relative ${value === "filled" ? "min-h-[345px]" : "h-[40%]"} `}>
+        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden ${value === "filled" ? "min-h-[345px]" : "h-[40%]"} `}>
             {emptyFields.length === 0 ? <div className='text-xs text-[var(--secondary-text-color)] font-[var(--font-weight-medium)] z-10'>
                 No Recent Activities
             </div> :

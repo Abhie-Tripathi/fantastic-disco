@@ -41,7 +41,7 @@ interface ProfileData {
   email: string;
   phoneNumber: string;
   profilePicture: string;
-  department: string;
+  // department: string;
 }
 const Dashboard = () => {
   let role = "sa";
@@ -74,7 +74,7 @@ const Dashboard = () => {
     email: "",
     phoneNumber: "",
     profilePicture: "",
-    department: "",
+    // department: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -235,8 +235,8 @@ const Dashboard = () => {
       name: data.firstname ? data.firstname : data.email.split("@")[0],
       email: data.email,
       phoneNumber: data.phoneNumber,
-      profilePicture: data.profilePicture,
-      department: data.department,
+      profilePicture: data.imageUrl,
+      // department: data.department,
     };
     setProfileData(profileObject);
     // console.log("user", user)

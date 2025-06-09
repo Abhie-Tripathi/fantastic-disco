@@ -9,6 +9,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { isEventeli } from "@/config";
 import { useProfileServices } from "@/services/profileService";
 import { useEffect, useState } from "react";
+import { Mail } from "lucide-react";
 
 const Subscription = () => {
   const { getMembershipData } = useProfileServices();
@@ -16,10 +17,10 @@ const Subscription = () => {
 
   const { membership, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
-//   const formattedMembershipEndDate = format(
-//     new Date("2026-01-01T00:00:00.000Z"),
-//     "dd MMM, yyyy"
-//   );
+  //   const formattedMembershipEndDate = format(
+  //     new Date("2026-01-01T00:00:00.000Z"),
+  //     "dd MMM, yyyy"
+  //   );
 
   const handleUpgradeClick = () => {
     window.open(
@@ -51,32 +52,36 @@ const Subscription = () => {
 
   return (
     <div className="p-6 pt-0">
-      <div className="space-y-4 w-4/5">
-        <div className="grid grid-cols-3 items-center">
-          <div className="font-medium col-span-1">Current Plan</div>
-
-          <div className="flex col-span-1 gap-2">
-            <span className="font-semibold">{membershipPlan}</span>
-            <Badge
-              className="text-[var(--success-text-color)] bg-[var(--success-background-color)] border-[var(--success-text-color)]"
-              variant="outline"
-            >
-              Active
-            </Badge>
-            {/* <Badge
-              className="text-[var(--danger-text-color)] bg-[var(--danger-background-color)] border-[var(--danger-text-color)]"
-              variant="outline"
-            >
-              Deactivated
-            </Badge> */}
+      <div className="space-y-4 md:w-4/5">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="font-medium col-span-1 md:col-span-1">
+            Current Plan
           </div>
-          {membershipPlan && membershipPlan === MembershipPlan[0] && (
-            <div className="col-span-1">
-              <Button size="sm" onClick={handleUpgradeClick}>
-                Upgrade Plan
-              </Button>
+
+          <div className="flex col-span-1 gap-3 flex-wrap">
+            <div>
+              <span className="font-semibold">{membershipPlan}</span>
+              <Badge
+                className="text-[var(--success-text-color)] bg-[var(--success-background-color)] border-[var(--success-text-color)] ml-2"
+                variant="outline"
+              >
+                Active
+              </Badge>
+              {/* <Badge
+                className="text-[var(--danger-text-color)] bg-[var(--danger-background-color)] border-[var(--danger-text-color)] ml-2"
+                variant="outline"
+              >
+                Deactivated
+              </Badge> */}
             </div>
-          )}
+            {membershipPlan && membershipPlan === MembershipPlan[0] && (
+              <div className="col-span-1">
+                <Button size="sm" onClick={handleUpgradeClick}>
+                  Upgrade Plan
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* <div className="grid grid-cols-3 items-center">
@@ -88,14 +93,15 @@ const Subscription = () => {
           </div>
         </div> */}
 
-        <div className="grid grid-cols-3 items-center">
+        <div className="grid grid-cols-2 gap-3">
           <div className="font-medium col-span-1">Payment related queries</div>
           <div className="flex col-span-1">
             <Link
-              className="text-primary text-sm font-semibold"
+              className="text-primary text-sm font-semibold flex items-center gap-1"
               href="mailto:be@whr.ai"
             >
-              Contact Us
+              <Mail className="h-4" />
+              be@whr.ai
             </Link>
           </div>
         </div>
