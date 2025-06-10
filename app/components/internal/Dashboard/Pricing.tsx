@@ -73,10 +73,10 @@ const Pricing = ({ membershipData }: Props) => {
         </div>
         {membershipPlan && (
           <div
-            className="text-xs font-medium hover:underline underline-offset-2 cursor-pointer mt-2"
+            className="text-muted-foreground text-xs font-medium underline underline-offset-2 cursor-pointer mt-2"
             onClick={() => handlePricingRedirect("view_all_features")}
           >
-            View All Features
+            view all features
           </div>
         )}
         {!membershipPlan && (

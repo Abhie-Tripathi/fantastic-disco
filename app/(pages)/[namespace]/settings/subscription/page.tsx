@@ -57,7 +57,7 @@ const Subscription = () => {
     <div className="p-6 pt-0">
       <div className="space-y-4 md:w-4/5">
         <div className="grid grid-cols-2 gap-3">
-          <div className="font-medium col-span-1 md:col-span-1">
+          <div className="text-muted-foreground font-medium col-span-1 md:col-span-1">
             Current Plan
           </div>
 
@@ -88,7 +88,7 @@ const Subscription = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3 items-center">
-          <div className="font-medium col-span-1">Next renewal date</div>
+          <div className="text-muted-foreground font-medium col-span-1">Next renewal</div>
           <div className="flex col-span-1">
             <span className="text-sm font-medium">
               {formattedMembershipEndDate}
@@ -97,8 +97,10 @@ const Subscription = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="font-medium col-span-1">Payment related queries</div>
-          <div className="flex col-span-1">
+          <div className="text-muted-foreground font-medium text-sm col-span-2 mt-4">For any payment-related queries, please contact us at 
+            <span className="text-primary" > be@whr.ai</span>
+            </div>
+          {/* <div className="flex col-span-1">
             <Link
               className="text-primary text-sm font-semibold flex items-center gap-1"
               href="mailto:be@whr.ai"
@@ -106,7 +108,7 @@ const Subscription = () => {
               <Mail className="h-4 w-4" />
               be@whr.ai
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
