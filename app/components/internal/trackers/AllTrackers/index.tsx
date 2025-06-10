@@ -16,6 +16,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import { CloudAlert, NotebookPen, Settings, Share2 } from 'lucide-react';
 import { useTrackerServices } from "@/services/trackerServices";
+import ShareModal from "@/app/components/internal/trackers/shareModal";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const mapping = {
@@ -26,6 +27,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
+  const [share, setShare] = useState(false);
+    const [sendInvite, setSendInvite] = useState(false);
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {getShareAccess, error}=useTrackerServices();
   const [eventsCount,setEventCount]=useState<{ type: string; totalCount: number; newCount: number; logo?:any }[]>([]);
@@ -199,6 +202,45 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         setEntryCount(keywordsLen)
       }
   }, []);
+    useEffect(() => {
+      const handlePopState = (event: any) => {
+        if (event.state && event.state.shareOpen) {
+          closeShareModal();
+        } else if (share) {
+          closeShareModal();
+        }
+      };
+  
+      window.addEventListener("popstate", handlePopState);
+  
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, [share, sendInvite]);
+    const closeShareModal = () => {
+      if (share === true) setShare(false);
+      else if (sendInvite) setSendInvite(false);
+      document.body.style.height = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+    const closeModal = (e: any) => {
+      const targetElement = e.target;
+      if (targetElement.classList.contains(styles.shareModal)) {
+        closeShareModal();
+      }
+    };
+    const shareFunction = () => {
+      if (!share) {
+        window.history.pushState({ shareOpen: true }, "");
+        setShare(true);
+        document.body.style.height = "100vh";
+        document.body.style.width = "100%";
+        document.body.style.overflow = "hidden";
+      } else {
+        closeShareModal();
+      }
+    };
    console.log(entryCount, "entryCount");
   return (
     
@@ -301,7 +343,16 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                     />
                 </Link>
               </div>
-                <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
+                <button 
+    className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
+    onClick={(e) => {
+      setShare(true);
+      e.preventDefault(); 
+        e.stopPropagation();
+    }}
+  >
+    <Share2 width={14} height={14} />
+  </button>
               </div>
             </div>
           {/* <div className={styles.lineChart}>
@@ -369,6 +420,16 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <Line data={lineData} options={lineOptions} />
           </div>
         </div> */}
+        {share && (
+            <div className={styles.shareModal} onClick={closeModal}>
+              <ShareModal
+                closeShareModal={closeShareModal}
+                share={share}
+                setShare={setShare}
+                shareFunction={shareFunction}
+              />
+            </div>
+          )}
     </div>
   );
 };
