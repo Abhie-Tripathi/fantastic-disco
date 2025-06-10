@@ -320,20 +320,40 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
+      console.log(location);
+      
       if (
         currentZoomGroup === "event" &&
         mapRef.current &&
-        location?.type === "geoCoordinates" &&
-        searchParams.get("viewBound")
+        location?.type === "geoCoordinates"
       ) {
+        
         try {
           const modifiedSearchParams = searchParams
             ?.toString()
             .replace(/locationIds=[^&]*&?/, "");
-
-          console.log("modifiedSearchParams", modifiedSearchParams);
-
+           console.log("inside 1");
+          console.log("Fetching events for tracker with viewBound");
+          const viewBound = {
+            boundType: "point",
+            coordinates: {
+              latitude: location.trackerGeoCordinates.coordinates.latitude,
+              longitude: location.trackerGeoCordinates.coordinates.longitude,
+              radius: location.trackerGeoCordinates.coordinates.radius,
+            },
+          };
+          console.log("viewBound:");
           let eventsData: any = {};
+          if (source === "tracker") {
+              eventsData = await getEventsLatLongData(
+                trackerId,
+                `viewBound=${JSON.stringify(viewBound)}`,
+                searchParams
+              );
+              console.log("Events Data:", eventsData);
+              
+            }
+          else
           eventsData = await getEventsWithSearchParams(modifiedSearchParams);
           setEvents((eventsData?.events as MapEvents[]) || []);
         } catch (error) {
