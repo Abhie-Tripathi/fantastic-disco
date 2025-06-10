@@ -35,6 +35,7 @@ import { PaginationComponent } from "../pagination";
 import { useIntelData } from "@/hooks/useIntelData";
 import { Skeleton } from "../ui/skeleton";
 import { useAuthContext } from "@/context";
+import { useFilterContext } from "@/context/filterContext";
 export default function EventList({
   eventDate,
   onClose,
@@ -115,7 +116,7 @@ export default function EventList({
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event, initialIntelScoreData, intelLoading }: { event: Event,initialIntelScoreData?:intelScore, intelLoading?:boolean}) => {
-    const {isTentimesUser} = useAuthContext();
+    const {isTentimesUser} = useFilterContext();
     const address = event.basic.eventLocation ? (
       event.basic.format === "online" ? (
         <span className="flex items-center">

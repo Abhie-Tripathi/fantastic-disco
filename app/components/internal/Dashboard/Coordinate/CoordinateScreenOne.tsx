@@ -34,7 +34,7 @@ const CoordinateScreenOne = ({ values, theme }: Props) => {
     }
 
     return (
-        <div className={`${isEmpty && "bg-[var(--background-secondary-color)]"} flex overflow-hidden h-[240px] justify-between`} >
+        <div className={`${isEmpty && ""} flex overflow-hidden h-[240px] justify-between`} >
             <div className="p-4 ">
                 <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]">
                     <span><Coordinate /></span>

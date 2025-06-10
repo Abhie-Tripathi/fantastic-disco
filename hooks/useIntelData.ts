@@ -1,6 +1,7 @@
 // hooks/useIntelData.ts
 import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context/auth";
+import { useFilterContext } from "@/context/filterContext";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 

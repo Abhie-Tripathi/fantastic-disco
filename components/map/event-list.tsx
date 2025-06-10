@@ -39,6 +39,7 @@ import { intelScore } from "@/types/trackers";
 import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context/auth"
+import { useFilterContext } from "@/context/filterContext";
 const EventCard = memo(
   ({
     event,
@@ -57,7 +58,7 @@ const EventCard = memo(
     initialIntelScoreData: intelScore;
     intelLoading?: boolean;
   }) => {
-    const {isTentimesUser} = useAuthContext();
+    const {isTentimesUser} = useFilterContext();
     const [mapZoom, setMapZoom] = useState(0);
     const {getFilterValue} = useFilterState();
     useEffect(() => {

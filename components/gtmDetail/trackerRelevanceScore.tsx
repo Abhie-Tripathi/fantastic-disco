@@ -11,13 +11,14 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { useAuthContext } from "@/context";
+import { useFilterContext } from "@/context/filterContext";
 interface TrackerRelevanceScoreProps {
   eventId: string;
 }
 const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   const {getEventIntelScore} = useEventsService();
   const {getTrackers} = useTrackerServices();
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   
   const [intelData, setIntelData] = useState<any>(null);
   const [isLoading, setIsLoading]= useState(true);
