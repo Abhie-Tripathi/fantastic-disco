@@ -445,13 +445,15 @@ export default function EventCalendar({
           <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
         </div>
       ) : error ? (
-        <div className="px-10 py-5">
+        <>
           {source === "tracker" ? (
-            <NullState image={TrackerNullState} title={error?.message} />
+            <div className="px-10 py-5">
+              <NullState image={TrackerNullState} title={error?.message} />
+            </div>
           ) : (
             <ZeroState text={error?.message} />
           )}
-        </div>
+        </>
       ) : source === "tracker" && activeVal === 0 ? (
         active === "bookmarked" ? (
           <div className="px-10 py-5">

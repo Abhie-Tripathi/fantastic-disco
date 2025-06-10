@@ -30,7 +30,22 @@ const config = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
-  reactStrictMode: false,
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Force CSS injection
+      config.optimization.splitChunks.cacheGroups.default = {
+        minChunks: 1,
+      };
+      config.optimization.splitChunks.cacheGroups.styles = {
+        name: 'styles',
+        test: /\.css$/,
+        chunks: 'all',
+        enforce: true,
+      };
+    }
+    return config;
+  },
+  reactStrictMode: true,
 };
 
 export default config;
