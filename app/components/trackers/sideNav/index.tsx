@@ -52,7 +52,7 @@ const Index = () => {
     ? "social"
     : "active";
   const [view, setView] = useState(
-    typeOfEvent === "table"
+    typeOfView === "table"
       ? "table"
       : typeOfView === "list"
       ? "list"
@@ -62,8 +62,18 @@ const Index = () => {
       ? "calendar"
       : "table"
   );
+  useEffect(() => {
+    const typeOfView = searchParams.get("view");
+
+    if (typeOfView === "table" || typeOfView === "list" || typeOfView === "map" || typeOfView === "calendar") {
+      setView(typeOfView);
+    } else {
+      setView("table");
+    }
+  }, [searchParams]);
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter();
+  const sort = searchParams.get("sortBy");
   const { data, skip, searchValue } = useTrackerContext();
   const { getTrackerDetail, error } = useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
@@ -113,7 +123,7 @@ const Index = () => {
       router.push(`/internal/trackers/savedevents?view=${view}`);
     } else
       router.push(
-        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}`
+        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}&sortBy=${sort}`
       );
   };
   // const fetchData=async()=>{

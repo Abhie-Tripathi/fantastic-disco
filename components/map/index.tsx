@@ -325,15 +325,16 @@ export default function MapComponent({
       if (
         currentZoomGroup === "event" &&
         mapRef.current &&
-        location?.type === "geoCoordinates"
+        location?.type === "geoCoordinates" &&
+  (source !== "tracker" || !searchParams.get("viewBound"))
       ) {
         
         try {
           const modifiedSearchParams = searchParams
             ?.toString()
             .replace(/locationIds=[^&]*&?/, "");
-           console.log("inside 1");
-          console.log("Fetching events for tracker with viewBound");
+          let eventsData: any = {};
+          if (source === "tracker") {
           const viewBound = {
             boundType: "point",
             coordinates: {
@@ -342,15 +343,11 @@ export default function MapComponent({
               radius: location.trackerGeoCordinates.coordinates.radius,
             },
           };
-          console.log("viewBound:");
-          let eventsData: any = {};
-          if (source === "tracker") {
               eventsData = await getEventsLatLongData(
                 trackerId,
                 `viewBound=${JSON.stringify(viewBound)}`,
                 searchParams
               );
-              console.log("Events Data:", eventsData);
               
             }
           else
