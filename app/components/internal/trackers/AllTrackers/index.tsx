@@ -18,7 +18,7 @@ import { CloudAlert, NotebookPen, Settings, Share2 } from 'lucide-react';
 import { useTrackerServices } from "@/services/trackerServices";
 import ShareModal from "@/app/components/internal/trackers/shareModal";
 // import { useTheme } from '@/context/theme';
-const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
+const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, setShare }: any) => {
   const mapping = {
     "T_COMPETITOR":"Companies",
     "T_PRODUCT_KEYWORDS":"Keywords",
@@ -27,7 +27,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
-  const [share, setShare] = useState(false);
+  // const [share, setShare] = useState(false);
     const [sendInvite, setSendInvite] = useState(false);
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {getShareAccess, error}=useTrackerServices();
@@ -162,20 +162,20 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleDoubleClick=(item:any)=>{
     
-      setSingleTrackerData(item)
-      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
-      setIsNewCall(true); 
-      setTrackerId(item.id);
+      // setSingleTrackerData(item)
+      // router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
+      // setIsNewCall(true); 
+      // setTrackerId(item.id);
   }
   const handleSingleClick=(item:any)=>{
-    setSingleTrackerData(item)
-      setSingleTrackerData(item)
-     router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
-      setMultipleFilters({ 
-        skip: skip,
-        q: searchValue,
-         id: item.id,
-      })
+    // setSingleTrackerData(item)
+    //   setSingleTrackerData(item)
+    //  router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
+    //   setMultipleFilters({ 
+    //     skip: skip,
+    //     q: searchValue,
+    //      id: item.id,
+    //   })
   }
   const [userAccessData, setUserAccessData] = useState<any>(null);
   const fetchAccess = async () => {
@@ -194,8 +194,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
  
   useEffect(() => {
     if(item?.type === "T_COMPETITOR"){
-        setEntryCount(item?.filterValues.orgWebsite.split(',').length)
-        console.log(item?.filterValues.orgWebsite.split(","), "entryCount");
+        setEntryCount(item?.filterValues?.orgWebsite?.split(',').length)
+        console.log(item?.filterValues?.orgWebsite?.split(","), "entryCount");
         
       }else if(item?.type === "T_PRODUCT_KEYWORDS"){
         const keywordsLen = item?.filterValues?.includeKeywords?.length + item?.filterValues?.excludeKeywords?.length;
@@ -249,8 +249,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
-          <div className="flex gap-2 flex-col justify-between w-[100%] sm:w-[40%]">
-            <div className="flex sm:gap-4 flex-col">
+          <div className="flex gap-2 justify-between w-[100%] sm:w-[40%] flex-row items-center">
+            <div className="flex flex-col gap-2 h-full justify-between">
+            <div className="flex flex-col gap-2 md:gap-3">
+            <div className="flex gap-2 flex-col">
             <div className="font-bold break-words leading-none">
               {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
@@ -282,17 +284,30 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{entryCount} {mapping[`${item.type}`]}</div>
             }
             </div>
-            <div className="flex gap-2 text-xs items-center"> 
+            </div>
+            <div className="md:flex gap-2 text-xs items-center hidden"> 
               <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div>
               <div className="text-[var(--secondary-bg-light)]">|</div>
               <div>{userAccessData?.superAdmin[0]?.name}</div>
               {/* <div>{userAccessData?.others?.length} Followers</div> */}
               {/* <Link></Link> */}
               <Link href={`/internal/trackers/${item.id}/manageAccess?type=${item.type}`}>
-              <div className="hover:border-b hover:border-[var(--primary-color)] text-[var(--primary-color)]">Manage</div>
+              <div className="hover:border-b hover:border-[var(--primary-color)] text-[var(--primary-color)] font-medium">Manage</div>
               </Link> 
             </div>
-             
+             </div>
+             <div className="flex md:hidden">
+              <button 
+    className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
+    onClick={(e) => {
+      setShare(true);
+      e.preventDefault(); 
+        e.stopPropagation();
+    }}
+  >
+    <Share2 width={20} height={20} />
+  </button>
+             </div>
             </div>
             <div className="flex gap-2 sm:w-[100%] h-full" style={{width:"auto"}}>
             <div className="flex w-full h-full flex-col justify-between">
@@ -329,9 +344,12 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             ))}
           </div>
-            <div className="flex justify-end">
+            <div className="hidden md:flex justify-end">
               
-              <div className="flex items-center justify-center text-[12px] text-[var(--primary-color)] gap-1 cursor-pointer">
+              <div className="flex items-center justify-center text-[12px] text-[var(--primary-color)] gap-1 cursor-pointer" onClick={(e) => {
+  
+        e.stopPropagation();
+    }}>
                 <div className="flex gap-2 items-center">
                 <Link href={`/internal/trackers/${item.id}/notesDiscussion?type=${item.type}`}>
                 <NotebookPen width={14} height={14} />

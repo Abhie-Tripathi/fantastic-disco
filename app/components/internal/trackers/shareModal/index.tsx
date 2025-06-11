@@ -83,6 +83,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             }
         }, []);
         const handleFilterChange = (e: any) => {
+            e.preventDefault();
+            e.stopPropagation();
             setFilter(e.target.value);
             setId?.('');
         };
@@ -168,7 +170,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           }, [error]);  
         
   return (
-    <div className="flex flex-col w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+    <div className="flex flex-col w-[360px] md:w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
                         {/* <div className={styles.bar}></div> */}
                         {/* <div className={styles.linkCopy}>
@@ -201,7 +203,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
                             {/* <button className={styles.send} onClick={shareInvites}>Send Invite</button> */}
                             <Button className='text-white' onClick={shareInvites}>Send Invite</Button>
                             {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
-                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]"  onClick={(e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    closeShareModal();
+  }}>Cancel</Button>
                         </div>
                     </div>
   )

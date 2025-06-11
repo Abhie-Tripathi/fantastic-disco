@@ -15,9 +15,9 @@ import Loading from "@/app/components/UI/Loading";
 import { AllTrackerTypes } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
 import { PaginationComponent } from "@/components/pagination";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
-import { Search } from "lucide-react";
+import { Route, Search } from "lucide-react";
 import {
   MagnifyingGlass,
  
@@ -46,7 +46,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const {setSkip, skip:w, searchValue} = useTrackerContext();
   const skip = w || 0;
   const take =Number(getFilterValue("take")) || 4;
-  
+  const [share,setShare]=useState(false);
+   const router= useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
@@ -131,7 +132,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
   console.log(allTracker);
-  
+  const clickHandler=(item)=>{
+    router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`)
+  }
   return (
     <div className={styles.container} ref={endOfListRef}>
       <div className={styles.containerLeft}>
@@ -215,12 +218,14 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => (
             <div className="flex gap-6">
-            <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`}className="w-[100%] md:w-[70%]">
-             <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
-            </Link>
+            {/* <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}className="w-[100%] md:w-[70%]"> */}
+            <div onClick={()=>clickHandler(item)} className="w-[100%] md:w-[70%]">
+             <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} share={share} setShare={setShare}/>
+             </div>
+            {/* </Link> */}
             <Suspense
                         fallback={
-                          <div className="h-[300px] w-[100%] items-center justify-center">
+                          <div className="hidden md:flex h-[160px] w-[30%] items-center justify-center">
                             <Loading />
                           </div>
                         }
