@@ -307,6 +307,22 @@ const Dashboard = () => {
     }
   }, [coordinateData, promoteData, trackerData, outreachData]);
 
+  const RightSectionCards = () => {
+    return (
+      <div className="grid grid-cols-12 col-span-8 xl:col-span-2 gap-3 mb-3 h-[280px] xl:h-fit">
+        <div className="col-span-12 sm:col-span-12 md:col-span-6 xl:col-span-12">
+          <RecentActivity value={value} profileData={profileData} />
+        </div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
+          <ManageTeam />
+        </div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
+          <Pricing membershipData={membershipData} />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3 max-[1010px]:max-h-none max-[1010px]:h-[100%]">
       {loading ? (
@@ -317,11 +333,19 @@ const Dashboard = () => {
         <>
           <div className="flex-1 grid grid-cols-8 gap-3">
             {role === "sa" && value === "empty" ? (
-              <div className="h-full max-[1010px]:h-fit">
-                <ModuleSelection theme={theme} value="admin" />
-              </div>
+              <>
+                <div className="col-span-8 xl:col-span-6 h-full ">
+                  <ModuleSelection theme={theme} value="admin" />
+                </div>
+                <RightSectionCards />
+              </>
             ) : role === "user" && value === "empty" ? (
-              <ModuleSelection theme={theme} value="user" />
+              <>
+                <div className="col-span-8 xl:col-span-6 h-full ">
+                  <ModuleSelection theme={theme} value="user" />
+                </div>
+                <RightSectionCards />
+            </>
             ) : value === "filled" ? (
               <>
                 <div className="flex flex-col gap-3 col-span-8 xl:col-span-6">
@@ -398,17 +422,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-12 col-span-8 xl:col-span-2 gap-3 mb-3 h-[280px] xl:h-fit">
-                  <div className="col-span-12 sm:col-span-12 md:col-span-6 xl:col-span-12">
-                    <RecentActivity value={value} profileData={profileData} />
-                  </div>
-                  <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
-                    <ManageTeam />
-                  </div>
-                  <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
-                    <Pricing membershipData={membershipData} />
-                  </div>
-                </div>
+                <RightSectionCards />
               </>
             ) : (
               <></>

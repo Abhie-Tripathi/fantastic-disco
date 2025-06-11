@@ -51,7 +51,7 @@ const RecentActivity = ({ profileData, value }: Props) => {
 
 
     return (
-        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden ${value === "filled" ? "min-h-[272px] xl:min-h-[345px]" : "h-[40%]"} w-full`}>
+        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden ${value === "filled" ? "min-h-[272px] xl:min-h-[345px]" : "min-h-[272px] xl:min-h-[200px]"} w-full`}>
             {emptyFields.length === 0 ? <div className='text-xs text-[var(--secondary-text-color)] font-[var(--font-weight-medium)] z-10'>
                 No Recent Notification
             </div> :
