@@ -16,7 +16,7 @@ interface ProfileData {
     email: string;
     phoneNumber: string;
     profilePicture: string;
-    department: string;
+    // department: string;
 }
 interface Props {
     profileData: ProfileData
@@ -51,14 +51,14 @@ const RecentActivity = ({ profileData, value }: Props) => {
 
 
     return (
-        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden relative ${value === "filled" ? "min-h-[345px]" : "h-[40%]"} `}>
+        <div className={`${styles.body} bg-[var(--background-secondary-color)] flex flex-col items-center p-3 relative overflow-hidden ${value === "filled" ? "min-h-[272px] xl:min-h-[345px]" : "min-h-[272px] xl:min-h-[200px]"} w-full`}>
             {emptyFields.length === 0 ? <div className='text-xs text-[var(--secondary-text-color)] font-[var(--font-weight-medium)] z-10'>
-                No Recent Activities
+                No Recent Notification
             </div> :
                 <div className='w-full flex items-center justify-between z-10'>
                     <div className='flex items-center gap-2'>
                         {/* <div className='flex items-center justify-center w-[19px] h-[16px] rounded-xl text-[10px] bg-[var(--primary-color)] leading-[12px] text-white'>{notifications.length}</div> */}
-                        <div className='text-xs font-semibold text-[var(--secondary-text-color)]'>Recent Activities</div>
+                        <div className='text-xs font-semibold text-[var(--secondary-text-color)]'>Recent Notification</div>
                     </div>
                     {/* <div className='text-xs font-medium text-[var(--primary-color)]'>Mark all as read</div> */}
                 </div>}
@@ -91,7 +91,7 @@ const RecentActivity = ({ profileData, value }: Props) => {
             {(emptyFields.length === 0 && value === "filled") &&
                 <Image unoptimized className={`mt-5`} width={159} height={123} src={theme === "light" ? Activities_null_top:Activities_null_topdark} alt='null' />}
             {emptyFields.length === 0 ?
-                <Image unoptimized className={`${styles.img} absolute bottom-[-140px] right-[-10px] min-w-[327px]`} src={ActivitiesNull} alt='null' height={150} /> :
+                <Image unoptimized className={`${styles.img} absolute top-[200px] w-full`} src={ActivitiesNull} alt='null' height={150} /> :
                 (emptyFields.length > 0 && !notifOpen) ?
                     <Image unoptimized className={`${styles.img} absolute 
                     bottom-[-120px] ${value === "filled" ? "right-[-10px]" : "right-[50px] "}

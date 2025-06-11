@@ -20,6 +20,7 @@ import Image from "next/image";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useFilterContext } from "@/context/filterContext";
 import FilterContent from "@/components/search/FilterContent";
+import ZeroState from "@/components/zerostate";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -393,10 +394,7 @@ export const PeopleList: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <NullState
-                image={coordinateNullState}
-                title={(error as ApiError).message}
-              />
+              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
