@@ -362,7 +362,11 @@ export default function EventCalendar({
     source !== "tracker" &&
     !searchParams.get("eventIds")
   ) {
-    return <ZeroState text="Location is Mandatory" />;
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />;
+      </div>
+    );
   }
 
   const renderCalendarContent = () => {

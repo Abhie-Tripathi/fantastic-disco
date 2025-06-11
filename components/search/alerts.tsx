@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { useEventsService } from "@/services/eventsService";
 import { useSearchParams } from "next/navigation";
@@ -24,85 +24,77 @@ import { formattedDateRange } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import { PaginationComponent } from "@/components/pagination";
 import { useTransition } from "@/context/transition";
+import { useQuery } from "@/hooks/useQuery";
 
 export default function Alerts() {
   const searchParams = useSearchParams();
   const { getEventsWithSearchParams, getEventsCount } = useEventsService();
-  const [alerts, setAlerts] = useState<AlertResponse | null>(null);
-  const [alertCounts, setAlertCounts] = useState<AlertCountItem[]>([]);
   const [offset, setOffset] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingCounts, setIsLoadingCounts] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  useEffect(() => {
-    const fetchAlertCounts = async () => {
-      setIsLoadingCounts(true);
-      try {
-        if (!(searchParams.has("active_gte") || searchParams.has("active_lte"))) return;
-        const alertCounts = (await getEventsCount({
-          ...Object.fromEntries(searchParams.entries()),
-          eventTypes: "alert",
-          groupBy: "alertType",
-        })) as unknown as AlertCount;
+  const { data: alertCountsData, isLoading: isLoadingCounts } = useQuery<
+    AlertCountItem[]
+  >({
+    queryKey: ["alertCounts", searchParams.toString()],
+    queryFn: async () => {
+      const alertCounts = (await getEventsCount({
+        ...Object.fromEntries(searchParams.entries()),
+        eventTypes: "alert",
+        groupBy: "alertType",
+      })) as unknown as AlertCount;
 
-        if (alertCounts?.count) {
-          setAlertCounts(
-            Object.entries(alertCounts.count).map(([alertType, count]) => ({
-              alertType,
-              count: count as number,
-            }))
-          );
-        }
-      } finally {
-        setIsLoadingCounts(false);
+      if (alertCounts?.count) {
+        return Object.entries(alertCounts.count).map(([alertType, count]) => ({
+          alertType,
+          count: count as number,
+        }));
       }
-    };
+      return [];
+    },
+    enabled:
+      (searchParams.has("active_gte") || searchParams.has("active_lte")) &&
+      (searchParams.has("locationIds") || searchParams.has("viewBound")),
+  });
 
-    fetchAlertCounts();
-  }, [searchParams]);
+  const filteredParams = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("eventTypes", "alert");
+    params.set("view", "list");
+    params.set("offset", offset.toString());
+    params.set("limit", itemsPerPage.toString());
 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      setIsLoading(true);
-      try {
-        if (!(searchParams.has("active_gte") || searchParams.has("active_lte"))) return;
-        const filteredParams = new URLSearchParams(searchParams.toString());
-        filteredParams.set("eventTypes", "alert");
-        filteredParams.set("view", "list");
-        filteredParams.set("offset", offset.toString());
-        filteredParams.set("limit", itemsPerPage.toString());
-
-        if (filteredParams.get("viewBound")) {
-          const viewBound = JSON.parse(filteredParams.get("viewBound") || "");
-          filteredParams.delete("viewBound");
-          filteredParams.set(
-            "viewBound",
-            JSON.stringify({
-              boundType: "point",
-              coordinates: {
-                latitude: viewBound.coordinates.latitude,
-                longitude: viewBound.coordinates.longitude,
-                radius: viewBound.coordinates.radius,
-              },
-            })
-          );
-        }
-        const fetchedAlerts = (await getEventsWithSearchParams(
-          filteredParams.toString()
-        )) as AlertResponse;
-        setAlerts(fetchedAlerts);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAlerts();
+    if (params.get("viewBound")) {
+      const viewBound = JSON.parse(params.get("viewBound") || "");
+      params.delete("viewBound");
+      params.set(
+        "viewBound",
+        JSON.stringify({
+          boundType: "point",
+          coordinates: {
+            latitude: viewBound.coordinates.latitude,
+            longitude: viewBound.coordinates.longitude,
+            radius: viewBound.coordinates.radius,
+          },
+        })
+      );
+    }
+    return params;
   }, [searchParams, offset, itemsPerPage]);
 
-  if (!alerts || !alerts.events || alerts.events.length === 0) return null;
+  const { data: alerts, isLoading } = useQuery<AlertResponse>({
+    queryKey: ["alerts", filteredParams.toString()],
+    queryFn: async () => {
+      const response = await getEventsWithSearchParams(
+        filteredParams.toString()
+      );
+      return response as AlertResponse;
+    },
+    enabled:
+      (searchParams.has("active_gte") || searchParams.has("active_lte")) &&
+      (searchParams.has("locationIds") || searchParams.has("viewBound")),
+  });
 
-  // if(isLoading || inTransition) return
+  if (!alerts || !alerts.events || alerts.events.length === 0) return null;
 
   const totalPages = Math.ceil(alerts.count / itemsPerPage);
   const currentPage = Math.floor(offset / itemsPerPage) + 1;
@@ -133,36 +125,38 @@ export default function Alerts() {
                     <div className="h-5 w-20 rounded bg-muted animate-pulse" />
                   </div>
                 ) : (
-                  alertCounts.map(({ alertType, count }, index) => (
-                    <div key={alertType} className="flex items-center">
-                      {index > 0 && (
-                        <Separator
-                          orientation="vertical"
-                          className="mx-2 sm:mx-4 h-8 hidden sm:block"
-                        />
-                      )}
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 rounded-lg bg-background px-2 sm:px-3 py-1.5">
-                          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-                            {alertIcons[alertType] ||
-                              (alertType.toLowerCase() === "warning" ? (
-                                <AlertTriangle className="h-4 w-4 text-primary" />
-                              ) : (
-                                <Info className="h-4 w-4 text-primary" />
-                              ))}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium capitalize">
-                              {alertType.toLowerCase()}
-                            </span>
-                            <Badge className="h-5 px-2 text-xs font-semibold no-underline">
-                              {count} {count === 1 ? "alert" : "alerts"}
-                            </Badge>
+                  alertCountsData?.map(
+                    ({ alertType, count }: AlertCountItem, index: number) => (
+                      <div key={alertType} className="flex items-center">
+                        {index > 0 && (
+                          <Separator
+                            orientation="vertical"
+                            className="mx-2 sm:mx-4 h-8 hidden sm:block"
+                          />
+                        )}
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 rounded-lg bg-background px-2 sm:px-3 py-1.5">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                              {alertIcons[alertType] ||
+                                (alertType.toLowerCase() === "warning" ? (
+                                  <AlertTriangle className="h-4 w-4 text-primary" />
+                                ) : (
+                                  <Info className="h-4 w-4 text-primary" />
+                                ))}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium capitalize">
+                                {alertType.toLowerCase()}
+                              </span>
+                              <Badge className="h-5 px-2 text-xs font-semibold no-underline">
+                                {count} {count === 1 ? "alert" : "alerts"}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    )
+                  )
                 )}
               </div>
             </div>
@@ -183,11 +177,11 @@ export default function Alerts() {
                   ))
                 : alerts.events
                     .sort(
-                      (a, b) =>
+                      (a: any, b: any) =>
                         new Date(a.basic.startDate).getTime() -
                         new Date(b.basic.startDate).getTime()
                     )
-                    .map((alert, index) => (
+                    .map((alert: any, index: number) => (
                       <Card
                         key={index}
                         className={cn(

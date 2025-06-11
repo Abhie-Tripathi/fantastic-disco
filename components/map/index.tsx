@@ -47,6 +47,7 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -676,7 +677,11 @@ export default function MapComponent({
     !searchParams.get("locationIds") &&
     !searchParams.get("eventIds")
   ) {
-    return <ZeroState text="Location is Mandatory" />;
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />
+      </div>
+    );
   }
   return (
     <div className="relative px-4 md:px-0">

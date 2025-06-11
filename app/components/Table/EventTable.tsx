@@ -8,7 +8,7 @@ import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
-import ZeroState from "@/app/components/zerostate"
+import ZeroState from "@/app/components/zerostate";
 import NullState from "@/app/components/trackers/nullState";
 import trackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
@@ -35,7 +35,7 @@ const EventTable = ({
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
-  const {inTransition} = useTransition()
+  const { inTransition } = useTransition();
   const { localFilters } = useFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
@@ -53,14 +53,14 @@ const EventTable = ({
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   const {
-      intelScoreData,
-      loading: intelLoading,
-      error: intelError,
-    } = useIntelData(
-      trackerId || "",
-      events?.length > 0 ? events : [],
-      eventType || ""
-    );
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    eventType || ""
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -111,8 +111,6 @@ const EventTable = ({
     }
   }, [events]);
 
-  
-  
   useEffect(() => {
     if (!events) return;
 
@@ -175,7 +173,17 @@ const EventTable = ({
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />;
+    } else
+      return error.message == "Location is required" ? (
+        <div className="p-6">
+          <CustomTrackerNullState />;
+        </div>
+      ) : (
+        <ZeroState
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
+      );
   }
 
   if (
@@ -232,26 +240,27 @@ const EventTable = ({
               localFilters={localFilters}
             />
             <TableBody className="overflow-auto">
-              {updatedEvents && updatedEvents.map((event: Event) => (
-                <EventTableRow
-                  global={view}
-                  view={query.eventType}
-                  setEventId={setEventId}
-                  setInterest={setInterest}
-                  type={query.type}
-                  key={event.basic.id}
-                  event={event}
-                  show={showValues}
-                  localFilters={localFilters}
-                  trackerId={trackerId}
-                  intelLoading={intelLoading}
-                  initialIntelScoreData={
-                    intelScoreData?.trackerEventsIntelScore?.find(
-                      (item: intelScore) => item?.event === event.basic.id
-                    ) || null
-                  }
-                />
-              ))}
+              {updatedEvents &&
+                updatedEvents.map((event: Event) => (
+                  <EventTableRow
+                    global={view}
+                    view={query.eventType}
+                    setEventId={setEventId}
+                    setInterest={setInterest}
+                    type={query.type}
+                    key={event.basic.id}
+                    event={event}
+                    show={showValues}
+                    localFilters={localFilters}
+                    trackerId={trackerId}
+                    intelLoading={intelLoading}
+                    initialIntelScoreData={
+                      intelScoreData?.trackerEventsIntelScore?.find(
+                        (item: intelScore) => item?.event === event.basic.id
+                      ) || null
+                    }
+                  />
+                ))}
             </TableBody>
           </Table>
         </div>
