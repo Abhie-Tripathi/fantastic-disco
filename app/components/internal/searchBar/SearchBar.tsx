@@ -8,6 +8,9 @@ import { formatEventDates } from "@/utils/dateFormat";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
 import { Event } from '@/types/events';
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 interface EventSuggestionItem {
   key: string | number;
   id?:any;
@@ -142,7 +145,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       name: item.basic.name || '',
                       tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
                       eventStartDate: item.basic.startDateTime,
-                      eventEndDate: item.basic.endDateTime
+                      eventEndDate: item.basic.endDateTime,
+                      location: item.basic.eventLocation
                     };
                   });
                 }
@@ -171,7 +175,34 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
          {searchInput.length > 0 && isOpen && (
   <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-304px] md:top-[40px]`}
 >
-    {restructureData && restructureData.length > 0  ? (
+  <Command>
+  <CommandGroup>
+                  <CommandList>
+  {restructureData.map((item, index) => (
+    <CommandItem
+      key={item.key ?? index}
+      onSelect={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      className="flex flex-col items-start cursor-pointer"
+    >
+      <div className="font-medium">
+                              <span>{item.name}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                {formattedDateRange(
+                                  item.eventStartDate, item.eventEndDate,
+                                  false
+                                )}
+                              </span>
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {/* {formatLocationParts(event.basic.eventLocation, true)} */}
+                            </div>
+    </CommandItem>
+  ))}
+</CommandList>
+
+                </CommandGroup>
+    </Command>
+    {/* {restructureData && restructureData.length > 0  ? (
       restructureData.map((item:any) => (
         <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.tableEntry??"")}>
           <div className={styles.event} >
@@ -204,7 +235,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       <div className={styles.resultData_list}>
         No results
       </div>
-    )}
+    )} */}
   </div>
 )}
          </> 

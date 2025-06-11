@@ -67,7 +67,7 @@ const FilterContent = ({
             {filters[type].map((section: FilterSection) => (
               <>
               {(section.id==="advanced-details" && trackerType==="T_EVENT_PARTICIPATION")&&
-                      <div className="ml-1 font-bold text-[12px]">* Filters restricted for this template</div>}
+                      <div className="ml-1 font-bold text-[12px]" style={{color:"var(--secondary-text-color)"}}>* Following filters are not applicable on this template</div>}
               <AccordionItem
                 key={section.id}
                 value={section.id}

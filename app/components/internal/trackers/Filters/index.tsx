@@ -2,7 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Filter, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Filter, LayoutGrid, Search } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -383,10 +383,10 @@ const templates = [
     name: "T_EVENT_PARTICIPATION",
     templateName: "Event Participation",
     type: "enabled",
-    description: "Input team members and their details to keep track of the events with speaking opportunities",
+    description: "Effortlessly track & Identify events similar to ones you already attend",
     inputAreas: [
       {
-        img: Url,
+        img: <Search className="w-4 h-4 text-muted-foreground" />,
         type: "text",
         placeholder: "Search By Event Name",
         required: true,
@@ -493,7 +493,30 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
-  const filterCount = Object.keys(localFilters).length;
+  const [filterCount, setFilterCount] = useState(0);
+
+useEffect(() => {
+  const keysToIgnore = ['type', 'active_lte', 'show', 'trust_score_lte'];
+  const mutuallyExclusiveGroups = [
+    ['includeKeywords', 'excludeKeywords'],
+    ['onlyBranded', 'onlySeries'],
+  ];
+
+  const filtersApplied = Object.keys(localFilters);
+
+  const filteredKeys = filtersApplied.filter((key) => !keysToIgnore.includes(key));
+  let count = filteredKeys.length;
+
+  mutuallyExclusiveGroups.forEach(group => {
+    if (group.every(key => filteredKeys.includes(key))) {
+      count -= 1;
+    }
+  });
+
+  setFilterCount(count);
+}, [localFilters]);
+
+
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const refs = {
     additionalFilterRef: useRef<HTMLDivElement>(null),
@@ -1528,7 +1551,7 @@ console.log(eventSuggestion);
       <div>
         <div className="text-[var(--primary-color)] font-bold text-lg">{last==="editTracker"?"Edit":"Create"} {template && <span>{template.templateName}</span>} Tracker</div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          Select from the available data filters to {last==="editTracker"?"edit":"create"} a tracker
+          {template?.description}
         </div>
       </div>
     </div>
@@ -1574,7 +1597,7 @@ console.log(eventSuggestion);
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
     {isCollapsed && (
-        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 overflow-hidden`}>
+        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 w-[40px]`}>
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -1629,8 +1652,9 @@ console.log(eventSuggestion);
         <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between w-full" style={{fontSize:"var(--font-size-small)"}}>
           <div className="flex items-center">
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
-          {" "} Please upload or manually enter the information
+          {" "} {`Please ${template?.isUploadEnable ?"upload or":""} manually enter the information`}
           </div>
+          {template?.isUploadEnable && 
           <div className="flex gap-1">
           
                            <Button
@@ -1699,6 +1723,8 @@ console.log(eventSuggestion);
 
                            </Button>
           </div>
+          }
+          
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
@@ -1721,7 +1747,8 @@ console.log(eventSuggestion);
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
@@ -1903,6 +1930,8 @@ console.log(eventSuggestion);
           />
           ) : (
             <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             <Image
               src={trackerEmptyTable}
               alt="table"
@@ -1912,8 +1941,6 @@ console.log(eventSuggestion);
                 justifyContent: "center",
               }}
             />
-            <div className={styles.emptyTableText}>No data added</div>
-            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             
           </div>
   )}
@@ -1928,6 +1955,12 @@ console.log(eventSuggestion);
             presetName={selectedPresetName}
           />:
           <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className = "flex flex-col">
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+            Please upload or manually enter the information
+            </div>
+          </div>
          <Image
            src={trackerEmptyTable}
            alt="table"
@@ -1937,8 +1970,7 @@ console.log(eventSuggestion);
              justifyContent: "center",
            }}
          />
-         <div className={styles.emptyTableText}>No data added</div>
-         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+         
        </div>
         }
         </TabsContent>
@@ -1951,6 +1983,14 @@ console.log(eventSuggestion);
     </>
   ) : (
     <div className={styles.emptyTableData}>
+      <div className = "flex flex-col">
+      <div className = "flex flex-col">
+      <div className={styles.emptyTableText}>No data added</div>
+      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+        {`Please ${template?.isUploadEnable?"upload or":""} manually enter the information`}
+      </div>
+      </div>
+      </div>
       <Image
         src={trackerEmptyTable}
         alt="table"
@@ -1960,10 +2000,6 @@ console.log(eventSuggestion);
           justifyContent: "center",
         }}
       />
-      <div className={styles.emptyTableText}>No data added</div>
-      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
-        Please upload or manually enter the information
-      </div>
     </div>
   ))
 }
