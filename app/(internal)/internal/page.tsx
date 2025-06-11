@@ -116,7 +116,9 @@ const Dashboard = () => {
   };
 
   const fetchTrackerData = async () => {
-    const trackerData: any = await getTrackers(`limit=4&offset=0&type=trackers`);
+    const trackerData: any = await getTrackers(
+      `limit=4&offset=0&type=trackers`
+    );
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
       const locations = Object.values(
@@ -305,6 +307,22 @@ const Dashboard = () => {
     }
   }, [coordinateData, promoteData, trackerData, outreachData]);
 
+  const RightSectionCards = () => {
+    return (
+      <div className="grid grid-cols-12 col-span-8 xl:col-span-2 gap-3 mb-3 h-[280px] xl:h-fit">
+        <div className="col-span-12 sm:col-span-12 md:col-span-6 xl:col-span-12">
+          <RecentActivity value={value} profileData={profileData} />
+        </div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
+          <ManageTeam />
+        </div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 xl:col-span-12">
+          <Pricing membershipData={membershipData} />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3 max-[1010px]:max-h-none max-[1010px]:h-[100%]">
       {loading ? (
@@ -313,96 +331,102 @@ const Dashboard = () => {
         </div>
       ) : (
         <>
-          <div className="flex-1">
+          <div className="flex-1 grid grid-cols-8 gap-3">
             {role === "sa" && value === "empty" ? (
-              <div className="h-full max-[1010px]:h-fit">
-                <ModuleSelection theme={theme} value="admin" />
-              </div>
+              <>
+                <div className="col-span-8 xl:col-span-6 h-full ">
+                  <ModuleSelection theme={theme} value="admin" />
+                </div>
+                <RightSectionCards />
+              </>
             ) : role === "user" && value === "empty" ? (
-              <ModuleSelection theme={theme} value="user" />
+              <>
+                <div className="col-span-8 xl:col-span-6 h-full ">
+                  <ModuleSelection theme={theme} value="user" />
+                </div>
+                <RightSectionCards />
+            </>
             ) : value === "filled" ? (
-              <div className="flex flex-col gap-3">
-                <Research theme={theme} />
-                <div className="flex flex-col gap-3 mb-2">
-                  <div className="w-full flex gap-3 max-[1100px]:flex-col">
-                    <div className="w-[50%] flex gap-3 max-[1100px]:w-full max-[885px]:flex-col">
-                      <div className="w-full hidden max-[885px]:block max-[600px]:hidden">
-                        <TrackerContainer
-                          trackers={trackerData}
-                          width="small"
-                        />
-                      </div>
-                      <div className="w-full hidden max-[600px]:block">
-                        <TrackerContainer
-                          trackers={trackerData}
-                          width="smaller"
-                        />
-                      </div>
-                      <div
-                        className={`${
-                          outreach && trends ? "w-[50%]" : "w-full"
-                        } max-[885px]:hidden`}
-                      >
-                        <TrackerContainer
-                          trackers={trackerData}
-                          width={role === "sa" ? "smaller" : "large"}
-                        />
-                      </div>
-                      {trends && role === "sa" && (
-                        <div className="w-[50%] max-[885px]:w-full">
-                          <Trends container="small" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="w-[50%] max-[1100px]:w-full">
-                      <CoordinateContainer
-                        theme={theme}
-                        coordinateData={coordinateData}
-                        height="small"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full flex gap-3 max-[885px]:flex-col">
-                    {role === "sa" && (
-                      <div className="w-[50%] max-[885px]:w-full">
-                        <Outreach
-                          outreachChat={outreachChat}
-                          outreachData={outreachData}
-                          theme={theme}
-                        />{" "}
-                      </div>
-                    )}
-                    {role === "sa" && (
-                      <div className="flex gap-3 w-[50%] max-[885px]:w-full max-[500px]:flex-col">
-                        <div
-                          className={`${
-                            prospect ? "w-[50%]" : "w-full"
-                          } max-[500px]:w-full`}
-                        >
-                          <PromoteContainer
-                            promoteData={promoteData}
-                            theme={theme}
-                            width={prospect ? "small" : "large"}
+              <>
+                <div className="flex flex-col gap-3 col-span-8 xl:col-span-6">
+                  <Research theme={theme} />
+                  <div className="flex flex-col gap-3">
+                    <div className="w-full flex gap-3 max-[1100px]:flex-col">
+                      <div className="w-[50%] flex gap-3 max-[1100px]:w-full max-[885px]:flex-col">
+                        <div className="w-full hidden max-[885px]:block max-[600px]:hidden">
+                          <TrackerContainer
+                            trackers={trackerData}
+                            width="small"
                           />
                         </div>
-                        {prospect && (
-                          <div className="w-[50%] max-[500px]:w-full">
-                            <Prospect theme={theme} />
+                        <div className="w-full hidden max-[600px]:block">
+                          <TrackerContainer
+                            trackers={trackerData}
+                            width="smaller"
+                          />
+                        </div>
+                        <div
+                          className={`${
+                            outreach && trends ? "w-[50%]" : "w-full"
+                          } max-[885px]:hidden`}
+                        >
+                          <TrackerContainer
+                            trackers={trackerData}
+                            width={role === "sa" ? "smaller" : "large"}
+                          />
+                        </div>
+                        {trends && role === "sa" && (
+                          <div className="w-[50%] max-[885px]:w-full">
+                            <Trends container="small" />
                           </div>
                         )}
                       </div>
-                    )}
+                      <div className="w-[50%] max-[1100px]:w-full">
+                        <CoordinateContainer
+                          theme={theme}
+                          coordinateData={coordinateData}
+                          height="small"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full flex gap-3 max-[885px]:flex-col">
+                      {role === "sa" && (
+                        <div className="w-[50%] max-[885px]:w-full">
+                          <Outreach
+                            outreachChat={outreachChat}
+                            outreachData={outreachData}
+                            theme={theme}
+                          />{" "}
+                        </div>
+                      )}
+                      {role === "sa" && (
+                        <div className="flex gap-3 w-[50%] max-[885px]:w-full max-[500px]:flex-col">
+                          <div
+                            className={`${
+                              prospect ? "w-[50%]" : "w-full"
+                            } max-[500px]:w-full`}
+                          >
+                            <PromoteContainer
+                              promoteData={promoteData}
+                              theme={theme}
+                              width={prospect ? "small" : "large"}
+                            />
+                          </div>
+                          {prospect && (
+                            <div className="w-[50%] max-[500px]:w-full">
+                              <Prospect theme={theme} />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+                <RightSectionCards />
+              </>
             ) : (
               <></>
             )}
-          </div>
-          <div className="flex flex-col min-w-[20%] gap-3 max-[1350px]:hidden">
-            <RecentActivity value={value} profileData={profileData} />
-            <ManageTeam />
-            <Pricing membershipData={membershipData} />
           </div>
         </>
       )}
