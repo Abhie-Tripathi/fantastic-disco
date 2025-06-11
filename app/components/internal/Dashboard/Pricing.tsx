@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
+import { ArrowRight } from "geist-icons";
 
 interface Props {
   membershipData: MembershipData | undefined;
@@ -61,12 +62,16 @@ const Pricing = ({ membershipData }: Props) => {
   // };
 
   return (
-    <div className="max-w-[320px] h-fit rounded-[12px] border border-[var(--border-color)] p-4">
-      <div className="text-[var(--primary-color)] font-[var(--font-weight-semibold)] text-xs">
+    <div className="min-h-[272px] h-fit rounded-[12px] border border-[var(--border-color)] p-4 w-full">
+      <div
+        className="flex items-center gap-2 cursor-pointer text-[var(--primary-color)] font-[var(--font-weight-semibold)] text-xs"
+        onClick={() => router.push("/internal/settings/subscription")}
+      >
         Subscription & Plans
+        <ArrowRight width='12px' height='12px' />
       </div>
-      <div className="border-t-[1px] border-[var(--border-color)] mt-2"></div>
-      <div className="mt-2 bg-[var(--info-background-color)] rounded-xl p-4 flex flex-col h-[205px] items-center justify-center">
+      {/* <div className="border-t-[1px] border-[var(--border-color)] mt-2"></div> */}
+      <div className="mt-2 bg-[var(--info-background-color)] rounded-xl p-4 flex flex-col h-[215px] items-center justify-center">
         <Image width={55} height={55} src={PricingImage} alt="img" />
         <div className="text-lg font-medium text-[#0072F5] mt-3 text-center">
           {membershipPlan || "Our subscription functionality is coming soon!"}
