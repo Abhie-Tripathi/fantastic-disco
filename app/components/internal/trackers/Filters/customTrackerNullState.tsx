@@ -7,7 +7,7 @@ const CustomTrackerNullState = () => {
   return (
     <div className="flex items-center justify-center flex-col gap-2 w-full">
       <div className="font-bold text-center">
-        Hello! Here's your quick-start guide:
+        Hello! Here&apos;s your quick-start guide:
       </div>
       {isEventeli && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
