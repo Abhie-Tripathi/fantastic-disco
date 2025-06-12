@@ -58,39 +58,113 @@ export default function AudienceDesAndDepSelector({
     useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
   const enabled = morphedData.audienceProfile?.isEnabled;
+  // Keep track of all selected designations separately from search results
+  const [selectedDesignationsCache, setSelectedDesignationsCache] = useState<
+    Designations[]
+  >([]);
+
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue(filterName as keyof Filters || "designations")
+      getLocalFilterValue((filterName as keyof Filters) || "designations")
         ?.split(",")
         .filter(Boolean) || [];
-    return designations.filter((d: Designations) =>
+
+    // Get selected items from current designations
+    const currentSelected = designations.filter((d: Designations) =>
       filterDesignations.includes(d.slug)
     );
-  }, [localFilters[filterName as keyof Filters || "designations"], designations]);
 
-  console.log("selectedLabels", selectedLabels);
+    // Get selected items from cache that might not be in current search results
+    const cachedSelected = selectedDesignationsCache.filter(
+      (d: Designations) =>
+        filterDesignations.includes(d.slug) &&
+        !currentSelected.some((current: any) => current.slug === d.slug)
+    );
+
+    return [...currentSelected, ...cachedSelected];
+  }, [
+    localFilters[(filterName as keyof Filters) || "designations"],
+    designations,
+    selectedDesignationsCache,
+  ]);
+
+  // Merge search results with selected items to ensure selected items are always visible
+  const displayDesignations = useMemo(() => {
+    const selectedSlugs = selectedLabels.map((label) => label.slug);
+    const searchResults = designations || [];
+
+    // Create a map to avoid duplicates
+    const designationMap = new Map();
+
+    // Add selected items first
+    selectedLabels.forEach((label) => {
+      designationMap.set(label.slug, label);
+    });
+
+    // Add search results
+    searchResults.forEach((designation: Designations) => {
+      designationMap.set(designation.slug, designation);
+    });
+
+    return Array.from(designationMap.values());
+  }, [designations, selectedLabels]);
+
+  // Handle open/close state changes
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    // Reset search when closing
+    if (!open) {
+      setSearch("");
+    }
+  };
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
-      localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
+      localFilters[(filterName as keyof Filters) || "designations"]
+        ?.split(",")
+        .filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.slug);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.slug)
       : [...currentDesignations, label.slug];
 
-    setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
+    setLocalFilter(
+      (filterName as keyof Filters) || "designations",
+      newDesignations.join(",")
+    );
+
+    // Update cache with selected designations
+    if (!isSelected) {
+      // Add to cache if not already there
+      setSelectedDesignationsCache((prev) => {
+        const exists = prev.some((item) => item.slug === label.slug);
+        return exists ? prev : [...prev, label];
+      });
+    } else {
+      // Remove from cache when deselected
+      setSelectedDesignationsCache((prev) =>
+        prev.filter((item) => item.slug !== label.slug)
+      );
+    }
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
+    const currentDesignations = localFilters[
+      (filterName as keyof Filters) || "designations"
+    ]
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
       setLocalFilter(
-        filterName as keyof Filters || "designations",
+        (filterName as keyof Filters) || "designations",
         currentDesignations.join(",")
       );
+
+    // Remove from cache as well
+    setSelectedDesignationsCache((prev) =>
+      prev.filter((item) => item.slug !== labelId)
+    );
   };
 
   const labels: Record<string, string> = {
@@ -116,12 +190,13 @@ export default function AudienceDesAndDepSelector({
       <Command shouldFilter={false}>
         <CommandInput
           placeholder="Search Audience Profile"
+          value={search}
           onValueChange={(search) => setSearch(search)}
         />
         <CommandEmpty>No label found.</CommandEmpty>
         <CommandGroup>
           <CommandList className="max-h-48">
-            {designations?.map((label: Designations) => (
+            {displayDesignations?.map((label: Designations) => (
               <CommandItem key={label.id} onSelect={() => handleSelect(label)}>
                 <Check
                   className={cn(
@@ -159,7 +234,7 @@ export default function AudienceDesAndDepSelector({
 
   if (variant === "popover") {
     return (
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={isOpen} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -189,7 +264,18 @@ export default function AudienceDesAndDepSelector({
   }
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion
+      type="single"
+      collapsible
+      onValueChange={(value) => {
+        const isOpen = Boolean(value);
+        setIsOpen(isOpen);
+        // Reset search when closing accordion
+        if (!isOpen) {
+          setSearch("");
+        }
+      }}
+    >
       <AccordionItem value="audienceProfile" className="border rounded-md">
         <AccordionTrigger
           className={cn(
