@@ -53,7 +53,6 @@ const EventTable = ({
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   const {
-<<<<<<< HEAD
       intelScoreData,
       loading: intelLoading,
       error: intelError,
@@ -63,16 +62,6 @@ const EventTable = ({
       eventType || "",
       query.type
     );
-=======
-    intelScoreData,
-    loading: intelLoading,
-    error: intelError,
-  } = useIntelData(
-    trackerId || "",
-    events?.length > 0 ? events : [],
-    eventType || ""
-  );
->>>>>>> d766de6aefe200da0d65b86981fc0045d7690b90
   const mapping = {
     rating: "rating",
     maturity: "maturity",
