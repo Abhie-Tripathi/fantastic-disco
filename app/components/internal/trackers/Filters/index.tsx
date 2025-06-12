@@ -496,10 +496,11 @@ const Pages = () => {
   const [filterCount, setFilterCount] = useState(0);
 
 useEffect(() => {
-  const keysToIgnore = ['type', 'active_lte', 'show', 'trust_score_lte'];
+  const keysToIgnore = ['type', 'show', 'trust_score_lte'];
   const mutuallyExclusiveGroups = [
     ['includeKeywords', 'excludeKeywords'],
     ['onlyBranded', 'onlySeries'],
+    ['active_gte', 'active_lte']
   ];
 
   const filtersApplied = Object.keys(localFilters);
@@ -852,7 +853,11 @@ const stepsConfig =[
     
 
       const secondLast = pathName[pathName.length - 2];
-     
+     if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
         setIsMandatory(true);
@@ -946,7 +951,11 @@ const stepsConfig =[
       }
     } else {
       // console.log(formData);
-      
+      if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
         setIsMandatory(true);
@@ -1514,7 +1523,7 @@ if(isLoading) return <Loading/>
       className={`p-2 bg-background border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1620,7 +1629,7 @@ if(isLoading) return <Loading/>
       className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1783,13 +1792,15 @@ if(isLoading) return <Loading/>
 
                       </>
                     ))}
-                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
+                    {type!=="T_EVENT_PARTICIPATION" &&
+                    <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
-
+                    }
                   </div>
+
                 }
                   {/* {customData.map((item:any, index:number) => (
     // <div key={index} className={styles.customDataOuterDiv}>
