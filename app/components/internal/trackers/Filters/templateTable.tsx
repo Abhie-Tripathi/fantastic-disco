@@ -15,7 +15,6 @@ interface Props {
 }
 
 const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion }: Props) => { 
-  console.log(customData);
   
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);

@@ -210,40 +210,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
 
                 </CommandGroup>
     </Command>
-    {/* {restructureData && restructureData.length > 0  ? (
-      restructureData.map((item:any) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.tableEntry??"")}>
-          <div className={styles.event} >
-  {item.name}
-  {item.city || item.country ? ", " : null} 
-  {type==="T_EVENT_PARTICIPATION" &&
-  <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>
-  {item.eventStartDate && item.eventEndDate &&
-    formatEventDates(item.eventStartDate, item.eventEndDate).split(",")[1]}
-  </span>
-  }
-  <span className={styles.subHeading}>
-    {item.city === item.country
-      ? item.country
-      : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
-  </span>
-  <div className='flex gap-2 text-sm'>
-  <span className='text-[var(--secondary-text-color)]'>
-  {item.eventLocation
-                      ? item.eventLocation === item.eventCountry
-                        ? item.eventCountry
-                        : `${item.eventLocation}, ${item.eventCountry}`
-                      : ""}
-  </span>
-  </div>
-</div>
-        </div>
-      ))
-    ) : (
-      <div className={styles.resultData_list}>
-        No results
-      </div>
-    )} */}
   </div>
 )}
          </> 

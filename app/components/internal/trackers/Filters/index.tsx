@@ -1472,7 +1472,6 @@ const handleShowTemplate=()=>{
   }
 }
 if(isLoading) return <Loading/>
-console.log(eventSuggestion);
 
 
  return (

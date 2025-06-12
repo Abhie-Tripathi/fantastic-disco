@@ -132,7 +132,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   initialIntelScoreData,
   intelLoading
 }) => {
-  
   const {isTentimesUser} = useFilterContext();
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");

@@ -11,7 +11,6 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
-  console.log("trackerType", trackerType);
   
   useEffect(() => {
     if (events?.length > 0 && !isEventeli) {
