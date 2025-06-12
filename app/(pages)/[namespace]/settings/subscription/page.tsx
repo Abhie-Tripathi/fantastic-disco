@@ -98,7 +98,7 @@ const Subscription = () => {
 
         <div className="grid grid-cols-2 gap-3">
           <div className="text-muted-foreground font-medium text-sm col-span-2 mt-4">For any payment-related queries, please contact us at 
-            <span className="text-primary" > be@whr.ai</span>
+            <Link href="mailto:be@whr.ai" className="text-primary font-semibold" > be@whr.ai</Link>
             </div>
           {/* <div className="flex col-span-1">
             <Link
