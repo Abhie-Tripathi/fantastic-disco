@@ -593,6 +593,16 @@ const LineChartComponent = ({
     return params;
   }, [link]);
 
+  const generateCompareViewAllEventsParams = useMemo(() => {
+    const params = new URLSearchParams(previousYearLink);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
+    params && params.delete("sortBy");
+    return params;
+  }, [previousYearLink]);
+
   const { data: eventData, isLoading: iseventsLoading } = useQuery({
     queryKey: ["events", link],
     queryFn: () => eventService.getEventsWithSearchParams(link),
@@ -895,7 +905,7 @@ const LineChartComponent = ({
                     Compared Date ({format(comparisonDate, "d MMM yyyy")})
                   </div>
                   <Link
-                    href={`/internal/search/events?${previousYearLink}`}
+                    href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
                     className="flex items-center gap-1 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
                   >
                     View All
@@ -1221,7 +1231,7 @@ const LineChartComponent = ({
           </Link>
           {compareFrom && compareTo && (
             <Link
-              href={`/internal/search/events?${previousYearLink}`}
+              href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
               className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
             >
               VIEW ALL
