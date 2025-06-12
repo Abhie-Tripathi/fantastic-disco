@@ -195,6 +195,7 @@ export default function MapComponent({
         return response || [];
       }
     },
+    retry:true
   });
 
   const handleMapClick = async (e: any) => {
