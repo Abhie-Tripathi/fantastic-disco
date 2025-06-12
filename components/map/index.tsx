@@ -46,6 +46,8 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Skeleton } from "@/components/ui/skeleton";
+import styles from '@/app/components/internal/trackers/MyTrackers/myTrackers.style.module.css'
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -667,7 +669,7 @@ export default function MapComponent({
   return (
     <div className="relative px-4 md:px-0 w-full">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
-        <Loading />
+        (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
       ) : eventCountsQuery.error ? (
         <div className="px-10 py-5">
           <NullState
@@ -679,9 +681,10 @@ export default function MapComponent({
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
+              global={isGlobal}
               image={TrackerNullState}
               title="We couldn’t find any events matching your tracker criteria at the moment."
-              text="Try adjusting your filters or checking back later, as new events are added frequently."
+              text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":""}`}
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
             />

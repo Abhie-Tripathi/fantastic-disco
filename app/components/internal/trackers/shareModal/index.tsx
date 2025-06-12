@@ -11,9 +11,10 @@ import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
 import { Button } from "@/components/ui/button";
 interface ShareModalProps {
+    shareId?:string;
     fetchAccess?: any;
   closeShareModal?: () => void;
- 
+    global?:boolean;
   id?: string;
   setId?: any;
   shareFunction?: () => void;
@@ -29,10 +30,14 @@ const ShareModal: React.FC<ShareModalProps> = ({
     shareFunction,
     share,
     setShare,
-    setAccessData
+    setAccessData,
+    global,
+    shareId
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
+    console.log("id is:",shareId);
+    
      const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
@@ -106,7 +111,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
               
             
             try {
-                const result= await shareTrackerInvite(formData, path[path.length - 2]);
+                const result= await shareTrackerInvite(formData, global? shareId:path[path.length - 2]);
 
                 GAEvent(
                                         "trackers",

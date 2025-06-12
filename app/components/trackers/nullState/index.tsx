@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const NullState = ({
+  global,
   image,
   title,
   text,
   buttonText,
   buttonUrl,
 }: {
+  global?:string;
   image: string;
   title?: string;
   text?: string;
@@ -29,6 +31,7 @@ const NullState = ({
             {text}
           </div>
         )}
+        {!global && 
         <div className="relative w-full aspect-[4/3] max-w-[160px] mx-auto">
           <Image 
             src={image} 
@@ -38,7 +41,7 @@ const NullState = ({
             sizes="160px"
             priority
           />
-        </div>
+        </div>}
         {buttonText && buttonText.length > 0 && (
           <div className="text-center">
             <Link href={`${buttonUrl}`}>

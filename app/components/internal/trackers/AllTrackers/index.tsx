@@ -14,9 +14,10 @@ import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
-import { CloudAlert, NotebookPen, Settings, Share2 } from 'lucide-react';
+import { CloudAlert, NotebookPen, Settings, Share2, Timer } from 'lucide-react';
 import { useTrackerServices } from "@/services/trackerServices";
 import ShareModal from "@/app/components/internal/trackers/shareModal";
+import UserProfile from "@/app/components/userProfile/UserProfile";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, setShare }: any) => {
   const mapping = {
@@ -32,6 +33,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {getShareAccess, error}=useTrackerServices();
   const [eventsCount,setEventCount]=useState<{ type: string; totalCount: number; newCount: number; logo?:any }[]>([]);
+  const [shareId,setShareId]=useState();
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -225,6 +227,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
       document.body.style.overflow = "";
     };
     const closeModal = (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
       const targetElement = e.target;
       if (targetElement.classList.contains(styles.shareModal)) {
         closeShareModal();
@@ -242,6 +246,37 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
       }
     };
    console.log(entryCount, "entryCount");
+const getTrackerCreatedAgo=(dateString: string | Date): string=> {
+  const now = new Date();
+  const createdDate = new Date(dateString);
+
+  if (isNaN(createdDate.getTime())) return "Invalid date";
+
+  // Remove time component for date-only comparison
+  const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const createdDateOnly = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+
+  const diffTime = nowDateOnly.getTime() - createdDateOnly.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const months = Math.floor(diffDays / 30);
+  const years = Math.floor(diffDays / 365);
+
+  if (diffDays === 0) return "Created today";
+  if (years >= 1) return `${years} year${years > 1 ? "s" : ""} ago`;
+  if (months >= 1) return `${months} month${months > 1 ? "s" : ""} ago`;
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+}
+const shareTracker=(id,e)=>{
+  console.log("shared id is:", id);
+  
+  setShare(true);
+      setShareId(id)
+      e.preventDefault(); 
+        e.stopPropagation();
+}
+console.log("sharedId", shareId);
+
   return (
     
     <div className="card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-[100%]" onClick={()=>handleSingleClick(item)}
@@ -249,7 +284,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
-          <div className="flex gap-2 justify-between w-[100%] sm:w-[40%] flex-row items-center">
+          <div className="flex gap-2 justify-between w-[100%] flex-row items-center">
             <div className="flex flex-col gap-2 h-full justify-between">
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
@@ -262,13 +297,13 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
         <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
-        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[95%]" style={{fontSize:"12px"}}>
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[95%] gap-1" style={{fontSize:"12px"}}>
           {/* {locations?.length > 0 && locations[0].length<15 &&locations[0]}
           {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
           <div  className={`${
             locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<40 &&locations[0]}
-            {locations?.length > 0 && locations[0].length>40 &&`${locations[0].substring(0,40)}...`} </div>
+            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<80 &&locations[0]}
+            {locations?.length > 0 && locations[0].length>80 &&`${locations[0].substring(0,80)}...`} </div>
           {locations?.length > 1 &&  (
             <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}
@@ -286,14 +321,30 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
             </div>
             </div>
             <div className="md:flex gap-2 text-xs items-center hidden"> 
-              <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div>
-              <div className="text-[var(--secondary-bg-light)]">|</div>
-              <div>{userAccessData?.superAdmin[0]?.name}</div>
+              {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
+              <div className="flex gap-1 items-center">{ userAccessData?.superAdmin === null ? 
+                              <UserProfile name={`${userAccessData?.superAdmin[0]?.name}`} width={30} height={30} borderRadius="50%"/>:
+                              <Image
+                                src={
+                                 userAccessData?.superAdmin[0]?.imageUrl
+                                }
+                                alt="user"
+                                className={`${styles["owner_img"]} h-[14px] w-[14px] rounded-full`}
+                                width={14}
+                                height={14}
+                                referrerPolicy="no-referrer"
+                              />
+                              }
+                              <div>{userAccessData?.superAdmin[0]?.name}</div>
+                              </div>
+              {/* <div className="text-[var(--secondary-bg-light)]">|</div> */}
+              
+              <div className="flex gap-1 items-center"><Timer width={14} height={14}/>{getTrackerCreatedAgo(item.createdAt)}</div>
               {/* <div>{userAccessData?.others?.length} Followers</div> */}
               {/* <Link></Link> */}
-              <Link href={`/internal/trackers/${item.id}/manageAccess?type=${item.type}`}>
+              {/* <Link href={`/internal/trackers/${item.id}/manageAccess?type=${item.type}`}>
               <div className="hover:border-b hover:border-[var(--primary-color)] text-[var(--primary-color)] font-medium">Manage</div>
-              </Link> 
+              </Link>  */}
             </div>
              </div>
              <div className="flex md:hidden">
@@ -363,11 +414,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
               </div>
                 <button 
     className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
-    onClick={(e) => {
-      setShare(true);
-      e.preventDefault(); 
-        e.stopPropagation();
-    }}
+    onClick={(e) => shareTracker(item.id,e)}
   >
     <Share2 width={14} height={14} />
   </button>
@@ -443,8 +490,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
               <ShareModal
                 closeShareModal={closeShareModal}
                 share={share}
+                shareId={shareId}
                 setShare={setShare}
                 shareFunction={shareFunction}
+                global={true}
               />
             </div>
           )}

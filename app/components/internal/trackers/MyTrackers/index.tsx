@@ -25,6 +25,8 @@ import {
 import SortDropdown from "@/components/search/sortDropdown";
 import Link from "next/link";
 import { isEventeli } from "@/config";
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface MyTrackersProps {
   searchValue:string;
   dataPresent: boolean;
@@ -132,7 +134,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
   console.log(allTracker);
-  const clickHandler=(item)=>{
+  const clickHandler=(item, e)=>{
+    // e.stopPropagation();
     router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`)
   }
   return (
@@ -219,20 +222,20 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             allTracker.map((item, id) => (
             <div className="flex gap-6">
             {/* <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}className="w-[100%] md:w-[70%]"> */}
-            <div onClick={()=>clickHandler(item)} className="w-[100%] md:w-[70%]">
+            <div onClick={(e)=>clickHandler(item,e)} className="w-[100%] md:w-[70%]">
              <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} share={share} setShare={setShare}/>
              </div>
             {/* </Link> */}
             <Suspense
                         fallback={
                           <div className="hidden md:flex h-[160px] w-[30%] items-center justify-center">
-                            <Loading />
+                            <Skeleton/>
                           </div>
                         }
                       >
             <div className="h-[180px] w-0 hidden md:flex md:w-[30%]">
                           {!singleTrackerData && searchValue.length < 3 ? (
-                            <Loading />
+                            <Skeleton/>
                           ) : !singleTrackerData ? (
                             <NullState
                               image={TrackerNullState}
@@ -260,9 +263,11 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             </div>
             
             ))}
-          {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
-          <div className={styles.loadingBar}></div>
-        </div>}
+          {loadOne &&  
+          <div className="hidden md:flex h-[160px] w-full items-center justify-center gap-6">
+                            <Skeleton className="h-full w-[70%]"/>
+                            <Skeleton className="h-full w-[30%]"/>
+                          </div>}
             <div
               className="flex item-center justify-center"
             >
