@@ -1523,12 +1523,12 @@ const LineChartComponent = ({
               graphData[graphData.length - 1].date
             )}
             interval={0}
-            width={10}
+            width={isMobileView ? 20 : 10}
             axisLine={false}
             tickLine={isMobileView ? false : true}
             padding={{
-              left: isMobileView ? 0 : 10,
-              right: isMobileView ? 0 : 10,
+              left: isMobileView ? 10 : 10,
+              right: isMobileView ? 20 : 10,
             }}
             label={{
               style: { fill: "#615E83" },
