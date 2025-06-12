@@ -83,9 +83,9 @@ const FilterContent = ({
                     {section.label}
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="px-4 pb-4">
+                <AccordionContent className="px-4">
                   <div
-                    className="space-y-4 border-t pt-4 mt-1"
+                    className="space-y-3 pt-3"
                     ref={refs?.advanceFilterRef}
                   >
                     {section.filters

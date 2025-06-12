@@ -88,6 +88,7 @@ export const sessionKeys = [
   "subIndustry",
   "industry",
   "redirect",
+  "newUser",
 ];
 
 // Match dynamic UUIDs or slugs after each prefix

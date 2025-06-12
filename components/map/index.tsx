@@ -45,7 +45,6 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -71,7 +70,6 @@ interface MapProps {
   trackerLoc?: string;
   trackerType?: string;
   eventType?: string;
-  trackerGeoCordinates?:any;
 }
 
 interface Coordinates {
@@ -93,12 +91,9 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
-  trackerGeoCordinates
 }: MapProps) {
-  
   const mapRef = useRef<MapRef>(null);
-  const isMobile = useIsMobile();
-  const searchParams = useSearchParams();
+  const { getLocalFilterValue, searchParams } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -145,7 +140,7 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const isHolidaySelected = getFilterValue("eventTypes")
+  const isHolidaySelected = getLocalFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
@@ -161,8 +156,7 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates || Object?.keys(trackerGeoCordinates || {}).length != 0) {
-      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
+    if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -348,8 +342,7 @@ export default function MapComponent({
         mapRef.current
       ) {
         await new Promise((resolve) => setTimeout(resolve, 600));
-        const map = mapRef?.current?.getMap();
-        if(map){
+        const map = mapRef.current.getMap();
         const center = map.getCenter();
         const bounds = map.getBounds();
         if (bounds) {
@@ -379,7 +372,7 @@ export default function MapComponent({
               JSON.stringify(viewBound)
             );
 
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
               "locationIds"
             )}`;
 
@@ -405,7 +398,6 @@ export default function MapComponent({
       } else {
         setEvents([]);
       }
-    }
     };
 
     fetchEvents();
@@ -415,30 +407,30 @@ export default function MapComponent({
     setViewport(viewState);
   }, []);
 
-  const eventCountsGeoJSON = React.useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: eventCountsQuery.data
-        ? eventCountsQuery?.data?.map((count: EventCount) => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(count.longitude),
-                parseFloat(count.latitude),
-              ],
-            },
-            properties: {
-              count: count.count,
-              id: count.cityId,
-              name: count.name,
-              type: currentZoomGroup, // "country" or "city"
-            },
-          }))
-        : [],
-    };
-  }, [eventCountsQuery.data, currentZoomGroup, location]);
-  
+  // const eventCountsGeoJSON = React.useMemo(() => {
+  //   return {
+  //     type: "FeatureCollection",
+  //     features: eventCountsQuery.data
+  //       ? eventCountsQuery?.data?.map((count: EventCount) => ({
+  //           type: "Feature",
+  //           geometry: {
+  //             type: "Point",
+  //             coordinates: [
+  //               parseFloat(count.longitude),
+  //               parseFloat(count.latitude),
+  //             ],
+  //           },
+  //           properties: {
+  //             count: count.count,
+  //             id: count.cityId,
+  //             name: count.name,
+  //             type: currentZoomGroup, // "country" or "city"
+  //           },
+  //         }))
+  //       : [],
+  //   };
+  // }, [eventCountsQuery.data, currentZoomGroup, location]);
+
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
     events.forEach((event) => {
@@ -508,15 +500,9 @@ export default function MapComponent({
             let bboxLocation = null;
 
             if (details.formattedLocations.length === 1) {
-              const location = details.formattedLocations[0];
-              bboxLocation = [
-                location.name,
-                location.city?.name,
-                location.state?.name,
-                location.country?.iso,
-              ]
-                .filter(Boolean)
-                .join(",");
+              bboxLocation =
+                details.formattedLocations[0].displayName ||
+                details.formattedLocations[0].name;
             } else {
               const locations = details.formattedLocations;
 
@@ -537,9 +523,8 @@ export default function MapComponent({
               }
             }
 
-            const locationType = details.formattedLocations[0].locationType;
             if (bboxLocation) {
-              const bbox = await getLocationBBox(bboxLocation, locationType);
+              const bbox = await getLocationBBox(bboxLocation);
               setLocationBBox(bbox);
             } else {
               setLocationBBox(null);
@@ -551,11 +536,13 @@ export default function MapComponent({
       }
     };
     fetchLocationDetails();
-  }, [location, trackerId, trackerLoc]);
+  }, [location, trackerId]);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (Object?.keys(trackerGeoCordinates || {}).length == 0 && location.locationIds == "defaultLoc") {
+    if (location.locationIds == "defaultLoc") {
+
+      console.log("flying to default loc")
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -565,7 +552,7 @@ export default function MapComponent({
     }
 
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      const { coordinates } = location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -575,7 +562,7 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
+    if (locationBBox && location.locationIds != "defaultLoc") {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -590,9 +577,7 @@ export default function MapComponent({
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
-      
-      
+      const { coordinates } = location;
       const center = point([
         Number(coordinates.longitude),
         Number(coordinates.latitude),
@@ -627,23 +612,7 @@ export default function MapComponent({
         if (!map.hasImage(key)) map.addImage(key, image);
       });
     }
-    const center = map.getCenter();
-    const zoom = map.getZoom();
-    const bearing = map.getBearing();
-    const pitch = map.getPitch();
-  
-    onMove({
-      viewState: {
-        latitude: center.lat,
-        longitude: center.lng,
-        zoom,
-        bearing,
-        pitch,
-        transitionDuration: 0,
-      },
-    });
-  }, [iconUrls, onMove]);
-  
+  }, []);
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12;
@@ -666,7 +635,7 @@ export default function MapComponent({
     return <ZeroState text="Location is Mandatory" />;
   }
   return (
-    <div className="relative px-4 md:px-0">
+    <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
         <Loading />
       ) : eventCountsQuery.error ? (
@@ -694,7 +663,7 @@ export default function MapComponent({
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal ? isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 136px)" : "300px",
+                    height: !isGlobal ? "calc(100vh - 136px)" : "300px",
                   }}
                   onMove={onMove}
                   onLoad={onMapLoad}
@@ -765,7 +734,7 @@ export default function MapComponent({
                   {!isGlobal && (
                     <Button
                       variant="default"
-                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:transform-none md:left-auto md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
+                      className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
                       onClick={() => setShowEventList("all")}
                     >
                       <AlignLeft className="w-5 h-5" />

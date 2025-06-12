@@ -29,7 +29,7 @@ import { useEventsService } from "@/services/eventsService";
 import { useTrackerServices } from "@/services/trackerServices";
 import { Event } from "@/types/events";
 import { formattedDateRange } from "@/utils/date";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Link from "next/link";
 import { PaginationComponent } from "../pagination";
 import { useIntelData } from "@/hooks/useIntelData";

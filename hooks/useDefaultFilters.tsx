@@ -3,14 +3,15 @@ import { useAuthContext } from "@/context/auth";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname, useRouter } from "next/navigation";
 import { endOfMonth, startOfMonth, addMonths } from "date-fns";
-import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
-import { sessionService } from "@/services/sessionService";
+import { EVENT_TYPE_GROUPS } from "@/data/trends";
 import { useEventsService } from "@/services/eventsService";
 import { RecentSearch } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { useConfigurationService } from "@/services/configurationService";
 import { isEventeli } from "@/config";
 import { getLastSearchWithoutAlert } from "@/utils/recentSearch";
+import { recentSearchService } from "@/services/recentSearchService";
+import { useTransition } from "@/context/transition";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
@@ -18,6 +19,7 @@ export function useDefaultFilters() {
   const { getFilterConfiguration } = useConfigurationService();
   const { getFilterValue, searchParams } = useFilterState();
   const { setMultipleLocalFilters } = useFilterContext();
+  const { setInTransition } = useTransition();
   const pathName = usePathname();
   const router = useRouter();
   const eventService = useEventsService();
@@ -378,6 +380,9 @@ export function useDefaultFilters() {
       Object.keys(currentParams).length === 0 || hasOnlyViewParam;
 
     // Only proceed if we have empty params or just view param
+    if (!isEmptySearch) {
+      return;
+    }
 
     try {
       // Try to use enabled filters first
@@ -400,39 +405,227 @@ export function useDefaultFilters() {
           pathName.split("/").includes("search") ||
           pathName === "/internal/trends"
         ) {
-          setTimeout(() => {
-            router.push(
-              `${pathName}?${
-                pathName === "/internal/trends"
-                  ? trendsParams.toString()
-                  : params.toString()
-              }`,
-              { scroll: false }
-            );
-          }, 0);
+          // Use router.replace to update URL without navigation
+          const newUrl = `${pathName}?${
+            pathName === "/internal/trends"
+              ? trendsParams.toString()
+              : params.toString()
+          }`;
+          router.replace(newUrl);
         } else {
           setMultipleLocalFilters(enabledFilterParams);
         }
         return;
       }
-      if (!isEmptySearch || pathName.split("/").includes("tracker")) {
-        return;
-      }
+
       // Fall back to recent search if no enabled filters
-      const recentSearchResponse = await eventService.getRecentSearch();
+      const recentSearchResponse = recentSearchService.getAll();
       if (
         recentSearchResponse &&
-        recentSearchResponse.recentSearches.length &&
-        recentSearchResponse.recentSearches[0].filterValues
+        recentSearchResponse.length > 0 &&
+        recentSearchResponse[0].searchEvent.params
       ) {
         const params = new URLSearchParams(searchParams.toString());
         let recentSearch: any = {};
         if (isEventeli) {
           recentSearch = getLastSearchWithoutAlert(
-            recentSearchResponse.recentSearches
+            recentSearchResponse.map((search) => ({
+              ...search,
+              requestedAt: new Date().toISOString(),
+              filterValues: {
+                ...search.searchEvent.params,
+                limit: 20,
+                offset: 0,
+                active_gte:
+                  search.searchEvent.params.active_gte ||
+                  startOfMonth(new Date()).toISOString(),
+                active_lte:
+                  search.searchEvent.params.active_lte ||
+                  endOfMonth(addMonths(new Date(), 3)).toISOString(),
+                view: "list",
+                eventTypes: search.searchEvent.params.eventTypes?.split(","),
+                categories: search.searchEvent.params.categories?.split(","),
+                locationIds:
+                  search.searchEvent.params.locationIds?.split(",") || [],
+                status: search.searchEvent.params.status?.split(","),
+                eventFormats:
+                  search.searchEvent.params.eventFormats?.split(","),
+                entryType: search.searchEvent.params.entryType?.split(","),
+                ratings: search.searchEvent.params.ratings?.split(","),
+                maturity: search.searchEvent.params.maturity?.split(","),
+                frequencies: search.searchEvent.params.frequencies?.split(","),
+                includeKeywords:
+                  search.searchEvent.params.includeKeywords?.split(","),
+                excludeKeywords:
+                  search.searchEvent.params.excludeKeywords?.split(","),
+                estimatedVisitorRangeTag:
+                  search.searchEvent.params.estimatedVisitorRangeTag?.split(
+                    ","
+                  ),
+                estimatedExhibitors:
+                  search.searchEvent.params.estimatedExhibitors?.split(","),
+                audienceSpread:
+                  search.searchEvent.params.audienceSpread?.split(","),
+                designations:
+                  search.searchEvent.params.designations?.split(","),
+                show: search.searchEvent.params.show?.split(",") || [],
+                viewBound: search.searchEvent.params.viewBound
+                  ? JSON.parse(search.searchEvent.params.viewBound)
+                  : undefined,
+                onlyBranded: search.searchEvent.params.onlyBranded === "true",
+                onlySeries: search.searchEvent.params.onlySeries === "true",
+                top: search.searchEvent.params.top
+                  ? parseInt(search.searchEvent.params.top)
+                  : undefined,
+                impact_score_gte: search.searchEvent.params.impact_score_gte
+                  ? parseInt(search.searchEvent.params.impact_score_gte)
+                  : undefined,
+                impact_score_lte: search.searchEvent.params.impact_score_lte
+                  ? parseInt(search.searchEvent.params.impact_score_lte)
+                  : undefined,
+                inbound_score_gte: search.searchEvent.params.inbound_score_gte
+                  ? parseInt(search.searchEvent.params.inbound_score_gte)
+                  : undefined,
+                inbound_score_lte: search.searchEvent.params.inbound_score_lte
+                  ? parseInt(search.searchEvent.params.inbound_score_lte)
+                  : undefined,
+                international_score_gte: search.searchEvent.params
+                  .international_score_gte
+                  ? parseInt(search.searchEvent.params.international_score_gte)
+                  : undefined,
+                international_score_lte: search.searchEvent.params
+                  .international_score_lte
+                  ? parseInt(search.searchEvent.params.international_score_lte)
+                  : undefined,
+              },
+            }))
           );
         } else {
-          recentSearch = recentSearchResponse.recentSearches[0];
+          recentSearch = {
+            ...recentSearchResponse[0],
+            requestedAt: new Date().toISOString(),
+            filterValues: {
+              ...recentSearchResponse[0].searchEvent.params,
+              limit: 20,
+              offset: 0,
+              active_gte:
+                recentSearchResponse[0].searchEvent.params.active_gte ||
+                startOfMonth(new Date()).toISOString(),
+              active_lte:
+                recentSearchResponse[0].searchEvent.params.active_lte ||
+                endOfMonth(addMonths(new Date(), 3)).toISOString(),
+              view: "list",
+              eventTypes:
+                recentSearchResponse[0].searchEvent.params.eventTypes?.split(
+                  ","
+                ),
+              categories:
+                recentSearchResponse[0].searchEvent.params.categories?.split(
+                  ","
+                ),
+              locationIds:
+                recentSearchResponse[0].searchEvent.params.locationIds?.split(
+                  ","
+                ) || [],
+              status:
+                recentSearchResponse[0].searchEvent.params.status?.split(","),
+              eventFormats:
+                recentSearchResponse[0].searchEvent.params.eventFormats?.split(
+                  ","
+                ),
+              entryType:
+                recentSearchResponse[0].searchEvent.params.entryType?.split(
+                  ","
+                ),
+              ratings:
+                recentSearchResponse[0].searchEvent.params.ratings?.split(","),
+              maturity:
+                recentSearchResponse[0].searchEvent.params.maturity?.split(","),
+              frequencies:
+                recentSearchResponse[0].searchEvent.params.frequencies?.split(
+                  ","
+                ),
+              includeKeywords:
+                recentSearchResponse[0].searchEvent.params.includeKeywords?.split(
+                  ","
+                ),
+              excludeKeywords:
+                recentSearchResponse[0].searchEvent.params.excludeKeywords?.split(
+                  ","
+                ),
+              estimatedVisitorRangeTag:
+                recentSearchResponse[0].searchEvent.params.estimatedVisitorRangeTag?.split(
+                  ","
+                ),
+              estimatedExhibitors:
+                recentSearchResponse[0].searchEvent.params.estimatedExhibitors?.split(
+                  ","
+                ),
+              audienceSpread:
+                recentSearchResponse[0].searchEvent.params.audienceSpread?.split(
+                  ","
+                ),
+              designations:
+                recentSearchResponse[0].searchEvent.params.designations?.split(
+                  ","
+                ),
+              show:
+                recentSearchResponse[0].searchEvent.params.show?.split(",") ||
+                [],
+              viewBound: recentSearchResponse[0].searchEvent.params.viewBound
+                ? JSON.parse(
+                    recentSearchResponse[0].searchEvent.params.viewBound
+                  )
+                : undefined,
+              onlyBranded:
+                recentSearchResponse[0].searchEvent.params.onlyBranded ===
+                "true",
+              onlySeries:
+                recentSearchResponse[0].searchEvent.params.onlySeries ===
+                "true",
+              top: recentSearchResponse[0].searchEvent.params.top
+                ? parseInt(recentSearchResponse[0].searchEvent.params.top)
+                : undefined,
+              impact_score_gte: recentSearchResponse[0].searchEvent.params
+                .impact_score_gte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params.impact_score_gte
+                  )
+                : undefined,
+              impact_score_lte: recentSearchResponse[0].searchEvent.params
+                .impact_score_lte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params.impact_score_lte
+                  )
+                : undefined,
+              inbound_score_gte: recentSearchResponse[0].searchEvent.params
+                .inbound_score_gte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params.inbound_score_gte
+                  )
+                : undefined,
+              inbound_score_lte: recentSearchResponse[0].searchEvent.params
+                .inbound_score_lte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params.inbound_score_lte
+                  )
+                : undefined,
+              international_score_gte: recentSearchResponse[0].searchEvent
+                .params.international_score_gte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params
+                      .international_score_gte
+                  )
+                : undefined,
+              international_score_lte: recentSearchResponse[0].searchEvent
+                .params.international_score_lte
+                ? parseInt(
+                    recentSearchResponse[0].searchEvent.params
+                      .international_score_lte
+                  )
+                : undefined,
+            },
+          };
         }
         const recentFilterParams = mapRecentSearchToParams(recentSearch);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
@@ -444,18 +637,14 @@ export function useDefaultFilters() {
           pathName.split("/").includes("search") ||
           pathName === "/internal/trends"
         ) {
-          setTimeout(() => {
-            router.push(
-              `${pathName}?${
-                pathName === "/internal/trends"
-                  ? trendsParams.toString()
-                  : params.toString()
-              }`,
-              { scroll: false }
-            );
-          }, 0);
+          // Use router.replace to update URL without navigation
+          const newUrl = `${pathName}?${
+            pathName === "/internal/trends"
+              ? trendsParams.toString()
+              : params.toString()
+          }`;
+          router.replace(newUrl);
         } else {
-          // Set local filters using the context
           setMultipleLocalFilters(recentFilterParams);
         }
         return;
@@ -472,24 +661,29 @@ export function useDefaultFilters() {
       defaultSearchParams.set("locationIds", defaultTrendsParams.locationIds);
       defaultSearchParams.set("categories", defaultTrendsParams.categories);
       defaultSearchParams.set("columns", "eventCount");
-      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
-        scroll: false,
-      });
+      const newUrl = `${pathName}?${defaultSearchParams.toString()}`;
+      router.replace(newUrl);
     }
 
-    if (pathName.split("/").includes("search")) {
+    if (pathName.split("/").includes("search") && !defaultSearchParams.has("eventIds")) {
       defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
       defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
-      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
-        scroll: false,
-      });
+      const newUrl = `${pathName}?${defaultSearchParams.toString()}`;
+      router.replace(newUrl);
     }
   };
 
   useEffect(() => {
-    if (!pathName.split("/").includes("editTracker")) {
-      setInitialFilters();
-    }
+    const init = async () => {
+      if (!pathName.split("/").includes("editTracker")) {
+        setInTransition(true)
+        await setInitialFilters();
+        setTimeout(() => {
+          setInTransition(false);
+        }, 1000);
+      }
+    };
+    init();
   }, []);
 
   return { searchParams };

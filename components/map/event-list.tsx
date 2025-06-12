@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/pagination";
 import { Event, HolidayEventLocation } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";

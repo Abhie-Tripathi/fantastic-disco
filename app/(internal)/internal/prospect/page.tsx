@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useSearchParams } from "next/navigation";
 import { useCompanyService } from "@/services/companyService";
 import Loading from "@/components/ui/Loading";

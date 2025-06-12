@@ -20,7 +20,7 @@ import {
   morphToGraphData,
   toMidnightISOString,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -54,7 +54,6 @@ import React from "react";
 
 interface IProps {
   showLegend: boolean;
-  holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
   showThresholdLines?: boolean;
 }
@@ -63,7 +62,6 @@ type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
   showLegend,
-  holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
@@ -144,7 +142,6 @@ const LineChartComponent = ({
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
-    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 
@@ -163,6 +160,7 @@ const LineChartComponent = ({
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     updatedSearchParams.set("eventTypes", "holiday");
     updatedSearchParams.delete("skip");
+    updatedSearchParams.delete("view");
     return updatedSearchParams.toString();
   }, [searchParams]);
 
@@ -212,6 +210,12 @@ const LineChartComponent = ({
     acc[startDateTime].holidays.push(name);
     return acc;
   }, {});
+
+  const holidayByDates =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
 
   useEffect(() => {
     if (trendsData !== undefined) {
@@ -581,9 +585,23 @@ const LineChartComponent = ({
 
   const generateViewAllEventsParams = useMemo(() => {
     const params = new URLSearchParams(link);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
     params && params.delete("sortBy");
     return params;
   }, [link]);
+
+  const generateCompareViewAllEventsParams = useMemo(() => {
+    const params = new URLSearchParams(previousYearLink);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
+    params && params.delete("sortBy");
+    return params;
+  }, [previousYearLink]);
 
   const { data: eventData, isLoading: iseventsLoading } = useQuery({
     queryKey: ["events", link],
@@ -887,7 +905,7 @@ const LineChartComponent = ({
                     Compared Date ({format(comparisonDate, "d MMM yyyy")})
                   </div>
                   <Link
-                    href={`/internal/search/events?${previousYearLink}`}
+                    href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
                     className="flex items-center gap-1 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
                   >
                     View All
@@ -1213,7 +1231,7 @@ const LineChartComponent = ({
           </Link>
           {compareFrom && compareTo && (
             <Link
-              href={`/internal/search/events?${previousYearLink}`}
+              href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
               className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
             >
               VIEW ALL
