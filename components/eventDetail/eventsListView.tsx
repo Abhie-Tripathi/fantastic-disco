@@ -2,7 +2,7 @@
 
 import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events/events";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";

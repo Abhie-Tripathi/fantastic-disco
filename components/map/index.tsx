@@ -25,11 +25,12 @@ import Alerts from "./alerts";
 import mapboxgl from "mapbox-gl";
 import { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { circle, point } from "@turf/turf";
 import { LayerProps } from "react-map-gl";
 import MapPopup from "./popup";
-import ZeroState from "@/components/zerostate";
+import ZeroState from "@/app/components/zerostate";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
@@ -46,6 +47,7 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -71,7 +73,7 @@ interface MapProps {
   trackerLoc?: string;
   trackerType?: string;
   eventType?: string;
-  trackerGeoCordinates?:any;
+  trackerGeoCordinates?: any;
 }
 
 interface Coordinates {
@@ -93,9 +95,8 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
-  trackerGeoCordinates
+  trackerGeoCordinates,
 }: MapProps) {
-  
   const mapRef = useRef<MapRef>(null);
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
@@ -161,8 +162,12 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates || Object?.keys(trackerGeoCordinates || {}).length != 0) {
-      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
+    if (
+      geoCoordinates ||
+      Object?.keys(trackerGeoCordinates || {}).length != 0
+    ) {
+      if (source === "tracker")
+        return { type: "geoCoordinates", trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -349,62 +354,62 @@ export default function MapComponent({
       ) {
         await new Promise((resolve) => setTimeout(resolve, 600));
         const map = mapRef?.current?.getMap();
-        if(map){
-        const center = map.getCenter();
-        const bounds = map.getBounds();
-        if (bounds) {
-          const ne = bounds.getNorthEast();
-          const sw = bounds.getSouthWest();
-          const radius =
-            (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) *
-              111) /
-            2;
+        if (map) {
+          const center = map.getCenter();
+          const bounds = map.getBounds();
+          if (bounds) {
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const radius =
+              (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) *
+                111) /
+              2;
 
-          const viewBound = {
-            boundType: "point",
-            coordinates: {
-              latitude: center.lat,
-              longitude: center.lng,
-              radius: radius,
-            },
-          };
+            const viewBound = {
+              boundType: "point",
+              coordinates: {
+                latitude: center.lat,
+                longitude: center.lng,
+                radius: radius,
+              },
+            };
 
-          try {
-            const modifiedSearchParams = searchParams
-              ?.toString()
-              .replace(/locationIds=[^&]*&?/, "")
-              .replace(/viewBound=[^&]*&?/, "");
+            try {
+              const modifiedSearchParams = searchParams
+                ?.toString()
+                .replace(/locationIds=[^&]*&?/, "")
+                .replace(/viewBound=[^&]*&?/, "");
 
-            const viewBoundString = encodeURIComponent(
-              JSON.stringify(viewBound)
-            );
-
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
-              "locationIds"
-            )}`;
-
-            let eventsData: any = {};
-
-            if (source === "tracker") {
-              eventsData = await getEventsLatLongData(
-                trackerId,
-                `viewBound=${viewBoundString}`,
-                searchParams
+              const viewBoundString = encodeURIComponent(
+                JSON.stringify(viewBound)
               );
-            } else {
-              eventsData = await getEventsWithSearchParams(finalSearchParams);
+
+              const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
+                "locationIds"
+              )}`;
+
+              let eventsData: any = {};
+
+              if (source === "tracker") {
+                eventsData = await getEventsLatLongData(
+                  trackerId,
+                  `viewBound=${viewBoundString}`,
+                  searchParams
+                );
+              } else {
+                eventsData = await getEventsWithSearchParams(finalSearchParams);
+              }
+              setEvents((eventsData?.events as MapEvents[]) || []);
+            } catch (error) {
+              console.error("Error fetching events:", error);
             }
-            setEvents((eventsData?.events as MapEvents[]) || []);
-          } catch (error) {
-            console.error("Error fetching events:", error);
+          } else {
+            console.error("Map bounds are not available");
           }
         } else {
-          console.error("Map bounds are not available");
+          setEvents([]);
         }
-      } else {
-        setEvents([]);
       }
-    }
     };
 
     fetchEvents();
@@ -437,7 +442,7 @@ export default function MapComponent({
         : [],
     };
   }, [eventCountsQuery.data, currentZoomGroup, location]);
-  
+
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
     events.forEach((event) => {
@@ -554,7 +559,10 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (Object?.keys(trackerGeoCordinates || {}).length == 0 && location.locationIds == "defaultLoc") {
+    if (
+      Object?.keys(trackerGeoCordinates || {}).length == 0 &&
+      location.locationIds == "defaultLoc"
+    ) {
       mapRef.current.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
@@ -564,7 +572,8 @@ export default function MapComponent({
     }
 
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      const { coordinates } =
+        source === "tracker" ? location.trackerGeoCordinates : location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -574,7 +583,11 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
+    if (
+      Object?.keys(trackerGeoCordinates || {}).length === 0 &&
+      locationBBox &&
+      location.locationIds != "defaultLoc"
+    ) {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -589,9 +602,9 @@ export default function MapComponent({
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
-      
-      
+      const { coordinates } =
+        source === "tracker" ? location.trackerGeoCordinates : location;
+
       const center = point([
         Number(coordinates.longitude),
         Number(coordinates.latitude),
@@ -619,30 +632,32 @@ export default function MapComponent({
     return null;
   }, [location]);
 
-  const onMapLoad = useCallback(({ target: map }) => {
-    for (const [key, url] of Object.entries(iconUrls)) {
-      map.loadImage(url, (error, image) => {
-        if (error) throw error;
-        if (!map.hasImage(key)) map.addImage(key, image);
+  const onMapLoad = useCallback(
+    ({ target: map }) => {
+      for (const [key, url] of Object.entries(iconUrls)) {
+        map.loadImage(url, (error, image) => {
+          if (error) throw error;
+          if (!map.hasImage(key)) map.addImage(key, image);
+        });
+      }
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      const bearing = map.getBearing();
+      const pitch = map.getPitch();
+
+      onMove({
+        viewState: {
+          latitude: center.lat,
+          longitude: center.lng,
+          zoom,
+          bearing,
+          pitch,
+          transitionDuration: 0,
+        },
       });
-    }
-    const center = map.getCenter();
-    const zoom = map.getZoom();
-    const bearing = map.getBearing();
-    const pitch = map.getPitch();
-  
-    onMove({
-      viewState: {
-        latitude: center.lat,
-        longitude: center.lng,
-        zoom,
-        bearing,
-        pitch,
-        transitionDuration: 0,
-      },
-    });
-  }, [iconUrls, onMove]);
-  
+    },
+    [iconUrls, onMove]
+  );
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12;
@@ -662,19 +677,18 @@ export default function MapComponent({
     !searchParams.get("locationIds") &&
     !searchParams.get("eventIds")
   ) {
-    return <ZeroState text="Location is Mandatory" />;
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />
+      </div>
+    );
   }
   return (
     <div className="relative px-4 md:px-0">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
         <Loading />
       ) : eventCountsQuery.error ? (
-        <div className="px-10 py-5">
-          <NullState
-            image={TrackerNullState}
-            title={eventCountsQuery.error.message}
-          />
-        </div>
+        <ZeroState text={eventCountsQuery.error.message} />
       ) : (
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
@@ -693,7 +707,11 @@ export default function MapComponent({
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal ? isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 136px)" : "300px",
+                    height: !isGlobal
+                      ? isMobile
+                        ? "calc(100dvh - 264px)"
+                        : "calc(100dvh - 136px)"
+                      : "300px",
                   }}
                   onMove={onMove}
                   onLoad={onMapLoad}
