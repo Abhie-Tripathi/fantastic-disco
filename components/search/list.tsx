@@ -329,7 +329,6 @@ export default function EventAccordion({
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
-  console.log("trackerId", trackerId);
 
   return (
     <div className="flex flex-col h-full px-4 md:px-0">
