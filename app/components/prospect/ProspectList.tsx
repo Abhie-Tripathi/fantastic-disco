@@ -6,6 +6,7 @@ import FilterContent from "@/components/search/FilterContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/ui/Loading";
+import ZeroState from "@/components/zerostate";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -365,10 +366,7 @@ export const ProspectList: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <NullState
-                image={coordinateNullState}
-                title={(error as ApiError).message}
-              />
+              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">

@@ -330,11 +330,11 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                               color:
                                 eventTypeColors[
                                   eventData.primaryEventType || ""
-                                ],
+                                ] || eventTypeColors["tradeshows"],
                               backgroundColor: lightenColor(
                                 eventTypeColors[
                                   eventData.primaryEventType || ""
-                                ],
+                                ] || eventTypeColors["tradeshows"],
                                 0.9
                               ),
                             }}

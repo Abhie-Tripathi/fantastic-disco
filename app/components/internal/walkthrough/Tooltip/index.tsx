@@ -27,10 +27,10 @@ const Tooltip = ({
   <div className={styles.container} {...tooltipProps}>
     <nav>
       <h2>{step.title}</h2>
-      {index !== totalSteps - 1 && <Button {...skipProps} variant="outline"
-    className="flex items-center justify-center gap-1 p-2 w-7 h-7 rounded-full"><X className="text-[var(--secondary-text-color)]" width={14} height={14} /></Button>}
-      {index === totalSteps - 1 && <Button {...closeProps} variant="outline"
-    className="flex items-center justify-center gap-1 p-2 w-7 h-7 rounded-full"><X className="text-[var(--secondary-text-color)]" width={14} height={14} /></Button>}
+      {index !== totalSteps - 1 && <button {...skipProps} title="Close"
+    className="flex items-center justify-center gap-1 text-[var(--secondary-text-color)] border-b border-transparent hover:border-[var(--secondary-text-color)] font-medium" style={{color:"var(--secondary-text-color)"}}>Close</button>}
+      {index === totalSteps - 1 && <button {...closeProps}
+    className="flex items-center justify-center gap-1 text-[var(--secondary-text-color)] border-b border-transparent hover:border-[var(--secondary-text-color)] font-medium" style={{color:"var(--secondary-text-color)"}}>Close</button>}
     </nav>
     <div className={styles.content}>{step.content}</div>
     <footer>
