@@ -3,7 +3,7 @@ import * as echarts from "echarts";
 import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
 import { useEventsService } from "@/services/eventsService";
 import { useFilterContext } from "@/context/filterContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useLocationService } from "@/services/locationService";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "../ui/Loading";
@@ -55,6 +55,7 @@ const TreemapView = ({ hierarchyLevels }: TreemapViewProps) => {
       return await getLocationDetails(locationId);
     },
     enabled: !!locationId,
+    refetchOnWindowFocus : false
   });
 
   const getGroupBy = () => {

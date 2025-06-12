@@ -12,13 +12,16 @@ import { getValidPath } from "@/lib/utils";
 import { SignUpDTO } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import IndustryCards from "./IndustryCards";
+import GoogleIcon from "/public/google.svg";
+import LinkedinIcon from "/public/linkedin.svg";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 const signUpSchema = z.object({
   email: z
@@ -86,7 +89,7 @@ export default function TeliSignUpForm() {
         variant: "default",
       });
     }
-  }, [user]);
+  }, [user, isAuthenticating]);
 
   useEffect(() => {
     if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
@@ -154,7 +157,7 @@ export default function TeliSignUpForm() {
           <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {/* {status === "unauthenticated" && (
+          {status === "unauthenticated" && (
             <>
               <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
@@ -186,7 +189,7 @@ export default function TeliSignUpForm() {
                 OR
               </p>
             </>
-          )} */}
+          )}
         </>
       )}
       <form

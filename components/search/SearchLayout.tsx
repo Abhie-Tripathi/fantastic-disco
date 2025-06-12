@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useState } from "react";
+import { RefObject, useMemo, useState } from "react";
 import { useFilterContext } from "@/context/filterContext";
 import Filters from "@/components/search/Filters";
 import { Filter } from "lucide-react";
@@ -13,7 +13,19 @@ interface SearchLayoutProps {
 const SearchLayout = ({ children, type }: SearchLayoutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { localFilters } = useFilterContext();
-  const filterCount = Object.keys(localFilters).length;
+  const filterCount = useMemo(() => {
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
 
   return (
     <div className="flex relative">
