@@ -134,7 +134,11 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       ? item.host 
                       : item.website && item.website !== "undefined" 
                       ? getDomain(item.website) 
-                      : item.name
+                      : item.name,
+                    location:{
+                        cityName:item?.location?.cityName,
+                        countryName:item?.location?.countryName
+                    }
                 }));
                 } else if (type === "T_EVENT_PARTICIPATION") {
                   updatedData = eventSuggestion.map((item:Event) => {
@@ -143,7 +147,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       eventLocation:item?.basic?.eventLocation?.cityName,
                       eventCountry:item?.basic?.eventLocation?.countryName,
                       name: item.basic.name || '',
-                      tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
+                      tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item?.basic?.eventLocation?.locationType}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
                       eventStartDate: item.basic.startDateTime,
                       eventEndDate: item.basic.endDateTime,
                       location: item.basic.eventLocation
@@ -173,7 +177,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   return (
         <>
          {searchInput.length > 0 && isOpen && (
-  <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-304px] md:top-[40px]`}
+  <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
   <Command>
   <CommandGroup>
@@ -186,15 +190,18 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     >
       <div className="font-medium">
                               <span>{item.name}</span>
+                              <span className="sr-only">{item.key}</span>
+                              {type==="T_EVENT_PARTICIPATION" &&
                               <span className="text-xs text-muted-foreground ml-2">
                                 {formattedDateRange(
                                   item.eventStartDate, item.eventEndDate,
                                   false
                                 )}
                               </span>
+                              }
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {/* {formatLocationParts(event.basic.eventLocation, true)} */}
+                              {formatLocationParts(item.location, true)}
                             </div>
     </CommandItem>
   ))}

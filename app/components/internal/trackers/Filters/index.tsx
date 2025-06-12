@@ -528,7 +528,7 @@ useEffect(() => {
 const stepsConfig =[
     {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
       ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
-      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":type==="T_EVENT_PARTICIPATION"?"Enter one or more event names to generate a tracker of similar events, industry trends, and strategic opportunities.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":type==="T_EVENT_PARTICIPATION"?"Select events and effortlessly track & Identify similar events to ones you already attend":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
     {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
     {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
     {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
@@ -1180,7 +1180,7 @@ const stepsConfig =[
         let updatedData: { "Search By Event Name": string }[] = [];
         editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
           const event = Object.values(item)[0];
-          updatedData.push({ "Search By Event Name": `${event?.basic?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.startDateTime}, ${event?.basic?.endDateTime}` });
+          updatedData.push({ "Search By Event Name": `${event.basic.name}, ${event?.basic?.eventLocation?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.eventLocation?.locationType}, ${event.basic.startDateTime}, ${event.basic.endDateTime} ` });
         });
         setEventSuggestion(editData?.filterValues?.eventIds);
 

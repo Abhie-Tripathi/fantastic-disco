@@ -197,7 +197,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
           ) {
             counts[1]++;
             percentage[1] = 30;
-          } else if (item.type === "T_PRODUCT_KEYWORDS") {
+          } else if (item.type === "T_PRODUCT_KEYWORDS" || item.type === "T_EVENT_PARTICIPATION") {
             counts[2]++;
             percentage[2] = 30;
           }
@@ -662,7 +662,7 @@ Do not include the competitor platform names in the output. Only return publicly
                   >
                     {item.name}
                   </div>
-                  <Slider key={index} width={item.value} color={item.fill} />
+                  <Slider key={index} width={item.value} color={item.fill} source="template"/>
                 </div>
               ))}
             </div>

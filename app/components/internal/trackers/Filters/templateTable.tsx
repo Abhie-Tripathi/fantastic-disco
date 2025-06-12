@@ -3,6 +3,8 @@ import styles from "./templatetable.style.module.css";
 import { useState } from "react";
 import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 
 interface Props {
   eventSuggestion?: string[];
@@ -13,6 +15,7 @@ interface Props {
 }
 
 const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion }: Props) => { 
+  console.log(customData);
   
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
@@ -139,16 +142,22 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                       <div>
                         <div>
                           {parts[0]}
-                          <span className='text-[var(--secondary-text-color)]' style={{fontSize:"12px"}}>{(parts[3] && parts[4]) && formatEventDates(parts[3], parts[4]).split(",")[1]}</span>
+                          {parts.length > 1 &&
+                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{formattedDateRange(
+                                                     parts[5],
+                                                     parts[6],
+                                                      false
+                                                    )}</span>}
                         </div>
                         {parts.length > 1 && (
                           <div className='text-[var(--secondary-text-color)]'>
                             <span className='text-sm'>
-                              {parts[1] && parts[2]
-                                ? parts[1] === parts[2]
-                                  ? parts[2]
-                                  : `${parts[1]}, ${parts[2]}`
-                                : parts[1] || parts[2] || ""}
+                              {formatLocationParts({
+  name: parts?.[1]?.trim() ?? "",
+  cityName: parts?.[2]?.trim() ?? "",
+  countryName: parts?.[3]?.trim() ?? "",
+  locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
+}, true)}
                             </span>
                           </div>
                         )}
