@@ -764,13 +764,12 @@ const EventTrends = () => {
                       )}
                       {visibleFilters.location && <LocationSelector />}
                       {visibleFilters.dateRange && <DateRangeSelector />}
-                      {activeView === "treemap" &&
-                        visibleFilters.categories && (
-                          <CategorySelector
-                            maxCategories={5}
-                            variant="accordion"
-                          />
-                        )}
+                      {visibleFilters.categories && (
+                        <CategorySelector
+                          maxCategories={5}
+                          variant="accordion"
+                        />
+                      )}
                       {visibleFilters.metrics && <ColumnsSelector />}
                       {activeView === "treemap" && (
                         <ChartFilters
@@ -1086,7 +1085,7 @@ const EventTrends = () => {
                   )}
                   {visibleFilters.location && <LocationSelector />}
                   {visibleFilters.dateRange && <DateRangeSelector />}
-                  {activeView === "treemap" && visibleFilters.categories && (
+                  {visibleFilters.categories && (
                     <CategorySelector maxCategories={5} variant="accordion" />
                   )}
                   {visibleFilters.metrics && <ColumnsSelector />}

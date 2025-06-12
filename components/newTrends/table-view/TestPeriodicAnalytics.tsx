@@ -182,7 +182,6 @@ const TestPeriodicAnalytics = () => {
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
-    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 
@@ -476,7 +475,6 @@ const TestPeriodicAnalytics = () => {
     const formattedEndStartDate = new Date(endDate).toISOString();
 
     updatedParams.delete("skip");
-    updatedParams.delete("categories");
     updatedParams.set("active_gte", formattedStartDate);
     updatedParams.set("active_lte", formattedEndStartDate);
 
