@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useFilterContext } from "@/context/filterContext";
 import { useMiscService } from "@/services/miscService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 
 // const designationsData = [];
 

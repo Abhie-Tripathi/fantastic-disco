@@ -13,7 +13,7 @@ import Image from "next/image";
 import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
 import "react-circular-progressbar/dist/styles.css";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Link from "next/link";
 import { TTabs } from "@/types/events";
 import {

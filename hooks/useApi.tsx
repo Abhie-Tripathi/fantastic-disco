@@ -45,7 +45,7 @@ export function useApi<T>() {
           url,
           ...config,
         });
-        
+
         if ("data" in response.data) {
           setState({
             data: response.data as unknown as T,
@@ -70,13 +70,27 @@ export function useApi<T>() {
           setState({ data: undefined, error: unknownError, isLoading: false });
           throw unknownError;
         }
-      } catch (error) {
+      } catch (error: any) {
+        if (error?.statusCode) {
+          setState({
+            data: undefined,
+            error: error,
+            isLoading: false,
+          });
+          throw error;
+        }
         setState({
           data: undefined,
-          error: error as any,
+          error: {
+            message:
+              "We’re currently experiencing technical difficulties. Please try again in a few minutes.",
+          } as any,
           isLoading: false,
         });
-        throw error;
+        throw {
+          message:
+            "We’re currently experiencing technical difficulties. Please try again in a few minutes.",
+        };
       }
     },
     []
