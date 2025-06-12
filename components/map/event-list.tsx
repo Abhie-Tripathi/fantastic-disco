@@ -38,7 +38,7 @@ import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
 import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
-import { useAuthContext } from "@/context/auth"
+import { useAuthContext } from "@/context/auth";
 import { useFilterContext } from "@/context/filterContext";
 const EventCard = memo(
   ({
@@ -48,19 +48,19 @@ const EventCard = memo(
     onLeave,
     trackerId,
     initialIntelScoreData,
-    intelLoading
+    intelLoading,
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
-    trackerId: string|undefined;
+    trackerId: string | undefined;
     initialIntelScoreData: intelScore;
     intelLoading?: boolean;
   }) => {
-    const {isTentimesUser} = useFilterContext();
+    const { isTentimesUser } = useFilterContext();
     const [mapZoom, setMapZoom] = useState(0);
-    const {getFilterValue} = useFilterState();
+    const { getFilterValue } = useFilterState();
     useEffect(() => {
       if (mapRef.current) {
         setMapZoom(mapRef.current.getZoom());
@@ -101,13 +101,18 @@ const EventCard = memo(
       }
       onHover();
     };
-    const type=getFilterValue("type");
+    const type = getFilterValue("type");
     const intelScoreData = [
       {
         name: "Total",
         value: initialIntelScoreData?.alltrackers_score || 0,
-        fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
-      }
+        fill:
+          type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY"
+            ? "#646BDC"
+            : type === "T_PRODUCT_KEYWORDS"
+            ? "#E99CD4"
+            : "#9B86D4",
+      },
     ];
     return (
       <Link href={`/internal/event/${event.basic.id}`}>
@@ -188,83 +193,87 @@ const EventCard = memo(
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between mb-1">
                   <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge
-                    variant="secondary"
-                    className={
-                      "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
-                    }
-                    style={{
-                      color:
-                        eventTypeColors[event.basic.primaryEventType || ""],
-                      backgroundColor: lightenColor(
-                        eventTypeColors[event.basic.primaryEventType || ""],
-                        0.9
-                      ),
-                    }}
-                  >
-                    <span>
-                      {
-                        eventTypeIcons[
-                          event.basic.primaryEventType || "festivals"
-                        ]
-                      }
-                    </span>
-                    <span>{event.basic.primaryEventType}</span>
-                  </Badge>
-                  {event.basic.rating > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize rounded-sm"
-                    >
-                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                      <span>{event.basic.rating}</span>
-                    </Badge>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge
+                        variant="secondary"
+                        className={
+                          "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
+                        }
+                        style={{
+                          color:
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                          backgroundColor: lightenColor(
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                            0.9
+                          ),
+                        }}
+                      >
+                        <span>
+                          {
+                            eventTypeIcons[
+                              event.basic.primaryEventType || "festivals"
+                            ]
+                          }
+                        </span>
+                        <span>{event.basic.primaryEventType}</span>
+                      </Badge>
+                      {event.basic.rating > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-gray-600 capitalize rounded-sm"
+                        >
+                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <span>{event.basic.rating}</span>
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <h3 className="font-semibold text-sm line-clamp-2">
+                        {event.basic.name}
+                      </h3>
+                    </div>
+                    <div className="text-xs text-gray-600 mb-1">{address}</div>
+                  </div>
+                  {isTentimesUser && (
+                    <>
+                      {trackerId &&
+                        !isEventeli &&
+                        type !== "T_CUSTOM" &&
+                        (intelLoading ? (
+                          <Skeleton className="h-16 w-16 rounded-md" />
+                        ) : (
+                          intelScoreData[0]?.value > 0 && (
+                            <div>
+                              <IntelScore
+                                width="85px"
+                                height="70px"
+                                intelScore={intelScoreData}
+                              />
+                            </div>
+                          )
+                        ))}
+                    </>
                   )}
                 </div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <h3 className="font-semibold text-sm line-clamp-2">
-                    {event.basic.name}
-                  </h3>
-                </div>
-                <div className="text-xs text-gray-600 mb-1">{address}</div>
-                </div>
-              {isTentimesUser &&(
-                <>
-                {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
-                (intelLoading ? (
-                  <Skeleton className="h-16 w-16 rounded-md" />
-                ) : (
-                  intelScoreData[0]?.value > 0 && (
-                    <div>
-                      <IntelScore width="85px" height="70px" intelScore={intelScoreData} />
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-medium text-primary">
+                      {formattedDateRange(
+                        event.basic.startDateTime,
+                        event.basic.endDateTime
+                      )}
                     </div>
-                  )
-                ))
-              }
-                </>
-              )}
-              
-              </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-primary">
-                    {formattedDateRange(
-                      event.basic.startDateTime,
-                      event.basic.endDateTime
-                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs text-primary"
+                      onClick={handleZoomToLocation}
+                    >
+                      <Focus className="w-3 h-3 mr-1" />
+                      Zoom
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 px-2 text-xs text-primary"
-                    onClick={handleZoomToLocation}
-                  >
-                    <Focus className="w-3 h-3 mr-1" />
-                    Zoom
-                  </Button>
                 </div>
-              </div>
               </div>
             </div>
           </CardContent>
@@ -437,7 +446,7 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
-  
+
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -512,6 +521,44 @@ function EventList({
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       if (!params.get("viewBound"))
         params.set("viewBound", JSON.stringify(viewBound));
+      else {
+        const existingViewBound = JSON.parse(params.get("viewBound") || "{}");
+        if (
+          existingViewBound.boundType === "point" &&
+          mapBounds &&
+          mapBounds[0] !== undefined &&
+          mapBounds[1] !== undefined &&
+          mapBounds[2] !== undefined &&
+          mapBounds[3] !== undefined
+        ) {
+          const point = existingViewBound.coordinates;
+          const radius = point.radius;
+
+          const corners = [
+            [mapBounds[0], mapBounds[1]], // SW
+            [mapBounds[0], mapBounds[3]], // NW
+            [mapBounds[2], mapBounds[1]], // SE
+            [mapBounds[2], mapBounds[3]], // NE
+          ];
+
+          const allPointsInCircle = corners.every(([lon, lat]) => {
+            const distance = turf.distance(
+              turf.point([lon, lat]),
+              turf.point([point.longitude, point.latitude]),
+              { units: "kilometers" }
+            );
+            return distance <= radius;
+          });
+
+          if (allPointsInCircle) {
+            const viewBound = {
+              boundType: "box",
+              coordinates: mapBounds,
+            };
+            params.set("viewBound", JSON.stringify(viewBound));
+          }
+        }
+      }
       params.set("sortBy", sortBy);
     }
 
@@ -750,11 +797,11 @@ function EventList({
                 onHover={() => handleEventHover(event)}
                 onLeave={handleEventLeave}
                 intelLoading={intelLoading}
-                initialIntelScoreData = {
-  intelScoreData?.trackerEventsIntelScore?.find(
-  (item:intelScore) => item?.event === event?.basic?.id
-) || null
-}
+                initialIntelScoreData={
+                  intelScoreData?.trackerEventsIntelScore?.find(
+                    (item: intelScore) => item?.event === event?.basic?.id
+                  ) || null
+                }
               />
             );
           })}
@@ -809,7 +856,14 @@ function EventList({
     <div
       className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
-      } ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && trackerId && trackerId.length>0) ? "w-full md:w-[420px]" : "w-full md:w-[345px]"}`}
+      } ${
+        searchParams?.get("type") !== "T_CUSTOM" &&
+        !isEventeli &&
+        trackerId &&
+        trackerId.length > 0
+          ? "w-full md:w-[420px]"
+          : "w-full md:w-[345px]"
+      }`}
     >
       {renderContent()}
       {hoveredPopupInfo && (
