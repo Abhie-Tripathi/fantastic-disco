@@ -161,7 +161,6 @@ const LineChartComponent = ({
     updatedSearchParams.set("eventTypes", "holiday");
     updatedSearchParams.delete("skip");
     updatedSearchParams.delete("view");
-    updatedSearchParams.delete("categories");
     return updatedSearchParams.toString();
   }, [searchParams]);
 
@@ -586,6 +585,10 @@ const LineChartComponent = ({
 
   const generateViewAllEventsParams = useMemo(() => {
     const params = new URLSearchParams(link);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
     params && params.delete("sortBy");
     return params;
   }, [link]);

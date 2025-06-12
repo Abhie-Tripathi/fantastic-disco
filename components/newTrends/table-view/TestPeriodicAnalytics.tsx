@@ -475,7 +475,6 @@ const TestPeriodicAnalytics = () => {
     const formattedEndStartDate = new Date(endDate).toISOString();
 
     updatedParams.delete("skip");
-    updatedParams.delete("categories");
     updatedParams.set("active_gte", formattedStartDate);
     updatedParams.set("active_lte", formattedEndStartDate);
 
