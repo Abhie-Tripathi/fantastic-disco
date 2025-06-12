@@ -84,8 +84,8 @@ export function useDefaultFilters() {
 
     ratings: filters.ratings?.enabledValue?.join(",") ?? "",
     maturity: filters.maturity?.enabledValue?.[0] ?? "",
-    onlyBranded: filters.branded?.enabledValue?.eventBrand ?? "true",
-    onlySeries: filters.branded?.enabledValue?.eventSeries ?? "true",
+    onlyBranded: filters.branded ? filters.branded?.enabledValue?.eventBrand ?? "true" : "",
+    onlySeries: filters.branded ? filters.branded?.enabledValue?.eventSeries ?? "true" : "",
     frequencies: filters.frequencies?.enabledValue?.join(",") ?? "",
     includeKeywords: filters.keywords?.includeKeywords?.join(",") ?? "",
     excludeKeywords: filters.keywords?.excludeKeywords?.join(",") ?? "",

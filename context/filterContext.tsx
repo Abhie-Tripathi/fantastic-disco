@@ -423,13 +423,14 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     (filters: Partial<Filters>) => {
       setLocalFilters((prev) => {
         if (
-          (filters.onlyBranded === "" &&
+          enabledFilters?.filter?.branded &&
+          ((filters.onlyBranded === "" &&
             !filters.onlySeries &&
             !prev.onlySeries) ||
           (filters.onlySeries === "" &&
             !filters.onlyBranded &&
             !prev.onlyBranded) ||
-          (filters.onlyBranded === "" && filters.onlySeries === "")
+          (filters.onlyBranded === "" && filters.onlySeries === ""))
         ) {
           toast({
             title: "Error",
@@ -445,7 +446,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         });
       });
     },
-    [filterEmptyValues]
+    [filterEmptyValues, enabledFilters]
   );
 
   const deleteMultipleLocalFilters = useCallback(
