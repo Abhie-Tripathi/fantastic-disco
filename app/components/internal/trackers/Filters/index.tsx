@@ -2081,7 +2081,8 @@ console.log(eventSuggestion);
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"

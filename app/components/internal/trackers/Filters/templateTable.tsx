@@ -5,7 +5,7 @@ import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
 import { formattedDateRange } from "@/utils/date";
 import { formatLocationParts } from "@/utils/locationFormat";
-
+import { Event } from "@/types/events";
 interface Props {
   eventSuggestion?: string[];
   setEventSuggestion?: (value: string[]) => void;
@@ -153,11 +153,11 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                           <div className='text-[var(--secondary-text-color)]'>
                             <span className='text-sm'>
                               {formatLocationParts({
-  name: parts?.[1]?.trim() ?? "",
-  cityName: parts?.[2]?.trim() ?? "",
-  countryName: parts?.[3]?.trim() ?? "",
-  locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
-}, true)}
+                                name: parts?.[1]?.trim() ?? "",
+                                cityName: parts?.[2]?.trim() ?? "",
+                                countryName: parts?.[3]?.trim() ?? "",
+                                locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
+                              } as Event["basic"]["eventLocation"], true)}
                             </span>
                           </div>
                         )}

@@ -15,15 +15,16 @@ interface EventSuggestionItem {
   key: string | number;
   id?:any;
   name: string;
-  location?: {
-    cityName?: string;
-    countryName?: string;
-  };
+  location?: Event["basic"]["eventLocation"];
+  eventStartDate?: string;
+  eventEndDate?: string;
   city?: string;
   country?: string;
   host?:string;
   website?:string;
   tableEntry?: string;
+  eventLocation?: string | null;
+  eventCountry?: string | null;
 }
 
   interface SearchBarProps {
@@ -148,8 +149,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       eventCountry:item?.basic?.eventLocation?.countryName,
                       name: item.basic.name || '',
                       tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item?.basic?.eventLocation?.locationType}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
-                      eventStartDate: item.basic.startDateTime,
-                      eventEndDate: item.basic.endDateTime,
+                      eventStartDate: item.basic.startDateTime || "",
+                      eventEndDate: item.basic.endDateTime || "",
                       location: item.basic.eventLocation
                     };
                   });
@@ -194,14 +195,14 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                               {type==="T_EVENT_PARTICIPATION" &&
                               <span className="text-xs text-muted-foreground ml-2">
                                 {formattedDateRange(
-                                  item.eventStartDate, item.eventEndDate,
+                                  item.eventStartDate || "", item.eventEndDate || "",
                                   false
                                 )}
                               </span>
                               }
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {formatLocationParts(item.location, true)}
+                              {item.location && formatLocationParts(item.location, true)}
                             </div>
     </CommandItem>
   ))}
