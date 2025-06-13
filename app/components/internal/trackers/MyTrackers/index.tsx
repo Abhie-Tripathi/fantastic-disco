@@ -134,7 +134,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
   console.log(allTracker);
-  const clickHandler=(item, e)=>{
+  const clickHandler=(item:AllTrackerTypes, e:any)=>{
     // e.stopPropagation();
     router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`)
   }
@@ -219,7 +219,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
-            allTracker.map((item, id) => (
+            allTracker.map((item:AllTrackerTypes, id:any) => (
             <div className="flex gap-6">
             {/* <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}className="w-[100%] md:w-[70%]"> */}
             <div onClick={(e)=>clickHandler(item,e)} className="w-[100%] md:w-[70%]">

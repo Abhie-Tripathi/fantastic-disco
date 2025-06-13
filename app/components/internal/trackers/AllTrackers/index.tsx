@@ -21,10 +21,10 @@ import UserProfile from "@/app/components/userProfile/UserProfile";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, setShare }: any) => {
   const mapping = {
-    "T_COMPETITOR":"Companies",
-    "T_PRODUCT_KEYWORDS":"Keywords",
-    "T_PEOPLE_FINDER": "Profiles",
-    "T_SPEAKING_OPPORTUNITY": "Profiles"
+    "T_COMPETITOR":"Companie",
+    "T_PRODUCT_KEYWORDS":"Keyword",
+    "T_PEOPLE_FINDER": "Profile",
+    "T_SPEAKING_OPPORTUNITY": "Profile"
   }
   const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
@@ -33,7 +33,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {getShareAccess, error}=useTrackerServices();
   const [eventsCount,setEventCount]=useState<{ type: string; totalCount: number; newCount: number; logo?:any }[]>([]);
-  const [shareId,setShareId]=useState();
+  const [shareId,setShareId]=useState<string>("");
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -196,12 +196,18 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
  
   useEffect(() => {
     if(item?.type === "T_COMPETITOR"){
-        setEntryCount(item?.filterValues?.orgWebsite?.split(',').length)
+      const res=(item?.filterValues?.orgWebsite?.split(',').length || 0) +
+  (item?.filterValues?.orgName?.split(',').length || 0);
+      console.log(res,"rees");
+      
+        setEntryCount(res)
         console.log(item?.filterValues?.orgWebsite?.split(","), "entryCount");
         
       }else if(item?.type === "T_PRODUCT_KEYWORDS"){
-        const keywordsLen = item?.filterValues?.includeKeywords?.length + item?.filterValues?.excludeKeywords?.length;
+        const keywordsLen = (item?.filterValues?.includeKeywords?.length || 0) + (item?.filterValues?.excludeKeywords?.length || 0);
         setEntryCount(keywordsLen)
+      }else if(item?.type === "T_PEOPLE_FINDER" || item?.type === "T_SPEAKING_OPPORTUNITY"){
+        setEntryCount(item?.filterValues?.userName?.split(',')?.length || 0)
       }
   }, []);
     useEffect(() => {
@@ -267,7 +273,7 @@ const getTrackerCreatedAgo=(dateString: string | Date): string=> {
   if (months >= 1) return `${months} month${months > 1 ? "s" : ""} ago`;
   return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
 }
-const shareTracker=(id,e)=>{
+const shareTracker=(id:string,e:any)=>{
   console.log("shared id is:", id);
   
   setShare(true);
@@ -279,10 +285,14 @@ console.log("sharedId", shareId);
 
   return (
     
-    <div className="card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-[100%]" onClick={()=>handleSingleClick(item)}
-    onDoubleClick={() => handleDoubleClick(item)} 
-    style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
-    >
+   <div
+  className={`card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-full 
+    border-4 
+    ${singleTrackerData?.id === item.id ? "border-[var(--primary-color)]" : "border-[var(--border-color)]"} 
+    hover:border-[var(--primary-color)] transition-all duration-200`}
+  onClick={() => handleSingleClick(item)}
+  onDoubleClick={() => handleDoubleClick(item)}
+>
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
           <div className="flex gap-2 justify-between w-[100%] flex-row items-center">
             <div className="flex flex-col gap-2 h-full justify-between">
@@ -316,26 +326,26 @@ console.log("sharedId", shareId);
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
             {formatType(item.type)}</div>
             {entryCount>0 &&
-            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{entryCount} {mapping[`${item.type}`]}</div>
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{entryCount} {(mapping as any)[item.type]}{entryCount > 1 && 's'}</div>
             }
             </div>
             </div>
             <div className="md:flex gap-2 text-xs items-center hidden"> 
               {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
-              <div className="flex gap-1 items-center">{ userAccessData?.superAdmin === null ? 
-                              <UserProfile name={`${userAccessData?.superAdmin[0]?.name}`} width={30} height={30} borderRadius="50%"/>:
+              <div className="flex gap-1 items-center">{ userAccessData?.superAdmin?.[0]?.imageUrl === null ? 
+                              <UserProfile name={`${userAccessData?.superAdmin?.[0]?.name}`} width={30} height={30} borderRadius="50%"/>:
                               <Image
                                 src={
-                                 userAccessData?.superAdmin[0]?.imageUrl
+                                 userAccessData?.superAdmin?.[0]?.imageUrl
                                 }
                                 alt="user"
-                                className={`${styles["owner_img"]} h-[14px] w-[14px] rounded-full`}
-                                width={14}
-                                height={14}
+                                className={`${styles["owner_img"]} h-[30px] w-[30px] rounded-full`}
+                                width={30}
+                                height={30}
                                 referrerPolicy="no-referrer"
                               />
                               }
-                              <div>{userAccessData?.superAdmin[0]?.name}</div>
+                              <div>{userAccessData?.superAdmin?.[0]?.name}</div>
                               </div>
               {/* <div className="text-[var(--secondary-bg-light)]">|</div> */}
               

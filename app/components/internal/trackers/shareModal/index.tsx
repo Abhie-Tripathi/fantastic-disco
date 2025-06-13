@@ -111,7 +111,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
               
             
             try {
-                const result= await shareTrackerInvite(formData, global? shareId:path[path.length - 2]);
+                const result= await shareTrackerInvite(formData, global? shareId||"":path[path.length - 2]);
 
                 GAEvent(
                                         "trackers",
@@ -211,7 +211,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                             <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]"  onClick={(e) => {
     e.stopPropagation();
     e.preventDefault();
-    closeShareModal();
+    closeShareModal?.();
   }}>Cancel</Button>
                         </div>
                     </div>
