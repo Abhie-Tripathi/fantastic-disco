@@ -459,6 +459,7 @@ const EventTable = ({
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
+console.log("totalChecked", totalChecked);
 
   return (
     <div className="w-full flex flex-col h-full">

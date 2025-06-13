@@ -99,7 +99,7 @@ const Page = ({ params }: { params: any }) => {
   const router = useRouter();
   const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
-  const [bulkActions,setBulkActions]=useState(["Take Action"])
+  const [bulkActions,setBulkActions]=useState(["Bulk Action"])
   // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType = searchParams.get("view");
