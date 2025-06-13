@@ -687,7 +687,6 @@ const Page = ({ params }: { params: any }) => {
                       const currentParams = new URLSearchParams(window.location.search);
                       currentParams.set('view', 'table');
                       const newUrl = `${pathname}?${currentParams.toString()}`;
-                      console.log('newUrl', newUrl);
 
                       setTimeout(() => {
                         router.replace(newUrl);
