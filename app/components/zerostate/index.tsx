@@ -5,24 +5,10 @@ import Link from "next/link";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 
-const ZeroState = ({
-  title,
-  text,
-  errorStatusCode,
-}: {
-  title?: string;
-  text?: string;
-  errorStatusCode?: number;
-}) => {
+const ZeroState = ({ title, text, errorStatusCode }: { title?: string, text?: string, errorStatusCode?: number; }) => {
   const handleUpgradeClick = () => {
-    GAEvent(
-      "",
-      "Plan Upgrade",
-      "Research",
-      `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`
-    );
-  };
-
+    GAEvent("", "Plan Upgrade", "Research", `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`);
+  }
   return (
     <div className="flex flex-col items-center justify-center gap-4 [color:var(--primary-color)] font-medium p-6 min-h-[300px] animate-fadeIn">
       {title && (
@@ -51,10 +37,10 @@ const ZeroState = ({
           )}
         </div>
       )}
-      <Image
-        src={ZeroStateIcon}
-        alt="zerostate"
-        width={200}
+      <Image 
+        src={ZeroStateIcon} 
+        alt="zerostate" 
+        width={200} 
         height={160}
         className="w-[180px] h-auto sm:w-[160px] md:w-[180px] lg:w-[200px] transition-transform duration-300 hover:scale-110 mt-4"
       />
