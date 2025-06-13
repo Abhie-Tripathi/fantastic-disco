@@ -20,6 +20,7 @@ import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CheckCircle2, Copy, ExternalLink } from "lucide-react";
+import { isEventeli } from "@/config";
 
 interface CreateTrackerDialog {
   open: boolean;
@@ -141,7 +142,11 @@ export default function CreateTrackerDialog({
       }
       if (data) {
         setTrackerUrl(
-          `${window.location.origin}/internal/trackers/${data.id}/trackedEvents?type=T_CUSTOM&view=table&eventType=active`
+          `${window.location.origin}/internal/trackers/${
+            data.id
+          }/trackedEvents?type=T_CUSTOM&view=table&${
+            isEventeli ? "eventType=social" : "eventType=active"
+          }`
         );
         setIsSuccess(true);
       }
