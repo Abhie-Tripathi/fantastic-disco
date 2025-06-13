@@ -13,7 +13,7 @@ import { useMiscService } from "@/services/miscService";
 import { Weather } from "@/types";
 import { Event } from "@/types/events";
 import { EventDate } from "@/types/events/eventDetail";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventsListView from "../eventDetail/eventsListView";

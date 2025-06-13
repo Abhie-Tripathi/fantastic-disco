@@ -327,6 +327,11 @@ export const AuthContextProvider = ({ children }: any) => {
   }, [request, router]);
 
   const signInSSO = useCallback(async () => {
+    const isNewUser = JSON.parse(sessionStorage.getItem("newUser") || "false");
+
+    if (isNewUser) {
+      return;
+    }
     setIsAuthenticating(true);
     try {
       const origin = window.location.origin;
@@ -354,6 +359,7 @@ export const AuthContextProvider = ({ children }: any) => {
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
         } else {
+          sessionStorage.setItem("newUser", JSON.stringify(true));
           // localStorage.removeItem("walkthroughCompleted");
           router.push("/signup");
         }
@@ -402,7 +408,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (error) {
         console.error("Verification failed:", error);
-        const fallbackPage = `https://whr.ai/${isEventeli ? 'geo' : 'gtm'}`;
+        const fallbackPage = `https://whr.ai/${isEventeli ? "geo" : "gtm"}`;
         router.push(fallbackPage);
       }
     },
