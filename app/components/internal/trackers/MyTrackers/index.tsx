@@ -158,7 +158,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                {totalCount}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
             <Button variant="default" onClick={()=>hideTemplates(false)}>Create</Button>
             <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
@@ -183,7 +183,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   </div>
 </div>
         <div className={`${
-    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100vh-252px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
+    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100dvh-253px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
@@ -206,6 +206,34 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             </div>
           {/* )} */}
           </div>
+          <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
+          <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
+            <div className="flex items-center justify-between">
+            <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 w-full">
+    <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+    <input
+      className="outline-none w-full bg-transparent"
+      placeholder="Enter tracker name"
+      value={searchValue}
+      onChange={(e) => setSearchValue(e.target.value)}
+    />
+  </div>
+              {/* <Button
+                variant="ghost"
+                className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+              > */}
+                {/* <FilterX className="w-3.5 h-3.5 mr-1" />
+                Reset all filters
+              </Button>
+              <span className="text-xs text-[#6E6F89]">
+                {filterCount} filters applied
+              </span> */}
+            </div>
+            <Button className="w-full h-10" onClick={()=>hideTemplates(false)}>
+              Create
+            </Button>
+          </div>
+        </div>
           </div>
     </div>
   );

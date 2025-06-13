@@ -8,13 +8,13 @@ import { newCategories } from "@/data/categories";
 import { industryData, sessionKeys } from "@/data/onboarding";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
+import { getValidPath } from "@/lib/utils";
 import { SignUpFormSchema } from "@/types/signup";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,10 +22,15 @@ import CategoryCards from "./CategoryCards";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const {
     signup,
     error,
@@ -53,7 +58,10 @@ const GtmSignUpForm = () => {
   });
   const { data: session, status } = useSession();
 
-  const signUpFlow = (user && user?.isNewUser && (status === "authenticated" || userAuthenticated)) ? 'sso' : 'default';
+  const signUpFlow =
+    user && user?.isNewUser && (status === "authenticated" || userAuthenticated)
+      ? "sso"
+      : "default";
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -81,9 +89,10 @@ const GtmSignUpForm = () => {
       sessionStorage.setItem("industry", signUpDTOData.industry);
     }
     sessionStorage.setItem("flow", "signUp");
+    redirectParams && sessionStorage.setItem("redirect", redirectParams);
 
     try {
-      if (signUpFlow === 'sso') {
+      if (signUpFlow === "sso") {
         await updateIndustry(signUpDTOData);
       } else {
         await signup(signUpDTOData);
@@ -92,6 +101,10 @@ const GtmSignUpForm = () => {
       console.error("Signup error:", error);
     }
   };
+
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
 
   useEffect(() => {
     const isMappedCategory = industryData.find(
@@ -140,7 +153,7 @@ const GtmSignUpForm = () => {
         variant: "default",
       });
     }
-  }, [user]);
+  }, [user, isAuthenticating]);
 
   const isCategoryMapped = industryData.find(
     (industryItem) => industryItem.slug === industry
@@ -197,12 +210,12 @@ const GtmSignUpForm = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
-      {signUpFlow === 'default' &&
+      {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {/* {status === "unauthenticated" && (
+          {status === "unauthenticated" && (
             <>
               <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
@@ -210,7 +223,11 @@ const GtmSignUpForm = () => {
                   variant={"outline"}
                   className="flex items-center h-11 w-auto gap-3 px-8"
                 >
-                  <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+                  <Image
+                    src={GoogleIcon}
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                  />
                   <span>Google</span>
                 </Button>
                 <Button
@@ -218,20 +235,26 @@ const GtmSignUpForm = () => {
                   variant={"outline"}
                   className="flex items-center h-11 w-auto gap-3 px-8"
                 >
-                  <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+                  <Image
+                    src={LinkedinIcon}
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                  />
                   <span>LinkedIn</span>
                 </Button>
               </div>
-              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
+              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
+                OR
+              </p>
             </>
-          )} */}
+          )}
         </>
-      }
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full mt-4"
       >
-        {signUpFlow === 'default' &&
+        {signUpFlow === "default" && (
           <Controller
             name="email"
             control={control}
@@ -269,7 +292,7 @@ const GtmSignUpForm = () => {
               </div>
             )}
           />
-        }
+        )}
         <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
           Choose an Industry Relevant to You
         </p>
@@ -313,47 +336,49 @@ const GtmSignUpForm = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing up...
             </>
+          ) : signUpFlow === "default" ? (
+            "Sign Up"
           ) : (
-            signUpFlow === 'default' ? "Sign Up" : "Submit"
+            "Submit"
           )}
         </Button>
       </form>
 
-      {signUpFlow === 'default' &&
-      <>
-        <div className="text-center py-2 text-sm">
-          Already have an account?
-          <Link
-            onClick={() => signOut({ callbackUrl: "/signin" })}
-            href="/signin"
-            className="text-[#6750a4] cursor-pointer font-medium"
-          >
-            {" "}
-            Log In
-          </Link>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="text-center text-[#808080] text-[12px]">
-            By signing up, you agree to our
+      {signUpFlow === "default" && (
+        <>
+          <div className="text-center py-2 text-sm">
+            Already have an account?
             <Link
-              target="_blank"
-              href={"https://whr.ai/terms-of-service"}
-              className="text-[#6750a4] font-medium ml-1"
+              onClick={() => signOut({ callbackUrl: "/signin" })}
+              href="/signin"
+              className="text-[#6750a4] cursor-pointer font-medium"
             >
-              Terms{" "}
-            </Link>
-            and
-            <Link
-              target="_blank"
-              href={"https://whr.ai/privacy-policy"}
-              className="text-[#6750a4] font-medium ml-1"
-            >
-              Privacy Policy
+              {" "}
+              Log In
             </Link>
           </div>
-        </div>
-      </>
-      }
+          <div className="flex items-center gap-2">
+            <div className="text-center text-[#808080] text-[12px]">
+              By signing up, you agree to our
+              <Link
+                target="_blank"
+                href={"https://whr.ai/terms-of-service"}
+                className="text-[#6750a4] font-medium ml-1"
+              >
+                Terms{" "}
+              </Link>
+              and
+              <Link
+                target="_blank"
+                href={"https://whr.ai/privacy-policy"}
+                className="text-[#6750a4] font-medium ml-1"
+              >
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

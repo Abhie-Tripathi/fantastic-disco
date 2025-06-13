@@ -3,23 +3,27 @@
 import NullState from "@/app/components/trackers/nullState";
 import { PaginationComponent } from "@/components/pagination";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Filter, FilterX, MailIcon, PhoneIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Loading from "@/components/ui/Loading";
 import { useBulkAction } from "@/context/bulkAction";
-import { useFilterState } from "@/hooks/useFilterState";
-import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
-import { ApiError } from "@/types/api";
 import { CompanyListResponse, userListData } from "@/types/prospect";
-import { useQuery } from "@tanstack/react-query";
 import { Location } from "geist-icons";
-import { MailIcon, PhoneIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { useQuery } from "@/hooks/useQuery";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import coordinateNullState from "@/public/coordinateNullState.svg";
+import { ApiError } from "@/types/api";
+import Link from "next/link";
+import Image from "next/image";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import { useFilterContext } from "@/context/filterContext";
+import FilterContent from "@/components/search/FilterContent";
+import ZeroState from "@/components/zerostate";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -72,7 +76,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
   const [imageSrc, setImageSrc] = useState<string | null>(
     poc.user_profilePicture
   );
-
+  const isMobile = useIsMobile();
   const handleImageError = useCallback(() => {
     setImageSrc(DEFAULT_USER_ICON);
   }, []);
@@ -87,124 +91,135 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
   const renderEventCategories = useCallback(() => {
     if (!poc.top_event_categories?.length) return null;
 
-    return poc.top_event_categories.slice(0, 2).map((item) => (
-      <span
-        key={item.key}
-        className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
-      >
-        {item.key}
-      </span>
-    ));
-  }, [poc.top_event_categories]);
+    const maxVisibleTags = isMobile ? 1 : 2;
+    const visibleCategories = poc.top_event_categories.slice(0, maxVisibleTags);
+    const remainingCount = poc.top_event_categories.length - maxVisibleTags;
+
+    return (
+      <div className="flex flex-wrap gap-2 items-center">
+        {visibleCategories.map((item) => (
+          <span
+            key={item.key}
+            className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+          >
+            {item.key}
+          </span>
+        ))}
+        {remainingCount > 0 && (
+          <span className="text-xs text-[#6E6F89]">+{remainingCount} more</span>
+        )}
+      </div>
+    );
+  }, [poc.top_event_categories, isMobile]);
 
   const renderCountryZones = useCallback(() => {
     if (!poc.top_event_countryZone?.length) return null;
 
-    return poc.top_event_countryZone.slice(0, 2).map((item) => (
-      <Badge
-        key={item.key}
-        variant="secondary"
-        className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-      >
-        {item.key}
-      </Badge>
-    ));
-  }, [poc.top_event_countryZone]);
+    const maxVisibleTags = isMobile ? 1 : 2;
+    const visibleZones = poc.top_event_countryZone.slice(0, maxVisibleTags);
+    const remainingCount = poc.top_event_countryZone.length - maxVisibleTags;
+
+    return (
+      <div className="flex flex-wrap gap-2 items-center">
+        {visibleZones.map((item) => (
+          <Badge
+            key={item.key}
+            variant="secondary"
+            className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+          >
+            {item.key}
+          </Badge>
+        ))}
+        {remainingCount > 0 && (
+          <span className="text-xs text-[#6E6F89]">+{remainingCount} more</span>
+        )}
+      </div>
+    );
+  }, [poc.top_event_countryZone, isMobile]);
 
   return (
-    <div className="flex gap-4 w-full items-center">
-      {isBulkActionActive && (
-        <Checkbox
-          checked={poc.user_id in selectedPeopleIds}
-          onCheckedChange={() =>
-            toggleSelection(poc.user_id, poc.user_name, poc.user_companyName)
-          }
-        />
-      )}
-      <div className="bg-background rounded-xl border shadow-sm relative w-full">
-        <Link href={`/internal/user/${poc.user_id}`} className="block">
-          <div className="p-4 flex gap-6">
-            {imageSrc && (
-              <Image
-                src={imageSrc}
-                alt={`${poc.user_name}'s profile picture`}
-                className="flex h-16 w-16 rounded-lg shadow-lg border"
-                width={200}
-                height={200}
-                onError={handleImageError}
-                priority={false}
-              />
+    <div className="bg-background rounded-xl border shadow-sm relative">
+      <Link href={`/internal/user/${poc.user_id}`} className="block">
+        <div className="p-4 flex gap-6">
+          {imageSrc && (
+            <Image
+              src={imageSrc}
+              alt={`${poc.user_name}'s profile picture`}
+              className="flex h-16 w-16 rounded-lg shadow-lg border"
+              width={200}
+              height={200}
+              onError={handleImageError}
+              priority={false}
+            />
+          )}
+          <div className="flex gap-2 flex-col w-full">
+            <div className="flex justify-between">
+              <div className="text-xl font-semibold">{poc.user_name}</div>
+            </div>
+
+            <div className="text-[#6E6F89] text-xs font-medium">
+              {poc.user_designationName}
+              {poc.user_companyName && <>, {poc.user_companyName}</>}
+            </div>
+
+            {locationDisplay && (
+              <div className="flex gap-2 items-center w-fit pr-3">
+                <Location color="#666666" width="14px" height="14px" />
+                <span className="text-[#6E6F89] text-sm">
+                  {locationDisplay}
+                </span>
+              </div>
             )}
             <div className="flex gap-2 flex-col w-full">
               <div className="flex justify-between">
                 <div className="text-xl font-semibold">{poc.user_name}</div>
               </div>
 
-              <div className="text-[#6E6F89] text-xs font-medium">
-                {poc.user_designationName}
-                {poc.user_companyName && <>, {poc.user_companyName}</>}
-              </div>
+            <div className="flex flex-wrap gap-2 items-center w-fit">
+              {renderEventCategories()}
+              {renderCountryZones()}
 
-              {locationDisplay && (
-                <div className="flex gap-2 items-center w-fit pr-3">
-                  <Location color="#666666" width="14px" height="14px" />
-                  <span className="text-[#6E6F89] text-sm">
-                    {locationDisplay}
-                  </span>
-                </div>
+              {poc.speakingCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Speaker {!isMobile ? `${poc.speakingCount} events` : ""}
+                </Badge>
               )}
 
-              {poc.about && poc.about.length > 10 && (
-                <div className="text-[#707287] text-sm line-clamp-4">
-                  {poc.about}
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-2 items-center w-fit">
-                {renderEventCategories()}
-                {renderCountryZones()}
-
-                {poc.speakingCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                  >
-                    Speaker ({poc.speakingCount} events)
-                  </Badge>
-                )}
-
-                {poc.attendCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                  >
-                    {poc.attendCount} events attended
-                  </Badge>
-                )}
-              </div>
-
-              {poc.state !== 2 && (
-                <div className="mt-1" onClick={(e) => e.preventDefault()}>
-                  <Button
-                    disabled={poc.state === 1}
-                    onClick={() => unlockPoc(poc.user_id)}
-                    variant="default"
-                    size="sm"
-                    className="blur-none"
-                  >
-                    Unlock Contact
-                  </Button>
-                </div>
-              )}
-
-              {poc.state === 2 && (
-                <ContactInfo email={poc.email} phoneNumber={poc.phoneNumber} />
+              {poc.attendCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  {poc.attendCount} events {isMobile ? "" : "attended"}
+                </Badge>
               )}
             </div>
+
+            {poc.state !== 2 && !isMobile && (
+              <div className="mt-1" onClick={(e) => e.preventDefault()}>
+                <Button
+                  disabled={poc.state === 1}
+                  onClick={() => unlockPoc(poc.user_id)}
+                  variant="default"
+                  size="sm"
+                  className="blur-none"
+                >
+                  Unlock Contact
+                </Button>
+              </div>
+            )}
+
+            {poc.state === 2 && (
+              <ContactInfo email={poc.email} phoneNumber={poc.phoneNumber} />
+            )}
           </div>
+          </div>
+        </div>
         </Link>
       </div>
-    </div>
   );
 };
 
@@ -220,6 +235,9 @@ export const PeopleList: React.FC = () => {
   } = useBulkAction<{ userName: string; userOrgWebsite: string }>();
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<any>();
+  const [showFilters, setShowFilter] = useState(false);
+  const { localFilters, deleteMultipleLocalFilters, applyFilters } =
+    useFilterContext();
 
   const {
     data: companyData,
@@ -329,6 +347,25 @@ export const PeopleList: React.FC = () => {
 
     setFilterValues({ filterValues });
   }
+  const toggleFilterHandler = () => {
+    if (showFilters) {
+      setShowFilter(false);
+    } else {
+      setShowFilter(true);
+    }
+  };
+
+  const searchHandler = useCallback(() => {
+    applyFilters({ resetPage: true });
+    setShowFilter(false);
+  }, []);
+
+  const filtersCount = (function () {
+    const excludedFilters = ["view", "sortBy", "offset", "limit", "show"];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  })();
 
   const unlockPoc = useCallback(
     async (pocId: number | string) => {
@@ -404,20 +441,36 @@ export const PeopleList: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 px-6">
-      <div className="flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4">
+    <div className="flex flex-col w-full">
+      <div
+        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+      >
         <div className="flex items-center gap-2">
-          <Badge className="bg-primary text-white">
+          <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
             {new Intl.NumberFormat("en", {
               notation: "compact",
               maximumFractionDigits: 1,
             }).format(count)}
           </Badge>
-          <p className="text-primary font-semibold">People Found</p>
+          <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+            People
+          </p>
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
-          {/* Export and Sort buttons removed as they were disabled */}
+          <Button
+            onClick={toggleFilterHandler}
+            variant={filtersCount > 0 ? "secondary" : "ghost"}
+            size="icon"
+            className="h-8 w-8 border relative  md:hidden"
+          >
+            <Filter className="w-4 h-4" />
+            {filtersCount > 0 && (
+              <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                {filtersCount}
+              </div>
+            )}
+          </Button>
         </div>
       </div>
       {isBulkActionActive && (
@@ -479,6 +532,85 @@ export const PeopleList: React.FC = () => {
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
       />
+
+      {showFilters ? (
+        <>
+          <FilterContent
+            type={"people"}
+            filterCount={filtersCount}
+            searchHandler={searchHandler}
+          />
+          <div className="w-full sticky bottom-0 bg-background z-10">
+            <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+              <div className="flex items-center justify-between mb-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    deleteMultipleLocalFilters(
+                      Object.keys(localFilters) as any[]
+                    );
+                  }}
+                  disabled={filtersCount === 0}
+                  className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
+                >
+                  <FilterX className="w-3.5 h-3.5 mr-1" />
+                  Reset all filters
+                </Button>
+                <span className="text-xs text-[#6E6F89]">
+                  {filtersCount} filters applied
+                </span>
+              </div>
+              <Button onClick={searchHandler} className="w-full h-10">
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex-1 flex gap-3 flex-col px-4 md:px-6">
+          {isLoading ? (
+            <div className="flex-1 items-center justify-center min-h-[400px]">
+              <Loading />
+            </div>
+          ) : error ? (
+            <div className="flex-1 items-center justify-center min-h-[400px]">
+              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
+            </div>
+          ) : count === 0 ? (
+            <div className="flex-1 items-center justify-center min-h-[400px]">
+              <NullState
+                image={coordinateNullState}
+                title="No Results Found"
+                text="Try adjusting the filter criteria to refine your search"
+              />
+            </div>
+          ) : (
+            <>
+              {filteredUsers.map((item) => (
+                <PeopleCard
+            key={item.user_id}
+            poc={item}
+            unlockPoc={unlockPoc}
+            isBulkActionActive={isBulkActionActive}
+            selectedPeopleIds={selectedData}
+            toggleSelection={toggleSelection}
+          />
+              ))}
+              <div className="sticky bg-background py-2 border-t">
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  count={count}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  paginationItems={["5", "10"]}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

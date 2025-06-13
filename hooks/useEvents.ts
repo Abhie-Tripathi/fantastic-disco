@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useEventsService } from "@/services/eventsService";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 
@@ -8,15 +8,14 @@ export const eventsKeys = {
 };
 
 export const useEvents = {
-  list: (query: EventQuery) => {
+  list: (query: EventQuery, inTransition?: boolean) => {
     const eventsService = useEventsService();
 
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(query),
       queryFn: () => eventsService.getEvents(query),
-      staleTime: 5 * 60 * 1000,
+      enabled: !inTransition,
     });
-
     return {
       events: EventQuery.data?.events || [],
       totalEvents: EventQuery.data?.count || 0,

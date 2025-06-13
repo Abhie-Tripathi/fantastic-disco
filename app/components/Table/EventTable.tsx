@@ -14,9 +14,9 @@ import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
-import ZeroState from "@/components/zerostate";
+import ZeroState from "@/app/components/zerostate";
 import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from "@/public/trackerNullState.svg";
+import trackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 import { useIntent } from "@/hooks/useIntent";
 import { useTrackerContext } from "@/context/tracker";
@@ -28,6 +28,10 @@ import { useConfiguration } from "@/hooks/useConfiguration";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
+import CustomTrackerNullState from "../internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -54,6 +58,7 @@ const EventTable = ({
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
   const bulkOption = ["Attend", "Speak"];
+  const { inTransition } = useTransition();
   const { localFilters } = useFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
@@ -81,6 +86,15 @@ const EventTable = ({
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    eventType || ""
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -385,7 +399,7 @@ const EventTable = ({
     });
   };
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
 
@@ -393,11 +407,32 @@ const EventTable = ({
     if (source === "tracker") {
       return (
         <NullState
-          image={TrackerNullState}
+          image={trackerNullState}
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else
+      return error.message == "Location is required" ? (
+        <div className="p-6">
+          <CustomTrackerNullState />;
+        </div>
+      ) : (
+        <ZeroState
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
+      );
+  }
+
+  if (
+    searchParams.size === 0 ||
+    (searchParams.size == 1 && searchParams.has("view"))
+  ) {
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />;
+      </div>
+    );
   }
 
   if (events.length === 0) {
@@ -405,14 +440,14 @@ const EventTable = ({
       if (query.eventType === "bookmarked") {
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
           />
         );
       } else
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="We couldn't find any events matching your tracker criteria at the moment."
             text="Try adjusting your filters or checking back later, as new events are added frequently."
             buttonText="Manage Configurations"
@@ -509,6 +544,12 @@ const EventTable = ({
                     show={showValues}
                     localFilters={localFilters}
                     trackerId={trackerId}
+                    intelLoading={intelLoading}
+                    initialIntelScoreData={
+                      intelScoreData?.trackerEventsIntelScore?.find(
+                        (item: intelScore) => item?.event === event.basic.id
+                      ) || null
+                    }
                   />
                 ))}
             </TableBody>

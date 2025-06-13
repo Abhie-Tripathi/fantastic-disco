@@ -163,3 +163,45 @@ export interface PresetData{
       type:string;
       count:number;
     }
+    export interface TrackerAIResponse {
+      companyData: companyData;
+      competitorData: competitorData;
+      keywordData: keywordData;
+    }
+    
+    export interface companyData{
+      status: number;
+      data: any[]; 
+      name: string;
+      domain: string;
+    };
+    
+    export interface competitorData{
+     
+        status: number;
+        name: string;
+        data: { domain: string }[];
+    };
+    export interface keywordData{
+        status: number;
+        name: string;
+        data: string[][];
+    }
+
+    export interface intelScore {
+      alltrackers: number;
+      alltrackers_score: number;
+      event: string;
+      people?: number;
+      people_score?: number;
+      prospect?: number;
+      prospect_score?: number;
+      purpose_score?: number;
+      purpose?: number;
+    }
+
+    export interface IntelScoreResponse {
+  intelScore: {
+    [eventId: string]: intelScore;
+  };
+}

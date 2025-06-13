@@ -51,7 +51,7 @@ import {
   morphToTrendsTableData,
   sortingTableData,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
 import {
   ArrowDown,
@@ -113,11 +113,14 @@ const safelyAccessTableData = (
   }
 };
 
-const calculatePercentageChange = (current: number, comparison: number): string | null => {
+const calculatePercentageChange = (
+  current: number,
+  comparison: number
+): string | null => {
   if (comparison === 0) return null;
   const change = ((current - comparison) / comparison) * 100;
   if (change === 0) return null;
-  const sign = change > 0 ? '+' : '';
+  const sign = change > 0 ? "+" : "";
   return `${sign}${change.toFixed(1)}%`;
 };
 
@@ -137,7 +140,7 @@ const TestPeriodicAnalytics = () => {
   const eventTypes = searchParams.get("eventTypes");
   const compareFrom = searchParams.get("compare_from");
   const compareTo = searchParams.get("compare_to");
-  const isMobileView = useIsMobile()
+  const isMobileView = useIsMobile();
   const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
   const hasHoliday =
     eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
@@ -179,7 +182,6 @@ const TestPeriodicAnalytics = () => {
     searchParams.forEach((value, key) => {
       params.append(key, value);
     });
-    params.delete("categories");
     return params.toString();
   }, [stringParams]);
 
@@ -525,11 +527,21 @@ const TestPeriodicAnalytics = () => {
               return (
                 <TableCell
                   key={key}
-                  width={340}
-                  className="text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[340px]"
+                  width={isMobileView ? 140 : 340}
+                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate ${
+                    !comparisonDate ? "h-[53px]" : ""
+                  }`}
                 >
-                  <div className="w-full flex flex-col justify-center px-2">
-                    <p className="truncate">{format(new Date(data[key]), "dd MMM yyyy")}</p>
+                  <div
+                    className={`w-full ${
+                      !comparisonDate
+                        ? "h-full flex items-center justify-center"
+                        : "flex flex-col justify-center"
+                    }`}
+                  >
+                    <p className="truncate">
+                      {format(new Date(data[key]), "dd MMM yyyy")}
+                    </p>
                     {comparisonDate && (
                       <p className="truncate text-[#4B9EF4]">
                         {format(new Date(comparisonDate.date), "dd MMM yyyy")}
@@ -552,8 +564,11 @@ const TestPeriodicAnalytics = () => {
               if (!isSmartInsightEnabledForColumn && !isOpenState) {
                 const currentValue = cellData["value"] ?? 0;
                 const comparisonValue = comparisonCellData?.["value"] ?? 0;
-                const percentageChange = calculatePercentageChange(currentValue, comparisonValue);
-                
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
+
                 return (
                   <TableCell
                     key={key}
@@ -561,29 +576,49 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
                           {comparisonCellData && percentageChange && (
-                            <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               ({percentageChange})
                             </span>
                           )}
                         </div>
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
-                          <ArrowUp width={15} height={15} />
-                        )}
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
-                          <ArrowDown width={15} height={15} color="#E1313A" />
-                        )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
                       </div>
                       {comparisonCellData && (
-                        <span className="min-w-[100px] text-start">{comparisonValue}</span>
+                        <span className="min-w-[100px] text-start">
+                          {comparisonValue}
+                        </span>
                       )}
                     </div>
                   </TableCell>
@@ -593,7 +628,10 @@ const TestPeriodicAnalytics = () => {
               if (isSmartInsightEnabledForColumn && !isOpenState) {
                 const currentValue = cellData["value"] ?? 0;
                 const comparisonValue = comparisonCellData?.["value"] ?? 0;
-                const percentageChange = calculatePercentageChange(currentValue, comparisonValue);
+                const percentageChange = calculatePercentageChange(
+                  currentValue,
+                  comparisonValue
+                );
 
                 return (
                   <TableCell
@@ -602,30 +640,46 @@ const TestPeriodicAnalytics = () => {
                     className={`text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color)] relative p-0 h-[53px]`}
                   >
                     {isSmartInsightEnabledForColumn && (
-                      <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} ${cellData["thresholdHighlightCol"]}`} />
+                      <div
+                        className={`absolute top-0 left-0 right-0 ${
+                          comparisonCellData ? "h-1/2" : "h-full"
+                        } ${cellData["thresholdHighlightCol"]}`}
+                      />
                     )}
                     <div className="flex flex-col items-center justify-center relative h-full gap-1">
-                      <div className={`flex items-center gap-2 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                      <div
+                        className={`flex items-center gap-2 ${
+                          comparisonCellData ? "min-w-[100px]" : ""
+                        }`}
+                      >
                         <div className="flex items-center gap-1">
                           <span>{currentValue}</span>
                           {comparisonCellData && percentageChange && (
-                            <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                            <span
+                              className={`text-xs ${
+                                Number(percentageChange) > 0
+                                  ? "text-[#398E4A]"
+                                  : Number(percentageChange) < 0
+                                  ? "text-[#E1313A]"
+                                  : "text-gray-500"
+                              }`}
+                            >
                               ({percentageChange})
                             </span>
                           )}
                         </div>
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
-                          <ArrowUp width={15} height={15} />
-                        )}
-                        {isSmartInsightEnabledForColumn && cellData["thresholdHighlightCol"] ===
-                          "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
-                          <ArrowDown width={15} height={15} color="#E1313A" />
-                        )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" && (
+                            <ArrowUp width={15} height={15} />
+                          )}
+                        {isSmartInsightEnabledForColumn &&
+                          cellData["thresholdHighlightCol"] ===
+                            "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" && (
+                            <ArrowDown width={15} height={15} color="#E1313A" />
+                          )}
                       </div>
-                      {comparisonCellData && (
-                        <span>{comparisonValue}</span>
-                      )}
+                      {comparisonCellData && <span>{comparisonValue}</span>}
                     </div>
                   </TableCell>
                 );
@@ -639,9 +693,14 @@ const TestPeriodicAnalytics = () => {
                 return subHeading
                   .filter((heading) => heading.slug !== "avg")
                   .map((subCol) => {
-                    const currentValue = cellData[subCol.slug as keyof EventTypeData];
-                    const comparisonValue = comparisonCellData?.[subCol.slug as keyof EventTypeData];
-                    const percentageChange = calculatePercentageChange(Number(currentValue), Number(comparisonValue));
+                    const currentValue =
+                      cellData[subCol.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[subCol.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
 
                     return (
                       <TableCell
@@ -650,11 +709,25 @@ const TestPeriodicAnalytics = () => {
                         className="p-0 h-[53px] w-32 border border-[var(--neutral-light-color)]"
                       >
                         <div className="flex flex-col items-center w-full">
-                          <div className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}>
-                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                          <div
+                            className={`flex text-center items-center justify-center w-full font-semibold text-[var(--primary-text-color)]`}
+                          >
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
                               <span>{currentValue}</span>
                               {comparisonCellData && percentageChange && (
-                                <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
                                   ({percentageChange})
                                 </span>
                               )}
@@ -675,9 +748,14 @@ const TestPeriodicAnalytics = () => {
                 return subHeading
                   .filter((heading) => heading.slug !== "avg")
                   .map((subCol) => {
-                    const currentValue = cellData[subCol.slug as keyof EventTypeData];
-                    const comparisonValue = comparisonCellData?.[subCol.slug as keyof EventTypeData];
-                    const percentageChange = calculatePercentageChange(Number(currentValue), Number(comparisonValue));
+                    const currentValue =
+                      cellData[subCol.slug as keyof EventTypeData];
+                    const comparisonValue =
+                      comparisonCellData?.[subCol.slug as keyof EventTypeData];
+                    const percentageChange = calculatePercentageChange(
+                      Number(currentValue),
+                      Number(comparisonValue)
+                    );
 
                     return (
                       <TableCell
@@ -686,8 +764,15 @@ const TestPeriodicAnalytics = () => {
                         className={`p-0 h-[53px] w-32 border border-[var(--neutral-light-color)] relative`}
                       >
                         {isSmartInsightEnabledForColumn && (
-                          <div className={`absolute top-0 left-0 right-0 ${comparisonCellData ? 'h-1/2' : 'h-full'} 
-                            ${subCol.slug === "avg" ? "bg-[#DA2F35] bg-opacity-5" : ""}
+                          <div
+                            className={`absolute top-0 left-0 right-0 ${
+                              comparisonCellData ? "h-1/2" : "h-full"
+                            } 
+                            ${
+                              subCol.slug === "avg"
+                                ? "bg-[#DA2F35] bg-opacity-5"
+                                : ""
+                            }
                             ${
                               cellData["maxRow"] &&
                               subCol.slug !== "avg" &&
@@ -707,29 +792,47 @@ const TestPeriodicAnalytics = () => {
                               cellData["maxCol"] === cellData["value"]
                                 ? "border-2 border-[var(--negative-color)]"
                                 : ""
-                            }`} 
+                            }`}
                           />
                         )}
                         <div className="flex flex-col items-center justify-center w-full h-full relative gap-1">
                           <div className="text-center w-full flex gap-2 items-center justify-center font-semibold text-[var(--primary-text-color)]">
-                            <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                            <div
+                              className={`flex items-center gap-1 ${
+                                comparisonCellData ? "min-w-[100px]" : ""
+                              }`}
+                            >
                               <span>{currentValue}</span>
                               {comparisonCellData && percentageChange && (
-                                <span className={`text-xs ${Number(percentageChange) > 0 ? 'text-[#398E4A]' : Number(percentageChange) < 0 ? 'text-[#E1313A]' : 'text-gray-500'}`}>
+                                <span
+                                  className={`text-xs ${
+                                    Number(percentageChange) > 0
+                                      ? "text-[#398E4A]"
+                                      : Number(percentageChange) < 0
+                                      ? "text-[#E1313A]"
+                                      : "text-gray-500"
+                                  }`}
+                                >
                                   ({percentageChange})
                                 </span>
                               )}
                             </div>
-                            {isSmartInsightEnabledForColumn && 
-                             cellData["thresholdHighlightCol"] === "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
-                             subCol.slug === "value" && (
-                              <ArrowUp width={15} height={15} />
-                            )}
-                            {isSmartInsightEnabledForColumn && 
-                             cellData["thresholdHighlightCol"] === "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
-                             subCol.slug === "value" && (
-                              <ArrowDown width={15} height={15} color="#E1313A" />
-                            )}
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]" &&
+                              subCol.slug === "value" && (
+                                <ArrowUp width={15} height={15} />
+                              )}
+                            {isSmartInsightEnabledForColumn &&
+                              cellData["thresholdHighlightCol"] ===
+                                "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]" &&
+                              subCol.slug === "value" && (
+                                <ArrowDown
+                                  width={15}
+                                  height={15}
+                                  color="#E1313A"
+                                />
+                              )}
                           </div>
                           {comparisonCellData && (
                             <div className="font-semibold">
@@ -750,12 +853,14 @@ const TestPeriodicAnalytics = () => {
                 className="text-center font-semibold border border-[var(--neutral-light-color)] text-[var(--primary-text-color-transparent)]"
               >
                 <div className="flex flex-col items-center">
-                  <div className={`flex items-center gap-1 ${comparisonCellData ? 'min-w-[100px]' : ''}`}>
+                  <div
+                    className={`flex items-center gap-1 ${
+                      comparisonCellData ? "min-w-[100px]" : ""
+                    }`}
+                  >
                     <span>0</span>
                   </div>
-                  {comparisonCellData && (
-                    <span>0</span>
-                  )}
+                  {comparisonCellData && <span>0</span>}
                 </div>
               </TableCell>
             );
@@ -794,21 +899,31 @@ const TestPeriodicAnalytics = () => {
   return (
     <>
       <div
-      className={`flex ${
-        isMobileView ? "flex-col gap-3" : "justify-between items-center"
-      } py-4`}
-    >
-      <div className="font-medium text-base">
-          {compareFrom && compareTo ? (
-            `Comparing ${renderFormattedDates(startDate, endDate)} with ${renderFormattedDates(
-              format(new Date(compareFrom), "dd MMM yyyy"),
-              format(new Date(compareTo), "dd MMM yyyy")
-            )}`
-          ) : (
-            `For the selected time period (${renderFormattedDates(startDate, endDate)})`
-          )}
+        className={`flex px-4 md:px-0 ${
+          isMobileView ? "flex-col gap-2" : "justify-between items-center"
+        } py-2 md:py-4`}
+      >
+        <div
+          className={`font-medium ${isMobileView ? "text-sm" : "text-base"}`}
+        >
+          {compareFrom && compareTo
+            ? `Comparing ${renderFormattedDates(
+                startDate,
+                endDate
+              )} with ${renderFormattedDates(
+                format(new Date(compareFrom), "dd MMM yyyy"),
+                format(new Date(compareTo), "dd MMM yyyy")
+              )}`
+            : `For the selected time period (${renderFormattedDates(
+                startDate,
+                endDate
+              )})`}
         </div>
-        <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
+        <div
+          className={`px-2 py-2 md:px-3 md:py-3 border border-[var(--neutral-light-color)] rounded-sm max-w-fit ${
+            isMobileView ? "text-xs" : ""
+          }`}
+        >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -816,12 +931,12 @@ const TestPeriodicAnalytics = () => {
                   <div className="flex items-center gap-2">
                     <Image
                       src={SmartInsights}
-                      width={18}
-                      height={18}
+                      width={16}
+                      height={16}
                       alt={""}
-                      className="w-[18px] h-[18px]"
+                      className="w-[16px] h-[16px] md:w-[18px] md:h-[18px]"
                     />
-                    <p className="text-primary m-0 font-normal text-sm sm:text-base">
+                    <p className="text-primary m-0 font-normal text-xs md:text-sm">
                       Smart Insights
                     </p>
                   </div>
@@ -831,7 +946,6 @@ const TestPeriodicAnalytics = () => {
                       setIsSmartInsightsEnabled((prev) => !prev)
                     }
                     disabled={Object.keys(smartInsightState).length === 0}
-                    className="mt-1 sm:mt-0"
                   />
                 </div>
               </TooltipTrigger>
@@ -845,15 +959,15 @@ const TestPeriodicAnalytics = () => {
           </TooltipProvider>
         </div>
       </div>
-      <div className="mt-6 overflow-x-auto">
+      <div className="mt-4 md:mt-6 overflow-x-auto px-4 md:px-0">
         <div className="w-full overflow-x-auto">
           <Table
             className={`border border-[var(--neutral-light-color)] ${
-              isMobileView ? "w-full" : "w-[98%]"
+              isMobileView ? "w-full text-xs" : "w-[98%] text-sm"
             } mx-auto relative`}
           >
             <TableHeader>
-              <TableRow>
+              <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                 {tableColumns &&
                   tableColumns.map((trends) => {
                     const colSpan = openState[trends.slug ?? ""]
@@ -868,20 +982,31 @@ const TestPeriodicAnalytics = () => {
                         key={trends.columnName}
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
-                        style={{ width: trends.slug === "date" ? "340px" : "1000px" }}
+                        style={{
+                          width:
+                            trends.slug === "date"
+                              ? isMobileView
+                                ? "100px"
+                                : "340px"
+                              : "1000px",
+                        }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
-                          trends.slug === "date" ? "sticky left-0 z-30 max-w-[340px]" : ""
-                        }`}
+                          trends.slug === "date"
+                            ? "sticky left-0 !z-50 max-w-[100px] md:max-w-[340px]"
+                            : ""
+                        } ${isMobileView ? "text-xs px-1 py-1" : "px-2 py-2"}`}
                       >
                         {trends.slug === "date" &&
                           trends.columnName.toUpperCase()}
                         {trends.slug !== "date" && (
-                          <div className="flex items-center justify-center mx-auto gap-4 h-inherit w-60">
+                          <div
+                            className={`flex items-center justify-center mx-auto gap-2 md:gap-4 h-inherit w-32 md:w-60`}
+                          >
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span
-                                    className={`cursor-pointer text-sm font-medium`}
+                                    className={`cursor-pointer text-xs md:text-sm font-medium`}
                                   >
                                     {trends.columnName.toUpperCase()}
                                   </span>
@@ -897,11 +1022,13 @@ const TestPeriodicAnalytics = () => {
                             <Select>
                               <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
-                                <SelectGroup className="flex flex-col gap-4 p-4">
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">SORT BY</p>
+                                <SelectGroup className="flex flex-col gap-2 md:gap-4 p-2 md:p-4">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
+                                      SORT BY
+                                    </p>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "asc"
@@ -911,7 +1038,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowUpNarrowWide
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -921,7 +1048,7 @@ const TestPeriodicAnalytics = () => {
                                       />
                                     </button>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "desc"
@@ -931,7 +1058,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowDownWideNarrow
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -942,10 +1069,10 @@ const TestPeriodicAnalytics = () => {
                                     </button>
                                   </div>
 
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
                                       {`Turn
-                                    ${
+                                    $${
                                       smartInsightState[trends.slug ?? ""]
                                         ? "off"
                                         : "on"
@@ -959,8 +1086,8 @@ const TestPeriodicAnalytics = () => {
                                           : EnableSmartInsights
                                       }
                                       className="cursor-pointer"
-                                      width={30}
-                                      height={30}
+                                      width={24}
+                                      height={24}
                                       alt={"Disable Smart Insights"}
                                       onClick={() =>
                                         toggleSmartInsightState(trends.slug)
@@ -988,8 +1115,8 @@ const TestPeriodicAnalytics = () => {
                                         : ExpandIcon
                                     }
                                     alt="TableIcons"
-                                    width={25}
-                                    height={25}
+                                    width={20}
+                                    height={20}
                                   />
                                 </button>
                               </TooltipTrigger>
@@ -1007,7 +1134,7 @@ const TestPeriodicAnalytics = () => {
               </TableRow>
               {(Object.values(openState).some((state) => state) ||
                 Object.values(smartInsightState).some((state) => state)) && (
-                <TableRow>
+                <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                   {tableColumns &&
                     tableColumns.map((trends) => {
                       const subHeading = trends.subHeading ?? [];
@@ -1174,14 +1301,14 @@ const TestPeriodicAnalytics = () => {
         </div>
         {totalPages > 1 && (
           <div
-            className={`mt-4 sticky bottom-0 bg-background py-4 ${
+            className={`mt-2 md:mt-4 sticky bottom-0 bg-background py-2 md:py-4 ${
               isMobileView ? "overflow-x-auto" : ""
             }`}
           >
             <Pagination>
               <PaginationContent
                 className={`flex-wrap justify-center ${
-                  isMobileView ? "text-sm gap-1" : ""
+                  isMobileView ? "text-xs gap-1" : ""
                 }`}
               >
                 <PaginationItem>

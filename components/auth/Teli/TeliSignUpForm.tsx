@@ -8,18 +8,20 @@ import { useAuthContext } from "@/context/auth";
 import { sessionKeys } from "@/data/onboarding";
 import { industryData } from "@/data/onboardingDropdownsData";
 import { useToast } from "@/hooks/use-toast";
+import { getValidPath } from "@/lib/utils";
 import { SignUpDTO } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import IndustryCards from "./IndustryCards";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 const signUpSchema = z.object({
   email: z
@@ -35,6 +37,9 @@ const signUpSchema = z.object({
 type FormData = z.infer<typeof signUpSchema>;
 
 export default function TeliSignUpForm() {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const {
     isLoading,
     signup,
@@ -84,7 +89,11 @@ export default function TeliSignUpForm() {
         variant: "default",
       });
     }
-  }, [user]);
+  }, [user, isAuthenticating]);
+
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
 
   const onSubmit = async (data: FormData) => {
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -110,6 +119,7 @@ export default function TeliSignUpForm() {
       }
 
       sessionStorage.setItem("flow", "signUp");
+      redirectParams && sessionStorage.setItem("redirect", redirectParams);
       if (signUpFlow === "sso") {
         await updateIndustry(signUpData);
       } else {
@@ -147,7 +157,7 @@ export default function TeliSignUpForm() {
           <p className="font-semibold text-lg leading-6 text-center mb-5">
             Create your account
           </p>
-          {/* {status === "unauthenticated" && (
+          {status === "unauthenticated" && (
             <>
               <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
                 <Button
@@ -179,7 +189,7 @@ export default function TeliSignUpForm() {
                 OR
               </p>
             </>
-          )} */}
+          )}
         </>
       )}
       <form

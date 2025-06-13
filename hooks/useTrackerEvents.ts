@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { useTrackerServices } from "@/services/trackerServices";
 

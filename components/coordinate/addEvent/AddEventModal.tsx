@@ -156,6 +156,13 @@ export default function AddEventModal() {
         //   email: item['Email'],
         // }));
 
+        if (result.data.length <= 1) {
+          toast({
+            description: "Please upload a valid csv file with data",
+            variant: "destructive",
+          });
+          return;
+        }
         setCsvData(result.data.slice(1)); // Skip the header row
 
         const colHeader = result.data[0] ? result.data[0] : [];
@@ -209,11 +216,11 @@ export default function AddEventModal() {
 
   return (
     <div>
-      <Button size="lg" onClick={openModal}>
+      <Button size="sm" className="px-4" onClick={openModal}>
         Add Event
       </Button>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isModalOpen} onClose={closeModal} className="w-[100vw] sm:w-[70vw] md:w-[50vw]">
         <div className="flex flex-col gap-4 h-full">
           <div className="flex justify-between items-center h-10 px-6">
             <h2 className="text-lg font-medium leading-6">Add Event</h2>

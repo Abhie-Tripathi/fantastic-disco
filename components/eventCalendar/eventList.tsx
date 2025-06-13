@@ -7,6 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import IntelScore from "@/app/components/Table/IntelScore";
+import { intelScore } from "@/types/trackers";
 import { AlertTriangle, Loader2, X, Star, Radio } from "lucide-react";
 import {
   Pagination,
@@ -27,9 +29,13 @@ import { useEventsService } from "@/services/eventsService";
 import { useTrackerServices } from "@/services/trackerServices";
 import { Event } from "@/types/events";
 import { formattedDateRange } from "@/utils/date";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Link from "next/link";
 import { PaginationComponent } from "../pagination";
+import { useIntelData } from "@/hooks/useIntelData";
+import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context";
+import { useFilterContext } from "@/context/filterContext";
 export default function EventList({
   eventDate,
   onClose,
@@ -89,16 +95,27 @@ export default function EventList({
   const handleSort = (newSortValue: string) => {
     setSortBy(newSortValue);
   };
-
+  const type=getFilterValue("type");
+  
   function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      searchParams.get("eventType") || ""
+    );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
-  const EventCard = ({ event }: { event: Event }) => {
+  const EventCard = ({ event, initialIntelScoreData, intelLoading }: { event: Event,initialIntelScoreData?:intelScore, intelLoading?:boolean}) => {
+    const {isTentimesUser} = useFilterContext();
     const address = event.basic.eventLocation ? (
       event.basic.format === "online" ? (
         <span className="flex items-center">
@@ -116,7 +133,13 @@ export default function EventList({
     ) : (
       "Venue to be announced"
     );
-
+    const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill: type==="T_PEOPLE_FINDER"||type==="T_SPEAKER_OPPORTUINTY"?"#646BDC":(type==="T_PRODUCT_KEYWORDS")?"#E99CD4":"#9B86D4",
+    }
+  ];
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -194,7 +217,9 @@ export default function EventList({
               )}
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex justify-between mb-1">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
                     className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
@@ -234,13 +259,34 @@ export default function EventList({
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
+                  </div>
+                  {isTentimesUser && (
+                    <>
+                    {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
+                    (intelLoading ? (
+                      <Skeleton className="h-16 w-16 rounded-md" />
+                    ) : (
+                      intelScoreData[0]?.value > 0 && (
+                        <div>
+                          <IntelScore width="85px" height="70px" intelScore={intelScoreData} />
+                        </div>
+                      )
+                    ))
+                  }
+                    </>
+                  )}
+                  
+                  </div>
+                <div>
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,
                     event.basic.endDateTime
                   )}
                 </div>
+                </div>
               </div>
+              
             </div>
           </CardContent>
         </Card>
@@ -392,7 +438,11 @@ export default function EventList({
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => (
-            <EventCard key={event.basic.id} event={event} />
+            <EventCard key={event.basic.id} event={event} initialIntelScoreData = {
+  intelScoreData?.trackerEventsIntelScore?.find(
+  (item:intelScore) => item?.event === event.basic.id
+) || null
+} intelLoading={intelLoading}/>
           ))}
           {events.length > 0 && (
             <PaginationComponent
@@ -443,7 +493,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border ${(searchParams?.get("type")!=="T_CUSTOM" && !isEventeli && trackerId && trackerId.length>0) ? "w-[420px]" : "w-[345px]"}`}
     >
       {renderContent()}
     </div>
