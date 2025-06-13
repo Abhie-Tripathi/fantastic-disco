@@ -80,12 +80,12 @@ export default function EditionSelector({
           )}
         </span>
       </div>
-      <Switch
+      {/* <Switch
         checked={showInFilter}
         onCheckedChange={handleShowToggle}
         aria-label="Show Maturity in filter"
         onClick={(e) => e.stopPropagation()}
-      />
+      /> */}
     </div>
   );
 
