@@ -123,6 +123,7 @@ export default function BulkActionPopover({
                   )}
                 />
                 {option.label}
+                <span className="hidden">{ind}</span>
               </CommandItem>
             ))}
           </CommandList>
