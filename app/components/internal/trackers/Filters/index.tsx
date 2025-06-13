@@ -390,7 +390,7 @@ const templates = [
         type: "text",
         placeholder: "Search By Event Name",
         required: true,
-        example: "facebook.com",
+        example: "MAGIC LAS VEGAS",
       }
     ],
     isUploadEnable: false,
@@ -496,13 +496,13 @@ const Pages = () => {
   const [filterCount, setFilterCount] = useState(0);
 
 useEffect(() => {
-  const keysToIgnore = ['type', 'show', 'trust_score_lte'];
+  const keysToIgnore = ['type', 'show', 'trust_score_lte', 'eventType', 'view'];
   const mutuallyExclusiveGroups = [
     ['includeKeywords', 'excludeKeywords'],
     ['onlyBranded', 'onlySeries'],
     ['active_gte', 'active_lte']
   ];
-
+  
   const filtersApplied = Object.keys(localFilters);
 
   const filteredKeys = filtersApplied.filter((key) => !keysToIgnore.includes(key));
