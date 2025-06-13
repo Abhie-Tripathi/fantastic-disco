@@ -28,6 +28,12 @@ const EventCount = ({ view }: { view: string }) => {
       : true,
   });
 
+  useEffect(() => {
+    if ((data as any)?.count == 0) {
+      GAEvent("", "Research", "Filter Applied", "No Event Found");
+    }
+  }, [searchParamsString]);
+
   const label: Record<string, string> = {
     events: "Events",
     people: "People",
@@ -42,12 +48,6 @@ const EventCount = ({ view }: { view: string }) => {
       </div>
     );
   }
-
-  useEffect(() => {
-    if ((data as any)?.count == 0) {
-      GAEvent("", "Research", "Filter Applied", "No Event Found");
-    }
-  }, [searchParamsString]);
 
   return (
     <div className="flex items-center gap-2 min-w-fit">
