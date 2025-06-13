@@ -4,6 +4,7 @@ import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
@@ -39,6 +40,10 @@ const EventCount = ({ view }: { view: string }) => {
         <p className="text-red-500 font-semibold text-sm sm:text-base">Error</p>
       </div>
     );
+  }
+
+  if ((data as any)?.count == 0) {
+    GAEvent("", "Research", "Filter Applied", "No Event Found");
   }
 
   return (
