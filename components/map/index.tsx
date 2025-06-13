@@ -327,7 +327,6 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
-      console.log(location);
       
       if (
         currentZoomGroup === "event" &&
