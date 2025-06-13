@@ -8,11 +8,7 @@ import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
-<<<<<<< HEAD
-import ZeroState from "@/app/components/zerostate"
-=======
 import ZeroState from "@/app/components/zerostate";
->>>>>>> 572701bf730e1bc7840637c2cf5c4daef93ce784
 import NullState from "@/app/components/trackers/nullState";
 import trackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
