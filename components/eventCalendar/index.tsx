@@ -26,7 +26,7 @@ import ZeroState from "@/app/components/zerostate";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEventsService } from "@/services/eventsService";
 import { useFilterContext } from "@/context/filterContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
 import { useTrackerServices } from "@/services/trackerServices";
@@ -362,7 +362,11 @@ export default function EventCalendar({
     source !== "tracker" &&
     !searchParams.get("eventIds")
   ) {
-    return <ZeroState text="Location is Mandatory" />;
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />;
+      </div>
+    );
   }
 
   const renderCalendarContent = () => {
@@ -445,13 +449,15 @@ export default function EventCalendar({
           <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
         </div>
       ) : error ? (
-        <div className="px-10 py-5">
+        <>
           {source === "tracker" ? (
-            <NullState image={TrackerNullState} title={error?.message} />
+            <div className="px-10 py-5">
+              <NullState image={TrackerNullState} title={error?.message} />
+            </div>
           ) : (
             <ZeroState text={error?.message} />
           )}
-        </div>
+        </>
       ) : source === "tracker" && activeVal === 0 ? (
         active === "bookmarked" ? (
           <div className="px-10 py-5">

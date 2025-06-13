@@ -6,6 +6,7 @@ import FilterContent from "@/components/search/FilterContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/ui/Loading";
+import ZeroState from "@/components/zerostate";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -13,7 +14,7 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
 import { ApiError } from "@/types/api";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { Buildings, Location } from "geist-icons";
 import { Filter, FilterX } from "lucide-react";
 import Image from "next/image";
@@ -293,7 +294,7 @@ export const ProspectList: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       <div
-        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
       >
         <div className="flex items-center gap-2">
           <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
@@ -365,10 +366,7 @@ export const ProspectList: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <NullState
-                image={coordinateNullState}
-                title={(error as ApiError).message}
-              />
+              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
