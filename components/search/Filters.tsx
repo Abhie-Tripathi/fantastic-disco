@@ -913,7 +913,7 @@ const Filters = ({
         }`}
       >
         {source !== "tracker" && (
-          <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
+          <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-2">
             <Tabs defaultValue={type} value={type}>
               <TabsList
                 className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
@@ -966,8 +966,8 @@ const Filters = ({
         </div>
         {source !== "tracker" && (
           <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
-            <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
-              <div className="flex items-center justify-between mb-2">
+            <div className="p-4 pt-3 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+              <div className="flex items-center justify-between">
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -985,20 +985,22 @@ const Filters = ({
                   {filterCount} filters applied
                 </span>
               </div>
-              <Button onClick={searchHandler} className="w-full h-10">
-                Apply Filters
-              </Button>
-              {filterCount > 0 && (
-                <Button
-                  id="save-search-btn"
-                  onClick={createTrackerHandler}
-                  variant="outline"
-                  className="w-full h-10"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Search
+              <div className="flex gap-2">
+                {filterCount > 0 && (
+                  <Button
+                    id="save-search-btn"
+                    onClick={createTrackerHandler}
+                    variant="outline"
+                    className="w-full h-10"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Search
+                  </Button>
+                )}
+                <Button onClick={searchHandler} className="w-full h-10">
+                  Apply Filters
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         )}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterContext } from "@/context/filterContext";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -18,66 +18,75 @@ import {
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { useFilterContext } from "@/context/filterContext";
+import { Switch } from "@/components/ui/switch";
+import { LockClosedSmall } from "geist-icons";
+import { EventType } from "@/public/data/searchFilters";
 
-const maturityLevels = [
-  { id: "new", label: "New" },
-  { id: "growing", label: "Growing" },
-  { id: "established", label: "Established" },
-  { id: "flagship", label: "Flagship" },
-];
-
-interface EditionProps {
-  source?: string;
-  selectedStatus?: string;
-  setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
-}
-
-interface EditionSelectorProps extends EditionProps {
+interface EditionSelectorProps {
   variant?: "accordion" | "popover";
 }
 
 export default function EditionSelector({
-  source,
-  selectedStatus: parentSelectedFormats = "",
-  setSelectedStatus: parentSetSelectedFormats,
   variant = "popover",
 }: EditionSelectorProps) {
-  const { getLocalFilterValue, setLocalFilter, searchParams } =
+  const { getLocalFilterValue, setLocalFilter, morphedData } =
     useFilterContext();
-  const [selectedFormatsLocal, setSelectedFormatsLocal] =
-    React.useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const selectedStatus =
-    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-  const setSelectedStatus =
-    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
+  const maturityLevels = morphedData.maturityLevels.options;
+  const enabled = morphedData.maturityLevels.isEnabled;
 
-  useEffect(() => {
-    if (source !== "tracker")
-      setSelectedStatus?.(getLocalFilterValue("maturity"));
-  }, [searchParams]);
+  const selectedStatus = useMemo(
+    () => getLocalFilterValue("maturity"),
+    [getLocalFilterValue]
+  );
+
+  const showInFilter = useMemo(() => {
+    const showFilters = getLocalFilterValue("show").split(",");
+    return showFilters.includes("maturity");
+  }, [getLocalFilterValue]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      setSelectedStatus?.("");
-      if (source !== "tracker") setLocalFilter("maturity", "");
+      setLocalFilter("maturity", "");
     } else {
-      setSelectedStatus?.(value);
-      if (source !== "tracker") setLocalFilter("maturity", value);
+      setLocalFilter("maturity", value);
+    }
+  };
+
+  const handleShowToggle = (checked: boolean) => {
+    const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
+    const newShow = checked
+      ? Array.from(new Set([...currentShow, "maturity"]))
+      : currentShow.filter((item) => item !== "maturity");
+
+    setLocalFilter("show", newShow.join(","));
+
+    if (!checked) {
+      setLocalFilter("maturity", "");
     }
   };
 
   const triggerContent = (
-    <span className="flex items-center gap-2">
-      Maturity
-      {selectedStatus && (
-        <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-          1
+    <div className="flex items-center justify-between w-full">
+      <div className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="flex items-center gap-2">
+          Maturity
+          {selectedStatus && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+              1
+            </span>
+          )}
         </span>
-      )}
-    </span>
+      </div>
+      <Switch
+        checked={showInFilter}
+        onCheckedChange={handleShowToggle}
+        aria-label="Show Maturity in filter"
+        onClick={(e) => e.stopPropagation()}
+      />
+    </div>
   );
 
   const content = (
@@ -87,11 +96,12 @@ export default function EditionSelector({
         onValueChange={handleStatusChange}
         className="space-y-2"
       >
-        {maturityLevels.map((maturityLevel) => (
+        {maturityLevels.map((maturityLevel: EventType) => (
           <div key={maturityLevel.id} className="flex items-center space-x-2">
             <RadioGroupItem
               value={maturityLevel.id}
               id={maturityLevel.id}
+              disabled={!maturityLevel.isEnabled}
               onClick={(e) => {
                 if (selectedStatus === maturityLevel.id) {
                   e.preventDefault();
@@ -115,6 +125,7 @@ export default function EditionSelector({
             role="combobox"
             aria-expanded={isOpen}
             className="w-full justify-between px-3 py-5 text-base font-normal"
+            disabled={!enabled}
           >
             <div className="flex items-center justify-between w-full">
               {triggerContent}
@@ -144,10 +155,9 @@ export default function EditionSelector({
             buttonVariants({ variant: "outline" }),
             "no-underline border-none justify-between px-3 py-5 text-base font-normal"
           )}
+          disabled={!enabled}
         >
-          <div className="flex items-center justify-between w-full">
-            {triggerContent}
-          </div>
+          {triggerContent}
         </AccordionTrigger>
         <AccordionContent>{content}</AccordionContent>
       </AccordionItem>

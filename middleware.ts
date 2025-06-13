@@ -22,9 +22,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signin", request.url));
   } else {
     if (request.nextUrl.pathname == "/") {
-      if (pathName) {
-        return NextResponse.redirect(new URL(`${pathName}`, request.url));
-      }
+      // if (pathName) {
+      //   return NextResponse.redirect(new URL(`${pathName}`, request.url));
+      // }
       return NextResponse.redirect(new URL("/internal", request.url));
     }
   }
