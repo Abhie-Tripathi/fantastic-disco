@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
+import { useEffect } from "react";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
@@ -42,9 +43,11 @@ const EventCount = ({ view }: { view: string }) => {
     );
   }
 
-  if ((data as any)?.count == 0) {
-    GAEvent("", "Research", "Filter Applied", "No Event Found");
-  }
+  useEffect(() => {
+    if ((data as any)?.count == 0) {
+      GAEvent("", "Research", "Filter Applied", "No Event Found");
+    }
+  }, [searchParamsString]);
 
   return (
     <div className="flex items-center gap-2 min-w-fit">
