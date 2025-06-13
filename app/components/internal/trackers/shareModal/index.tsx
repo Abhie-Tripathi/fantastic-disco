@@ -10,7 +10,9 @@ import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 interface ShareModalProps {
+    trackerType?:string;
     shareId?:string;
     fetchAccess?: any;
   closeShareModal?: () => void;
@@ -25,6 +27,7 @@ interface ShareModalProps {
 const ShareModal: React.FC<ShareModalProps> = ({
     fetchAccess,
     closeShareModal,
+    trackerType,
     id,
     setId,
     shareFunction,
@@ -36,7 +39,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
-    console.log("id is:",shareId);
+    console.log("id is:",id);
     
      const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);
@@ -176,7 +179,17 @@ const ShareModal: React.FC<ShareModalProps> = ({
         
   return (
     <div className="flex flex-col w-[360px] md:w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+                        <div className='flex justify-between'>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
+                        {global &&
+  <Link href={`/internal/trackers/${shareId}/notesDiscussion?type=${trackerType}`}>
+    <div className="text-[var(--primary-color)] border-b border-transparent hover:border-[var(--primary-color)] transition-all duration-200">
+      Manage
+    </div>
+  </Link>
+}
+
+                        </div>
                         {/* <div className={styles.bar}></div> */}
                         {/* <div className={styles.linkCopy}>
                             <div className={styles.link}>{currentUrl}</div>

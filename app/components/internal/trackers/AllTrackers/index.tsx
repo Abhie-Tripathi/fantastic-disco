@@ -240,17 +240,19 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
         closeShareModal();
       }
     };
-    const shareFunction = () => {
-      if (!share) {
-        window.history.pushState({ shareOpen: true }, "");
-        setShare(true);
-        document.body.style.height = "100vh";
-        document.body.style.width = "100%";
-        document.body.style.overflow = "hidden";
-      } else {
-        closeShareModal();
-      }
-    };
+    // const shareFunction = () => {
+    //   if (!share) {
+       
+    //     console.log("sharedId1", shareId);
+    //     window.history.pushState({ shareOpen: true }, "");
+    //     setShare(true);
+    //     document.body.style.height = "100vh";
+    //     document.body.style.width = "100%";
+    //     document.body.style.overflow = "hidden";
+    //   } else {
+    //     closeShareModal();
+    //   }
+    // };
    console.log(entryCount, "entryCount");
 const getTrackerCreatedAgo=(dateString: string | Date): string=> {
   const now = new Date();
@@ -360,11 +362,7 @@ console.log("sharedId", shareId);
              <div className="flex md:hidden">
               <button 
     className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
-    onClick={(e) => {
-      setShare(true);
-      e.preventDefault(); 
-        e.stopPropagation();
-    }}
+   onClick={(e) => shareTracker(item.id,e)}
   >
     <Share2 width={20} height={20} />
   </button>
@@ -501,9 +499,10 @@ console.log("sharedId", shareId);
                 closeShareModal={closeShareModal}
                 share={share}
                 shareId={shareId}
-                setShare={setShare}
-                shareFunction={shareFunction}
+                // setShare={setShare}
+                // shareFunction={shareFunction}
                 global={true}
+                trackerType={item.type}
               />
             </div>
           )}
