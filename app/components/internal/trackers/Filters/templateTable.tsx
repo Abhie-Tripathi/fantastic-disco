@@ -112,11 +112,38 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                         checked={selectedIdArray.includes(index)}
                       />
                     </td>
-                    {Object.entries(item).map(([entryKey, value]) => (
-                      <td key={entryKey} className={styles.dataColoumn}>
-                        {value as string}
-                      </td>
-                    ))}
+                    {Object.entries(item).map(([entryKey, value]) => {
+                  const stringValue = String(value);
+                  const parts = stringValue.split('_');
+                  
+                  return (
+                    <td key={entryKey} className={styles.dataColoumn}>
+                      <div>
+                        <div>
+                          {parts[0]}
+                          {parts.length > 1 &&
+                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{formattedDateRange(
+                                                     parts[5],
+                                                     parts[6],
+                                                      false
+                                                    )}</span>}
+                        </div>
+                        {parts.length > 1 && (
+                          <div className='text-[var(--secondary-text-color)]'>
+                            <span className='text-sm'>
+                              {formatLocationParts({
+                                name: parts?.[1]?.trim() ?? "",
+                                cityName: parts?.[2]?.trim() ?? "",
+                                countryName: parts?.[3]?.trim() ?? "",
+                                locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
+                              } as Event["basic"]["eventLocation"], true)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  );
+                })}
                     <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
                     <Trash />
                     </td>
@@ -134,7 +161,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                     </td>
                     {Object.entries(item).map(([entryKey, value]) => {
                   const stringValue = String(value);
-                  const parts = stringValue.split(',');
+                  const parts = stringValue.split('_');
                   
                   return (
                     <td key={entryKey} className={styles.dataColoumn}>

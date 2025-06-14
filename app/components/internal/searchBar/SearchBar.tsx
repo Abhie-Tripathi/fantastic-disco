@@ -148,7 +148,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       eventLocation:item?.basic?.eventLocation?.cityName,
                       eventCountry:item?.basic?.eventLocation?.countryName,
                       name: item.basic.name || '',
-                      tableEntry: `${item.basic.name}, ${item?.basic?.eventLocation?.name}, ${item?.basic?.eventLocation?.cityName}, ${item?.basic?.eventLocation?.countryName}, ${item?.basic?.eventLocation?.locationType}, ${item.basic.startDateTime}, ${item.basic.endDateTime} `,
+                      tableEntry: `${item.basic.name}_${item?.basic?.eventLocation?.name}_${item?.basic?.eventLocation?.cityName}_${item?.basic?.eventLocation?.countryName}_${item?.basic?.eventLocation?.locationType}_${item.basic.startDateTime}_${item.basic.endDateTime} `,
                       eventStartDate: item.basic.startDateTime || "",
                       eventEndDate: item.basic.endDateTime || "",
                       location: item.basic.eventLocation

@@ -1189,7 +1189,7 @@ const stepsConfig =[
         let updatedData: { "Search By Event Name": string }[] = [];
         editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
           const event = Object.values(item)[0];
-          updatedData.push({ "Search By Event Name": `${event.basic.name}, ${event?.basic?.eventLocation?.name}, ${event?.basic?.eventLocation?.cityName}, ${event?.basic?.eventLocation?.countryName}, ${event?.basic?.eventLocation?.locationType}, ${event.basic.startDateTime}, ${event.basic.endDateTime} ` });
+          updatedData.push({ "Search By Event Name": `${event.basic.name}_${event?.basic?.eventLocation?.name}_${event?.basic?.eventLocation?.cityName}_${event?.basic?.eventLocation?.countryName}_${event?.basic?.eventLocation?.locationType}_${event.basic.startDateTime}_${event.basic.endDateTime} ` });
         });
         setEventSuggestion(editData?.filterValues?.eventIds);
 

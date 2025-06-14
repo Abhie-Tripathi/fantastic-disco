@@ -267,7 +267,7 @@ const EventTable = ({
         </div>
       </div>
 
-      {totalPages > 1 && (
+      {totalPages > 0 && (
         <div className="sticky bottom-0 bg-background py-3 border-t">
           <PaginationComponent
             currentPage={currentPage}
