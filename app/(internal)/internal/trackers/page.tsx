@@ -1,6 +1,10 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Templates from "@/app/components/Templates";
+import dynamic from "next/dynamic";
+const Templates = dynamic(()=>import('@/app/components/Templates'),{
+   loading: () => <Loading/>,
+})
+// import Templates from "@/app/components/Templates";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import { Suspense, lazy } from "react";
@@ -184,7 +188,7 @@ const Trackers = ({ searchParams }: Search) => {
       }
       console.log(singleTrackerData.id);
     }
-  }, [singleTrackerData]);
+  }, [skip]);
   const fetchNote = async (id: string) => {
     const result = await getNotesFromTracker(id, `limit=1&offset=0`);
 
@@ -215,10 +219,12 @@ const Trackers = ({ searchParams }: Search) => {
   };
   const hideTemplates = useCallback(
     (val: boolean) => {
+      console.log("val",val);
+      
       if (!val) {
         setMultipleFilters({
           showTemplates: (!val).toString(),
-          id: "",
+          // id: "",
           q: "",
         });
       } else {

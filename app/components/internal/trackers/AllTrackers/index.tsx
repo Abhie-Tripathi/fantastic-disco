@@ -275,14 +275,17 @@ const getTrackerCreatedAgo=(dateString: string | Date): string=> {
   if (months >= 1) return `${months} month${months > 1 ? "s" : ""} ago`;
   return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
 }
-const shareTracker=(id:string,e:any)=>{
-  console.log("shared id is:", id);
-  
-  setShare(true);
-      setShareId(id)
-      e.preventDefault(); 
-        e.stopPropagation();
-}
+const shareTracker = (id: string, e: any) => {
+  e.preventDefault(); 
+  e.stopPropagation();
+  setShareId(id);    
+  setShare(true);     
+};
+useEffect(() => {
+  if (shareId) {
+    setShare(true);
+  }
+}, [shareId]);
 console.log("sharedId", shareId);
 
   return (
@@ -493,7 +496,7 @@ console.log("sharedId", shareId);
             <Line data={lineData} options={lineOptions} />
           </div>
         </div> */}
-        {share && (
+        {share && shareId && (
             <div className={styles.shareModal} onClick={closeModal}>
               <ShareModal
                 closeShareModal={closeShareModal}

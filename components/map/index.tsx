@@ -95,9 +95,8 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
   eventType,
-  trackerGeoCordinates
+  trackerGeoCordinates,
 }: MapProps) {
-  
   const mapRef = useRef<MapRef>(null);
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
@@ -163,8 +162,12 @@ export default function MapComponent({
         ? "defaultLoc"
         : getFilterValue("locationIds");
 
-    if (geoCoordinates || Object?.keys(trackerGeoCordinates || {}).length != 0) {
-      if(source==="tracker") return { type: "geoCoordinates",trackerGeoCordinates };
+    if (
+      geoCoordinates ||
+      Object?.keys(trackerGeoCordinates || {}).length != 0
+    ) {
+      if (source === "tracker")
+        return { type: "geoCoordinates", trackerGeoCordinates };
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
@@ -195,6 +198,8 @@ export default function MapComponent({
   });
 
   const handleMapClick = async (e: any) => {
+    setHoverInfo(null);
+
     const features = e.target.queryRenderedFeatures(e.point, {
       layers: [
         "unclustered-events-single",
@@ -566,7 +571,8 @@ export default function MapComponent({
     }
 
     if (location?.type === "geoCoordinates") {
-      const { coordinates } = source==="tracker"?location.trackerGeoCordinates:location;
+      const { coordinates } =
+        source === "tracker" ? location.trackerGeoCordinates : location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
@@ -576,7 +582,11 @@ export default function MapComponent({
         essential: true,
       });
     }
-    if (Object?.keys(trackerGeoCordinates || {}).length === 0 && locationBBox && location.locationIds != "defaultLoc") {
+    if (
+      Object?.keys(trackerGeoCordinates || {}).length === 0 &&
+      locationBBox &&
+      location.locationIds != "defaultLoc"
+    ) {
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -681,7 +691,6 @@ export default function MapComponent({
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
-              global={isGlobal}
               image={TrackerNullState}
               title="We couldn’t find any events matching your tracker criteria at the moment."
               text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":""}`}

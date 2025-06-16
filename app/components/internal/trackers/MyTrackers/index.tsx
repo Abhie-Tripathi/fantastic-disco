@@ -26,6 +26,7 @@ import SortDropdown from "@/components/search/sortDropdown";
 import Link from "next/link";
 import { isEventeli } from "@/config";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface MyTrackersProps {
   searchValue:string;
@@ -39,6 +40,7 @@ interface MyTrackersProps {
   hideTemplates: any;
   eventType?: string;
   locations?: string[];
+  trackerLoc: string;
 }
 const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId, hideTemplates, setSearchValue, eventType, locations}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
@@ -47,6 +49,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const {setFilter, getFilterValue, setMultipleFilters}=useFilterState();
   const {setSkip, skip:w, searchValue} = useTrackerContext();
   const skip = w || 0;
+  const isMobile=useIsMobile();
   const take =Number(getFilterValue("take")) || 4;
   const [share,setShare]=useState(false);
    const router= useRouter();
@@ -66,7 +69,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setSkip(((page-1) * trackerPerPage));
     setMultipleFilters({
       skip:((page-1) * trackerPerPage).toString(),
-      id:allTracker[0].id,
+      // id:allTracker[0].id,
       q: searchValue
     })
    
@@ -113,7 +116,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       setMultipleFilters({ 
           skip: skip,
           q: searchValue,
-          id: result?.trackers[0]?.id,
+          // id: result?.trackers[0]?.id,
         })
     setTotalPage(Math.ceil(result.count / trackerPerPage));
     setTotalCount(result.count)
@@ -132,6 +135,17 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setDataPresent(true);
   }
   },[totalPage])
+  const shouldRenderMap = (trackerId: string, currentSkip: number) => {
+  // Only render if:
+  // 1. We have tracker data
+  // 2. The skip value hasn't changed (prevent re-render during pagination)
+  // 3. Not in loading state
+  return (
+    singleTrackerData?.id === trackerId && 
+    !loadOne &&
+    currentSkip === skip
+  );
+};
   const [openSearchBar,setOpenSearchBar]=useState(false);
   console.log(allTracker);
   const clickHandler=(item:AllTrackerTypes, e:any)=>{
@@ -187,7 +201,10 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                 />
               </div>
             </div>
-            <Button className="h-[42px]" variant="default" onClick={()=>hideTemplates(false)}>Create</Button>
+            <Button className="h-[42px]" variant="default" onClick={(e) => {
+    e.stopPropagation();
+    hideTemplates(false);
+  }}>Create</Button>
             {/* <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
             </Button> */}
@@ -226,6 +243,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
              <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} share={share} setShare={setShare}/>
              </div>
             {/* </Link> */}
+            {!isMobile  &&
             <Suspense
                         fallback={
                           <div className="hidden md:flex h-[160px] w-[30%] items-center justify-center">
@@ -243,6 +261,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             />
                           ) : (
                             // <NullState image={TrackerNullState}  title="Some issue with map view."/>
+                            
                             <Map
                               isGlobal={true}
                               source="tracker"
@@ -259,7 +278,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             />
                           )}
                         </div>
-            </Suspense>
+            </Suspense>}
             </div>
             
             ))}
