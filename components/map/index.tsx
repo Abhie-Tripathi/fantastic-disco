@@ -327,20 +327,36 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
+      
       if (
         currentZoomGroup === "event" &&
         mapRef.current &&
         location?.type === "geoCoordinates" &&
-        searchParams.get("viewBound")
+  (source !== "tracker" || !searchParams.get("viewBound"))
       ) {
+        
         try {
           const modifiedSearchParams = searchParams
             ?.toString()
             .replace(/locationIds=[^&]*&?/, "");
-
-          console.log("modifiedSearchParams", modifiedSearchParams);
-
           let eventsData: any = {};
+          if (source === "tracker") {
+          const viewBound = {
+            boundType: "point",
+            coordinates: {
+              latitude: location.trackerGeoCordinates.coordinates.latitude,
+              longitude: location.trackerGeoCordinates.coordinates.longitude,
+              radius: location.trackerGeoCordinates.coordinates.radius,
+            },
+          };
+              eventsData = await getEventsLatLongData(
+                trackerId,
+                `viewBound=${JSON.stringify(viewBound)}`,
+                searchParams
+              );
+              
+            }
+          else
           eventsData = await getEventsWithSearchParams(modifiedSearchParams);
           setEvents((eventsData?.events as MapEvents[]) || []);
         } catch (error) {
