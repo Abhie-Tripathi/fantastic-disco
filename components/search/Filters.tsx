@@ -76,7 +76,7 @@ import {
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
 import FilterContent from "./FilterContent";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface FilterSection {
@@ -702,6 +702,7 @@ const Filters = ({
   const isMobile = useIsMobile();
   const { theme } = useTheme();
   const path = useSearchParams();
+  const pathName = usePathname();
   const filterCount = useMemo(() => {
     const excludedFilters = [
       "active_gte",
@@ -718,9 +719,14 @@ const Filters = ({
 
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
-  const searchHandler = useCallback(() => {
+  const searchHandler = () => {
+    if (pathName.split("/").includes("search")) {
+      Object.keys(localFilters).map((filter) =>
+        GAEvent("", "Reseach", "Filter Applied", filter)
+      );
+    }
     applyFilters({ resetPage: true });
-  }, [applyFilters]);
+  };
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");

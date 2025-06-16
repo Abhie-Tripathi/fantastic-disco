@@ -177,7 +177,7 @@ const EventTable = ({
     } else
       return error.message == "Location is required" ? (
         <div className="p-6">
-          <CustomTrackerNullState />;
+          <CustomTrackerNullState />
         </div>
       ) : (
         <ZeroState
@@ -193,7 +193,7 @@ const EventTable = ({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }

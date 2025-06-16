@@ -16,7 +16,7 @@ import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { endOfMonth } from "date-fns";
+import { endOfMonth, format } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { useConfigurationService } from "@/services/configurationService";
@@ -189,11 +189,11 @@ type FilterContextType = {
     newValue: string
   ) => void;
   enabledFilters: EventFilterData | null;
-  showFetchedData:any;
-  setShowFetchedData:(val:boolean) => void;
+  showFetchedData: any;
+  setShowFetchedData: (val: boolean) => void;
   isTentimesUser: boolean;
 };
-const isTentimesUser=false;
+const isTentimesUser = false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -247,12 +247,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         !params.active_lte &&
         !params.eventIds
       ) {
-        params.active_gte = startOfMonth(new Date())
-          .toISOString()
-          .split("T")[0];
-        params.active_lte = endOfMonth(addMonths(new Date(), 3))
-          .toISOString()
-          .split("T")[0];
+        params.active_gte = format(startOfMonth(new Date()), "yyyy-MM-dd");
+        params.active_lte = format(
+          endOfMonth(addMonths(new Date(), 2)),
+          "yyyy-MM-dd"
+        );
       }
 
       setLocalFilters(filterEmptyValues(params));
@@ -309,8 +308,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
-          console.log(value);
-
           toast({
             title: "Error",
             description: "At least one filter must be selected",
@@ -425,13 +422,31 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {
       setLocalFilters((prev) => {
+        if (
+          enabledFilters?.filter?.branded &&
+          ((filters.onlyBranded === "" &&
+            !filters.onlySeries &&
+            !prev.onlySeries) ||
+          (filters.onlySeries === "" &&
+            !filters.onlyBranded &&
+            !prev.onlyBranded) ||
+          (filters.onlyBranded === "" && filters.onlySeries === ""))
+        ) {
+          toast({
+            title: "Error",
+            description: "At least one of Branded or Series must be selected",
+            variant: "destructive",
+          });
+          return prev;
+        }
+
         return filterEmptyValues({
           ...prev,
           ...filters,
         });
       });
     },
-    [filterEmptyValues]
+    [filterEmptyValues, enabledFilters]
   );
 
   const deleteMultipleLocalFilters = useCallback(
@@ -486,7 +501,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
-      isTentimesUser
+      isTentimesUser,
     }),
     [
       isTentimesUser,

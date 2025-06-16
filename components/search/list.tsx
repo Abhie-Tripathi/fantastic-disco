@@ -289,7 +289,7 @@ export default function EventAccordion({
     } else
       return error.message == "Location is required" ? (
         <div className="p-6">
-          <CustomTrackerNullState />;
+          <CustomTrackerNullState />
         </div>
       ) : (
         <ZeroState
@@ -305,7 +305,7 @@ export default function EventAccordion({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }

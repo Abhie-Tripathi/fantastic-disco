@@ -155,6 +155,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       fill: type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY" ? "#646BDC" : (type === "T_PRODUCT_KEYWORDS") ? "#E99CD4" : "#9B86D4",
     }
   ];
+
+
+  const isCancelled = event.basic.status === "cancelled";
+  const isPostponed = event.basic.status === "postponed";
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -285,6 +289,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Date Column */}
       <TableCell>
+      {isCancelled && (
+                    <Badge
+                      variant="outline"
+                      className="border-destructive text-destructive mt-2"
+                    >
+                      Cancelled
+                    </Badge>
+                  )}
+                  {isPostponed && (
+                    <Badge
+                      variant="outline"
+                      className="border-[#FF990A] text-[#FF990A] mt-2"
+                    >
+                      Postponed
+                    </Badge>
+                  )}
         {event.basic.status === "cancelled" ||
         event.basic.status === "postponed" ? (
           <del className="text-muted-foreground" title={event.basic.status}>

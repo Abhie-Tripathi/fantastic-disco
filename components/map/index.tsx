@@ -199,6 +199,8 @@ export default function MapComponent({
   });
 
   const handleMapClick = async (e: any) => {
+    setHoverInfo(null);
+
     const features = e.target.queryRenderedFeatures(e.point, {
       layers: [
         "unclustered-events-single",
@@ -695,7 +697,7 @@ export default function MapComponent({
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
-              title="We couldn’t find any events matching your tracker criteria at the moment."
+              title="We couldn't find any events matching your tracker criteria at the moment."
               text="Try adjusting your filters or checking back later, as new events are added frequently."
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
