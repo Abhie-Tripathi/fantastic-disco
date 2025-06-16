@@ -211,10 +211,10 @@ export function useDefaultFilters() {
    * 3. **Default Filters:** If parameters are not found in recent search filters, it falls back to default filters.
    */
   const generateTrendsParams = (
-    params: URLSearchParams,
+    params?: URLSearchParams,
     recentFilterParams?: any
   ) => {
-    const trendsParams = new URLSearchParams(params);
+    const trendsParams = new URLSearchParams();
     const eventTypesParams = trendsParams.get("eventTypes");
     const locationIdsParams = trendsParams.get("locationIds");
     const viewBoundParams = trendsParams.get("viewBound");
@@ -399,7 +399,7 @@ export function useDefaultFilters() {
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
         });
-        const trendsParams = generateTrendsParams(params);
+        const trendsParams = generateTrendsParams();
 
         if (
           pathName.split("/").includes("search") ||

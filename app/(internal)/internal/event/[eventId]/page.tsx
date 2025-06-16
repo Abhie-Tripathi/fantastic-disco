@@ -76,12 +76,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   } = useEventsService();
   const coordinateService = useCoordinateService();
   const { data: eventData, isLoading } = useQuery<any>({
-    queryKey: ["eventDetailData"],
+    queryKey: ["eventDetailData", params.eventId],
     queryFn: () => getEventDetailById(params.eventId),
     refetchOnWindowFocus: false,
   });
   const { data: event } = useQuery<any>({
-    queryKey: ["eventDetails"],
+    queryKey: ["eventDetails", params.eventId],
     queryFn: async () => {
       const [
         // eventDataResult,

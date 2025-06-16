@@ -20,6 +20,7 @@ import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CheckCircle2, Copy, ExternalLink } from "lucide-react";
+import { isEventeli } from "@/config";
 
 interface CreateTrackerDialog {
   open: boolean;
@@ -140,7 +141,13 @@ export default function CreateTrackerDialog({
         });
       }
       if (data) {
-        setTrackerUrl(`${window.location.origin}/internal/trackers/${data.id}`);
+        setTrackerUrl(
+          `${window.location.origin}/internal/trackers/${
+            data.id
+          }/trackedEvents?type=T_CUSTOM&view=table&${
+            isEventeli ? "eventType=social" : "eventType=active"
+          }`
+        );
         setIsSuccess(true);
       }
     } catch (error) {
@@ -268,7 +275,7 @@ export default function CreateTrackerDialog({
             <div className="flex flex-col md:flex-row gap-3 w-full pt-2">
               <Button
                 className="w-full bg-[#6E56CF] hover:bg-[#644fc0]"
-                onClick={() => router.push("/internal/trackers")}
+                onClick={() => router.push(trackerUrl)}
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
                 View Tracker
