@@ -277,17 +277,23 @@ useEffect(() => {
         <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
-        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[95%] gap-1" style={{fontSize:"12px"}}>
-          {/* {locations?.length > 0 && locations[0].length<15 &&locations[0]}
-          {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
-          <div  className={`${
-            locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<80 &&locations[0]}
-            {locations?.length > 0 && locations[0].length>80 &&`${locations[0].substring(0,80)}...`} </div>
-          {locations?.length > 1 &&  (
-            <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
-          )}
-        </div>
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
+        <div className="w-[95%] overflow-hidden flex gap-1">
+  {locations.slice(0, 3).map((loc:string, i:number) => (
+    <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
+      {loc}
+    </div>
+  ))}
+  </div>
+
+  {locations.length > 3 && (
+    <div className="border h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)] text-xs w-[5%]">
+      +{locations.length - 3}
+    </div>
+  )}
+</div>
+
+
         </div>
 }
             </div> 

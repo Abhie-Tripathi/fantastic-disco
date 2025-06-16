@@ -47,7 +47,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const {setFilter, getFilterValue, setMultipleFilters}=useFilterState();
-  const {setSkip, skip:w, searchValue} = useTrackerContext();
+  const {setSkip, skip:w, searchValue, setIsNewCall, setTrackerId} = useTrackerContext();
   const skip = w || 0;
   const isMobile=useIsMobile();
   const take =Number(getFilterValue("take")) || 4;
@@ -139,6 +139,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   console.log(allTracker);
   const clickHandler=(item:AllTrackerTypes, e:any)=>{
     // e.stopPropagation();
+    setSingleTrackerData(item)
+    setIsNewCall(true); 
+    setTrackerId(item.id);
     router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`)
   }
   return (
