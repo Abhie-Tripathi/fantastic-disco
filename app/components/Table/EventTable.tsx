@@ -50,17 +50,14 @@ const EventTable = ({
 }: EventTableProps) => {
   const pathName = usePathname();
   // const { theme } = useTheme();
-  const [interestStatus, setInterestStatus] = useState<{
-  attend: boolean;
-  speak: boolean;
-  bookamrked:boolean;
-  unbookmarked:boolean;
-}>({
-  attend: false,
-  speak: false,
-  bookamrked: false,
-  unbookmarked:false,
-});
+type InterestKey = 'bookmark' | 'attend' | 'speak' | 'exhibit';
+
+type InterestState = {
+  [key in InterestKey]?: boolean;
+};
+
+const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, InterestState>>(new Map());
+
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
   const { createUserEventInterest, isLoading: isSubmitting } =
@@ -142,7 +139,7 @@ const EventTable = ({
       setAction(actions[0]);
     }
   }, [actions]);
-  const bulkSubmit = async () => {
+const bulkSubmit = async () => {
     try {
       let filteredIds = [];
       if (action.status === "UN-BOOKMARK") {
@@ -227,6 +224,7 @@ const EventTable = ({
       // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
     }
   };
+
 
   //  try {
   //     if (eventType === "bookmarked") {
@@ -317,8 +315,24 @@ const EventTable = ({
     }
     setIsChecked(checked);
   };
+function mapInterestsToBoolean(interests?: Record<string, { interestId?: string }>) {
+  const result: Record<InterestKey, boolean> = {
+    bookmark: false,
+    exhibit: false,
+    attend: false,
+    speak: false,
+  };
 
-  function toggleSelection(id: string) {
+  if (!interests) return result;
+
+  (Object.keys(result) as InterestKey[]).forEach((key) => {
+    result[key] = !!interests[key]?.interestId;
+  });
+
+  return result;
+}
+
+  function toggleSelection(id: string, event:any) {
     setTotalChecked((prev) => {
       if (prev.includes(id)) {
         // Remove the id
@@ -328,6 +342,18 @@ const EventTable = ({
         return [...prev, id];
       }
     });
+    setSelectedInterestMap(prev => {
+    const newMap = new Map(prev);
+
+    if (newMap.has(id)) {
+      newMap.delete(id); // unchecking
+    } else {
+      const interestBooleans = mapInterestsToBoolean(event.interests);
+      newMap.set(id, interestBooleans); // checking
+    }
+
+    return newMap;
+  });
   }
 
   function handleSelectAll(checked: boolean) {
@@ -470,7 +496,7 @@ const EventTable = ({
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
-console.log("totalChecked", totalChecked);
+console.log("totalChecked", selectedInterestMap);
 
   return (
     <div className="w-full flex flex-col h-full">

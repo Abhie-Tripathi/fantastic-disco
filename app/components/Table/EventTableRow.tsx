@@ -192,7 +192,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <Checkbox
               className=""
               checked={totalChecked.includes(event.basic.id)}
-              onCheckedChange={() => toggleSelection(event.basic.id)}
+              onCheckedChange={() => toggleSelection(event.basic.id, event)}
             />
           )}
           {/* Logo Section */}
