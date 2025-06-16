@@ -692,12 +692,13 @@ export default function MapComponent({
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
         (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
       ) : eventCountsQuery.error ? (
-        <ZeroState text={eventCountsQuery.error.message} />
+        <ZeroState text={eventCountsQuery.error.message} isGlobal={isGlobal}/>
       ) : (
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
+              global={isGlobal}
               title="We couldn’t find any events matching your tracker criteria at the moment."
               text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":""}`}
               buttonText="Manage Configuration"
