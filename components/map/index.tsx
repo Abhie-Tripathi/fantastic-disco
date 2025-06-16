@@ -699,8 +699,8 @@ export default function MapComponent({
             <NullState
               image={TrackerNullState}
               global={isGlobal}
-              title="We couldn’t find any events matching your tracker criteria at the moment."
-              text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":""}`}
+              title={`${!isGlobal?"We couldn’t find any events matching your tracker criteria at the moment.":""}`}
+              text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":"We couldn’t find any events matching your tracker criteria at the moment."}`}
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
             />

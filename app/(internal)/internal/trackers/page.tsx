@@ -182,30 +182,8 @@ const Trackers = ({ searchParams }: Search) => {
         // setLocalFilter("locationIds", ids.join(","))
         // console.log(ids);
       } else setLocations("");
-      if (singleTrackerData.id) {
-        fetchNote(singleTrackerData?.id);
-        fetchSavedEvent(singleTrackerData?.id);
-      }
     }
   }, [singleTrackerData]);
-  const fetchNote = async (id: string) => {
-    const result = await getNotesFromTracker(id, `limit=1&offset=0`);
-
-    if (result && result.comments?.length > 0) {
-      setNote(result?.comments);
-    } else setNote(null);
-  };
-  const fetchSavedEvent = async (id: string) => {
-    const result = (await getSavedEvents(id, `limit=2&offset=0`)) as {
-      events: EventTableType[];
-      count: number;
-    };
-    console.log(result);
-
-    if (result && result?.count > 0) {
-      setSavedEvents(result);
-    } else setSavedEvents(undefined);
-  };
   const setContextData = (id: string | undefined) => {
     GAEvent(
       "trackers",

@@ -303,15 +303,15 @@ useEffect(() => {
             <div className="md:flex gap-2 text-xs items-center hidden"> 
               {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
               <div className="flex gap-1 items-center">{ userAccessData?.superAdmin?.[0]?.imageUrl === null ? 
-                              <UserProfile name={`${userAccessData?.superAdmin?.[0]?.name}`} width={30} height={30} borderRadius="50%"/>:
+                              <UserProfile name={`${userAccessData?.superAdmin?.[0]?.name}`} width={18} height={18} borderRadius="50%" />:
                               <Image
                                 src={
                                  userAccessData?.superAdmin?.[0]?.imageUrl
                                 }
                                 alt="user"
-                                className={`${styles["owner_img"]} h-[30px] w-[30px] rounded-full`}
-                                width={30}
-                                height={30}
+                                className={`${styles["owner_img"]} h-[18px] w-[18px] rounded-full`}
+                                width={18}
+                                height={18}
                                 referrerPolicy="no-referrer"
                               />
                               }
