@@ -226,7 +226,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
             allTracker.map((item:AllTrackerTypes, id:any) => (
-            <div className="flex gap-6">
+            <div className="flex gap-6" key={item.id}>
             {/* <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}className="w-[100%] md:w-[70%]"> */}
             <div onClick={(e)=>clickHandler(item,e)} className="w-[100%] md:w-[70%]">
              <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} share={share} setShare={setShare}/>
