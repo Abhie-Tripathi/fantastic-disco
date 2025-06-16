@@ -50,6 +50,17 @@ const EventTable = ({
 }: EventTableProps) => {
   const pathName = usePathname();
   // const { theme } = useTheme();
+  const [interestStatus, setInterestStatus] = useState<{
+  attend: boolean;
+  speak: boolean;
+  bookamrked:boolean;
+  unbookmarked:boolean;
+}>({
+  attend: false,
+  speak: false,
+  bookamrked: false,
+  unbookmarked:false,
+});
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
   const { createUserEventInterest, isLoading: isSubmitting } =
@@ -467,7 +478,7 @@ console.log("totalChecked", totalChecked);
         className="flex items-center justify-between gap-4 pl-4 pb-2"
         style={{ height: showCheckBox ? "50px" : "auto" }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {showCheckBox && (
             <div className="flex gap-2 items-center">
               <Checkbox
@@ -475,6 +486,7 @@ console.log("totalChecked", totalChecked);
                 onCheckedChange={handleSelectAll}
               />
               <div>Select events to perform action</div>
+              <span className="-ml-[5px] pt-[2px] text-[var(--secondary-text-color)] text-[12px]">{totalChecked.length>0 && `(${totalChecked.length} Selected)`}</span>
             </div>
           )}
           {showCheckBox && (
