@@ -66,7 +66,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
-        {view !== "bookmarked" && (
+        {(
           <>
             {show.includes(Show.estimatedExhibitors) && (
               <TableHead className="min-w-[132px] h-10">
@@ -161,6 +161,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
+          type !== "T_EVENT_PARTICIPATION" &&
           view !== "bookmarked" && (
             <>
               <TableHead

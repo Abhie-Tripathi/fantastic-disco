@@ -12,6 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
 import {
@@ -39,6 +40,7 @@ import Link from "next/link";
 import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
+import VideoModal from "@/components/layout/videoModal";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -185,7 +187,17 @@ export default function Navbar() {
           </div>
           <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
-              ? getRoute(pathname.split("/")[2])
+              ? (
+                <div className="flex items-center">
+                  {getRoute(pathname.split("/")[2])}
+                  <div className="ml-2 " >
+                    <VideoModal source={pathname.split("/")[2]} />
+                  </div>
+                  {pathname.split("/")[2] === "trends" && (
+                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
+                  )}
+                </div>
+              )
               : pathname.split("/").slice(-2)[0] === "edit"
               ? "Edit Widget"
               : geniroutes[pathname.split("/").slice(-1)[0]]}
@@ -282,6 +294,9 @@ export default function Navbar() {
               </div>
             </>
           )}
+          <div className="lg:hidden">
+            <VideoModal source={pathname.split("/")[2]} />
+          </div>
           {/* {!isEventeli && (
             <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
               {theme === "dark" ? (

@@ -4,33 +4,30 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context";
+import { getValidPath } from "@/lib/utils";
 import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
+import { signIn, useSession } from "next-auth/react";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
+  const params = useSearchParams();
+  const redirectParams = params.get("redirect");
+  const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const router = useRouter();
-  const {
-    signin,
-    error,
-    isLoading,
-    setError,
-    signInSSO,
-    isAuthenticating,
-    user,
-  } = useAuthContext();
+  const { signin, error, isLoading, setError, signInSSO, isAuthenticating } =
+  useAuthContext();
   const { data: session, status } = useSession();
 
   const {
@@ -50,6 +47,10 @@ export default function SignInForm() {
       console.error("Sign in error:", error);
     }
   };
+
+  useEffect(() => {
+    if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
+  }, [redirectPath]);
 
   useEffect(() => {
     if (
@@ -76,7 +77,7 @@ export default function SignInForm() {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
-      {/* <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+      <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
@@ -94,7 +95,7 @@ export default function SignInForm() {
           <span>LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"

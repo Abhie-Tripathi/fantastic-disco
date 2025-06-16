@@ -18,23 +18,20 @@ import { useEvents } from "@/hooks/useEvents";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { cn, lightenColor } from "@/lib/utils";
-import TrackerNullState from "@/public/trackerNullState.svg";
-import { ApiError } from "@/types/api";
+import trackerNullState from "@/public/trackerNullState.svg";
+import type { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
-import { Event, HolidayEventLocation } from "@/types/events/events";
+import type { Event, HolidayEventLocation } from "@/types/events/events";
 import { formattedDateRange } from "@/utils/date";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { formatLocationParts } from "@/utils/locationFormat";
 import * as Flags from "country-flag-icons/react/3x2";
 import { format } from "date-fns";
-import {
-  Radio,
-  Star,
-  TicketPercent
-} from "lucide-react";
+import { Radio, Star, TicketPercent } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { PaginationComponent } from "../pagination";
 import {
   Tooltip,
@@ -42,7 +39,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import IntelScore from "@/app/components/Table/IntelScore";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
+import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context/auth";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
 
+import { useFilterContext } from "@/context/filterContext";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -116,6 +122,7 @@ interface EventListProps {
   trackerId?: string;
   source?: string;
   view?: string;
+  eventType?: string;
 }
 
 export default function EventAccordion({
@@ -123,7 +130,9 @@ export default function EventAccordion({
   trackerId,
   view,
 }: EventListProps) {
+  const isMobile = useIsMobile();
   const searchParams = useSearchParams();
+  const { inTransition } = useTransition();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const showMaturity = !!getFilterValue("maturity");
@@ -154,8 +163,21 @@ export default function EventAccordion({
       view
     ));
   } else {
-    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+    ({ events, totalEvents, isLoading, error } = useEvents.list(
+      query,
+      inTransition
+    ));
   }
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    "past",
+    query.type
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -168,15 +190,17 @@ export default function EventAccordion({
     audienceZone: "audienceZone",
     rankings: "rankings",
   };
-  let showsData: string[] = [];
+  const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
     if ((data?.filterValues as any)?.show?.includes(key)) {
       showsData.push(value);
     }
   });
-  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
+  const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
-    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
+    Math.floor(
+      Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage
+    ) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
 
   let showValues: Show[] = getFilterValue("show")
@@ -200,10 +224,14 @@ export default function EventAccordion({
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
-              newEvents = newEvents.filter(
-                (event: Event) => event.basic.id !== eventId
-              );
+      if (
+        query.eventType === "bookmarked" &&
+        interest &&
+        "bookmark" in interest
+      ) {
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
@@ -246,7 +274,7 @@ export default function EventAccordion({
     });
   };
 
-  if (isLoading) {
+  if (isLoading || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
 
@@ -254,11 +282,32 @@ export default function EventAccordion({
     if (source === "tracker") {
       return (
         <NullState
-          image={TrackerNullState}
+          image={trackerNullState}
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else
+      return error.message == "Location is required" ? (
+        <div className="p-6">
+          <CustomTrackerNullState />
+        </div>
+      ) : (
+        <ZeroState
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
+      );
+  }
+
+  if (
+    searchParams.size === 0 ||
+    (searchParams.size == 1 && searchParams.has("view"))
+  ) {
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />
+      </div>
+    );
   }
 
   if (events.length === 0) {
@@ -266,14 +315,14 @@ export default function EventAccordion({
       if (query.eventType === "bookmarked") {
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
           />
         );
       } else
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="We couldn't find any events matching your tracker criteria at the moment."
             text="Try adjusting your filters or checking back later, as new events are added frequently."
             buttonText="Manage Configurations"
@@ -285,12 +334,14 @@ export default function EventAccordion({
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full px-4 md:px-0">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              isMobile={isMobile}
               global={view}
               trackerId={trackerId}
               view={query.eventType}
@@ -302,6 +353,12 @@ export default function EventAccordion({
               showMaturity={showMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
+              intelLoading={intelLoading}
+              initialIntelScoreData={
+                intelScoreData?.trackerEventsIntelScore?.find(
+                  (item: intelScore) => item?.event === event.basic.id
+                ) || null
+              }
             />
           ))}
         </ul>
@@ -321,6 +378,7 @@ export default function EventAccordion({
 }
 
 const EventListItem = ({
+  isMobile,
   global,
   view,
   trackerId,
@@ -331,7 +389,10 @@ const EventListItem = ({
   showMatchKeywords,
   showaudienceSpread,
   showMaturity,
+  initialIntelScoreData,
+  intelLoading,
 }: {
+  isMobile: boolean;
   trackerId?: string;
   view?: string;
   setEventId: any;
@@ -342,7 +403,11 @@ const EventListItem = ({
   showaudienceSpread: boolean;
   showMaturity: boolean;
   global?: string;
+  initialIntelScoreData?: intelScore;
+  intelLoading?: boolean;
 }) => {
+  const { getFilterValue } = useFilterState();
+  const { isTentimesUser } = useFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -400,32 +465,43 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-
+  const type = getFilterValue("type");
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill:
+        type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY"
+          ? "#646BDC"
+          : type === "T_PRODUCT_KEYWORDS"
+          ? "#E99CD4"
+          : "#9B86D4",
+    },
+  ];
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
-        <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
+        <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
             <img
-              src={event.basic.logoUrl}
+              src={event.basic.logoUrl || "/placeholder.svg"}
               alt={`${event.basic.name} logo`}
-              className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+              className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
             />
           ) : event.basic.website ? (
-            <div className="w-24 h-24 relative">
+            <div className="w-16 h-16 md:w-24 md:h-24 relative">
               <img
                 src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
                 alt={`${event.basic.name} website favicon`}
-                className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
-                  // This will trigger the fallback div to show
                   e.currentTarget.dataset.error = "true";
                 }}
               />
               {/* Fallback that shows when image errors */}
               <div
-                className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
                 style={{ display: "none" }}
                 ref={(el) => {
                   if (el) {
@@ -436,23 +512,39 @@ const EventListItem = ({
                   }
                 }}
               >
-                <span className="text-[#5055A3] text-2xl font-semibold">
+                <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
                   {event.basic.name.charAt(0)}
                 </span>
               </div>
             </div>
           ) : (
-            <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
-              <span className="text-[#5055A3] text-2xl font-semibold">
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+              <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
                 {event.basic.name.charAt(0)}
               </span>
             </div>
           )}
         </div>
-        <div className="pl-[136px] p-6 pr-3">
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>
+        <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="col-span-1 md:col-span-7 flex flex-col justify-between gap-3">
+              <div className="flex justify-between items-start">
+                <h2 className="text-xl md:text-2xl font-semibold ">
+                  {event.basic.name}
+                </h2>
+                {isMobile && global !== "global" && (
+                  <div onClick={(e) => e.preventDefault()}>
+                    <ActionPopover
+                      eventId={event.basic.id}
+                      interests={event.interests}
+                      trackerId={trackerId}
+                      setInterest={setInterest}
+                      setEventId={setEventId}
+                      view={view}
+                    />
+                  </div>
+                )}
+              </div>
               <div>
                 <p className="text-sm capitalize">{address}</p>
                 <div className="flex items-center gap-2">
@@ -516,7 +608,9 @@ const EventListItem = ({
                                 ]
                               }
                             </span>
-                            <span>{event.basic.primaryEventType}</span>
+                            <span className="capitalize">
+                              {event.basic.primaryEventType.toLowerCase()}
+                            </span>
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -701,7 +795,8 @@ const EventListItem = ({
                         </Tooltip>
                       </TooltipProvider>
                     )}
-                  {showValues.includes(Show.forecasted) &&
+                  {!isMobile &&
+                    showValues.includes(Show.forecasted) &&
                     event.advance?.rehostDate && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
@@ -745,7 +840,8 @@ const EventListItem = ({
                       </TooltipProvider>
                     )}
 
-                  {showValues.includes(Show.audienceZone) &&
+                  {!isMobile &&
+                    showValues.includes(Show.audienceZone) &&
                     event.audience?.audienceZone && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
@@ -896,7 +992,7 @@ const EventListItem = ({
               </div>
             </div>
 
-            <div className="col-span-5 flex flex-col gap-2 justify-between">
+            <div className="col-span-1 md:col-span-5 flex flex-col gap-2 justify-between">
               {isEventeli && event.alerts && event.alerts?.length > 0 && (
                 <div className="flex items-center justify-end gap-2">
                   {event.alerts?.map((alert) => (
@@ -917,20 +1013,20 @@ const EventListItem = ({
                 </div>
               )}
 
-              <div className="flex items-start justify-end h-full">
+              <div className="flex items-start justify-start md:justify-end h-full">
                 {showValues.includes(Show.scores) &&
                 event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
                   <div className="flex justify-end gap-6 w-full">
-                    <div className="flex flex-col gap-4">
+                    <div className="hidden md:flex flex-col gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
-                            <p className="text-xs text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm text-gray-600 font-medium">
                               Estimated Exhibitors
                             </p>
-                            <p className="text-lg font-semibold text-primary">
+                            <p className="text-base md:text-lg font-semibold text-primary">
                               {formatExhibitorCount(
                                 event.insights?.estimatedExhibitors
                               )}
@@ -939,10 +1035,10 @@ const EventListItem = ({
                         )}
                       {event.insights?.estimatedAttendance !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-600 font-medium">
+                          <p className="text-xs md:text-sm text-gray-600 font-medium">
                             Estimated Visitors
                           </p>
-                          <p className="text-lg font-semibold text-primary">
+                          <p className="text-base md:text-lg font-semibold text-primary">
                             {event.insights?.estimatedAttendance == "0"
                               ? "--"
                               : event.insights?.estimatedAttendance}
@@ -950,12 +1046,13 @@ const EventListItem = ({
                         </div>
                       )}
                       {isEventeli &&
+                        showValues.includes(Show.economicImpact) &&
                         event.insights?.economicImpact !== undefined && (
                           <div>
-                            <p className="text-xs text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm text-gray-600 font-medium">
                               Economic Impact
                             </p>
-                            <p className="text-lg font-semibold text-primary">
+                            <p className="text-base md:text-lg font-semibold text-primary">
                               {formatEstimatedSpend(
                                 event.insights?.economicImpact
                               )}
@@ -964,7 +1061,7 @@ const EventListItem = ({
                         )}
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="hidden md:block space-y-4">
                       {isEventeli &&
                         showValues.includes(Show.scores) &&
                         event.insights?.scores && (
@@ -980,7 +1077,8 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                    {global !== "global" && (
+
+                    {global !== "global" && !isMobile && (
                       <div
                         className="flex items-start justify-end"
                         onClick={(e) => e.preventDefault()}
@@ -996,15 +1094,15 @@ const EventListItem = ({
                     )}
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full gap-6">
-                    <div className="grid grid-row-2 items-end gap-4">
+                  <div className="flex justify-start md:justify-end w-full gap-6">
+                    <div className="hidden md:grid grid-row-2 items-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
-                            <p className="text-xs text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm text-gray-600 font-medium">
                               Estimated Exhibitors
                             </p>
-                            <p className="text-lg font-semibold text-primary">
+                            <p className="text-base md:text-lg font-semibold text-primary">
                               {event.insights?.estimatedExhibitors == "" ||
                               event.insights?.estimatedExhibitors == null
                                 ? "--"
@@ -1016,10 +1114,10 @@ const EventListItem = ({
                         )}
                       {event.insights?.estimatedAttendance !== undefined && (
                         <div>
-                          <p className="text-xs text-gray-600 font-medium">
+                          <p className="text-xs md:text-sm text-gray-600 font-medium">
                             Estimated Visitors
                           </p>
-                          <p className="text-lg font-semibold text-primary">
+                          <p className="text-base md:text-lg font-semibold text-primary">
                             {event.insights?.estimatedAttendance == "0" ||
                             event.insights?.estimatedAttendance == null
                               ? "--"
@@ -1031,10 +1129,10 @@ const EventListItem = ({
                         showValues.includes(Show.economicImpact) &&
                         event.insights?.economicImpact !== undefined && (
                           <div>
-                            <p className="text-xs text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm text-gray-600 font-medium">
                               Economic Impact
                             </p>
-                            <p className="text-lg font-semibold text-primary">
+                            <p className="text-base md:text-lg font-semibold text-primary">
                               {formatEstimatedSpend(
                                 event.insights?.economicImpact
                               )}
@@ -1042,7 +1140,37 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-                    {global !== "global" && (
+                    {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                    {trackerId &&
+                      trackerId.length > 0 &&
+                      isTentimesUser &&
+                      !isMobile && (
+                        <>
+                          {!isEventeli && !intelLoading ? (
+                            intelScoreData?.[0]?.value > 0 && (
+                              <div className="space-y-4">
+                                <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center">
+                                  <IntelScore
+                                    width="80px"
+                                    height="70px"
+                                    intelScore={intelScoreData}
+                                  />
+                                  <div
+                                    className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                                    style={{ fontSize: "10px" }}
+                                  >
+                                    Relevance Score
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          ) : (
+                            <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                          )}
+                        </>
+                      )}
+
+                    {global !== "global" && !isMobile && (
                       <div
                         className="flex items-start justify-end"
                         onClick={(e) => e.preventDefault()}
@@ -1063,6 +1191,32 @@ const EventListItem = ({
             </div>
           </div>
         </div>
+        {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+        {trackerId && trackerId.length > 0 && isTentimesUser && isMobile && (
+          <>
+            {!isEventeli && !intelLoading ? (
+              intelScoreData?.[0]?.value > 0 && (
+                <div className="space-y-4">
+                  <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center mt-[-38px]">
+                    <IntelScore
+                      width="80px"
+                      height="70px"
+                      intelScore={intelScoreData}
+                    />
+                    <div
+                      className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                      style={{ fontSize: "10px" }}
+                    >
+                      Relevance Score
+                    </div>
+                  </div>
+                </div>
+              )
+            ) : (
+              <Skeleton className="h-[132px] w-[98px] rounded-md" />
+            )}
+          </>
+        )}
       </Link>
     </div>
   );
@@ -1133,7 +1287,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
         <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
             <img
-              src={event.basic.logoUrl}
+              src={event.basic.logoUrl || "/placeholder.svg"}
               alt={`${event.basic.name} logo`}
               className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
             />
@@ -1174,7 +1328,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
           )}
         </div>
         <div className="pl-[136px] p-6 pr-3">
-          <div className="grid grid-cols-12 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold">{event.basic.name}</h2>
               <div>

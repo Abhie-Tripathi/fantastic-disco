@@ -49,6 +49,7 @@ export default function NewVerificationForm() {
   const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
   const categories = sessionCategories && JSON.parse(sessionCategories);
+  const redirectPath = sessionStorage.getItem("redirect");
 
   const formatDateForFilter = (date: Date) => {
     return format(date, "yyyy-MM-dd");
@@ -60,7 +61,7 @@ export default function NewVerificationForm() {
     const startDate = formatDateForFilter(startOfMonth(currentDate));
     const endDate = formatDateForFilter(endOfMonth(currentDate));
 
-    params.set("view", "map");
+    params.set("view", "list");
     params.set("status", "active,cancelled,postponed");
     params.set("active_gte", startDate);
     params.set("active_lte", endDate);
@@ -81,11 +82,13 @@ export default function NewVerificationForm() {
           (industryItem) => industryItem.slug === industry
         )?.subCategory;
         if (isCategoryMapped) {
-          return `/internal/search/events?${urlParams}`;
+          return redirectPath
+            ? `/internal/${redirectPath}`
+            : `/internal/search/events?${urlParams}`;
         }
       }
     }
-    return "/";
+    return redirectPath ? `/internal/${redirectPath}` : "/";
   }, [flow, industry]);
 
   const form = useForm<OTPData>({

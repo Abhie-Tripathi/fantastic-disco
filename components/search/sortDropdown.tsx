@@ -1,11 +1,6 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -14,13 +9,15 @@ import {
 import {
   ArrowUp,
   ArrowDown,
-  ArrowUpDown,
-  ChevronDown,
-  Info,
+  Check,
+  ArrowUpNarrowWide,
+  ArrowDownNarrowWide,
+  ArrowDownUp,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
+import { cn } from "@/lib/utils";
 
 interface SortOption {
   value: string;
@@ -82,14 +79,25 @@ const SortDropdown = ({
     return option?.label || "Sort by";
   };
 
-  const handleApply = () => {
-    const sortValue = sortOrder === "desc" ? `-${sortField}` : sortField;
+  const handleSortFieldChange = (field: string) => {
+    setSortField(field);
+    const sortValue = sortOrder === "desc" ? `-${field}` : field;
     if (onSort) {
       onSort(sortValue);
     } else {
       setFilter("sortBy", sortValue);
     }
     setOpen(false);
+  };
+
+  const handleSortOrderChange = (order: "asc" | "desc") => {
+    setSortOrder(order);
+    const sortValue = order === "desc" ? `-${sortField}` : sortField;
+    if (onSort) {
+      onSort(sortValue);
+    } else {
+      setFilter("sortBy", sortValue);
+    }
   };
 
   useEffect(() => {
@@ -103,19 +111,13 @@ const SortDropdown = ({
       <PopoverTrigger asChild>
         {compact ? (
           <Button
+            id="sorting-dropdown-mobile"
             variant="ghost"
             size="xs"
-            className="h-8 px-3 flex items-center gap-2"
+            className="h-8 w-8 flex items-center gap-2 border"
           >
-            {sortOrder === "asc" ? (
-              <ArrowUp className="h-4 w-4" />
-            ) : (
-              <ArrowDown className="h-4 w-4" />
-            )}
-            <span className="text-sm">
-              {sortOptions.find((option) => option.value === sortField)
-                ?.label || "Sort"}
-            </span>
+            {/* {sortOrder === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />} */}
+            <ArrowDownUp className="w-4 h-4" />
           </Button>
         ) : (
           <Button variant="outline" className="flex items-center gap-2">
@@ -125,44 +127,61 @@ const SortDropdown = ({
               ) : (
                 <ArrowDown className="h-4 w-4" />
               )}
-              {getCurrentSortLabel()}
-              <ChevronDown className="h-4 w-4" />
+              <span className="hidden md:block">{getCurrentSortLabel()}</span>
             </span>
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-[240px] p-4" align="end">
-        <div className="flex flex-col gap-3">
-          <span className="text-sm font-medium text-secondary-foreground">
-            Sort by
-          </span>
-
-          <Select value={sortField} onValueChange={setSortField}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select field" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={sortOrder} onValueChange={setSortOrder}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select order" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="asc">Ascending</SelectItem>
-              <SelectItem value="desc">Descending</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button onClick={handleApply} className="place-self-end">
-            Apply
-          </Button>
+      <PopoverContent className="w-[240px] p-0" align="end">
+        <div className="bg-white rounded-md shadow-sm">
+          <div className="flex items-center justify-between p-3 border-b">
+            <h3 className="font-medium">Sort by</h3>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8 p-0",
+                  sortOrder === "asc" && "bg-gray-100"
+                )}
+                onClick={() => handleSortOrderChange("asc")}
+              >
+                <ArrowUpNarrowWide className="h-4 w-4" />
+                <span className="sr-only">Sort ascending</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8 p-0",
+                  sortOrder === "desc" && "bg-gray-100"
+                )}
+                onClick={() => handleSortOrderChange("desc")}
+              >
+                <ArrowDownNarrowWide className="h-4 w-4" />
+                <span className="sr-only">Sort descending</span>
+              </Button>
+            </div>
+          </div>
+          <div className="py-1 max-h-[300px] overflow-y-auto">
+            {sortOptions.map((option) => (
+              <button
+                key={option.value}
+                className={cn(
+                  "w-full flex items-center px-3 py-2 text-left hover:bg-gray-100 transition-colors",
+                  sortField === option.value && "bg-gray-100"
+                )}
+                onClick={() => handleSortFieldChange(option.value)}
+              >
+                <div className="w-6 flex-shrink-0">
+                  {sortField === option.value && (
+                    <Check className="h-4 w-4 text-blue-600" />
+                  )}
+                </div>
+                <span>{option.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </PopoverContent>
     </Popover>

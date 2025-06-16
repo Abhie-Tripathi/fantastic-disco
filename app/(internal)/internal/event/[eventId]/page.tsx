@@ -34,7 +34,7 @@ import {
   TTabs,
 } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
 import { ArrowLeft, Location } from "geist-icons";
 import {
@@ -76,12 +76,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   } = useEventsService();
   const coordinateService = useCoordinateService();
   const { data: eventData, isLoading } = useQuery<any>({
-    queryKey: ["eventDetailData"],
+    queryKey: ["eventDetailData", params.eventId],
     queryFn: () => getEventDetailById(params.eventId),
     refetchOnWindowFocus: false,
   });
   const { data: event } = useQuery<any>({
-    queryKey: ["eventDetails"],
+    queryKey: ["eventDetails", params.eventId],
     queryFn: async () => {
       const [
         // eventDataResult,
@@ -279,9 +279,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isPostponed = status === "postponed";
 
   const venueName =
-    eventLocation?.locationType.toLowerCase() === "venue" ? eventLocation?.name : null;
+    eventLocation?.locationType.toLowerCase() === "venue"
+      ? eventLocation?.name
+      : null;
   const venueAddress = [
-    eventLocation?.locationType.toLowerCase() !== "venue" ? eventLocation?.name : null,
+    eventLocation?.locationType.toLowerCase() !== "venue"
+      ? eventLocation?.name
+      : null,
     eventLocation?.cityName,
     eventLocation?.countryName,
   ]
@@ -524,13 +528,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   <Globe className="w-4 h-4" stroke="currentColor" />
                 </Link>
               )}
-              <ButtonUI
+              {/* <ButtonUI
                 variant={"link"}
                 onClick={handleShare}
                 className="hover:text-black dark:hover:text-primary text-[#666666] px-0"
               >
                 <Share2 className="w-4 h-4" stroke="currentColor" />
-              </ButtonUI>
+              </ButtonUI> */}
             </div>
           </div>
         </div>

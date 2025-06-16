@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface CircularProgressProps {
   percentages: number[];
@@ -9,11 +9,22 @@ const CircularProgress = ({
   percentages,
   relevanceScore,
 }: CircularProgressProps) => {
+  
   const colors = ["#646BDC", "#E99CD4", "#9B86D4"];
-
   const baseRadius = 22;
   const spacing = 3;
   const strokeWidth = 3;
+
+  const [animatedPercentages, setAnimatedPercentages] = useState<number[]>(
+    new Array(percentages.length).fill(0)
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAnimatedPercentages(percentages);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [percentages]);
 
   const circleRadius = (index: number) => {
     const radius = baseRadius - index * (strokeWidth + spacing);
@@ -23,16 +34,15 @@ const CircularProgress = ({
   return (
     <div style={{ position: "relative", display: "inline-flex" }}>
       <svg viewBox="0 0 52 52" style={{ width: "200px", height: "200px" }}>
-        {percentages.map((percentage, index) => {
+        {animatedPercentages.map((percentage, index) => {
           const radius = circleRadius(index);
           const circum = 2 * Math.PI * radius;
-          const filledBar = Math.round((percentage * circum) / 100);
 
           return (
             radius > 0 && (
-              <React.Fragment key={`circle-${percentage}`}>
+              <React.Fragment key={`circle-${index}`}>
+                {/* Background Circle */}
                 <circle
-                  className="text-gray-200"
                   strokeWidth={strokeWidth}
                   stroke="currentColor"
                   fill="transparent"
@@ -43,6 +53,7 @@ const CircularProgress = ({
                   transform="rotate(-90 26 26)"
                   strokeLinecap="round"
                 />
+                {/* Animated Foreground Circle */}
                 <circle
                   strokeWidth={strokeWidth}
                   strokeDasharray={circum}
@@ -53,7 +64,10 @@ const CircularProgress = ({
                   r={radius}
                   cx="26"
                   cy="26"
-                  style={{ color: colors[index] }}
+                  style={{
+                    color: colors[index],
+                    transition: "stroke-dashoffset 1s ease-out",
+                  }}
                   transform="rotate(-90 26 26)"
                 />
               </React.Fragment>

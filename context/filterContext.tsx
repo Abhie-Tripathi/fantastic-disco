@@ -16,10 +16,13 @@ import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { endOfMonth } from "date-fns";
+import { endOfMonth, format } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { useConfigurationService } from "@/services/configurationService";
+import { TrackerAIResponse } from "@/types/trackers";
+import recentSearchService from "@/services/recentSearchService";
+
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -109,11 +112,9 @@ export interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
   eventType?: string;
-
   //Preset Filters
-  presetCountry?:string;
-  presetCategory?:string;
-
+  presetCountry?: string;
+  presetCategory?: string;
   // Coordinate Filters
   eventId?: string;
   type?: string;
@@ -135,7 +136,7 @@ export interface Filters {
   userNames?: string;
   userJobTitle?: string;
   userSocialLink?: string;
-
+  filter?: string;
   compare_from?: string;
   compare_to?: string;
 }
@@ -153,7 +154,23 @@ type Filter = {
   estimatedVisitorRangeTag: string;
 };
 type FilterContextType = {
+  suggestion: number;
+  setSuggestion: React.Dispatch<React.SetStateAction<number>>;
   localFilters: Filters;
+  loadingState: {
+    isKeywordsLoading: boolean;
+    isCompetitorsLoading: boolean;
+    isPeopleLoading: boolean;
+  };
+  setLoadingState: React.Dispatch<
+    React.SetStateAction<{
+      isKeywordsLoading: boolean;
+      isCompetitorsLoading: boolean;
+      isPeopleLoading: boolean;
+    }>
+  >;
+  templateView: boolean;
+  setTemplateView: React.Dispatch<React.SetStateAction<boolean>>;
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
   clearLocalFilters: () => void;
@@ -172,8 +189,11 @@ type FilterContextType = {
     newValue: string
   ) => void;
   enabledFilters: EventFilterData | null;
+  showFetchedData: any;
+  setShowFetchedData: (val: boolean) => void;
+  isTentimesUser: boolean;
 };
-
+const isTentimesUser = false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -183,21 +203,43 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
+  const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
+  const [suggestion, setSuggestion] = useState<number>(0);
   const [localFilters, setLocalFilters] = useState<Filters>({});
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
+  const getCompanySuggestion = () => {
+    if (typeof window === "undefined") {
+      return {};
+    }
+
+    try {
+      const item = localStorage.getItem("companySuggestion");
+      return item ? JSON.parse(item) : {};
+    } catch (error) {
+      console.error("Error parsing companySuggestion", error);
+      return {};
+    }
+  };
+  const aiStatus = getCompanySuggestion();
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")
     ) as Filters;
   }, []);
-
+  const [loadingState, setLoadingState] = useState({
+    isKeywordsLoading: aiStatus?.keywordData?.status === 1 || false,
+    isCompetitorsLoading: aiStatus?.competitorData?.status === 1 || false,
+    isPeopleLoading: aiStatus?.companyData?.status === 1 || false,
+  });
+  const [templateView, setTemplateView] = useState(false);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
-      const params = Object.fromEntries(searchParams.entries()) as Filters;
-
+      const params = {
+        ...Object.fromEntries(searchParams.entries()),
+      } as Filters;
       // Set default date range if not present
       if (
         pathname === "/internal/search/events" &&
@@ -205,12 +247,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         !params.active_lte &&
         !params.eventIds
       ) {
-        params.active_gte = startOfMonth(new Date())
-          .toISOString()
-          .split("T")[0];
-        params.active_lte = endOfMonth(addMonths(new Date(), 3))
-          .toISOString()
-          .split("T")[0];
+        params.active_gte = format(startOfMonth(new Date()), "yyyy-MM-dd");
+        params.active_lte = format(
+          endOfMonth(addMonths(new Date(), 2)),
+          "yyyy-MM-dd"
+        );
       }
 
       setLocalFilters(filterEmptyValues(params));
@@ -267,8 +308,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
-          console.log(value);
-
           toast({
             title: "Error",
             description: "At least one filter must be selected",
@@ -345,7 +384,33 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         const currentPathname = window.location.pathname;
-        router.push(`${currentPathname}?${params.toString()}`, {
+        const searchString = params.toString();
+
+        // Save to recent searches
+        const searchEvent = {
+          date: new Date().toISOString(),
+          fullPath: `${currentPathname}?${searchString}`,
+          path: currentPathname,
+          params: Object.fromEntries(params.entries()),
+        };
+
+        const isTrends = currentPathname.includes("/internal/trends");
+
+        if (isTrends) {
+          recentSearchService.addToTrendsHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        } else {
+          recentSearchService.addToSearchHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        }
+
+        router.push(`${currentPathname}?${searchString}`, {
           scroll: false,
         });
         return filteredFilters;
@@ -357,13 +422,31 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {
       setLocalFilters((prev) => {
+        if (
+          enabledFilters?.filter?.branded &&
+          ((filters.onlyBranded === "" &&
+            !filters.onlySeries &&
+            !prev.onlySeries) ||
+          (filters.onlySeries === "" &&
+            !filters.onlyBranded &&
+            !prev.onlyBranded) ||
+          (filters.onlyBranded === "" && filters.onlySeries === ""))
+        ) {
+          toast({
+            title: "Error",
+            description: "At least one of Branded or Series must be selected",
+            variant: "destructive",
+          });
+          return prev;
+        }
+
         return filterEmptyValues({
           ...prev,
           ...filters,
         });
       });
     },
-    [filterEmptyValues]
+    [filterEmptyValues, enabledFilters]
   );
 
   const deleteMultipleLocalFilters = useCallback(
@@ -399,7 +482,15 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
+      suggestion,
+      setSuggestion,
+      showFetchedData,
+      setShowFetchedData,
       localFilters,
+      loadingState,
+      setLoadingState,
+      templateView,
+      setTemplateView,
       morphedData,
       enabledFilters,
       setLocalFilter,
@@ -410,8 +501,14 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
+      isTentimesUser,
     }),
     [
+      isTentimesUser,
+      suggestion,
+      showFetchedData,
+      templateView,
+      loadingState,
       localFilters,
       morphedData,
       enabledFilters,

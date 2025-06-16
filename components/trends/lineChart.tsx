@@ -20,7 +20,7 @@ import {
   morphToGraphData,
   toMidnightISOString,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { addDays, differenceInDays, format, isAfter } from "date-fns";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -46,12 +46,17 @@ import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { Button } from "../ui/button";
+import {
+  useRouter,
+  useSearchParams,
+  ReadonlyURLSearchParams,
+} from "next/navigation";
+import React from "react";
 
 type ViewType = "day" | "week" | "month";
 
 interface IProps {
   showLegend: boolean;
-  holidayByDates?: TableGroupedHoliday[];
   doInvertTicks?: boolean;
   showThresholdLines?: boolean;
 }
@@ -60,7 +65,6 @@ type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
   showLegend,
-  holidayByDates,
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
@@ -85,11 +89,53 @@ const LineChartComponent = ({
   const [predictedData, setPredictedData] = useState<any>();
 
   const { getEventsWithSearchParams } = useEventsService();
-  const metric = getFilterValue("columns") as
+  const metrics = (getFilterValue("columns") as string)?.split(",") || [];
+  const metric = metrics[0]; // Use the first metric as primary
+
+  // Define which metrics share the right axis
+  const rightAxisMetrics = [
+    "predictedAttendance",
+    "inboundEstimate",
+    "internationalEstimate",
+  ] as const;
+  type MetricType = (typeof rightAxisMetrics)[number] | "eventCount";
+
+  // Separate metrics by axis
+  const leftAxisMetric = metrics.find((m) => m === "eventCount") as
+    | MetricType
+    | undefined;
+  const activeRightAxisMetrics = metrics.filter((m) =>
+    rightAxisMetrics.includes(m as (typeof rightAxisMetrics)[number])
+  ) as MetricType[];
+
+  // Get labels for all active metrics
+  const metricLabels = metrics.reduce((acc, metric) => {
+    const label =
+      columnsDropdown.find((column) => column.value === metric)?.label ??
+      metric;
+    if (
+      rightAxisMetrics.includes(metric as (typeof rightAxisMetrics)[number]) ||
+      metric === "eventCount"
+    ) {
+      acc[metric as MetricType] = label;
+    }
+    return acc;
+  }, {} as Record<MetricType, string>);
+
+  const primaryMetric = leftAxisMetric as
     | "eventCount"
     | "predictedAttendance"
     | "inboundEstimate"
     | "internationalEstimate";
+  const secondaryMetric = activeRightAxisMetrics[0] as
+    | "eventCount"
+    | "predictedAttendance"
+    | "inboundEstimate"
+    | "internationalEstimate"
+    | undefined;
+
+  const primaryLabel = metricLabels[primaryMetric];
+  const secondaryLabel = secondaryMetric ? metricLabels[secondaryMetric] : "";
 
   const apiParams = useMemo(() => {
     const params = new URLSearchParams({
@@ -101,7 +147,6 @@ const LineChartComponent = ({
         params.append(key, value);
       }
     });
-    params.delete("categories");
     return params.toString();
   }, [currentView, searchParams]);
 
@@ -120,6 +165,7 @@ const LineChartComponent = ({
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     updatedSearchParams.set("eventTypes", "holiday");
     updatedSearchParams.delete("skip");
+    updatedSearchParams.delete("view");
     return updatedSearchParams.toString();
   }, [searchParams]);
 
@@ -170,6 +216,12 @@ const LineChartComponent = ({
     return acc;
   }, {});
 
+  const holidayByDates =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
+
   useEffect(() => {
     if (trendsData !== undefined) {
       setEventTrendsData(trendsData);
@@ -178,9 +230,9 @@ const LineChartComponent = ({
 
   useEffect(() => {
     if (eventTrendsData && eventTrendsData.groupedData) {
-      const graphData = morphToGraphData(eventTrendsData.groupedData, metric);
+      const graphData = morphToGraphData(eventTrendsData.groupedData, metrics);
       const previousYearGraphData = previousYearData
-        ? morphToGraphData(previousYearData.groupedData, metric)
+        ? morphToGraphData(previousYearData.groupedData, metrics)
         : [];
 
       // Combine current and previous year data with proper date alignment
@@ -221,33 +273,54 @@ const LineChartComponent = ({
         });
 
         if (comparisonItem) {
-          return {
-            ...currentItem,
-            previousYearTotal: comparisonItem.total,
-            previousYearSocial: comparisonItem.social,
-            previousYearBusiness: comparisonItem.business,
-          };
+          // Create a new object with all current metrics
+          const result = { ...currentItem };
+
+          // Add previous year data for all metrics
+          metrics.forEach((metric) => {
+            result[`previousYear${metric}`] = comparisonItem[metric];
+
+            // Handle social and business breakdowns if they exist
+            if (comparisonItem[`social${metric}`] !== undefined) {
+              result[`previousYearSocial${metric}`] =
+                comparisonItem[`social${metric}`];
+            }
+            if (comparisonItem[`business${metric}`] !== undefined) {
+              result[`previousYearBusiness${metric}`] =
+                comparisonItem[`business${metric}`];
+            }
+          });
+
+          // Add general social and business data if they exist
+          if (comparisonItem.social !== undefined) {
+            result.previousYearSocial = comparisonItem.social;
+          }
+          if (comparisonItem.business !== undefined) {
+            result.previousYearBusiness = comparisonItem.business;
+          }
+
+          return result;
         }
 
-        return {
-          ...currentItem,
-          previousYearTotal: undefined,
-          previousYearSocial: undefined,
-          previousYearBusiness: undefined,
-        };
+        return currentItem;
       });
 
-      setPredictedData(combinedData);
+      // Only update state if the data has actually changed
+      if (JSON.stringify(combinedData) !== JSON.stringify(predictedData)) {
+        setPredictedData(combinedData);
+      }
     }
   }, [
-    eventTrendsData,
-    previousYearData,
-    metric,
-    searchParams,
+    eventTrendsData?.groupedData,
+    previousYearData?.groupedData,
+    metrics,
     compareFrom,
     compareTo,
+    searchParams.get("active_gte"),
+    searchParams.get("active_lte"),
   ]);
 
+  // Remove the separate useEffect for trendsData
   useEffect(() => {
     if (trendsData === undefined) {
       setPredictedData(undefined);
@@ -271,6 +344,11 @@ const LineChartComponent = ({
   const CustomDot = (props: any) => {
     const { cx, cy, payload, index } = props;
 
+    // Don't render custom dot if multiple metrics are selected or comparison is enabled
+    if (metrics.length > 1 || (compareFrom && compareTo)) {
+      return null;
+    }
+
     // Get the interval dates
     const intervalDates = generateDateIntervals(
       graphData[0].date,
@@ -287,7 +365,9 @@ const LineChartComponent = ({
         holidayByDates?.some((holiday) => holiday.date === payload.date)) ||
       false;
 
-    if (shouldRenderDot && payload.total < thresholdArea[1]) {
+    const total = payload.business + payload.social;
+
+    if (shouldRenderDot && total < thresholdArea[1]) {
       return (
         <g>
           <circle
@@ -325,7 +405,7 @@ const LineChartComponent = ({
         </g>
       );
     }
-    if (shouldRenderDot && payload.total > thresholdArea[0]) {
+    if (shouldRenderDot && total > thresholdArea[0]) {
       return (
         <g>
           <circle
@@ -510,9 +590,23 @@ const LineChartComponent = ({
 
   const generateViewAllEventsParams = useMemo(() => {
     const params = new URLSearchParams(link);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
     params && params.delete("sortBy");
     return params;
   }, [link]);
+
+  const generateCompareViewAllEventsParams = useMemo(() => {
+    const params = new URLSearchParams(previousYearLink);
+    const categories = searchParams.get("categories");
+    if (params && categories) {
+      params.append("categories", categories);
+    }
+    params && params.delete("sortBy");
+    return params;
+  }, [previousYearLink]);
 
   const { data: eventData, isLoading: iseventsLoading } = useQuery({
     queryKey: ["events", link],
@@ -534,7 +628,11 @@ const LineChartComponent = ({
     });
 
   const threshold =
-    (eventTrendsData && eventTrendsData.thresholds[metric]) ?? 0;
+    (eventTrendsData &&
+      eventTrendsData.thresholds[
+        primaryMetric as keyof typeof eventTrendsData.thresholds
+      ]) ??
+    0;
   const thresholdArea = [
     threshold * 1.5, // 5% above threshold
     threshold * 0.5, // 5% below threshold
@@ -573,6 +671,15 @@ const LineChartComponent = ({
       console.error('Error formatting date:', error);
       return dateString;
     }
+  };
+
+  // Desktop view - improved logic for consistent intervals
+  const getTickCount = (days: number) => {
+    if (days <= 30) return 6; // 6 ticks for up to 1 month
+    if (days <= 90) return 7; // 7 ticks for up to 3 months
+    if (days <= 180) return 8; // 8 ticks for up to 6 months
+    if (days <= 365) return 9; // 9 ticks for up to 1 year
+    return 10; // 10 ticks for more than 1 year
   };
 
   const CustomTick = (props: any) => {
@@ -732,14 +839,22 @@ const LineChartComponent = ({
           ),
         }));
 
-  const label =
-    columnsDropdown.find((column) => column.value === metric)?.label ?? "";
-
   const CustomToolTip = ({
     active,
     payload,
     label,
-  }: TooltipProps<number, string>) => {
+    holidayByDates,
+    compareFrom,
+    compareTo,
+    searchParams,
+  }: TooltipProps<number, string> & {
+    holidayByDates?: TableGroupedHoliday[];
+    compareFrom?: string;
+    compareTo?: string;
+    searchParams: {
+      get: (key: string) => string | null;
+    };
+  }) => {
     if (
       !payload ||
       !Array.isArray(payload) ||
@@ -754,6 +869,138 @@ const LineChartComponent = ({
       return null;
     }
 
+    // If there's more than one metric, show simplified tooltip
+    if (metrics.length > 1) {
+      const { date } = tooltipPayload;
+      const matchingHoliday =
+        holidayByDates &&
+        holidayByDates.find((holiday) => holiday.date === date);
+
+      // Calculate comparison date based on relative position
+      let comparisonDate = new Date(date);
+
+      if (compareFrom && compareTo) {
+        const activeGte = searchParams.get("active_gte");
+        const activeLte = searchParams.get("active_lte");
+        if (!activeGte || !activeLte) return null;
+
+        const mainStartDate = new Date(activeGte);
+        const mainEndDate = new Date(activeLte);
+        const currentDate = new Date(date);
+
+        const mainRangePosition =
+          (currentDate.getTime() - mainStartDate.getTime()) /
+          (mainEndDate.getTime() - mainStartDate.getTime());
+
+        const compareStartDate = new Date(compareFrom);
+        const compareEndDate = new Date(compareTo);
+
+        comparisonDate = new Date(
+          compareStartDate.getTime() +
+            mainRangePosition *
+              (compareEndDate.getTime() - compareStartDate.getTime())
+        );
+      }
+
+      const renderMetricValue = (metric: string, isPreviousYear = false) => {
+        const key = isPreviousYear ? `previousYear${metric}` : metric;
+        const value = tooltipPayload[key];
+        if (value === undefined || !metric) return null;
+
+        const label =
+          columnsDropdown.find((column) => column.value === metric)?.label ??
+          metric;
+
+        // Format the number to be more readable
+        const formattedValue = new Intl.NumberFormat("en-US", {
+          notation: "compact",
+          maximumFractionDigits: 1,
+          compactDisplay: "short",
+        }).format(value);
+
+        return (
+          <div key={key} className="flex justify-between">
+            <span className="text-gray-500">{label}</span>
+            <span className="font-medium">{formattedValue}</span>
+          </div>
+        );
+      };
+
+      return (
+        <div
+          className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 ${
+            compareFrom && compareTo ? "w-[400px]" : "w-[300px]"
+          }`}
+        >
+          <div className="space-y-2">
+            <div className="text-sm">
+              <div className="flex justify-between items-center">
+                {compareFrom && compareTo ? (
+                  <div className="font-medium text-gray-600">
+                    Selected Date ({format(new Date(date), "d MMM yyyy")})
+                  </div>
+                ) : (
+                  <div className="font-medium text-gray-600">
+                    {format(new Date(date), "d MMM yyyy")}
+                  </div>
+                )}
+                <Link
+                  href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
+                  className="flex items-center gap-1 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
+                >
+                  View All
+                  <ArrowUpRight height={16} width={16} stroke="#6750a4" />
+                </Link>
+              </div>
+              <div className="mt-1">
+                {leftAxisMetric && renderMetricValue(leftAxisMetric)}
+                {activeRightAxisMetrics.map(
+                  (metric) => metric && renderMetricValue(metric)
+                )}
+              </div>
+            </div>
+
+            {compareFrom && compareTo && (
+              <div className="text-sm pt-2 border-t border-gray-200">
+                <div className="flex justify-between items-center">
+                  <div className="font-medium text-gray-600">
+                    Compared Date ({format(comparisonDate, "d MMM yyyy")})
+                  </div>
+                  <Link
+                    href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
+                    className="flex items-center gap-1 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
+                  >
+                    View All
+                    <ArrowUpRight height={16} width={16} stroke="#4B9EF4" />
+                  </Link>
+                </div>
+                <div className="mt-1">
+                  {leftAxisMetric && renderMetricValue(leftAxisMetric, true)}
+                  {activeRightAxisMetrics.map(
+                    (metric) => metric && renderMetricValue(metric, true)
+                  )}
+                </div>
+              </div>
+            )}
+
+            {matchingHoliday && (
+              <div className="text-sm pt-2 border-t border-gray-200">
+                <div className="font-medium text-gray-600">Holiday</div>
+                <div className="mt-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">
+                      {matchingHoliday.holidays.join(", ")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // For single metric, show the original detailed tooltip
     const { date, total, previousYearTotal } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
@@ -769,12 +1016,10 @@ const LineChartComponent = ({
       const compareStartDate = new Date(compareFrom);
       const compareEndDate = new Date(compareTo);
 
-      // Calculate the relative position (0 to 1) of the current date in the main range
       const mainRangePosition =
         (currentDate.getTime() - mainStartDate.getTime()) /
         (mainEndDate.getTime() - mainStartDate.getTime());
 
-      // Find the corresponding date in the comparison range
       comparisonDate = new Date(
         compareStartDate.getTime() +
           mainRangePosition *
@@ -824,6 +1069,8 @@ const LineChartComponent = ({
         });
       }
     }
+
+    console.log(tooltipPayload);
 
     return (
       <div
@@ -876,8 +1123,9 @@ const LineChartComponent = ({
                   <div>
                     <p className="font-semibold text-[#6750a4]">{total}</p>
                     <Text size="normal" color="secondary" fontWeight="regular">
-                      {columnsDropdown.find((column) => column.value === metric)
-                        ?.label ?? ""}
+                      {columnsDropdown.find(
+                        (column) => column.value === metrics[0]
+                      )?.label ?? ""}
                     </Text>
                   </div>
                 </div>
@@ -957,7 +1205,7 @@ const LineChartComponent = ({
                         fontWeight="regular"
                       >
                         {columnsDropdown.find(
-                          (column) => column.value === metric
+                          (column) => column.value === metrics[0]
                         )?.label ?? ""}
                       </Text>
                     </div>
@@ -1045,7 +1293,7 @@ const LineChartComponent = ({
           </Link>
           {compareFrom && compareTo && (
             <Link
-              href={`/internal/search/events?${previousYearLink}`}
+              href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
               className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[#4B9EF4] cursor-pointer"
             >
               VIEW ALL
@@ -1058,54 +1306,192 @@ const LineChartComponent = ({
   };
 
   const CustomLegend = ({ payload }: { payload?: any[] }) => {
-    // Get the comparison option label - we'll use a generic name regardless of the comparison type
-    const comparisonLabel = "Compared Period";
+    if (!payload) return null;
 
-    // Separate year entries from threshold entries
-    const yearEntries =
-      payload?.filter(
-        (entry) =>
-          entry.id === "current_year" ||
-          (compareFrom && compareTo && entry.id === "previous_year")
-      ) || [];
+    // Filter out entries that aren't selected metrics
+    const filteredPayload = payload.filter((entry) => {
+      // Handle metric entries
+      if (entry.id?.startsWith("metric_")) {
+        const metricName = entry.id.replace("metric_", "");
+        return metrics.includes(metricName);
+      }
+      // Handle primary metric
+      if (entry.id === "primary_metric") {
+        return true;
+      }
+      // Handle previous year entries
+      if (entry.id?.startsWith("previous_year_")) {
+        const metricName = entry.id.replace("previous_year_", "");
+        return metrics.includes(metricName) || metricName === "primary";
+      }
+      // Handle threshold entries
+      return ["upper_threshold", "lower_threshold", "average"].includes(
+        entry.id
+      );
+    });
 
-    const thresholdEntries =
-      payload?.filter(
-        (entry) => entry.id !== "current_year" && entry.id !== "previous_year"
-      ) || [];
+    // Separate threshold entries from metric entries
+    const thresholdEntries = filteredPayload.filter((entry) =>
+      ["upper_threshold", "lower_threshold", "average"].includes(entry.id)
+    );
+
+    const metricEntries = filteredPayload.filter(
+      (entry) =>
+        !["upper_threshold", "lower_threshold", "average"].includes(entry.id)
+    );
+
+    // Split metric entries into rows based on screen size and number of entries
+    const splitMetricEntries = () => {
+      if (isMobileView) {
+        // For mobile, show 2 items per row
+        const rows = [];
+        for (let i = 0; i < metricEntries.length; i += 2) {
+          rows.push(metricEntries.slice(i, i + 2));
+        }
+        return rows;
+      } else {
+        // For desktop, split into 2 rows if more than 2 entries
+        if (metricEntries.length <= 2) return [metricEntries];
+        const midPoint = Math.ceil(metricEntries.length / 2);
+        return [
+          metricEntries.slice(0, midPoint),
+          metricEntries.slice(midPoint),
+        ];
+      }
+    };
+
+    // Helper to get proper metric display name
+    const getMetricDisplayName = (entry: any) => {
+      if (entry.id === "primary_metric") {
+        return entry.value;
+      }
+      if (entry.id?.startsWith("metric_")) {
+        return entry.value;
+      }
+      if (entry.id?.startsWith("previous_year_")) {
+        const baseMetric = entry.value.replace("Previous Year ", "");
+        return `Compared ${baseMetric}`;
+      }
+      return entry.value;
+    };
+
+    const metricRows = splitMetricEntries();
 
     return (
-      <div className="flex flex-col items-end gap-4">
-        {/* Year entries row */}
-        <div className="flex gap-5 items-center">
-          {yearEntries.map((entry, index) => {
-            if (entry.id === "previous_year") {
-              entry.value = comparisonLabel;
-            }
-            return (
+      <div
+        className={`flex flex-col items-end ${
+          isMobileView ? "gap-1 w-full" : "gap-2"
+        }`}
+      >
+        {/* Metric entries rows */}
+        {metricRows.map((row, rowIndex) => (
+          <div
+            key={`row-${rowIndex}`}
+            className={`flex items-center ${
+              isMobileView ? "w-full justify-between gap-2 flex-wrap" : "gap-5"
+            }`}
+          >
+            {row.map((entry, index) => {
+              const isComparedMetric = entry.id?.startsWith("previous_year_");
+              return (
+                <div
+                  key={`metric-item-${rowIndex}-${index}`}
+                  className={`flex items-center ${
+                    isMobileView
+                      ? "gap-1 flex-1 min-w-[120px] max-w-[160px]"
+                      : "gap-2"
+                  }`}
+                >
+                  <div
+                    className={`${isMobileView ? "w-3" : "w-4"} h-0 border-t-2`}
+                    style={{
+                      borderColor: entry.color,
+                      borderStyle: isComparedMetric ? "dashed" : "solid",
+                    }}
+                  ></div>
+                  <TooltipProvider>
+                    <ShadcnTooltip>
+                      <TooltipTrigger asChild>
+                        <span
+                          className={`cursor-pointer text-xs font-medium truncate block ${
+                            isMobileView ? "max-w-[120px]" : ""
+                          }`}
+                          style={{
+                            color: entry.color,
+                          }}
+                        >
+                          {getMetricDisplayName(entry)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        className={`${
+                          isMobileView ? "w-48" : "w-60"
+                        } tooltip-content-styles`}
+                      >
+                        <p className="font-medium text-[var(--secondary-text-color)]">
+                          {entry.tooltipDescription}
+                        </p>
+                      </TooltipContent>
+                    </ShadcnTooltip>
+                  </TooltipProvider>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+
+        {/* Threshold entries row */}
+        {thresholdEntries.length > 0 && (
+          <div
+            className={`flex items-center ${
+              isMobileView ? "w-full justify-between gap-2 flex-wrap" : "gap-5"
+            }`}
+          >
+            {thresholdEntries.map((entry, index) => (
               <div
-                key={`year-item-${index}`}
-                className="flex items-center gap-2"
+                key={`threshold-item-${index}`}
+                className={`flex items-center ${
+                  isMobileView
+                    ? "gap-1 flex-1 min-w-[120px] max-w-[160px]"
+                    : "gap-2"
+                }`}
               >
                 <div
-                  className="w-4 h-0 border-t-2"
+                  className={`${isMobileView ? "w-3" : "w-4"} h-0 border-t-2`}
                   style={{
                     borderColor: entry.color,
+                    borderStyle:
+                      entry.id === "upper_threshold" ||
+                      entry.id === "lower_threshold"
+                        ? "dashed"
+                        : "solid",
                   }}
                 ></div>
                 <TooltipProvider>
                   <ShadcnTooltip>
                     <TooltipTrigger asChild>
                       <span
-                        className={`cursor-pointer text-sm font-medium`}
+                        className={`cursor-pointer text-xs font-medium truncate block ${
+                          isMobileView ? "max-w-[120px]" : ""
+                        }`}
                         style={{
                           color: entry.color,
                         }}
                       >
-                        {entry.value}
+                        {isMobileView && entry.value.length > 10
+                          ? entry.value === "Upper Threshold"
+                            ? "Upper"
+                            : entry.value === "Lower Threshold"
+                            ? "Lower"
+                            : entry.value
+                          : entry.value}
                       </span>
                     </TooltipTrigger>
-                    <TooltipContent className="w-60 tooltip-content-styles">
+                    <TooltipContent
+                      className={`${
+                        isMobileView ? "w-48" : "w-60"
+                      } tooltip-content-styles`}
+                    >
                       <p className="font-medium text-[var(--secondary-text-color)]">
                         {entry.tooltipDescription}
                       </p>
@@ -1113,60 +1499,49 @@ const LineChartComponent = ({
                   </ShadcnTooltip>
                 </TooltipProvider>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
-        {/* Threshold entries row */}
-        <div className="flex gap-5 items-center">
-          {thresholdEntries.map((entry, index) => (
-            <div
-              key={`threshold-item-${index}`}
-              className="flex items-center gap-2"
-            >
+  const renderLegend = (props: LegendProps) => {
+    const { payload } = props;
+
+    if (!payload) {
+      return null;
+    }
+
+    return (
+      <div className="flex flex-wrap gap-4 justify-center">
+        {payload.map((entry, index) => {
+          const isPreviousYear = entry.dataKey
+            ?.toString()
+            .startsWith("previousYear");
+          const isSecondaryMetric =
+            entry.dataKey === secondaryMetric ||
+            entry.dataKey
+              ?.toString()
+              .startsWith(`previousYear${secondaryMetric}`);
+          const color = isSecondaryMetric ? "#9333ea" : "#615E83";
+          const label = isPreviousYear
+            ? `${entry.value} (Previous Year)`
+            : entry.value;
+
+          return (
+            <div key={`item-${index}`} className="flex items-center gap-2">
               <div
-                className="w-4 h-0 border-t-2"
+                className="w-3 h-3 rounded-full"
                 style={{
-                  borderColor: entry.color,
-                  borderStyle:
-                    entry.id === "upper_threshold" ||
-                    entry.id === "lower_threshold"
-                      ? "dashed"
-                      : "solid",
+                  backgroundColor: color,
+                  opacity: isPreviousYear ? 0.5 : 1,
                 }}
-              ></div>
-              <TooltipProvider>
-                <ShadcnTooltip>
-                  <TooltipTrigger asChild>
-                    <span
-                      className={`cursor-pointer text-sm font-medium`}
-                      style={{
-                        color: entry.color,
-                      }}
-                    >
-                      {isMobileView && entry.value.length > 10
-                        ? entry.value === "Upper Threshold"
-                          ? "Upper"
-                          : entry.value === "Lower Threshold"
-                          ? "Lower"
-                          : entry.value
-                        : entry.value}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    className={`${
-                      isMobileView ? "w-48" : "w-60"
-                    } tooltip-content-styles`}
-                  >
-                    <p className="font-medium text-[var(--secondary-text-color)]">
-                      {entry.tooltipDescription}
-                    </p>
-                  </TooltipContent>
-                </ShadcnTooltip>
-              </TooltipProvider>
+              />
+              <span className="text-sm text-gray-600">{label}</span>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     );
   };
@@ -1251,238 +1626,458 @@ const LineChartComponent = ({
               graphData[graphData.length - 1].date
             )}
             interval={0}
-            width={10}
+            width={isMobileView ? 20 : 10}
             axisLine={false}
             tickLine={isMobileView ? false : true}
             padding={{
-              left: isMobileView ? 0 : 10,
-              right: isMobileView ? 0 : 10,
+              left: isMobileView ? 10 : 10,
+              right: isMobileView ? 20 : 10,
             }}
             label={{
               style: { fill: "#615E83" },
             }}
           />
-          <YAxis
-            dataKey="total"
-            fontSize="12px"
-            width={isMobileView ? 50 : 70}
-            domain={[
-              () => {
-                if (!graphData || graphData.length === 0) return 0;
-
-                const validTotals = graphData
-                  .map((item: any) => item.total)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+          {leftAxisMetric && (
+            <YAxis
+              yAxisId="left"
+              dataKey={primaryMetric}
+              fontSize="12px"
+              width={isMobileView ? 55 : 70}
+              domain={[
+                () => {
+                  if (!graphData || graphData.length === 0) return 0;
+                  const validTotals = graphData
+                    .map((item: any) => item[primaryMetric])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${primaryMetric}`])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  if (validTotals.length === 0 && validPrevYears.length === 0)
+                    return 0;
+                  const minTotal =
+                    validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear =
+                    validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal =
+                    validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear =
+                    validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
                   );
-                const validPrevYears = graphData
-                  .map((item: any) => item.previousYearTotal)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.floor(minValue / roundedTickSize) * roundedTickSize
+                  );
+                },
+                () => {
+                  if (!graphData || graphData.length === 0) return 100;
+                  const validTotals = graphData
+                    .map((item: any) => item[primaryMetric])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  const validPrevYears = graphData
+                    .map((item: any) => item[`previousYear${primaryMetric}`])
+                    .filter(
+                      (val: any) =>
+                        val !== undefined && val !== null && !isNaN(val)
+                    );
+                  if (validTotals.length === 0 && validPrevYears.length === 0)
+                    return 100;
+                  const minTotal =
+                    validTotals.length > 0 ? Math.min(...validTotals) : 0;
+                  const minPreviousYear =
+                    validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
+                  const minValue = Math.min(minTotal, minPreviousYear, 0);
+                  const maxTotal =
+                    validTotals.length > 0 ? Math.max(...validTotals) : 0;
+                  const maxPreviousYear =
+                    validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
+                  const overallMax = Math.max(maxTotal, maxPreviousYear, 1);
+                  const paddedMax = overallMax * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
+                  );
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.ceil(paddedMax / roundedTickSize) * roundedTickSize
+                  );
+                },
+              ]}
+              tickCount={5}
+              tickFormatter={tickFormatter}
+              label={{
+                value: primaryLabel,
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle", fill: "#7D7D7D" },
+                fontSize: isMobileView ? "12px" : "14px",
+                offset: isMobileView ? 15 : 0,
+              }}
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#615E83",
+                fontSize: isMobileView ? "10px" : "14px",
+                fontWeight: isMobileView ? "400" : "500",
+              }}
+            />
+          )}
+          {activeRightAxisMetrics.length > 0 && (
+            <YAxis
+              yAxisId="right"
+              orientation={leftAxisMetric ? "right" : "left"}
+              dataKey={secondaryMetric}
+              fontSize="12px"
+              width={isMobileView ? 50 : 70}
+              domain={[
+                () => {
+                  if (!graphData || graphData.length === 0) return 0;
+                  const allValues = activeRightAxisMetrics.flatMap((metric) =>
+                    graphData
+                      .map((item: any) => [
+                        item[metric],
+                        item[`previousYear${metric}`],
+                      ])
+                      .flat()
+                      .filter(
+                        (val: any) =>
+                          val !== undefined && val !== null && !isNaN(val)
+                      )
                   );
 
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 0;
-
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
-                const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
-                const paddedMax = overallMax * 1.1; // Add 10% padding
-
-                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
-                const idealTickSize = range / 4;
-
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
-                let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-
-                return Math.floor(minValue / roundedTickSize) * roundedTickSize;
-              },
-              () => {
-                if (!graphData || graphData.length === 0) return 100;
-
-                const validTotals = graphData
-                  .map((item: any) => item.total)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+                  if (allValues.length === 0) return 0;
+                  const minValue = Math.min(...allValues, 0);
+                  const maxValue = Math.max(...allValues, 1);
+                  const paddedMax = maxValue * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
                   );
-                const validPrevYears = graphData
-                  .map((item: any) => item.previousYearTotal)
-                  .filter(
-                    (val: any) =>
-                      val !== undefined && val !== null && !isNaN(val)
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.floor(minValue / roundedTickSize) * roundedTickSize
+                  );
+                },
+                () => {
+                  if (!graphData || graphData.length === 0) return 100;
+                  const allValues = activeRightAxisMetrics.flatMap((metric) =>
+                    graphData
+                      .map((item: any) => [
+                        item[metric],
+                        item[`previousYear${metric}`],
+                      ])
+                      .flat()
+                      .filter(
+                        (val: any) =>
+                          val !== undefined && val !== null && !isNaN(val)
+                      )
                   );
 
-                if (validTotals.length === 0 && validPrevYears.length === 0)
-                  return 100;
+                  if (allValues.length === 0) return 100;
+                  const minValue = Math.min(...allValues, 0);
+                  const maxValue = Math.max(...allValues, 1);
+                  const paddedMax = maxValue * 1.1;
+                  const range = Math.max(paddedMax - minValue, 1);
+                  const idealTickSize = range / 4;
+                  const magnitude = Math.pow(
+                    10,
+                    Math.floor(Math.log10(idealTickSize))
+                  );
+                  let roundedTickSize = magnitude;
+                  if (idealTickSize / magnitude >= 5)
+                    roundedTickSize = magnitude * 5;
+                  else if (idealTickSize / magnitude >= 2)
+                    roundedTickSize = magnitude * 2;
+                  return (
+                    Math.ceil(paddedMax / roundedTickSize) * roundedTickSize
+                  );
+                },
+              ]}
+              tickCount={5}
+              tickFormatter={tickFormatter}
+              label={{
+                value: (() => {
+                  if (activeRightAxisMetrics.length === 0)
+                    return "Attendance & Estimates";
+                  if (activeRightAxisMetrics.length === 1)
+                    return metricLabels[activeRightAxisMetrics[0]];
 
-                const minTotal =
-                  validTotals.length > 0 ? Math.min(...validTotals) : 0;
-                const minPreviousYear =
-                  validPrevYears.length > 0 ? Math.min(...validPrevYears) : 0;
-                const minValue = Math.min(minTotal, minPreviousYear, 0);
-                const maxTotal =
-                  validTotals.length > 0 ? Math.max(...validTotals) : 0;
-                const maxPreviousYear =
-                  validPrevYears.length > 0 ? Math.max(...validPrevYears) : 0;
-                const overallMax = Math.max(maxTotal, maxPreviousYear, 1); // Ensure at least 1 for non-zero range
-                const paddedMax = overallMax * 1.1; // Add 10% padding
+                  // Check if both attendance and estimate are selected
+                  const hasAttendance = activeRightAxisMetrics.includes(
+                    "predictedAttendance"
+                  );
+                  const hasEstimate =
+                    activeRightAxisMetrics.includes("inboundEstimate") ||
+                    activeRightAxisMetrics.includes("internationalEstimate");
 
-                const range = Math.max(paddedMax - minValue, 1); // Ensure non-zero range
-                const idealTickSize = range / 4;
+                  if (hasAttendance && hasEstimate)
+                    return "Attendance & Estimates";
 
-                const magnitude = Math.pow(
-                  10,
-                  Math.floor(Math.log10(idealTickSize))
-                );
-                let roundedTickSize = magnitude;
-                if (idealTickSize / magnitude >= 5)
-                  roundedTickSize = magnitude * 5;
-                else if (idealTickSize / magnitude >= 2)
-                  roundedTickSize = magnitude * 2;
-
-                return Math.ceil(paddedMax / roundedTickSize) * roundedTickSize;
-              },
-            ]}
-            tickCount={5}
-            tickFormatter={tickFormatter}
-            label={
-              isMobileView
-                ? undefined
-                : {
-                    value: label,
-                    angle: -90,
-                    position: "insideLeft",
-                    style: { textAnchor: "middle", fill: "#7D7D7D" },
-                    fontSize: "14px",
+                  // For inbound and international estimates
+                  const hasInbound =
+                    activeRightAxisMetrics.includes("inboundEstimate");
+                  const hasInternational = activeRightAxisMetrics.includes(
+                    "internationalEstimate"
+                  );
+                  if (hasInbound && hasInternational) {
+                    return "Inbound & International Estimates";
                   }
-            }
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#615E83",
-              fontSize: isMobileView ? "10px" : "14px",
-              fontWeight: isMobileView ? "400" : "500",
-            }}
-          />
+
+                  // For any other combination, join with &
+                  return activeRightAxisMetrics
+                    .map((metric) => metricLabels[metric])
+                    .join(" & ");
+                })(),
+                angle: leftAxisMetric ? 90 : -90,
+                position: leftAxisMetric ? "insideRight" : "insideLeft",
+                style: { textAnchor: "middle", fill: "#7D7D7D" },
+                fontSize: isMobileView ? "12px" : "14px",
+              }}
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#615E83",
+                fontSize: isMobileView ? "10px" : "14px",
+                fontWeight: isMobileView ? "400" : "500",
+              }}
+            />
+          )}
           <Tooltip
-            content={<CustomToolTip />}
+            content={
+              <CustomToolTip
+                holidayByDates={holidayByDates}
+                compareFrom={compareFrom ?? undefined}
+                compareTo={compareTo ?? undefined}
+                searchParams={searchParams}
+              />
+            }
             trigger="click"
             wrapperStyle={{ pointerEvents: "auto" }}
           />
-          {showThresholdLines && (
-            <ReferenceArea
-              y1={thresholdArea[0]}
-              y2={thresholdArea[1]}
-              fill="#FAEFE2"
-            />
-          )}
-          {threshold && threshold > 0 && showThresholdLines && (
+          {showThresholdLines && metrics.length === 1 && (
             <>
-              <ReferenceLine
-                y={thresholdArea[0]}
-                stroke="#398E4A"
-                strokeDasharray="12 12"
-                label={{
-                  position: "insideBottomRight",
-                  className: "text-[#398E4A]",
-                  style: {
-                    fill: "#398E4A",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: -8,
-                }}
-              />
-              <ReferenceLine
-                y={threshold}
-                stroke="#DF2670"
-                label={{
-                  position: "insideTopRight",
-                  className: "text-[#DF2670]",
-                  style: {
-                    fill: "#DF2670",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: 0,
-                }}
-              />
-              <ReferenceLine
-                y={thresholdArea[1]}
-                stroke="#FF990A"
-                strokeDasharray="12 12"
-                label={{
-                  position: "insideTopRight",
-                  className: "text-[#FF990A]",
-                  style: {
-                    fill: "#FF990A",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  },
-                  dy: 8,
-                }}
-              />
+              {(() => {
+                const metric = metrics[0];
+                const metricThreshold =
+                  eventTrendsData?.thresholds[
+                    metric as keyof typeof eventTrendsData.thresholds
+                  ];
+                if (!metricThreshold) return null;
+
+                const thresholdArea = [
+                  metricThreshold * 1.5, // 50% above threshold
+                  metricThreshold * 0.5, // 50% below threshold
+                ];
+
+                return (
+                  <>
+                    <ReferenceArea
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y1={thresholdArea[0]}
+                      y2={thresholdArea[1]}
+                      fill="#FAEFE2"
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={thresholdArea[0]}
+                      stroke="#398E4A"
+                      strokeDasharray="12 12"
+                      label={{
+                        position: "insideBottomRight",
+                        className: "text-[#398E4A]",
+                        style: {
+                          fill: "#398E4A",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: -8,
+                      }}
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={metricThreshold}
+                      stroke="#DF2670"
+                      label={{
+                        position: "insideTopRight",
+                        className: "text-[#DF2670]",
+                        style: {
+                          fill: "#DF2670",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: 0,
+                      }}
+                    />
+                    <ReferenceLine
+                      yAxisId={leftAxisMetric ? "left" : "right"}
+                      y={thresholdArea[1]}
+                      stroke="#FF990A"
+                      strokeDasharray="12 12"
+                      label={{
+                        position: "insideTopRight",
+                        className: "text-[#FF990A]",
+                        style: {
+                          fill: "#FF990A",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        },
+                        dy: 8,
+                      }}
+                    />
+                  </>
+                );
+              })()}
             </>
           )}
           <Line
+            yAxisId={leftAxisMetric ? "left" : "right"}
             type="linear"
-            dataKey="total"
-            name="Selected Period"
+            dataKey={leftAxisMetric}
+            name={leftAxisMetric ? metricLabels[leftAxisMetric] : "Event Count"}
             stroke="#6750a4"
             strokeWidth={2}
             strokeOpacity={1}
             connectNulls={true}
             dot={<CustomDot />}
           />
+          {activeRightAxisMetrics.map((metric, index) => {
+            const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+            return (
+              <Line
+                key={metric}
+                yAxisId={leftAxisMetric ? "right" : "right"}
+                type="linear"
+                dataKey={metric}
+                name={metricLabels[metric]}
+                stroke={colors[index % colors.length]}
+                strokeWidth={2}
+                strokeOpacity={1}
+                connectNulls={true}
+                dot={<CustomDot />}
+              />
+            );
+          })}
           {compareFrom && compareTo && (
-            <Line
-              type="linear"
-              dataKey="previousYearTotal"
-              name="Compared Period"
-              stroke="#4B9EF4"
-              strokeWidth={2}
-              strokeOpacity={1}
-              connectNulls={true}
-              dot={false}
-            />
+            <>
+              {leftAxisMetric && (
+                <Line
+                  key={`previousYear-${leftAxisMetric}`}
+                  yAxisId={leftAxisMetric ? "left" : "right"}
+                  type="linear"
+                  dataKey={`previousYear${leftAxisMetric}`}
+                  name={`Previous Year ${metricLabels[leftAxisMetric]}`}
+                  stroke="#6750a4"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  connectNulls={true}
+                  dot={false}
+                />
+              )}
+              {activeRightAxisMetrics.map((metric, index) => {
+                const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                return (
+                  <Line
+                    key={`previousYear-${metric}`}
+                    yAxisId={leftAxisMetric ? "right" : "right"}
+                    type="linear"
+                    dataKey={`previousYear${metric}`}
+                    name={`Previous Year ${metricLabels[metric]}`}
+                    stroke={colors[index % colors.length]}
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    connectNulls={true}
+                    dot={false}
+                  />
+                );
+              })}
+            </>
           )}
           {showLegend && (
             <Legend
               content={<CustomLegend />}
               payload={
                 [
-                  {
-                    value: "Selected Period",
-                    type: "line",
-                    id: "current_year",
-                    color: "#6750a4",
-                    tooltipDescription: "Data for the current selected period",
-                  },
-                  {
-                    value: "Compared Period",
-                    type: "line",
-                    id: "previous_year",
-                    color: "#4B9EF4",
-                    tooltipDescription: "Data for the comparison period",
-                  },
-                  ...(showThresholdLines
+                  ...(leftAxisMetric
+                    ? [
+                        {
+                          value: primaryLabel,
+                          type: "line",
+                          id: "primary_metric",
+                          color: "#6750a4",
+                          tooltipDescription: `Data for ${primaryLabel}`,
+                        },
+                      ]
+                    : []),
+                  ...activeRightAxisMetrics.map((metric, index) => {
+                    const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                    return {
+                      value: metricLabels[metric],
+                      type: "line",
+                      id: `metric_${metric}`,
+                      color: colors[index % colors.length],
+                      tooltipDescription: `Data for ${metricLabels[metric]}`,
+                    };
+                  }),
+                  ...(compareFrom && compareTo
+                    ? [
+                        ...(leftAxisMetric
+                          ? [
+                              {
+                                value: `Previous Year ${primaryLabel}`,
+                                type: "line",
+                                id: "previous_year_primary",
+                                color: "#6750a4",
+                                tooltipDescription: `Previous year data for ${primaryLabel}`,
+                                strokeDasharray: "5 5",
+                              },
+                            ]
+                          : []),
+                        ...activeRightAxisMetrics.map((metric, index) => {
+                          const colors = ["#3b82f6", "#8b5cf6", "#f97316"];
+                          return {
+                            value: `Previous Year ${metricLabels[metric]}`,
+                            type: "line",
+                            id: `previous_year_${metric}`,
+                            color: colors[index % colors.length],
+                            tooltipDescription: `Previous year data for ${metricLabels[metric]}`,
+                            strokeDasharray: "5 5",
+                          };
+                        }),
+                      ]
+                    : []),
+                  ...(showThresholdLines && metrics.length === 1
                     ? [
                         {
                           value: "Upper Threshold",
@@ -1519,12 +2114,12 @@ const LineChartComponent = ({
                   ? {
                       width: "100%",
                       position: "relative",
-                      bottom: -5,
-                      left: 0,
+                      bottom: 54,
+                      left: 16,
                       fontSize: "12px",
                       fontWeight: "400",
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }
                   : {
                       width: "auto",

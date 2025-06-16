@@ -33,6 +33,7 @@ export const endpoints = {
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
     recentSearch: `${BASE_URL}/me/recent-searches`,
+    getIntelScore: `${BASE_URL}/events`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -73,7 +74,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
     verifyAccess: `${BASE_URL}/auth/verify-access`,
-    templatePreset: `${BASE_URL}/others/preset`
+    templatePreset: `${BASE_URL}/others/preset`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,

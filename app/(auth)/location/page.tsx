@@ -22,7 +22,8 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { EventCount } from "@/types/events";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { SaveLocationDTO } from "@/types/locations";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -115,6 +116,7 @@ const LocationForm = () => {
     useLocationService();
 
   const [searchParams, setSearchParams] = useState<string>();
+  const redirectPath = sessionStorage.getItem("redirect");
 
   const defaultLocation: LocationItem = {
     id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
@@ -172,7 +174,11 @@ const LocationForm = () => {
   const saveLocationMutation = useMutation({
     mutationFn: (values: any) => createTracker(values),
     onSuccess: () => {
-      router.push(`internal/search/events?${searchParams}`);
+      router.push(
+        redirectPath
+          ? `/internal/${redirectPath}`
+          : `internal/search/events?${searchParams}`
+      );
       queryClient.invalidateQueries({ queryKey: ["locations"] });
     },
     onError: (error: any) => {

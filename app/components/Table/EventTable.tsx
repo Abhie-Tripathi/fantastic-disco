@@ -8,13 +8,18 @@ import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
-import ZeroState from "@/components/zerostate";
+import ZeroState from "@/app/components/zerostate";
 import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from "@/public/trackerNullState.svg";
+import trackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
+import CustomTrackerNullState from "../internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -30,6 +35,7 @@ const EventTable = ({
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
+  const { inTransition } = useTransition();
   const { localFilters } = useFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
@@ -41,20 +47,26 @@ const EventTable = ({
   let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error, isFetching } = useTrackerEvents.list(
-      query,
-      trackerId,
-      view
-    ));
+    ({ events, totalEvents, isLoading, error, isFetching } =
+      useTrackerEvents.list(query, trackerId, view));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-  // console.log(isLoading);
+  const {
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      eventType || "",
+      query.type
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
     branded: "branded",
-    series:"series",
+    series: "series",
     forecasted: "forecasted",
     frequency: "frequency",
     estimatedExhibitors: "estimatedExhibitors",
@@ -99,14 +111,18 @@ const EventTable = ({
       setUpdatedEvents(events);
     }
   }, [events]);
-  
+
   useEffect(() => {
     if (!events) return;
-    
+
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
+      if (
+        query.eventType === "bookmarked" &&
+        interest &&
+        "bookmark" in interest
+      ) {
         newEvents = newEvents.filter(
           (event: Event) => event.basic.id !== eventId
         );
@@ -140,14 +156,13 @@ const EventTable = ({
     });
   }, [eventId, interest]);
 
-
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
       limit: newItemsPerPage,
     });
   };
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || inTransition) {
     return <Loading className="h-24 text-primary" />;
   }
 
@@ -155,11 +170,32 @@ const EventTable = ({
     if (source === "tracker") {
       return (
         <NullState
-          image={TrackerNullState}
+          image={trackerNullState}
           title={(error as ApiError).message}
         />
       );
-    } else return <ZeroState text={(error as ApiError).message} />;
+    } else
+      return error.message == "Location is required" ? (
+        <div className="p-6">
+          <CustomTrackerNullState />
+        </div>
+      ) : (
+        <ZeroState
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
+      );
+  }
+
+  if (
+    searchParams.size === 0 ||
+    (searchParams.size == 1 && searchParams.has("view"))
+  ) {
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />
+      </div>
+    );
   }
 
   if (events.length === 0) {
@@ -167,50 +203,71 @@ const EventTable = ({
       if (query.eventType === "bookmarked") {
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
           />
         );
       } else
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="We couldn't find any events matching your tracker criteria at the moment."
             text="Try adjusting your filters or checking back later, as new events are added frequently."
             buttonText="Manage Configurations"
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
         );
-    } else return <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />;
+    } else
+      return (
+        <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
+      );
   }
 
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex-1 overflow-hidden rounded-md border bg-background">
-        <div className={`${view === "global" ? "h-[calc(100vh-165px)]" : "h-[calc(100vh-210px)]"} overflow-auto`}>
+        <div
+          className={`${
+            view === "global"
+              ? "h-[calc(100vh-165px)]"
+              : "h-[calc(100vh-210px)]"
+          } overflow-auto`}
+        >
           <Table>
-            <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
+            <EventTableHeader
+              show={showValues}
+              type={query.type}
+              view={query.eventType}
+              localFilters={localFilters}
+            />
             <TableBody className="overflow-auto">
-              {updatedEvents && updatedEvents.map((event: Event) => (
-                <EventTableRow
-                  global={view}
-                  view={query.eventType}
-                  setEventId={setEventId}
-                  setInterest={setInterest}
-                  type={query.type}
-                  key={event.basic.id}
-                  event={event}
-                  show={showValues}
-                  localFilters={localFilters}
-                  trackerId={trackerId}
-                />
-              ))}
+              {updatedEvents &&
+                updatedEvents.map((event: Event) => (
+                  <EventTableRow
+                    global={view}
+                    view={query.eventType}
+                    setEventId={setEventId}
+                    setInterest={setInterest}
+                    type={query.type}
+                    key={event.basic.id}
+                    event={event}
+                    show={showValues}
+                    localFilters={localFilters}
+                    trackerId={trackerId}
+                    intelLoading={intelLoading}
+                    initialIntelScoreData={
+                      intelScoreData?.trackerEventsIntelScore?.find(
+                        (item: intelScore) => item?.event === event.basic.id
+                      ) || null
+                    }
+                  />
+                ))}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      {totalPages > 1 && (
+      {totalPages > 0 && (
         <div className="sticky bottom-0 bg-background py-3 border-t">
           <PaginationComponent
             currentPage={currentPage}

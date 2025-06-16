@@ -188,7 +188,6 @@ const TestPeriodicAnalytics = () => {
         params.append(key, value);
       }
     });
-    params.delete("categories");
     return params.toString();
   }, [currentView, searchParams]);
 
@@ -798,8 +797,10 @@ const TestPeriodicAnalytics = () => {
               return (
                 <TableCell
                   key={key}
-                  width={340}
-                  className="text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[340px]"
+                  width={isMobileView ? 140 : 340}
+                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate ${
+                    !comparisonDate ? "h-[53px]" : ""
+                  }`}
                 >
                   <div className="w-full flex flex-col justify-center px-2">
                     <p className="truncate">
@@ -1229,7 +1230,11 @@ const TestPeriodicAnalytics = () => {
             </Button>
           </div>
         </div>
-        <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
+        <div
+          className={`px-2 py-2 md:px-3 md:py-3 border border-[var(--neutral-light-color)] rounded-sm max-w-fit ${
+            isMobileView ? "text-xs" : ""
+          }`}
+        >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1237,12 +1242,12 @@ const TestPeriodicAnalytics = () => {
                   <div className="flex items-center gap-2">
                     <Image
                       src={SmartInsights}
-                      width={18}
-                      height={18}
+                      width={16}
+                      height={16}
                       alt={""}
-                      className="w-[18px] h-[18px]"
+                      className="w-[16px] h-[16px] md:w-[18px] md:h-[18px]"
                     />
-                    <p className="text-primary m-0 font-normal text-sm sm:text-base">
+                    <p className="text-primary m-0 font-normal text-xs md:text-sm">
                       Smart Insights
                     </p>
                   </div>
@@ -1252,7 +1257,6 @@ const TestPeriodicAnalytics = () => {
                       setIsSmartInsightsEnabled((prev) => !prev)
                     }
                     disabled={Object.keys(smartInsightState).length === 0}
-                    className="mt-1 sm:mt-0"
                   />
                 </div>
               </TooltipTrigger>
@@ -1266,15 +1270,15 @@ const TestPeriodicAnalytics = () => {
           </TooltipProvider>
         </div>
       </div>
-      <div className="mt-6 overflow-x-auto">
+      <div className="mt-4 md:mt-6 overflow-x-auto px-4 md:px-0">
         <div className="w-full overflow-x-auto">
           <Table
             className={`border border-[var(--neutral-light-color)] ${
-              isMobileView ? "w-full" : "w-[98%]"
+              isMobileView ? "w-full text-xs" : "w-[98%] text-sm"
             } mx-auto relative`}
           >
             <TableHeader>
-              <TableRow>
+              <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                 {tableColumns &&
                   tableColumns.map((trends) => {
                     const colSpan = openState[trends.slug ?? ""]
@@ -1301,12 +1305,14 @@ const TestPeriodicAnalytics = () => {
                         {trends.slug === "date" &&
                           trends.columnName.toUpperCase()}
                         {trends.slug !== "date" && (
-                          <div className="flex items-center justify-center mx-auto gap-4 h-inherit w-60">
+                          <div
+                            className={`flex items-center justify-center mx-auto gap-2 md:gap-4 h-inherit w-32 md:w-60`}
+                          >
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span
-                                    className={`cursor-pointer text-sm font-medium`}
+                                    className={`cursor-pointer text-xs md:text-sm font-medium`}
                                   >
                                     {trends.columnName.toUpperCase()}
                                   </span>
@@ -1322,11 +1328,13 @@ const TestPeriodicAnalytics = () => {
                             <Select>
                               <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-background p-0 border-2 rounded-sm border-[var(--neutral-light-color)]"></SelectTrigger>
                               <SelectContent>
-                                <SelectGroup className="flex flex-col gap-4 p-4">
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">SORT BY</p>
+                                <SelectGroup className="flex flex-col gap-2 md:gap-4 p-2 md:p-4">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
+                                      SORT BY
+                                    </p>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "asc"
@@ -1336,7 +1344,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowUpNarrowWide
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -1346,7 +1354,7 @@ const TestPeriodicAnalytics = () => {
                                       />
                                     </button>
                                     <button
-                                      className={`${
+                                      className={`$${
                                         sortingColumnOrder.eventType ===
                                           trends.slug &&
                                         sortingColumnOrder.order === "desc"
@@ -1356,7 +1364,7 @@ const TestPeriodicAnalytics = () => {
                                     >
                                       <ArrowDownWideNarrow
                                         color="currentColor"
-                                        className="cursor-pointer w-5 text-[var(--secondary-text-color)]"
+                                        className="cursor-pointer w-4 md:w-5 text-[var(--secondary-text-color)]"
                                         onClick={() =>
                                           sortingData(
                                             trends.slug as keyof TableData,
@@ -1367,10 +1375,10 @@ const TestPeriodicAnalytics = () => {
                                     </button>
                                   </div>
 
-                                  <div className="flex gap-4 items-center">
-                                    <p className="text-sm">
+                                  <div className="flex gap-2 md:gap-4 items-center">
+                                    <p className="text-xs md:text-sm">
                                       {`Turn
-                                    ${
+                                    $${
                                       smartInsightState[trends.slug ?? ""]
                                         ? "off"
                                         : "on"
@@ -1384,8 +1392,8 @@ const TestPeriodicAnalytics = () => {
                                           : EnableSmartInsights
                                       }
                                       className="cursor-pointer"
-                                      width={30}
-                                      height={30}
+                                      width={24}
+                                      height={24}
                                       alt={"Disable Smart Insights"}
                                       onClick={() =>
                                         toggleSmartInsightState(trends.slug)
@@ -1413,8 +1421,8 @@ const TestPeriodicAnalytics = () => {
                                         : ExpandIcon
                                     }
                                     alt="TableIcons"
-                                    width={25}
-                                    height={25}
+                                    width={20}
+                                    height={20}
                                   />
                                 </button>
                               </TooltipTrigger>
@@ -1432,7 +1440,7 @@ const TestPeriodicAnalytics = () => {
               </TableRow>
               {(Object.values(openState).some((state) => state) ||
                 Object.values(smartInsightState).some((state) => state)) && (
-                <TableRow>
+                <TableRow className={isMobileView ? "h-[40px]" : "h-[53px]"}>
                   {tableColumns &&
                     tableColumns.map((trends) => {
                       const subHeading = trends.subHeading ?? [];
@@ -1599,14 +1607,14 @@ const TestPeriodicAnalytics = () => {
         </div>
         {totalPages > 1 && (
           <div
-            className={`mt-4 sticky bottom-0 bg-background py-4 ${
+            className={`mt-2 md:mt-4 sticky bottom-0 bg-background py-2 md:py-4 ${
               isMobileView ? "overflow-x-auto" : ""
             }`}
           >
             <Pagination>
               <PaginationContent
                 className={`flex-wrap justify-center ${
-                  isMobileView ? "text-sm gap-1" : ""
+                  isMobileView ? "text-xs gap-1" : ""
                 }`}
               >
                 <PaginationItem>

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { fetcher } from "@/lib/axios";
 
 interface Notification {

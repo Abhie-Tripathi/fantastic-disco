@@ -17,6 +17,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LockClosedSmall } from "geist-icons";
 
 interface KeywordSelectorProps {
   type?: string;
@@ -51,6 +52,8 @@ export default function KeywordFilter({
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const { morphedData } = useFilterContext();
+  const enabled = morphedData.globalAndTourings.isEnabled;
 
   useEffect(() => {
     const includeKeywords = [
@@ -72,8 +75,14 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          includeKeywords[includeKeywords.length - 1]
-        }...`
+          includeKeywords[0]
+        }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+          "data": [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ]
+      }.  Do not show example values and don't include [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ] in response. If no data is found, respond in this format: {\"data\": []}`
       );
     } else if (
       excludeKeywords.length > 0 &&
@@ -83,8 +92,14 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          excludeKeywords[excludeKeywords.length - 1]
-        }...`
+          excludeKeywords[0]
+        }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
+          "data": [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ]
+      }.  Do not show example values and don't include [
+             keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
+          ] in response. If no data is found, respond in this format: {\"data\": []}`
       );
     }
   }, [
@@ -163,8 +178,9 @@ export default function KeywordFilter({
   };
 
   const triggerContent = (
-    <span className="flex items-center gap-2 font-normal text-normal">
-      Products/Topics
+    <span className="flex items-center font-normal text-normal">
+      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+      <span className="mr-2">Products/Topics</span>
       {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {includeKeywords.length + excludeKeywords.length}
@@ -219,6 +235,7 @@ export default function KeywordFilter({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!enabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -248,6 +265,7 @@ export default function KeywordFilter({
     <Accordion type="single" collapsible>
       <AccordionItem value="productsTopics" className="border rounded-md">
         <AccordionTrigger
+          disabled={!enabled}
           className={cn(
             buttonVariants({ variant: "outline" }),
             "no-underline border-none justify-between px-3 py-5 text-base font-normal"

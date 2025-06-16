@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Event } from "@/types/events";
+import { addMonths, endOfMonth, format as formatDate, startOfMonth } from "date-fns";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -49,10 +50,18 @@ const SearchEventsCTAButton = ({
 
     const eventFormats = format === "online" ? format : null;
 
-    const params = {
+    const params: {
+      eventFormats?: string;
+      locationIds?: string;
+      categories?: string;
+      active_gte: string;
+      active_lte: string;
+    } = {
       ...(enabledCategories && { categories: enabledCategories }),
       ...(locationIds && { locationIds }),
       ...(eventFormats && { eventFormats }),
+      active_gte: formatDate(startOfMonth(new Date()), "yyyy-MM-dd"),
+      active_lte: formatDate(endOfMonth(addMonths(new Date(), 2)), "yyyy-MM-dd")
     };
 
     return new URLSearchParams(params).toString();

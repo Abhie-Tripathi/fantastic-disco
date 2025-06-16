@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Cross } from "geist-icons";
 import { X } from "lucide-react";
 import React, { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode; // This will accept any React elements passed from the parent
+  className?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) => {
   return (
     <>
       {/* Overlay */}
@@ -20,29 +22,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           onClick={onClose}
         ></div>
       )}
-
       {/* Modal content */}
       <div
-        className={`fixed top-0 right-0 w-full sm:w-2/3 lg:w-1/2 2xl:w-1/3 h-full bg-background z-50 transform transition-all duration-500 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={cn(
+          "fixed top-0 bottom-0 right-0 w-1/2 min-h-screen bg-background z-50 transform transition-all duration-500 ease-in-out",
+          isOpen ? "translate-x-0" : "translate-x-full",
+          className
+        )}
       >
-        {/* {isOpen &&
-          <div className="left-0 sm:left-[-24px] absolute">
-            <Button
-                className="p-1 rounded-[2px] h-6"
-                variant="outline"
-                onClick={onClose}
-              >
-                <Cross width="14px" height="14px" color="var(--tertiary-text-color)" />
-              </Button>
-          </div>
-        } */}
-        <div className="py-4 h-full">
-          {/* Render the children content passed from the parent */}
-          {/* <div>{children}</div> */}
-          {children}
-        </div>
+        <div className="py-6 h-full">{children}</div>
       </div>
     </>
   );
