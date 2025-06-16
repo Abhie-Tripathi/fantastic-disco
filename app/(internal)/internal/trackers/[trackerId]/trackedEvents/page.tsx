@@ -1,8 +1,7 @@
-
 "use client";
-import React, { lazy, Suspense, useEffect, useState} from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import Expand from "/public/expand_more.svg";
-import Notes from "@/public/notes.svg"
+import Notes from "@/public/notes.svg";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
@@ -10,32 +9,24 @@ import styles from "./trackedEvents.style.module.css";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import "chart.js/auto";
 import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from '@/public/trackerNullState.svg';
+import TrackerNullState from "@/public/trackerNullState.svg";
 const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import List from "@/components/search/list";
 import Table from "@/app/components/Table/EventTable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
-import { baseUrl} from "@/context";
+import { baseUrl } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
-import {
-  CalendarMonthEventsResponse,
-  CalendarWeekEventsResponse,
-  Event,
-  // EventsResponse,
-  MapEventsResponse,
-} from "@/types/events";
-import ShareModal from '@/app/components/internal/trackers/shareModal'
+import ShareModal from "@/app/components/internal/trackers/shareModal";
 import Link from "next/link";
 import { useTrackerServices } from "@/services/trackerServices";
-import {Toggle} from "@/types/trackers"
+import { Toggle } from "@/types/trackers";
 import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
 import ZeroState from "@/components/zerostate";
@@ -44,7 +35,27 @@ import { useFilterState } from "@/hooks/useFilterState";
 import EventCalendar from "@/components/eventCalendar";
 import { isEventeli } from "@/config";
 import SortDropdown from "@/components/search/sortDropdown";
-import { NotebookPen, Share2 } from "lucide-react";
+import {
+  CalendarIcon,
+  Globe,
+  ListIcon,
+  NotebookPen,
+  Share2,
+} from "lucide-react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -66,15 +77,19 @@ const Map = lazy(() => import("@/components/map"));
 //   globalToggle?:boolean;
 //   brandSeries?:boolean;
 // }
-interface LocationObject  { [id: string]: string };
+interface LocationObject {
+  [id: string]: string;
+}
 const Page = ({ params }: { params: any }) => {
-  const {data, savedEventCount, setIsNewCall, editTrue}=useTrackerContext();
+  const isMobile = useIsMobile();
+  const { data, savedEventCount, setIsNewCall, editTrue } = useTrackerContext();
   // console.log(data);
-  const [share,setShare]=useState(false);
+  const [share, setShare] = useState(false);
   const pathname = usePathname();
-  const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
-  const {adaptParams}=TrackersAdapter;
-  const {getFilterValue, setFilter} = useFilterState();
+  const { getCalendarViewEvents, getTrackerEvents, getSavedEvents } =
+    useTrackerServices();
+  const { adaptParams } = TrackersAdapter;
+  const { getFilterValue, setFilter } = useFilterState();
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -85,31 +100,36 @@ const Page = ({ params }: { params: any }) => {
   const token = searchParams.get("token");
   // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
-  const viewType=searchParams.get("view");
-  const skip= getFilterValue("skip") || "0";
+  const viewType = searchParams.get("view");
+  const skip = getFilterValue("skip") || "0";
   const take = getFilterValue("take") || "20";
-  const typeOfEvent=searchParams.get("eventType");
+  const typeOfEvent = searchParams.get("eventType");
   // const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   const [active, setActive] = useState(typeOfEvent);
   // const id = pathName[pathName.length - 2];
   // console.log(active);
   // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
+  const [showViewDropdown, setShowViewDropdown] = useState(false);
   const [eventType, setEventType] = useState("active");
   const [view, setView] = useState<string | null>(
-    ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
+    ["table", "list", "map", "calendar"].includes(viewType || "")
+      ? viewType
+      : "table"
   );
   const [activeCount,setActiveCount]=useState<number>(0);
+  const {refs} = useTrackerContext();
   useEffect(() => {
-    if (editTrue)
-      setIsNewCall(true);
-  }, [editTrue])
-  const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
+    if (editTrue) setIsNewCall(true);
+  }, [editTrue]);
+  const [eventCount, setEventCount] = useState<
+    { type: string; totalCount: number; newCount: number }[]
+  >([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
-  const [sendInvite,setSendInvite]=useState(false);
-  const [geoCoordinate,setGeoCoordinate]=useState<any>();
-  const [showInsights,setShowInsights] = useState({
+  const [sendInvite, setSendInvite] = useState(false);
+  const [geoCoordinate, setGeoCoordinate] = useState<any>();
+  const [showInsights, setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
     global: false,
@@ -120,11 +140,11 @@ const Page = ({ params }: { params: any }) => {
     growth: false,
     repeatSent: false,
     trackerKeywords: true,
-    eventRating:false, 
-    eventFrequency:false,
-    economicImpact:false,
-    includeKeywords: '',
-    excludeKeywords: '',
+    eventRating: false,
+    eventFrequency: false,
+    economicImpact: false,
+    includeKeywords: "",
+    excludeKeywords: "",
   });
   const lineData = {
     labels: [
@@ -153,17 +173,17 @@ const Page = ({ params }: { params: any }) => {
       },
     ],
   };
-  
+
   // useEffect(() => {
   //   const fetchTrackerDetail = async () => {
-      
+
   //     try{
   //         const data= await getTrackerDetail(trackerId);
   //         console.log(data);
-          
+
   //         if (data) {
   //           console.log(data);
-            
+
   //           setTrackerDetail(data.tracker);
   //           setLoading(true);
   //         }
@@ -172,10 +192,10 @@ const Page = ({ params }: { params: any }) => {
   //           showToast("error", error.message);
   //           if (typeof window !== 'undefined') {
   //             router.push('/internal/trackers');
-  //           } 
+  //           }
   //         }
   //     }catch(error){
-  //         console.log(error); 
+  //         console.log(error);
   //     }
   //   };
   //   fetchTrackerDetail();
@@ -200,10 +220,10 @@ const Page = ({ params }: { params: any }) => {
   //   queryFn: async () => {
   //      if(active==="Saved Events"){
   //       const savedEventsResponse = await getSavedEvents(
-  //         trackerId, 
+  //         trackerId,
   //         `offset=${skip}&max=${take}`
   //       );
-      
+
   //       return savedEventsResponse as Event | undefined;
   //       }
   //     else if (viewType === "list") {
@@ -212,8 +232,8 @@ const Page = ({ params }: { params: any }) => {
   //       ) ;
   //       return trackerEventsResponse  as Event | undefined;
   //     }
-      
-  //     return undefined; 
+
+  //     return undefined;
   //   },
   //   refetchOnWindowFocus: false,
   //   staleTime: 0,
@@ -228,64 +248,64 @@ const Page = ({ params }: { params: any }) => {
     setTrackerDetail(data?.tracker);
     // console.log(data);
     const CountValues = {
-      geo : ['social','business','unattended'],
-      gtm : ['active','past', 'new']
-    }
+      geo: ["social", "business", "unattended"],
+      gtm: ["active", "past", "new"],
+    };
     // createQueryString();
     if (isEventeli) {
-      const transformedData =  CountValues.geo.map((key)=>{
+      const transformedData = CountValues.geo.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount :  data?.groupedEventsCount[key].total || 0,
-          newCount : data?.groupedEventsCount[key].new || 0
-        }
-      })
-    
+          totalCount: data?.groupedEventsCount[key].total || 0,
+          newCount: data?.groupedEventsCount[key].new || 0,
+        };
+      });
+
       transformedData.push({
         type: "Bookmarked",
         totalCount: (savedEventCount as number) || 0,
         newCount: 0,
       });
-    
+
       setEventCount(transformedData);
     } else {
-      const groupedEventsCount = data?.groupedEventsCount as Record<string, number> || {};
-    
-      const transformedData =  CountValues.gtm.map((key)=>{
+      const groupedEventsCount =
+        (data?.groupedEventsCount as Record<string, number>) || {};
+
+      const transformedData = CountValues.gtm.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount :  data?.groupedEventsCount[key] || 0,
-          newCount : data?.groupedEventsCount[key]?.new || 0
-        }
-      })
-    
+          totalCount: data?.groupedEventsCount[key] || 0,
+          newCount: data?.groupedEventsCount[key]?.new || 0,
+        };
+      });
+
       transformedData.push({
         type: "Bookmarked",
         totalCount: (savedEventCount as number) || 0,
         newCount: 0,
       });
-    
+
       setEventCount(transformedData);
     }
-    
+
     setLoading(true);
   }, [data, savedEventCount]);
-  useEffect(()=>{
-    if(editTrue) setLoading(false);
+  useEffect(() => {
+    if (editTrue) setLoading(false);
     else setLoading(true);
-  },[editTrue])
-  useEffect(()=>{
+  }, [editTrue]);
+  useEffect(() => {
     const res = eventCount.find((count) => count.type.toLowerCase() === active);
-    
+
     setActiveCount(res?.totalCount || 0);
-    
-  },[active, eventCount])
+  }, [active, eventCount]);
   // useEffect(()=>{
   //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
   // },[typeOfEvent])
-  useEffect(()=>{
-    setView(searchParams.get("view"))
-  },[searchParams.get("view")])
+  useEffect(() => {
+    setView(searchParams.get("view"));
+  }, [searchParams.get("view")]);
   const lineOptions = {
     plugins: {
       legend: {
@@ -323,7 +343,7 @@ const Page = ({ params }: { params: any }) => {
     setOpen(true);
   }, []);
   // console.log(data);
-  
+
   const [exp, setExp] = useState(false);
   const exportData = async () => {
     let dataToSend = {};
@@ -368,11 +388,21 @@ const Page = ({ params }: { params: any }) => {
     if (active === "New Events") setType("NEW");
     if (active === "Expired Events") setType("EXPIRED");
   }, [active]);
-  const formatCount = (count: number ) => {
+
+  useEffect(() => {
+    if (isMobile && view === "table") {
+      const currentParams = new URLSearchParams(window.location.search);
+      currentParams.set('view', 'list');
+      const newUrl = `${pathname}?${currentParams.toString()}`;
+      router.replace(newUrl);
+    }
+  }, [isMobile, view, router, pathname]);
+
+  const formatCount = (count: number) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
-        return `${Math.floor(value)}k`;
+      return `${Math.floor(value)}k`;
     }
     return count;
   };
@@ -404,126 +434,135 @@ const Page = ({ params }: { params: any }) => {
       router.replace("/internal/trackers");
     }
   };
- useEffect(()=>{
-  let toggleOpend:Toggle ={};
-  if(trackerDetail?.filterValue?.userType)
-  toggleOpend=JSON.parse(trackerDetail?.filterValue?.userType);
-    if(trackerDetail?.filterValue?.internationalScore){
-      setShowInsights(prev=>({...prev, global:true}));
+  useEffect(() => {
+    let toggleOpend: Toggle = {};
+    if (trackerDetail?.filterValue?.userType)
+      toggleOpend = JSON.parse(trackerDetail?.filterValue?.userType);
+    if (trackerDetail?.filterValue?.internationalScore) {
+      setShowInsights((prev) => ({ ...prev, global: true }));
     }
-    if(trackerDetail?.filterValue?.reputationScore){
-      setShowInsights(prev=>({...prev, reptSent:true}));
+    if (trackerDetail?.filterValue?.reputationScore) {
+      setShowInsights((prev) => ({ ...prev, reptSent: true }));
     }
-    if(toggleOpend?.trust===true){
-      setShowInsights(prev=>({...prev, repeatSent:true}));
+    if (toggleOpend?.trust === true) {
+      setShowInsights((prev) => ({ ...prev, repeatSent: true }));
     }
-    if(toggleOpend?.exhibit===true){
-      setShowInsights(prev=>({...prev, estExhibit:true}));
+    if (toggleOpend?.exhibit === true) {
+      setShowInsights((prev) => ({ ...prev, estExhibit: true }));
     }
-    if(toggleOpend?.economicImpact===true){
-      setShowInsights(prev=>({...prev, economicImpact:true}));
+    if (toggleOpend?.economicImpact === true) {
+      setShowInsights((prev) => ({ ...prev, economicImpact: true }));
     }
-    if(toggleOpend?.rating===true){
-      setShowInsights(prev=>({...prev, eventRating:true}));
+    if (toggleOpend?.rating === true) {
+      setShowInsights((prev) => ({ ...prev, eventRating: true }));
     }
-    if(trackerDetail?.filterValue?.includeKeywords) {
-      setShowInsights(prev=>({...prev, includeKeywords: trackerDetail?.filterValue?.includeKeywords}));
+    if (trackerDetail?.filterValue?.includeKeywords) {
+      setShowInsights((prev) => ({
+        ...prev,
+        includeKeywords: trackerDetail?.filterValue?.includeKeywords,
+      }));
     }
-    if(trackerDetail?.filterValue?.excludeKeywords) {
-      setShowInsights(prev=>({...prev, excludeKeywords: trackerDetail?.filterValue?.excludeKeywords}));
+    if (trackerDetail?.filterValue?.excludeKeywords) {
+      setShowInsights((prev) => ({
+        ...prev,
+        excludeKeywords: trackerDetail?.filterValue?.excludeKeywords,
+      }));
     }
-    if(trackerDetail?.filterValue) {
+    if (trackerDetail?.filterValue) {
       const toggleObj = {
-        maturity: (toggleOpend?.maturity ? true : false),
-        brandedEvent: (toggleOpend?.brandSeries ? true : false),
-        eventSeries: (toggleOpend?.brandSeries ? true : false),
-        forecasted: (toggleOpend?.forecastedStatus ? true : false),
-        impactScore: (toggleOpend?.globalToggle ? true : false),
-        inboundScore: (toggleOpend?.globalToggle ? true : false),
-        internationalScore: (toggleOpend?.globalToggle ? true : false),
-        eventRank: (toggleOpend?.eventRank ? true : false),
-        audienceZone: (toggleOpend?.audienceZone ? true : false),
-        audienceSpread: (toggleOpend?.audienceSpread ? true : false),
-        eventFrequency: (toggleOpend?.eventFrequency ? true : false),
+        maturity: toggleOpend?.maturity ? true : false,
+        brandedEvent: toggleOpend?.brandSeries ? true : false,
+        eventSeries: toggleOpend?.brandSeries ? true : false,
+        forecasted: toggleOpend?.forecastedStatus ? true : false,
+        impactScore: toggleOpend?.globalToggle ? true : false,
+        inboundScore: toggleOpend?.globalToggle ? true : false,
+        internationalScore: toggleOpend?.globalToggle ? true : false,
+        eventRank: toggleOpend?.eventRank ? true : false,
+        audienceZone: toggleOpend?.audienceZone ? true : false,
+        audienceSpread: toggleOpend?.audienceSpread ? true : false,
+        eventFrequency: toggleOpend?.eventFrequency ? true : false,
       };
-      setShowInsights(prev=>({...prev, ...toggleObj}));
+      setShowInsights((prev) => ({ ...prev, ...toggleObj }));
     }
- },[trackerDetail])
- const addQueryString = (value:string) => {
-  setFilter('eventType', value.toLowerCase());
-};
-  let trackerLoc: string[]=[];
-  
-  if(data?.filterValues?.locationIds){
+  }, [trackerDetail]);
+  const addQueryString = (value: string) => {
+    setFilter("eventType", value.toLowerCase());
+  };
+  let trackerLoc: string[] = [];
+
+  if (data?.filterValues?.locationIds) {
     const ids = Object?.keys(data?.filterValues?.locationIds);
     // console.log(ids);
-    
-    trackerLoc=ids;
+
+    trackerLoc = ids;
   }
   useEffect(() => {
-    if(data?.filterValues?.viewBound){
+    if (data?.filterValues?.viewBound) {
       const ids = data?.filterValues?.viewBound;
       // console.log(ids);
-      
+
       setGeoCoordinate(ids);
       // setLocalFilter("locationIds", ids.join(","))
       // console.log(ids);
-    }else setGeoCoordinate({});
-  },[data])
- 
+    } else setGeoCoordinate({});
+  }, [data]);
+
   useEffect(() => {
     const handlePopState = (event: any) => {
-        if (event.state && event.state.shareOpen) {
-            closeShareModal();
-        } else if (share) {
-            closeShareModal();
-        }
+      if (event.state && event.state.shareOpen) {
+        closeShareModal();
+      } else if (share) {
+        closeShareModal();
+      }
     };
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-        window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
-}, [share, sendInvite]);
-const closeShareModal = () => {
-if(share===true)
-  setShare(false);
+  }, [share, sendInvite]);
+  const closeShareModal = () => {
+    if (share === true) setShare(false);
+    else if (sendInvite) setSendInvite(false);
+    document.body.style.height = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+  };
+  const closeModal = (e: any) => {
+    const targetElement = e.target;
+    if (targetElement.classList.contains(styles.shareModal)) {
+      closeShareModal();
+    }
+  };
+  const shareFunction = () => {
+    if (!share) {
+      window.history.pushState({ shareOpen: true }, "");
+      setShare(true);
+      document.body.style.height = "100vh";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+    } else {
+      closeShareModal();
+    }
+  };
+  // console.log(activeCount);
 
-else if(sendInvite) setSendInvite(false);
-  document.body.style.height = '';
-  document.body.style.width = '';
-  document.body.style.overflow = '';
-};
-const closeModal = (e: any) => {
-const targetElement = e.target;
-if (targetElement.classList.contains(styles.shareModal)) {
-    closeShareModal();
-}
-};
-const shareFunction = () => {
-if (!share) {
-  window.history.pushState({ shareOpen: true }, '');
-  setShare(true);
-  document.body.style.height = '100vh';
-  document.body.style.width = '100%';
-  document.body.style.overflow = 'hidden';
-} else {
-  closeShareModal();
-}
-};
-// console.log(activeCount);
-
+  const onTabsChange = (tab: string) => {
+    setView(tab);
+    setShowViewDropdown(false);
+  };
+  
   return (
-    <div className="flex w-[calc(100vw-134px)]">
-    {/* <SideNav/> */}
-    {/* {(isLoading && view==="list") && <Loading/>} */}
-    <Suspense fallback={<p>Loading feed...</p>}>
-      <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
-        <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
-        {/* <div className={styles.new}></div> */}
-          <div className="flex gap-2">
-            {/* <button
+    <div className="flex">
+      {/* <SideNav/> */}
+      {/* {(isLoading && view==="list") && <Loading/>} */}
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <div className="flex gap-3 md:gap-5 mb-[24px] flex-col w-[100%] px-0 md:px-8">
+          <div className="hidden md:flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
+            {/* <div className={styles.new}></div> */}
+            <div className="flex gap-2" ref={!isMobile?refs.eventTypeRef: null}>
+              {/* <button
                className={`${styles.eventStatusBtn} ${
                 active === "Active Events" ? styles.active : ""
               }`}
@@ -634,54 +673,69 @@ if (!share) {
                 </div>
               }
             </button> */}
-            {eventCount?.map((item,index)=>(
-               <button
-               key={index}
-               className={`${styles.eventStatusBtn} ${
-                item.type.toLowerCase()===active ? styles.active : ""
-              }`}
-                onClick={() => {
-                  GAEvent("trackers", "Tracker Detail", "View", "New Events");
-                  // deleteFilter("skip")
-                  setActive(item.type.toLowerCase());
-                  addQueryString(item.type);
-                }}
+              {eventCount?.map((item, index) => (
+                <button
+                  key={index}
+                  className={`${styles.eventStatusBtn} ${
+                    item.type.toLowerCase() === active ? styles.active : ""
+                  }`}
+                  onClick={() => {
+                    GAEvent("trackers", "Tracker Detail", "View", `${item.type} Events`);
+                    // deleteFilter("skip")
+                    if (item.type.toLowerCase() === "unattended" && view==="map") {
+                      setView("table")
+                      const currentParams = new URLSearchParams(window.location.search);
+                      currentParams.set('view', 'table');
+                      currentParams.set('eventType', "unattended")
+                      const newUrl = `${pathname}?${currentParams.toString()}`;
+
+                      setTimeout(() => {
+                        router.replace(newUrl);
+                      }, 0);
+                    }
+                    setActive(item.type.toLowerCase());
+                    addQueryString(item.type);
+                  }}
+                >
+                  {item.type} Events
+                  {
+                    <div className={styles.circle}>
+                      {loading ? (
+                        formatCount(item.totalCount)
+                      ) : (
+                        <div className={styles.loader}></div>
+                      )}
+                    </div>
+                  }
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2" >
+              <Button
+                variant="outline"
+                className="flex gap-1"
+                onClick={() => setShare(!share)}
+                ref={!isMobile?refs.shareRef:null}
               >
-               {item.type} Events
-                {
-                  <div className={styles.circle}>
-                    {loading ? (
-                      formatCount(
-                        item.totalCount
-                      )
-                    ) : (
-                      <div className={styles.loader}></div>
-                    )}
-                  </div>
-                }
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2">
-          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
-          <Share2 width={16} height={16}/>
-          Share 
-          </Button>
-          <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
-            onClick={() => {
-              GAEvent(
-                "trackers",
-                "Tracker Detail",
-                "View",
-                "Notes and Discussion"
-              )
-            }}
-            className="flex items-center"
-          >
-          <Button variant="outline" className="flex gap-1">
-          <NotebookPen width={16} height={16}/>
-          Notes 
-            {/* <ListUnordered
+                <Share2 width={16} height={16} />
+                Share
+              </Button>
+              <Link
+                href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
+                onClick={() => {
+                  GAEvent(
+                    "trackers",
+                    "Tracker Detail",
+                    "View",
+                    "Notes and Discussion"
+                  );
+                }}
+                className="flex items-center"
+              >
+                <Button variant="outline" className="flex gap-1" ref={!isMobile?refs.notesRef:null}>
+                  <NotebookPen width={16} height={16} />
+                  Notes
+                  {/* <ListUnordered
               height="16px"
               width="16px"
               color={
@@ -703,16 +757,115 @@ if (!share) {
               }
               onClick={() => setView("calendar")}
             /> */}
-          </Button>
-          </Link>
-          <SortDropdown />
+                </Button>
+              </Link>
+              <div ref={!isMobile?refs.popularityRef:null}>
+              <SortDropdown />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {(view === "table") && (
-          <div className="flex-grow overflow-hidden">
-            <Suspense fallback={<Loading />}>
-          {/* <Table
+          <div className="md:hidden flex items-center justify-between gap-2 px-4 py-1">
+            {/* Badge for event count */}
+
+            <div className="flex-1 flex items-center gap-2 ">
+              <Badge className="bg-primary  text-white text-xs whitespace-nowrap font-medium md:font-semibold">
+                {new Intl.NumberFormat("en", {
+                  notation: "compact",
+                  maximumFractionDigits: 1,
+                }).format(activeCount)}
+              </Badge>
+              <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+                Events
+              </p>
+            </div>
+            {/* Event type select */}
+
+            <Select
+              value={active || undefined}
+              onValueChange={(val) => {
+                setActive(val);
+                addQueryString(val);
+              }}
+            >
+              <div ref={isMobile?refs.eventTypeRef:null}>
+              <SelectTrigger className="w-full max-w-[130px] border-gray-300">
+                <SelectValue placeholder="Select event type" />
+              </SelectTrigger>
+              <SelectContent>
+                
+                {eventCount?.map((item) => (
+                  <SelectItem key={item.type} value={item.type.toLowerCase()}>
+                    {item.type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+              </div>
+            </Select>
+
+            <Popover open={showViewDropdown} onOpenChange={setShowViewDropdown}>
+              <PopoverTrigger asChild>
+                <div ref={isMobile?refs.viewsRef:null}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 border p-2"
+                >
+                  {view === "list" ? (
+                    <ListIcon className="w-4 h-4" />
+                  ) : view === "table" ? (
+                    <ListIcon className="w-4 h-4" />
+                  ) : view === "map" ? (
+                    <Globe className="w-4 h-4" />
+                  ) : (
+                    <CalendarIcon className="w-4 h-4" />
+                  )}
+                </Button>
+                </div> 
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-48 p-2">
+                <div className="flex flex-col space-y-1" >
+                  <Button
+                    variant={view === "list" ? "secondary" : "ghost"}
+                    className="justify-start flex items-center gap-2"
+                    onClick={() => onTabsChange("list")}
+                  >
+                    <ListIcon className="h-4 w-4" />
+                    <span>List View</span>
+                  </Button>
+                  {/* <Button
+                      variant={selectedView === "table" ? "secondary" : "ghost"}
+                      className="justify-start flex items-center gap-2"
+                      onClick={() => onTabsChange("table")}
+                    >
+                      <TableIcon className="h-4 w-4" />
+                      <span>Table View</span>
+                    </Button> */}
+                  <Button
+                    variant={view === "map" ? "secondary" : "ghost"}
+                    className="justify-start flex items-center gap-2"
+                    onClick={() => onTabsChange("map")}
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span>Map View</span>
+                  </Button>
+                  <Button
+                    variant={view === "calendar" ? "secondary" : "ghost"}
+                    className="justify-start flex items-center gap-2"
+                    onClick={() => onTabsChange("calendar")}
+                  >
+                    <CalendarIcon className="h-4 w-4" />
+                    <span>Calendar View</span>
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            {view==="list" && <SortDropdown compact/>}
+          </div>
+          {view === "table" && (
+            <div className="flex-grow overflow-hidden">
+              <Suspense fallback={<Loading />}>
+                {/* <Table
             savedEventCount={savedEventCount}
             setSavedEventCount={setSavedEventCount}
             showInsights={showInsights}
@@ -720,13 +873,17 @@ if (!share) {
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
-          <Table source="tracker" trackerId={trackerId} eventType={active || ""}/>
-          </Suspense>
-          </div>
-        )}
-        {view === "list" && (
-  <div className="flex-grow overflow-hidden">
-    {/* {isLoading ? (
+                <Table
+                  source="tracker"
+                  trackerId={trackerId}
+                  eventType={active || ""}
+                />
+              </Suspense>
+            </div>
+          )}
+          {view === "list" && (
+            <div className="flex-grow overflow-hidden">
+              {/* {isLoading ? (
       <div className="px-10 py-5">
       <Loading />
       </div>
@@ -744,49 +901,72 @@ if (!share) {
       ) : (
         <NullState 
           image={TrackerNullState}
-          title="We couldn’t find any events matching your tracker criteria at the moment."
+          title="We couldn't find any events matching your tracker criteria at the moment."
           text="Try adjusting your filters or checking back later, as new events are added frequently."
           buttonText="Manage Configuration"
           buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
         />
       )
     ) : ( */}
-      <>
-        {/* <Alerts /> */}
-        <List source="tracker" trackerId={params.trackerId}/>
-      </>
-    {/* )} */}
-  </div>
-)}
+              <>
+                {/* <Alerts /> */}
+                <List source="tracker" trackerId={params.trackerId}/>
+              </>
+              {/* )} */}
+            </div>
+          )}
 
-        {(view === "map") && (
+          {view === "map"  && (
             <div>
               <Suspense fallback={<Loading />}>
-              {(Number(activeCount)===0 && active==="bookmarked")?
-              <div className="px-10 py-5">
-                <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
-              </div>
-               : 
-                <Map source="tracker" 
-                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"past":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
-                trackerId={params.trackerId}
-                trackerGeoCordinates={geoCoordinate}
-                trackerLoc={trackerLoc.join(",")}
-                trackerType={trackerType}
-                eventType={active || ""}
-                 />
-                } 
+                {Number(activeCount) === 0 && active === "bookmarked" ? (
+                  <div className="px-10 py-5">
+                    <NullState
+                      image={TrackerNullState}
+                      title="No events saved yet! Start saving events to easily track and revisit them here."
+                    />
+                  </div>
+                ) : (
+                  active==="unattended" ?(
+                  <div className="px-10 py-5">
+                    <NullState
+                      image={TrackerNullState}
+                      title="Map view is not available for unattended events."
+                        text="The events marked as 'Unattended' do not support map visualization. Please switch to another event type or view to explore available data."
+                    />
+                    </div>
+                  ):
+                  (<Map
+                    source="tracker"
+                    searchParams={`${
+                      active === "Active Events"
+                        ? "active"
+                        : active === "Expired Events"
+                        ? "past"
+                        : active === "New Events"
+                        ? ""
+                        : active === "Saved Events"
+                        ? "saved"
+                        : "active"
+                    }`}
+                    trackerId={params.trackerId}
+                    trackerGeoCordinates={geoCoordinate}
+                    trackerLoc={trackerLoc.join(",")}
+                    trackerType={trackerType}
+                    eventType={active || ""}
+                  />)
+                )}
                 {/* <Map/> */}
               </Suspense>
             </div>
           )}
-        {/* {(view === "calendar" ) && (
+          {/* {(view === "calendar" ) && (
             <div>
               <Suspense fallback={<Loading />}>
               {isLoading ? (
             <Loading />
           ) : eventData?.count == 0 ? (
-            <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
+            <NullState image={TrackerNullState} title="We couldn't find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
           ) : (
@@ -800,26 +980,36 @@ if (!share) {
               </Suspense>
             </div>
           )} */}
-        {view === "calendar" && (
-          <div>
-            <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeCount} eventType={active || ""}/>
-            </Suspense>
-          </div>
-        )}
-      </div>
-      
-    </Suspense>
-    {share && (
-                <div className={modalstyles.shareModal} onClick={closeModal}>
-                    {share && 
-        <div className={modalstyles.shareModal} onClick={closeModal}>
-          <ShareModal closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+          {view === "calendar" && (
+            <div>
+              <Suspense fallback={<Loading />}>
+                <EventCalendar
+                  source={"tracker"}
+                  trackerId={trackerId}
+                  date={data?.tracker?.filterValue?.startDate}
+                  activeVal={activeCount}
+                  eventType={active || ""}
+                />
+              </Suspense>
+            </div>
+          )}
         </div>
-        }
-                </div>
-            )}
-  </div>
+      </Suspense>
+      {share && (
+        <div className={modalstyles.shareModal} onClick={closeModal}>
+          {share && (
+            <div className={modalstyles.shareModal} onClick={closeModal}>
+              <ShareModal
+                closeShareModal={closeShareModal}
+                share={share}
+                setShare={setShare}
+                shareFunction={shareFunction}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

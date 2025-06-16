@@ -21,7 +21,14 @@ import {
   LineChart,
   MagnifyingGlass,
 } from "geist-icons";
-import { LogOut, Moon, Settings, Sun, UserSearch } from "lucide-react";
+import {
+  LogOut,
+  MessageCircleMore,
+  Moon,
+  Settings,
+  Sun,
+  UserSearch,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,6 +36,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
+import { GAEvent } from "@/utils/GAEvent";
 
 function Coordinate() {
   return (
@@ -129,14 +137,14 @@ const Sidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search",
-      href: `/internal/search/events`,
-      icon: MagnifyingGlass,
-    },
-    {
       name: "Tracker",
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
+    },
+    {
+      name: "Search",
+      href: `/internal/search/events`,
+      icon: MagnifyingGlass,
     },
     { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
@@ -466,6 +474,24 @@ const Sidebar = () => {
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
+          <Button
+            className={`w-full hover:bg-muted ${
+              isHovered ? "justify-start px-3" : "justify-center px-0"
+            }`}
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              window.open("https://whr.canny.io/feature-request", "_blank");
+              GAEvent("", "Feature Request", "Desktop Sidebar", `${isEventeli ? "geo" : "gtm"} | feature_request`);
+            }}
+          >
+            <MessageCircleMore className="h-5 w-5 transition-all" />
+            {isHovered && (
+              <span className="ml-3.5 text-sm">
+                Feature Request
+              </span>
+            )}
+          </Button>
           <span className="text-xs text-muted-foreground px-1">
             {isHovered ? "Version 1.0.0" : "v1.0.0"}
           </span>

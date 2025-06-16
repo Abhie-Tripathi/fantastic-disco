@@ -1,8 +1,6 @@
-// components/JoyrideComponent.tsx
-
 import React, { useState } from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import Tooltip from "../Tooltip"; // Assuming you have this tooltip component
+import Tooltip from "../Tooltip";
 
 interface Props {
   steps: Step[];
@@ -22,42 +20,81 @@ const JoyRideCustom: React.FC<Props> = ({
   const [joyrideRun, setJoyrideRun] = useState(run);
   const [currIndex, setCurrIndex] = useState(0);
 
+  const scrollToTarget = (target: string | Element) => {
+    const element =
+      typeof target === "string" ? document.querySelector(target) : target;
+
+    if (element) {
+      // Scroll the element into view smoothly, centered vertically
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      // Adjust scroll for any fixed header
+      const headerHeight = document.querySelector("header")?.clientHeight || 0;
+      const elementRect = element.getBoundingClientRect();
+      const absoluteElementTop = elementRect.top + window.pageYOffset;
+      const middlePosition = absoluteElementTop - window.innerHeight / 2;
+
+      window.scrollTo({
+        top: middlePosition - headerHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const joyrideCallback = (data: CallBackProps) => {
-    const { status, index } = data;
-    setCurrIndex(index);
+    const { status, index, type, step } = data;
+
+    if (type === "step:before" && step.target) {
+      // Scroll first with delay before updating current step index
+      // setTimeout(() => {
+      scrollToTarget(step.target);
+      setCurrIndex(index); // update step index after scroll starts
+      // }, 100); // delay in ms (adjust as needed)
+    } else {
+      setCurrIndex(index);
+    }
+
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      let walkthroughCompleted: string[] = JSON.parse(
+      const walkthroughCompleted: string[] = JSON.parse(
         localStorage.getItem("walkthroughCompleted") || "[]"
       );
 
       if (!walkthroughCompleted.includes(pathName)) {
-        walkthroughCompleted.push(pathName);
-
         localStorage.setItem(
           "walkthroughCompleted",
-          JSON.stringify(walkthroughCompleted)
+          JSON.stringify([...walkthroughCompleted, pathName])
         );
       }
       setJoyrideRun(false);
-      if (onFinish) onFinish();
+      onFinish?.();
     }
   };
 
   return (
     <Joyride
       tooltipComponent={(props) => (
-        <Tooltip {...props} totalSteps={steps.length} />
+        <Tooltip {...props} totalSteps={steps.length} pathName={pathName} />
       )}
-      steps={steps}
+      steps={steps.map((step) => ({
+        ...step,
+        disableBeacon: true, // Disable beacon for all steps
+      }))}
+      scrollToFirstStep={false}
+      // disableScrollParentFix={pathName === "research" ? false : true}
+      disableScrollParentFix={pathName === "research" ? false : true}
       run={joyrideRun}
       callback={joyrideCallback}
+      disableScrolling={pathName === "research" ? false : true}
       continuous
       showProgress
       showSkipButton
-      disableScrolling
-      disableScrollParentFix
       disableOverlayClose
       spotlightClicks={spotClicksIndex.includes(currIndex)}
+      scrollDuration={300}
+      scrollOffset={150} // Adjust based on your header height
       styles={{
         options: {
           arrowColor: "#ffffff",
@@ -66,7 +103,26 @@ const JoyRideCustom: React.FC<Props> = ({
           primaryColor: "#000",
           textColor: "#004a14",
           width: 400,
-          zIndex: 1000,
+          zIndex: 10000, // Make sure it's on top
+        },
+        tooltipContainer: {
+          textAlign: "left",
+          transition: "opacity 200ms ease-out",
+        },
+        buttonNext: {
+          backgroundColor: "#000",
+        },
+        buttonBack: {
+          color: "#000",
+        },
+      }}
+      floaterProps={{
+        disableAnimation: false,
+        placement: "bottom",
+        styles: {
+          arrow: {
+            spread: 20,
+          },
         },
       }}
     />

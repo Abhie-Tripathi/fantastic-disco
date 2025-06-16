@@ -1,96 +1,99 @@
-import ClockIcon from '/public/clock.svg'
-import ClockIconLight from '/public/clock_light.svg'
-import Image from "next/image";
-import styles from './statusDropdown.style.module.css';
+import styles from "./statusDropdown.style.module.css";
 import { useEffect, useState } from "react";
-import { useTheme } from '@/context';
-import { toast } from 'react-toastify';
-import upArrowLight from '/public/internal/up_arrow_light.svg'
-import upArrow from '/public/internal/up_arrow.svg'
-import { useCoordinateService } from '@/services/coordinateService';
-import { showToast } from '@/utils/showToast';
-import { GAEvent } from '@/utils/GAEvent';
+import { toast } from "react-toastify";
+import { useCoordinateService } from "@/services/coordinateService";
+import { showToast } from "@/utils/showToast";
+import { GAEvent } from "@/utils/GAEvent";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, Clock5 } from "lucide-react";
 interface PropType {
   label: string;
   eventId: string;
   enquiryId: string;
   currentEnquiryStatus: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
-  setSelectedId:any;
+  setSelectedId: any;
   pipelineConfig: any;
   enquiryStatusUpdate: (eventId: string, status: string) => void;
-  // value:any;
-  // setValue:any;
 }
 
-const formatText = (val: string) => {
-  if(val) {
-    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
-  }
-}
+const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
+  const [showStatusDropdown, setShowStatusDropdown] = useState<boolean>(false);
 
-const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
-  
-  const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("");
-  const {theme} = useTheme();
 
   const coordinateService = useCoordinateService();
 
-  const statusLabel = props.pipelineConfig?.filter((item: any)=>(
-    item.status === props.currentEnquiryStatus
-  ))?.[0]?.label;
+  const statusLabel = props.pipelineConfig?.filter(
+    (item: any) => item.status === props.currentEnquiryStatus
+  )?.[0]?.label;
 
-  const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if( ["PENDING", props.pipelineConfig?.[1]?.status, "REJECTED"].includes(props?.currentEnquiryStatus) )
-      setIsOpen((prev) => !prev);
-    else 
-      showToast('error',"Status already updated")
-      return;
+  const openDropDownHandler = () => {
+    if (
+      ["PENDING", props.pipelineConfig?.[1]?.status, "REJECTED"].includes(
+        props?.currentEnquiryStatus
+      )
+    )
+      setShowStatusDropdown((prev) => !prev);
+    else showToast("error", "Status already updated");
+    return;
   };
-useEffect(()=>{
-
- setIsOpen(false);
- if(props?.currentEnquiryStatus)
-    setValue(statusLabel);
-}, [props.currentEnquiryStatus])
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const target = event.target as HTMLDivElement;
-    setIsOpen(false);
-    // setValue(target.innerText);
-    if(props.handleShortlistModal && props.eventId && props.enquiryId){
+  useEffect(() => {
+    if (props?.currentEnquiryStatus) setValue(statusLabel);
+  }, [props.currentEnquiryStatus]);
+  const handleMenuItemClick = () => {
+    if (props.handleShortlistModal && props.eventId && props.enquiryId) {
       props.handleShortlistModal(props.eventId, props.enquiryId);
       props.setSelectedId(props.eventId);
     }
-
   };
 
-  const handleRejectClick = async() => {
+  const handleRejectClick = async () => {
     let payloadData = {
       enquiryId: props.enquiryId,
-      enquiryStatus:"REJECTED"
+      enquiryStatus: "REJECTED",
     };
     try {
       const apiData = await coordinateService.setEnquiryStatus(payloadData);
-      if(apiData){
-        GAEvent("Coordinate", "Enquiry Detail", "Coordinate | Enquiry Status Change", `Change | REJECTED`);
+      if (apiData) {
+        GAEvent(
+          "Coordinate",
+          "Enquiry Detail",
+          "Coordinate | Enquiry Status Change",
+          `Change | REJECTED`
+        );
         toast.error(
-          <div>Status updated! <span className={styles['reject-undo-btn']} onClick={() => handleUndoClick()}>UNDO</span></div>, {
-          position: 'bottom-right',
-          autoClose: 3000,
-          closeButton: false,
-          hideProgressBar: true,
-        });
-        props.enquiryStatusUpdate(props.eventId, 'REJECTED');
+          <div>
+            Status updated!{" "}
+            <span
+              className={styles["reject-undo-btn"]}
+              onClick={() => handleUndoClick()}
+            >
+              UNDO
+            </span>
+          </div>,
+          {
+            position: "bottom-right",
+            autoClose: 3000,
+            closeButton: false,
+            hideProgressBar: true,
+          }
+        );
+        props.enquiryStatusUpdate(props.eventId, "REJECTED");
         // setValue('Rejected');
-        setIsOpen(false);
+        // setIsOpen(false);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
-  }
+  };
 
-  const handleUndoClick = async() => {
+  const handleUndoClick = async () => {
     let payloadData = {
       enquiryId: props.enquiryId,
       enquiryStatus: props.currentEnquiryStatus,
@@ -99,52 +102,47 @@ useEffect(()=>{
       const apiData = await coordinateService.setEnquiryStatus(payloadData);
       setValue(statusLabel);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
-  }
-
-  const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  }
+  };
 
   return (
-    <>
-    <div className={styles.filter_container} onClick={handleClickEvent}>
-      <div className={styles.filter}>
-        <div
-          className={styles.dropdown_container3}
-          onClick={openDropDownHandler}
+    <Popover open={showStatusDropdown} onOpenChange={openDropDownHandler}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="border px-3 gap-1.5 text-[var(--info-text-color)] hover:text-[var(--info-text-color)] bg-[var(--info-background-color)]"
         >
-          {/* <div className={styles.dropdown_value}> */}
-            <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
-            {value}
-            <Image
-                    src={theme==="light"?upArrowLight:upArrow}
-                    alt="up"
-                    width={16}
-                    height={16}
-                    className="icons"
-                    style={{transform:"rotate(180deg)"}}
-                  />
-          {/* </div> */}
+          <Clock5 color="var(--info-text-color)" className="h-4 w-4" />
+          {value}
+          <ChevronDown color="var(--info-text-color)" className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-48 p-2">
+        <div className="flex flex-col space-y-1">
+          <Button
+            variant={"ghost"}
+            className="justify-between flex items-center gap-2"
+            onClick={handleMenuItemClick}
+          >
+            <span>
+              {props?.pipelineConfig?.[1]?.label
+                ? props?.pipelineConfig?.[1]?.label
+                : "Shortlist"}
+            </span>
+          </Button>
+
+          <Button
+            variant={"ghost"}
+            className="justify-between flex items-center gap-2"
+            onClick={handleRejectClick}
+          >
+            <span>Reject</span>
+          </Button>
         </div>
-        {isOpen && (
-          <div className={styles.dropdown_menu}>
-            <div
-              className={styles.dropdown_menu_items}
-            >
-              <div onClick={handleMenuItemClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
-                {props?.pipelineConfig?.[1]?.label ? props?.pipelineConfig?.[1]?.label : 'Shortlist'}
-              </div>
-              <div onClick={handleRejectClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
-                Reject
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-    </>
+      </PopoverContent>
+    </Popover>
   );
 };
 export default StatusChangeDropdown;

@@ -24,7 +24,7 @@ const RecentChat = ({ outreachChat }: Props) => {
         router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}&status=${outreachChat?.enquiryStatus}`)
     }
     return (
-        <div className='bg-[var(--background-secondary-color)] rounded-[10px] p-3 w-full h-full relative'>
+        <div className='bg-[var(--background-secondary-color)] rounded-[10px] p-3 w-full h-full relative border border-[var(--border-color)]'>
             <div className='flex items-center w-full gap-2 h-[15%]'>
                 <ClockDashed color='#0062D1' height='12px' width='12px' />
                 <div className='w-[85%] h-full'>

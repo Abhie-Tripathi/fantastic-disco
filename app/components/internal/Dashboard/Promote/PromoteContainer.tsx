@@ -15,7 +15,7 @@ const PromoteContainer = ({ width, theme, promoteData }: Props) => {
     //     { name: "Events", value: 0 },
     // ]
     return (
-        <div className='border border-[var(--border-color)] rounded-xl w-full overflow-hidden'>
+        <div className='bg-[#F6FAFF] dark:bg-[#12233C] border border-[#E0F0FF] dark:border-[#292929] rounded-xl w-full overflow-hidden'>
             {width === "small" ? <PromoteOne theme={theme} values={promoteData}/> : <PromoteTwo values={promoteData}/>}
         </div>
     )

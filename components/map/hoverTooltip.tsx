@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+
 interface HoverTooltipProps {
   hoverInfo: {
     x: number;
@@ -8,15 +10,16 @@ interface HoverTooltipProps {
 }
 
 export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
-  const aggregatedPoints = hoverInfo.clusteredPoints?.reduce((acc, point) => {
-    const existing = acc.find(p => p.name === point.name);
-    if (existing) {
-      existing.count += point.count;
-    } else {
-      acc.push({ ...point });
-    }
-    return acc;
-  }, [] as { name: string; count: number }[]) || [];
+  const aggregatedPoints =
+    hoverInfo.clusteredPoints?.reduce((acc, point) => {
+      const existing = acc.find((p) => p.name === point.name);
+      if (existing) {
+        existing.count += point.count;
+      } else {
+        acc.push({ ...point });
+      }
+      return acc;
+    }, [] as { name: string; count: number }[]) || [];
 
   return (
     <div
@@ -57,4 +60,4 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
       )}
     </div>
   );
-} 
+}

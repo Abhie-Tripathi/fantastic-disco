@@ -26,7 +26,8 @@ import Link from "next/link";
 import Alerts from "@/components/map/alerts";
 import { Event, EventCount, MapEvents } from "@/types";
 import { useEventsService } from "@/services/eventsService";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useFilterState } from "@/hooks/useFilterState";
 import { circle, point } from "@turf/turf";
 import { LayerProps } from "react-map-gl";
@@ -139,7 +140,6 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
       );
       return response || [];
     },
-    staleTime: 60 * 1000,
     enabled: currentZoomGroup !== "event",
   });
 

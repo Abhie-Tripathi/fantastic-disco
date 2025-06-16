@@ -1,14 +1,18 @@
+import { dynamicPathPatterns, staticPathPatterns } from "@/data/onboarding";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-export function lightenColor(hex: string | undefined, factor: number | undefined): string {
+export function lightenColor(
+  hex: string | undefined,
+  factor: number | undefined
+): string {
   if (!hex) return "#ffffff";
-  
+
   const defaultFactor = 0.5;
-  if (typeof factor !== 'number' || isNaN(factor)) {
+  if (typeof factor !== "number" || isNaN(factor)) {
     factor = defaultFactor;
   }
 
@@ -29,11 +33,23 @@ export function lightenColor(hex: string | undefined, factor: number | undefined
     const newB = Math.round(b + (255 - b) * clampedFactor);
 
     const lightenedHex = [newR, newG, newB]
-      .map(x => x.toString(16).padStart(2, '0'))
-      .join('');
+      .map((x) => x.toString(16).padStart(2, "0"))
+      .join("");
 
     return `#${lightenedHex}`;
   } catch (error) {
     return "#ffffff";
   }
+}
+export function getValidPath(url: string) {
+  const decodedUrl = decodeURIComponent(url);
+  const [pathName, params] = decodedUrl.split("?");
+
+  const modulePath = pathName.split("internal")[1] || pathName;
+
+  const allPatterns = [...staticPathPatterns, ...dynamicPathPatterns];
+
+  return allPatterns.some((matcher) => matcher(modulePath))
+    ? `${modulePath}${params ? `?${params}` : ""}`
+    : null;
 }
