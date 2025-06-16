@@ -4,21 +4,27 @@ import React,{useState, useEffect, useRef} from 'react'
 import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
+import { formatEventDates } from "@/utils/dateFormat";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
+import { Event } from '@/types/events';
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 interface EventSuggestionItem {
   key: string | number;
   id?:any;
   name: string;
-  location?: {
-    cityName?: string;
-    countryName?: string;
-  };
+  location?: Event["basic"]["eventLocation"];
+  eventStartDate?: string;
+  eventEndDate?: string;
   city?: string;
   country?: string;
   host?:string;
   website?:string;
   tableEntry?: string;
+  eventLocation?: string | null;
+  eventCountry?: string | null;
 }
 
   interface SearchBarProps {
@@ -38,7 +44,11 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        let url; 
+        // if(type==="T_EVENT_PARTICIPATIONS"){
+        //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        // }else 
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATION"?"limit=10":"limit=5"}&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -60,7 +70,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               else if(type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"){
                 
                 setEventSuggestion(data.companies);
-              }else
+              }else if(type === "T_EVENT_PARTICIPATION"){
+                setEventSuggestion(data.events)
+              }
+              else
               setEventSuggestion(data.events); 
             } else {
               console.error('Fetch error:', error); 
@@ -122,10 +135,27 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       ? item.host 
                       : item.website && item.website !== "undefined" 
                       ? getDomain(item.website) 
-                      : item.name
+                      : item.name,
+                    location:{
+                        cityName:item?.location?.cityName,
+                        countryName:item?.location?.countryName
+                    }
                 }));
-                  
-                } else {
+                } else if (type === "T_EVENT_PARTICIPATION") {
+                  updatedData = eventSuggestion.map((item:Event) => {
+                    return {
+                      key: item.basic.id,
+                      eventLocation:item?.basic?.eventLocation?.cityName,
+                      eventCountry:item?.basic?.eventLocation?.countryName,
+                      name: item.basic.name || '',
+                      tableEntry: `${item.basic.name}_${item?.basic?.eventLocation?.name}_${item?.basic?.eventLocation?.cityName}_${item?.basic?.eventLocation?.countryName}_${item?.basic?.eventLocation?.locationType}_${item.basic.startDateTime}_${item.basic.endDateTime} `,
+                      eventStartDate: item.basic.startDateTime || "",
+                      eventEndDate: item.basic.endDateTime || "",
+                      location: item.basic.eventLocation
+                    };
+                  });
+                }
+                else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
@@ -148,27 +178,38 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   return (
         <>
          {searchInput.length > 0 && isOpen && (
-  <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-154px] md:top-[40px]`}
+  <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
-    {restructureData && restructureData.length > 0  ? (
-      restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.tableEntry??"")}>
-          <div className={styles.event} >
-  {item.name}
-  {item.city || item.country ? ", " : null} 
-  <span className={styles.subHeading}>
-    {item.city === item.country
-      ? item.country
-      : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
-  </span>
-</div>
-        </div>
-      ))
-    ) : (
-      <div className={styles.resultData_list}>
-        No results
-      </div>
-    )}
+  <Command>
+  <CommandGroup>
+                  <CommandList>
+  {restructureData.map((item, index) => (
+    <CommandItem
+      key={item.key ?? index}
+      onSelect={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      className="flex flex-col items-start cursor-pointer"
+    >
+      <div className="font-medium">
+                              <span>{item.name}</span>
+                              <span className="sr-only">{item.key}</span>
+                              {type==="T_EVENT_PARTICIPATION" &&
+                              <span className="text-xs text-muted-foreground ml-2">
+                                {formattedDateRange(
+                                  item.eventStartDate || "", item.eventEndDate || "",
+                                  false
+                                )}
+                              </span>
+                              }
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {item.location && formatLocationParts(item.location, true)}
+                            </div>
+    </CommandItem>
+  ))}
+</CommandList>
+
+                </CommandGroup>
+    </Command>
   </div>
 )}
          </> 

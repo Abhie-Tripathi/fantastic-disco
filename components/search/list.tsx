@@ -172,7 +172,12 @@ export default function EventAccordion({
     intelScoreData,
     loading: intelLoading,
     error: intelError,
-  } = useIntelData(trackerId || "", events?.length > 0 ? events : [], "past");
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    "past",
+    query.type
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",

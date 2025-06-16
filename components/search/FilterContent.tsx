@@ -33,6 +33,7 @@ interface FilterContentProps {
   searchHandler?: () => void;
   closeHandler?: (value: boolean) => void;
   refs?: any;
+  trackerType?: string;
 }
 
 const FilterContent = ({
@@ -43,6 +44,7 @@ const FilterContent = ({
   searchHandler,
   closeHandler,
   refs,
+  trackerType
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();
@@ -63,6 +65,9 @@ const FilterContent = ({
             defaultValue={[filters[type][0]?.id]}
           >
             {filters[type].map((section: FilterSection) => (
+              <>
+              {(section.id==="advanced-details" && trackerType==="T_EVENT_PARTICIPATION")&&
+                      <div className="ml-1 font-bold text-[12px]" style={{color:"var(--secondary-text-color)"}}>* Below filters are not applicable on this template</div>}
               <AccordionItem
                 key={section.id}
                 value={section.id}
@@ -118,6 +123,7 @@ const FilterContent = ({
                   </div>
                 </AccordionContent>
               </AccordionItem>
+              </>
             ))}
           </Accordion>
         </div>
