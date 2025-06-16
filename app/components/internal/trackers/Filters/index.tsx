@@ -2,10 +2,11 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Filter, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Filter, LayoutGrid, Search } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Event } from "@/types/events";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
@@ -90,6 +91,8 @@ import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -377,6 +380,22 @@ const templates = [
     isUploadEnable: true,
   },
   {
+    name: "T_EVENT_PARTICIPATION",
+    templateName: "Event Participation",
+    type: "enabled",
+    description: "Effortlessly track & Identify events similar to ones you already attend",
+    inputAreas: [
+      {
+        img: <Search className="w-4 h-4 text-muted-foreground" />,
+        type: "text",
+        placeholder: "Search By Event Name",
+        required: true,
+        example: "MAGIC LAS VEGAS",
+      }
+    ],
+    isUploadEnable: false,
+  },
+  {
     name: "T_SOCIAL_CAUSE",
     templateName: "Social Cause",
     type: "disabled",
@@ -451,6 +470,7 @@ const Pages = () => {
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [customData, setCustomData] = useState<any[]>([]);
   const [activeTab,setActiveTab]=useState("include");
+  const [eventSuggestion, setEventSuggestion] = useState<string[]>([]);
   const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
   const handleTabChange = (value: string) => {
     setSelectedAdvancedView(value);
@@ -473,7 +493,31 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
-  const filterCount = Object.keys(localFilters).length;
+  const [filterCount, setFilterCount] = useState(0);
+
+useEffect(() => {
+  const keysToIgnore = ['type', 'show', 'trust_score_lte', 'eventType', 'view'];
+  const mutuallyExclusiveGroups = [
+    ['includeKeywords', 'excludeKeywords'],
+    ['onlyBranded', 'onlySeries'],
+    ['active_gte', 'active_lte']
+  ];
+  
+  const filtersApplied = Object.keys(localFilters);
+
+  const filteredKeys = filtersApplied.filter((key) => !keysToIgnore.includes(key));
+  let count = filteredKeys.length;
+
+  mutuallyExclusiveGroups.forEach(group => {
+    if (group.every(key => filteredKeys.includes(key))) {
+      count -= 1;
+    }
+  });
+
+  setFilterCount(count);
+}, [localFilters]);
+
+
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const refs = {
     additionalFilterRef: useRef<HTMLDivElement>(null),
@@ -485,7 +529,7 @@ const Pages = () => {
 const stepsConfig =[
     {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
       ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
-      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":type==="T_EVENT_PARTICIPATION"?"Select events and effortlessly track & Identify similar events to ones you already attend":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
     {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
     {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
     {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
@@ -500,7 +544,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP" || type==="T_EVENT_PARTICIPATION")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -661,27 +705,20 @@ const stepsConfig =[
 
     return result;
   }
-  const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
-    let finalResult;
+  const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
     setHideSuggestion(false);
     setShowTemplate(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
     // presetItem[]
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType === "T_BRAND_BUILDING") {
-      if (trackerType === 'T_COMPETITOR') {
-        finalResult = transformedData(presetItem.data, ["organizations"])
-      }
-      if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
-        finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
-      }
       const presetData: any = [];
-      finalResult?.map((item: any) => {
+
+      presetItem?.data.map((item: any) => {
         const temp: any = {};
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-      
 
         presetData.push(temp);
       })
@@ -800,6 +837,9 @@ const stepsConfig =[
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
+    if(eventSuggestion.length > 0) {
+      filterValues.eventIds = eventSuggestion.join(",");
+    }
     console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
@@ -813,8 +853,16 @@ const stepsConfig =[
     
 
       const secondLast = pathName[pathName.length - 2];
-     
+     if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -903,8 +951,16 @@ const stepsConfig =[
       }
     } else {
       // console.log(formData);
-      
+      if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1018,8 +1074,7 @@ const stepsConfig =[
       setSuggestion(0);
     }
   }, [type]);
-  
-  useEffect(()=>{
+    useEffect(()=>{
     if(type === "T_PEOPLE_FINDER" && suggestion ===3){
       setSuggestions([]);
       const localData = localStorage.getItem("companySuggestion");
@@ -1044,7 +1099,7 @@ const stepsConfig =[
   }
 
   }, [type])
-  const [inc,setInc]=useState<String[]>([]);
+   const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
       const localData = localStorage.getItem("companySuggestion");
@@ -1074,6 +1129,7 @@ const stepsConfig =[
       setSuggestion(0);
     }
   }, [type]);
+ 
   useEffect(() => { 
     if(suggestion===2 && inc.length>0){
       setSuggestions([]);
@@ -1128,6 +1184,16 @@ const stepsConfig =[
           "Company Name": speakerOrgs[index]?.trim()
         }));
         setCustomData(presentCustomData);
+      }
+      if (type === "T_EVENT_PARTICIPATION") {
+        let updatedData: { "Search By Event Name": string }[] = [];
+        editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
+          const event = Object.values(item)[0];
+          updatedData.push({ "Search By Event Name": `${event.basic.name}_${event?.basic?.eventLocation?.name}_${event?.basic?.eventLocation?.cityName}_${event?.basic?.eventLocation?.countryName}_${event?.basic?.eventLocation?.locationType}_${event.basic.startDateTime}_${event.basic.endDateTime} ` });
+        });
+        setEventSuggestion(editData?.filterValues?.eventIds);
+
+        setCustomData(updatedData);
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
@@ -1222,7 +1288,7 @@ const stepsConfig =[
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION") {
       addNew();
     }
   }
@@ -1304,32 +1370,53 @@ const stepsConfig =[
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
   };
-useEffect(()=>{
-  if(valid===false) setValid(true);
-  if(isMandatory) setIsMandatory(false);
-},[inputValues])
-const [selected,setSelected]=useState(false);
-const addCompany = (id:number,val: any) => {
-  setSelected(true);
-  if(!Array.isArray(val)){
-  setInputValues(prevValues => ({
-    ...prevValues,
-    [0]: val
-  }));  
-  }else{
-    setInputValues(val);
+  useEffect(() => {
+    if (valid === false) setValid(true);
+    if (isMandatory) setIsMandatory(false);
+  }, [inputValues])
+  const [selected, setSelected] = useState(false);
+  const addCompany = (id: number, val: any) => {
+
+    if (type === "T_EVENT_PARTICIPATION") {
+      setEventSuggestion((prev: string[]) => {
+        const alreadyExists = prev.find(entry => entry === id.toString())
+
+        if (alreadyExists) {
+          setInputValues({});
+          return prev;
+        } else {
+          setInputValues(prevValues => ({
+            ...prevValues,
+            [0]: val
+          }));
+          return [...prev, id.toString()];
+        }
+      });
+    }
+
+    setSelected(true);
+    if (type !== "T_EVENT_PARTICIPATION") {
+      if (!Array.isArray(val)) {
+        setInputValues(prevValues => ({
+          ...prevValues,
+          [0]: val
+        }));
+      } else {
+        setInputValues(val);
+      }
+    }
   }
-}
-useEffect(()=>{
-  if(selected) {
-    addNew();
-    setSelected(false);
-  }
-},[selected])
-const [isDiv,setIsDiv]=useState(false);
-useEffect(()=>{
-  if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
-}, [type])
+
+  useEffect(() => {
+    if (selected) {
+      addNew();
+      setSelected(false);
+    }
+  }, [selected])
+  const [isDiv, setIsDiv] = useState(false);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS") setIsDiv(true);
+  }, [type])
 
   const handleCustomData = (data: any) => {
     setHideSuggestion(true);
@@ -1367,7 +1454,7 @@ useEffect(()=>{
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
-console.log(type);
+
 const [del, setDel] = useState(false);
 const closeShareModal = () => {
   setDel(false);
@@ -1394,9 +1481,9 @@ const handleShowTemplate=()=>{
   }
 }
 if(isLoading) return <Loading/>
-console.log(refs);
 
-return (
+
+ return (
   <>
   {steps?.length > 0 && (
             <JoyRideCustom
@@ -1407,7 +1494,6 @@ return (
           />
           )}
   <div className="w-full md:flex md:items-center md:justify-center">
-
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
@@ -1437,7 +1523,7 @@ return (
       className={`p-2 bg-background border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1473,7 +1559,7 @@ return (
       <div>
         <div className="text-[var(--primary-color)] font-bold text-lg">{last==="editTracker"?"Edit":"Create"} {template && <span>{template.templateName}</span>} Tracker</div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          Select from the available data filters to {last==="editTracker"?"edit":"create"} a tracker
+          {template?.description}
         </div>
       </div>
     </div>
@@ -1519,7 +1605,7 @@ return (
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
     {isCollapsed && (
-        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 overflow-hidden`}>
+        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 w-[40px]`}>
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -1543,7 +1629,7 @@ return (
       className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1562,7 +1648,7 @@ return (
     </div>}
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
-    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
+    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATIONS") &&
     <div className="flex gap-4 flex-col w-full">
       <div className={`!hidden md:!flex card ${styles.competitor}`} ref={!isMobile ? refs.templateRef : null}>
         {/* <div className={styles.competitorHead}>
@@ -1574,28 +1660,79 @@ return (
         <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between w-full" style={{fontSize:"var(--font-size-small)"}}>
           <div className="flex items-center">
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
-          {" "} Please upload or manually enter the information
+          {" "} {`Please ${template?.isUploadEnable ?"upload or":""} manually enter the information`}
           </div>
+          {template?.isUploadEnable && 
           <div className="flex gap-1">
           
-          <Button
-                    variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    onClick={handleShowTemplate}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <LayoutGrid height="15px" width="15px" />
-                    {" "}Pre-sets
-          </Button>
-          <Button
-                  variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    // size="sm"
-                    onClick={handleUploadEnable}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <Share height="15px" width="15px" />
-                    {" "}Upload
-          </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 h-9"
+                             onClick={handleShowTemplate}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <LayoutGrid height="15px" width="15px" />
+                                     {" "}Pre-sets
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
+                             // size="sm"
+                             onClick={handleUploadEnable}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <Share height="15px" width="15px" />
+                                     {" "}Upload
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
           </div>
+          }
+          
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
@@ -1618,7 +1755,8 @@ return (
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
@@ -1647,20 +1785,22 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
         }
                         </div>
 
                       </>
                     ))}
-                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
+                    {type!=="T_EVENT_PARTICIPATION" &&
+                    <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
-
+                    }
                   </div>
+
                 }
                   {/* {customData.map((item:any, index:number) => (
     // <div key={index} className={styles.customDataOuterDiv}>
@@ -1800,6 +1940,8 @@ return (
           />
           ) : (
             <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             <Image
               src={trackerEmptyTable}
               alt="table"
@@ -1809,8 +1951,6 @@ return (
                 justifyContent: "center",
               }}
             />
-            <div className={styles.emptyTableText}>No data added</div>
-            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             
           </div>
   )}
@@ -1825,6 +1965,12 @@ return (
             presetName={selectedPresetName}
           />:
           <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className = "flex flex-col">
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+            Please upload or manually enter the information
+            </div>
+          </div>
          <Image
            src={trackerEmptyTable}
            alt="table"
@@ -1834,8 +1980,7 @@ return (
              justifyContent: "center",
            }}
          />
-         <div className={styles.emptyTableText}>No data added</div>
-         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+         
        </div>
         }
         </TabsContent>
@@ -1844,10 +1989,18 @@ return (
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setEventSuggestion} eventSuggestion={eventSuggestion} />
     </>
   ) : (
     <div className={styles.emptyTableData}>
+      <div className = "flex flex-col">
+      <div className = "flex flex-col">
+      <div className={styles.emptyTableText}>No data added</div>
+      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+        {`Please ${template?.isUploadEnable?"upload or":""} manually enter the information`}
+      </div>
+      </div>
+      </div>
       <Image
         src={trackerEmptyTable}
         alt="table"
@@ -1857,10 +2010,6 @@ return (
           justifyContent: "center",
         }}
       />
-      <div className={styles.emptyTableText}>No data added</div>
-      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
-        Please upload or manually enter the information
-      </div>
     </div>
   ))
 }
@@ -1899,8 +2048,8 @@ return (
           </div>
           <div className="flex gap-1.5">
           {!isEventeli &&
-          <div ref={isMobile?refs.presetRef:null}>
-          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
+          <div ref={(isMobile && template?.isUploadEnable)?refs.presetRef:null}>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)} disabled={!template?.isUploadEnable}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
           </div>
@@ -1942,7 +2091,8 @@ return (
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
@@ -1971,8 +2121,8 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
         }
                         </div>
 
@@ -2131,6 +2281,5 @@ return (
   </div>
   </>
 );
-};
-
-export default Pages;
+ };
+ export default Pages;

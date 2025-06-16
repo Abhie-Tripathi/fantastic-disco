@@ -53,14 +53,15 @@ const EventTable = ({
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   const {
-    intelScoreData,
-    loading: intelLoading,
-    error: intelError,
-  } = useIntelData(
-    trackerId || "",
-    events?.length > 0 ? events : [],
-    eventType || ""
-  );
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      eventType || "",
+      query.type
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -266,7 +267,7 @@ const EventTable = ({
         </div>
       </div>
 
-      {totalPages > 1 && (
+      {totalPages > 0 && (
         <div className="sticky bottom-0 bg-background py-3 border-t">
           <PaginationComponent
             currentPage={currentPage}

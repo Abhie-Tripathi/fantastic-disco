@@ -186,7 +186,7 @@ export default function MapComponent({
         : ["eventCounts", currentZoomGroup, searchParams.toString(), location],
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
-        const response = await getMapViewData(trackerId, "city", eventType);
+        const response = await getMapViewData(trackerId, "city", eventType, isGlobal?trackerType:searchParams.get("type"));
         return response || [];
       } else {
         const response = await getEventsCount({
@@ -197,6 +197,7 @@ export default function MapComponent({
         return response || [];
       }
     },
+    retry:true
   });
 
   const handleMapClick = async (e: any) => {
@@ -329,20 +330,36 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
+      
       if (
         currentZoomGroup === "event" &&
         mapRef.current &&
         location?.type === "geoCoordinates" &&
-        searchParams.get("viewBound")
+  (source !== "tracker" || !searchParams.get("viewBound"))
       ) {
+        
         try {
           const modifiedSearchParams = searchParams
             ?.toString()
             .replace(/locationIds=[^&]*&?/, "");
-
-          console.log("modifiedSearchParams", modifiedSearchParams);
-
           let eventsData: any = {};
+          if (source === "tracker") {
+          const viewBound = {
+            boundType: "point",
+            coordinates: {
+              latitude: location.trackerGeoCordinates.coordinates.latitude,
+              longitude: location.trackerGeoCordinates.coordinates.longitude,
+              radius: location.trackerGeoCordinates.coordinates.radius,
+            },
+          };
+              eventsData = await getEventsLatLongData(
+                trackerId,
+                `viewBound=${JSON.stringify(viewBound)}`,
+                searchParams
+              );
+              
+            }
+          else
           eventsData = await getEventsWithSearchParams(modifiedSearchParams);
           setEvents((eventsData?.events as MapEvents[]) || []);
         } catch (error) {

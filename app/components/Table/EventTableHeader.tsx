@@ -161,6 +161,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
+          type !== "T_EVENT_PARTICIPATION" &&
           view !== "bookmarked" && (
             <>
               <TableHead
