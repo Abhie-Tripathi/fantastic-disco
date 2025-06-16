@@ -46,11 +46,7 @@ const Index = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const typeOfView = searchParams.get("view");
-  const typeOfEvent = searchParams.get("eventType")
-    ? searchParams.get("eventType")
-    : isEventeli
-    ? "social"
-    : "active";
+  const [typeOfEvent, setTypeOfEvent] = useState<string>("active");
   const [view, setView] = useState(
     typeOfView === "table"
       ? "table"
@@ -64,12 +60,18 @@ const Index = () => {
   );
   useEffect(() => {
     const typeOfView = searchParams.get("view");
-
+     const eventType = searchParams.get("eventType");
     if (typeOfView === "table" || typeOfView === "list" || typeOfView === "map" || typeOfView === "calendar") {
       setView(typeOfView);
     } else {
       setView("table");
     }
+
+    if (eventType) {
+    setTypeOfEvent(eventType);
+  } else {
+    setTypeOfEvent(isEventeli ? "social" : "active");
+  }
   }, [searchParams]);
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter();
@@ -123,7 +125,7 @@ const Index = () => {
       router.push(`/internal/trackers/savedevents?view=${view}`);
     } else
       router.push(
-        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}&sortBy=${sort}`
+        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
       );
   };
   // const fetchData=async()=>{

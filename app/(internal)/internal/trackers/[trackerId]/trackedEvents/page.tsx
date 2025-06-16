@@ -686,6 +686,7 @@ const Page = ({ params }: { params: any }) => {
                       setView("table")
                       const currentParams = new URLSearchParams(window.location.search);
                       currentParams.set('view', 'table');
+                      currentParams.set('eventType', "unattended")
                       const newUrl = `${pathname}?${currentParams.toString()}`;
 
                       setTimeout(() => {
