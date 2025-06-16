@@ -427,7 +427,7 @@ const Pages = () => {
   const searchParams = useSearchParams();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { toast } = useToast();
-  const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
+  const {data: editData, setEditTrue, setData: setEditData, setIsNewCall, setTrackerId} = useTrackerContext();
   const isMobile = useIsMobile();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
   const {enabledFilters } = useFilterContext();
@@ -961,15 +961,16 @@ const stepsConfig =[
       console.log(getLocalFilterValue("locationIds").length, trackerName.length === 0, type === defaultType);
       
       try{
-        const data= await createTracker(formData)
-        // const data="hg"
+        const data= await createTracker(formData) as {id: string}
         if (error) {
           // console.log(error);
           setIsCreating(false);
           return;
         }
-        if (data) {  
-          router.replace("/internal/trackers");
+        if (data) { 
+          setIsNewCall(true); 
+          setTrackerId(data?.id);
+          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
         }
       }catch(error){
         // console.log(error);

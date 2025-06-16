@@ -108,7 +108,7 @@ const gtmFilters: {
       label: "Advanced Details",
       filters: [
         {
-          id: "eventIds",
+          id: "edition",
           component: "EditionSelector",
           enabled: true,
         },
@@ -379,7 +379,7 @@ const geoFilters: {
       label: "Advanced Details",
       filters: [
         {
-          id: "eventIds",
+          id: "edition",
           component: "EditionSelector",
           enabled: true,
         },

@@ -294,6 +294,9 @@ export default function Navbar() {
               </div>
             </>
           )}
+          <div className="lg:hidden">
+            <VideoModal source={pathname.split("/")[2]} />
+          </div>
           {/* {!isEventeli && (
             <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
               {theme === "dark" ? (

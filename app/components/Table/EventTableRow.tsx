@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { Filters } from "@/context/filterContext";
+import { Filters, useFilterContext } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
@@ -133,7 +133,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading
 }) => {
  
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -156,6 +156,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       fill: type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY" ? "#646BDC" : (type === "T_PRODUCT_KEYWORDS") ? "#E99CD4" : "#9B86D4",
     }
   ];
+
+
+  const isCancelled = event.basic.status === "cancelled";
+  const isPostponed = event.basic.status === "postponed";
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -286,6 +290,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Date Column */}
       <TableCell>
+      {isCancelled && (
+                    <Badge
+                      variant="outline"
+                      className="border-destructive text-destructive mt-2"
+                    >
+                      Cancelled
+                    </Badge>
+                  )}
+                  {isPostponed && (
+                    <Badge
+                      variant="outline"
+                      className="border-[#FF990A] text-[#FF990A] mt-2"
+                    >
+                      Postponed
+                    </Badge>
+                  )}
         {event.basic.status === "cancelled" ||
         event.basic.status === "postponed" ? (
           <del className="text-muted-foreground" title={event.basic.status}>
@@ -691,7 +711,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
-                  minWidth: "90px",
+                  minWidth: "100px",
                   textAlign: "center",
                   background: "var(--heading-background-color)",
                 }}
@@ -705,6 +725,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                           "peopleFinderPersonAssociation"
                         )[0]?.split("_")?.[0]
                       }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )?.length-1}`}
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {getTrackerAssociation(
@@ -766,7 +795,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
-                  minWidth: "90px",
+                  minWidth: "100px",
                   textAlign: "center",
                   background: "var(--heading-background-color)",
                 }}
@@ -780,6 +809,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                           "speakerPersonAssociation"
                         )[0].split("_")[0]
                       }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )?.length-1}`}
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {getTrackerAssociation(
@@ -838,7 +876,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
-                  minWidth: "90px",
+                  minWidth: "100px",
                   textAlign: "center",
                   background: "var(--heading-background-color)",
                 }}
@@ -852,6 +890,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                           "competitorDomainOrName"
                         )?.[0].split("_")[0]
                       }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.length-1}`}
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {getTrackerAssociation(
@@ -914,7 +961,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
-                  minWidth: "90px",
+                  minWidth: "100px",
                   textAlign: "center",
                   background: "var(--heading-background-color)",
                 }}
@@ -923,6 +970,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   <Tooltip>
                     <TooltipTrigger>
                       {event?.basic?.matchedKeywords?.[0]}{" "}
+                      <span className="text-xs font-bold text-muted-foreground">
+                      {event?.basic?.matchedKeywords?.length && event.basic.matchedKeywords.length > 1 && `+${event.basic.matchedKeywords.length - 1}`}
+                      </span>
                       {/* Fixed variable name */}
                     </TooltipTrigger>
                     <TooltipContent>

@@ -123,15 +123,15 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     setLocations(updatedLocations);
     
     const CountValues = {
-      geo : ['social','business','unattended'],
+      geo : ['social','business','unattended', 'saved'],
       gtm : ['active','past', 'new', 'saved']
     }
     if(isEventeli){
     const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount :  item?.groupedEventsCount[key].total || 0,
-        newCount : item?.groupedEventsCount[key].new || 0
+        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount[key]?.new || 0
       }
     })
     setEventCount(transformedData);
@@ -162,23 +162,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     if(type==="CUSTOM") return "Custom"
     return type.split("_").slice(1).map((ele)=>`${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
   }
-  const handleDoubleClick=(item:any)=>{
-    
-      // setSingleTrackerData(item)
-      // router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
-      // setIsNewCall(true); 
-      // setTrackerId(item.id);
-  }
-  const handleSingleClick=(item:any)=>{
-    // setSingleTrackerData(item)
-    //   setSingleTrackerData(item)
-    //  router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
-    //   setMultipleFilters({ 
-    //     skip: skip,
-    //     q: searchValue,
-    //      id: item.id,
-    //   })
-  }
+ 
   const [userAccessData, setUserAccessData] = useState<any>(null);
   const fetchAccess = async () => {
     const result = await getShareAccess(singleTrackerData?.id, "tracker");
@@ -198,10 +182,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     if(item?.type === "T_COMPETITOR"){
       const res=(item?.filterValues?.orgWebsite?.split(',').length || 0) +
   (item?.filterValues?.orgName?.split(',').length || 0);
-      console.log(res,"rees");
       
         setEntryCount(res)
-        console.log(item?.filterValues?.orgWebsite?.split(","), "entryCount");
         
       }else if(item?.type === "T_PRODUCT_KEYWORDS"){
         const keywordsLen = (item?.filterValues?.includeKeywords?.length || 0) + (item?.filterValues?.excludeKeywords?.length || 0);
@@ -240,20 +222,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
         closeShareModal();
       }
     };
-    // const shareFunction = () => {
-    //   if (!share) {
-       
-    //     console.log("sharedId1", shareId);
-    //     window.history.pushState({ shareOpen: true }, "");
-    //     setShare(true);
-    //     document.body.style.height = "100vh";
-    //     document.body.style.width = "100%";
-    //     document.body.style.overflow = "hidden";
-    //   } else {
-    //     closeShareModal();
-    //   }
-    // };
-   console.log(entryCount, "entryCount");
 const getTrackerCreatedAgo=(dateString: string | Date): string=> {
   const now = new Date();
   const createdDate = new Date(dateString);
@@ -286,7 +254,6 @@ useEffect(() => {
     setShare(true);
   }
 }, [shareId]);
-console.log("sharedId", shareId);
 
   return (
     
@@ -295,8 +262,6 @@ console.log("sharedId", shareId);
     border-4 
     ${singleTrackerData?.id === item.id ? "border-[var(--primary-color)]" : "border-[var(--border-color)]"} 
     hover:border-[var(--primary-color)] transition-all duration-200`}
-  onClick={() => handleSingleClick(item)}
-  onDoubleClick={() => handleDoubleClick(item)}
 >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
           <div className="flex gap-2 justify-between w-[100%] flex-row items-center">
@@ -502,8 +467,6 @@ console.log("sharedId", shareId);
                 closeShareModal={closeShareModal}
                 share={share}
                 shareId={shareId}
-                // setShare={setShare}
-                // shareFunction={shareFunction}
                 global={true}
                 trackerType={item.type}
               />

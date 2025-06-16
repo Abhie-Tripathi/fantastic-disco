@@ -186,9 +186,8 @@ const Trackers = ({ searchParams }: Search) => {
         fetchNote(singleTrackerData?.id);
         fetchSavedEvent(singleTrackerData?.id);
       }
-      console.log(singleTrackerData.id);
     }
-  }, [skip]);
+  }, [singleTrackerData]);
   const fetchNote = async (id: string) => {
     const result = await getNotesFromTracker(id, `limit=1&offset=0`);
 
@@ -219,7 +218,6 @@ const Trackers = ({ searchParams }: Search) => {
   };
   const hideTemplates = useCallback(
     (val: boolean) => {
-      console.log("val",val);
       
       if (!val) {
         setMultipleFilters({

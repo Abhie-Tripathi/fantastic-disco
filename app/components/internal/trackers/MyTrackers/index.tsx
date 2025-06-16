@@ -135,17 +135,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setDataPresent(true);
   }
   },[totalPage])
-  const shouldRenderMap = (trackerId: string, currentSkip: number) => {
-  // Only render if:
-  // 1. We have tracker data
-  // 2. The skip value hasn't changed (prevent re-render during pagination)
-  // 3. Not in loading state
-  return (
-    singleTrackerData?.id === trackerId && 
-    !loadOne &&
-    currentSkip === skip
-  );
-};
   const [openSearchBar,setOpenSearchBar]=useState(false);
   console.log(allTracker);
   const clickHandler=(item:AllTrackerTypes, e:any)=>{

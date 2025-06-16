@@ -39,7 +39,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
-    console.log("id is:",id);
     
      const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);

@@ -2,7 +2,7 @@
 import EventTable from "@/app/components/internal/trackers/EventTable/EventTable";
 import React, {useState} from "react";
 import styles from './savedevent.style.module.css'  
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import Table from "@/app/components/Table/EventTable";
 import NavBar from "@/app/components/trackers/sideNav";
 import List from "@/components/search/list";

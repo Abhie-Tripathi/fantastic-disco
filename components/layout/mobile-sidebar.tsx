@@ -22,10 +22,11 @@ import { Coordinate, Outreach } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SheetClose } from "@/components/ui/sheet";
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { LogOut, MessageCircleMore, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
 import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
@@ -35,14 +36,14 @@ const MobileSidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search",
-      href: "/internal/search/events",
-      icon: MagnifyingGlass,
-    },
-    {
       name: "Tracker",
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
+    },
+    {
+      name: "Search",
+      href: "/internal/search/events",
+      icon: MagnifyingGlass,
     },
     { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
@@ -252,6 +253,18 @@ const MobileSidebar = () => {
           <Moon className="h-5 w-5  transition-all" />
         )}
         <span className="sr-only">Toggle theme</span>
+      </Button>
+      <Button
+        className="ml-3 mb-3"
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          window.open("https://whr.canny.io/feature-request", "_blank");
+          GAEvent("", "Feature Request", "Mobile Sidebar", `${isEventeli ? "geo" : "gtm"} | feature_request`);
+        }}
+      >
+        <MessageCircleMore className="h-5 w-5  transition-all" />
+        <span className="sr-only">Feature Request</span>
       </Button>
       <span className="text-xs text-muted-foreground px-4 mb-3">
         Version 1.0.0
