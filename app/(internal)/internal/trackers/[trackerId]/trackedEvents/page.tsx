@@ -680,7 +680,7 @@ const Page = ({ params }: { params: any }) => {
                     item.type.toLowerCase() === active ? styles.active : ""
                   }`}
                   onClick={() => {
-                    GAEvent("trackers", "Tracker Detail", "View", "New Events");
+                    GAEvent("trackers", "Tracker Detail", "View", `${item.type} Events`);
                     // deleteFilter("skip")
                     if (item.type.toLowerCase() === "unattended" && view==="map") {
                       setView("table")
