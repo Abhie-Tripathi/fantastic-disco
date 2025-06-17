@@ -71,6 +71,7 @@ import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/context";
 
 // Add tooltipDescription to NewColumn interface if it doesn't exist in the original type
 interface ExtendedNewColumn extends NewColumn {
@@ -127,6 +128,7 @@ function convertToLongDate(isoDateString: string): string {
 }
 
 const TestPeriodicAnalytics = () => {
+  const {isTentimesUser} = useAuthContext()
   const params = useSearchParams();
   const router = useRouter();
   const [openState, setOpenState] = useState<{ [key: string]: boolean }>({});
@@ -1206,7 +1208,7 @@ const TestPeriodicAnalytics = () => {
                   endDate
                 )})`}
           </div>
-          <div className="flex justify-start gap-2">
+          {isTentimesUser && <div className="flex justify-start gap-2">
             <Button
               variant={currentView === "day" ? "default" : "outline"}
               onClick={() => handleViewChange("day")}
@@ -1228,7 +1230,7 @@ const TestPeriodicAnalytics = () => {
             >
               Month
             </Button>
-          </div>
+          </div>}
         </div>
         <div
           className={`px-2 py-2 md:px-3 md:py-3 border border-[var(--neutral-light-color)] rounded-sm max-w-fit ${

@@ -52,6 +52,7 @@ import {
   ReadonlyURLSearchParams,
 } from "next/navigation";
 import React from "react";
+import { useAuthContext } from "@/context";
 
 type ViewType = "day" | "week" | "month";
 
@@ -68,6 +69,7 @@ const LineChartComponent = ({
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
+  const {isTentimesUser} = useAuthContext()
   const [link, setLink] = useState("");
   const { setFilter, getFilterValue } = useFilterState();
   const currentView = getFilterValue("dateView") as ViewType || "day";
@@ -1747,7 +1749,7 @@ const LineChartComponent = ({
 
   return (
     <div ref={chartRef}>
-      <div className="flex justify-start gap-2 mb-4">
+      {isTentimesUser && <div className="flex justify-start gap-2 mb-4">
         <Button
           variant={currentView === "day" ? "default" : "outline"}
           onClick={() => handleViewChange("day")}
@@ -1769,7 +1771,7 @@ const LineChartComponent = ({
         >
           Month
         </Button>
-      </div>
+      </div>}
       <ResponsiveContainer width="100%" height={420}>
         <LineChart
           data={graphData}
