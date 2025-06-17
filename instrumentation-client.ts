@@ -6,10 +6,13 @@ import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  enabled: process.env.NODE_ENV === 'production',
+  enabled: process.env.NODE_ENV === "production",
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
+
+  replaysSessionSampleRate: 0, // Disable session replays
+  replaysOnErrorSampleRate: 0, // Disable error-triggered replays
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
