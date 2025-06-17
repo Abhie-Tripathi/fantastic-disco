@@ -73,6 +73,7 @@ const EventTable = ({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   let showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -80,6 +81,7 @@ const EventTable = ({
       showsData.push(value);
     }
   });
+  const trackerMaturity = data?.filterValues?.maturity
   // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
@@ -239,6 +241,7 @@ const EventTable = ({
               type={query.type}
               view={query.eventType}
               localFilters={localFilters}
+              trackerMaturity={trackerMaturity}
             />
             <TableBody className="overflow-auto">
               {updatedEvents &&
@@ -246,6 +249,7 @@ const EventTable = ({
                   <EventTableRow
                     global={view}
                     view={query.eventType}
+                    trackerMaturity={trackerMaturity}
                     setEventId={setEventId}
                     setInterest={setInterest}
                     type={query.type}

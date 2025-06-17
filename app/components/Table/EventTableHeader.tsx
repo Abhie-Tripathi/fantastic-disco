@@ -9,6 +9,7 @@ interface EventTableHeaderProps {
   type?: string;
   view?: string;
   localFilters: Filters;
+  trackerMaturity?:[];
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
@@ -16,6 +17,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   type,
   view,
   localFilters,
+  trackerMaturity
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -113,7 +115,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
 
-            {maturity && (
+            {(maturity || trackerMaturity) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Maturity</div>
               </TableHead>

@@ -705,16 +705,21 @@ const stepsConfig =[
 
     return result;
   }
-  const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
+   const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+    let finalResult;
     setHideSuggestion(false);
-    setShowTemplate(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
     // presetItem[]
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType === "T_BRAND_BUILDING") {
+      if (trackerType === 'T_COMPETITOR') {
+        finalResult = transformedData(presetItem.data, ["organizations"])
+      }
+      if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
+        finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
+      }
       const presetData: any = [];
-
-      presetItem?.data.map((item: any) => {
+      finalResult?.map((item: any) => {
         const temp: any = {};
         template?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
@@ -775,7 +780,8 @@ const stepsConfig =[
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings"
+    rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);

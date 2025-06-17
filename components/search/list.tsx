@@ -189,6 +189,7 @@ export default function EventAccordion({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -196,6 +197,7 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
+  const trackerMaturity = !!data?.filterValues?.maturity
   const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(
@@ -350,7 +352,7 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
-              showMaturity={showMaturity}
+              showMaturity={showMaturity || trackerMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
               intelLoading={intelLoading}
