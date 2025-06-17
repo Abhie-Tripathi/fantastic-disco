@@ -69,6 +69,7 @@ export default function CreateTrackerDialog({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   const adaptedParams = searchParams;
   const filters = getLocalFilterValue("show").split(",");
