@@ -52,8 +52,8 @@ import {
   morphToTrendsTableData,
   sortingTableData,
 } from "@/utils/lineChart";
-import { useQuery } from "@tanstack/react-query";
-import { format, startOfWeek, endOfWeek } from "date-fns";
+import { useQuery } from "@/hooks/useQuery";
+import { format } from "date-fns";
 import {
   ArrowDown,
   ArrowDownWideNarrow,
@@ -113,19 +113,6 @@ const calculatePercentageChange = (
   const sign = change > 0 ? "+" : "";
   return `${sign}${change.toFixed(1)}%`;
 };
-
-function convertToLongDate(isoDateString: string): string {
-  const date = new Date(isoDateString);
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  return date
-    .toLocaleDateString("en-US", options)
-    .toLocaleUpperCase()
-    .replace(",", "");
-}
 
 const TestPeriodicAnalytics = () => {
   const {isTentimesUser} = useAuthContext()
@@ -1189,9 +1176,9 @@ const TestPeriodicAnalytics = () => {
   return (
     <>
       <div
-        className={`flex ${
-          isMobileView ? "flex-col gap-3" : "justify-between items-center"
-        } py-4`}
+        className={`flex px-4 md:px-0 ${
+          isMobileView ? "flex-col gap-2" : "justify-between items-center"
+        } py-2 md:py-4`}
       >
         <div className="flex flex-col gap-2">
           <div className="font-medium text-base">
@@ -1296,13 +1283,18 @@ const TestPeriodicAnalytics = () => {
                         colSpan={colSpan}
                         rowSpan={trends.slug === "date" ? 2 : 1}
                         style={{
-                          width: trends.slug === "date" ? "340px" : "1000px",
+                          width:
+                            trends.slug === "date"
+                              ? isMobileView
+                                ? "100px"
+                                : "340px"
+                              : "1000px",
                         }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
                           trends.slug === "date"
-                            ? "sticky left-0 z-30 max-w-[340px]"
+                            ? "sticky left-0 !z-50 max-w-[100px] md:max-w-[340px]"
                             : ""
-                        }`}
+                        } ${isMobileView ? "text-xs px-1 py-1" : "px-2 py-2"}`}
                       >
                         {trends.slug === "date" &&
                           trends.columnName.toUpperCase()}
