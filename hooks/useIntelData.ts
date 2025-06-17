@@ -6,7 +6,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
 export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null, trackerType?:string) => {
-  const {isTentimesUser} = useFilterContext();
+  const {isTentimesUser} = useAuthContext();
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
