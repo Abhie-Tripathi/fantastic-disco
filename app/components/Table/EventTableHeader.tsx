@@ -9,7 +9,7 @@ interface EventTableHeaderProps {
   type?: string;
   view?: string;
   localFilters: Filters;
-  trackerMaturity?:[];
+  trackerMaturity?: string[];
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({

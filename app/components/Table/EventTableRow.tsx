@@ -40,7 +40,7 @@ interface EventTableRowProps {
   localFilters: Filters;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
-  trackerMaturity?:[];
+  trackerMaturity?:string[];
 }
 
 function getForecastedStatus(data: any) {
