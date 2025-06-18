@@ -32,6 +32,7 @@ import CustomTrackerNullState from "../internal/trackers/Filters/customTrackerNu
 import { useTransition } from "@/context/transition";
 import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
+import { useBulkActions } from "@/hooks/useBulkAction";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -53,7 +54,7 @@ const EventTable = ({
 type InterestKey = 'bookmark' | 'attend' | 'speak' | 'exhibit';
 
 type InterestState = {
-  [key in InterestKey]?: boolean;
+  [key in InterestKey]?: string;
 };
 
 const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, InterestState>>(new Map());
@@ -94,6 +95,10 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
+  const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
+  removeBookmark,
+  createUserEventInterest
+});
   const {
     intelScoreData,
     loading: intelLoading,
@@ -134,110 +139,50 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     //   ? [{ label: "Bookmark", status: "BOOKMARK" }]
     //   : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
+ actions.forEach((action) => {
+  const interestKey = action.status.toLowerCase();
+  
+  selectedInterestMap.set(eventId, {
+    ...selectedInterestMap.get(eventId),
+    [interestKey]: undefined, // this should be response.id in real use
+  });
+});
+
   useEffect(() => {
     if (actions.length > 0 && !action) {
       setAction(actions[0]);
     }
   }, [actions]);
-const bulkSubmit = async () => {
-  console.log(action.status);
-  
-    try {
-      let filteredIds = [];
-      if (action.status === "UN-BOOKMARK") {
-        filteredIds =
-          updatedEvents
-            ?.filter(
-              (event) =>
-                totalChecked.includes(event.basic.id) &&
-                event.interests &&
-                Object.keys(event.interests).includes("bookmark")
-            )
-            .map(
-              (filteredEvent) => filteredEvent.interests?.bookmark?.interestId
-            ) || [];
-        const bookmarkPromises =
-          filteredIds &&
-          filteredIds.length > 0 &&
-          filteredIds.map((id) => {
-            const response = removeBookmark(id);
-            if (response?.interest && setInterest) {
-              setInterest({
-                [response.interest.toLowerCase()]: {
-                  interestId: response.id,
-                },
-              });
-            }
-            return response;
-          });
-        if (bookmarkPromises && bookmarkPromises.length > 0) {
-          await Promise.all(bookmarkPromises);
-        }
-      } else {
-        console.log("action.status",action.status);
-        filteredIds =
-          updatedEvents
-            ?.filter(
-              (event) =>
-                totalChecked.includes(event.basic.id) &&
-                ((event.interests &&
-                  !Object.keys(event.interests).includes(
-                    action.status.toLowerCase()
-                  )) ||
-                  event.interests === undefined)
-            )
-            .map((filteredEvent) => filteredEvent.basic.id) || [];
-
-        const interestPromises: Promise<any>[] = [];
-
-selectedInterestMap.forEach((value, eventId) => {
-  
-  
-    if (value[action.status.toLowerCase()]===false) {
-      const promise = createUserEventInterest(
-        {
-          eventId,
-          interest: action.status, // e.g. "attend", "bookmark"
-          sourceModule,
-          ...(trackerId && { sourceId: trackerId }),
+const handleBulkSubmit = async () => {
+  try {
+    await executeBulkAction(
+      {
+        action,
+        selectedInterestMap,
+        updatedEvents,
+        totalChecked,
+        sourceModule,
+        trackerId
+      },
+      {
+        setInterest,
+        setUpdatedEvents,
+        setSelectedInterestMap,
+        setShowCheckBox,
+        setTotalChecked,
+        onSuccess: () => {
+          // Optional success handling
+          console.log("Bulk action completed successfully");
         },
-        {
-          onSuccess: (response: any) => {
-            if (response?.interest) {
-              setInterest((prev) => ({
-                ...prev,
-                [response.interest.toLowerCase()]: {
-                  interestId: response.id,
-                },
-              }));
-            }
-            if (response?.eventId && setEventId) {
-              setEventId(response?.eventId);
-            }
-            // setSavedEventCount((prev) => prev + 1);
-          },
-          onError: (error) => {
-            console.error("Error while submitting interest:", error);
-          },
+        onError: (error) => {
+          console.error("Bulk action failed:", error);
         }
-      );
-
-      interestPromises.push(promise);
-    }
-  
-});
-
-await Promise.all(interestPromises);
-
       }
-      setShowCheckBox?.(false);
-      setTotalChecked([]);
-      // toast({ title: "Success", description: "Done!", variant: "default" });
-    } catch (error) {
-      console.error("Error in bulk submission:", error);
-      // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
-    }
-  };
+    );
+  } catch (error) {
+    console.error("Error in bulk submission:", error);
+  }
+};
 
 
   //  try {
@@ -329,22 +274,25 @@ await Promise.all(interestPromises);
     }
     setIsChecked(checked);
   };
-function mapInterestsToBoolean(interests?: Record<string, { interestId?: string }>) {
-  const result: Record<InterestKey, boolean> = {
-    bookmark: false,
-    exhibit: false,
-    attend: false,
-    speak: false,
+function mapInterestsToInterestIds(
+  interests?: Record<string, { interestId?: string }>
+): Record<InterestKey, string | undefined> {
+  const result: Record<InterestKey, string | undefined> = {
+    bookmark: undefined,
+    exhibit: undefined,
+    attend: undefined,
+    speak: undefined,
   };
 
   if (!interests) return result;
 
   (Object.keys(result) as InterestKey[]).forEach((key) => {
-    result[key] = !!interests[key]?.interestId;
+    result[key] = interests[key]?.interestId;
   });
 
   return result;
 }
+
 
   function toggleSelection(id: string, event:any) {
     setTotalChecked((prev) => {
@@ -362,7 +310,7 @@ function mapInterestsToBoolean(interests?: Record<string, { interestId?: string 
     if (newMap.has(id)) {
       newMap.delete(id); // unchecking
     } else {
-      const interestBooleans = mapInterestsToBoolean(event.interests);
+      const interestBooleans = mapInterestsToInterestIds(event.interests);
       newMap.set(id, interestBooleans); // checking
     }
 
@@ -545,10 +493,16 @@ console.log("totalChecked", selectedInterestMap);
               <Button
                 type="submit"
                 className="w-30 self-center"
-                disabled={isLoading || totalChecked.length === 0}
-                onClick={() => bulkSubmit()}
+                disabled={isBulkActionLoading || totalChecked.length === 0}
+                onClick={handleBulkSubmit}
               >
-                Submit
+                {isBulkActionLoading ? (
+                  <>
+                    Processing...
+                  </>
+                ) : (
+                  'Submit'
+                )}
               </Button>
               <Button
                 variant={"outline"}

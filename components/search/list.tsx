@@ -61,7 +61,7 @@ import { Skeleton } from "../ui/skeleton";
 import { useAuthContext } from "@/context/auth";
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 import { useTransition } from "@/context/transition";
-
+import { useBulkActions } from "@/hooks/useBulkAction";
 import { useFilterContext } from "@/context/filterContext";
 interface CircularProgressProps {
   value: number | null;
@@ -164,6 +164,14 @@ export default function EventAccordion({
   const [action, setAction] = useState();
   const { toast } = useToast();
   const { inTransition } = useTransition();
+  type InterestKey = 'bookmark' | 'attend' | 'speak' | 'exhibit';
+  
+  type InterestState = {
+    [key in InterestKey]?: string;
+  };
+  
+  const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, InterestState>>(new Map());
+  
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -198,6 +206,10 @@ export default function EventAccordion({
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
+   const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
+    removeBookmark,
+    createUserEventInterest
+  });
   const sourceModule = pathName.includes("trackers")
     ? "TRACKER"
     : pathName === "/internal/search/events"
@@ -239,169 +251,49 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
-  const bulkSubmit = async () => {
-    try {
-      let filteredIds = [];
-      if (action.status === "UN-BOOKMARK") {
-        filteredIds =
-          updatedEvents
-            ?.filter(
-              (event) =>
-                totalChecked.includes(event.basic.id) &&
-                event.interests &&
-                Object.keys(event.interests).includes("bookmark")
-            )
-            .map(
-              (filteredEvent) => filteredEvent.interests?.bookmark?.interestId
-            ) || [];
+ const handleBulkSubmit = async () => {
+  // Validate inputs
+  if (!action) {
+    toast({ title: "Error", description: "No action selected", variant: "destructive" });
+    return;
+  }
 
-        const responses = await Promise.all(
-          filteredIds.map((id) => removeBookmark(id))
-        );
-        const newInterests: Record<string, Interest> = {};
-        responses.forEach((response) => {
-          if (response?.interest && response?.eventId) {
-            newInterests[response.eventId] = {
-              ...(newInterests[response.eventId] || {}),
-              [response.interest.toLowerCase()]: {
-                interestId: response.id,
-              },
-            };
-          }
-        });
+  if (totalChecked.length === 0) {
+    toast({ title: "Error", description: "No events selected", variant: "destructive" });
+    return;
+  }
 
-        setInterest((prev) => ({
-          ...prev,
-          ...newInterests,
-        }));
-      } else {
-        filteredIds =
-          updatedEvents
-            ?.filter(
-              (event) =>
-                totalChecked.includes(event.basic.id) &&
-                ((event.interests &&
-                  !Object.keys(event.interests).includes(
-                    action.status.toLowerCase()
-                  )) ||
-                  event.interests === undefined)
-            )
-            .map((filteredEvent) => filteredEvent.basic.id) || [];
-        const responses = await Promise.all(
-          filteredIds.map(
-            (id) =>
-              new Promise((resolve) => {
-                createUserEventInterest(
-                  {
-                    eventId: id,
-                    interest: action?.status,
-                    sourceModule: sourceModule,
-                    ...(trackerId && { sourceId: trackerId }),
-                  },
-                  {
-                    onSuccess: (response: any) => resolve(response),
-                    onError: (error) => {
-                      console.error("Error while submitting interest:", error);
-                      resolve(null);
-                    },
-                  }
-                );
-              })
-          )
-        );
+  try {
+    console.log('Executing bulk action with:', {
+      action: action.status,
+      selectedCount: totalChecked.length,
+      selectedEvents: totalChecked
+    });
 
-        // Collect all interests into a grouped structure
-        const newInterests: Record<string, Interest> = {};
-        let count = 0;
-        responses.forEach((response: any) => {
-          if (response?.interest && response?.eventId) {
-            const interestType = response.interest.toLowerCase();
-            newInterests[response.eventId] = {
-              ...(newInterests[response.eventId] || {}),
-              [interestType]: {
-                interestId: response.id,
-              },
-            };
-            count++;
-          }
-        });
-
-        setInterest((prev) => ({
-          ...prev,
-          ...newInterests,
-        }));
-
-        setSavedEventCount((prev) => prev + count);
+    await executeBulkAction(
+      {
+        action,
+        selectedInterestMap,
+        updatedEvents,
+        totalChecked,
+        sourceModule,
+        trackerId
+      },
+      {
+        setInterest,
+        setUpdatedEvents,
+        setSelectedInterestMap,
+        setShowCheckBox,
+        setTotalChecked,
+        onSuccess: () => toast({ title: "Success", description: "Bulk action completed" }),
+        onError: (error) => toast({ title: "Error", description: error.message })
       }
-
-      setShowCheckBox?.(false);
-      setTotalChecked([]);
-      toast({
-        title: "Success",
-        description: "Interests have been updated successfully.",
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("Error in bulk submission:", error);
-    }
-
-    // try {
-    //   if (eventType === "bookmarked") {
-    //     const bookmarkPromises = totalChecked.map((id) => {
-    //       const unBookmarkEvent = events.find((event) => event.basic.id === id);
-    //       const response = removeBookmark(
-    //         unBookmarkEvent?.interests?.bookmark?.interestId
-    //       );
-    //       if (response?.interest && setInterest) {
-    //         setInterest({
-    //           [response.interest.toLowerCase()]: {
-    //             interestId: response.id,
-    //           },
-    //         });
-    //       }
-    //     });
-
-    //     await Promise.all(bookmarkPromises);
-    //   } else {
-    //     const interestPromises = totalChecked.map((id) =>
-    //       createUserEventInterest(
-    //         {
-    //           eventId: id,
-    //           interest: action?.status,
-    //           sourceModule: sourceModule,
-    //           ...(trackerId && { sourceId: trackerId }),
-    //         },
-    //         {
-    //           onSuccess: (response: any) => {
-    //             if (response?.interest) {
-    //               setInterest((prev) => ({
-    //                 ...prev,
-    //                 [response.interest.toLowerCase()]: {
-    //                   interestId: response.id,
-    //                 },
-    //               }));
-    //             }
-    //             if (response?.eventId && setEventId) {
-    //               setEventId(response?.eventId);
-    //             }
-    //             setSavedEventCount((prev) => prev + 1);
-    //           },
-    //           onError: (error) => {
-    //             console.error("Error while submitting interest:", error);
-    //           },
-    //         }
-    //       )
-    //     );
-
-    //     await Promise.all(interestPromises);
-    //   }
-
-    //   // toast({ title: "Success", description: "Done!", variant: "default" });
-    // } catch (error) {
-    //   console.error("Error in bulk submission:", error);
-    //   // toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
-    // }
-  };
+    );
+  } catch (error) {
+    console.error('Bulk action failed:', error);
+    toast({ title: "Error", description: "Failed to complete bulk action" });
+  }
+};
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(
@@ -432,7 +324,24 @@ export default function EventAccordion({
     }
     setIsChecked(checked);
   };
+  function mapInterestsToInterestIds(
+  interests?: Record<string, { interestId?: string }>
+): Record<InterestKey, string | undefined> {
+  const result: Record<InterestKey, string | undefined> = {
+    bookmark: undefined,
+    exhibit: undefined,
+    attend: undefined,
+    speak: undefined,
+  };
 
+  if (!interests) return result;
+
+  (Object.keys(result) as InterestKey[]).forEach((key) => {
+    result[key] = interests[key]?.interestId;
+  });
+
+  return result;
+}
   function toggleSelection(id: string) {
     setTotalChecked((prev) => {
       if (prev.includes(id)) {
@@ -443,6 +352,18 @@ export default function EventAccordion({
         return [...prev, id];
       }
     });
+    setSelectedInterestMap(prev => {
+    const newMap = new Map(prev);
+
+    if (newMap.has(id)) {
+      newMap.delete(id); // unchecking
+    } else {
+      const interestBooleans = mapInterestsToInterestIds(event.interests);
+      newMap.set(id, interestBooleans); // checking
+    }
+
+    return newMap;
+  });
   }
 
   function handleSelectAll(checked: boolean) {
@@ -475,6 +396,14 @@ export default function EventAccordion({
     ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
     // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
+   actions.forEach((action) => {
+  const interestKey = action.status.toLowerCase();
+  
+  selectedInterestMap.set(eventId, {
+    ...selectedInterestMap.get(eventId),
+    [interestKey]: undefined, // this should be response.id in real use
+  });
+});
   useEffect(() => {
     if (actions.length > 0 && !action) {
       setAction(actions[0]);
@@ -631,13 +560,19 @@ export default function EventAccordion({
         {showCheckBox && (
           <div className="flex gap-4">
             <Button
-              type="submit"
-              className="w-30 self-center"
-              disabled={isLoading || totalChecked.length === 0}
-              onClick={() => bulkSubmit()}
-            >
-              Submit
-            </Button>
+                            type="submit"
+                            className="w-30 self-center"
+                            disabled={isBulkActionLoading || totalChecked.length === 0}
+                            onClick={handleBulkSubmit}
+                          >
+                            {isBulkActionLoading ? (
+                              <>
+                                Processing...
+                              </>
+                            ) : (
+                              'Submit'
+                            )}
+                          </Button>
             <Button
               variant={"outline"}
               type="button"
