@@ -512,14 +512,21 @@ export const AuthContextProvider = ({ children }: any) => {
               "Sign Up",
               "Verify OTP | Valid Submitted"
             );
-            // setUser(result.user);
             await newcheckAuth();
             setLocalStorage(result.user);
+            
+            // Check if user needs to request access
+            if (result.user.access === "USER") {
+              return result;
+            }
+            
             handleFlowAction(flow, redirectTo);
           }
         }
+        return result;
       } catch (err) {
         console.error("OTP verification error:", err);
+        throw err;
       }
     },
     [request, router]

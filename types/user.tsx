@@ -30,6 +30,7 @@ export interface UserResponse {
   accountId?: string;
   isNewUser?: boolean;
   userLocation?: UserLocation;
+  access?: string | null;
 }
 
 export type UserLocation = Location | NominatimSearchResult;
