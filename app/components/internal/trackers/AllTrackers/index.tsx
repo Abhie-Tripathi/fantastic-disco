@@ -269,7 +269,7 @@ useEffect(() => {
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
             <div className="font-bold break-words leading-none">
-              {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
+              {item?.name?.length>90? `${item.name.substring(0,90)}...`:item.name}
               </div>
             <div className="flex gap-1 w-[100%]">
         {locations?.length>0 && 
@@ -309,7 +309,7 @@ useEffect(() => {
             <div className="md:flex gap-2 text-xs items-center hidden"> 
               {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
               <div className="flex gap-1 items-center">{ userAccessData?.superAdmin?.[0]?.imageUrl === null ? 
-                              <UserProfile name={`${userAccessData?.superAdmin?.[0]?.name}`} width={18} height={18} borderRadius="50%" />:
+                              <UserProfile name={`${userAccessData?.superAdmin?.[0]?.name}`} width={18} height={18} borderRadius="50%"fontSize="0.5rem"/>:
                               <Image
                                 src={
                                  userAccessData?.superAdmin?.[0]?.imageUrl
