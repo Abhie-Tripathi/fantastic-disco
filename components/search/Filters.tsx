@@ -958,7 +958,7 @@ const Filters = ({
           <FilterContent
             source={source}
             type={type}
-            trackerType={path?.get("type")|| ""}
+            trackerType={path?.get("type") || ""}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
@@ -987,7 +987,7 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {filterCount > 0 && (
+                {filterCount > 0 && pathName.split("/").includes("events") && (
                   <Button
                     id="save-search-btn"
                     onClick={createTrackerHandler}
