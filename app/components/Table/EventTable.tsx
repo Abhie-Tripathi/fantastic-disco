@@ -140,6 +140,8 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     }
   }, [actions]);
 const bulkSubmit = async () => {
+  console.log(action.status);
+  
     try {
       let filteredIds = [];
       if (action.status === "UN-BOOKMARK") {
@@ -172,6 +174,7 @@ const bulkSubmit = async () => {
           await Promise.all(bookmarkPromises);
         }
       } else {
+        console.log("action.status",action.status);
         filteredIds =
           updatedEvents
             ?.filter(
@@ -185,36 +188,47 @@ const bulkSubmit = async () => {
             )
             .map((filteredEvent) => filteredEvent.basic.id) || [];
 
-        const interestPromises = filteredIds.map((id) =>
-          createUserEventInterest(
-            {
-              eventId: id,
-              interest: action?.status,
-              sourceModule: sourceModule,
-              ...(trackerId && { sourceId: trackerId }),
-            },
-            {
-              onSuccess: (response: any) => {
-                if (response?.interest) {
-                  setInterest((prev) => ({
-                    ...prev,
-                    [response.interest.toLowerCase()]: {
-                      interestId: response.id,
-                    },
-                  }));
-                }
-                if (response?.eventId && setEventId) {
-                  setEventId(response?.eventId);
-                }
-                setSavedEventCount((prev) => prev + 1);
-              },
-              onError: (error) => {
-                console.error("Error while submitting interest:", error);
-              },
+        const interestPromises: Promise<any>[] = [];
+
+selectedInterestMap.forEach((value, eventId) => {
+  
+  
+    if (value[action.status.toLowerCase()]===false) {
+      const promise = createUserEventInterest(
+        {
+          eventId,
+          interest: action.status, // e.g. "attend", "bookmark"
+          sourceModule,
+          ...(trackerId && { sourceId: trackerId }),
+        },
+        {
+          onSuccess: (response: any) => {
+            if (response?.interest) {
+              setInterest((prev) => ({
+                ...prev,
+                [response.interest.toLowerCase()]: {
+                  interestId: response.id,
+                },
+              }));
             }
-          )
-        );
-        await Promise.all(interestPromises);
+            if (response?.eventId && setEventId) {
+              setEventId(response?.eventId);
+            }
+            // setSavedEventCount((prev) => prev + 1);
+          },
+          onError: (error) => {
+            console.error("Error while submitting interest:", error);
+          },
+        }
+      );
+
+      interestPromises.push(promise);
+    }
+  
+});
+
+await Promise.all(interestPromises);
+
       }
       setShowCheckBox?.(false);
       setTotalChecked([]);
