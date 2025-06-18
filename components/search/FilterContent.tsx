@@ -88,7 +88,110 @@ const FilterContent = ({
                     className="space-y-3 pt-3"
                     ref={refs?.advanceFilterRef}
                   >
-                    {section.filters
+                    {(type === "companies" || type === "people") && (
+                      <>
+                        {type === "companies" && (
+                          <>
+                            <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2">Company</div>
+                            {section.filters
+                              .filter((filter: FilterItem) => 
+                                filter.id === "companyType" || 
+                                filter.id === "company-followers" || 
+                                filter.id === "location"
+                              )
+                              .map((filter: FilterItem) => {
+                                const Component = getFilterComponent(filter.component);
+                                if (!Component) return null;
+
+                                return (
+                                  <div
+                                    key={filter.id}
+                                    className="flex items-center justify-between group relative transition-opacity duration-200"
+                                    style={{ opacity: filter.enabled ? 1 : 0.5 }}
+                                  >
+                                    <div className="w-full">
+                                      <Component
+                                        variant="accordion"
+                                        disabled={!filter.enabled}
+                                        filterName={filter.filterName}
+                                      />
+                                    </div>
+                                    {!filter.enabled && (
+                                      <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                          </>
+                        )}
+
+                        <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2">Event</div>
+                        {section.filters
+                          .filter((filter: FilterItem) => 
+                            filter.id === "category" || 
+                            filter.id === "locationIds" || 
+                            filter.id === "product-topics" || 
+                            filter.id === "event-followers"
+                          )
+                          .map((filter: FilterItem) => {
+                            const Component = getFilterComponent(filter.component);
+                            if (!Component) return null;
+
+                            return (
+                              <div
+                                key={filter.id}
+                                className="flex items-center justify-between group relative transition-opacity duration-200"
+                                style={{ opacity: filter.enabled ? 1 : 0.5 }}
+                              >
+                                <div className="w-full">
+                                  <Component
+                                    variant="accordion"
+                                    disabled={!filter.enabled}
+                                    filterName={filter.filterName}
+                                  />
+                                </div>
+                                {!filter.enabled && (
+                                  <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                )}
+                              </div>
+                            );
+                          })}
+
+                        <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2 mt-4">People</div>
+                        {section.filters
+                          .filter((filter: FilterItem) => 
+                            filter.id === "userNames" || 
+                            filter.id === "userSocialLink" || 
+                            filter.id === "userJobTitle" || 
+                            filter.id === "userDepartment"
+                          )
+                          .map((filter: FilterItem) => {
+                            const Component = getFilterComponent(filter.component);
+                            if (!Component) return null;
+
+                            return (
+                              <div
+                                key={filter.id}
+                                className="flex items-center justify-between group relative transition-opacity duration-200"
+                                style={{ opacity: filter.enabled ? 1 : 0.5 }}
+                              >
+                                <div className="w-full">
+                                  <Component
+                                    variant="accordion"
+                                    disabled={!filter.enabled}
+                                    filterName={filter.filterName}
+                                  />
+                                </div>
+                                {!filter.enabled && (
+                                  <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                )}
+                              </div>
+                            );
+                          })}
+                      </>
+                    )}
+
+                    {type === "events" && section.filters
                       .filter(
                         (filter: FilterItem) =>
                           !isMobile || filter.id !== "eventIds"
