@@ -1379,15 +1379,15 @@ const {getFilterValue} = useFilterState()
                           className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
                         >
                           <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                            {(event.basic.eventLocation as any)[0].displayName}
+                            {(event.basic?.eventLocation as any)[0]?.displayName}
                           </p>
                           <div className="grid grid-rows-2 gap-2">
                             <CircularProgress
-                              value={(event.basic.eventLocation as any)[0].businessScore}
+                              value={(event.basic?.eventLocation as any)[0]?.businessScore}
                               label="Business"
                             />
                             <CircularProgress
-                              value={(event.basic.eventLocation as any)[0].socialScore}
+                              value={(event.basic?.eventLocation as any)[0]?.socialScore}
                               label="Social"
                             />
                           </div>

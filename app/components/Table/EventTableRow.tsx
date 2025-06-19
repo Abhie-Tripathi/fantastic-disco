@@ -355,11 +355,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
 
       {showHolidayScore && <TableCell>
-       {(event.basic.eventLocation as any)[0].businessScore}
+       {(event.basic?.eventLocation as any)[0]?.businessScore}
       </TableCell>}
 
       {showHolidayScore && <TableCell>
-        {(event.basic.eventLocation as any)[0].socialScore}
+        {(event.basic?.eventLocation as any)[0]?.socialScore}
        </TableCell>}
 
 
