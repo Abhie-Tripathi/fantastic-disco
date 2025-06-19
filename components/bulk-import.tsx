@@ -1,11 +1,15 @@
 import {EllipsisVertical} from "lucide-react";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover";
-export default function BulkImport({bulkActions, setShowCheckBox}){
+  interface BulkImportProps {
+  bulkActions: string[];
+  setShowCheckBox: Dispatch<SetStateAction<boolean>>;
+}
+export default function BulkImport({ bulkActions, setShowCheckBox }: BulkImportProps){
     const [open, setOpen] = useState(false);
     const actionTaken=()=>{
         setShowCheckBox(true)

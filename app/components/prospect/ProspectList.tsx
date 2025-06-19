@@ -293,7 +293,14 @@ export const ProspectList: React.FC = () => {
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
-
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: string) => {
+      setMultipleFilters({
+        limit: newItemsPerPage,
+      });
+    },
+    [setMultipleFilters]
+  );
   const handlePageChange = useCallback(
     (page: number) => {
       setMultipleFilters({
@@ -303,7 +310,6 @@ export const ProspectList: React.FC = () => {
     },
     [itemsPerPage, setMultipleFilters]
   );
-
   function handleSelectAll(checked: boolean) {
     setSelectedData((prev) => {
       const next = { ...prev };
@@ -391,14 +397,7 @@ export const ProspectList: React.FC = () => {
     }
   };
 
-  const handleItemsPerPageChange = useCallback(
-    (newItemsPerPage: string) => {
-      setMultipleFilters({
-        limit: newItemsPerPage,
-      });
-    },
-    [setMultipleFilters]
-  );
+  
 
   return (
     <div className="flex flex-col w-full">

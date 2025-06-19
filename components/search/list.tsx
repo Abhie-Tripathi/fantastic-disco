@@ -272,11 +272,14 @@ export default function EventAccordion({
       },
       {
         setInterest,
-        setUpdatedEvents,
+        setUpdatedEvents: setUpdatedEvents as (value: Event[] | ((prev: Event[]) => Event[])) => void,
         setSelectedInterestMap,
         setShowCheckBox,
         setTotalChecked,
-        onSuccess: () => toast({ title: "Success", description: "Bulk action completed" }),
+        onSuccess: () => {
+          toast({ title: "Success", description: "Bulk action completed" })
+          setSelectedInterestMap(new Map());
+        },
         onError: (error) => toast({ title: "Error", description: error.message })
       }
     );
@@ -362,20 +365,34 @@ export default function EventAccordion({
   }
 
   function handleSelectAll(checked: boolean) {
-    if (checked) {
-      setTotalChecked((prev) => {
-        const newIds = updatedEvents?.map((event) => event.basic.id) || [];
-        return [...prev, ...newIds];
+  const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+
+  if (checked) {
+    setTotalChecked((prev) => [...prev, ...newIds]);
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+
+      updatedEvents?.forEach((event) => {
+        const id = event.basic.id;
+        const interestState = mapInterestsToInterestIds(event.interests);
+        newMap.set(id, interestState);
       });
-    } else {
-      setTotalChecked((prev) => {
-        return prev.filter(
-          (eventId) =>
-            !updatedEvents?.map((event) => event.basic.id).includes(eventId)
-        );
-      });
-    }
+
+      return newMap;
+    });
+  } else {
+    setTotalChecked((prev) =>
+      prev.filter((eventId) => !newIds.includes(eventId))
+    );
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+      newIds.forEach((id) => newMap.delete(id));
+      return newMap;
+    });
   }
+}
 
   const isAllChecked = useMemo(() => {
     return (
@@ -524,14 +541,17 @@ export default function EventAccordion({
         className="flex items-center justify-between gap-4 pl-4 pb-2"
         style={{ height: showCheckBox ? "50px" : "auto" }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {showCheckBox && (
             <div className="flex gap-2 items-center">
               <Checkbox
                 checked={isAllChecked}
                 onCheckedChange={handleSelectAll}
               />
-              <div>Select events to perform action</div>
+              <div>
+                Select events to perform action
+                 <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px]">{selectedInterestMap.size>0 && `(${selectedInterestMap.size} Selected)`}</span>
+                </div>
             </div>
           )}
           {showCheckBox && (

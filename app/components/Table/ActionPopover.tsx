@@ -46,8 +46,11 @@ export function ActionPopover({
     isLoading: isConfigLoading,
     error,
   } = useConfiguration.interest();
-  const { createUserEventInterest, isLoading: isSubmitting } =
-    useIntent.createUserEventInterest();
+  const {
+  createUserEventInterestSimple,
+  isLoading: isSubmitting
+} = useIntent.createUserEventInterest();
+
   const [selectedAction, setSelectedAction] = useState<string | undefined>(
     () => {
       if (interests?.speak) return "SPEAK";
@@ -104,7 +107,7 @@ export function ActionPopover({
       setEventId(response?.eventId);
       setIsOpen(false);
     } else {
-      createUserEventInterest(
+      createUserEventInterestSimple(
         {
           eventId,
           interest: selectedAction || "",

@@ -33,6 +33,7 @@ import { useTransition } from "@/context/transition";
 import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
 import { useBulkActions } from "@/hooks/useBulkAction";
+import { useToast } from "@/hooks/use-toast";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -67,6 +68,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
   const bulkOption = ["Attend", "Speak"];
+   const { toast } = useToast();
   const { inTransition } = useTransition();
   const { localFilters } = useFilterContext();
   const { data, editTrue } = useTrackerContext();
@@ -159,13 +161,15 @@ const handleBulkSubmit = async () => {
       },
       {
         setInterest,
-        setUpdatedEvents,
+        setUpdatedEvents: setUpdatedEvents as (value: Event[] | ((prev: Event[]) => Event[])) => void,
         setSelectedInterestMap,
         setShowCheckBox,
         setTotalChecked,
         onSuccess: () => {
           // Optional success handling
+          toast({ title: "Success", description: "Bulk action completed" })
           console.log("Bulk action completed successfully");
+          setSelectedInterestMap(new Map());
         },
         onError: (error) => {
           console.error("Bulk action failed:", error);
@@ -486,7 +490,7 @@ console.log("totalChecked", selectedInterestMap);
                 onCheckedChange={handleSelectAll}
               />
               <div>Select events to perform action</div>
-              <span className="-ml-[5px] pt-[2px] text-[var(--secondary-text-color)] text-[12px]">{totalChecked.length>0 && `(${totalChecked.length} Selected)`}</span>
+              <span className="-ml-[5px] pt-[2px] text-[var(--secondary-text-color)] text-[12px]">{selectedInterestMap.size>0 && `(${selectedInterestMap.size} Selected)`}</span>
             </div>
           )}
           {showCheckBox && (
