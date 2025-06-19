@@ -158,6 +158,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     }
   ];
 
+  const showHolidayScore =
+  getFilterValue("eventTypes") == "holiday" &&
+  getFilterValue("locationIds").split(",").length == 1;
+
 
   const isCancelled = event.basic.status === "cancelled";
   const isPostponed = event.basic.status === "postponed";
@@ -348,6 +352,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             : "TBA"}
         </div>
       </TableCell>
+
+
+      {showHolidayScore && <TableCell>
+       {(event.basic.eventLocation as any)[0].businessScore}
+      </TableCell>}
+
+      {showHolidayScore && <TableCell>
+        {(event.basic.eventLocation as any)[0].socialScore}
+       </TableCell>}
+
 
       {/* City Column */}
       <TableCell>

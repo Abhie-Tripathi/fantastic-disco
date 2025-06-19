@@ -17,7 +17,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   type,
   view,
   localFilters,
-  trackerMaturity
+  trackerMaturity,
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -34,6 +34,10 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+
+  const showHolidayScore =
+    getFilterValue("eventTypes") == "holiday" &&
+    getFilterValue("locationIds").split(",").length == 1;
 
   return (
     <TableHeader>
@@ -52,6 +56,12 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Venue</div>
         </TableHead>
+       {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Business Score</div>
+        </TableHead>}
+        {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Social Score</div>
+        </TableHead>}
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">City</div>
         </TableHead>
@@ -68,7 +78,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
-        {(
+        {
           <>
             {show.includes(Show.estimatedExhibitors) && (
               <TableHead className="min-w-[132px] h-10">
@@ -159,7 +169,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
           </>
-        )}
+        }
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
