@@ -192,6 +192,7 @@ type FilterContextType = {
   showFetchedData: any;
   setShowFetchedData: (val: boolean) => void;
   isTentimesUser: boolean;
+  filterEmptyValues: (filters: Filters) => Filters;
 };
 const isTentimesUser = false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -502,6 +503,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteMultipleLocalFilters,
       replaceLocalFilter,
       isTentimesUser,
+      filterEmptyValues,
     }),
     [
       isTentimesUser,
@@ -519,6 +521,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteMultipleLocalFilters,
       replaceLocalFilter,
       searchParams,
+      filterEmptyValues,
     ]
   );
 
