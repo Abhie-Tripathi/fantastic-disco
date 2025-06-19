@@ -159,7 +159,7 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
   };
 
   return (
-    <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
+     <div className="flex gap-4 w-full items-center">
       {isBulkActionActive && (
         <Checkbox
           checked={companyDetail.id in selectedCompaniesIds}
@@ -168,6 +168,7 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
           }
         />
       )}
+      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
       <Link href={`/internal/company/${companyDetail.id}`} className="block">
         <div className="p-4 flex gap-6">
           {compLogo && (
@@ -241,6 +242,7 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
         </div>
         </Link>
     </div>
+  </div>
   );
 };
 
@@ -273,7 +275,12 @@ export const ProspectList: React.FC = () => {
     gcTime: CACHE_TIME,
     staleTime: STALE_TIME,
   });
-
+  const value=Object.values(selectedData)
+        .map((names) => names.orgWebsite)
+        .join(",");
+  console.log("value",value);
+  
+  
   const companies = useMemo(
     () => companyData?.companyData || [],
     [companyData]
@@ -428,13 +435,13 @@ export const ProspectList: React.FC = () => {
       </div>
       {isBulkActionActive && (
         <div className="flex justify-between w-full">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center md:px-6 md:py-4">
             <Checkbox
               className="rounded-sm"
               checked={isAllSelected}
               onCheckedChange={handleSelectAll}
             />
-            <label className="text-sm">
+            <label className="text-sm pr-6 items-center justify-center">
               Select companies to create tracker
             </label>
           </div>
@@ -457,7 +464,7 @@ export const ProspectList: React.FC = () => {
           </div>
         </div>
       )}
-      {companies.map((item) => (
+      {/* {companies.map((item) => (
         <ProspectCard
           key={item.id}
           companyDetail={item}
@@ -465,8 +472,8 @@ export const ProspectList: React.FC = () => {
           selectedCompaniesIds={selectedData}
           toggleSelection={toggleSelection}
         />
-      ))}
-      <div className="sticky bg-background py-2 border-t">
+      ))} */}
+      {/* <div className="sticky bg-background py-2 border-t">
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}
@@ -476,7 +483,7 @@ export const ProspectList: React.FC = () => {
           onItemsPerPageChange={handleItemsPerPageChange}
           paginationItems={["5", "10"]}
         />
-      </div>
+      </div> */}
 
       <CreateTrackerDialog
         trackerType="companies"

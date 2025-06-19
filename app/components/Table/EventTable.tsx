@@ -51,7 +51,7 @@ const EventTable = ({
 }: EventTableProps) => {
   const pathName = usePathname();
   // const { theme } = useTheme();
-type InterestKey = 'bookmark' | 'attend' | 'speak' | 'exhibit';
+type InterestKey = string;
 
 type InterestState = {
   [key in InterestKey]?: string;
@@ -72,7 +72,8 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
-  const [action, setAction] = useState();
+  const [action, setAction] = useState<{ label: string; status: string } | undefined>(undefined);
+
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -139,14 +140,6 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     //   ? [{ label: "Bookmark", status: "BOOKMARK" }]
     //   : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
- actions.forEach((action) => {
-  const interestKey = action.status.toLowerCase();
-  
-  selectedInterestMap.set(eventId, {
-    ...selectedInterestMap.get(eventId),
-    [interestKey]: undefined, // this should be response.id in real use
-  });
-});
 
   useEffect(() => {
     if (actions.length > 0 && !action) {
@@ -276,18 +269,22 @@ const handleBulkSubmit = async () => {
   };
 function mapInterestsToInterestIds(
   interests?: Record<string, { interestId?: string }>
-): Record<InterestKey, string | undefined> {
-  const result: Record<InterestKey, string | undefined> = {
-    bookmark: undefined,
-    exhibit: undefined,
-    attend: undefined,
-    speak: undefined,
-  };
+): Record<string, string | undefined> {
+  // Create initial result object with all possible interest keys from actions
+  const result = actions.reduce((acc, action) => {
+    const key = action.status.toLowerCase();
+    acc[key] = undefined;
+    return acc;
+  }, {} as Record<string, string | undefined>);
 
   if (!interests) return result;
 
-  (Object.keys(result) as InterestKey[]).forEach((key) => {
-    result[key] = interests[key]?.interestId;
+  // Map existing interests to the result
+  Object.keys(interests).forEach((key) => {
+    const normalizedKey = key.toLowerCase();
+    if (normalizedKey in result) {
+      result[normalizedKey] = interests[key]?.interestId;
+    }
   });
 
   return result;
@@ -318,21 +315,36 @@ function mapInterestsToInterestIds(
   });
   }
 
-  function handleSelectAll(checked: boolean) {
-    if (checked) {
-      setTotalChecked((prev) => {
-        const newIds = updatedEvents?.map((event) => event.basic.id) || [];
-        return [...prev, ...newIds];
+ function handleSelectAll(checked: boolean) {
+  const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+
+  if (checked) {
+    setTotalChecked((prev) => [...prev, ...newIds]);
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+
+      updatedEvents?.forEach((event) => {
+        const id = event.basic.id;
+        const interestState = mapInterestsToInterestIds(event.interests);
+        newMap.set(id, interestState);
       });
-    } else {
-      setTotalChecked((prev) => {
-        return prev.filter(
-          (eventId) =>
-            !updatedEvents?.map((event) => event.basic.id).includes(eventId)
-        );
-      });
-    }
+
+      return newMap;
+    });
+  } else {
+    setTotalChecked((prev) =>
+      prev.filter((eventId) => !newIds.includes(eventId))
+    );
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+      newIds.forEach((id) => newMap.delete(id));
+      return newMap;
+    });
   }
+}
+
 
   const isAllChecked = useMemo(() => {
     return (

@@ -268,7 +268,7 @@ export default function CreateTrackerDialog({
               </Button>
               <Button
                 className="bg-[#6E56CF] hover:bg-[#644fc0] w-full sm:w-auto"
-                onClick={saveTrackerHandler}
+                onClick={handleTrackerCreationByType}
                 disabled={isLoading || !!error}
               >
                 {isLoading ? "Saving..." : "Save"}

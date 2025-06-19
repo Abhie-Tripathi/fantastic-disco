@@ -17,7 +17,7 @@ const NullState = ({
   buttonUrl?: string;
 }) => {
   return (
-    <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4">
+    <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4 w-full">
       <div className="max-w-[90%] md:max-w-[80%] lg:max-w-[70%] flex flex-col items-center gap-3">
         {title && (
           <div className="font-semibold text-center text-xs sm:text-sm md:text-base text-[var(--secondary-text-color)]">

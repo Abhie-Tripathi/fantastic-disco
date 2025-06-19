@@ -141,15 +141,6 @@ interface EventListProps {
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
-interface Interest {
-  [eventKey: string]: {
-    [actionKey: string]: {
-      interestId: string;
-    };
-  };
-  eventType?: string;
-}
-
 export default function EventAccordion({
   source,
   eventType,
@@ -161,10 +152,10 @@ export default function EventAccordion({
   const pathName = usePathname();
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
-  const [action, setAction] = useState();
+  const [action, setAction] = useState<{ label: string; status: string } | undefined>(undefined);
   const { toast } = useToast();
   const { inTransition } = useTransition();
-  type InterestKey = 'bookmark' | 'attend' | 'speak' | 'exhibit';
+  type InterestKey = string;
   
   type InterestState = {
     [key in InterestKey]?: string;
@@ -201,8 +192,8 @@ export default function EventAccordion({
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
-  // const [interest, setInterest] = useState();
-  const [interest, setInterest] = useState<Record<string, Interest>>({});
+  const [interest, setInterest] = useState();
+  // const [interest, setInterest] = useState<Record<string, Interest>>({});
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
@@ -265,7 +256,7 @@ export default function EventAccordion({
 
   try {
     console.log('Executing bulk action with:', {
-      action: action.status,
+      action: action?.status,
       selectedCount: totalChecked.length,
       selectedEvents: totalChecked
     });
@@ -326,23 +317,27 @@ export default function EventAccordion({
   };
   function mapInterestsToInterestIds(
   interests?: Record<string, { interestId?: string }>
-): Record<InterestKey, string | undefined> {
-  const result: Record<InterestKey, string | undefined> = {
-    bookmark: undefined,
-    exhibit: undefined,
-    attend: undefined,
-    speak: undefined,
-  };
+): Record<string, string | undefined> {
+  // Create initial result object with all possible interest keys from actions
+  const result = actions.reduce((acc, action) => {
+    const key = action.status.toLowerCase();
+    acc[key] = undefined;
+    return acc;
+  }, {} as Record<string, string | undefined>);
 
   if (!interests) return result;
 
-  (Object.keys(result) as InterestKey[]).forEach((key) => {
-    result[key] = interests[key]?.interestId;
+  // Map existing interests to the result
+  Object.keys(interests).forEach((key) => {
+    const normalizedKey = key.toLowerCase();
+    if (normalizedKey in result) {
+      result[normalizedKey] = interests[key]?.interestId;
+    }
   });
 
   return result;
 }
-  function toggleSelection(id: string) {
+ function toggleSelection(id: string, event:any) {
     setTotalChecked((prev) => {
       if (prev.includes(id)) {
         // Remove the id
@@ -396,14 +391,6 @@ export default function EventAccordion({
     ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
     // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
-   actions.forEach((action) => {
-  const interestKey = action.status.toLowerCase();
-  
-  selectedInterestMap.set(eventId, {
-    ...selectedInterestMap.get(eventId),
-    [interestKey]: undefined, // this should be response.id in real use
-  });
-});
   useEffect(() => {
     if (actions.length > 0 && !action) {
       setAction(actions[0]);
@@ -655,8 +642,8 @@ const EventListItem = ({
   initialIntelScoreData,
   intelLoading,
 }: {
-  interest: Record<string, Interest>;
-  toggleSelection: (id: string) => void;
+  interest: any;
+  toggleSelection: (id: string, event:Event) => void;
   isMobile: boolean;
   trackerId?: string;
   view?: string;
@@ -774,7 +761,7 @@ const EventListItem = ({
         <div className="flex pl-4">
           <Checkbox
             checked={totalChecked.includes(event.basic.id)}
-            onCheckedChange={() => toggleSelection(event.basic.id)}
+            onCheckedChange={() => toggleSelection(event.basic.id,  event)}
           />
         </div>
       )}

@@ -993,7 +993,13 @@ const Filters = ({
                 {filterCount > 0 && (
                   <Button
                     id="save-search-btn"
-                    onClick={createTrackerHandler}
+                    onClick={() => {
+                      if (type === "companies" || type === "people") {
+                        setIsBulkActionActive(true);
+                      } else {
+                        createTrackerHandler();
+                      }
+                    }}
                     variant="outline"
                     className="w-full h-10"
                   >
@@ -1001,6 +1007,7 @@ const Filters = ({
                     Save Search
                   </Button>
                 )}
+
                 <Button onClick={searchHandler} className="w-full h-10">
                   Apply Filters
                 </Button>

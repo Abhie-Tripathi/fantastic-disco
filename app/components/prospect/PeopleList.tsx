@@ -138,7 +138,16 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
   }, [poc.top_event_countryZone, isMobile]);
 
   return (
-    <div className="bg-background rounded-xl border shadow-sm relative">
+    <div className="flex gap-4 w-full items-center">
+      {isBulkActionActive && (
+        <Checkbox
+          checked={poc.user_id in selectedPeopleIds}
+          onCheckedChange={() =>
+            toggleSelection(poc.user_id, poc.user_name, poc.user_companyName)
+          }
+        />
+      )}
+    <div className="bg-background rounded-xl border shadow-sm relative w-full">
       <Link href={`/internal/user/${poc.user_id}`} className="block">
         <div className="p-4 flex gap-6">
           {imageSrc && (
@@ -220,6 +229,7 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
         </div>
         </Link>
       </div>
+    </div>
   );
 };
 
@@ -474,7 +484,7 @@ export const PeopleList: React.FC = () => {
         </div>
       </div>
       {isBulkActionActive && (
-        <div className="flex justify-between py-3 w-full">
+        <div className="flex justify-between py-3 w-full px-6 py-4">
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
@@ -502,7 +512,7 @@ export const PeopleList: React.FC = () => {
           </div>
         </div>
       )}
-      <div className="flex gap-3 flex-col">
+      {/* <div className="flex gap-3 flex-col px-6">
         {filteredUsers.map((item) => (
           <PeopleCard
             key={item.user_id}
@@ -524,7 +534,7 @@ export const PeopleList: React.FC = () => {
           onItemsPerPageChange={handleItemsPerPageChange}
           paginationItems={["5", "10"]}
         />
-      </div>
+      </div> */}
 
       <CreateTrackerDialog
         trackerType="people"

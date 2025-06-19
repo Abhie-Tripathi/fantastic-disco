@@ -33,13 +33,13 @@ interface AudienceDesAndDepSelectorProps {
   variant?: "accordion" | "popover";
   filterName?: string;
   options: any;
-  action: Options;
+  action?: Options;
   setAction: any;
 }
 interface Options {
   status?: string;
   label?: string;
-}
+};
 export default function BulkActionPopover({
   variant = "popover",
   filterName,
@@ -117,7 +117,7 @@ export default function BulkActionPopover({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    option.status === action.status
+                    option?.status === action?.status
                       ? "opacity-100"
                       : "opacity-0"
                   )}

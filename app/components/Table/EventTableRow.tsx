@@ -25,9 +25,10 @@ import { ArrowDown, ArrowUp, Star } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 import { ActionPopover } from "./ActionPopover";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EventTableRowProps {
-  toggleSelection: (id: string) => void;
+  toggleSelection: (id: string, event: Event) => void;
   event: Event;
   trackerId?: string;
   show: Show[];
