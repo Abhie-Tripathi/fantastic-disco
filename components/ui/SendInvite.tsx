@@ -20,11 +20,13 @@ interface SendInviteProps {
   redirectDomain?: string;
 }
 
-const SendInvite = ({ customTrigger, redirectDomain = window.location.origin }: SendInviteProps) => {
+const SendInvite = ({ customTrigger, redirectDomain }: SendInviteProps) => {
   const [email, setEmail] = useState("");
   const [selectedInvitationRole, setSelectedInvitationRole] = useState<AccessType>("USER");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const actualRedirectDomain = redirectDomain ?? (typeof window !== "undefined" ? window.location.origin : "");
 
   const handleSubmit = async () => {
     if (!email) {
@@ -46,7 +48,7 @@ const SendInvite = ({ customTrigger, redirectDomain = window.location.origin }: 
         body: JSON.stringify({
           email,
           accessType: selectedInvitationRole,
-          redirectDomain,
+          redirectDomain: actualRedirectDomain,
         }),
       });
 
