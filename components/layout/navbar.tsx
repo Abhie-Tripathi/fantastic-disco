@@ -26,6 +26,7 @@ import {
   Search,
   Menu,
   Bell,
+  ArrowUpRight,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -41,6 +42,9 @@ import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
 import VideoModal from "@/components/layout/videoModal";
+import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -113,6 +117,8 @@ export default function Navbar() {
 
   const [storedUser, setStoredUser] = useState<any>(null);
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
+  const { getMembershipData } = useProfileServices();
+  const [membershipData, setMembershipData] = useState<any>(null);
 
   useEffect(() => {
     // Ensure this code runs only on the client side
@@ -143,6 +149,18 @@ export default function Navbar() {
     }
   }, [storedUser]);
 
+  useEffect(() => {
+    const fetchMembership = async () => {
+      try {
+        const data = await getMembershipData();
+        setMembershipData(data);
+      } catch (e) {
+        setMembershipData(null);
+      }
+    };
+    fetchMembership();
+  }, []);
+
   const generateProfileName = () => {
     if (storedUser) {
       const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
@@ -160,6 +178,20 @@ export default function Navbar() {
       router.push("/widget/settings/profile");
     }
   };
+
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Navbar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -307,6 +339,21 @@ export default function Navbar() {
               <span className="sr-only">Toggle theme</span>
             </Button>
           )} */}
+
+          {membershipData && membershipData.membership === MembershipPlan.Freemium && (
+            <Button
+              variant="default"
+              size="sm"
+              className="flex items-center gap-2 font-semibold shadow-md px-4 py-2 text-white bg-gradient-to-r from-[#7B5AFF] to-[#4B9EF4] hover:from-[#5A4690] hover:to-[#4B9EF4] transition-colors duration-200"
+              onClick={handleUpgradeClick}
+            >
+              <span className="hidden sm:inline">Upgrade</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Button>
+          )}
+
+          <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
+
 
           <div className="hidden lg:block">
             <DropdownMenu>
