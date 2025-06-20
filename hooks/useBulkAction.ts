@@ -110,82 +110,82 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
           })
         );
       } else {
-        const interestKey = action?.status?.toLowerCase();
+  const interestKey = action?.status?.toLowerCase();
+  
+  if (!interestKey) {
+    console.warn("Invalid action status:", action?.status);
+    return;
+  }
 
-if (!interestKey) {
-  console.warn("Invalid action status:", action?.status);
-  return;
+  const validInterestEntries = Array.from(selectedInterestMap.entries()).filter(
+    ([eventId, value]) => {
+      const alreadyHasInterest = Boolean(value?.interests?.[interestKey]);
+      if (alreadyHasInterest) {
+        console.log(`Skipping ${eventId} - already has '${interestKey}'`);
+        return false;
+      }
+
+      if (!eventId || !value) {
+        console.warn("Invalid entry:", { eventId, value });
+        return false;
+      }
+
+      return true;
+    }
+  );
+
+  if (validInterestEntries.length === 0) {
+    return;
+  }
+
+  const interestResults = await Promise.allSettled(
+    validInterestEntries.map(async ([eventId]) => {
+      try {
+        const currentEntry = selectedInterestMap.get(eventId);
+        
+        if (currentEntry?.[interestKey]!==undefined) {
+          return { eventId, skipped: true };
+        }
+
+        const response = await apiFunctions.createUserEventInterest({
+          eventId,
+          interest: action?.status,
+          sourceModule: sourceModule || "",
+          ...(trackerId && { sourceId: trackerId }),
+        });
+
+        const responseInterestKey = response.interest?.toLowerCase?.();
+        if (!responseInterestKey) throw new Error("No interest in response");
+
+        setUpdatedEvents?.((prev: Event[] = []) =>
+          prev.map((event) =>
+            event.basic.id === response.eventId
+              ? {
+                  ...event,
+                  interests: {
+                    ...event.interests,
+                    [responseInterestKey]: { interestId: response.id },
+                  },
+                }
+              : event
+          )
+        );
+        return { eventId, response };
+      } catch (error) {
+        console.error(`${eventId} failed:`, error);
+        throw { eventId, error };
+      }
+    })
+  );
+
+  interestResults.forEach((result, i) => {
+    const [eventId] = validInterestEntries[i];
+    console.group(`Event ${eventId}`);
+    console.groupEnd();
+  });
+  console.groupEnd();
 }
 
-const validInterestEntries = Array.from(selectedInterestMap.entries()).filter(
-  ([eventId, value]) => {
-    const isValid = eventId && !value?.interests?.[interestKey];
-    if (!isValid) {
-      console.warn('Skipping invalid interest entry:', { eventId, value });
-    }
-    return isValid;
-  }
-);
-
-
-        const interestResults = await Promise.allSettled(
-          validInterestEntries.map(async ([eventId, _]) => {
-            try {
-              const response = await apiFunctions.createUserEventInterest({
-                eventId,
-                interest: action?.status,
-                sourceModule: sourceModule || '',
-                ...(trackerId && { sourceId: trackerId }),
-              });
-
-               const interestKey = response.interest.toLowerCase();
-
-    // Update states using functional updates to ensure we get the latest state
-
-    setUpdatedEvents?.((prev: Event[]) => prev?.map(event => 
-      event.basic.id === response.eventId ? {
-        ...event,
-        interests: {
-          ...event.interests,
-          [interestKey]: { interestId: response.id }
-        }
-      } : event
-    ));
-
-    // setSelectedInterestMap(prev => {
-    //   const newMap = new Map(prev);
-    //   const currentEntry = newMap.get(response.eventId) || {};
-    //   newMap.set(response.eventId, {
-    //     ...currentEntry,
-    //     [interestKey]: response.id
-    //   });
-    //   return newMap;
-    // });
-
-
-              console.log(`${action?.status} success for ${eventId}:`, response);
-
-              return { eventId, response };
-            } catch (error) {
-              console.error(`${action?.status} failed for ${eventId}:`, error);
-              throw { eventId, error };
-            }
-          })
-        );
-
-        console.group(`${action?.status} Results`);
-        interestResults.forEach((result, index) => {
-          const [eventId] = validInterestEntries[index];
-          console.group(`Event ${eventId}`);
-          if (result.status === 'fulfilled') {
-            console.log('✅ Success:', result.value.response);
-          } else {
-            console.error('❌ Error:', result.reason.error);
-          }
-          console.groupEnd();
-        });
-        console.groupEnd();
-      }
 
 
       setShowCheckBox?.(false);

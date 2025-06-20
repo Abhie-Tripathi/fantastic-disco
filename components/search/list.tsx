@@ -223,7 +223,12 @@ export default function EventAccordion({
     intelScoreData,
     loading: intelLoading,
     error: intelError,
-  } = useIntelData(trackerId || "", events?.length > 0 ? events : [], "past");
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    "past",
+    query.type
+  );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -235,6 +240,7 @@ export default function EventAccordion({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -255,11 +261,6 @@ export default function EventAccordion({
   }
 
   try {
-    console.log('Executing bulk action with:', {
-      action: action?.status,
-      selectedCount: totalChecked.length,
-      selectedEvents: totalChecked
-    });
 
     await executeBulkAction(
       {
@@ -288,7 +289,8 @@ export default function EventAccordion({
     toast({ title: "Error", description: "Failed to complete bulk action" });
   }
 };
-  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
+  const trackerMaturity = !!data?.filterValues?.maturity
+  const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(
       Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage
@@ -489,7 +491,7 @@ export default function EventAccordion({
     } else
       return error.message == "Location is required" ? (
         <div className="p-6">
-          <CustomTrackerNullState />;
+          <CustomTrackerNullState />
         </div>
       ) : (
         <ZeroState
@@ -505,7 +507,7 @@ export default function EventAccordion({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }
@@ -612,7 +614,7 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
-              showMaturity={showMaturity}
+              showMaturity={showMaturity || trackerMaturity}
               showMatchKeywords={showMatchKeywords}
               showaudienceSpread={audienceSpread.length > 0 ? true : false}
               intelLoading={intelLoading}

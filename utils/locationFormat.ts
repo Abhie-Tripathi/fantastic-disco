@@ -32,7 +32,6 @@ export const formatLocationParts = (
   if (!name && !cityName && !countryName) return "";
 
   const type = locationType?.toLowerCase() || "";
-
   if (type === "city") {
     if (countryName) return `${name || cityName}, ${countryName}`;
     return name || cityName || "";

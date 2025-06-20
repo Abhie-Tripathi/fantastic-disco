@@ -557,7 +557,7 @@ const Page = ({ params }: { params: any }) => {
     setView(tab);
     setShowViewDropdown(false);
   };
-
+  
   return (
     <div className="flex">
       {/* <SideNav/> */}
@@ -685,8 +685,19 @@ const Page = ({ params }: { params: any }) => {
                     item.type.toLowerCase() === active ? styles.active : ""
                   }`}
                   onClick={() => {
-                    GAEvent("trackers", "Tracker Detail", "View", "New Events");
+                    GAEvent("trackers", "Tracker Detail", "View", `${item.type} Events`);
                     // deleteFilter("skip")
+                    if (item.type.toLowerCase() === "unattended" && view==="map") {
+                      setView("table")
+                      const currentParams = new URLSearchParams(window.location.search);
+                      currentParams.set('view', 'table');
+                      currentParams.set('eventType', "unattended")
+                      const newUrl = `${pathname}?${currentParams.toString()}`;
+
+                      setTimeout(() => {
+                        router.replace(newUrl);
+                      }, 0);
+                    }
                     setActive(item.type.toLowerCase());
                     addQueryString(item.type);
                   }}
@@ -920,7 +931,7 @@ const Page = ({ params }: { params: any }) => {
   </div>
 )}
 
-          {view === "map" && (
+          {view === "map"  && (
             <div>
               <Suspense fallback={<Loading />}>
                 {Number(activeCount) === 0 && active === "bookmarked" ? (
@@ -931,7 +942,16 @@ const Page = ({ params }: { params: any }) => {
                     />
                   </div>
                 ) : (
-                  <Map
+                  active==="unattended" ?(
+                  <div className="px-10 py-5">
+                    <NullState
+                      image={TrackerNullState}
+                      title="Map view is not available for unattended events."
+                        text="The events marked as 'Unattended' do not support map visualization. Please switch to another event type or view to explore available data."
+                    />
+                    </div>
+                  ):
+                  (<Map
                     source="tracker"
                     searchParams={`${
                       active === "Active Events"
@@ -949,7 +969,7 @@ const Page = ({ params }: { params: any }) => {
                     trackerLoc={trackerLoc.join(",")}
                     trackerType={trackerType}
                     eventType={active || ""}
-                  />
+                  />)
                 )}
                 {/* <Map/> */}
               </Suspense>

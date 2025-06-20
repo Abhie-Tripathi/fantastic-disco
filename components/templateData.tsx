@@ -138,9 +138,9 @@ const data: TemplateData = isEventeli ?
             {
                 type: "template",
                 domain: "Market Research",
-                isEnabled: false,
+                isEnabled: true,
                 img: PeopleFinder,
-                url: "",
+                url: "T_EVENT_PARTICIPATION",
                 trackerName: "Event Participation",
                 content:
                   "Effortlessly track & Identify events similar to ones you already attend",

@@ -103,14 +103,15 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   createUserEventInterest
 });
   const {
-    intelScoreData,
-    loading: intelLoading,
-    error: intelError,
-  } = useIntelData(
-    trackerId || "",
-    events?.length > 0 ? events : [],
-    eventType || ""
-  );
+      intelScoreData,
+      loading: intelLoading,
+      error: intelError,
+    } = useIntelData(
+      trackerId || "",
+      events?.length > 0 ? events : [],
+      eventType || "",
+      query.type
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -122,6 +123,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   let showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -129,6 +131,8 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
       showsData.push(value);
     }
   });
+  const trackerMaturity = data?.filterValues?.maturity
+  // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
   // setFilter("show",showsData?.join(","));
@@ -168,7 +172,6 @@ const handleBulkSubmit = async () => {
         onSuccess: () => {
           // Optional success handling
           toast({ title: "Success", description: "Bulk action completed" })
-          console.log("Bulk action completed successfully");
           setSelectedInterestMap(new Map());
         },
         onError: (error) => {
@@ -181,60 +184,6 @@ const handleBulkSubmit = async () => {
   }
 };
 
-
-  //  try {
-  //     if (eventType === "bookmarked") {
-  //       const bookmarkPromises = totalChecked.map((id) => {
-  //         const unBookmarkEvent = events.find((event) => event.basic.id === id);
-
-  //         const response = removeBookmark(
-  //           unBookmarkEvent?.interests?.bookmark?.interestId
-  //         );
-  //         if (response?.interest && setInterest) {
-  //           setInterest({
-  //             [response.interest.toLowerCase()]: {
-  //               interestId: response.id,
-  //             },
-  //           });
-  //         }
-  //       });
-
-  //       await Promise.all(bookmarkPromises);
-  //     } else {
-  //       const interestPromises = totalChecked.map((id) =>
-  //         createUserEventInterest(
-  //           {
-  //             eventId: id,
-  //             interest: action?.status,
-  //             sourceModule: sourceModule,
-  //             ...(trackerId && { sourceId: trackerId }),
-  //           },
-  //           {
-  //             onSuccess: (response: any) => {
-  //               if (response?.interest) {
-  //                 setInterest((prev) => ({
-  //                   ...prev,
-  //                   [response.interest.toLowerCase()]: {
-  //                     interestId: response.id,
-  //                   },
-  //                 }));
-  //               }
-  //               if (response?.eventId && setEventId) {
-  //                 setEventId(response?.eventId);
-  //               }
-  //               setSavedEventCount((prev) => prev + 1);
-  //             },
-  //             onError: (error) => {
-  //               console.error("Error while submitting interest:", error);
-  //             },
-  //           }
-  //         )
-  //       );
-
-  //       await Promise.all(interestPromises);
-  //     }
-  //     // toast({ title: "Success", description: "Done!", variant: "default" });
-  //   }
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -429,7 +378,7 @@ function mapInterestsToInterestIds(
     } else
       return error.message == "Location is required" ? (
         <div className="p-6">
-          <CustomTrackerNullState />;
+          <CustomTrackerNullState />
         </div>
       ) : (
         <ZeroState
@@ -445,7 +394,7 @@ function mapInterestsToInterestIds(
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }
@@ -474,7 +423,8 @@ function mapInterestsToInterestIds(
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
       );
   }
-console.log("totalChecked", selectedInterestMap);
+
+console.log("interests",selectedInterestMap);
 
   return (
     <div className="w-full flex flex-col h-full">
@@ -546,6 +496,7 @@ console.log("totalChecked", selectedInterestMap);
               type={query.type}
               view={query.eventType}
               localFilters={localFilters}
+              trackerMaturity={trackerMaturity}
             />
             <TableBody className="overflow-auto">
               {updatedEvents &&
@@ -559,6 +510,7 @@ console.log("totalChecked", selectedInterestMap);
                     showCheckBox={showCheckBox}
                     global={view}
                     view={query.eventType}
+                    trackerMaturity={trackerMaturity}
                     setEventId={setEventId}
                     setInterest={setInterest}
                     type={query.type}
@@ -580,7 +532,7 @@ console.log("totalChecked", selectedInterestMap);
         </div>
       </div>
 
-      {totalPages > 1 && (
+      {totalPages > 0 && (
         <div className="sticky bottom-0 bg-background py-3 border-t">
           <PaginationComponent
             currentPage={currentPage}

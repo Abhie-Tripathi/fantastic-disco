@@ -49,48 +49,10 @@ export default function BulkActionPopover({
 }: AudienceDesAndDepSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  // const [action,setAction] = useState(options[0]);
-  //   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
-  //     useFilterContext();
-  //     console.log(options);
-  //   const enabled = morphedData.audienceProfile?.isEnabled;
-  //   const selectedLabels = useMemo(() => {
-  //     const filterDesignations =
-  //       getLocalFilterValue(filterName as keyof Filters || "designations")
-  //         ?.split(",")
-  //         .filter(Boolean) || [];
-  //     return designations.filter((d: Designations) =>
-  //       filterDesignations.includes(d.slug)
-  //     );
-  //   }, [localFilters[filterName as keyof Filters || "designations"], designations]);
-
-  //   console.log("selectedLabels", selectedLabels);
-
-  //   const handleSelect = (label: Designations) => {
-  //     const currentDesignations =
-  //       localFilters[filterName as keyof Filters || "designations"]?.split(",").filter(Boolean) || [];
-  //     const isSelected = currentDesignations.includes(label.slug);
-
-  //     const newDesignations = isSelected
-  //       ? currentDesignations.filter((id) => id !== label.slug)
-  //       : [...currentDesignations, label.slug];
-
-  //     setLocalFilter(filterName as keyof Filters || "designations", newDesignations.join(","));
-  //   };
   const handleSelect = (option: Options) => {
     setAction(option);
     setIsOpen(!isOpen);
   };
-  //   const handleRemoveLabel = (labelId: string) => {
-  //     const currentDesignations = localFilters[filterName as keyof Filters || "designations"]
-  //       ?.split(",")
-  //       .filter((id) => id !== labelId);
-  //     if (currentDesignations)
-  //       setLocalFilter(
-  //         filterName as keyof Filters || "designations",
-  //         currentDesignations.join(",")
-  //       );
-  //   };
 
   const labels: Record<string, string> = {
     userJobTitle: "Job Title",
@@ -99,11 +61,6 @@ export default function BulkActionPopover({
   const triggerContent = (
     <div className="flex items-center">
       <span className="mr-2">{action?.label}</span>
-      {/* {selectedLabels.length > 0 && (
-        <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-          {selectedLabels.length}
-        </span>
-      )} */}
     </div>
   );
 
@@ -129,23 +86,6 @@ export default function BulkActionPopover({
           </CommandList>
         </CommandGroup>
       </Command>
-      {/* {selectedLabels.length > 0 && (
-        <div className="p-2 border-t max-h-[60px] overflow-auto">
-          <div className="flex flex-wrap gap-1">
-            {selectedLabels.map((label: any) => (
-              <Badge key={label.id} variant="secondary" className="mr-1 mb-1">
-                {label.name}
-                <button
-                  className="ml-1 hover:text-destructive"
-                  onClick={() => handleRemoveLabel(label.slug)}
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )} */}
     </>
   );
 

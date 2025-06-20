@@ -364,7 +364,7 @@ export default function EventCalendar({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }
@@ -437,7 +437,7 @@ export default function EventCalendar({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }

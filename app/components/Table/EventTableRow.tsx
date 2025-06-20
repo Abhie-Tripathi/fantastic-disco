@@ -45,6 +45,7 @@ interface EventTableRowProps {
   setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
+  trackerMaturity?:string[];
 }
 
 function getForecastedStatus(data: any) {
@@ -141,9 +142,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setIsChecked,
   setTotalChecked,
   initialIntelScoreData,
-  intelLoading
+  intelLoading,
+  trackerMaturity
 }) => {
- 
   const {isTentimesUser} = useFilterContext();
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -634,7 +635,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Maturity Column */}
-      {maturity && event.advance?.maturity !== undefined && (
+      {(maturity || trackerMaturity) && event.advance?.maturity !== undefined && (
         <TableCell className="text-center">
           {event.advance?.maturity ? (
             <span className="badge_primary capitalize">

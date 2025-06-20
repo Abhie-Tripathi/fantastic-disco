@@ -11,7 +11,7 @@ const CustomTrackerNullState = () => {
       </div>
       {isEventeli && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
-          <span className="font-bold">Select location - </span>
+          <span className="font-bold">Mandatory location* - </span>
           <span className={`w-full text-center text-[#666666] text-sm`}>
             Choose one or multiple locations to focus your search.
           </span>
@@ -19,7 +19,7 @@ const CustomTrackerNullState = () => {
       )}
 
       <div className={`w-full text-[#666666] text-sm text-center`}>
-        <span className="font-bold">Apply Filters - </span>
+        <span className="font-bold">Apply filters - </span>
         <span className={`w-full text-center text-[#666666] text-sm`}>
           Explore the basic filters to quickly refine your results by category,
           date, and location.
@@ -33,7 +33,7 @@ const CustomTrackerNullState = () => {
       </div>
       <Image src={ZeroStateIcon} alt="zerostate" width={200} height={160} />
     </div>
-  );
-};
+  )
+}
 
-export default CustomTrackerNullState;
+export default CustomTrackerNullState

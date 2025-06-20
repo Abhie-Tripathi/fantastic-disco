@@ -6,7 +6,7 @@ import Quick_Commerce from "/public/teliAuthIcons/subIndustryIcons/Quick_Commerc
 import Parking from "/public/teliAuthIcons/subIndustryIcons/Parking.svg";
 import Real_Estate from "/public/teliAuthIcons/industryIcons/Real_Estate.svg";
 import Travel from "/public/teliAuthIcons/industryIcons/Travel.svg";
-import Venue from "/public/teliAuthIcons/industryIcons/Venue.svg";
+import Venue from "/public/teliAuthIcons/industryIcons/venue.svg";
 import Event_Planner from "/public/teliAuthIcons/industryIcons/Event_Planner.svg";
 import Event_Supplier from "/public/teliAuthIcons/industryIcons/Event_Supplier.svg";
 import DMO from "/public/teliAuthIcons/industryIcons/DMO.svg";
@@ -15,8 +15,8 @@ import Activity_Planners from "/public/teliAuthIcons/industryIcons/Activity_Plan
 import Transportation_and_Logistics from "/public/teliAuthIcons/industryIcons/Transportation_and_Logistics.svg";
 import Local_Government from "/public/teliAuthIcons/industryIcons/Local_Government.svg";
 import Media_and_Marketing from "/public/teliAuthIcons/industryIcons/media_marketing.svg";
-import Corporate_and_Brands from "/public/teliAuthIcons/industryIcons/Enterprises.svg";
-import Others from "/public/teliAuthIcons/industryIcons/Others.svg";
+import Corporate_and_Brands from "/public/teliAuthIcons/industryIcons/enterprises.svg";
+import Others from "/public/teliAuthIcons/industryIcons/others.svg";
 
 export const industryData: TeliIndustry[] = [
   {

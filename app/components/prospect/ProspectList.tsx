@@ -278,7 +278,6 @@ export const ProspectList: React.FC = () => {
   const value=Object.values(selectedData)
         .map((names) => names.orgWebsite)
         .join(",");
-  console.log("value",value);
   
   
   const companies = useMemo(
