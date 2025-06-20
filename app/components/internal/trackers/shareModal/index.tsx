@@ -65,9 +65,9 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 console.error('Fetch failed:', err);
             }
         };
-        useEffect(() => {
-              fetchData();
-            }, []);
+        // useEffect(() => {
+        //       fetchData();
+        //     }, []);
     useEffect(() => {
         if(!id)
           setDrop(true);
@@ -202,7 +202,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                 <input type="text" 
                                 className='w-full border-0 text-[var(--primary-text-color)] outline-none bg-inherit p-2'
                                 value={filter}
-                                placeholder='Invite others by email or name' onChange={handleFilterChange} />
+                                placeholder='Invite others by email' onChange={handleFilterChange} />
                             </div>
                         </div>
                         {filter?.length > 0 && filteredData?.length > 0 && drop &&

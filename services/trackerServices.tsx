@@ -293,7 +293,6 @@ export const useTrackerServices = () => {
         )
     }
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
-      console.log("tracker type", trackerType);
       
       const eventType = type;
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");

@@ -136,7 +136,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   }
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
-  console.log(allTracker);
   const clickHandler=(item:AllTrackerTypes, e:any)=>{
     // e.stopPropagation();
     setSingleTrackerData(item)
