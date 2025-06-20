@@ -266,7 +266,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                               ""
                             }
 
-                              trackerType={singleTrackerData?.type || ""}
+                              trackerType={item?.type || ""}
                             />
                           )}
                         </div>

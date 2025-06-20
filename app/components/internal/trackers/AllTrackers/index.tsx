@@ -21,10 +21,11 @@ import UserProfile from "@/app/components/userProfile/UserProfile";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, setShare }: any) => {
   const mapping = {
-    "T_COMPETITOR":"Companie",
+    "T_COMPETITOR":"Company",
     "T_PRODUCT_KEYWORDS":"Keyword",
     "T_PEOPLE_FINDER": "Profile",
-    "T_SPEAKING_OPPORTUNITY": "Profile"
+    "T_SPEAKING_OPPORTUNITY": "Profile",
+    "T_EVENT_PARTICIPATION": "Event"
   }
   const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
@@ -302,7 +303,18 @@ useEffect(() => {
             <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
             {formatType(item.type)}</div>
             {entryCount>0 &&
-            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{entryCount} {(mapping as any)[item.type]}{entryCount > 1 && 's'}</div>
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
+                    {item.type === "T_COMPETITOR" ? (
+                      <>
+                        {entryCount} {entryCount > 1 ? "Companies" : "Company"}
+                      </>
+                    ) : (
+                      <>
+                        {entryCount} {(mapping as any)[item.type]}
+                        {entryCount > 1 && "s"}
+                      </>
+                    )}
+              </div>
             }
             </div>
             </div>
