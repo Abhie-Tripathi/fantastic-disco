@@ -1385,7 +1385,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                 <div className="max-w-[94px] h-full">
                   <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
                     <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                      {(event.basic?.eventLocation as any)[0]?.displayName}
+                      {(event.basic?.eventLocation as any)[0]?.displayName.split(",")[0]}
                     </p>
                     <div className="grid grid-rows-2 gap-2">
                       <CircularProgress
