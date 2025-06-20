@@ -132,6 +132,18 @@ const gtmFilters: {
           component: "ProductTopics",
           enabled: true,
         },
+        {
+          id: "userJobTitle",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
       ],
     },
     {
@@ -401,6 +413,18 @@ const geoFilters: {
         {
           id: "productTopics",
           component: "ProductTopics",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "Seniority",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
+        {
+          id: "userDepartment",
+          component: "Department",
+          filterName: "userJobTitle",
           enabled: true,
         },
       ],
