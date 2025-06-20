@@ -44,7 +44,7 @@ const FilterContent = ({
   searchHandler,
   closeHandler,
   refs,
-  trackerType
+  trackerType,
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();
@@ -66,76 +66,256 @@ const FilterContent = ({
           >
             {filters[type].map((section: FilterSection) => (
               <>
-              {(section.id==="advanced-details" && trackerType==="T_EVENT_PARTICIPATION")&&
-                      <div className="ml-1 font-bold text-[12px]" style={{color:"var(--secondary-text-color)"}}>* Below filters are not applicable on this template</div>}
-              <AccordionItem
-                key={section.id}
-                value={section.id}
-                className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
-              >
-                <AccordionTrigger
-                  id={section.id}
-                  // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
-                  className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
+                {section.id === "advanced-details" &&
+                  trackerType === "T_EVENT_PARTICIPATION" && (
+                    <div
+                      className="ml-1 font-bold text-[12px]"
+                      style={{ color: "var(--secondary-text-color)" }}
+                    >
+                      * Below filters are not applicable on this template
+                    </div>
+                  )}
+                <AccordionItem
+                  key={section.id}
+                  value={section.id}
+                  className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md"
                 >
-                  <div className="text-sm flex gap-2 items-center uppercase font-medium">
-                    <Filter className="w-4 h-4"/>
-                    {section.label}
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-4">
-                  <div
-                    className="space-y-3 pt-3"
-                    ref={refs?.advanceFilterRef}
+                  <AccordionTrigger
+                    id={section.id}
+                    // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
+                    className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
                   >
-                    {(type === "companies" || type === "people") && (
-                      <>
-                        {type === "companies" && (
-                          <>
-                            <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2">Company</div>
-                            {section.filters
-                              .filter((filter: FilterItem) => 
-                                filter.id === "companyType" || 
-                                filter.id === "company-followers" || 
-                                filter.id === "location"
-                              )
-                              .map((filter: FilterItem) => {
-                                const Component = getFilterComponent(filter.component);
-                                if (!Component) return null;
+                    <div className="text-sm flex gap-2 items-center uppercase font-medium">
+                      <Filter className="w-4 h-4" />
+                      {section.label}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4">
+                    <div
+                      className="space-y-3 pt-2"
+                      ref={refs?.advanceFilterRef}
+                    >
+                      {(type === "companies" || type === "people") && (
+                        <>
+                          {type === "companies" && (
+                            <>
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                Company
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "companyType" ||
+                                    filter.id === "company-followers" ||
+                                    filter.id === "location"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
 
-                                return (
-                                  <div
-                                    key={filter.id}
-                                    className="flex items-center justify-between group relative transition-opacity duration-200"
-                                    style={{ opacity: filter.enabled ? 1 : 0.5 }}
-                                  >
-                                    <div className="w-full">
-                                      <Component
-                                        variant="accordion"
-                                        disabled={!filter.enabled}
-                                        filterName={filter.filterName}
-                                      />
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
                                     </div>
-                                    {!filter.enabled && (
-                                      <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
-                                    )}
-                                  </div>
-                                );
-                              })}
-                          </>
-                        )}
+                                  );
+                                })}
 
-                        <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2">Event</div>
-                        {section.filters
-                          .filter((filter: FilterItem) => 
-                            filter.id === "category" || 
-                            filter.id === "locationIds" || 
-                            filter.id === "product-topics" || 
-                            filter.id === "event-followers"
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                Event
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "category" ||
+                                    filter.id === "locationIds" ||
+                                    filter.id === "product-topics" ||
+                                    filter.id === "event-followers"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
+
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                People
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "userNames" ||
+                                    filter.id === "userSocialLink" ||
+                                    filter.id === "userJobTitle" ||
+                                    filter.id === "userDepartment"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
+
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </>
+                          )}
+
+                          {type === "people" && (
+                            <>
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                People
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "userNames" ||
+                                    filter.id === "userSocialLink" ||
+                                    filter.id === "userJobTitle" ||
+                                    filter.id === "userDepartment"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
+
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                Event
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "category" ||
+                                    filter.id === "locationIds" ||
+                                    filter.id === "product-topics" ||
+                                    filter.id === "event-followers"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
+
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                            </>
+                          )}
+                        </>
+                      )}
+
+                      {type === "events" &&
+                        section.filters
+                          .filter(
+                            (filter: FilterItem) =>
+                              !isMobile || filter.id !== "eventIds"
                           )
                           .map((filter: FilterItem) => {
-                            const Component = getFilterComponent(filter.component);
-                            if (!Component) return null;
+                            const Component = getFilterComponent(
+                              filter.component
+                            );
+                            if (
+                              !Component ||
+                              (source === "tracker" && filter.id === "eventIds")
+                            )
+                              return null;
 
                             return (
                               <div
@@ -156,76 +336,9 @@ const FilterContent = ({
                               </div>
                             );
                           })}
-
-                        <div className="text-sm font-semibold text-[var(--secondary-text-color)] mb-2 mt-4">People</div>
-                        {section.filters
-                          .filter((filter: FilterItem) => 
-                            filter.id === "userNames" || 
-                            filter.id === "userSocialLink" || 
-                            filter.id === "userJobTitle" || 
-                            filter.id === "userDepartment"
-                          )
-                          .map((filter: FilterItem) => {
-                            const Component = getFilterComponent(filter.component);
-                            if (!Component) return null;
-
-                            return (
-                              <div
-                                key={filter.id}
-                                className="flex items-center justify-between group relative transition-opacity duration-200"
-                                style={{ opacity: filter.enabled ? 1 : 0.5 }}
-                              >
-                                <div className="w-full">
-                                  <Component
-                                    variant="accordion"
-                                    disabled={!filter.enabled}
-                                    filterName={filter.filterName}
-                                  />
-                                </div>
-                                {!filter.enabled && (
-                                  <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
-                                )}
-                              </div>
-                            );
-                          })}
-                      </>
-                    )}
-
-                    {type === "events" && section.filters
-                      .filter(
-                        (filter: FilterItem) =>
-                          !isMobile || filter.id !== "eventIds"
-                      )
-                      .map((filter: FilterItem) => {
-                        const Component = getFilterComponent(filter.component);
-                        if (
-                          !Component ||
-                          (source === "tracker" && filter.id === "eventIds")
-                        )
-                          return null;
-
-                        return (
-                          <div
-                            key={filter.id}
-                            className="flex items-center justify-between group relative transition-opacity duration-200"
-                            style={{ opacity: filter.enabled ? 1 : 0.5 }}
-                          >
-                            <div className="w-full">
-                              <Component
-                                variant="accordion"
-                                disabled={!filter.enabled}
-                                filterName={filter.filterName}
-                              />
-                            </div>
-                            {!filter.enabled && (
-                              <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
-                            )}
-                          </div>
-                        );
-                      })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               </>
             ))}
           </Accordion>
