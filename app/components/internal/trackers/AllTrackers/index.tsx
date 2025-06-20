@@ -320,7 +320,7 @@ useEffect(() => {
             </div>
             <div className="md:flex gap-2 text-xs items-center hidden"> 
               {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
-              <div className="flex gap-1 items-center">{ userAccessData?.superAdmin?.[0]?.imageUrl === null ? 
+              <div className="flex gap-1 items-center">{ item?.createdBy?.imageUrl === null ? 
                               <UserProfile name={`${item?.createdBy?.name}`} width={18} height={18} borderRadius="50%"fontSize="0.5rem"/>:
                               <Image
                                 src={
