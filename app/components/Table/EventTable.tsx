@@ -43,7 +43,6 @@ const EventTable = ({
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
-  console.log(trackerId);
   let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
@@ -83,8 +82,6 @@ const EventTable = ({
   });
   const trackerMaturity = data?.filterValues?.maturity
   const locationIds =  Object?.keys(data?.filterValues?.locationIds || {});
-
-  console.log("hey",locationIds)
 
   // console.log(show.join(","));
   // if(showsData.length>0){
