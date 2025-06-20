@@ -415,8 +415,10 @@ export default function MapComponent({
                 eventsData = await getEventsLatLongData(
                   trackerId,
                   `viewBound=${viewBoundString}`,
-                  searchParams
+                  searchParams,
+                  trackerType
                 );
+                
               } else {
                 eventsData = await getEventsWithSearchParams(finalSearchParams);
               }
