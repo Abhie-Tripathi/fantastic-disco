@@ -36,7 +36,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     includeKeywords.length + excludeKeywords.length >= 5;
 
   const showHolidayScore =
-    getFilterValue("eventTypes") == "holiday" &&
+    getFilterValue("eventTypes").includes("holiday") &&
     getFilterValue("locationIds").split(",").length == 1;
 
   return (

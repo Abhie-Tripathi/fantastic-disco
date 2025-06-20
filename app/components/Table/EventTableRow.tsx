@@ -159,7 +159,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   ];
 
   const showHolidayScore =
-  getFilterValue("eventTypes") == "holiday" &&
+  getFilterValue("eventTypes").includes("holiday") &&
   getFilterValue("locationIds").split(",").length == 1;
 
 
