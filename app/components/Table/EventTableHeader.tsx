@@ -9,6 +9,7 @@ interface EventTableHeaderProps {
   type?: string;
   view?: string;
   localFilters: Filters;
+  locationIds: string[]
   trackerMaturity?: string[];
 }
 
@@ -16,6 +17,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   show,
   type,
   view,
+  locationIds,
   localFilters,
   trackerMaturity,
 }) => {
@@ -36,8 +38,8 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     includeKeywords.length + excludeKeywords.length >= 5;
 
   const showHolidayScore =
-    getFilterValue("eventTypes").includes("holiday") &&
-    getFilterValue("locationIds").split(",").length == 1;
+    (getFilterValue("eventTypes").includes("holiday") || (view == "unattended")) &&
+    (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds.length == 1);
 
   return (
     <TableHeader>

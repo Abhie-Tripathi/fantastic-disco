@@ -189,7 +189,7 @@ export default function EventAccordion({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-    economicImpact: "economicImpact"
+    economicImpact: "economicImpact",
   };
   const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -197,7 +197,7 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
-  const trackerMaturity = !!data?.filterValues?.maturity
+  const trackerMaturity = !!data?.filterValues?.maturity;
   const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(
@@ -1225,7 +1225,12 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-const {getFilterValue} = useFilterState()
+  const { getFilterValue } = useFilterState();
+  const { data, setIsNewCall } = useTrackerContext();
+
+  const trackerLocationIds = Object?.keys(
+    data?.filterValues?.locationIds || {}
+  );
 
   function formatAddress(eventLocation: HolidayEventLocation[]): string {
     const addressParts: string[] = [];
@@ -1250,7 +1255,9 @@ const {getFilterValue} = useFilterState()
     })
     .map((eventType) => eventType.name);
 
-  const showHolidayScore = getFilterValue("locationIds").split(",").length == 1
+  const showHolidayScore =
+    getFilterValue("locationIds").split(",").filter(Boolean).length == 1 ||
+    trackerLocationIds.length == 1;
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -1373,28 +1380,31 @@ const {getFilterValue} = useFilterState()
               </div>
             </div>
 
-         {showHolidayScore && <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
-              <div className="max-w-[94px] h-full">
-                        <div
-                          className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
-                        >
-                          <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                            {(event.basic?.eventLocation as any)[0]?.displayName}
-                          </p>
-                          <div className="grid grid-rows-2 gap-2">
-                            <CircularProgress
-                              value={(event.basic?.eventLocation as any)[0]?.businessScore}
-                              label="Business"
-                            />
-                            <CircularProgress
-                              value={(event.basic?.eventLocation as any)[0]?.socialScore}
-                              label="Social"
-                            />
-                          </div>
-                        </div>
-                  
+            {showHolidayScore && (
+              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
+                <div className="max-w-[94px] h-full">
+                  <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                    <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                      {(event.basic?.eventLocation as any)[0]?.displayName}
+                    </p>
+                    <div className="grid grid-rows-2 gap-2">
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.businessScore
+                        }
+                        label="Business"
+                      />
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.socialScore
+                        }
+                        label="Social"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>}
+            )}
           </div>
         </div>
       </div>

@@ -33,6 +33,7 @@ interface EventTableRowProps {
   trackerId?: string;
   show: Show[];
   type?: string;
+  locationIds: string[]
   setEventId?: any;
   setInterest?: any;
   global?: string;
@@ -127,6 +128,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   trackerId,
   type,
   setEventId,
+  locationIds,
   setInterest,
   view,
   global,
@@ -159,8 +161,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   ];
 
   const showHolidayScore =
-  getFilterValue("eventTypes").includes("holiday") &&
-  getFilterValue("locationIds").split(",").length == 1;
+  (getFilterValue("eventTypes").includes("holiday") || (view == "unattended")) &&
+  (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds.length == 1);
 
 
   const isCancelled = event.basic.status === "cancelled";

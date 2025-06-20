@@ -82,6 +82,10 @@ const EventTable = ({
     }
   });
   const trackerMaturity = data?.filterValues?.maturity
+  const locationIds =  Object?.keys(data?.filterValues?.locationIds || {});
+
+  console.log("hey",locationIds)
+
   // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
@@ -238,6 +242,7 @@ const EventTable = ({
           <Table>
             <EventTableHeader
               show={showValues}
+              locationIds = {locationIds}
               type={query.type}
               view={query.eventType}
               localFilters={localFilters}
@@ -248,6 +253,7 @@ const EventTable = ({
                 updatedEvents.map((event: Event) => (
                   <EventTableRow
                     global={view}
+                    locationIds = {locationIds}
                     view={query.eventType}
                     trackerMaturity={trackerMaturity}
                     setEventId={setEventId}
