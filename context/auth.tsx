@@ -316,6 +316,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signOut = useCallback(async () => {
     setUser(null);
+    setWhrUser(null);
     deleteLocalStorage();
     // localStorage.removeItem("walkthroughCompleted");
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
@@ -357,7 +358,9 @@ export const AuthContextProvider = ({ children }: any) => {
           //   JSON.stringify(["research"])
           // );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
+          if (redirectPath === "whr-pricing") {
+            pricingRedirect();
+          } else router.push(redirectPath ? `${redirectPath}` : "/internal");
         } else {
           sessionStorage.setItem("newUser", JSON.stringify(true));
           // localStorage.removeItem("walkthroughCompleted");
@@ -433,11 +436,14 @@ export const AuthContextProvider = ({ children }: any) => {
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          router.push(
-            redirectPath
-              ? `/internal/${redirectPath}`
-              : `/internal/search/events?${modifiedParams.toString()}`
-          );
+          if (redirectPath === "whr-pricing") {
+            pricingRedirect();
+          } else
+            router.push(
+              redirectPath
+                ? `/internal/${redirectPath}`
+                : `/internal/search/events?${modifiedParams.toString()}`
+            );
         }
       } catch (error) {
         console.log("Error", error);
@@ -457,7 +463,9 @@ export const AuthContextProvider = ({ children }: any) => {
   const signInActions = (redirectTo: string | undefined) => {
     // localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    router.push(redirectTo || "/internal");
+    if (redirectTo === "whr-pricing") {
+      pricingRedirect();
+    } else router.push(redirectTo || "/internal");
   };
 
   const signUpActions = async (redirectTo: string | undefined) => {
@@ -474,7 +482,9 @@ export const AuthContextProvider = ({ children }: any) => {
     } else {
       sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     }
-    router.push(restrictedUrl || "/");
+    if (redirectTo === "whr-pricing") {
+      pricingRedirect();
+    } else router.push(restrictedUrl || "/");
   };
 
   const handleFlowAction = (flow: AuthFlow, redirectTo: string | undefined) => {
@@ -525,6 +535,31 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
+  const pricingRedirect = () => {
+    setTimeout(() => {
+      router.replace("https://whr.ai/pricing");
+    }, 1000);
+  };
+
+  const setWhrUser = (userDetails: UserResponse | null) => {
+    if (userDetails) {
+      const gtmUser = {
+        id: userDetails?.id,
+        firstname: userDetails?.firstname,
+        lastname: userDetails?.lastname,
+        email: userDetails?.email,
+        profilePicture: userDetails?.imageUrl,
+      };
+
+      document.cookie = `${isEventeli ? "geoUser" : "gtmUser"}=${JSON.stringify(
+        gtmUser
+      )}; path=/; max-age=${365 * 24 * 60 * 60}`;
+    } else
+      document.cookie = `${
+        isEventeli ? "geoUser" : "gtmUser"
+      }=; path=/; max-age=0`;
+  };
+
   const isTentimesUser = useMemo(() => {
     return user?.accountId === TENTIMES_USER_ACCOUNT_ID;
   }, [user]);
@@ -533,6 +568,8 @@ export const AuthContextProvider = ({ children }: any) => {
     if (!user) {
       const userData = window.localStorage.getItem("user");
       userData && setUser(JSON.parse(userData));
+    } else {
+      setWhrUser(user);
     }
   }, [user]);
 
