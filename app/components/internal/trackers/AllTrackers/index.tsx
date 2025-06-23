@@ -255,7 +255,11 @@ useEffect(() => {
     setShare(true);
   }
 }, [shareId]);
-
+const clickHandler=(id:string)=>{
+    // e.stopPropagation();
+    setIsNewCall(true); 
+    setTrackerId(id);
+  }
   return (
     
    <div
@@ -396,10 +400,10 @@ useEffect(() => {
         e.stopPropagation();
     }}>
                 <div className="flex gap-2 items-center">
-                <Link href={`/internal/trackers/${item.id}/notesDiscussion?type=${item.type}`}>
+                <Link href={`/internal/trackers/${item.id}/notesDiscussion?type=${item.type}`} onClick={()=>clickHandler(item.id)}>
                 <NotebookPen width={14} height={14} />
                 </Link>
-                <Link href={`/internal/trackers/${item.id}/editTracker?type=${item.type}`}>
+                <Link href={`/internal/trackers/${item.id}/editTracker?type=${item.type}`} onClick={()=>clickHandler(item.id)}>
                  <Settings
                       width={14}
                       height={14}
@@ -482,6 +486,7 @@ useEffect(() => {
         {share && shareId && (
             <div className={styles.shareModal} onClick={closeModal}>
               <ShareModal
+              clickHandler={clickHandler}
                 closeShareModal={closeShareModal}
                 share={share}
                 shareId={shareId}

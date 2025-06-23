@@ -23,6 +23,7 @@ interface ShareModalProps {
   share?: boolean;
   setShare?: any
   setAccessData?: (data: any) => void;
+  clickHandler?: (id: string) => void;
 }
 const ShareModal: React.FC<ShareModalProps> = ({
     fetchAccess,
@@ -35,7 +36,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
     setShare,
     setAccessData,
     global,
-    shareId
+    shareId, 
+    clickHandler
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
@@ -181,7 +183,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                         <div className='flex justify-between'>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
                         {global &&
-  <Link href={`/internal/trackers/${shareId}/notesDiscussion?type=${trackerType}`}>
+  <Link href={`/internal/trackers/${shareId}/notesDiscussion?type=${trackerType}`} onClick={() => clickHandler?.(shareId || '')}>
     <div className="text-[var(--primary-color)] border-b border-transparent hover:border-[var(--primary-color)] transition-all duration-200">
       Manage
     </div>
