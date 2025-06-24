@@ -530,6 +530,12 @@ const geoFilters: {
           enabled: true,
         },
         {
+          id: "upcoming-event",
+          component: "TotalEvent",
+          filterName: "upcomingEvent",
+          enabled: true,
+        },
+        {
           id: "company-followers",
           component: "EventFollowers",
           filterName: "communitySize",
