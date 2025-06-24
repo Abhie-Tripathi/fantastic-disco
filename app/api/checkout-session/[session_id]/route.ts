@@ -12,18 +12,29 @@ export async function GET(
   { params }: { params: { session_id: string } }
 ) {
   cookieHeader = req.headers.get("cookie") || "";
+
   try {
-    const email_id = req.nextUrl.searchParams.get("email_id");
-    console.log("email_id", email_id);
+    const userDetail = await fetchUser();
+
+    if (!userDetail.data) {
+      return NextResponse.json(
+        { error: userDetail, message: "User not found" },
+        { status: 500 }
+      );
+    }
 
     const session = await stripe.checkout.sessions.retrieve(params.session_id, {
       expand: ["subscription", "customer", "invoice.payment_intent"],
     });
 
+    const email_id = userDetail.data?.email;
     const customerEmail = session.customer_details?.email;
     const sub_expires_at = session.expires_at;
     const plan = session.metadata?.plan;
     const frequency = session.metadata?.planFrequency;
+    const currency = session.currency;
+    const totalAmountPaid = session.amount_total;
+    const paymentStatus = session.payment_status;
 
     const startDate = fromUnixTime(session.created);
 
@@ -39,18 +50,30 @@ export async function GET(
 
     let updatePlanResponse = {};
     if (
+      paymentStatus === "paid" &&
       sub_expires_at &&
-      Date.now() < (sub_expires_at * 1000) &&
+      Date.now() < sub_expires_at * 1000 &&
       plan &&
       formattedStartDate &&
       formattedEndDate &&
       email_id === customerEmail
-    )
+    ) {
+      // const updatedPayload = {
+      //   "planStartDate": startDate,
+      //   "planEndDate": endDate, // -- or change interval as per plan duration
+      //   "purchaseValue": totalAmountPaid, // -- replace with actual value if needed
+      //   "currency": currency, // -- replace with actual currency
+      //   "updatedAt": new Date().toISOString(), // CURRENT_TIMESTAMP
+      //   "pendingRequests": '200', // essential or scale - 200, advacne - 1000
+      //   "pendingCompanySearchRequests": '200' // essential or scale - 200, advanced-1000
+      // }
+
       updatePlanResponse = await upgradePlan(
         plan,
         formattedStartDate,
         formattedEndDate
       );
+    }
 
     const res = NextResponse.json({
       stripe: session,
@@ -80,12 +103,12 @@ const upgradePlan = async (
 
     const token = resp.data.user.token;
 
-    const payload = JSON.stringify({
+    const payload = {
       plan: Number(plan),
       token: token,
       startDate: startDate,
       endDate: endDate,
-    });
+    };
 
     const updatePlan = await fetch(`${BASE_URL}/me/account/membership`, {
       method: "PUT",
@@ -93,12 +116,30 @@ const upgradePlan = async (
         "Content-Type": "application/json",
         Cookie: cookieHeader,
       },
-      body: payload,
+      body: JSON.stringify(payload),
     });
     const planUpdateResponse = await updatePlan.json();
     return planUpdateResponse;
   } catch (e) {
     console.log("Error Updating Plan:", e);
+    return e;
+  }
+};
+
+const fetchUser = async () => {
+  try {
+    const fetchUserData = await fetch(`${BASE_URL}/me`, {
+      method: "GET",
+      headers: {
+        Cookie: cookieHeader,
+      },
+    });
+
+    const resp = await fetchUserData.json();
+
+    return resp;
+  } catch (e) {
+    console.log("Error Fetching User:", e);
     return e;
   }
 };

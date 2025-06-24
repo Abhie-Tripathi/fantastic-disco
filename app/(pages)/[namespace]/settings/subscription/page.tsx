@@ -12,10 +12,8 @@ import { useEffect, useState } from "react";
 // import { Mail } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthContext } from "@/context";
 
 const Subscription = () => {
-  const { user } = useAuthContext();
   const { getMembershipData } = useProfileServices();
   const [membershipData, setMembershipData] = useState<MembershipData>();
 
@@ -66,11 +64,11 @@ const Subscription = () => {
   //   fetchMembershipData();
   // }, [paymentStatus]);
 
-  useEffect(() => {
+  useEffect(() => {    
     const fetchCheckoutSession = async () => {
       try {
         const res = await fetch(
-          `/api/checkout-session/${session_id}?email_id=${user?.email}`
+          `/api/checkout-session/${session_id}`
         );
         const data = await res.json();
         console.log("Payment Status:", data);

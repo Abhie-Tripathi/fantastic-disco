@@ -358,7 +358,7 @@ export const AuthContextProvider = ({ children }: any) => {
           //   JSON.stringify(["research"])
           // );
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-          if (redirectPath === "whr-pricing") {
+          if (redirectPath && redirectPath.includes("whr-pricing")) {
             pricingRedirect();
           } else router.push(redirectPath ? `${redirectPath}` : "/internal");
         } else {
@@ -436,7 +436,7 @@ export const AuthContextProvider = ({ children }: any) => {
         if (isEventeli) {
           router.push(`/location`);
         } else {
-          if (redirectPath === "whr-pricing") {
+          if (redirectPath && redirectPath.includes("whr-pricing")) {
             pricingRedirect();
           } else
             router.push(
@@ -463,7 +463,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signInActions = (redirectTo: string | undefined) => {
     // localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    if (redirectTo === "whr-pricing") {
+    if (redirectTo && redirectTo.includes("whr-pricing")) {
       pricingRedirect();
     } else router.push(redirectTo || "/internal");
   };
@@ -482,7 +482,7 @@ export const AuthContextProvider = ({ children }: any) => {
     } else {
       sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     }
-    if (redirectTo === "whr-pricing") {
+    if (redirectTo && redirectTo.includes("whr-pricing")) {
       pricingRedirect();
     } else router.push(restrictedUrl || "/");
   };
