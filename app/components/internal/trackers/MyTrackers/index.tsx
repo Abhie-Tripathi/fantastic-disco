@@ -278,6 +278,11 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             <Skeleton className="h-full w-[70%]"/>
                             <Skeleton className="h-full w-[30%]"/>
                           </div>}
+          {(loadOne && isMobile) &&(
+            <div className="flex md:hidden h-[160px] w-full items-center justify-center gap-6">
+              <Skeleton className="h-full w-[100%]"/>
+            </div>
+          )}
             <div
               className="flex item-center justify-center"
             >
