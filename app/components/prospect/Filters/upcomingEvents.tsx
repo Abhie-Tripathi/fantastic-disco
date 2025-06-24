@@ -5,7 +5,7 @@ import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
 import { LockClosedSmall } from "geist-icons";
 import { cn } from "@/lib/utils";
-export default function TotalEvent() {
+export default function UpcomingEvents() {
   const { setLocalFilter, getLocalFilterValue, morphedData, deleteMultipleLocalFilters } =
     useFilterContext();
       const [isMounted, setIsMounted] = useState(false);

@@ -34,7 +34,7 @@ import Industry from "@/app/components/prospect/Filters/industryFilter";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
 import Seniority from "@/app/components/prospect/Filters/seniority";
 import Department from "@/app/components/prospect/Filters/department";
-import TotalEvent from "@/app/components/prospect/Filters/totalEvent";
+import TotalEvent from "@/app/components/prospect/Filters/upcomingEvents";
 
 interface FilterSection {
   id: string;
