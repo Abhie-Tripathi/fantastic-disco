@@ -34,7 +34,7 @@ import Industry from "@/app/components/prospect/Filters/industryFilter";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
 import Seniority from "@/app/components/prospect/Filters/seniority";
 import Department from "@/app/components/prospect/Filters/department";
-import TotalEvent from "@/app/components/prospect/Filters/upcomingEvents";
+import UpcomingEvents from "@/app/components/prospect/Filters/upcomingEvents";
 
 interface FilterSection {
   id: string;
@@ -215,7 +215,7 @@ const gtmFilters: {
         // },
         {
           id: "upcoming-event",
-          component: "TotalEvent",
+          component: "UpcomingEvents",
           filterName: "upcomingEvent",
           enabled: true,
         },
@@ -647,7 +647,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
   CompanyType,
   Seniority,
   Department,
-  TotalEvent
+  UpcomingEvents
 };
 
 export const getFilterComponent = (componentName: string) => {
