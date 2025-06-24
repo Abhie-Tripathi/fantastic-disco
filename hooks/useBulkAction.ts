@@ -1,3 +1,4 @@
+import { useTrackerContext } from '@/context/tracker';
 import { Event } from '@/types/events';
 import { useState } from 'react';
 
@@ -37,7 +38,7 @@ interface ApiFunctions {
 export const useBulkActions = (apiFunctions: ApiFunctions) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-
+  const{ setSavedEventCount } = useTrackerContext();
   const executeBulkAction = async (
     params: BulkActionParams,
     callbacks: BulkActionCallbacks
@@ -74,7 +75,7 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
             }
             return isValid;
           });
-
+        setSavedEventCount?.(((prev:number) => prev - validUnbookmarkEntries.length));
         await Promise.all(
           validUnbookmarkEntries.map(async ([eventId, value]) => {
             try {
@@ -121,12 +122,10 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
     ([eventId, value]) => {
       const alreadyHasInterest = Boolean(value?.interests?.[interestKey]);
       if (alreadyHasInterest) {
-        console.log(`Skipping ${eventId} - already has '${interestKey}'`);
         return false;
       }
 
       if (!eventId || !value) {
-        console.warn("Invalid entry:", { eventId, value });
         return false;
       }
 
@@ -137,7 +136,7 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
   if (validInterestEntries.length === 0) {
     return;
   }
-
+  setSavedEventCount?.((prev: number) => prev + validInterestEntries.length);
   const interestResults = await Promise.allSettled(
     validInterestEntries.map(async ([eventId]) => {
       try {
