@@ -531,7 +531,7 @@ const geoFilters: {
         },
         {
           id: "upcoming-event",
-          component: "TotalEvent",
+          component: "UpcomingEvents",
           filterName: "upcomingEvent",
           enabled: true,
         },
