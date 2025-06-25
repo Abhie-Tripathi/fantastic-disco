@@ -121,24 +121,24 @@ const FilterContent = ({
                           let heading = null;
                           if (type === "companies") {
                             if (!companiesRendered && companiesFilters.includes(filter.id)) {
-                              heading = <div key="Companies-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>Companies</div>;
+                              heading = <div key="Companies-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>Companies</div>;
                               companiesRendered = true;
                             } else if (!eventRendered && eventFilters.includes(filter.id)) {
-                              heading = <div key="Event-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>Event</div>;
+                              heading = <div key="Event-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>Event</div>;
                               eventRendered = true;
                             } else if (!peopleRendered && !companiesFilters.includes(filter.id) && !eventFilters.includes(filter.id)) {
-                              heading = <div key="People-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>People</div>;
+                              heading = <div key="People-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>People</div>;
                               peopleRendered = true;
                             }
                           } else if (type === "people") {
                             if (!eventRendered && eventFilters.includes(filter.id)) {
-                              heading = <div key="Event-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>Event</div>;
+                              heading = <div key="Event-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>Event</div>;
                               eventRendered = true;
                             } else if (!companiesRendered && peopleCompaniesFilters.includes(filter.id)) {
-                              heading = <div key="Companies-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>Companies</div>;
+                              heading = <div key="Companies-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>Companies</div>;
                               companiesRendered = true;
                             } else if (!peopleRendered && !peopleCompaniesFilters.includes(filter.id) && !eventFilters.includes(filter.id)) {
-                              heading = <div key="People-heading" className="font-semibold text-sm" style={{ color: "var(--secondary-text-color)" }}>People</div>;
+                              heading = <div key="People-heading" className=" text-xs" style={{ color: "var(--secondary-text-color)" }}>People</div>;
                               peopleRendered = true;
                             }
                           }
