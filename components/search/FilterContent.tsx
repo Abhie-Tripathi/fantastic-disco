@@ -296,6 +296,45 @@ const FilterContent = ({
                                     </div>
                                   );
                                 })}
+
+                              <div className="text-sm font-semibold text-[var(--secondary-text-color)]">
+                                Company
+                              </div>
+                              {section.filters
+                                .filter(
+                                  (filter: FilterItem) =>
+                                    filter.id === "companyType" ||
+                                    filter.id === "company-followers" ||
+                                    filter.id === "location" ||
+                                    filter.id === "company-followers"
+                                )
+                                .map((filter: FilterItem) => {
+                                  const Component = getFilterComponent(
+                                    filter.component
+                                  );
+                                  if (!Component) return null;
+
+                                  return (
+                                    <div
+                                      key={filter.id}
+                                      className="flex items-center justify-between group relative transition-opacity duration-200"
+                                      style={{
+                                        opacity: filter.enabled ? 1 : 0.5,
+                                      }}
+                                    >
+                                      <div className="w-full">
+                                        <Component
+                                          variant="accordion"
+                                          disabled={!filter.enabled}
+                                          filterName={filter.filterName}
+                                        />
+                                      </div>
+                                      {!filter.enabled && (
+                                        <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
                             </>
                           )}
                         </>

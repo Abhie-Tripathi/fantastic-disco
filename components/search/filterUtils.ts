@@ -314,6 +314,12 @@ const gtmFilters: {
           component: "EventFollowers",
           enabled: true,
         },
+        {
+          id: "company-followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
       ],
     },
   ],
@@ -583,6 +589,12 @@ const geoFilters: {
         {
           id: "event-followers",
           component: "EventFollowers",
+          enabled: true,
+        },
+        {
+          id: "company-followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
           enabled: true,
         },
       ],
