@@ -326,7 +326,7 @@ const gtmFilters: {
           id: "event-followers",
           component: "EventFollowers",
           enabled: true,
-        },
+        }
       ],
     },
   ],
