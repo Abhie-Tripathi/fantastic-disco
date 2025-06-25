@@ -112,11 +112,13 @@ const Research = ({ theme }: Props) => {
 
                 </div>
             </div>
-            <div className="w-[260px] mb-[-40px] max-[1100px]:hidden">
+            {localFilters.locationIds !== undefined ? <div className="w-[260px] mb-[-40px] max-[1100px]:hidden">
                 <Suspense fallback={<div>Loading...</div>}>
                     <MapContainer searchHandler={searchHandler} location={locationName} theme={theme} latLang={latLang} />
                 </Suspense>
-            </div>
+            </div>    
+        : <Button onClick={searchHandler} className='mb-6 flex gap-1 items-center' size="sm">Explore Events <MoveRight width={12} /></Button>     
+        }
         </div>
     )
 }
