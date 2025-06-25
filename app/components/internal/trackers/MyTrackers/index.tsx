@@ -17,7 +17,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { PaginationComponent } from "@/components/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
-import { Route, Search } from "lucide-react";
+import { MoveUpRight, Route, Search } from "lucide-react";
 import {
   MagnifyingGlass,
  
@@ -170,7 +170,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       </div>
           
         <div>
-        <div className="flex items-center p-6">
+        <div className="flex items-center p-6 pb-3 md:pb-6">
             {/* <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
               <div className="font-medium">Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
@@ -179,10 +179,10 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             </div> */}
           <div className="flex items-center gap-2 w-full">
             <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden max-h-20 opacity-100 scale-y-100 w-full bg-white
+              className={`transition-all duration-300 ease-in-out overflow-hidden max-h-20 opacity-100 scale-y-100 w-full bg-background
                 `}
             >
-              <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2">
+              <div className="border px-3 py-2 flex items-center gap-2 bg-background rounded-md shadow-sm p-2">
                 <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
                 <input
                   className="outline-none w-full bg-transparent"
@@ -196,10 +196,31 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     e.stopPropagation();
     hideTemplates(false);
   }}>Create</Button>
+{!isMobile &&
+<Link
+  href="/internal/trackers/savedevents?view=table"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">Bookmarked</Button>
+</Link>}
             {/* <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
             </Button> */}
             </div>
+             
+          </div>
+          <div className="flex-col gap-4 px-6 pb-3 flex md:hidden">
+                  <Link 
+                  href={`/internal/trackers/savedevents?view=table`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >
+                    <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
+                      Bookmarked Events
+                      <MoveUpRight width={16} height={16} />
+                    </div>
+                  </Link>
           </div>
           <div
   className={`transition-all duration-300 ease-in-out overflow-hidden ${
@@ -219,7 +240,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   </div>
 </div>
         <div className={`${
-    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100dvh-158px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
+    isMobile?"h-[calc(100vh-206px)]": "h-[calc(100dvh-158px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
@@ -256,7 +277,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             <Map
                               isGlobal={true}
                               source="tracker"
-                              eventType={eventType}
+                              eventType=""
                               searchParams="active"
                               trackerId={item?.id || ""}
                             trackerLoc={

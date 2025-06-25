@@ -8,8 +8,9 @@ import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import { GAEvent } from "@/utils/GAEvent";
-import { ChartTrendingUp, Globe, Location, Buildings } from "geist-icons";
+import { ChartTrendingUp, Globe, Location, Buildings, Bookmark } from "geist-icons";
 import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -27,6 +28,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     "T_SPEAKING_OPPORTUNITY": "Profile",
     "T_EVENT_PARTICIPATION": "Event"
   }
+  const isMobile = useIsMobile();
   const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
   // const [share, setShare] = useState(false);
@@ -130,16 +132,17 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     if(isEventeli){
     const transformedData =  CountValues.geo.map((key)=>{
       return {
-        type: key.charAt(0).toUpperCase() + key.slice(1),
+        type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
         totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
         newCount : item?.groupedEventsCount[key]?.new || 0
       }
     })
+    
     setEventCount(transformedData);
   }else{
     const transformedData =  CountValues.gtm.map((key)=>{
       return {
-        type: key.charAt(0).toUpperCase() + key.slice(1),
+        type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
         totalCount :  item?.groupedEventsCount[key] || item?.savedEventsCount || 0,
         newCount : item?.groupedEventsCount[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
@@ -274,7 +277,11 @@ const clickHandler=(id:string)=>{
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
             <div className="font-bold break-words leading-none">
-              {item?.name?.length>90? `${item.name.substring(0,90)}...`:item.name}
+                  {typeof item?.name === 'string'
+                    ? item.name.length > (isMobile ? 60 : 90)
+                      ? `${item.name.substring(0, isMobile ? 60 : 90)}...`
+                      : item.name
+                    : null}
               </div>
             <div className="flex gap-1 w-[100%]">
         {locations?.length>0 && 
@@ -284,18 +291,19 @@ const clickHandler=(id:string)=>{
         </div>
         <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
         <div className="w-[95%] overflow-hidden flex gap-1">
-  {locations.slice(0, 3).map((loc:string, i:number) => (
+  {locations.slice(0, isMobile?2:3).map((loc:string, i:number) => (
     <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
       {loc}
     </div>
   ))}
   </div>
 
-  {locations.length > 3 && (
-    <div className="border h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)] text-xs w-[5%]">
-      +{locations.length - 3}
-    </div>
-  )}
+  {locations.length > (isMobile ? 2 : 3) && (
+  <div className="flex items-center text-xs text-primary font-medium ml-1">
+    {`+${locations.length - (isMobile ? 2 : 3)}`}
+  </div>
+)}
+
 </div>
 
 
@@ -325,7 +333,14 @@ const clickHandler=(id:string)=>{
             <div className="md:flex gap-2 text-xs items-center hidden"> 
               {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
               <div className="flex gap-1 items-center">{ item?.createdBy?.imageUrl === null ? 
-                              <UserProfile name={`${item?.createdBy?.name}`} width={18} height={18} borderRadius="50%"fontSize="0.5rem"/>:
+                <UserProfile
+                  name={`${item?.createdBy?.firstName ?? ""} ${item?.createdBy?.lastName ?? ""}`.trim()}
+                  width={18}
+                  height={18}
+                  borderRadius="50%"
+                  fontSize="0.5rem"
+                />
+                :
                               <Image
                                 src={
                                  item?.createdBy?.imageUrl
@@ -337,7 +352,10 @@ const clickHandler=(id:string)=>{
                                 referrerPolicy="no-referrer"
                               />
                               }
-                              <div>{item?.createdBy?.name?.charAt(0)?.toUpperCase()+item?.createdBy?.name?.substring(1)}</div>
+                {(item?.createdBy?.firstName || item?.createdBy?.lastName) && (
+                  <div>{`${item?.createdBy?.firstName ?? ""} ${item?.createdBy?.lastName ?? ""}`.trim()}</div>
+                )}
+
                               </div>
               {/* <div className="text-[var(--secondary-bg-light)]">|</div> */}
               
@@ -362,7 +380,7 @@ const clickHandler=(id:string)=>{
             <div className="flex w-full h-full flex-col justify-between">
             <div className="flex gap-2 w-[100%] text-sm font-medium">
             {eventsCount?.map((item,index)=>(
-              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px"}} key={index}>
+              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
               {isEventeli && (
           item.type === "Business" ? (
@@ -374,9 +392,14 @@ const clickHandler=(id:string)=>{
             <CloudAlert height={12} width={12} color="var(--primary-color)" />
           )
           )}
-                {!isEventeli &&
-                <Image src={item.logo} alt={item.type} width={12} height={12}/>
-                }
+                  {!isEventeli &&
+                    (item.type === "Bookmark" ? (
+                      <Bookmark width="12px" height="12px" color="var(--primary-color)" />
+                    ) : (
+                      <Image src={item.logo} alt={item.type} width={12} height={12} />
+                    ))
+                  }
+
                 {item.type}
                 
               </div>

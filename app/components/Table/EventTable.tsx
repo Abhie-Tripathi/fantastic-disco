@@ -188,10 +188,10 @@ const EventTable = ({
         />
       );
   }
-
+  
   if (
     searchParams.size === 0 ||
-    (searchParams.size == 1 && searchParams.has("view"))
+    (searchParams.size == 1 && searchParams.has("view") && source!=="tracker")
   ) {
     return (
       <div className="p-6">

@@ -197,6 +197,8 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
+  console.log("source",source);
+  
   const trackerMaturity = !!data?.filterValues?.maturity
   const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -303,7 +305,7 @@ export default function EventAccordion({
 
   if (
     searchParams.size === 0 ||
-    (searchParams.size == 1 && searchParams.has("view"))
+    (searchParams.size == 1 && searchParams.has("view") && source!=="tracker")
   ) {
     return (
       <div className="p-6">
