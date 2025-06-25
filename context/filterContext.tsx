@@ -139,6 +139,7 @@ export interface Filters {
   filter?: string;
   compare_from?: string;
   compare_to?: string;
+  upcomingEvents?: string;
 }
 type Filter = {
   eventTypes: string;
