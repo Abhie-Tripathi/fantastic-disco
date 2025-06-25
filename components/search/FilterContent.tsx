@@ -146,7 +146,8 @@ const FilterContent = ({
                                     filter.id === "category" ||
                                     filter.id === "locationIds" ||
                                     filter.id === "product-topics" ||
-                                    filter.id === "event-followers"
+                                    filter.id === "event-followers"||
+                                    filter.id === "upcoming-event"
                                 )
                                 .map((filter: FilterItem) => {
                                   const Component = getFilterComponent(
@@ -267,7 +268,8 @@ const FilterContent = ({
                                     filter.id === "category" ||
                                     filter.id === "locationIds" ||
                                     filter.id === "product-topics" ||
-                                    filter.id === "event-followers"
+                                    filter.id === "event-followers" ||
+                                    filter.id === "upcoming-event"
                                 )
                                 .map((filter: FilterItem) => {
                                   const Component = getFilterComponent(
