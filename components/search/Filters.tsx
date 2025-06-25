@@ -741,7 +741,7 @@ const Filters = ({
   const searchHandler = () => {
     if (pathName.split("/").includes("search")) {
       Object.keys(localFilters).map((filter) =>
-        GAEvent("", "Reseach", "Filter Applied", filter)
+        GAEvent("", "Research", "Filter Applied", filter)
       );
     }
     applyFilters({ resetPage: true });
