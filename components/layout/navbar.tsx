@@ -344,6 +344,7 @@ export default function Navbar() {
             <Button
               variant="outline"
               size="sm"
+              className="hidden md:flex"
               onClick={handleUpgradeClick}
             >
               <span className="hidden sm:inline">Upgrade</span>

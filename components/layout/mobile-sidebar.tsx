@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
@@ -27,11 +27,27 @@ import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const { signOut } = useAuthContext();
+  const [membershipData, setMembershipData] = useState<any>(null);
+  const { getMembershipData } = useProfileServices();
+
+  useEffect(() => {
+    const fetchMembership = async () => {
+      try {
+        const data = await getMembershipData();
+        setMembershipData(data);
+      } catch (e) {
+        setMembershipData(null);
+      }
+    };
+    fetchMembership();
+  }, []);
 
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
@@ -89,6 +105,11 @@ const MobileSidebar = () => {
           height={24}
           style={theme === "dark" ? { filter: "invert(100%)" } : {}}
         />
+        {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+                <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+                  {MembershipPlan[membershipData?.membership || 0]}
+                </span>
+              </div>}
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">

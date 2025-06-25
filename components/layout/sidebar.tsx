@@ -306,11 +306,11 @@ const Sidebar = () => {
                 height={24}
                 style={theme === "dark" ? { filter: "invert(100%)" } : {}}
               />
-              <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+              {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
                 <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
                   {MembershipPlan[membershipData?.membership || 0]}
                 </span>
-              </div>
+              </div>}
             </>
           )}
         </div>
