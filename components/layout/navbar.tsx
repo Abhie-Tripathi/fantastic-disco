@@ -342,9 +342,8 @@ export default function Navbar() {
 
           {membershipData && membershipData.membership === MembershipPlan.Freemium && (
             <Button
-              variant="default"
+              variant="outline"
               size="sm"
-              className="flex items-center gap-2 font-semibold shadow-md px-4 py-2 text-white bg-gradient-to-r from-[#7B5AFF] to-[#4B9EF4] hover:from-[#5A4690] hover:to-[#4B9EF4] transition-colors duration-200"
               onClick={handleUpgradeClick}
             >
               <span className="hidden sm:inline">Upgrade</span>
