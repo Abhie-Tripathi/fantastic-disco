@@ -48,7 +48,7 @@ const FilterContent = ({
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const isMobile = useIsMobile();
-
+  
   return (
     <div className="flex-1">
       <div className="overflow-y-auto w-full mt-0 flex-1">
