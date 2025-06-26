@@ -21,15 +21,15 @@ export default function Page() {
   const token = searchParams.get("hash") || "";
   const userId = Number(searchParams.get("uid") || "");
   const redirectPath = searchParams.get("redirect") || "";
-
+  const trackerType = searchParams.get("trackerType") || "";
   useEffect(() => {
     const verify = async () => {
       try {
-        const formData = { email, otp, target, targetId };
+        const formData = { email, otp, target, targetId, trackerType };
         const result = await verifyAccess(formData);
 
         if (result) {
-          router.push("/internal/trackers?tab=allTrackers&skip=0");
+          router.push(`/internal/trackers/${targetId}/trackedEvents?type=${trackerType}&eventType=${isEventeli?"social":"active"}&view=table`);
         }
       } catch (error) {
         console.error("Verification failed:", error);

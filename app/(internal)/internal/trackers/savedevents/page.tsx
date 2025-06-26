@@ -65,7 +65,7 @@ const SavedEvents = () => {
   return (
     <div className="flex-grow overflow-hidden w-[calc(100vw-134px)]">
       <NavBar/>
-      <div className="flex gap-5 mt-[54px] flex-col w-[100%] pt-5">
+      <div className="flex gap-5 flex-col w-[100%] pt-5">
       {viewType==="table" && 
       <div className="flex-grow overflow-hidden">
       <Table source="tracker" view="global"/>

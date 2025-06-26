@@ -43,6 +43,8 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Skeleton } from "@/components/ui/skeleton";
+import styles from '@/app/components/internal/trackers/MyTrackers/myTrackers.style.module.css'
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 import { debounce } from "lodash";
 const MapStyle = {
@@ -737,18 +739,19 @@ export default function MapComponent({
     );
   }
   return (
-    <div className="relative px-4 md:px-0">
+    <div className="relative px-4 md:px-0 w-full">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
-        <Loading />
+        (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
       ) : eventCountsQuery.error ? (
-        <ZeroState text={eventCountsQuery.error.message} />
+        <ZeroState text={eventCountsQuery.error.message} isGlobal={isGlobal}/>
       ) : (
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
-              title="We couldn't find any events matching your tracker criteria at the moment."
-              text="Try adjusting your filters or checking back later, as new events are added frequently."
+              global={isGlobal}
+              title={`${!isGlobal?"We couldn’t find any events matching your tracker criteria at the moment.":""}`}
+              text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":"We couldn’t find any events matching your tracker criteria at the moment."}`}
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
             />
@@ -760,11 +763,7 @@ export default function MapComponent({
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal
-                      ? isMobile
-                        ? "calc(100dvh - 264px)"
-                        : "calc(100dvh - 136px)"
-                      : "300px",
+                    height: !isGlobal ? isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 136px)" : "180px",
                   }}
                   onMove={onMove}
                   onLoad={onMapLoad}
