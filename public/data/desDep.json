@@ -1,0 +1,60 @@
+{
+  "data": {
+    "role": [
+     {
+        "id": "f5f78dd1-9aba-53b5-96ff-d81519f663d5",
+        "name": "Owner"
+      },
+      {
+        "id": "9d5464c1-d5c0-560b-830a-361724d4001f",
+        "name": "Partner"
+      },
+      {
+        "id": "81347d20-b479-565f-8da0-f735be692f5f",
+        "name": "CXO"
+      },
+      {
+        "id": "eb597ff6-c38b-53ae-b545-6097fe0b6f7a",
+        "name": "Vice President"
+      },
+      {
+        "id": "d2888668-2959-52c6-a8ab-cbaec64e70f4",
+        "name": "Director"
+      },
+      {
+        "id": "05732b0b-181d-5b20-b4fc-c5b76de6ccbf",
+        "name": "Manager"
+      },
+      {
+        "id": "a7b4e57e-5925-55fb-9531-df33c2a26854",
+        "name": "Senior Individual Contributor"
+      },
+      {
+        "id": "0a10d30f-2b01-56a3-9ac9-5e84b960fa12",
+        "name": "Training"
+      },
+      {
+        "id": "022a4644-f32f-5953-8221-2d3b4e0ea995",
+        "name": "Unpaid"
+      }
+    ],
+     "department": [
+      {
+        "id": "c1569ffb-f10d-5f33-bcec-d22e45d1be3a",
+        "name": "Accounting"
+      },
+      {
+        "id": "71a45302-0e35-552d-9bfe-de3c340f1332",
+        "name": "Finance"
+      },
+      {
+        "id": "a59c73f8-a72d-57c7-bd79-8387cf21ac60",
+        "name": "Marketing"
+      },
+      {
+        "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
+        "name": "Operations"
+      }
+    ]
+}
+}

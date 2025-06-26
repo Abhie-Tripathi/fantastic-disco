@@ -9,6 +9,7 @@ import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
 import { Event } from '@/types/events';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import DesDep from "@/public/data/desDep.json";
 import { formattedDateRange } from "@/utils/date";
 import { formatLocationParts } from "@/utils/locationFormat";
 interface EventSuggestionItem {
@@ -44,6 +45,11 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
+        if(type==="T_AUDIENCE_DEPT_PROFILE"){
+          const filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase() === searchInput);
+          console.log(filterDesValue);
+          
+        }
         let url; 
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;

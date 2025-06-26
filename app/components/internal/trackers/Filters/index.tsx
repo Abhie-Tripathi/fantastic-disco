@@ -276,18 +276,18 @@ const templates = [
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
-    type: "disabled",
+    type: "enabled",
     templateName: "Audience Dept. & Profiles",
     description: "Track events for the specific organizational departments or audience profiles",
     inputAreas: [
       {
         type: "text",
-        placeholder: "Department",
+        placeholder: "Seniority",
       },
-      // {
-      //   type: "text",
-      //   placeholder: "Profile",
-      // }
+      {
+        type: "text",
+        placeholder: "Department",
+      }
     ],
     isUploadEnable: false,
   },
@@ -679,6 +679,19 @@ const stepsConfig =[
         setLocalFilter("excludeKeywords", excludeKeywords)
       }
     }
+    else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
+    const flattened = customData.flatMap(obj =>
+      Object.entries(obj).map(([key, value]) => ({ Role: `${value}` }))
+    );
+
+    // Avoid unnecessary state updates to prevent infinite loop
+    const isAlreadyFlattened = flattened.length === customData.length &&
+      flattened.every((entry, idx) => entry.Role === customData[idx]?.Role);
+
+    if (!isAlreadyFlattened) {
+      setCustomData(flattened);
+    }
+  }
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
     // console.log(val);
@@ -908,17 +921,17 @@ const stepsConfig =[
       }
       
       
-       else if (
-        type !== defaultType && 
-        type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
-        (trackerName.length === 0 || customData.length === 0)
-      ) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
+      //  else if (
+      //   type !== defaultType && 
+      //   type !== "T_PRODUCT_KEYWORDS" && 
+      //   type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+      //   (trackerName.length === 0 || customData.length === 0)
+      // ) {
+      //   console.log("Please, Fill all the details");
+      //   setIsCreating(false);
+      //   setIsMandatory(true);
+      //   return;
+      // }
       else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
@@ -1004,17 +1017,17 @@ const stepsConfig =[
         });
         return;
       }
-       else if (
-        type !== defaultType && 
-        type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
-        (trackerName.length === 0 || customData.length === 0)
-      ) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
+      //  else if (
+      //   type !== defaultType && 
+      //   type !== "T_PRODUCT_KEYWORDS" && 
+      //   type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+      //   (trackerName.length === 0 || customData.length === 0)
+      // ) {
+      //   console.log("Please, Fill all the details");
+      //   setIsCreating(false);
+      //   setIsMandatory(true);
+      //   return;
+      // }
       else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
@@ -1793,7 +1806,7 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[0]?.length > 0  &&
          <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
         }
                         </div>
