@@ -277,7 +277,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             <Map
                               isGlobal={true}
                               source="tracker"
-                              eventType=""
+                              eventType={eventType}
                               searchParams="active"
                               trackerId={item?.id || ""}
                             trackerLoc={

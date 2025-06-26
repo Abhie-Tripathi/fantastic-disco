@@ -290,10 +290,14 @@ const clickHandler=(id:string)=>{
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
         <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
-        <div className="w-[95%] overflow-hidden flex gap-1">
+        <div className="overflow-hidden flex gap-1">
   {locations.slice(0, isMobile?2:3).map((loc:string, i:number) => (
-    <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
-      {loc}
+    // <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
+    //   {loc}
+    // </div>
+    <div key={i}>
+      {loc} 
+      {locations.length>1 && " | "} 
     </div>
   ))}
   </div>
