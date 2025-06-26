@@ -206,7 +206,7 @@ const Index = () => {
           <div className="flex justify-center items-center">
             <div
               className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md"
-              ref={!isMobile?refs.viewsRef:null}
+              ref={(!isMobile && last!=="savedevents")?refs.viewsRef:null}
               // style={{
               //   position: "fixed", // Key change
               //   top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
@@ -428,6 +428,7 @@ const Index = () => {
               <span>Back</span>
             </Link>
           </Button>
+          {last !== "savedevents" && 
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
@@ -456,13 +457,15 @@ const Index = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
+        }
         </div>
         {/* Title */}
         <div className="font-medium text-base mb-3 text-[var(--primary-text-color)]">
           {data?.name}
         </div>
         {/* Tab Bar */}
-        <Tabs
+        {last !== "savedevents" &&
+          <Tabs
           defaultValue={type ?? undefined}
           value={type ?? undefined}
           className="w-full"
@@ -520,6 +523,7 @@ const Index = () => {
             </Link>
           </TabsList>
         </Tabs>
+        }
       </div>
       {share && (
         <div className={modalstyles.shareModal} onClick={closeModal}>
