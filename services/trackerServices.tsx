@@ -294,7 +294,8 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
+   const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
+      
       const eventType = type;
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
@@ -305,7 +306,7 @@ export const useTrackerServices = () => {
         );
         return response;
     }
-    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any, trackerType?:string) => {
+   const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any, trackerType?:string) => {
       const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));

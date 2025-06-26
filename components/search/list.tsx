@@ -240,7 +240,7 @@ export default function EventAccordion({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-    economicImpact: "economicImpact"
+    economicImpact: "economicImpact",
   };
   const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -503,7 +503,7 @@ export default function EventAccordion({
 
   if (
     searchParams.size === 0 ||
-    (searchParams.size == 1 && searchParams.has("view"))
+    (searchParams.size == 1 && searchParams.has("view") && source!=="tracker")
   ) {
     return (
       <div className="p-6">
@@ -1532,40 +1532,12 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  // const [currentSlide, setCurrentSlide] = useState(0);
-  // const slides = [
-  //   {
-  //     label: "India",
-  //     businessScore: 20,
-  //     socialScore: 20,
-  //   },
-  //   {
-  //     label: "Global",
-  //     businessScore: 30,
-  //     socialScore: 25,
-  //   },
-  //   {
-  //     label: "Regional",
-  //     businessScore: 15,
-  //     socialScore: 18,
-  //   },
-  // ];
+  const { getFilterValue } = useFilterState();
+  const { data, setIsNewCall } = useTrackerContext();
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  //   }, 3000);
-
-  //   return () => clearInterval(interval);
-  // }, [slides.length]);
-
-  // const nextSlide = () => {
-  //   setCurrentSlide((prev) => (prev + 1) % slides.length);
-  // };
-
-  // const prevSlide = () => {
-  //   setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  // };
+  const trackerLocationIds = Object?.keys(
+    data?.filterValues?.locationIds || {}
+  );
 
   function formatAddress(eventLocation: HolidayEventLocation[]): string {
     const addressParts: string[] = [];
@@ -1589,6 +1561,10 @@ const UnplannedCard = ({ event }: { event: Event }) => {
       );
     })
     .map((eventType) => eventType.name);
+
+  const showHolidayScore =
+    getFilterValue("locationIds").split(",").filter(Boolean).length == 1 ||
+    trackerLocationIds.length == 1;
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -1711,54 +1687,31 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               </div>
             </div>
 
-            {/* <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
-              <div className="max-w-[94px] h-full">
-                <div className="relative">
-                  <div className="overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-300 ease-in-out"
-                      style={{
-                        transform: `translateX(-${currentSlide * 100}%)`,
-                      }}
-                    >
-                      {slides.map((slide, index) => (
-                        <div
-                          key={index}
-                          className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
-                        >
-                          <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                            {slide.label}
-                          </p>
-                          <div className="grid grid-rows-2 gap-2">
-                            <CircularProgress
-                              value={slide.businessScore}
-                              label="Business"
-                            />
-                            <CircularProgress
-                              value={slide.socialScore}
-                              label="Social"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-1 mt-2">
-                    {slides.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          currentSlide === index
-                            ? "bg-primary w-4"
-                            : "bg-gray-300"
-                        }`}
+            {showHolidayScore && (
+              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
+                <div className="max-w-[94px] h-full">
+                  <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                    <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                      {(event.basic?.eventLocation as any)[0]?.displayName.split(",")[0]}
+                    </p>
+                    <div className="grid grid-rows-2 gap-2">
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.businessScore
+                        }
+                        label="Business"
                       />
-                    ))}
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.socialScore
+                        }
+                        label="Social"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> */}
+            )}
           </div>
         </div>
       </div>

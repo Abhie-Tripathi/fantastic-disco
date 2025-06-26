@@ -3,6 +3,7 @@
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
+import UpcomingEvents from "@/app/components/prospect/Filters/upcomingEvents";
 import Department from "@/app/components/prospect/Filters/department";
 import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
 import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
@@ -249,6 +250,18 @@ const gtmFilters: {
           id: "companyType",
           component: "CompanyType",
           filterName: "eventParticipationType",
+          enabled: true,
+        },
+        // {
+        //   id: "total-event",
+        //   component: "TotalEvent",
+        //   filterName: "totalEvent",
+        //   enabled: true,
+        // },
+        {
+          id: "upcoming-event",
+          component: "UpcomingEvents",
+          filterName: "upcomingEvent",
           enabled: true,
         },
         {
@@ -518,6 +531,12 @@ const geoFilters: {
           enabled: true,
         },
         {
+          id: "upcoming-event",
+          component: "UpcomingEvents",
+          filterName: "upcomingEvent",
+          enabled: true,
+        },
+        {
           id: "company-followers",
           component: "EventFollowers",
           filterName: "communitySize",
@@ -726,7 +745,7 @@ const Filters = ({
   const searchHandler = () => {
     if (pathName.split("/").includes("search")) {
       Object.keys(localFilters).map((filter) =>
-        GAEvent("", "Reseach", "Filter Applied", filter)
+        GAEvent("", "Research", "Filter Applied", filter)
       );
     }
     applyFilters({ resetPage: true });
@@ -962,7 +981,7 @@ const Filters = ({
           <FilterContent
             source={source}
             type={type}
-            trackerType={path?.get("type")|| ""}
+            trackerType={path?.get("type") || ""}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
@@ -991,7 +1010,7 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {filterCount > 0 && (
+                {filterCount > 0 && pathName.split("/").includes("events") && (
                   <Button
                     id="save-search-btn"
                     onClick={() => {
