@@ -18,9 +18,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ name, width, height, borderRa
     };
     
   return (
+    <>
+    {name &&
     <div className={styles.container} style={{width: width, fontSize:fontSize, height: height, borderRadius: `${borderRadius}`}}>
       {getInetial()}
-    </div>
+    </div>}
+    </>
   )
 }
 
