@@ -928,11 +928,9 @@ const stepsConfig =[
       if (last === "editTracker") {
       try{
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
-        console.log(data);
         
         if (data) {
           if(data?.error){
-            console.log("data.error", data?.error);
             
             // toast.error((data.error as ApiError).message, {
             //   position: "bottom-right",
