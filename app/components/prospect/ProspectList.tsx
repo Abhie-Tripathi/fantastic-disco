@@ -380,14 +380,6 @@ export const ProspectList: React.FC = () => {
     ).length;
   })();
 
-  if (error) {
-    return (
-      <NullState
-        image={coordinateNullState}
-        title={(error as ApiError).message}
-      />
-    );
-  }
   const toggleFilterHandler = () => {
     if (showFilters) {
       setShowFilter(false);

@@ -426,8 +426,6 @@ function mapInterestsToInterestIds(
       );
   }
 
-console.log("interests",selectedInterestMap);
-
   return (
     <div className="w-full flex flex-col h-full">
       <div
