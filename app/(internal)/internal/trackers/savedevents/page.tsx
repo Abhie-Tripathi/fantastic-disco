@@ -12,11 +12,13 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from '@/public/trackerNullState.svg';
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 const SavedEvents = () => {
   // const pathName = usePathname();
   const {getFilterValue, setFilter} = useFilterState();
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
   const skip= getFilterValue("skip") || "0";
   const take = getFilterValue("take") || "20";
   const viewType=searchParams.get("view");
@@ -63,9 +65,9 @@ const SavedEvents = () => {
   });
   
   return (
-    <div className="flex-grow overflow-hidden w-[calc(100vw-134px)]">
+    <div className={`flex-grow overflow-hidden ${isMobile?"w-full":"w-[calc(100vw-134px)]"}`}>
       <NavBar/>
-      <div className="flex gap-5 flex-col w-[100%] pt-5">
+      <div className={`flex gap-5 flex-col w-[100%] ${isMobile?'pt-0':'pt-5'}`}>
       {viewType==="table" && 
       <div className="flex-grow overflow-hidden">
       <Table source="tracker" view="global"/>

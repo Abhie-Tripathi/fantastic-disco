@@ -212,7 +212,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           </div>
           <div className="flex-col gap-4 px-6 pb-3 flex md:hidden">
                   <Link 
-                  href={`/internal/trackers/savedevents?view=table`}
+                  href={`/internal/trackers/savedevents?view=list`}
                   target="_blank"
                   rel="noopener noreferrer"
                   >

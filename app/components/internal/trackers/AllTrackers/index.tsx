@@ -382,7 +382,9 @@ const clickHandler=(id:string)=>{
             </div>
             <div className="flex gap-2 sm:w-[100%] h-full" style={{width:"auto"}}>
             <div className="flex w-full h-full flex-col justify-between">
-            <div className="flex gap-2 w-[100%] text-sm font-medium">
+            <div className="flex gap-2 w-[100%] text-sm font-medium" style={{paddingBottom: "2px",
+scrollbarWidth: "none",
+overflowY: "scroll"}}>
             {eventsCount?.map((item,index)=>(
               <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
