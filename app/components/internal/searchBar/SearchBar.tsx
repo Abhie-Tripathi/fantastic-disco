@@ -46,7 +46,9 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       
       if(searchInput!==previousInput){
         if(type==="T_AUDIENCE_DEPT_PROFILE"){
-          const filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase() === searchInput);
+          console.log("searchInput", searchInput);
+          
+          const filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
           console.log(filterDesValue);
           
         }
