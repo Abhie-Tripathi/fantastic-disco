@@ -183,7 +183,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                         <div className='flex justify-between'>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
                         {global &&
-  <Link href={`/internal/trackers/${shareId}/notesDiscussion?type=${trackerType}`} onClick={() => clickHandler?.(shareId || '')}>
+  <Link href={`/internal/trackers/${shareId}/manageAccess?type=${trackerType}`} onClick={() => clickHandler?.(shareId || '')}>
     <div className="text-[var(--primary-color)] border-b border-transparent hover:border-[var(--primary-color)] transition-all duration-200">
       Manage
     </div>
