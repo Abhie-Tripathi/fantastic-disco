@@ -680,6 +680,8 @@ const stepsConfig =[
       }
     }
     else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
+    console.log("customData", customData);
+    
     const flattened = customData.flatMap(obj =>
       Object.entries(obj).map(([key, value]) => ({ Role: `${value}` }))
     );
@@ -834,7 +836,17 @@ const stepsConfig =[
       {} as Record<string, any>
     );
     
-    
+    const jobComposite={
+  "designationIds": [],
+  "conditions": {
+    "logic": "OR",
+    "departmentIds": departmentIds,
+    "seniorityIds": seniorityIds
+  }
+}
+    if(departmentIds?.length > 0 || seniorityIds?.length > 0){
+      filterValues.jobComposite = JSON.stringify(jobComposite);
+    }
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -856,9 +868,9 @@ const stepsConfig =[
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
-    if(eventSuggestion.length > 0) {
-      filterValues.eventIds = eventSuggestion.join(",");
-    }
+    // if(eventSuggestion.length > 0) {
+    //   filterValues.eventIds = eventSuggestion.join(",");
+    // }
     console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
@@ -976,6 +988,9 @@ const stepsConfig =[
         setIsCreating(false);
         setIsMandatory(true);
         return;
+      }
+      if(type==="T_AUDIENCE_DEPT_PROFILE"){
+
       }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
@@ -1396,9 +1411,14 @@ const stepsConfig =[
     if (isMandatory) setIsMandatory(false);
   }, [inputValues])
   const [selected, setSelected] = useState(false);
-  const addCompany = (id: number, val: any) => {
-
-    if (type === "T_EVENT_PARTICIPATION") {
+  const [departmentIds, setDepartmentIds]=useState([]);
+   const [seniorityIds, setSeniorityIds]=useState([]);
+  const addCompany = (id: number, val: any, ind) => {
+    console.log("val", ind);
+    
+    if (type === "T_EVENT_PARTICIPATION" || type === "T_AUDIENCE_DEPT_PROFILE") {
+      console.log("inputValues", inputValues);
+      
       setEventSuggestion((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString())
 
@@ -1406,17 +1426,24 @@ const stepsConfig =[
           setInputValues({});
           return prev;
         } else {
+          if(ind===0){
+            console.log("ids",id);
+            
+            setSeniorityIds(prev=>[...prev, id])
+          }else{
+            setDepartmentIds(prev=>[...prev, id])
+          }
           setInputValues(prevValues => ({
             ...prevValues,
-            [0]: val
+            [ind]: val
           }));
           return [...prev, id.toString()];
         }
       });
     }
 
-    setSelected(true);
-    if (type !== "T_EVENT_PARTICIPATION") {
+    
+    else {
       if (!Array.isArray(val)) {
         setInputValues(prevValues => ({
           ...prevValues,
@@ -1426,8 +1453,10 @@ const stepsConfig =[
         setInputValues(val);
       }
     }
+    setSelected(true);
   }
-
+  console.log("eventSuggestion", inputValues);
+  
   useEffect(() => {
     if (selected) {
       addNew();
@@ -1806,8 +1835,8 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[index]?.length > 0   && 
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type} index={index}/>
         }
                         </div>
 

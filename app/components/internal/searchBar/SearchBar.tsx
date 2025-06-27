@@ -34,8 +34,9 @@ interface EventSuggestionItem {
     handleSelect: (id: number, name: string) => void;
     endpoint: string; 
     type?: string;
+     index?: number;
   }
-const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type}:SearchBarProps) => {
+const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index}:SearchBarProps) => {
     const { theme } = useTheme();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -47,9 +48,12 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       if(searchInput!==previousInput){
         if(type==="T_AUDIENCE_DEPT_PROFILE"){
           console.log("searchInput", searchInput);
-          
-          const filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
-          console.log(filterDesValue);
+          let filterDesValue = [];
+          if(index===0)
+          filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
+          else if(index===1)
+          filterDesValue = DesDep.data.department.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
+          setEventSuggestion(filterDesValue);
           
         }
         let url; 
@@ -132,6 +136,17 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     tableEntry: item?.name || ''
                   }))
                 }
+                else if(type==="T_AUDIENCE_DEPT_PROFILE"){
+                  updatedData = eventSuggestion.map((item: any, index: number) => ({
+                    key: item.id || index,
+                    name: item.name || '',
+                    // city: item?.location?.cityName || '',
+                    // country: item?.location?.countryName || '',
+                    tableEntry: item.name || ''
+                  }));
+                  console.log("updatedData", updatedData);
+                  setRestructureData(updatedData);
+                }
                 else if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {
                   
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
@@ -176,7 +191,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-        handleSelect(id,name);
+        handleSelect(id,name, index);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
