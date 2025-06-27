@@ -553,11 +553,11 @@ export const AuthContextProvider = ({ children }: any) => {
 
       document.cookie = `${isEventeli ? "geoUser" : "gtmUser"}=${JSON.stringify(
         gtmUser
-      )}; path=/; max-age=${365 * 24 * 60 * 60}`;
+      )}; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=${365 * 24 * 60 * 60}`;
     } else
       document.cookie = `${
         isEventeli ? "geoUser" : "gtmUser"
-      }=; path=/; max-age=0`;
+      }=; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=0`;
   };
 
   const isTentimesUser = useMemo(() => {
