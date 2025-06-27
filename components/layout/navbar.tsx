@@ -220,15 +220,15 @@ export default function Navbar() {
           <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
               ? (
-                <div className="flex items-center">
-                  {getRoute(pathname.split("/")[2])}
+              <div className="flex items-center">
+                {getRoute(pathname.split("/")[2])}
                   <div className="ml-2 " >
-                    <VideoModal source={pathname.split("/")[2]} />
-                  </div>
-                  {pathname.split("/")[2] === "trends" && (
-                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
-                  )}
+                  <VideoModal source={pathname.split("/")[2]} />
                 </div>
+                {pathname.split("/")[2] === "trends" && (
+                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
+                )}
+              </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
               ? "Edit Widget"
@@ -251,6 +251,19 @@ export default function Navbar() {
           {!isEventeli && (
             <>
               <div className="flex items-center gap-1 max-[570px]:hidden">
+                {membershipData &&
+                  membershipData.membership === MembershipPlan.Freemium && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex"
+                        onClick={handleUpgradeClick}
+                      >
+                        <span className="hidden sm:inline">Upgrade</span>
+                      </Button>
+                    </>
+                  )}
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => handleRoute("research")}
@@ -339,23 +352,6 @@ export default function Navbar() {
               <span className="sr-only">Toggle theme</span>
             </Button>
           )} */}
-
-          {membershipData && membershipData.membership === MembershipPlan.Freemium && (
-            <>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden md:flex"
-              onClick={handleUpgradeClick}
-            >
-              <span className="hidden sm:inline">Upgrade</span>
-              <ArrowUpRight className="h-4 w-4" />
-            </Button>
-          <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
-          </>
-          )}
-
-
 
           <div className="hidden lg:block">
             <DropdownMenu>

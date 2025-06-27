@@ -132,7 +132,6 @@ const MobileSidebar = () => {
             onClick={handleUpgradeClick}
           >
             <span className="font-semibold text-xs text-primary">Upgrade</span>
-            <ArrowUpRightIcon className="h-4 w-4" />
           </Button>
         )}
       </div>
