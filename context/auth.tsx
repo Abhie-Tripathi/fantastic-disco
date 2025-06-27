@@ -551,10 +551,6 @@ export const AuthContextProvider = ({ children }: any) => {
         profilePicture: userDetails?.imageUrl,
       };
 
-      console.log("Setting cookie:", `${isEventeli ? "geoUser" : "gtmUser"}=${JSON.stringify(
-        gtmUser
-      )}; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=${365 * 24 * 60 * 60}`);
-
       document.cookie = `${isEventeli ? "geoUser" : "gtmUser"}=${JSON.stringify(
         gtmUser
       )}; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=${365 * 24 * 60 * 60}`;
