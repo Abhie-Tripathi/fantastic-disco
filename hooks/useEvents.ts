@@ -9,6 +9,9 @@ export const eventsKeys = {
 
 export const useEvents = {
   list: (query: EventQuery, inTransition?: boolean) => {
+    if (query.limit && Number(query.limit) > 20)  // Limit Restriction
+      query.limit = 20
+
     const eventsService = useEventsService();
 
     const EventQuery = useQuery({

@@ -932,7 +932,7 @@ const Page = ({ params }: { params: any }) => {
                     <NullState
                       image={TrackerNullState}
                       title="Map view is not available for unattended events."
-                        text="The events marked as 'Unattended' do not support map visualization. Please switch to another event type or view to explore available data."
+                        text="Map visualization is not supported for 'Unattended' events—please select a different view to explore the data."
                     />
                     </div>
                   ):

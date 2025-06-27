@@ -8,18 +8,35 @@ import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import { GAEvent } from "@/utils/GAEvent";
-import { ChartTrendingUp, Globe, Location, Buildings } from "geist-icons";
+import { ChartTrendingUp, Globe, Location, Buildings, Bookmark } from "geist-icons";
 import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
-import { CloudAlert } from 'lucide-react';
+import { CloudAlert, NotebookPen, Settings, Share2, Timer } from 'lucide-react';
+import { useTrackerServices } from "@/services/trackerServices";
+import ShareModal from "@/app/components/internal/trackers/shareModal";
+import UserProfile from "@/app/components/userProfile/UserProfile";
 // import { useTheme } from '@/context/theme';
-const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
+const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, setShare }: any) => {
+  const mapping = {
+    "T_COMPETITOR":"Company",
+    "T_PRODUCT_KEYWORDS":"Keyword",
+    "T_PEOPLE_FINDER": "Profile",
+    "T_SPEAKING_OPPORTUNITY": "Profile",
+    "T_EVENT_PARTICIPATION": "Event"
+  }
+  const isMobile = useIsMobile();
+  const [entryCount, setEntryCount] = useState<number>(0);
   const router= useRouter();
+  // const [share, setShare] = useState(false);
+    const [sendInvite, setSendInvite] = useState(false);
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
+  const {getShareAccess, error}=useTrackerServices();
   const [eventsCount,setEventCount]=useState<{ type: string; totalCount: number; newCount: number; logo?:any }[]>([]);
+  const [shareId,setShareId]=useState<string>("");
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -109,23 +126,24 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     setLocations(updatedLocations);
     
     const CountValues = {
-      geo : ['social','business','unattended'],
-      gtm : ['active','past', 'new']
+      geo : ['social','business','unattended', 'saved'],
+      gtm : ['active','past', 'new', 'saved']
     }
     if(isEventeli){
     const transformedData =  CountValues.geo.map((key)=>{
       return {
-        type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount :  item?.groupedEventsCount[key].total || 0,
-        newCount : item?.groupedEventsCount[key].new || 0
+        type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
+        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount[key]?.new || 0
       }
     })
+    
     setEventCount(transformedData);
   }else{
     const transformedData =  CountValues.gtm.map((key)=>{
       return {
-        type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount :  item?.groupedEventsCount[key] || 0,
+        type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
+        totalCount :  item?.groupedEventsCount[key] || item?.savedEventsCount || 0,
         newCount : item?.groupedEventsCount[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
       }
@@ -148,34 +166,122 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     if(type==="CUSTOM") return "Custom"
     return type.split("_").slice(1).map((ele)=>`${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
   }
-  const handleDoubleClick=(item:any)=>{
-    
-      setSingleTrackerData(item)
-      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli? "social" :"active"}`)
-      setIsNewCall(true); 
-      setTrackerId(item.id);
-  }
-  const handleSingleClick=(item:any)=>{
-    setSingleTrackerData(item)
-      setSingleTrackerData(item)
-     
-      setMultipleFilters({ 
-        skip: skip,
-        q: searchValue,
-         id: item.id,
-      })
-  }
+ 
+  const [userAccessData, setUserAccessData] = useState<any>(null);
+  const fetchAccess = async () => {
+    const result = await getShareAccess(singleTrackerData?.id, "tracker");
+    if (error) {
+      console.error("Error fetching data:", error);
+    } else {
+      setUserAccessData(result);
+    }
+  };
+  // useEffect(() => {
+  //   if (singleTrackerData?.id) {
+  //     fetchAccess();
+  //   }
+  // }, [singleTrackerData?.id]);
+ 
+  useEffect(() => {
+    if(item?.type === "T_COMPETITOR"){
+      const res=(item?.filterValues?.orgWebsite?.split(',').length || 0) +
+  (item?.filterValues?.orgName?.split(',').length || 0);
+      
+        setEntryCount(res)
+        
+      }else if(item?.type === "T_PRODUCT_KEYWORDS"){
+        const keywordsLen = (item?.filterValues?.includeKeywords?.length || 0) + (item?.filterValues?.excludeKeywords?.length || 0);
+        setEntryCount(keywordsLen)
+      }else if(item?.type === "T_PEOPLE_FINDER" || item?.type === "T_SPEAKING_OPPORTUNITY"){
+        setEntryCount(item?.filterValues?.userName?.split(',')?.length || 0)
+      }
+  }, []);
+    useEffect(() => {
+      const handlePopState = (event: any) => {
+        if (event.state && event.state.shareOpen) {
+          closeShareModal();
+        } else if (share) {
+          closeShareModal();
+        }
+      };
   
+      window.addEventListener("popstate", handlePopState);
+  
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, [share, sendInvite]);
+    const closeShareModal = () => {
+      if (share === true) setShare(false);
+      else if (sendInvite) setSendInvite(false);
+      document.body.style.height = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+    };
+    const closeModal = (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const targetElement = e.target;
+      if (targetElement.classList.contains(styles.shareModal)) {
+        closeShareModal();
+      }
+    };
+const getTrackerCreatedAgo=(dateString: string | Date): string=> {
+  const now = new Date();
+  const createdDate = new Date(dateString);
+
+  if (isNaN(createdDate.getTime())) return "Invalid date";
+
+  // Remove time component for date-only comparison
+  const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const createdDateOnly = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+
+  const diffTime = nowDateOnly.getTime() - createdDateOnly.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const months = Math.floor(diffDays / 30);
+  const years = Math.floor(diffDays / 365);
+
+  if (diffDays === 0) return "Created today";
+  if (years >= 1) return `${years} year${years > 1 ? "s" : ""} ago`;
+  if (months >= 1) return `${months} month${months > 1 ? "s" : ""} ago`;
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+}
+const shareTracker = (id: string, e: any) => {
+  e.preventDefault(); 
+  e.stopPropagation();
+  setShareId(id);    
+  setShare(true);     
+};
+useEffect(() => {
+  if (shareId) {
+    setShare(true);
+  }
+}, [shareId]);
+const clickHandler=(id:string)=>{
+    // e.stopPropagation();
+    setIsNewCall(true); 
+    setTrackerId(id);
+  }
   return (
-    <div className="card cursor-pointer sm:h-[160px] flex-col sm:flex-row" onClick={()=>handleSingleClick(item)}
-    onDoubleClick={() => handleDoubleClick(item)} 
-    style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
-    >
-        <div className="flex justify-between gap-2 flex-col sm:flex-row">
-          <div className="flex gap-2 flex-col justify-between w-[100%] sm:w-[40%]">
-            <div className="flex sm:gap-4 flex-col">
+    
+   <div
+  className={`card cursor-pointer sm:h-[180px] flex-col sm:flex-row w-full 
+    border-4 
+    ${singleTrackerData?.id === item.id ? "border-[var(--primary-color)]" : "border-[var(--border-color)]"} 
+    hover:border-[var(--primary-color)] transition-all duration-200`}
+>
+        <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
+          <div className="flex gap-2 justify-between w-[100%] flex-row items-center">
+            <div className="flex flex-col gap-2 h-full justify-between">
+            <div className="flex flex-col gap-2 md:gap-3">
+            <div className="flex gap-2 flex-col">
             <div className="font-bold break-words leading-none">
-              {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
+                  {typeof item?.name === 'string'
+                    ? item.name.length > (isMobile ? 60 : 90)
+                      ? `${item.name.substring(0, isMobile ? 60 : 90)}...`
+                      : item.name
+                    : null}
               </div>
             <div className="flex gap-1 w-[100%]">
         {locations?.length>0 && 
@@ -183,28 +289,104 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
-        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[95%]" style={{fontSize:"12px"}}>
-          {/* {locations?.length > 0 && locations[0].length<15 &&locations[0]}
-          {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
-          <div  className={`${
-            locations?.length > 1 ? 'w-[75%]' : 'w-full'
-            } text-[var(--tertiary-text-color)] break-words whitespace-normal overflow-hidden`}>{locations?.length > 0 && locations[0].length<40 &&locations[0]}
-            {locations?.length > 0 && locations[0].length>40 &&`${locations[0].substring(0,40)}...`} </div>
-          {locations?.length > 1 &&  (
-            <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
-          )}
-        </div>
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
+        <div className="overflow-hidden flex gap-1">
+  {locations.slice(0, isMobile?2:3).map((loc:string, i:number) => (
+    // <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
+    //   {loc}
+    // </div>
+    <div key={i}>
+      {loc} 
+      {locations.length>1 && " | "} 
+    </div>
+  ))}
+  </div>
+
+  {locations.length > (isMobile ? 2 : 3) && (
+  <div className="flex items-center text-xs text-primary font-medium ml-1">
+    {`+${locations.length - (isMobile ? 2 : 3)}`}
+  </div>
+)}
+
+</div>
+
+
         </div>
 }
             </div> 
             </div>
-            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
+            <div className="flex gap-2 text-xs">
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
+            {formatType(item.type)}</div>
+            {entryCount>0 &&
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>
+                    {item.type === "T_COMPETITOR" ? (
+                      <>
+                        {entryCount} {entryCount > 1 ? "Companies" : "Company"}
+                      </>
+                    ) : (
+                      <>
+                        {entryCount} {(mapping as any)[item.type]}
+                        {entryCount > 1 && "s"}
+                      </>
+                    )}
+              </div>
+            }
             </div>
-            <div className="flex gap-2 w-[92%] sm:w-[100%]">
-            <div className="flex w-full h-[100px]">
-            <div className="flex gap-2 w-[100%] text-sm font-medium">
+            </div>
+            <div className="md:flex gap-2 text-xs items-center hidden"> 
+              {/* <div className="text-[var(--tertiary-text-color)] rounded px-1 py-[2px] bg-[var(--secondary-bg-light)] text-[10px] flex items-center justify-center">Admin</div> */}
+              <div className="flex gap-1 items-center">{ item?.createdBy?.imageUrl === null ? 
+                <UserProfile
+                  name={`${item?.createdBy?.firstName ?? ""} ${item?.createdBy?.lastName ?? ""}`.trim()}
+                  width={18}
+                  height={18}
+                  borderRadius="50%"
+                  fontSize="0.5rem"
+                />
+                :
+                              <Image
+                                src={
+                                 item?.createdBy?.imageUrl
+                                }
+                                alt="user"
+                                className={`${styles["owner_img"]} h-[18px] w-[18px] rounded-full`}
+                                width={18}
+                                height={18}
+                                referrerPolicy="no-referrer"
+                              />
+                              }
+                {(item?.createdBy?.firstName || item?.createdBy?.lastName) && (
+                  <div>{`${item?.createdBy?.firstName ?? ""} ${item?.createdBy?.lastName ?? ""}`.trim()}</div>
+                )}
+
+                              </div>
+              {/* <div className="text-[var(--secondary-bg-light)]">|</div> */}
+              
+              <div className="flex gap-1 items-center"><Timer width={14} height={14}/>{getTrackerCreatedAgo(item.createdAt)}</div>
+              {/* <div>{userAccessData?.others?.length} Followers</div> */}
+              {/* <Link></Link> */}
+              {/* <Link href={`/internal/trackers/${item.id}/manageAccess?type=${item.type}`}>
+              <div className="hover:border-b hover:border-[var(--primary-color)] text-[var(--primary-color)] font-medium">Manage</div>
+              </Link>  */}
+            </div>
+             </div>
+             <div className="flex md:hidden">
+              <button 
+    className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
+   onClick={(e) => shareTracker(item.id,e)}
+  >
+    <Share2 width={20} height={20} />
+  </button>
+             </div>
+            </div>
+            <div className="flex gap-2 sm:w-[100%] h-full" style={{width:"auto"}}>
+            <div className="flex w-full h-full flex-col justify-between">
+            <div className="flex gap-2 w-[100%] text-sm font-medium" style={{paddingBottom: "2px",
+scrollbarWidth: "none",
+overflowY: "scroll"}}>
             {eventsCount?.map((item,index)=>(
-              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}} key={index}>
+              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
               {isEventeli && (
           item.type === "Business" ? (
@@ -216,9 +398,14 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <CloudAlert height={12} width={12} color="var(--primary-color)" />
           )
           )}
-                {!isEventeli &&
-                <Image src={item.logo} alt={item.type} width={12} height={12}/>
-                }
+                  {!isEventeli &&
+                    (item.type === "Bookmark" ? (
+                      <Bookmark width="12px" height="12px" color="var(--primary-color)" />
+                    ) : (
+                      <Image src={item.logo} alt={item.type} width={12} height={12} />
+                    ))
+                  }
+
                 {item.type}
                 
               </div>
@@ -235,7 +422,31 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             ))}
           </div>
-
+            <div className="hidden md:flex justify-end">
+              
+              <div className="flex items-center justify-center text-[12px] text-[var(--primary-color)] gap-1 cursor-pointer" onClick={(e) => {
+  
+        e.stopPropagation();
+    }}>
+                <div className="flex gap-2 items-center">
+                <Link href={`/internal/trackers/${item.id}/notesDiscussion?type=${item.type}`} onClick={()=>clickHandler(item.id)}>
+                <NotebookPen width={14} height={14} />
+                </Link>
+                <Link href={`/internal/trackers/${item.id}/editTracker?type=${item.type}`} onClick={()=>clickHandler(item.id)}>
+                 <Settings
+                      width={14}
+                      height={14}
+                    />
+                </Link>
+              </div>
+                <button 
+    className="w-4 h-4 text-[var(--primary-color)] focus:outline-none"
+    onClick={(e) => shareTracker(item.id,e)}
+  >
+    <Share2 width={14} height={14} />
+  </button>
+              </div>
+            </div>
           {/* <div className={styles.lineChart}>
             <Line data={lineData} options={lineOptions} />
           </div> */}
@@ -301,6 +512,18 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <Line data={lineData} options={lineOptions} />
           </div>
         </div> */}
+        {share && shareId && (
+            <div className={styles.shareModal} onClick={closeModal}>
+              <ShareModal
+              clickHandler={clickHandler}
+                closeShareModal={closeShareModal}
+                share={share}
+                shareId={shareId}
+                global={true}
+                trackerType={item.type}
+              />
+            </div>
+          )}
     </div>
   );
 };
