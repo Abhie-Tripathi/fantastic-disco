@@ -341,6 +341,7 @@ export default function Navbar() {
           )} */}
 
           {membershipData && membershipData.membership === MembershipPlan.Freemium && (
+            <>
             <Button
               variant="outline"
               size="sm"
@@ -350,9 +351,10 @@ export default function Navbar() {
               <span className="hidden sm:inline">Upgrade</span>
               <ArrowUpRight className="h-4 w-4" />
             </Button>
+          <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
+          </>
           )}
 
-          <div className="border-r-[1px] border-[var(--border-color)] h-[20px]"></div>
 
 
           <div className="hidden lg:block">

@@ -17,12 +17,13 @@ import {
   LineChart,
   GridMasonry,
   Wrench,
+  ArrowUpRight,
 } from "geist-icons";
 import { Coordinate, Outreach } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SheetClose } from "@/components/ui/sheet";
-import { LogOut, MessageCircleMore, Moon, Settings, Sun, User } from "lucide-react";
+import { ArrowUpRightIcon, LogOut, MessageCircleMore, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
 import { isEventeli } from "@/config";
@@ -94,6 +95,19 @@ const MobileSidebar = () => {
     },
   ];
 
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Mobile Sidebar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center p-4 border-b">
@@ -105,11 +119,22 @@ const MobileSidebar = () => {
           height={24}
           style={theme === "dark" ? { filter: "invert(100%)" } : {}}
         />
-        {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
-                <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
-                  {MembershipPlan[membershipData?.membership || 0]}
-                </span>
-              </div>}
+        {membershipData && membershipData.membership !== MembershipPlan.Freemium && (
+          <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+            <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+              {MembershipPlan[membershipData?.membership || 0]}
+            </span>
+          </div>
+        )}
+        {membershipData && membershipData.membership === MembershipPlan.Freemium && (
+          <Button
+            variant="link"      
+            onClick={handleUpgradeClick}
+          >
+            <span className="font-semibold text-xs text-primary">Upgrade</span>
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Button>
+        )}
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
