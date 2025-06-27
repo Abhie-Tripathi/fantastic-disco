@@ -1010,7 +1010,7 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {filterCount > 0 && pathName.split("/").includes("events") && (
+                {filterCount > 0 && (
                   <Button
                     id="save-search-btn"
                     onClick={() => {
