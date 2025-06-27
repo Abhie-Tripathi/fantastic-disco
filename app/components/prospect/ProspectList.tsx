@@ -356,7 +356,7 @@ export const ProspectList: React.FC = () => {
           </Tabs>
         </div>
 
-        <div className="flex justify-center"></div>
+        {/* <div className="flex justify-center"></div> */}
         <div className="flex items-center md:hidden justify-end gap-2">
           <Select
             value={selectedView}
