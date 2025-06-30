@@ -93,6 +93,7 @@ import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { log } from "console";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -282,10 +283,12 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required:false,
         placeholder: "Seniority",
       },
       {
         type: "text",
+        required:false,
         placeholder: "Department",
       }
     ],
@@ -679,21 +682,26 @@ const stepsConfig =[
         setLocalFilter("excludeKeywords", excludeKeywords)
       }
     }
-    else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
-    console.log("customData", customData);
-    
-    const flattened = customData.flatMap(obj =>
-      Object.entries(obj).map(([key, value]) => ({ Role: `${value}` }))
-    );
+   else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
+  console.log("customData", customData);
 
-    // Avoid unnecessary state updates to prevent infinite loop
-    const isAlreadyFlattened = flattened.length === customData.length &&
-      flattened.every((entry, idx) => entry.Role === customData[idx]?.Role);
+  const flattened = customData.flatMap(obj =>
+    Object.entries(obj)
+      .filter(([, value]) => value !== undefined && value.trim() !== "")
+      .map(([key, value]) => ({ Role: `${value}_${key}` }))
+  );
+  console.log("flattened", flattened);
+  
+  // Avoid unnecessary state updates to prevent infinite loop
+  const isAlreadyFlattened =
+    flattened.length === customData.length &&
+    flattened.every((entry, idx) => entry.Role.split("_")?.[0] === `${customData[idx]?.Role?.split("_")?.[0]}`);
 
-    if (!isAlreadyFlattened) {
-      setCustomData(flattened);
-    }
+  if (!isAlreadyFlattened) {
+    setCustomData(flattened);
   }
+}
+
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
     // console.log(val);
@@ -868,9 +876,9 @@ const stepsConfig =[
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
-    // if(eventSuggestion.length > 0) {
-    //   filterValues.eventIds = eventSuggestion.join(",");
-    // }
+    if(eventSuggestion.length > 0) {
+      filterValues.eventIds = eventSuggestion.join(",");
+    }
     console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
@@ -1357,29 +1365,31 @@ const stepsConfig =[
     let isValid = true;
     let isPresent = false;
     if(template.type==="enabled"){
-    if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
+    if (template && template.inputAreas) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
-        const value = inputValues[index];
-        if (inputArea.placeholder === 'Add Competitor Name or Website') {
-          //if (regex.test(value.trim())) {
-            acc[inputArea.placeholder] = value;
-            isPresent=customData.some((item) => {
-              return Object.values(item).includes(value.trim()); 
-            });
-          // } 
-          // else {
-          //   isValid = false;
-          // }
-        } else {
-          if (value !== null && value.trim() !== '') {
-            acc[inputArea.placeholder] = value;
-          } else {   
-            isValid = false;
-            setValid(false);
-          }
-        }
-        return acc;
-      }, {});
+  const value = inputValues[index];
+  
+  if (inputArea.placeholder === 'Add Competitor Name or Website') {
+    acc[inputArea.placeholder] = value;
+    isPresent = customData.some((item) =>
+      Object.values(item).includes(value.trim())
+    );
+  } else {
+    if (inputArea.required) {
+      if (value!==undefined && value !== null && value?.trim() !== '') {
+        acc[inputArea.placeholder] = value;
+      } else {
+        isValid = false;
+        setValid(false);
+      }
+    } else {
+      acc[inputArea.placeholder] = value?.trim() || "";
+    }
+  }
+
+  return acc;
+}, {});
+
 
       if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
@@ -1413,13 +1423,30 @@ const stepsConfig =[
   const [selected, setSelected] = useState(false);
   const [departmentIds, setDepartmentIds]=useState([]);
    const [seniorityIds, setSeniorityIds]=useState([]);
+   const [suggestionIds,setSuggestionIds]=useState([]);
   const addCompany = (id: number, val: any, ind) => {
-    console.log("val", ind);
-    
-    if (type === "T_EVENT_PARTICIPATION" || type === "T_AUDIENCE_DEPT_PROFILE") {
+    console.log("val", val);
+    if (type === "T_EVENT_PARTICIPATION") {
+      setSuggestionIds((prev: string[]) => {
+        const alreadyExists = prev.find(entry => entry === id.toString())
+
+        if (alreadyExists) {
+          setInputValues({});
+          return prev;
+        } else {
+          setEventSuggestion(prev=>[...prev, id.toString()]);
+          setInputValues(prevValues => ({
+            ...prevValues,
+            [0]: val
+          }));
+          return [...prev, id.toString()];
+        }
+      });
+    }
+    else if (type === "T_AUDIENCE_DEPT_PROFILE") {
       console.log("inputValues", inputValues);
       
-      setEventSuggestion((prev: string[]) => {
+      setSuggestionIds((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString())
 
         if (alreadyExists) {
@@ -1455,8 +1482,25 @@ const stepsConfig =[
     }
     setSelected(true);
   }
-  console.log("eventSuggestion", inputValues);
+  console.log("eventSuggestion", eventSuggestion);
+  useEffect(() => {
+  console.log("seniorityIds", suggestionIds);
   
+    const finalSeniroityIds = seniorityIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setSeniorityIds(finalSeniroityIds);
+const finalDepartmentIds = departmentIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDepartmentIds(finalDepartmentIds);
+const finalEventSuggestion = eventSuggestion.filter(
+  (item) => suggestionIds.includes(item)
+);
+setEventSuggestion(finalEventSuggestion);
+console.log("finalSeniroityIds",finalSeniroityIds);
+
+  },[suggestionIds])
   useEffect(() => {
     if (selected) {
       addNew();
@@ -2039,7 +2083,7 @@ if(isLoading) return <Loading/>
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setEventSuggestion} eventSuggestion={eventSuggestion} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>

@@ -12,9 +12,10 @@ interface Props {
   customData: any[];
   handleCustomData: (data: any) => void;
   presetName?: string;
+  type?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion }: Props) => { 
+const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type }: Props) => { 
   
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
@@ -53,6 +54,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
     handleCustomData(filteredData);
     setSelectedIdArray([]);
   };
+  console.log("selectedIdArray", eventSuggestion);
   
   return (
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
@@ -122,13 +124,13 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                         <div>
                           {parts[0]}
                           {parts.length > 1 &&
-                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{formattedDateRange(
+                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{type==="T_AUDIENCE_DEPT_PROFILE"?parts[1]:formattedDateRange(
                                                      parts[5],
                                                      parts[6],
                                                       false
                                                     )}</span>}
                         </div>
-                        {parts.length > 1 && (
+                        {(parts.length > 1 && type!=="T_AUDIENCE_DEPT_PROFILE") && (
                           <div className='text-[var(--secondary-text-color)]'>
                             <span className='text-sm'>
                               {formatLocationParts({
@@ -169,13 +171,13 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                         <div>
                           {parts[0]}
                           {parts.length > 1 &&
-                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{formattedDateRange(
+                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{type==="T_AUDIENCE_DEPT_PROFILE"?parts[1]:formattedDateRange(
                                                      parts[5],
                                                      parts[6],
                                                       false
                                                     )}</span>}
                         </div>
-                        {parts.length > 1 && (
+                        {(parts.length > 1 && type!=="T_AUDIENCE_DEPT_PROFILE") && (
                           <div className='text-[var(--secondary-text-color)]'>
                             <span className='text-sm'>
                               {formatLocationParts({
