@@ -102,8 +102,8 @@ const SavedTrendCard = ({
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
-    const compare_from = params.get("compare_from")
-    const compare_to = params.get("compare_to")
+    const compare_from = params.get("compare_from") || undefined
+    const compare_to = params.get("compare_to") || undefined
     const viewBound = geoCoordinate ? JSON.parse(geoCoordinate) : undefined;
     const BaseFilterValue: BaseFilterValue = {
       groupBy: "date",
