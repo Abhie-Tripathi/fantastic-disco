@@ -15,6 +15,7 @@ import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { intelScore } from "@/types/trackers";
 import trustScore from "@/public/trust-score.svg"
+import primeTrophy from "@/public/prime_trophy.svg"
 import Image from "next/image";
 
 // Local CircularProgress for mobile card
@@ -221,6 +222,7 @@ const MobileEventCard = ({
         </span>
         <span className="flex items-center gap-1 text-xs text-gray-700">
           <Trophy className="w-4 h-4 text-amber-500" />
+          <Image alt="primetrophy" src={primeTrophy}/>
           {rankDisplay}
         </span>
         <span className="flex items-center gap-1 text-xs text-gray-700">
