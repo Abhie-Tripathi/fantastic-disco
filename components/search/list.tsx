@@ -49,6 +49,7 @@ import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/c
 import { useTransition } from "@/context/transition";
 
 import { useFilterContext } from "@/context/filterContext";
+import MobileEventCard from "./mobile-card";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -342,7 +343,7 @@ export default function EventAccordion({
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
-            <EventListItem
+            <MobileEventCard
               isMobile={isMobile}
               global={view}
               trackerId={trackerId}
