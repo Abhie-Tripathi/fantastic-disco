@@ -10,12 +10,10 @@ import React, {
   useMemo,
 } from "react";
 import ReactMapGL, {
-  MapRef,
-  Marker,
+  type MapRef,
   Source,
   Layer,
-  ViewState,
-  MapLayerMouseEvent,
+  type ViewState,
 } from "react-map-gl";
 import { isEventeli, MapboxToken } from "@/config";
 import { Button } from "@/components/ui/button";
@@ -23,18 +21,16 @@ import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
 import Alerts from "./alerts";
 import mapboxgl from "mapbox-gl";
-import { Event, EventCount, MapEvents } from "@/types/events";
+import type { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
-import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@/hooks/useQuery";
 import { circle, point } from "@turf/turf";
-import { LayerProps } from "react-map-gl";
+import type { LayerProps } from "react-map-gl";
 import MapPopup from "./popup";
 import ZeroState from "@/app/components/zerostate";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
-import { useFilterContext } from "@/context/filterContext";
 import EventCountsLayer from "./layers/EventCountsLayer";
 import EventsLayer from "./layers/EventsLayer";
 import HoverTooltip from "./hoverTooltip";
@@ -47,7 +43,10 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Skeleton } from "@/components/ui/skeleton";
+import styles from '@/app/components/internal/trackers/MyTrackers/myTrackers.style.module.css'
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { debounce } from "lodash";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -150,6 +149,7 @@ export default function MapComponent({
     .split(",")
     .includes("holiday");
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
+  const [isMapMoving, setIsMapMoving] = useState(false);
 
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("viewBound");
@@ -326,119 +326,153 @@ export default function MapComponent({
     }
   };
 
+  const lastFetchCenter = useRef<{ lat: number; lng: number } | null>(null);
+  const isCurrentlyFetching = useRef(false);
+  const currentZoomGroupRef = useRef(currentZoomGroup);
+  const searchParamsRef = useRef(searchParams);
+  const sourceRef = useRef(source);
+  const trackerIdRef = useRef(trackerId);
+  const trackerTypeRef = useRef(trackerType);
+
   useEffect(() => {
-    const fetchEvents = async () => {
-      
-      if (
-        currentZoomGroup === "event" &&
-        mapRef.current &&
-        location?.type === "geoCoordinates" &&
-  (source !== "tracker" || !searchParams.get("viewBound"))
-      ) {
-        
-        try {
-          const modifiedSearchParams = searchParams
-            ?.toString()
-            .replace(/locationIds=[^&]*&?/, "");
-          let eventsData: any = {};
-          if (source === "tracker") {
-          const viewBound = {
-            boundType: "point",
-            coordinates: {
-              latitude: location.trackerGeoCordinates.coordinates.latitude,
-              longitude: location.trackerGeoCordinates.coordinates.longitude,
-              radius: location.trackerGeoCordinates.coordinates.radius,
-            },
-          };
-              eventsData = await getEventsLatLongData(
-                trackerId,
-                `viewBound=${JSON.stringify(viewBound)}`,
-                searchParams
-              );
-              
-            }
-          else
-          eventsData = await getEventsWithSearchParams(modifiedSearchParams);
-          setEvents((eventsData?.events as MapEvents[]) || []);
-        } catch (error) {
-          console.error("Error fetching events:", error);
-        }
+    currentZoomGroupRef.current = currentZoomGroup;
+  }, [currentZoomGroup]);
+
+  useEffect(() => {
+    searchParamsRef.current = searchParams;
+  }, [searchParams]);
+
+  useEffect(() => {
+    sourceRef.current = source;
+    trackerIdRef.current = trackerId;
+    trackerTypeRef.current = trackerType;
+  }, [source, trackerId, trackerType]);
+
+  const fetchEventsOnMove = useCallback(async () => {
+    if (
+      currentZoomGroupRef.current !== "event" ||
+      !mapRef.current ||
+      isCurrentlyFetching.current
+    ) {
+      return;
+    }
+
+    const map = mapRef.current.getMap();
+    if (!map) return;
+
+    const center = map.getCenter();
+    const bounds = map.getBounds();
+    if (!bounds) return;
+
+    if (lastFetchCenter.current) {
+      const distance = Math.sqrt(
+        Math.pow(center.lat - lastFetchCenter.current.lat, 2) +
+          Math.pow(center.lng - lastFetchCenter.current.lng, 2)
+      );
+      if (distance < 0.02) {
         return;
       }
+    }
 
-      if (
-        location?.type === "locationIds" &&
-        currentZoomGroup === "event" &&
-        mapRef.current
-      ) {
-        await new Promise((resolve) => setTimeout(resolve, 600));
-        const map = mapRef?.current?.getMap();
-        if (map) {
-          const center = map.getCenter();
-          const bounds = map.getBounds();
-          if (bounds) {
-            const ne = bounds.getNorthEast();
-            const sw = bounds.getSouthWest();
-            const radius =
-              (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) *
-                111) /
-              2;
+    isCurrentlyFetching.current = true;
+    lastFetchCenter.current = { lat: center.lat, lng: center.lng };
 
-            const viewBound = {
-              boundType: "point",
-              coordinates: {
-                latitude: center.lat,
-                longitude: center.lng,
-                radius: radius,
-              },
-            };
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+    const radius =
+      (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) * 111) /
+      2;
 
-            try {
-              const modifiedSearchParams = searchParams
-                ?.toString()
-                .replace(/locationIds=[^&]*&?/, "")
-                .replace(/viewBound=[^&]*&?/, "");
-
-              const viewBoundString = encodeURIComponent(
-                JSON.stringify(viewBound)
-              );
-
-              const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getFilterValue(
-                "locationIds"
-              )}`;
-
-              let eventsData: any = {};
-
-              if (source === "tracker") {
-                eventsData = await getEventsLatLongData(
-                  trackerId,
-                  `viewBound=${viewBoundString}`,
-                  searchParams,
-                  trackerType
-                );
-                
-              } else {
-                eventsData = await getEventsWithSearchParams(finalSearchParams);
-              }
-              setEvents((eventsData?.events as MapEvents[]) || []);
-            } catch (error) {
-              console.error("Error fetching events:", error);
-            }
-          } else {
-            console.error("Map bounds are not available");
-          }
-        } else {
-          setEvents([]);
-        }
-      }
+    const viewBound = {
+      boundType: "point",
+      coordinates: {
+        latitude: center.lat,
+        longitude: center.lng,
+        radius: radius,
+      },
     };
 
-    fetchEvents();
-  }, [currentZoomGroup, searchParams, location, eventType]);
+    try {
+      let eventsData: any = {};
 
-  const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
-    setViewport(viewState);
+      if (sourceRef.current === "tracker") {
+        eventsData = await getEventsLatLongData(
+          trackerIdRef.current,
+          `viewBound=${encodeURIComponent(JSON.stringify(viewBound))}`,
+          searchParamsRef.current,
+          trackerTypeRef.current
+        );
+      } else {
+        const modifiedSearchParams = searchParamsRef.current
+          ?.toString()
+          .replace(/locationIds=[^&]*&?/, "")
+          .replace(/viewBound=[^&]*&?/, "");
+
+        const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+        const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
+
+        eventsData = await getEventsWithSearchParams(finalSearchParams);
+      }
+
+      console.log("Events fetched on move:", eventsData?.events?.length);
+      setEvents((eventsData?.events as MapEvents[]) || []);
+    } catch (error) {
+      console.error("Error fetching events on map move:", error);
+    } finally {
+      isCurrentlyFetching.current = false;
+      setIsMapMoving(false);
+    }
   }, []);
+
+  const debouncedFetchEventsOnMove = useMemo(() => {
+    return debounce(fetchEventsOnMove, 500);
+  }, [fetchEventsOnMove]);
+
+  const lastCallTime = useRef(0);
+  const COOLDOWN_PERIOD = 800;
+
+  const onMove = useCallback(
+    ({ viewState }: { viewState: ViewState }) => {
+      setViewport(viewState);
+
+      if (currentZoomGroup === "event" && !isCurrentlyFetching.current) {
+        const now = Date.now();
+        if (now - lastCallTime.current > COOLDOWN_PERIOD) {
+          console.log("Map moved in event zoom group - triggering fetch");
+          lastCallTime.current = now;
+          setIsMapMoving(true);
+          debouncedFetchEventsOnMove();
+        }
+      }
+    },
+    [currentZoomGroup, debouncedFetchEventsOnMove]
+  );
+
+  useEffect(() => {
+    if (
+      currentZoomGroup === "event" &&
+      mapRef.current &&
+      !isCurrentlyFetching.current
+    ) {
+      console.log("Zoom group changed to event");
+      lastFetchCenter.current = null;
+      lastCallTime.current = 0;
+
+      const timeoutId = setTimeout(() => {
+        if (currentZoomGroupRef.current === "event") {
+          fetchEventsOnMove();
+        }
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentZoomGroup, fetchEventsOnMove]);
+
+  useEffect(() => {
+    return () => {
+      debouncedFetchEventsOnMove.cancel();
+    };
+  }, [debouncedFetchEventsOnMove]);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
@@ -705,18 +739,19 @@ export default function MapComponent({
     );
   }
   return (
-    <div className="relative px-4 md:px-0">
+    <div className="relative px-4 md:px-0 w-full">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
-        <Loading />
+        (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
       ) : eventCountsQuery.error ? (
-        <ZeroState text={eventCountsQuery.error.message} />
+        <ZeroState text={eventCountsQuery.error.message} isGlobal={isGlobal}/>
       ) : (
         <>
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
-              title="We couldn't find any events matching your tracker criteria at the moment."
-              text="Try adjusting your filters or checking back later, as new events are added frequently."
+              global={isGlobal}
+              title={`${!isGlobal?"We couldn’t find any events matching your tracker criteria at the moment.":""}`}
+              text={`${!isGlobal?"Try adjusting your filters or checking back later, as new events are added frequently.":"We couldn’t find any events matching your tracker criteria at the moment."}`}
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
             />
@@ -728,11 +763,7 @@ export default function MapComponent({
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal
-                      ? isMobile
-                        ? "calc(100dvh - 264px)"
-                        : "calc(100dvh - 136px)"
-                      : "300px",
+                    height: !isGlobal ? isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 136px)" : "180px",
                   }}
                   onMove={onMove}
                   onLoad={onMapLoad}

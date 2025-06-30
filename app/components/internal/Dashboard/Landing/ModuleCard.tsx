@@ -24,7 +24,7 @@ const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, t
   const handleRouting = () => {
     if (button === "Promote") {
       router.push("/widget/dashboard")
-    } else router.push("/internal/prospect")
+    } else router.push("/internal/search/companies")
   }
   const searchHandler = () => {
     const params = new URLSearchParams();

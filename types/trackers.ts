@@ -139,7 +139,7 @@ export interface PresetData{
     }
 
     export interface AllTrackerTypes{
-      filterValue: FilterValue;
+      filterValues: FilterValue;
       id: string;
       name:string;
       type:string
