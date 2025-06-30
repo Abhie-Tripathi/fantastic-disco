@@ -357,6 +357,7 @@ function mapInterestsToInterestIds(
     setIsChecked(false);
     setShowCheckBox?.(false);
     setTotalChecked([]);
+    setSelectedInterestMap(new Map());
   }
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {

@@ -1010,7 +1010,7 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {filterCount > 0 && (
+                {((type === "events" && filterCount > 0) ||(type === "companies" || type === "people")) && (
                   <Button
                     id="save-search-btn"
                     onClick={() => {

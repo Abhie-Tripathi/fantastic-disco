@@ -868,7 +868,9 @@ const Page = ({ params }: { params: any }) => {
                 </div>
               </PopoverContent>
             </Popover>
+            
             {view==="list" && <SortDropdown compact/>}
+          {/* {view==="list" && <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>} */}
           </div>
           {view === "table" && (
             <div className="flex-grow overflow-hidden">
@@ -881,7 +883,7 @@ const Page = ({ params }: { params: any }) => {
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
-          <Table source="tracker" trackerId={trackerId} eventType={active || ""} showCheckBox={showCheckBox}/>
+          <Table source="tracker" trackerId={trackerId} eventType={active || ""} showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
           </Suspense>
           </div>
         )}

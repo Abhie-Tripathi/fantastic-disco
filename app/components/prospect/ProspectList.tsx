@@ -56,7 +56,7 @@ interface ProspectCardProps {
       orgWebsite: string;
     }
   >;
-  toggleSelection: (id: string, website?: string | null | undefined) => void;
+  toggleSelection: (id: string, website?: string | null | undefined, name?: string | null | undefined) => void;
 }
 
 interface StatsBadgeProps {
@@ -164,7 +164,7 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
         <Checkbox
           checked={companyDetail.id in selectedCompaniesIds}
           onCheckedChange={() =>
-            toggleSelection(companyDetail.id, companyDetail.website)
+            toggleSelection(companyDetail.id, companyDetail.website, companyDetail.name)
           }
         />
       )}
@@ -256,14 +256,16 @@ export const ProspectList: React.FC = () => {
     setSelectedData,
     setIsBulkActionActive,
   } = useBulkAction<{
-    orgWebsite: string;
+    orgWebsite?: string;
+    orgName?: string;
   }>();
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<any>();
   const { localFilters, deleteMultipleLocalFilters, applyFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState(false);
-
+  console.log("selectedData", selectedData);
+  
   const {
     data: companyData,
     error,
@@ -316,9 +318,15 @@ export const ProspectList: React.FC = () => {
       if (checked) {
         // ADD all companies to next
         companies.forEach((company) => {
+          if(company.website){
           next[company.id] = {
             orgWebsite: company.website || "",
           };
+        }else{
+          next[company.id] = {
+            orgName: (company.name || "").replace(/,/g, ""),
+          };
+        }
         });
       } else {
         // REMOVE all companies from next
@@ -333,15 +341,21 @@ export const ProspectList: React.FC = () => {
     });
   }
 
-  function toggleSelection(id: string, website?: string | null | undefined) {
+  function toggleSelection(id: string, website?: string | null | undefined, name?: string | null | undefined) {
     setSelectedData((prev) => {
       const next = { ...prev };
       if (id in next) {
         delete next[id];
       } else {
+        if(website){
         next[id] = {
           orgWebsite: website || "",
         };
+        }else{
+          next[id] = {
+          orgName: name || "",
+        };
+        }
       }
       return next;
     });
@@ -435,7 +449,7 @@ export const ProspectList: React.FC = () => {
               Select companies to create tracker
             </label>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 item-center pr-6">
             <Button
               disabled={Object.keys(selectedData).length === 0}
               variant={"default"}
