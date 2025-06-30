@@ -107,7 +107,11 @@ const SaveTrendModal = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full h-10 text-primary border-primary" disabled={isLoading}>
+        <Button
+          variant="outline"
+          className="w-full h-10 text-primary border-primary"
+          disabled={isLoading}
+        >
           <Save className="w-4 h-4 mr-2" />
           Save Trend
         </Button>
@@ -224,6 +228,8 @@ const SaveTrend = ({
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
     const categories = params.get("categories");
+    const compareFrom = params.get("compare_from");
+    const compareTo = params.get("compare_to");
     const viewBound: ViewBound = geoCoordinate
       ? JSON.parse(geoCoordinate)
       : undefined;
@@ -239,6 +245,8 @@ const SaveTrend = ({
       columns: columns || "",
       ...(categories ? { categories } : {}),
       ...(locationIds ? { locationIds } : geoCoordinate ? { viewBound } : {}),
+      ...(compareFrom ? { compare_from: compareFrom } : {}),
+      ...(compareTo ? { compare_to: compareTo } : {}),
     };
     const data: CreateSaveTrendData = {
       name: trackerName,
