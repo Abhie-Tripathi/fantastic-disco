@@ -25,6 +25,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 // Constants
 const EXCLUDED_TAGS = [
@@ -248,7 +256,10 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
 
 export const ProspectList: React.FC = () => {
   const searchParams = useSearchParams();
-  const { getFilterValue, setMultipleFilters } = useFilterState();
+  const { getFilterValue, setMultipleFilters, setFilter } = useFilterState();
+  const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
+  const selectedView = getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"; // "all" || "upcoming"
+  
   const { getCompanyList } = useCompanyService();
   const {
     isBulkActionActive,
@@ -394,6 +405,14 @@ export const ProspectList: React.FC = () => {
     ).length;
   })();
 
+  const onTabsChange = (value: string) => {
+    if (value === "all")
+      setFilter("upcomingEvents", "false");
+    else if (value === "upcoming")
+      setFilter("upcomingEvents", "true");
+    setShowViewDropdown(false);
+  };
+
   const toggleFilterHandler = () => {
     if (showFilters) {
       setShowFilter(false);
@@ -405,9 +424,9 @@ export const ProspectList: React.FC = () => {
   
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full md:px-6">
       <div
-        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 pb-4 px-4 md:px-0`}
       >
         <div className="flex items-center gap-2">
           <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
@@ -420,8 +439,51 @@ export const ProspectList: React.FC = () => {
             Companies
           </p>
         </div>
-        <div className="flex justify-center"></div>
-        <div className="flex justify-end gap-2">
+
+        <div
+          id="company-view-desktop"
+          className="justify-center hidden md:flex"
+        >
+          <Tabs
+            defaultValue="all"
+            value={selectedView}
+            onValueChange={onTabsChange}
+            className="mt-0"
+          >
+            <TabsList className="grid w-fit grid-cols-2 h-auto bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger
+                value="all"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                {/* <TableIcon className="h-4 w-4" /> */}
+                <span>All</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="upcoming"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                {/* <ListIcon className="h-4 w-4" /> */}
+                <span>Upcoming</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* <div className="flex justify-center"></div> */}
+        <div className="flex items-center md:hidden justify-end gap-2">
+          <Select
+            value={selectedView}
+            onValueChange={onTabsChange}
+          >
+            <SelectTrigger className="w-[110px] border-gray-300">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="upcoming">Upcoming</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Button
             onClick={toggleFilterHandler}
             variant={filtersCount > 0 ? "secondary" : "ghost"}
@@ -530,7 +592,7 @@ export const ProspectList: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="flex-1 flex gap-3 flex-col px-4 md:px-6">
+        <div className="flex-1 flex gap-3 flex-col px-4 md:px-0">
           {isLoading ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
               <Loading />

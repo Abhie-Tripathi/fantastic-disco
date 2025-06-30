@@ -28,6 +28,7 @@ import {
   Settings,
   Sun,
   UserSearch,
+  ArrowUpRight,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +38,9 @@ import { Skeleton } from "../ui/skeleton";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
 import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
+import { Badge } from "@/components/ui/badge";
 
 function Coordinate() {
   return (
@@ -82,6 +86,8 @@ const Sidebar = () => {
   const { user, signOut } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
+  const [membershipData, setMembershipData] = useState<any>(null);
+  const { getMembershipData } = useProfileServices();
 
   useEffect(() => {
     if (user) setStoredUser(user);
@@ -101,6 +107,18 @@ const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchMembership = async () => {
+      try {
+        const data = await getMembershipData();
+        setMembershipData(data);
+      } catch (e) {
+        setMembershipData(null);
+      }
+    };
+    fetchMembership();
   }, []);
 
   const generateProfileName = () => {
@@ -280,13 +298,20 @@ const Sidebar = () => {
         <div className="flex items-center space-x-2">
           <Image src={HeroLogo} alt="logo" width={40} height={40} />
           {isHovered && (
-            <Image
-              className="mb-[6px]"
-              src={HeroText}
-              alt="logotext"
-              height={24}
-              style={theme === "dark" ? { filter: "invert(100%)" } : {}}
-            />
+            <>
+              <Image
+                className="mb-[6px]"
+                src={HeroText}
+                alt="logotext"
+                height={24}
+                style={theme === "dark" ? { filter: "invert(100%)" } : {}}
+              />
+              {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+                <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+                  {MembershipPlan[membershipData?.membership || 0]}
+                </span>
+              </div>}
+            </>
           )}
         </div>
       </div>

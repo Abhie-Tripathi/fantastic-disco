@@ -26,6 +26,7 @@ import {
   Search,
   Menu,
   Bell,
+  ArrowUpRight,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -41,6 +42,9 @@ import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
 import VideoModal from "@/components/layout/videoModal";
+import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -113,6 +117,8 @@ export default function Navbar() {
 
   const [storedUser, setStoredUser] = useState<any>(null);
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
+  const { getMembershipData } = useProfileServices();
+  const [membershipData, setMembershipData] = useState<any>(null);
 
   useEffect(() => {
     // Ensure this code runs only on the client side
@@ -143,6 +149,18 @@ export default function Navbar() {
     }
   }, [storedUser]);
 
+  useEffect(() => {
+    const fetchMembership = async () => {
+      try {
+        const data = await getMembershipData();
+        setMembershipData(data);
+      } catch (e) {
+        setMembershipData(null);
+      }
+    };
+    fetchMembership();
+  }, []);
+
   const generateProfileName = () => {
     if (storedUser) {
       const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
@@ -160,6 +178,20 @@ export default function Navbar() {
       router.push("/widget/settings/profile");
     }
   };
+
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Navbar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -188,15 +220,15 @@ export default function Navbar() {
           <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
               ? (
-                <div className="flex items-center">
-                  {getRoute(pathname.split("/")[2])}
+              <div className="flex items-center">
+                {getRoute(pathname.split("/")[2])}
                   <div className="ml-2 " >
-                    <VideoModal source={pathname.split("/")[2]} />
-                  </div>
-                  {pathname.split("/")[2] === "trends" && (
-                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
-                  )}
+                  <VideoModal source={pathname.split("/")[2]} />
                 </div>
+                {pathname.split("/")[2] === "trends" && (
+                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
+                )}
+              </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
               ? "Edit Widget"
@@ -219,6 +251,19 @@ export default function Navbar() {
           {!isEventeli && (
             <>
               <div className="flex items-center gap-1 max-[570px]:hidden">
+                {membershipData &&
+                  membershipData.membership === MembershipPlan.Freemium && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex"
+                        onClick={handleUpgradeClick}
+                      >
+                        <span className="hidden sm:inline">Upgrade</span>
+                      </Button>
+                    </>
+                  )}
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => handleRoute("research")}
