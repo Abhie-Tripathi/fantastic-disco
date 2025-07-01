@@ -2,7 +2,7 @@
   position: fixed;
   top: 0px;
   left: 0px;
-  z-index: 10;
+  z-index: 111;
   width: 100vw;
   height: 100vh;
   background-color: rgb(0 0 0 / 25%);
@@ -73,7 +73,7 @@
 }
 
 .exportType_modal_description {
-  margin-bottom: 32px;
+  /* margin-bottom: 32px; */
   padding: 20px 24px;
   font-weight: 300;
   /* color: #222; */

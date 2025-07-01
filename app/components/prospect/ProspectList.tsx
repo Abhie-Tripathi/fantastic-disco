@@ -523,7 +523,7 @@ export const ProspectList: React.FC = () => {
               className="h-8"
               onClick={() => handleCreate()}
             >
-              Create
+              Submit
             </Button>
             <Button
               variant={"outline"}

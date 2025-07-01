@@ -33,6 +33,7 @@ import {
   TableIcon,
 } from "lucide-react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import ExportModal from "./Search/ExportModal";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -46,6 +47,7 @@ const Events = () => {
   const [showFilters, setShowFilter] = useState<boolean>(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
+  const [showExport, setShowExport] = useState<boolean>(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
@@ -100,7 +102,9 @@ const Events = () => {
       setTrackerModalOpen(true);
     }
   };
-
+  const exportModalHandler = () => {
+    setShowExport(false);
+  };
   return (
      <div className="flex-1 relative md:w-[62%]">
       <div className={`md:px-6 transition-all duration-300`}>
@@ -170,8 +174,9 @@ const Events = () => {
                 selectedView === "table" ||
                 selectedView === "") && (
                 <BulkImport
-                  bulkActions={["Bulk Action"]}
+                  bulkActions={["Bulk Action", "Export"]}
                   setShowCheckBox={setShowCheckBox}
+                  setShowExport={setShowExport}
                 />
               )}
             </div>
@@ -333,6 +338,9 @@ const Events = () => {
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
       />
+      {showExport &&
+      <ExportModal onClose={exportModalHandler}/>
+      }
     </div>
   );
 };

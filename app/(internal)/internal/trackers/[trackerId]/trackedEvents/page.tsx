@@ -114,6 +114,7 @@ const Page = ({ params }: { params: any }) => {
   const [open, setOpen] = useState(false);
   const [showViewDropdown, setShowViewDropdown] = useState(false);
   const [eventType, setEventType] = useState("active");
+  const [showExport, setShowExport] = useState<boolean>(false);
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "")
       ? viewType
@@ -552,7 +553,9 @@ const Page = ({ params }: { params: any }) => {
     }
   };
   // console.log(activeCount);
-
+  const exportModalHandler = () => {
+    setShowExport(false);
+  };
   const onTabsChange = (tab: string) => {
     setView(tab);
     setShowViewDropdown(false);
@@ -769,7 +772,12 @@ const Page = ({ params }: { params: any }) => {
               <div ref={!isMobile?refs.popularityRef:null}>
               <SortDropdown />
               </div>
-               <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>
+              {(view === "table" || view === "list")&&
+              <BulkImport
+                bulkActions={["Bulk Action", "Export"]}
+                setShowCheckBox={setShowCheckBox}
+                setShowExport={setShowExport}
+              />}
             </div>
           </div>
 
@@ -1026,6 +1034,9 @@ const Page = ({ params }: { params: any }) => {
           )}
         </div>
       )}
+      {showExport &&
+      <ExportModal onClose={exportModalHandler}/>
+      }
     </div>
   );
 };

@@ -15,6 +15,10 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Crown } from "lucide-react";
+import { isEventeli } from "@/config";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -198,19 +202,43 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
       console.log(data);
     }
   };
-
+ const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=research_export`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Navbar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
+    );
+  };
   return (
     <div className={styles.container}>
       {!showExportedFiles && (
         <div
           className={`${styles.exportType_modal} ${
             theme === "light" && styles.exportType_modal_light
-          }`}
+          } flex flex-col`}
         >
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
               Export Events
+              {/* <span className="text-xs font-norma">
+                Available only in the Advance plan.
+                <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex"
+                        // onClick={handleUpgradeClick}
+                      >
+                        <span className="hidden sm:inline">Upgrade</span>
+                      </Button>
+              </span> */}
+              
             </div>
+            
             <Image
               src={CloseIcon}
               alt="closeicon"
@@ -218,7 +246,6 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
               className={styles.closeIcon}
             />
           </div>
-
           {/* <div className={styles.tabs_container}>
             <div
               className={`${styles.tab} ${
@@ -243,8 +270,22 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             You can check the progress of your export in the exported files
             dialog.
           </div>
-
-          <div
+          <div className="w-full pb-4 flex items-center justify-center gap-1">
+             {/* <Badge variant="secondary" className="mx-auto">
+            <Crown className="w-3 h-3 mr-1" />
+            Advance Plan Feature
+          </Badge> */}
+          <span className="text-xs" style={{color:"var(--primary-color)"}}>Available only in the Advance and Above plan</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden md:flex"
+            // onClick={handleUpgradeClick}
+          >
+            <span className="hidden sm:inline">Upgrade</span>
+          </Button>
+          </div>
+          {/* <div
             className={styles.exportType_modal_button}
             onClick={exportDataHandler}
           >
@@ -255,7 +296,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             onClick={()=>setShowExportedFiles(true)}
           >
             See previous exported files
-          </div>
+          </div> */}
         </div>
       )}
 
