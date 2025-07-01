@@ -261,8 +261,8 @@ const Page = ({ params }: { params: any }) => {
       const transformedData = CountValues.geo.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: data?.groupedEventsCount[key].total || 0,
-          newCount: data?.groupedEventsCount[key].new || 0,
+          totalCount: data?.groupedEventsCount?.[key].total || 0,
+          newCount: data?.groupedEventsCount?.[key].new || 0,
         };
       });
 
