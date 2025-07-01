@@ -17,7 +17,6 @@ import { useToast } from "@/hooks/use-toast";
 import Alerts from "@/components/search/alerts";
 import SortDropdown from "@/components/search/sortDropdown";
 import { isEventeli } from "@/config";
-import { CallBackProps, STATUS, Step } from "react-joyride";
 import BulkImport from "@/components/bulk-import";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -339,7 +338,7 @@ const Events = () => {
         onOpenChange={setTrackerModalOpen}
       />
       {showExport &&
-      <ExportModal onClose={exportModalHandler}/>
+      <ExportModal onClose={exportModalHandler} source={"research"}/>
       }
     </div>
   );

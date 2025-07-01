@@ -23,6 +23,7 @@ interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
   type?:string|undefined;
+  source:string;
 }
 
 interface ExportContent {
@@ -61,7 +62,7 @@ function formatDate(dateString: string): string {
   return formattedDate;
 }
 
-const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
+const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) => {
   const pathName = usePathname().split('/');
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
@@ -204,13 +205,13 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
   };
  const handleUpgradeClick = () => {
     window.open(
-      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=research_export`,
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=${source}_export`,
       "_blank"
     );
     GAEvent(
       "",
       "Plan Upgrade",
-      "Navbar",
+      `${source}`,
       `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
     );
   };

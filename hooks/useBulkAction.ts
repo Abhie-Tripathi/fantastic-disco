@@ -70,9 +70,9 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
         const validUnbookmarkEntries = Array.from(selectedInterestMap.entries())
           .filter(([eventId, value]) => {
             const isValid = eventId && value?.bookmark !== undefined;
-            if (!isValid) {
-              console.warn('Skipping invalid unbookmark entry:', { eventId, value });
-            }
+            // if (!isValid) {
+            //   console.warn('Skipping invalid unbookmark entry:', { eventId, value });
+            // }
             return isValid;
           });
         if(action?.status === "UN BOOKMARK")
@@ -181,10 +181,9 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
 
   interestResults.forEach((result, i) => {
     const [eventId] = validInterestEntries[i];
-    console.group(`Event ${eventId}`);
-    console.groupEnd();
+    // console.groupEnd();
   });
-  console.groupEnd();
+  // console.groupEnd();
 }
 
 
