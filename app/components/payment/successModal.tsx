@@ -54,7 +54,7 @@ const PaymentSuccessModal = ({
 }: ModalProps) => {
   const membershipPlan = MembershipPlan[membership || 0];
 
-  const features = featureList?.[membershipPlan] || featureList["Essential"];
+  const features = featureList?.[membershipPlan] || [];
 
   const router = useRouter();
 
@@ -108,7 +108,9 @@ const PaymentSuccessModal = ({
             </div>
 
             <div className="w-4/5 text-base text-[var(--danger-text-color)] border-t border-dashed py-4 sm:border-none ">
-              Please check your payment details and try again. If the amount has been deducted, your plan will be activated within the next 24 working hours.
+              Please check your payment details and try again. If the amount has
+              been deducted, your plan will be activated within the next 24
+              working hours.
             </div>
 
             <Button size="lg" onClick={() => handleRoute("failed")}>
@@ -163,25 +165,31 @@ const PaymentSuccessModal = ({
                 <Button onClick={() => handleRoute("paid")}>Get started</Button>
               </div>
 
-              <div className="col-span-1 bg-[#F7F7FC] dark:bg-[#292929] p-6 rounded-e-2xl">
-                <h4 className="text-sm font-bold mb-4">What&apos;s included</h4>
+              {features.length > 0 && (
+                <div className="col-span-1 bg-[#F7F7FC] dark:bg-[#292929] p-6 rounded-e-2xl">
+                  <h4 className="text-sm font-bold mb-4">
+                    What&apos;s included
+                  </h4>
 
-                {features.map((item, index) => (
-                  <div
-                    key={index}
-                    className="text-[#170F49] dark:text-white text-sm flex items-center gap-2 mb-3"
-                  >
-                    <CircleCheck
-                      height={20}
-                      width={20}
-                      color="#FFFFFF"
-                      fill="#4A3AFF"
-                    />
-                    {item}
-                  </div>
-                ))}
-                <span className="text-primary text-sm font-semibold" >and more</span>
-              </div>
+                  {features.map((item, index) => (
+                    <div
+                      key={index}
+                      className="text-[#170F49] dark:text-white text-sm flex items-center gap-2 mb-3"
+                    >
+                      <CircleCheck
+                        height={20}
+                        width={20}
+                        color="#FFFFFF"
+                        fill="#4A3AFF"
+                      />
+                      {item}
+                    </div>
+                  ))}
+                  <span className="text-primary text-sm font-semibold">
+                    and more
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Mobile View */}
@@ -204,25 +212,32 @@ const PaymentSuccessModal = ({
                 </Badge>
               </div>
 
-              <h4 className="text-sm font-semibold">What&apos;s included</h4>
-
-              <div className="flex gap-2 flex-col">
-                {features.map((item, index) => (
-                  <div
-                    key={index}
-                    className="text-[#170F49] dark:text-white text-sm flex items-center gap-2"
-                  >
-                    <CircleCheck
-                      height={20}
-                      width={20}
-                      color="#FFFFFF"
-                      fill="#4A3AFF"
-                    />
-                    {item}
+              {features.length > 0 && (
+                <>
+                  <h4 className="text-sm font-semibold">
+                    What&apos;s included
+                  </h4>
+                  <div className="flex gap-2 flex-col">
+                    {features.map((item, index) => (
+                      <div
+                        key={index}
+                        className="text-[#170F49] dark:text-white text-sm flex items-center gap-2"
+                      >
+                        <CircleCheck
+                          height={20}
+                          width={20}
+                          color="#FFFFFF"
+                          fill="#4A3AFF"
+                        />
+                        {item}
+                      </div>
+                    ))}
+                    <span className="text-primary text-sm font-medium">
+                      and more
+                    </span>
                   </div>
-                ))}
-                <span className="text-primary text-sm font-medium" >and more</span>
-              </div>
+                </>
+              )}
 
               <Button onClick={() => handleRoute("paid")}>Get started</Button>
             </div>
