@@ -276,7 +276,6 @@ export const ProspectList: React.FC = () => {
   const { localFilters, deleteMultipleLocalFilters, applyFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState(false);
-  console.log("selectedData", selectedData);
   
   const {
     data: companyData,

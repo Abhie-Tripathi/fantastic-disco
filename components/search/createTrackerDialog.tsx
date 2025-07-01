@@ -227,7 +227,6 @@ export default function CreateTrackerDialog({
       // setIsBulkActionActive(false);
       setSelectedData({});
     } catch (error) {
-      console.log("Tracker creation failed: ", error);
       toast({
         variant: "destructive",
         title: "Error",
