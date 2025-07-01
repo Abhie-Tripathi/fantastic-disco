@@ -108,8 +108,7 @@ const PaymentSuccessModal = ({
             </div>
 
             <div className="w-4/5 text-base text-[var(--danger-text-color)] border-t border-dashed py-4 sm:border-none ">
-              Please check your payment details and try again. If the amount is
-              deducted then plan will be activated in next 24 working hours.
+              Please check your payment details and try again. If the amount has been deducted, your plan will be activated within the next 24 working hours.
             </div>
 
             <Button size="lg" onClick={() => handleRoute("failed")}>
@@ -181,20 +180,7 @@ const PaymentSuccessModal = ({
                     {item}
                   </div>
                 ))}
-                <Button
-                  onClick={() =>
-                    window.open(
-                      `https://whr.ai/pricing?utm_source=${
-                        isEventeli ? "geo" : "gtm"
-                      }&utm_campaign=payment&utm_medium=web&utm_term=payment_success_view_more`,
-                      "_blank"
-                    )
-                  }
-                  size="sm"
-                  variant="link"
-                >
-                  View more {"->"}
-                </Button>
+                <span className="text-primary text-sm font-semibold" >and more</span>
               </div>
             </div>
 
@@ -235,20 +221,7 @@ const PaymentSuccessModal = ({
                     {item}
                   </div>
                 ))}
-                <Button
-                  onClick={() =>
-                    window.open(
-                      `https://whr.ai/pricing?utm_source=${
-                        isEventeli ? "geo" : "gtm"
-                      }&utm_campaign=payment&utm_medium=web&utm_term=payment_success_view_more`,
-                      "_blank"
-                    )
-                  }
-                  size="sm"
-                  variant="link"
-                >
-                  View more {"->"}
-                </Button>
+                <span className="text-primary text-sm font-medium" >and more</span>
               </div>
 
               <Button onClick={() => handleRoute("paid")}>Get started</Button>
