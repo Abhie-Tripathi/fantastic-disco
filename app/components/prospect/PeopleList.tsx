@@ -179,10 +179,14 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
                 </span>
               </div>
             )}
+            {poc.about && poc.about.length > 10 && (
+              <div className="text-[#707287] text-sm line-clamp-4">
+                {poc.about}
+              </div>
+            )} 
+            
             <div className="flex gap-2 flex-col w-full">
-              {/* <div className="flex justify-between">
-                <div className="text-xl font-semibold">{poc.user_name}</div>
-              </div> */}
+            
 
             <div className="flex flex-wrap gap-2 items-center w-fit">
               {renderEventCategories()}
