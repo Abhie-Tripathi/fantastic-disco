@@ -122,7 +122,40 @@ const MobileEventCard = ({
     </div>
   );
 
-  // Category badges
+  // Helper for ordinal suffix
+  function getOrdinalSuffix(number: number): string {
+    const j = number % 10;
+    const k = number % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
+  }
+
+  // Helper for exhibitor count
+  function formatExhibitorCount(value: string | number | null): string {
+    if (value === null || value === undefined) return "--";
+    const stringValue = String(value);
+    const values = stringValue.split("-");
+    if (values.length === 2 && values[0] === values[1]) {
+      return Number(values[0]).toLocaleString();
+    }
+    return stringValue.toLocaleString();
+  }
+
+  // Helper for match keywords color
+  const getMatchKeywordsColor = (percentage: number | null) => {
+    if (percentage === null) return "text-gray-500";
+    if (percentage > 20)
+      return "text-green-500 bg-[var(--success-background-color)] ";
+    if (percentage >= 10 && percentage <= 20)
+      return "text-blue-500 bg-[#eeeaf9]";
+    if (percentage > 0 && percentage < 10)
+      return "text-red-500 bg-[var(--danger-background-color)]";
+    return "text-gray-500";
+  };
+
+  // Category badges (primary event type and first category)
   const categories = [
     event.basic.primaryEventType && (
       <Badge
@@ -173,25 +206,173 @@ const MobileEventCard = ({
       "rank" in event.insights.rankings &&
       typeof event.insights.rankings.rank === "number"
     ) {
-      rankDisplay = `${event.insights.rankings.rank}th Country Rank`;
+      rankDisplay = `${event.insights.rankings.rank}${getOrdinalSuffix(event.insights.rankings.rank)} ${(event.insights.rankings as any).rankType || "Country"} Rank`;
     } else if (
       "country" in event.insights.rankings &&
       event.insights.rankings.country &&
       typeof event.insights.rankings.country.rank === "number"
     ) {
-      rankDisplay = `${event.insights.rankings.country.rank}th Country Rank`;
+      rankDisplay = `${event.insights.rankings.country.rank}${getOrdinalSuffix(event.insights.rankings.country.rank)} Country Rank`;
     }
   }
+
+  // Entry type badges
+  let entryTypeBadges = null;
+  if (showValues.includes(Show.entryType)) {
+    if (event.basic.entryType === "free_and_paid") {
+      entryTypeBadges = (
+        <>
+          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium mr-1">
+            Free
+          </Badge>
+          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+            Paid
+          </Badge>
+        </>
+      );
+    } else if (event.basic.entryType === "paid") {
+      entryTypeBadges = (
+        <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+          Paid
+        </Badge>
+      );
+    }
+  }
+
+  // Maturity, frequency, branded, series, forecasted
+  const extraBadges = [
+    showMaturity && event.advance?.maturity && (
+      <Badge key="maturity" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+        {event.advance?.maturity}
+      </Badge>
+    ),
+    showValues.includes(Show.frequency) && event.advance?.frequency && (
+      <Badge key="frequency" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+        {event.advance?.frequency}
+      </Badge>
+    ),
+    showValues.includes(Show.branded) && event.advance?.isBranded && (
+      <Badge key="branded" variant="outline" className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm text-xs font-medium">
+        Branded
+      </Badge>
+    ),
+    showValues.includes(Show.series) && event.advance?.isSeries && (
+      <Badge key="series" variant="outline" className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6] capitalize rounded-sm text-xs font-medium">
+        Series
+      </Badge>
+    ),
+    showValues.includes(Show.forecasted) && event.advance?.rehostDate && (
+      <Badge key="forecasted" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+        Forecasted: {event.advance?.rehostDate ? new Date(event.advance?.rehostDate).toLocaleString('default', { month: 'short', year: 'numeric' }) : ''}
+      </Badge>
+    ),
+  ].filter(Boolean);
+
+  // Rankings, trust score, reputation score
+  const rankingBadge = showValues.includes(Show.rankings) && event.insights?.rankings && rankDisplay !== "-" && (
+    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+      {rankDisplay}
+    </Badge>
+  );
+  const trustScoreBadge = showValues.includes(Show.rankings) && event.insights?.trustScore && event.insights?.trustScore > 0 && (
+    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+      Trust Score: {event.insights?.trustScore}
+    </Badge>
+  );
+  const reputationScoreBadge = showValues.includes(Show.rating) && event.insights?.reputationScore && (
+    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+      Reputation Score: {event.insights?.reputationScore}
+    </Badge>
+  );
+
+  // Match keywords
+  const matchKeywordsBadge = showMatchKeywords && event.basic.matchedKeywords && event.basic.matchedKeywords.length > 0 && (
+    <Badge variant="outline" className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium">
+      Match Keyword: {event.basic.matchedKeywords?.join(" | ")}
+    </Badge>
+  );
+  const matchKeywordsScoreBadge = showMatchKeywords && (
+    <Badge
+      variant="outline"
+      className={`flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium ${getMatchKeywordsColor(event.basic.matchedKeywordsPercentage ?? null)}`}
+    >
+      {(() => {
+        const percentage = event.basic.matchedKeywordsPercentage ?? null;
+        if (percentage === null) return "-";
+        if (percentage > 20) return <span>High</span>;
+        if (percentage >= 10 && percentage <= 20) return <span>Medium</span>;
+        if (percentage > 0 && percentage < 10) return <span>Low</span>;
+        return "-";
+      })()}
+    </Badge>
+  );
+
+  // Audience spread
+  const audienceSpreadBadge = showaudienceSpread && event.audience?.audienceSpread && (
+    <Badge variant="outline" className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium">
+      <div className="flex gap-1">
+        {Object.entries(event.audience.audienceSpread)
+          .slice(0, 5)
+          .map(([key, { iso, name }]) => {
+            const countryIso = iso === "UK" ? "GB" : iso;
+            const Flag = (require("country-flag-icons/react/3x2") as any)[countryIso];
+            return Flag ? (
+              <span key={key} className="inline-block rounded overflow-hidden" title={name}>
+                <Flag className="w-4 h-3 border" />
+              </span>
+            ) : null;
+          })}
+      </div>
+    </Badge>
+  );
 
   return (
     <div className="bg-white rounded-xl shadow border p-4 flex flex-col gap-3 w-full">
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
-        <img
-          src={event.basic.logoUrl || "/placeholder.svg"}
-          alt={event.basic.name}
-          className="w-12 h-12 rounded-md object-cover border bg-white"
-        />
+        {/* Logo logic with fallback */}
+        {event.basic.logoUrl ? (
+          <img
+            src={event.basic.logoUrl || "/placeholder.svg"}
+            alt={event.basic.name}
+            className="w-12 h-12 rounded-md object-contain border bg-white"
+          />
+        ) : event.basic.website ? (
+          <div className="w-12 h-12 relative">
+            <img
+              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+              alt={`${event.basic.name} website favicon`}
+              className="w-12 h-12 object-contain border rounded-md bg-white"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                e.currentTarget.dataset.error = "true";
+              }}
+            />
+            {/* Fallback that shows when image errors */}
+            <div
+              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+              style={{ display: "none" }}
+              ref={(el) => {
+                if (el) {
+                  const img = el.previousSibling as HTMLImageElement;
+                  if (img && img.dataset.error === "true") {
+                    el.style.display = "flex";
+                  }
+                }
+              }}
+            >
+              <span className="text-[#5055A3] text-lg font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+            <span className="text-[#5055A3] text-lg font-semibold">
+              {event.basic.name.charAt(0)}
+            </span>
+          </div>
+        )}
         <div className="flex-1">
           <div className="font-semibold text-base leading-tight text-gray-900">
             {event.basic.name}
@@ -208,7 +389,17 @@ const MobileEventCard = ({
           />
         </div>
       </div>
-      <div className="flex gap-2 mt-1">{categories}</div>
+      <div className="flex gap-2 mt-1 flex-wrap">
+        {categories}
+        {entryTypeBadges}
+        {extraBadges}
+        {rankingBadge}
+        {trustScoreBadge}
+        {reputationScoreBadge}
+        {matchKeywordsBadge}
+        {matchKeywordsScoreBadge}
+        {audienceSpreadBadge}
+      </div>
       {/* Date & Location */}
       <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
         <span>{date}</span>
@@ -220,48 +411,47 @@ const MobileEventCard = ({
           <Star className="w-4 h-4 text-primary" fill="#6751A4" />
           {event.basic.rating || "-"}
         </span>
-        <span className="flex items-center gap-1 text-xs text-gray-700">
-          <Trophy className="w-4 h-4 text-amber-500" />
-          <Image alt="primetrophy" src={primeTrophy}/>
-          {rankDisplay}
-        </span>
-        <span className="flex items-center gap-1 text-xs text-gray-700">
-          <Image alt="trustscore" src={trustScore} className="w-5 h-5"/>
-          Trust Score : {event.insights?.trustScore ?? "-"}
-        </span>
+        {rankingBadge}
+        {trustScoreBadge}
       </div>
       {/* Stats */}
       <div className="mt-2 flex flex-col gap-1">
-        {stat(
-          "Estimated Visitors",
-          event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
-        )}
-        {stat(
-          "Estimated Exhibitors",
-          event.insights?.estimatedExhibitors?.toLocaleString() ?? "-"
-        )}
-        {stat(
-          "Economic Impact",
-          event.insights?.economicImpact
-            ? formatEstimatedSpend(event.insights.economicImpact)
-            : "-"
-        )}
+        {showValues.includes(Show.estimatedExhibitors) &&
+          stat(
+            "Estimated Exhibitors",
+            event.insights?.estimatedExhibitors !== undefined && event.insights?.estimatedExhibitors !== null && event.insights?.estimatedExhibitors !== ""
+              ? formatExhibitorCount(event.insights?.estimatedExhibitors)
+              : "-"
+          )}
+        {showValues.includes(Show.scores) &&
+          stat(
+            "Estimated Visitors",
+            event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
+          )}
+        {showValues.includes(Show.economicImpact) &&
+          stat(
+            "Economic Impact",
+            event.insights?.economicImpact
+              ? formatEstimatedSpend(event.insights.economicImpact)
+              : "-"
+          )}
       </div>
       {/* Insights & Scores */}
-      <div className="flex justify-between">
-        <div className="text-xs text-gray-500 font-medium">Insights & Scores</div>
-
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-[11px] mb-1 border px-1">Inbound</div>
-            <CircularProgress value={inbound} />
-          </div>
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-[11px] mb-1 border px-1">International</div>
-            <CircularProgress value={international} />
+      {showValues.includes(Show.scores) && (
+        <div className="flex justify-between">
+          <div className="text-xs text-gray-500 font-medium">Insights & Scores</div>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex flex-col items-center flex-1">
+              <div className="text-[11px] mb-1 border px-1">Inbound</div>
+              <CircularProgress value={inbound} />
+            </div>
+            <div className="flex flex-col items-center flex-1">
+              <div className="text-[11px] mb-1 border px-1">International</div>
+              <CircularProgress value={international} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

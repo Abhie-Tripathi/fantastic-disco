@@ -304,7 +304,7 @@ export default function EventAccordion({
 
   if (
     searchParams.size === 0 ||
-    (searchParams.size == 1 && searchParams.has("view") && source!=="tracker")
+    (searchParams.size == 1 && searchParams.has("view") && source !== "tracker")
   ) {
     return (
       <div className="p-6">
@@ -342,28 +342,55 @@ export default function EventAccordion({
     <div className="flex flex-col h-full px-4 md:px-0">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
-          {updatedEvents?.map((event: Event) => (
-            <MobileEventCard
-              isMobile={isMobile}
-              global={view}
-              trackerId={trackerId}
-              view={query.eventType}
-              setEventId={setEventId}
-              setInterest={setInterest}
-              key={event.basic.id}
-              event={event}
-              showValues={showValues}
-              showMaturity={showMaturity || trackerMaturity}
-              showMatchKeywords={showMatchKeywords}
-              showaudienceSpread={audienceSpread.length > 0 ? true : false}
-              intelLoading={intelLoading}
-              initialIntelScoreData={
-                intelScoreData?.trackerEventsIntelScore?.find(
-                  (item: intelScore) => item?.event === event.basic.id
-                ) || null
-              }
-            />
-          ))}
+          {updatedEvents?.map((event: Event) => {
+            if (isMobile) {
+              return (
+                <MobileEventCard
+                  isMobile={isMobile}
+                  global={view}
+                  trackerId={trackerId}
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
+                  key={event.basic.id}
+                  event={event}
+                  showValues={showValues}
+                  showMaturity={showMaturity || trackerMaturity}
+                  showMatchKeywords={showMatchKeywords}
+                  showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                  intelLoading={intelLoading}
+                  initialIntelScoreData={
+                    intelScoreData?.trackerEventsIntelScore?.find(
+                      (item: intelScore) => item?.event === event.basic.id
+                    ) || null
+                  }
+                />
+              );
+            }
+
+            return (
+              <EventListItem
+                isMobile={isMobile}
+                global={view}
+                trackerId={trackerId}
+                view={query.eventType}
+                setEventId={setEventId}
+                setInterest={setInterest}
+                key={event.basic.id}
+                event={event}
+                showValues={showValues}
+                showMaturity={showMaturity || trackerMaturity}
+                showMatchKeywords={showMatchKeywords}
+                showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                intelLoading={intelLoading}
+                initialIntelScoreData={
+                  intelScoreData?.trackerEventsIntelScore?.find(
+                    (item: intelScore) => item?.event === event.basic.id
+                  ) || null
+                }
+              />
+            );
+          })}
         </ul>
       </div>
       <div className="sticky bottom-0 bg-background py-3">
@@ -1382,26 +1409,28 @@ const UnplannedCard = ({ event }: { event: Event }) => {
             </div>
 
             {showHolidayScore && (
-              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
-                <div className="max-w-[94px] h-full">
-                  <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                    <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                      {(event.basic?.eventLocation as any)[0]?.displayName.split(",")[0]}
-                    </p>
-                    <div className="grid grid-rows-2 gap-2">
-                      <CircularProgress
-                        value={
-                          (event.basic?.eventLocation as any)[0]?.businessScore
-                        }
-                        label="Business"
-                      />
-                      <CircularProgress
-                        value={
-                          (event.basic?.eventLocation as any)[0]?.socialScore
-                        }
-                        label="Social"
-                      />
-                    </div>
+              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px] ">
+                <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded max-h-fit">
+                  <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                    {
+                      (event.basic?.eventLocation as any)[0]?.displayName.split(
+                        ","
+                      )[0]
+                    }
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <CircularProgress
+                      value={
+                        (event.basic?.eventLocation as any)[0]?.businessScore
+                      }
+                      label="Business"
+                    />
+                    <CircularProgress
+                      value={
+                        (event.basic?.eventLocation as any)[0]?.socialScore
+                      }
+                      label="Social"
+                    />
                   </div>
                 </div>
               </div>
