@@ -133,8 +133,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0
+        totalCount :  item?.groupedEventsCount?.[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0
       }
     })
     
@@ -383,9 +383,9 @@ const clickHandler=(id:string)=>{
 scrollbarWidth: "none",
 overflowY: "scroll"}}>
             {eventsCount?.map((item,index)=>(
-              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
+              <div className={`flex w-20 flex-col gap-1 items-center justify-center card `} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-              {(isEventeli && item.type !== "Bookmark") && (
+              {/* {(isEventeli && item.type !== "Bookmark") && (
           item.type === "Business" ? (
             <Buildings height="12px" width="12px" color="var(--primary-color)" />
           ) : item.type === "Social" ? (
@@ -399,12 +399,13 @@ overflowY: "scroll"}}>
                     <Bookmark width="12px" height="12px" color="var(--primary-color)" />
                   ) : !isEventeli ? (
                     <Image src={item.logo} alt={item.type} width={12} height={12} />
-                  ) : null}
+                  ) : null} */}
 
-
+                <span className="text-xs">
                 {item.type}
-                
+                </span>
               </div>
+              {/* <div className="w-[80%]" style={{ border: "0.2px solid var(--border-color)" }}></div> */}
               <div className={styles.numberOfEvents}>
                 {formatCount(item?.totalCount)}
                 {/* <div className="badge_success">
@@ -414,7 +415,7 @@ overflowY: "scroll"}}>
                 </span>
                 </div> */}
               </div>
-              <div className={styles.events}>Events</div>
+              <div className={`${styles.events} font-normal text-xs`}>Events</div>
             </div>
             ))}
           </div>

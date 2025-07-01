@@ -66,7 +66,7 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
     setError(null);
 
     try {
-      if (action?.status === "UN-BOOKMARK") {
+      if (action?.status === "UN BOOKMARK") {
         const validUnbookmarkEntries = Array.from(selectedInterestMap.entries())
           .filter(([eventId, value]) => {
             const isValid = eventId && value?.bookmark !== undefined;
@@ -75,7 +75,7 @@ export const useBulkActions = (apiFunctions: ApiFunctions) => {
             }
             return isValid;
           });
-        if(action?.status === "UN-BOOKMARK")
+        if(action?.status === "UN BOOKMARK")
         setSavedEventCount?.(((prev:number) => prev - validUnbookmarkEntries.length));
         await Promise.all(
           validUnbookmarkEntries.map(async ([eventId, value]) => {

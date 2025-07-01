@@ -1024,7 +1024,7 @@ const Filters = ({
                     className="w-full h-10"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Save Search
+                    Save
                   </Button>
                 )}
 

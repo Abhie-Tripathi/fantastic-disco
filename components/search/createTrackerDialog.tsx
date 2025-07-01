@@ -183,12 +183,48 @@ export default function CreateTrackerDialog({
             ? "T_PEOPLE_FINDER"
             : "",
       };
-      await createTracker(payload);
-      toast({
-        title: "Tracker created successfully!",
+      try {
+      const { data, error } = await myFetch(`${BASE_URL}/trackers`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      onOpenChange(false);
-      setIsBulkActionActive(false);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      }
+      if (data) {
+        setTrackerUrl(
+          `${window.location.origin}/internal/trackers/${
+            data.id
+          }/trackedEvents?type=${trackerType === "companies"
+            ? "T_COMPETITOR"
+            : trackerType === "people"
+            ? "T_PEOPLE_FINDER":""}&view=table&${
+            isEventeli ? "eventType=social" : "eventType=active"
+          }`
+        );
+        setIsSuccess(true);
+      }
+    } catch (error) {
+      console.error("Error saving tracker:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create tracker. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+      // toast({
+      //   title: "Tracker created successfully!",
+      // });
+      // onOpenChange(false);
+      // setIsBulkActionActive(false);
       setSelectedData({});
     } catch (error) {
       console.log("Tracker creation failed: ", error);

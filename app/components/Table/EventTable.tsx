@@ -74,7 +74,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
-  const [action, setAction] = useState<{ label: string; status: string } | undefined>(undefined);
+  const [action, setAction] = useState<{ label: string; status: string } | undefined>({status:"", label: "None"});
 
   const {
     interestConfiguration,
@@ -143,7 +143,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const actions = [
     ...(interestConfiguration?.interest || []),
     ...[{ label: "Bookmark", status: "BOOKMARK" }],
-    ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
+    ...[{ label: "Un Bookmark", status: "UN BOOKMARK" }],
     // ...(eventType !== "bookmarked"
     //   ? [{ label: "Bookmark", status: "BOOKMARK" }]
     //   : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
@@ -151,7 +151,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
 
   useEffect(() => {
     if (actions.length > 0 && !action) {
-      setAction(actions[0]);
+      setAction({status:"", label: "None"}); 
     }
   }, [actions]);
 const handleBulkSubmit = async () => {

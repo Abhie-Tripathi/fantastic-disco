@@ -180,9 +180,9 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
               </div>
             )}
             <div className="flex gap-2 flex-col w-full">
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <div className="text-xl font-semibold">{poc.user_name}</div>
-              </div>
+              </div> */}
 
             <div className="flex flex-wrap gap-2 items-center w-fit">
               {renderEventCategories()}
@@ -484,14 +484,21 @@ export const PeopleList: React.FC = () => {
         </div>
       </div>
       {isBulkActionActive && (
-        <div className="flex justify-between py-3 w-full px-6 py-4">
+        <div className="flex justify-between w-full px-6 py-4">
           <div className="flex gap-2 items-center">
             <Checkbox
               className="rounded-sm"
               checked={isAllSelected}
               onCheckedChange={handleSelectAll}
             />
-            <label className="text-sm">Select people to create tracker</label>
+            <label className="text-sm">
+              Select people to create people tracker
+              {Object.keys(selectedData).length > 0 && (
+              <span className="pt-[2px] ml-1 text-[var(--secondary-text-color)] text-[12px]">
+                ({Object.keys(selectedData).length} Selected)
+              </span>
+              )}
+            </label>
           </div>
           <div className="flex gap-2">
             <Button

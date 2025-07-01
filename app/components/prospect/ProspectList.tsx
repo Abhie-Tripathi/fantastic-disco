@@ -61,7 +61,8 @@ interface ProspectCardProps {
   selectedCompaniesIds: Record<
     string,
     {
-      orgWebsite: string;
+      orgWebsite?: string;
+      orgName?: string;
     }
   >;
   toggleSelection: (id: string, website?: string | null | undefined, name?: string | null | undefined) => void;
@@ -500,18 +501,23 @@ export const ProspectList: React.FC = () => {
         </div>
       </div>
       {isBulkActionActive && (
-        <div className="flex justify-between w-full">
-          <div className="flex gap-2 items-center md:px-6 md:py-4">
+        <div className="flex justify-between w-full items-center">
+          <div className="flex gap-2 items-center md:py-4">
             <Checkbox
               className="rounded-sm"
               checked={isAllSelected}
               onCheckedChange={handleSelectAll}
             />
-            <label className="text-sm pr-6 items-center justify-center">
-              Select companies to create tracker
+            <label className="text-sm items-center justify-center">
+              Select companies to create company tracker
+              {Object.keys(selectedData).length > 0 && (
+              <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px] ml-1">
+                ({Object.keys(selectedData).length} Selected)
+              </span>
+            )}
             </label>
           </div>
-          <div className="flex gap-2 item-center pr-6">
+          <div className="flex gap-2 item-center">
             <Button
               disabled={Object.keys(selectedData).length === 0}
               variant={"default"}

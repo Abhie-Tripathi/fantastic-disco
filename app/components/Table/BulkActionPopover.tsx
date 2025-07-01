@@ -53,7 +53,7 @@ export default function BulkActionPopover({
     setAction(option);
     setIsOpen(!isOpen);
   };
-
+  
   const labels: Record<string, string> = {
     userJobTitle: "Job Title",
   };

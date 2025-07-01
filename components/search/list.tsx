@@ -152,7 +152,7 @@ export default function EventAccordion({
   const pathName = usePathname();
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
-  const [action, setAction] = useState<{ label: string; status: string } | undefined>(undefined);
+  const [action, setAction] = useState<{ label: string; status: string } | undefined>({status:"", label: "None"});
   const { toast } = useToast();
   const { inTransition } = useTransition();
   type InterestKey = string;
@@ -407,12 +407,12 @@ export default function EventAccordion({
   const actions = [
     ...(interestConfiguration?.interest || []),
     ...[{ label: "Bookmark", status: "BOOKMARK" }],
-    ...[{ label: "Un-Bookmark", status: "UN-BOOKMARK" }],
+    ...[{ label: "Un Bookmark", status: "UN BOOKMARK" }],
     // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
   ];
   useEffect(() => {
     if (actions.length > 0 && !action) {
-      setAction(actions[0]);
+      setAction({status:"", label: "None"});
     }
   }, [actions]);
   useEffect(() => {
