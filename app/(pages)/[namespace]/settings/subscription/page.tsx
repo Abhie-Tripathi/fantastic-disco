@@ -9,7 +9,9 @@ import { GAEvent } from "@/utils/GAEvent";
 import { isEventeli } from "@/config";
 import { useProfileServices } from "@/services/profileService";
 import { useEffect, useState } from "react";
-import { Mail } from "lucide-react";
+// import { Mail } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Subscription = () => {
   const { getMembershipData } = useProfileServices();
@@ -18,12 +20,18 @@ const Subscription = () => {
   const { membership, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
 
+  const [isLoading, setIsloading] = useState<boolean>(true);
+
   const formattedMembershipEndDate =
     membershipPlan === MembershipPlan[0]
       ? "-"
       : endDate && endDate !== null
       ? format(endDate, "dd MMM, yyyy")
       : "-";
+
+  const [paymentStatus, setPaymentStatus] = useState<any>(null);
+  const searchParams = useSearchParams();
+  const session_id = searchParams.get("session_id");
 
   const handleUpgradeClick = () => {
     window.open(
@@ -42,16 +50,39 @@ const Subscription = () => {
 
   const fetchMembershipData = async () => {
     try {
+      setIsloading(true);
       const data = await getMembershipData();
       if (data) setMembershipData(data);
     } catch (error) {
       console.error("Error fetching user membership data:", error);
+    } finally {
+      setIsloading(false);
     }
   };
 
-  useEffect(() => {
-    fetchMembershipData();
-  }, []);
+  // useEffect(() => {
+  //   fetchMembershipData();
+  // }, [paymentStatus]);
+
+  useEffect(() => {    
+    const fetchCheckoutSession = async () => {
+      try {
+        const res = await fetch(
+          `/api/checkout-session/${session_id}`
+        );
+        const data = await res.json();
+        console.log("Payment Status:", data);
+        setPaymentStatus(data);
+      } catch (err) {
+        console.error("Error fetching payment status:", err);
+      } finally {
+        fetchMembershipData();
+      }
+    };
+
+    if (!session_id) fetchMembershipData();
+    else fetchCheckoutSession();
+  }, [session_id]);
 
   return (
     <div className="p-6 pt-0">
@@ -62,44 +93,63 @@ const Subscription = () => {
           </div>
 
           <div className="flex col-span-1 gap-3 flex-wrap">
-            <div>
-              <span className="font-medium">{membershipPlan}</span>
-              <Badge
-                className="text-[var(--success-text-color)] bg-[var(--success-background-color)] border-[var(--success-text-color)] ml-2"
-                variant="outline"
-              >
-                Active
-              </Badge>
-              {/* <Badge
+            {isLoading ? (
+              <Skeleton className="h-6 w-36" />
+            ) : (
+              <>
+                <div>
+                  <span className="font-medium">{membershipPlan}</span>
+                  <Badge
+                    className="text-[var(--success-text-color)] bg-[var(--success-background-color)] border-[var(--success-text-color)] ml-2"
+                    variant="outline"
+                  >
+                    Active
+                  </Badge>
+                  {/* <Badge
                 className="text-[var(--danger-text-color)] bg-[var(--danger-background-color)] border-[var(--danger-text-color)] ml-2"
                 variant="outline"
               >
                 Deactivated
               </Badge> */}
-            </div>
-            {membershipPlan && membershipPlan === MembershipPlan[0] && (
-              <div className="col-span-1 lg:ml-5">
-                <Button size="sm" onClick={handleUpgradeClick}>
-                  Upgrade Plan
-                </Button>
-              </div>
+                </div>
+                {membershipPlan && membershipPlan === MembershipPlan[0] && (
+                  <div className="col-span-1 lg:ml-5">
+                    <Button size="sm" onClick={handleUpgradeClick}>
+                      Upgrade Plan
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 items-center">
-          <div className="text-muted-foreground font-medium col-span-1">Next renewal</div>
+          <div className="text-muted-foreground font-medium col-span-1">
+            Next renewal
+          </div>
           <div className="flex col-span-1">
-            <span className="text-sm font-medium">
-              {formattedMembershipEndDate}
-            </span>
+            {isLoading ? (
+              <Skeleton className="h-6 w-36" />
+            ) : (
+              <span className="text-sm font-medium">
+                {formattedMembershipEndDate}
+              </span>
+            )}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="text-muted-foreground font-medium text-sm col-span-2 mt-4">For any payment-related queries, please contact us at 
-            <Link href="mailto:be@whr.ai" className="text-primary font-semibold" > be@whr.ai</Link>
-            </div>
+          <div className="text-muted-foreground font-medium text-sm col-span-2 mt-4">
+            For any payment-related queries, please contact us at
+            <Link
+              href="mailto:payment@whr.ai"
+              className="text-primary font-semibold"
+            >
+              {" "}
+              payment@whr.ai
+            </Link>
+          </div>
           {/* <div className="flex col-span-1">
             <Link
               className="text-primary text-sm font-semibold flex items-center gap-1"

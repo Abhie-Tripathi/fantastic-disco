@@ -17,6 +17,7 @@ import { useLocationService } from '@/services/locationService';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { isEventeli } from '@/config';
+import recentSearchService from '@/services/recentSearchService';
 
 interface Props {
     theme: string | null
@@ -26,7 +27,7 @@ const Research = ({ theme }: Props) => {
     const MapContainer = React.lazy(() => import('./MapContainer'));
 
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-    const { getLocalFilterValue, localFilters } = useFilterContext();
+    const { getLocalFilterValue, localFilters, filterEmptyValues } = useFilterContext();
     const { getLocationDetails } = useLocationService()
     const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610 })
     const [locationName, setLocationName] = useState<string>("")
@@ -67,7 +68,21 @@ const Research = ({ theme }: Props) => {
                 params.set(key, value);
             }
         });
-        console.log('params', params);
+
+        const searchEvent = {
+            date: new Date().toISOString(),
+            fullPath: `/internal/search/events?${params.toString()}`,
+            path: "/internal/search/events",
+            params: Object.fromEntries(params.entries()),
+          };
+
+        const filteredFilters = filterEmptyValues(localFilters);
+
+        recentSearchService.addToSearchHistory(
+            params.toString(),
+            searchEvent,
+            filteredFilters
+          );
         router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
     };
 

@@ -43,7 +43,6 @@ const EventTable = ({
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
-  console.log(trackerId);
   let events, totalEvents, isLoading, error, isFetching;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
@@ -73,6 +72,7 @@ const EventTable = ({
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
+    economicImpact: "economicImpact"
   };
   let showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
@@ -80,6 +80,9 @@ const EventTable = ({
       showsData.push(value);
     }
   });
+  const trackerMaturity = data?.filterValues?.maturity
+  const locationIds =  Object?.keys(data?.filterValues?.locationIds || {});
+
   // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
@@ -186,10 +189,10 @@ const EventTable = ({
         />
       );
   }
-
+  
   if (
     searchParams.size === 0 ||
-    (searchParams.size == 1 && searchParams.has("view"))
+    (searchParams.size == 1 && searchParams.has("view") && source!=="tracker")
   ) {
     return (
       <div className="p-6">
@@ -236,16 +239,20 @@ const EventTable = ({
           <Table>
             <EventTableHeader
               show={showValues}
+              locationIds = {locationIds}
               type={query.type}
               view={query.eventType}
               localFilters={localFilters}
+              trackerMaturity={trackerMaturity}
             />
             <TableBody className="overflow-auto">
               {updatedEvents &&
                 updatedEvents.map((event: Event) => (
                   <EventTableRow
                     global={view}
+                    locationIds = {locationIds}
                     view={query.eventType}
+                    trackerMaturity={trackerMaturity}
                     setEventId={setEventId}
                     setInterest={setInterest}
                     type={query.type}

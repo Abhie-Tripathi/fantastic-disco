@@ -5,8 +5,9 @@ interface UserProfileProps {
     width?: number; 
     height?: number; 
     borderRadius?: string;
+    fontSize?: string | number;
 }
-const UserProfile: React.FC<UserProfileProps> = ({ name, width, height, borderRadius }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ name, width, height, borderRadius, fontSize = '1rem' }) => {
     const getInetial = () => {
         const splitedName = name.split(" "); 
         if (splitedName.length === 1) {
@@ -17,9 +18,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ name, width, height, borderRa
     };
     
   return (
-    <div className={styles.container} style={{width: width, height: height, borderRadius: `${borderRadius}`}}>
+    <>
+    {name &&
+    <div className={styles.container} style={{width: width, fontSize:fontSize, height: height, borderRadius: `${borderRadius}`}}>
       {getInetial()}
-    </div>
+    </div>}
+    </>
   )
 }
 

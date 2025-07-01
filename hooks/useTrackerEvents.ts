@@ -9,6 +9,9 @@ export const eventsKeys = {
 
 export const useTrackerEvents = {
   list: (query: EventQuery, trackerId?: string, view?: string) => {
+    if (query.limit && Number(query.limit) > 20)  // Limit Restriction
+      query.limit = 20
+
     const trackerService = useTrackerServices();
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(query, trackerId),
@@ -21,7 +24,6 @@ export const useTrackerEvents = {
 
           
     });
-
     return {
       events: EventQuery?.data?.events || [],
       totalEvents: EventQuery?.data?.count || 0,

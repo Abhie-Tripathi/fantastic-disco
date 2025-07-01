@@ -10,29 +10,38 @@ import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 interface ShareModalProps {
+    trackerType?:string;
+    shareId?:string;
     fetchAccess?: any;
   closeShareModal?: () => void;
- 
+    global?:boolean;
   id?: string;
   setId?: any;
   shareFunction?: () => void;
   share?: boolean;
   setShare?: any
   setAccessData?: (data: any) => void;
+  clickHandler?: (id: string) => void;
 }
 const ShareModal: React.FC<ShareModalProps> = ({
     fetchAccess,
     closeShareModal,
+    trackerType,
     id,
     setId,
     shareFunction,
     share,
     setShare,
-    setAccessData
+    setAccessData,
+    global,
+    shareId, 
+    clickHandler
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
+    
      const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
@@ -58,9 +67,9 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 console.error('Fetch failed:', err);
             }
         };
-        useEffect(() => {
-              fetchData();
-            }, []);
+        // useEffect(() => {
+        //       fetchData();
+        //     }, []);
     useEffect(() => {
         if(!id)
           setDrop(true);
@@ -83,6 +92,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             }
         }, []);
         const handleFilterChange = (e: any) => {
+            e.preventDefault();
+            e.stopPropagation();
             setFilter(e.target.value);
             setId?.('');
         };
@@ -104,7 +115,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
               
             
             try {
-                const result= await shareTrackerInvite(formData, path[path.length - 2]);
+                const result= await shareTrackerInvite(formData, global? shareId||"":path[path.length - 2]);
 
                 GAEvent(
                                         "trackers",
@@ -168,8 +179,18 @@ const ShareModal: React.FC<ShareModalProps> = ({
           }, [error]);  
         
   return (
-    <div className="flex flex-col w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+    <div className="flex flex-col w-[360px] md:w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+                        <div className='flex justify-between'>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
+                        {global &&
+  <Link href={`/internal/trackers/${shareId}/manageAccess?type=${trackerType}`} onClick={() => clickHandler?.(shareId || '')}>
+    <div className="text-[var(--primary-color)] border-b border-transparent hover:border-[var(--primary-color)] transition-all duration-200">
+      Manage
+    </div>
+  </Link>
+}
+
+                        </div>
                         {/* <div className={styles.bar}></div> */}
                         {/* <div className={styles.linkCopy}>
                             <div className={styles.link}>{currentUrl}</div>
@@ -183,7 +204,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                 <input type="text" 
                                 className='w-full border-0 text-[var(--primary-text-color)] outline-none bg-inherit p-2'
                                 value={filter}
-                                placeholder='Invite others by email or name' onChange={handleFilterChange} />
+                                placeholder='Invite others by email' onChange={handleFilterChange} />
                             </div>
                         </div>
                         {filter?.length > 0 && filteredData?.length > 0 && drop &&
@@ -201,7 +222,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
                             {/* <button className={styles.send} onClick={shareInvites}>Send Invite</button> */}
                             <Button className='text-white' onClick={shareInvites}>Send Invite</Button>
                             {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
-                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]"  onClick={(e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    closeShareModal?.();
+  }}>Cancel</Button>
                         </div>
                     </div>
   )
