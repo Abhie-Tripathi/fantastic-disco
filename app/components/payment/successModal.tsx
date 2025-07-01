@@ -106,10 +106,10 @@ const PaymentSuccessModal = ({ open, onOpenChange, isSuccess, plan }: ModalProps
               </div>
 
               <div className="col-span-1 bg-[#F7F7FC] p-6 rounded-e-2xl">
-                <h4 className="text-sm font-bold mb-4">What's included</h4>
+                <h4 className="text-sm font-bold mb-4">What&apos;s included</h4>
 
-                {featureList.map((item) => (
-                  <div className="text-[#170F49] text-sm flex items-center gap-2 mb-3">
+                {featureList.map((item, index) => (
+                  <div key={index} className="text-[#170F49] text-sm flex items-center gap-2 mb-3">
                     <CircleCheck
                       height={20}
                       width={20}
@@ -143,11 +143,11 @@ const PaymentSuccessModal = ({ open, onOpenChange, isSuccess, plan }: ModalProps
                 </Badge>
               </div>
 
-              <h4 className="text-sm font-semibold">What's included</h4>
+              <h4 className="text-sm font-semibold">What&apos;s included</h4>
 
               <div className="flex gap-2 flex-col">
-                {featureList.map((item) => (
-                  <div className="text-[#170F49] text-sm flex items-center gap-2">
+                {featureList.map((item, index) => (
+                  <div key={index} className="text-[#170F49] text-sm flex items-center gap-2">
                     <CircleCheck
                       height={20}
                       width={20}
