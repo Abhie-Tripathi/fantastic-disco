@@ -73,14 +73,14 @@ const PaymentSuccessModal = ({
     if (isSuccess) {
       GAEvent(
         "",
-        "Payment Confirmation",
+        "Plan Upgrade",
         "Success",
         `${isEventeli ? "geo" : "gtm"} | payment | web | payment_success`
       );
     } else {
       GAEvent(
         "",
-        "Payment Confirmation",
+        "Plan Upgrade",
         "Failed",
         `${isEventeli ? "geo" : "gtm"} | payment | web | payment_failed`
       );
