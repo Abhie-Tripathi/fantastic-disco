@@ -466,9 +466,9 @@ export const PeopleList: React.FC = () => {
               maximumFractionDigits: 1,
             }).format(count)}
           </Badge>
-          <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+          {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
             People
-          </p>
+          </p> */}
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">

@@ -17,7 +17,7 @@ import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown } from "lucide-react";
+import { Crown, X } from "lucide-react";
 import { isEventeli } from "@/config";
 interface exportModalProps {
   onClose: () => void;
@@ -224,7 +224,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
         >
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
-              Export Events
+              Export
               {/* <span className="text-xs font-norma">
                 Available only in the Advance plan.
                 <Button
@@ -239,12 +239,13 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
               
             </div>
             
-            <Image
+            {/* <Image
               src={CloseIcon}
               alt="closeicon"
               onClick={() => onClose()}
               className={styles.closeIcon}
-            />
+            /> */}
+            <X onClick={() => onClose()} className={styles.closeIcon} width={16}/>
           </div>
           {/* <div className={styles.tabs_container}>
             <div

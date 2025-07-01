@@ -435,9 +435,9 @@ export const ProspectList: React.FC = () => {
               maximumFractionDigits: 1,
             }).format(count)}
           </Badge>
-          <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+          {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
             Companies
-          </p>
+          </p> */}
         </div>
 
         <div
