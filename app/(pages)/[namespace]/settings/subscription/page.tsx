@@ -170,7 +170,7 @@ const Subscription = () => {
           isSuccess={
             paymentStatus?.stripe?.payment_status === "paid" ? true : false
           }
-          plan={membershipPlan}
+          membership={membership || 0}
         />
       )}
     </div>
