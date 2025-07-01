@@ -281,7 +281,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             variant="outline"
             size="sm"
             className="hidden md:flex"
-            // onClick={handleUpgradeClick}
+            onClick={handleUpgradeClick}
           >
             <span className="hidden sm:inline">Upgrade</span>
           </Button>
