@@ -174,11 +174,15 @@ const LocationForm = () => {
   const saveLocationMutation = useMutation({
     mutationFn: (values: any) => createTracker(values),
     onSuccess: () => {
-      router.push(
-        redirectPath
-          ? `/internal/${redirectPath}`
-          : `internal/search/events?${searchParams}`
-      );
+      if (redirectPath && redirectPath.includes("whr-pricing")) {
+        router.replace("https://whr.ai/pricing");
+      } else {
+        router.push(
+          redirectPath
+            ? `/internal/${redirectPath}`
+            : `internal/search/events?${searchParams}`
+        );
+      }
       queryClient.invalidateQueries({ queryKey: ["locations"] });
     },
     onError: (error: any) => {
