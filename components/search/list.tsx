@@ -754,14 +754,6 @@ const EventListItem = ({
       setTotalChecked?.((prev) => prev.filter((item) => item !== id));
     }
   };
-
-  console.log(
-    event.basic.id,
-    interest && Object.keys(interest).length > 0
-      ? interest[event.basic.id]
-      : "empty",
-    event.interests
-  );
   const type = getFilterValue("type");
   const intelScoreData = [
     {
