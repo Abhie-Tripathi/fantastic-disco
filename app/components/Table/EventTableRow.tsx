@@ -161,7 +161,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   ];
 
   const showHolidayScore =
-  (getFilterValue("eventTypes").includes("holiday") || (view == "unattended")) &&
+  (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
   (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds.length == 1);
 
 
@@ -288,9 +288,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </Link>
               )}
             </div>
-            <div className="text-sm text-muted-foreground truncate">
+            <Link href={`/internal/company/${event.basic.organizer?.prospectId}`} className="text-sm text-muted-foreground !truncate">
               {event.basic.organizer?.name}
-            </div>
+            </Link>
           </div>
         </div>
       </TableCell>

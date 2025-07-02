@@ -192,7 +192,7 @@ const MobileEventCard = ({
     event.basic.endDateTime
   );
   const location = event.basic.eventLocation
-    ? formatLocationParts(event.basic.eventLocation)
+    ? formatLocationParts(event.basic.eventLocation, true)
     : "Venue to be announced";
 
   // Insights & Scores

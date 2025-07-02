@@ -557,7 +557,7 @@ const EventListItem = ({
         </div>
         <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div className="col-span-1 md:col-span-7 flex flex-col justify-between gap-3">
+            <div className="col-span-1 md:col-span-7 flex flex-col gap-4">
               <div className="flex justify-between items-start">
                 <h2 className="text-xl md:text-2xl font-semibold ">
                   {event.basic.name}
@@ -1285,7 +1285,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
 
   const showHolidayScore =
     getFilterValue("locationIds").split(",").filter(Boolean).length == 1 ||
-    trackerLocationIds.length == 1;
+    trackerLocationIds.length == 1; 
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -1335,7 +1335,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
         </div>
         <div className="pl-[136px] p-6 pr-3">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div className="col-span-7 flex flex-col justify-between gap-3">
+            <div className="col-span-7 flex flex-col gap-4">
               <h2 className="text-2xl font-semibold">{event.basic.name}</h2>
               <div>
                 <p className="text-sm capitalize">
@@ -1379,7 +1379,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                               ]
                             }
                           </span>
-                          <span>{event.basic.primaryEventType}</span>
+                          <span className="capitalize">{event.basic.primaryEventType.toLowerCase()}</span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -1409,28 +1409,26 @@ const UnplannedCard = ({ event }: { event: Event }) => {
             </div>
 
             {showHolidayScore && (
-              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px] ">
-                <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded max-h-fit">
-                  <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                    {
-                      (event.basic?.eventLocation as any)[0]?.displayName.split(
-                        ","
-                      )[0]
-                    }
-                  </p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <CircularProgress
-                      value={
-                        (event.basic?.eventLocation as any)[0]?.businessScore
-                      }
-                      label="Business"
-                    />
-                    <CircularProgress
-                      value={
-                        (event.basic?.eventLocation as any)[0]?.socialScore
-                      }
-                      label="Social"
-                    />
+              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
+                <div className="max-w-[94px] h-full">
+                  <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                    <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                      {(event.basic?.eventLocation as any)[0]?.displayName.split(",")[0]}
+                    </p>
+                    <div className="grid grid-rows-2 gap-2">
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.businessScore
+                        }
+                        label="Business"
+                      />
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.socialScore
+                        }
+                        label="Social"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
