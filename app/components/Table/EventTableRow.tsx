@@ -1,7 +1,6 @@
-import type React from "react";
-import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -9,26 +8,27 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { intelScore } from "@/types/trackers";
-import { formatDate, getEventRating } from "@/utils/eventHelpers";
-import Link from "next/link";
-import { ArrowUp, ArrowDown, Star } from "lucide-react";
-import { Event } from "@/types/events";
-import Image from "next/image";
-import { ActionPopover } from "./ActionPopover";
-import { Show } from "@/types/events/dto/event-query.dto";
-import { Badge } from "@/components/ui/badge";
-import { formatEstimatedSpend } from "@/utils/formater";
-import { lightenColor } from "@/lib/utils";
-import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { Filters, useFilterContext } from "@/context/filterContext";
-import * as Flags from "country-flag-icons/react/3x2";
-import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
 import IntelScore from "./IntelScore";
 import { groupedEventTypes } from "@/constants";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { Filters, useFilterContext } from "@/context/filterContext";
+import { useFilterState } from "@/hooks/useFilterState";
+import { lightenColor } from "@/lib/utils";
+import { Event } from "@/types/events";
+import { Show } from "@/types/events/dto/event-query.dto";
+import { formatDate } from "@/utils/eventHelpers";
+import { formatEstimatedSpend } from "@/utils/formater";
+import { CheckedState } from "@radix-ui/react-checkbox";
+import * as Flags from "country-flag-icons/react/3x2";
+import { ArrowDown, ArrowUp, Star } from "lucide-react";
+import Link from "next/link";
+import type React from "react";
+import { ActionPopover } from "./ActionPopover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthContext } from "@/context/auth";
+
 interface EventTableRowProps {
+  toggleSelection: (id: string, event: Event) => void;
   event: Event;
   trackerId?: string;
   show: Show[];
@@ -39,6 +39,11 @@ interface EventTableRowProps {
   global?: string;
   view?: string;
   localFilters: Filters;
+  showCheckBox?: boolean;
+  totalChecked: string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
+  isChecked: boolean;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
   trackerMaturity?:string[];
@@ -122,6 +127,7 @@ function getAssociationColor(value: string) {
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
+  toggleSelection,
   event,
   show,
   localFilters,
@@ -132,6 +138,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setInterest,
   view,
   global,
+  showCheckBox,
+  totalChecked,
+  isChecked,
+  setIsChecked,
+  setTotalChecked,
   initialIntelScoreData,
   intelLoading,
   trackerMaturity
@@ -150,8 +161,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
     .filter(Boolean);
+  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+  const handleCheckboxChange = (checked: CheckedState, id: string) => {
+    if (checked) {
+      if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => [...prev, id]);
+    } else {
+      if (isChecked) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+    }
+  };
   const intelScoreData = [
     {
       name: "Total",
@@ -174,7 +195,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         className="sticky left-0 z-0 bg-[var(--heading-background-color)] max-w-[300px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-[var(--heading-background-color)]"
         style={{ zIndex: 0 }}
       >
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
+          {showCheckBox && (
+            <Checkbox
+              className=""
+              checked={totalChecked.includes(event.basic.id)}
+              onCheckedChange={() => toggleSelection(event.basic.id, event)}
+            />
+          )}
           {/* Logo Section */}
           <div className="flex-shrink-0">
             {event.basic.logoUrl ? (

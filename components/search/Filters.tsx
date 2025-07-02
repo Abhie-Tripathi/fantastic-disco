@@ -49,11 +49,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isEventeli } from "@/config";
 import { useFilterContext } from "@/context/filterContext";
-import { useTheme } from "@/context/theme";
-import { toast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import whrbotlogo from "@/public/whrbotlogo.svg";
-import { GAEvent } from "@/utils/GAEvent";
 import {
   Calendar1,
   ChevronLeft,
@@ -76,6 +73,10 @@ import {
 } from "react";
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
+import { GAEvent } from "@/utils/GAEvent";
+import { toast } from "@/hooks/use-toast";
+import { useTheme } from "@/context/theme";
+import { useBulkAction } from "@/context/bulkAction";
 import FilterContent from "./FilterContent";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
@@ -717,6 +718,9 @@ const Filters = ({
 }: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
+
+  const { setIsBulkActionActive } = useBulkAction();
+
   const { getFilterValue } = useFilterState();
   const isMobile = useIsMobile();
   const { theme } = useTheme();
@@ -1006,17 +1010,24 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {filterCount > 0 && pathName.split("/").includes("events") && (
+                {((type === "events" && filterCount > 0) ||((type === "companies" || type === "people")&& !isEventeli)) && (
                   <Button
                     id="save-search-btn"
-                    onClick={createTrackerHandler}
+                    onClick={() => {
+                      if (type === "companies" || type === "people") {
+                        setIsBulkActionActive(true);
+                      } else {
+                        createTrackerHandler();
+                      }
+                    }}
                     variant="outline"
                     className="w-full h-10"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Save Search
+                    Save
                   </Button>
                 )}
+
                 <Button onClick={searchHandler} className="w-full h-10">
                   Apply Filters
                 </Button>

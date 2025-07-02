@@ -1,6 +1,7 @@
 "use client";
 
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
+import BulkActionPopover from "@/app/components/Table/BulkActionPopover";
 import NullState from "@/app/components/trackers/nullState";
 import Loading from "@/app/components/UI/Loading";
 import ZeroState from "@/app/components/zerostate";
@@ -14,10 +15,14 @@ import {
   getAlertLevelBorderColor,
 } from "@/constants/eventTypes";
 import { useTrackerContext } from "@/context/tracker";
+import { useConfiguration } from "@/hooks/useConfiguration";
 import { useEvents } from "@/hooks/useEvents";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useIntent } from "@/hooks/useIntent";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { cn, lightenColor } from "@/lib/utils";
+import TrackerNullState from "@/public/trackerNullState.svg";
+import { useTrackerServices } from "@/services/trackerServices";
 import trackerNullState from "@/public/trackerNullState.svg";
 import type { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
@@ -25,20 +30,29 @@ import type { Event, HolidayEventLocation } from "@/types/events/events";
 import { formattedDateRange } from "@/utils/date";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { formatLocationParts } from "@/utils/locationFormat";
+import { CheckedState } from "@radix-ui/react-checkbox";
 import * as Flags from "country-flag-icons/react/3x2";
 import { format } from "date-fns";
 import { Radio, Star, TicketPercent } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import type React from "react";
-import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { PaginationComponent } from "../pagination";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import IntelScore from "@/app/components/Table/IntelScore";
 import { useIntelData } from "@/hooks/useIntelData";
@@ -47,7 +61,7 @@ import { Skeleton } from "../ui/skeleton";
 import { useAuthContext } from "@/context/auth";
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 import { useTransition } from "@/context/transition";
-
+import { useBulkActions } from "@/hooks/useBulkAction";
 import { useFilterContext } from "@/context/filterContext";
 interface CircularProgressProps {
   value: number | null;
@@ -119,20 +133,46 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 };
 
 interface EventListProps {
+  eventType?: string;
   trackerId?: string;
   source?: string;
   view?: string;
-  eventType?: string;
+  showCheckBox?: boolean;
+  setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function EventAccordion({
   source,
+  eventType,
   trackerId,
   view,
+  showCheckBox,
+  setShowCheckBox,
 }: EventListProps) {
+  const pathName = usePathname();
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [totalChecked, setTotalChecked] = useState<string[]>([]);
+  const [action, setAction] = useState<{ label: string; status: string } | undefined>({status:"", label: "None"});
+  const { toast } = useToast();
+  const { inTransition } = useTransition();
+  type InterestKey = string;
+  
+  type InterestState = {
+    [key in InterestKey]?: string;
+  };
+  
+  const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, InterestState>>(new Map());
+  
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error: isConfigError,
+  } = useConfiguration.interest();
+  const { createUserEventInterest, isLoading: isSubmitting } =
+    useIntent.createUserEventInterest();
+  const { removeBookmark } = useTrackerServices();
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
-  const { inTransition } = useTransition();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const showMaturity = !!getFilterValue("maturity");
@@ -153,9 +193,20 @@ export default function EventAccordion({
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   const [interest, setInterest] = useState();
+  // const [interest, setInterest] = useState<Record<string, Interest>>({});
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
+   const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
+    removeBookmark,
+    createUserEventInterest
+  });
+  const sourceModule = pathName.includes("trackers")
+    ? "TRACKER"
+    : pathName === "/internal/search/events"
+    ? "RESEARCH"
+    : "";
+
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
       query,
@@ -197,7 +248,48 @@ export default function EventAccordion({
       showsData.push(value);
     }
   });
-  const trackerMaturity = !!data?.filterValues?.maturity;
+ const handleBulkSubmit = async () => {
+  // Validate inputs
+  if (!action) {
+    toast({ title: "Error", description: "No action selected", variant: "destructive" });
+    return;
+  }
+
+  if (totalChecked.length === 0) {
+    toast({ title: "Error", description: "No events selected", variant: "destructive" });
+    return;
+  }
+
+  try {
+
+    await executeBulkAction(
+      {
+        action,
+        selectedInterestMap,
+        updatedEvents,
+        totalChecked,
+        sourceModule,
+        trackerId
+      },
+      {
+        setInterest,
+        setUpdatedEvents: setUpdatedEvents as (value: Event[] | ((prev: Event[]) => Event[])) => void,
+        setSelectedInterestMap,
+        setShowCheckBox,
+        setTotalChecked,
+        onSuccess: () => {
+          toast({ title: "Success", description: "Bulk action completed" })
+          setSelectedInterestMap(new Map());
+        },
+        onError: (error) => toast({ title: "Error", description: error.message })
+      }
+    );
+  } catch (error) {
+    console.error('Bulk action failed:', error);
+    toast({ title: "Error", description: "Failed to complete bulk action" });
+  }
+};
+  const trackerMaturity = !!data?.filterValues?.maturity
   const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(
@@ -219,7 +311,110 @@ export default function EventAccordion({
       setUpdatedEvents(events);
     }
   }, [events]);
+  const handleCheckboxChange = (checked: boolean) => {
+    if (checked) {
+      const resultId = events.map((event) => event.basic.id);
+      setTotalChecked(resultId);
+    } else {
+      setTotalChecked([]);
+    }
+    setIsChecked(checked);
+  };
+  function mapInterestsToInterestIds(
+  interests?: Record<string, { interestId?: string }>
+): Record<string, string | undefined> {
+  // Create initial result object with all possible interest keys from actions
+  const result = actions.reduce((acc, action) => {
+    const key = action.status.toLowerCase();
+    acc[key] = undefined;
+    return acc;
+  }, {} as Record<string, string | undefined>);
 
+  if (!interests) return result;
+
+  // Map existing interests to the result
+  Object.keys(interests).forEach((key) => {
+    const normalizedKey = key.toLowerCase();
+    if (normalizedKey in result) {
+      result[normalizedKey] = interests[key]?.interestId;
+    }
+  });
+
+  return result;
+}
+ function toggleSelection(id: string, event:any) {
+    setTotalChecked((prev) => {
+      if (prev.includes(id)) {
+        // Remove the id
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        // Add the id
+        return [...prev, id];
+      }
+    });
+    setSelectedInterestMap(prev => {
+    const newMap = new Map(prev);
+
+    if (newMap.has(id)) {
+      newMap.delete(id); // unchecking
+    } else {
+      const interestBooleans = mapInterestsToInterestIds(event.interests);
+      newMap.set(id, interestBooleans); // checking
+    }
+
+    return newMap;
+  });
+  }
+
+  function handleSelectAll(checked: boolean) {
+  const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+
+  if (checked) {
+    setTotalChecked((prev) => [...prev, ...newIds]);
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+
+      updatedEvents?.forEach((event) => {
+        const id = event.basic.id;
+        const interestState = mapInterestsToInterestIds(event.interests);
+        newMap.set(id, interestState);
+      });
+
+      return newMap;
+    });
+  } else {
+    setTotalChecked((prev) =>
+      prev.filter((eventId) => !newIds.includes(eventId))
+    );
+
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+      newIds.forEach((id) => newMap.delete(id));
+      return newMap;
+    });
+  }
+}
+
+  const isAllChecked = useMemo(() => {
+    return (
+      updatedEvents &&
+      updatedEvents.length > 0 &&
+      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
+    );
+  }, [totalChecked, updatedEvents]);
+
+  const actions = [
+    ...(interestConfiguration?.interest || []),
+    ...[{ label: "Bookmark", status: "BOOKMARK" }],
+    ...[{ label: "Un Bookmark", status: "UN BOOKMARK" }],
+    // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
+  useEffect(() => {
+    if (actions.length > 0 && !action) {
+      setAction({status:"", label: "None"});
+    }
+  }, [actions]);
   useEffect(() => {
     if (!events) return;
 
@@ -259,7 +454,6 @@ export default function EventAccordion({
           return event;
         });
       }
-
       return newEvents;
     });
   }, [eventId, interest]);
@@ -269,6 +463,12 @@ export default function EventAccordion({
       limit: itemsPerPage.toString(),
     });
   };
+
+  function handleCancel() {
+    setIsChecked(false);
+    setShowCheckBox?.(false);
+    setTotalChecked([]);
+  }
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -338,11 +538,73 @@ export default function EventAccordion({
   }
 
   return (
-    <div className="flex flex-col h-full px-4 md:px-0">
+    <div className="flex flex-col h-full">
+      <div
+        className="flex items-center justify-between gap-4 pl-4 pb-2"
+        style={{ height: showCheckBox ? "50px" : "auto" }}
+      >
+        <div className="flex items-center gap-2">
+          {showCheckBox && (
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                checked={isAllChecked}
+                onCheckedChange={handleSelectAll}
+              />
+              <div>
+                Select events to perform action
+                 <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px]">{selectedInterestMap.size>0 && `(${selectedInterestMap.size} Selected)`}</span>
+                </div>
+            </div>
+          )}
+          {showCheckBox && (
+            <div className="flex min-w-[130px]">
+              <BulkActionPopover
+                options={actions}
+                action={action}
+                setAction={setAction}
+              />
+            </div>
+          )}
+        </div>
+        {showCheckBox && (
+          <div className="flex gap-4">
+            <Button
+                            type="submit"
+                            className="w-30 self-center"
+                            disabled={isBulkActionLoading || totalChecked.length === 0}
+                            onClick={handleBulkSubmit}
+                          >
+                            {isBulkActionLoading ? (
+                              <>
+                                Processing...
+                              </>
+                            ) : (
+                              'Submit'
+                            )}
+                          </Button>
+            <Button
+              variant={"outline"}
+              type="button"
+              className="w-30 self-center text-destructive"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+      </div>
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              interest={interest}
+              toggleSelection={toggleSelection}
+              totalChecked={totalChecked}
+              isChecked={isChecked}
+              setIsChecked={setIsChecked}
+              setTotalChecked={setTotalChecked}
+              showCheckBox={showCheckBox}
+              itemsPerPage={itemsPerPage}
               isMobile={isMobile}
               global={view}
               trackerId={trackerId}
@@ -380,6 +642,8 @@ export default function EventAccordion({
 }
 
 const EventListItem = ({
+  interest,
+  toggleSelection,
   isMobile,
   global,
   view,
@@ -390,10 +654,18 @@ const EventListItem = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  showCheckBox,
+  totalChecked,
+  isChecked,
+  setIsChecked,
+  setTotalChecked,
+  itemsPerPage,
   showMaturity,
   initialIntelScoreData,
   intelLoading,
 }: {
+  interest: any;
+  toggleSelection: (id: string, event:Event) => void;
   isMobile: boolean;
   trackerId?: string;
   view?: string;
@@ -405,6 +677,12 @@ const EventListItem = ({
   showaudienceSpread: boolean;
   showMaturity: boolean;
   global?: string;
+  showCheckBox?: boolean;
+  totalChecked: string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
+  isChecked: boolean;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  itemsPerPage: number;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
 }) => {
@@ -467,6 +745,15 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
+  const handleCheckboxChange = (checked: CheckedState, id: string) => {
+    if (checked) {
+      if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => [...prev, id]);
+    } else {
+      if (isChecked) setIsChecked(!isChecked);
+      setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+    }
+  };
   const type = getFilterValue("type");
   const intelScoreData = [
     {
@@ -480,9 +767,20 @@ const EventListItem = ({
           : "#9B86D4",
     },
   ];
+  
+  
   return (
-    <div className="bg-background rounded-lg border shadow-sm relative">
-      <Link href={`/internal/event/${event.basic.id}`} className="block">
+    <div className="flex gap-4 items-center w-full">
+      {showCheckBox && (
+        <div className="flex pl-4">
+          <Checkbox
+            checked={totalChecked.includes(event.basic.id)}
+            onCheckedChange={() => toggleSelection(event.basic.id,  event)}
+          />
+        </div>
+      )}
+    <div className="bg-background rounded-lg border shadow-sm relative w-full">
+            <Link href={`/internal/event/${event.basic.id}`} className="block">
         <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
           {event.basic.logoUrl ? (
             <img
@@ -1221,6 +1519,7 @@ const EventListItem = ({
         )}
       </Link>
     </div>
+  </div>
   );
 };
 

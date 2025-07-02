@@ -2,6 +2,9 @@
 
 import NullState from "@/app/components/trackers/nullState";
 import { PaginationComponent } from "@/components/pagination";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useBulkAction } from "@/context/bulkAction";
 import FilterContent from "@/components/search/FilterContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +17,8 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
 import { ApiError } from "@/types/api";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
-import { useQuery } from "@/hooks/useQuery";
+import { useQuery } from "@tanstack/react-query";
+
 import { Buildings, Location } from "geist-icons";
 import { Filter, FilterX } from "lucide-react";
 import Image from "next/image";
@@ -53,6 +57,15 @@ const STALE_TIME = 300000; // 5 minutes
 // Types
 interface ProspectCardProps {
   companyDetail: companyListData;
+  isBulkActionActive: boolean;
+  selectedCompaniesIds: Record<
+    string,
+    {
+      orgWebsite?: string;
+      orgName?: string;
+    }
+  >;
+  toggleSelection: (id: string, website?: string | null | undefined, name?: string | null | undefined) => void;
 }
 
 interface StatsBadgeProps {
@@ -74,7 +87,12 @@ const StatsBadge: React.FC<StatsBadgeProps> = ({ label, value }) => {
   );
 };
 
-const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
+const ProspectCard: React.FC<ProspectCardProps> = ({
+  companyDetail,
+  isBulkActionActive,
+  selectedCompaniesIds,
+  toggleSelection,
+}) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
   const isMobile = useIsMobile();
@@ -150,7 +168,16 @@ const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
   };
 
   return (
-    <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
+     <div className="flex gap-4 w-full items-center">
+      {isBulkActionActive && (
+        <Checkbox
+          checked={companyDetail.id in selectedCompaniesIds}
+          onCheckedChange={() =>
+            toggleSelection(companyDetail.id, companyDetail.website, companyDetail.name)
+          }
+        />
+      )}
+      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
       <Link href={`/internal/company/${companyDetail.id}`} className="block">
         <div className="p-4 flex gap-6">
           {compLogo && (
@@ -222,8 +249,9 @@ const ProspectCard: React.FC<ProspectCardProps> = ({ companyDetail }) => {
             </div>
           </div>
         </div>
-      </Link>
+        </Link>
     </div>
+  </div>
   );
 };
 
@@ -234,10 +262,21 @@ export const ProspectList: React.FC = () => {
   const selectedView = getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"; // "all" || "upcoming"
   
   const { getCompanyList } = useCompanyService();
+  const {
+    isBulkActionActive,
+    selectedData,
+    setSelectedData,
+    setIsBulkActionActive,
+  } = useBulkAction<{
+    orgWebsite?: string;
+    orgName?: string;
+  }>();
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
+  const [filterValues, setFilterValues] = useState<any>();
   const { localFilters, deleteMultipleLocalFilters, applyFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState(false);
-
+  
   const {
     data: companyData,
     error,
@@ -249,7 +288,11 @@ export const ProspectList: React.FC = () => {
     gcTime: CACHE_TIME,
     staleTime: STALE_TIME,
   });
-
+  const value=Object.values(selectedData)
+        .map((names) => names.orgWebsite)
+        .join(",");
+  
+  
   const companies = useMemo(
     () => companyData?.companyData || [],
     [companyData]
@@ -262,7 +305,14 @@ export const ProspectList: React.FC = () => {
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
-
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: string) => {
+      setMultipleFilters({
+        limit: newItemsPerPage,
+      });
+    },
+    [setMultipleFilters]
+  );
   const handlePageChange = useCallback(
     (page: number) => {
       setMultipleFilters({
@@ -272,7 +322,77 @@ export const ProspectList: React.FC = () => {
     },
     [itemsPerPage, setMultipleFilters]
   );
+  function handleSelectAll(checked: boolean) {
+    setSelectedData((prev) => {
+      const next = { ...prev };
 
+      if (checked) {
+        // ADD all companies to next
+        companies.forEach((company) => {
+          if(company.website){
+          next[company.id] = {
+            orgWebsite: company.website || "",
+          };
+        }else{
+          next[company.id] = {
+            orgName: (company.name || "").replace(/,/g, ""),
+          };
+        }
+        });
+      } else {
+        // REMOVE all companies from next
+        companies.forEach((company) => {
+          if (company.id in next) {
+            delete next[company.id];
+          }
+        });
+      }
+
+      return next;
+    });
+  }
+
+  function toggleSelection(id: string, website?: string | null | undefined, name?: string | null | undefined) {
+    setSelectedData((prev) => {
+      const next = { ...prev };
+      if (id in next) {
+        delete next[id];
+      } else {
+        if(website){
+        next[id] = {
+          orgWebsite: website || "",
+        };
+        }else{
+          next[id] = {
+          orgName: name || "",
+        };
+        }
+      }
+      return next;
+    });
+  }
+
+  function handleCancel() {
+    setIsBulkActionActive(false);
+    setSelectedData({});
+  }
+
+  function handleCreate() {
+    setTrackerModalOpen(true);
+    const filterValues = {
+      orgWebsite: Object.values(selectedData)
+        .map((names) => names.orgWebsite)
+        .join(","),
+    };
+
+    setFilterValues({ filterValues });
+  }
+
+  const isAllSelected = useMemo(() => {
+    return (
+      companies.length > 0 && companies.every((user) => user.id in selectedData)
+    );
+  }, [companies, selectedData]);
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
     setShowFilter(false);
@@ -301,14 +421,7 @@ export const ProspectList: React.FC = () => {
     }
   };
 
-  const handleItemsPerPageChange = useCallback(
-    (newItemsPerPage: string) => {
-      setMultipleFilters({
-        limit: newItemsPerPage,
-      });
-    },
-    [setMultipleFilters]
-  );
+  
 
   return (
     <div className="flex flex-col w-full md:px-6">
@@ -322,9 +435,9 @@ export const ProspectList: React.FC = () => {
               maximumFractionDigits: 1,
             }).format(count)}
           </Badge>
-          <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+          {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
             Companies
-          </p>
+          </p> */}
         </div>
 
         <div
@@ -386,6 +499,69 @@ export const ProspectList: React.FC = () => {
           </Button>
         </div>
       </div>
+      {isBulkActionActive && (
+        <div className="flex justify-between w-full items-center">
+          <div className="flex gap-2 items-center md:py-4">
+            <Checkbox
+              className="rounded-sm"
+              checked={isAllSelected}
+              onCheckedChange={handleSelectAll}
+            />
+            <label className="text-sm items-center justify-center">
+              Select companies to create company tracker
+              {Object.keys(selectedData).length > 0 && (
+              <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px] ml-1">
+                ({Object.keys(selectedData).length} Selected)
+              </span>
+            )}
+            </label>
+          </div>
+          <div className="flex gap-2 item-center">
+            <Button
+              disabled={Object.keys(selectedData).length === 0}
+              variant={"default"}
+              className="h-8"
+              onClick={() => handleCreate()}
+            >
+              Submit
+            </Button>
+            <Button
+              variant={"outline"}
+              className="h-8 text-destructive"
+              onClick={() => handleCancel()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+      {/* {companies.map((item) => (
+        <ProspectCard
+          key={item.id}
+          companyDetail={item}
+          isBulkActionActive={isBulkActionActive}
+          selectedCompaniesIds={selectedData}
+          toggleSelection={toggleSelection}
+        />
+      ))} */}
+      {/* <div className="sticky bg-background py-2 border-t">
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          count={count}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          paginationItems={["5", "10"]}
+        />
+      </div> */}
+
+      <CreateTrackerDialog
+        trackerType="companies"
+        trackerPayloadFilterValues={filterValues}
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
 
       {showFilters ? (
         <>
@@ -441,7 +617,13 @@ export const ProspectList: React.FC = () => {
           ) : (
             <>
               {companies.map((item) => (
-                <ProspectCard key={item.id} companyDetail={item} />
+                <ProspectCard
+          key={item.id}
+          companyDetail={item}
+          isBulkActionActive={isBulkActionActive}
+          selectedCompaniesIds={selectedData}
+          toggleSelection={toggleSelection}
+        />
               ))}
               <div className="bg-background py-3">
                 <PaginationComponent
