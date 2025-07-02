@@ -128,6 +128,8 @@ export interface GetFilterValue extends BaseFilterValue {
   eventTypes: EventTypes;
   locationIds?: LocationIds;
   viewBound?: string;
+  compare_to?: string;
+  compare_from?: string;
   categories?: {
     [key: string]: {
       id: string;
