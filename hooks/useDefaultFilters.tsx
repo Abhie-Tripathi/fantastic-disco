@@ -359,7 +359,7 @@ export function useDefaultFilters() {
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
     trendsParams.set("locationIds", defaultTrendsParams.locationIds);
-    trendsParams.set("categories", defaultTrendsParams.categories);
+    // trendsParams.set("categories", defaultTrendsParams.categories);
 
     return trendsParams;
   };

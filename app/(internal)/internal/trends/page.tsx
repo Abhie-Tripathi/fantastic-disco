@@ -69,6 +69,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
 
 const gtmViewTemplates = [
   {
@@ -177,11 +178,11 @@ const EventTrends = () => {
   const [showCategoryWarning, setShowCategoryWarning] = useState(false);
   const [showMandatoryFieldsWarning, setShowMandatoryFieldsWarning] =
     useState(false);
-  const categories = getLocalFilterValue("categories");
-  const locations = getLocalFilterValue("locationIds");
+  const categories = getFilterValue("categories");
+  const locations = getFilterValue("locationIds");
   const dateRange =
-    getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte");
-  const metrics = getLocalFilterValue("columns");
+    getFilterValue("active_gte") && getFilterValue("active_lte");
+  const metrics = getFilterValue("columns");
   type FilterKey =
     | "location"
     | "eventTypes"
@@ -346,10 +347,6 @@ const EventTrends = () => {
       return; // Don't change view if not supported by template
     }
     if (view === "treemap") {
-      if (categories.length === 0) {
-        const defaultCategories = "technology,medical-pharma";
-        setMultipleLocalFilters({ categories: defaultCategories, view: view });
-      }
       setMultipleLocalFilters({ columns: "eventCount", view: view });
     } else if (
       (view === "line" || view === "table") &&
@@ -475,16 +472,10 @@ const EventTrends = () => {
         !metrics ||
         metrics.length === 0)
     ) {
-      timeoutId = setTimeout(() => {
-        setShowMandatoryFieldsWarning(true);
-      }, 1000); // 1 second delay
+      setShowMandatoryFieldsWarning(true);
     } else {
       setShowMandatoryFieldsWarning(false);
     }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
   }, [activeView, locations, dateRange, metrics]);
 
   const handleShare = () => {
@@ -824,86 +815,7 @@ const EventTrends = () => {
                     {filterCount} filters applied
                   </span>
                 </div>
-                {activeView === "treemap" &&
-                  categories.length === 0 &&
-                  showCategoryWarning && (
-                    <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
-                      <div className="flex-shrink-0">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="text-destructive"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <line x1="12" y1="8" x2="12" y2="12" />
-                          <line x1="12" y1="16" x2="12.01" y2="16" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-destructive">
-                          Category Required
-                        </p>
-                        <p className="text-xs text-destructive/80">
-                          Please select at least one category to view the
-                          treemap visualization
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                {(activeView === "line" || activeView === "table") &&
-                  showMandatoryFieldsWarning && (
-                    <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md mb-2">
-                      <div className="flex-shrink-0">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="text-destructive"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <line x1="12" y1="8" x2="12" y2="12" />
-                          <line x1="12" y1="16" x2="12.01" y2="16" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-destructive">
-                          Required Fields Missing
-                        </p>
-                        <p className="text-xs text-destructive/80">
-                          Please select location, date range, and at least one
-                          metric to view the{" "}
-                          {activeView === "line" ? "line chart" : "table"}{" "}
-                          visualization
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                <Button
-                  onClick={applyHandler}
-                  className="w-full h-10"
-                  disabled={
-                    (activeView === "treemap" && categories.length === 0) ||
-                    ((activeView === "line" || activeView === "table") &&
-                      (!locations ||
-                        locations.length === 0 ||
-                        !dateRange ||
-                        !metrics ||
-                        metrics.length === 0))
-                  }
-                >
+                <Button onClick={applyHandler} className="w-full h-10">
                   Apply Filters
                 </Button>
 
@@ -1133,19 +1045,37 @@ const EventTrends = () => {
                       </h2>
                     </div>
 
-                    <LineChartComponent showLegend />
+                    {showMandatoryFieldsWarning ? (
+                      <div className="py-8">
+                        <CustomTrackerNullState />
+                      </div>
+                    ) : (
+                      <LineChartComponent showLegend />
+                    )}
                   </Card>
                 )}
                 {activeView === "table" && (
                   <Card className="p-0 pb-36 md:pb-0 overflow-hidden border-none md:border rounded-none md:rounded">
                     <div className="overflow-x-auto max-w-[100vw] pb-4">
-                      <TestPeriodicAnalytics />
+                      {showMandatoryFieldsWarning ? (
+                        <div className="py-8">
+                          <CustomTrackerNullState />
+                        </div>
+                      ) : (
+                        <LineChartComponent showLegend />
+                      )}
                     </div>
                   </Card>
                 )}
                 {activeView === "treemap" && (
                   <Card className="p-2 pb-36 md:pb-0 min-h-[400px] border-none md:border rounded-none md:rounded">
-                    <TreemapView hierarchyLevels={hierarchyLevels} />
+                    {categories.length === 0 && showCategoryWarning ? (
+                      <div className="py-8">
+                        <CustomTrackerNullState />
+                      </div>
+                    ) : (
+                      <TreemapView hierarchyLevels={hierarchyLevels} />
+                    )}
                   </Card>
                 )}
               </>
@@ -1178,15 +1108,6 @@ const EventTrends = () => {
                     applyHandler();
                     setShowFilters(false);
                   }}
-                  disabled={
-                    (activeView === "treemap" && categories.length === 0) ||
-                    ((activeView === "line" || activeView === "table") &&
-                      (!locations ||
-                        locations.length === 0 ||
-                        !dateRange ||
-                        !metrics ||
-                        metrics.length === 0))
-                  }
                 >
                   Apply Filters
                 </button>
@@ -1448,7 +1369,13 @@ const EventTrends = () => {
                                 styles.predictedAttendence_container
                               } ${isMobileView ? "" : ""} overflow-x-auto`}
                             >
-                              <LineChartComponent showLegend />
+                              {showMandatoryFieldsWarning ? (
+                                <div className="py-8">
+                                  <CustomTrackerNullState />
+                                </div>
+                              ) : (
+                                <LineChartComponent showLegend />
+                              )}
                             </div>
                           </Card>
                         )}
@@ -1456,7 +1383,9 @@ const EventTrends = () => {
                         {activeView === "table" && (
                           <Card
                             className={`${
-                              isMobileView ? "p-0 overflow-hidden" : "p-6"
+                              isMobileView
+                                ? "p-0 overflow-hidden"
+                                : "p-6 min-h-[600px]"
                             }`}
                           >
                             <div
@@ -1464,7 +1393,13 @@ const EventTrends = () => {
                                 isMobileView ? "max-w-[100vw] pb-4" : ""
                               }`}
                             >
-                              <TestPeriodicAnalytics />
+                              {showMandatoryFieldsWarning ? (
+                                <div className="py-8">
+                                  <CustomTrackerNullState />
+                                </div>
+                              ) : (
+                                <TestPeriodicAnalytics />
+                              )}
                             </div>
                           </Card>
                         )}
@@ -1478,7 +1413,13 @@ const EventTrends = () => {
                         isMobileView ? "p-2 min-h-[400px]" : "p-4 min-h-[600px]"
                       }`}
                     >
-                      <TreemapView hierarchyLevels={hierarchyLevels} />
+                      {categories.length === 0 && showCategoryWarning ? (
+                        <div className="py-8">
+                          <CustomTrackerNullState />
+                        </div>
+                      ) : (
+                        <TreemapView hierarchyLevels={hierarchyLevels} />
+                      )}
                     </Card>
                   )}
                 </>
