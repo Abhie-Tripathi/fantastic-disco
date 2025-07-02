@@ -7,8 +7,8 @@ export interface EventTypeData {
   festival: number | null;
   concert: number | null;
   sport: number | null;
-  community: number | null;
-  "performing-arts": number | null;
+  "community-group": number | null;
+  "stage-performance": number | null;
 }
 
 export interface EventGroupData {

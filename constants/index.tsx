@@ -11,7 +11,7 @@ export const authEndpoints = {
 };
 
 export const groupedEventTypes = {
-  social: ["festival", "concert", "sport", "performing-arts", "community"],
+  social: ["festival", "concert", "sport", "stage-performance", "community-group"],
   business: ["tradeshows", "conferences", "workshops"],
   unAttended: ["holiday"],
 };

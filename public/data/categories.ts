@@ -3,7 +3,7 @@ export const categories = [
       attended: [
         {
           name: "Community",
-          slug: "community",
+          slug: "community-group",
         },
         {
           name: "Concerts",
@@ -23,7 +23,7 @@ export const categories = [
         },
         {
           name: "Performing arts",
-          slug: "performing-arts",
+          slug: "stage-performance",
         },
         {
           name: "Sports",

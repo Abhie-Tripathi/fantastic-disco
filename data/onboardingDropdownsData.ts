@@ -131,4 +131,4 @@ export const industryData: TeliIndustry[] = [
 
 export const eventStatus = "active,cancelled,postponed,predicted";
 export const eventType =
-  "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences";
+  "community-group,concert,stage-performance,sport,festival,workshops,tradeshows,conferences";

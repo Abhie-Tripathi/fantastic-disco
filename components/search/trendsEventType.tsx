@@ -14,7 +14,7 @@ import { columnsDropdown } from "@/data/trends";
 type EventGroupType = "social" | "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
-  social: ["festival", "concert", "sport", "performing-arts", "community"],
+  social: ["festival", "concert", "sport", "stage-performance", "community-group"],
   business: ["tradeshows", "conferences", "workshops"],
 };
 

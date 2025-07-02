@@ -200,7 +200,7 @@ export const newCategories = [
 //     {
 //       id: "b07790e2-835e-4d5e-b727-a8bda549625f",
 //       name: "Performing Arts",
-//       slug: "performing-arts",
+//       slug: "stage-performance",
 //       createdAt: "2024-07-04T18:07:59.198Z",
 //       updatedAt: "2024-07-04T18:07:59.198Z",
 //       eventGroupType: "ATTENDED",
@@ -208,8 +208,8 @@ export const newCategories = [
 //     },
 //     {
 //       id: "d925f21f-3d00-48fd-abf2-c72b3b3736d4",
-//       name: "Community",
-//       slug: "community",
+//       name: "community-group",
+//       slug: "community-group",
 //       createdAt: "2024-07-04T18:07:59.198Z",
 //       updatedAt: "2024-07-04T18:07:59.198Z",
 //       eventGroupType: "ATTENDED",
@@ -272,7 +272,7 @@ export const categories = {
     {
       id: "3a3609e5-56df-5a8b-ad47-c9e168eb4f59",
       name: "Community",
-      slug: "community",
+      slug: "community-group",
       createdAt: "2024-03-23T00:05:00.000Z",
       updatedAt: "2024-08-09T18:51:57.038Z",
       eventGroupType: "ATTENDED",
@@ -299,7 +299,7 @@ export const categories = {
     {
       id: "94fcb56e-2838-5d74-9092-e582d873a03e",
       name: "Performing Arts",
-      slug: "performing-arts",
+      slug: "stage-performance",
       createdAt: "2024-03-23T00:04:59.000Z",
       updatedAt: "2024-08-09T18:51:57.038Z",
       eventGroupType: "ATTENDED",
@@ -369,7 +369,7 @@ export const newcategories = {
     {
       id: "3a3609e5-56df-5a8b-ad47-c9e168eb4f59",
       name: "Community",
-      slug: "community",
+      slug: "community-group",
       createdAt: "2024-03-23T00:05:00.000Z",
       updatedAt: "2024-08-09T18:51:57.038Z",
       eventGroupType: "ATTENDED",
@@ -387,7 +387,7 @@ export const newcategories = {
     {
       id: "94fcb56e-2838-5d74-9092-e582d873a03e",
       name: "Performing Arts",
-      slug: "performing-arts",
+      slug: "stage-performance",
       createdAt: "2024-03-23T00:04:59.000Z",
       updatedAt: "2024-08-09T18:51:57.038Z",
       eventGroupType: "ATTENDED",

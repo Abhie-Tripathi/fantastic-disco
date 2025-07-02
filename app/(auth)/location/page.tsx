@@ -319,7 +319,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"
@@ -421,7 +421,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"
