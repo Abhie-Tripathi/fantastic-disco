@@ -379,12 +379,23 @@ export const ProspectList: React.FC = () => {
 
   function handleCreate() {
     setTrackerModalOpen(true);
-    const filterValues = {
-      orgWebsite: Object.values(selectedData)
-        .map((names) => names.orgWebsite)
-        .join(","),
-    };
+    const orgNames: string[] = [];
+const orgWebsites: string[] = [];
 
+Object.values(selectedData).forEach((names) => {
+  if (names.orgName) {
+    orgNames.push(names.orgName);
+  } else if (names.orgWebsite) {
+    orgWebsites.push(names.orgWebsite);
+  }
+});
+
+const filterValues = {
+   ...(orgNames.length > 0 && { orgName: orgNames.join(",") }),
+  ...(orgWebsites.length > 0 && { orgWebsite: orgWebsites.join(",") }),
+};
+
+    
     setFilterValues({ filterValues });
   }
 
@@ -420,7 +431,6 @@ export const ProspectList: React.FC = () => {
       setShowFilter(true);
     }
   };
-
   
 
   return (
