@@ -308,6 +308,11 @@ const GtmSignUpForm = () => {
             </>
           )}
         />
+        {errors.industry && (
+          <p className="text-red-500 text-sm text-center">
+            {errors.industry.message}
+          </p>
+        )}
         {isCategoryMapped && (
           <Controller
             name={"industry"}
