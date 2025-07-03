@@ -18,13 +18,13 @@ const CustomTrackerNullState = () => {
 
       {isTreeMapView && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
-          <span className="font-bold">Mandatory categories* - </span>
+          <span className="font-bold">Mandatory categories* and location* - </span>
           <span className={`w-full text-center text-[#666666] text-sm`}>
-            Choose multiple categories to view the spread.
+            Choose multiple categories and a location to view the spread.
           </span>
         </div>
       )}
-      {(isEventeli || isTrends) && (
+      {(isEventeli || isTrends) && !isTreeMapView && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
           <span className="font-bold">Mandatory location* - </span>
           <span className={`w-full text-center text-[#666666] text-sm`}>

@@ -354,7 +354,7 @@ const EventTrends = () => {
     ) {
       // Set default location ID for line chart and table view if no location is selected
       setMultipleLocalFilters({
-        locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
+        // locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
         view: view,
       });
     }
@@ -445,25 +445,15 @@ const EventTrends = () => {
 
   // Add delay for showing category warning
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
     if (activeView === "treemap" && categories.length === 0) {
-      timeoutId = setTimeout(() => {
         setShowCategoryWarning(true);
-      }, 1000); // 1 second delay
     } else {
       setShowCategoryWarning(false);
     }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
   }, [activeView, categories]);
 
   // Add effect for mandatory fields warning
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
     if (
       (activeView === "line" || activeView === "table") &&
       (!locations ||
@@ -1358,7 +1348,7 @@ const EventTrends = () => {
                     <div>
                       <>
                         {activeView === "line" && (
-                          <Card className="p-2 pb-4 md:p-6 relative">
+                          <Card className="p-2 pb-4 md:p-6 relative min-h-[600px]">
                             <div className="hidden md:flex items-center justify-between mb-4">
                               <h2 className="text-lg font-medium absolute top-6 left-6">
                                 Trend Analysis
