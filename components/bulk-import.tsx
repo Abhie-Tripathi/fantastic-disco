@@ -6,7 +6,10 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover";
   interface BulkImportProps {
-  bulkActions: string[];
+  bulkActions: {
+    id: number;
+    option: string;
+  }[];
   setShowCheckBox: Dispatch<SetStateAction<boolean>>;
   setShowExport: Dispatch<SetStateAction<boolean>>;
 }
@@ -34,8 +37,8 @@ export default function BulkImport({ bulkActions, setShowCheckBox, setShowExport
         <div>
             {
                 bulkActions.map((item, index)=>(
-                    <div key={index} className="whitespace-nowrap text-sm font-medium hover:bg-accent cursor-pointer p-2" onClick={()=>actionTaken(index)}>
-                        {item}
+                    <div key={index} className="whitespace-nowrap text-sm font-medium hover:bg-accent cursor-pointer p-2" onClick={()=>actionTaken(item.id)}>
+                        {item.option}
                     </div>
                 ))
             }

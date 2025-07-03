@@ -1,7 +1,7 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData, ExportContent } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
@@ -33,6 +33,9 @@ interface UserAccessData {
 interface PresetDataResponse {
   count: number;
   trackers: PresetData[];
+}
+interface ExportDataResponse {
+  trackerExports: ExportContent[];
 }
 
 type GetSavedEventsResponse =
@@ -371,12 +374,16 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    const getExportData = async (trackerId: string) => {
-      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/exports`, {
-        method: "GET",
-      });
-      return response;
+    const getExportData = async (trackerId: string): Promise<ExportDataResponse | undefined> => {
+  const response = await api.request<ExportDataResponse>(
+    `${endpoints.tracker.commonUrl}/${trackerId}/exports`,
+    {
+      method: "GET",
     }
+  );
+  return response;
+};
+
     const postExportReq = async(trackerId: string, eventType: string, redirectUrl: string) => {
       console.log(`Posting export request for trackerId: ${trackerId}, eventType: ${eventType}, redirectUrl: ${redirectUrl}`);
       

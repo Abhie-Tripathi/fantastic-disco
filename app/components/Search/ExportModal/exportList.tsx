@@ -11,27 +11,12 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { FileText } from 'lucide-react';
+import { ExportContent } from '@/types/trackers';
 
-interface ExportEntry {
-  id: string;
-  name: string;
-  type: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  progress: number;
-  createdAt: string;
-  createdBy: string;
-  totalRecords: number;
-  processedRecords: number;
-  downloadUrl?: string;
-  user?: {
-    firstname: string;
-    lastname: string;
-  };
-  exportOf?: string;
-}
+
 
 interface ExportListProps {
-  data?: ExportEntry[];
+  data?: ExportContent[];
   onDownload?: (exportId: string) => void;
   onRetry?: (exportId: string) => void;
   isLoading?: boolean;
@@ -74,7 +59,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
     );
   }
 
-  if (data.length === 0) {
+  if (data?.length === 0) {
     return (
       <div className="border rounded-lg p-8 text-center mb-5 mx-5">
         <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -96,7 +81,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((exportEntry) => (
+          {data?.map((exportEntry) => (
             <TableRow key={exportEntry.id}>
               <TableCell className="p-2">
                 {formatDate(exportEntry.createdAt)}
