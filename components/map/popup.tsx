@@ -12,8 +12,8 @@ import { Star } from "lucide-react";
 import { buttonVariants } from "../ui/button";
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/arts.png",
-  community: "/eventType/community.png",
+  "stage-performance": "/eventType/arts.png",
+  "community-group": "/eventType/community.png",
   concert: "/eventType/concert.png",
   conferences: "/eventType/conference.png",
   festival: "/eventType/festival.png",

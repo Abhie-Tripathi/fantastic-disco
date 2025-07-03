@@ -61,9 +61,9 @@ const EventCount = ({ view }: { view: string }) => {
           }).format((data as any)?.count || 0)}
         </Badge>
       )}
-      <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+      {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
         {label[view]}
-      </p>
+      </p> */}
     </div>
   );
 };

@@ -140,6 +140,7 @@ export const useTrackerServices = () => {
       });
     }
     const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
+      
       return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
         method: "DELETE",
       });

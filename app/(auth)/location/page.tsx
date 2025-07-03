@@ -174,11 +174,15 @@ const LocationForm = () => {
   const saveLocationMutation = useMutation({
     mutationFn: (values: any) => createTracker(values),
     onSuccess: () => {
-      router.push(
-        redirectPath
-          ? `/internal/${redirectPath}`
-          : `internal/search/events?${searchParams}`
-      );
+      if (redirectPath && redirectPath.includes("whr-pricing")) {
+        router.replace("https://whr.ai/pricing");
+      } else {
+        router.push(
+          redirectPath
+            ? `/internal/${redirectPath}`
+            : `internal/search/events?${searchParams}`
+        );
+      }
       queryClient.invalidateQueries({ queryKey: ["locations"] });
     },
     onError: (error: any) => {
@@ -315,7 +319,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"
@@ -417,7 +421,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"

@@ -127,19 +127,19 @@ export default function LocationSelector({
   }, [localFilters]);
 
   // Add new useEffect for trends page default location
-  useEffect(() => {
-    if (
-      pathName === "/internal" &&
-      !localFilters.locationIds &&
-      !localFilters.viewBound
-    ) {
-      replaceLocalFilter(
-        "viewBound",
-        "locationIds",
-        "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
-      );
-    }
-  }, [pathName]);
+  // useEffect(() => {
+  //   if (
+  //     pathName !== "/internal" &&
+  //     !localFilters.locationIds &&
+  //     !localFilters.viewBound
+  //   ) {
+  //     replaceLocalFilter(
+  //       "viewBound",
+  //       "locationIds",
+  //       "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
+  //     );
+  //   }
+  // }, [pathName]);
 
   // Autofocus when popover opens
   useEffect(() => {
@@ -172,13 +172,13 @@ export default function LocationSelector({
   };
 
   // Add cleanup effect
-  useEffect(() => {
-    return () => {
-      if (pathName === "/internal" || pathName === "/internal/search") {
-        replaceLocalFilter("viewBound", "locationIds", "");
-      }
-    };
-  }, [pathName]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (pathName === "/internal" || pathName === "/internal/search") {
+  //       replaceLocalFilter("viewBound", "locationIds", "");
+  //     }
+  //   };
+  // }, [pathName]);
 
   const validateCenterPoint = (): boolean => {
     const errors: { radius?: string; lat?: string; lng?: string } = {};

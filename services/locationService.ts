@@ -214,6 +214,7 @@ export const useLocationService = () => {
             q: locationName,
             format: "json",
             limit: 10,
+            featureType: locationType
           },
         }
       );

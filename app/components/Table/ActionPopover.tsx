@@ -46,8 +46,11 @@ export function ActionPopover({
     isLoading: isConfigLoading,
     error,
   } = useConfiguration.interest();
-  const { createUserEventInterest, isLoading: isSubmitting } =
-    useIntent.createUserEventInterest();
+  const {
+  createUserEventInterestSimple,
+  isLoading: isSubmitting
+} = useIntent.createUserEventInterest();
+
   const [selectedAction, setSelectedAction] = useState<string | undefined>(
     () => {
       if (interests?.speak) return "SPEAK";
@@ -89,41 +92,41 @@ export function ActionPopover({
         if (response?.interest && setInterest) {
           if(selectedAction === "UN-BOOKMARK")
           setSavedEventCount(savedEventCount - 1);
-          setInterest({
-            [response.interest.toLowerCase()]: {
-              interestId: response.id,
-            },
-          });
-        }
-        
-        toast({
-          title: "Success",
-          description: "Your interest has been recorded",
-          variant: "default",
-        });
-        setEventId(response?.eventId);
-        setIsOpen(false);
-      } else {
-        createUserEventInterest(
-          {
-            eventId,
-            interest: selectedAction || '',
-            sourceModule: trackerId ? "TRACKER" : "RESEARCH",
-            ...(trackerId && { sourceId: trackerId }),
+        setInterest({
+          [response.interest.toLowerCase()]: {
+            interestId: response.id,
           },
-          {
-            onSuccess: (response: any) => {
-              if (response?.interest) {
-                setInterest({
-                  [response.interest.toLowerCase()]: {
-                    interestId: response.id,
-                  },
-                });
-              }
-              if (response?.eventId && setEventId) {
-                setEventId(response?.eventId);
-              }
-              if(selectedAction === "BOOKMARK")
+        });
+      }
+
+      toast({
+        title: "Success",
+        description: "Your interest has been recorded",
+        variant: "default",
+      });
+      setEventId(response?.eventId);
+      setIsOpen(false);
+    } else {
+      createUserEventInterestSimple(
+        {
+          eventId,
+          interest: selectedAction || "",
+          sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+          ...(trackerId && { sourceId: trackerId }),
+        },
+        {
+          onSuccess: (response: any) => {
+            if (response?.interest) {
+              setInterest({
+                [response.interest.toLowerCase()]: {
+                  interestId: response.id,
+                },
+              });
+            }
+            if (response?.eventId && setEventId) {
+              setEventId(response?.eventId);
+            }
+            if (selectedAction === "BOOKMARK")
               setSavedEventCount(savedEventCount + 1);
               setIsOpen(false);
               toast({

@@ -15,7 +15,8 @@ export const useIntent = {
         intentService.createUserEventInterest(data),
     });
     return {
-      createUserEventInterest: mutation.mutate,
+      createUserEventInterestSimple: mutation.mutate,
+      createUserEventInterest: mutation.mutateAsync,
       isLoading: mutation.isPending,
       error: mutation.error,
       isSuccess: mutation.isSuccess,

@@ -2,7 +2,7 @@
     {
       "id": "7d8710f6-8f45-46c4-8287-f449cbb407d1",
       "name": "Community",
-      "slug": "community",
+      "slug": "community-group",
       "type": "ATTENDED",
       "createdAt": "2024-06-22T08:32:42.690Z",
       "updatedAt": "2024-06-22T08:32:42.690Z"
@@ -42,7 +42,7 @@
     {
       "id": "0de9578c-ec7c-436a-8df7-19ec848a95fd",
       "name": "Performing arts",
-      "slug": "performing-arts",
+      "slug": "stage-performance",
       "type": "ATTENDED",
       "createdAt": "2024-06-22T08:32:42.938Z",
       "updatedAt": "2024-06-22T08:32:42.938Z"

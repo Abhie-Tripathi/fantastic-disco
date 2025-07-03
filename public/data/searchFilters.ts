@@ -22,8 +22,8 @@ export const searchFilters = {
         { id: "festival", label: "Festival", isEnabled: true },
         { id: "concert", label: "Concert", isEnabled: true },
         { id: "sport", label: "Sport", isEnabled: true },
-        { id: "performing-arts", label: "Performing Arts", isEnabled: true },
-        { id: "community", label: "Community", isEnabled: true },
+        { id: "stage-performance", label: "Performing Arts", isEnabled: true },
+        { id: "community-group", label: "Community", isEnabled: true },
       ],
       business: [
         { id: "tradeshows", label: "Tradeshows", isEnabled: true },

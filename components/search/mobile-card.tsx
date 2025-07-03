@@ -1,11 +1,7 @@
 import React from "react";
 import { Event } from "@/types/events/events";
 import { Badge } from "@/components/ui/badge";
-import {
-  Star,
-  Shield,
-  Trophy,
-} from "lucide-react";
+import { Star, Shield, Trophy } from "lucide-react";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { formatLocationParts } from "@/utils/locationFormat";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -14,8 +10,8 @@ import { formattedDateRange } from "@/utils/date";
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { intelScore } from "@/types/trackers";
-import trustScore from "@/public/trust-score.svg"
-import primeTrophy from "@/public/prime_trophy.svg"
+import trustScore from "@/public/trust-score.svg";
+import primeTrophy from "@/public/prime_trophy.svg";
 import Image from "next/image";
 
 // Local CircularProgress for mobile card
@@ -110,10 +106,7 @@ const MobileEventCard = ({
   intelLoading?: boolean;
 }) => {
   // Helper for stats
-  const stat = (
-    label: string,
-    value: React.ReactNode
-  ) => (
+  const stat = (label: string, value: React.ReactNode) => (
     <div className="flex items-center justify-between py-1">
       <span className="flex items-center gap-1 text-xs text-gray-500 font-medium">
         {label}
@@ -206,13 +199,17 @@ const MobileEventCard = ({
       "rank" in event.insights.rankings &&
       typeof event.insights.rankings.rank === "number"
     ) {
-      rankDisplay = `${event.insights.rankings.rank}${getOrdinalSuffix(event.insights.rankings.rank)} ${(event.insights.rankings as any).rankType || "Country"} Rank`;
+      rankDisplay = `${event.insights.rankings.rank}${getOrdinalSuffix(
+        event.insights.rankings.rank
+      )} ${(event.insights.rankings as any).rankType || "Country"} Rank`;
     } else if (
       "country" in event.insights.rankings &&
       event.insights.rankings.country &&
       typeof event.insights.rankings.country.rank === "number"
     ) {
-      rankDisplay = `${event.insights.rankings.country.rank}${getOrdinalSuffix(event.insights.rankings.country.rank)} Country Rank`;
+      rankDisplay = `${event.insights.rankings.country.rank}${getOrdinalSuffix(
+        event.insights.rankings.country.rank
+      )} Country Rank`;
     }
   }
 
@@ -222,17 +219,26 @@ const MobileEventCard = ({
     if (event.basic.entryType === "free_and_paid") {
       entryTypeBadges = (
         <>
-          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium mr-1">
+          <Badge
+            variant="outline"
+            className="text-gray-600 capitalize rounded-sm text-xs font-medium mr-1"
+          >
             Free
           </Badge>
-          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+          <Badge
+            variant="outline"
+            className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+          >
             Paid
           </Badge>
         </>
       );
     } else if (event.basic.entryType === "paid") {
       entryTypeBadges = (
-        <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+        <Badge
+          variant="outline"
+          className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        >
           Paid
         </Badge>
       );
@@ -242,59 +248,110 @@ const MobileEventCard = ({
   // Maturity, frequency, branded, series, forecasted
   const extraBadges = [
     showMaturity && event.advance?.maturity && (
-      <Badge key="maturity" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+      <Badge
+        key="maturity"
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
         {event.advance?.maturity}
       </Badge>
     ),
     showValues.includes(Show.frequency) && event.advance?.frequency && (
-      <Badge key="frequency" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
+      <Badge
+        key="frequency"
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
         {event.advance?.frequency}
       </Badge>
     ),
     showValues.includes(Show.branded) && event.advance?.isBranded && (
-      <Badge key="branded" variant="outline" className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm text-xs font-medium">
+      <Badge
+        key="branded"
+        variant="outline"
+        className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm text-xs font-medium"
+      >
         Branded
       </Badge>
     ),
     showValues.includes(Show.series) && event.advance?.isSeries && (
-      <Badge key="series" variant="outline" className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6] capitalize rounded-sm text-xs font-medium">
+      <Badge
+        key="series"
+        variant="outline"
+        className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6] capitalize rounded-sm text-xs font-medium"
+      >
         Series
       </Badge>
     ),
     showValues.includes(Show.forecasted) && event.advance?.rehostDate && (
-      <Badge key="forecasted" variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
-        Forecasted: {event.advance?.rehostDate ? new Date(event.advance?.rehostDate).toLocaleString('default', { month: 'short', year: 'numeric' }) : ''}
+      <Badge
+        key="forecasted"
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        Forecasted:{" "}
+        {event.advance?.rehostDate
+          ? new Date(event.advance?.rehostDate).toLocaleString("default", {
+              month: "short",
+              year: "numeric",
+            })
+          : ""}
       </Badge>
     ),
   ].filter(Boolean);
 
   // Rankings, trust score, reputation score
-  const rankingBadge = showValues.includes(Show.rankings) && event.insights?.rankings && rankDisplay !== "-" && (
-    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
-      {rankDisplay}
-    </Badge>
-  );
-  const trustScoreBadge = showValues.includes(Show.rankings) && event.insights?.trustScore && event.insights?.trustScore > 0 && (
-    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
-      Trust Score: {event.insights?.trustScore}
-    </Badge>
-  );
-  const reputationScoreBadge = showValues.includes(Show.rating) && event.insights?.reputationScore && (
-    <Badge variant="outline" className="text-gray-600 capitalize rounded-sm text-xs font-medium">
-      Reputation Score: {event.insights?.reputationScore}
-    </Badge>
-  );
+  const rankingBadge = showValues.includes(Show.rankings) &&
+    event.insights?.rankings &&
+    rankDisplay !== "-" && (
+      <Badge
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        {rankDisplay}
+      </Badge>
+    );
+  const trustScoreBadge =
+    showValues.includes(Show.rankings) &&
+    event.insights?.trustScore &&
+    event.insights?.trustScore > 0 ? (
+      <Badge
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        Trust Score: {event.insights?.trustScore}
+      </Badge>
+    ) : (
+      ""
+    );
+
+  const reputationScoreBadge = showValues.includes(Show.rating) &&
+    event.insights?.reputationScore && (
+      <Badge
+        variant="outline"
+        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        Reputation Score: {event.insights?.reputationScore}
+      </Badge>
+    );
 
   // Match keywords
-  const matchKeywordsBadge = showMatchKeywords && event.basic.matchedKeywords && event.basic.matchedKeywords.length > 0 && (
-    <Badge variant="outline" className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium">
-      Match Keyword: {event.basic.matchedKeywords?.join(" | ")}
-    </Badge>
-  );
+  const matchKeywordsBadge = showMatchKeywords &&
+    event.basic.matchedKeywords &&
+    event.basic.matchedKeywords.length > 0 && (
+      <Badge
+        variant="outline"
+        className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        Match Keyword: {event.basic.matchedKeywords?.join(" | ")}
+      </Badge>
+    );
   const matchKeywordsScoreBadge = showMatchKeywords && (
     <Badge
       variant="outline"
-      className={`flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium ${getMatchKeywordsColor(event.basic.matchedKeywordsPercentage ?? null)}`}
+      className={`flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium ${getMatchKeywordsColor(
+        event.basic.matchedKeywordsPercentage ?? null
+      )}`}
     >
       {(() => {
         const percentage = event.basic.matchedKeywordsPercentage ?? null;
@@ -308,26 +365,37 @@ const MobileEventCard = ({
   );
 
   // Audience spread
-  const audienceSpreadBadge = showaudienceSpread && event.audience?.audienceSpread && (
-    <Badge variant="outline" className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium">
-      <div className="flex gap-1">
-        {Object.entries(event.audience.audienceSpread)
-          .slice(0, 5)
-          .map(([key, { iso, name }]) => {
-            const countryIso = iso === "UK" ? "GB" : iso;
-            const Flag = (require("country-flag-icons/react/3x2") as any)[countryIso];
-            return Flag ? (
-              <span key={key} className="inline-block rounded overflow-hidden" title={name}>
-                <Flag className="w-4 h-3 border" />
-              </span>
-            ) : null;
-          })}
-      </div>
-    </Badge>
-  );
+  const audienceSpreadBadge = showaudienceSpread &&
+    event.audience?.audienceSpread && (
+      <Badge
+        variant="outline"
+        className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium"
+      >
+        <div className="flex gap-1">
+          {Object.entries(event.audience.audienceSpread)
+            .slice(0, 5)
+            .map(([key, { iso, name }]) => {
+              const countryIso = iso === "UK" ? "GB" : iso;
+              const Flag = (require("country-flag-icons/react/3x2") as any)[
+                countryIso
+              ];
+              return Flag ? (
+                <span
+                  key={key}
+                  className="inline-block rounded overflow-hidden"
+                  title={name}
+                >
+                  <Flag className="w-4 h-3 border" />
+                </span>
+              ) : null;
+            })}
+        </div>
+      </Badge>
+    );
 
   return (
     <div className="bg-white rounded-xl shadow border p-4 flex flex-col gap-3 w-full">
+      <div className=" text-xs text-gray-500">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -378,16 +446,6 @@ const MobileEventCard = ({
             {event.basic.name}
           </div>
         </div>
-        <div onClick={(e) => e.preventDefault()}>
-          <ActionPopover
-            eventId={event.basic.id}
-            interests={event.interests}
-            trackerId={trackerId}
-            setInterest={setInterest}
-            setEventId={setEventId}
-            view={view}
-          />
-        </div>
       </div>
       <div className="flex gap-2 mt-1 flex-wrap">
         {categories}
@@ -399,35 +457,37 @@ const MobileEventCard = ({
         {matchKeywordsBadge}
         {matchKeywordsScoreBadge}
         {audienceSpreadBadge}
+        {showValues.includes(Show.rating) &&
+        event.basic.rating &&
+        event.basic.rating > 0 ? (
+          <Badge
+            variant="outline"
+            className="text-gray-600 capitalize rounded-sm"
+          >
+            <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+            <span>{event.basic.rating}</span>
+          </Badge>
+        ) : (
+          ""
+        )}
       </div>
       {/* Date & Location */}
-      <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-        <span>{date}</span>
-        <span className="text-black">{location}</span>
-      </div>
-      {/* Ratings, Rank, Trust Score */}
-      <div className="flex items-center gap-3 mt-1">
-        <span className="flex items-center gap-1 text-xs text-gray-700">
-          <Star className="w-4 h-4 text-primary" fill="#6751A4" />
-          {event.basic.rating || "-"}
-        </span>
-        {rankingBadge}
-        {trustScoreBadge}
-      </div>
+      <div className="text-xs text-gray-500">{location}</div>
       {/* Stats */}
-      <div className="mt-2 flex flex-col gap-1">
+      <div className="flex flex-col gap-1">
         {showValues.includes(Show.estimatedExhibitors) &&
           stat(
             "Estimated Exhibitors",
-            event.insights?.estimatedExhibitors !== undefined && event.insights?.estimatedExhibitors !== null && event.insights?.estimatedExhibitors !== ""
+            event.insights?.estimatedExhibitors !== undefined &&
+              event.insights?.estimatedExhibitors !== null &&
+              event.insights?.estimatedExhibitors !== ""
               ? formatExhibitorCount(event.insights?.estimatedExhibitors)
               : "-"
           )}
-        {showValues.includes(Show.scores) &&
-          stat(
-            "Estimated Visitors",
-            event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
-          )}
+        {stat(
+          "Estimated Visitors",
+          event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
+        )}
         {showValues.includes(Show.economicImpact) &&
           stat(
             "Economic Impact",
@@ -439,7 +499,9 @@ const MobileEventCard = ({
       {/* Insights & Scores */}
       {showValues.includes(Show.scores) && (
         <div className="flex justify-between">
-          <div className="text-xs text-gray-500 font-medium">Insights & Scores</div>
+          <div className="text-xs text-gray-500 font-medium">
+            Insights & Scores
+          </div>
           <div className="flex items-center gap-2 mt-2">
             <div className="flex flex-col items-center flex-1">
               <div className="text-[11px] mb-1 border px-1">Inbound</div>
@@ -452,6 +514,18 @@ const MobileEventCard = ({
           </div>
         </div>
       )}
+      <div className="flex justify-end">
+        <div onClick={(e) => e.preventDefault()}>
+          <ActionPopover
+            eventId={event.basic.id}
+            interests={event.interests}
+            trackerId={trackerId}
+            setInterest={setInterest}
+            setEventId={setEventId}
+            view={view}
+          />
+        </div>
+      </div>
     </div>
   );
 };
