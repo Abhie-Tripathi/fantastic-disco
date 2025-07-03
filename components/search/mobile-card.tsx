@@ -13,6 +13,9 @@ import { intelScore } from "@/types/trackers";
 import trustScore from "@/public/trust-score.svg";
 import primeTrophy from "@/public/prime_trophy.svg";
 import Image from "next/image";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useTrackerContext } from "@/context/tracker";
+import Link from "next/link";
 
 // Local CircularProgress for mobile card
 const CircularProgress = ({
@@ -172,7 +175,7 @@ const MobileEventCard = ({
       <Badge
         key={cat.id}
         variant="outline"
-        className="text-gray-700 rounded-sm px-2 py-0.5 text-xs font-medium"
+        className="text-gray-600 rounded-sm px-2 py-0.5 text-xs font-medium"
       >
         {cat.name}
       </Badge>
@@ -364,6 +367,27 @@ const MobileEventCard = ({
     </Badge>
   );
 
+  const audienceZone = showValues.includes(Show.audienceZone) &&
+    event.audience?.audienceZone && (
+      <Badge variant="outline" className="text-gray-600 capitalize">
+        {event.audience.audienceZone} Audience
+      </Badge>
+    );
+
+  const ratingBadge = showValues.includes(Show.rating) &&
+  event.basic.rating &&
+  event.basic.rating > 0 ? (
+    <Badge
+      variant="outline"
+      className="text-gray-600 capitalize rounded-sm"
+    >
+      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+      <span>{event.basic.rating}</span>
+    </Badge>
+  ) : (
+    ""
+  )
+
   // Audience spread
   const audienceSpreadBadge = showaudienceSpread &&
     event.audience?.audienceSpread && (
@@ -393,9 +417,14 @@ const MobileEventCard = ({
       </Badge>
     );
 
+  if (event.basic.primaryEventType == "holiday") {
+    return <UnplannedCard event={event} />;
+  }
+
   return (
-    <div className="bg-white rounded-xl shadow border p-4 flex flex-col gap-3 w-full">
-      <div className=" text-xs text-gray-500">{date}</div>
+      <Link href={`/internal/event/${event.basic.id}`} className="block">
+    <div className="bg-background rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
+      <div className="text-xs text-gray-600">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -403,14 +432,14 @@ const MobileEventCard = ({
           <img
             src={event.basic.logoUrl || "/placeholder.svg"}
             alt={event.basic.name}
-            className="w-12 h-12 rounded-md object-contain border bg-white"
+            className="w-12 h-12 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
           />
         ) : event.basic.website ? (
           <div className="w-12 h-12 relative">
             <img
               src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
               alt={`${event.basic.name} website favicon`}
-              className="w-12 h-12 object-contain border rounded-md bg-white"
+              className="w-12 h-12 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
                 e.currentTarget.dataset.error = "true";
@@ -418,7 +447,7 @@ const MobileEventCard = ({
             />
             {/* Fallback that shows when image errors */}
             <div
-              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
               style={{ display: "none" }}
               ref={(el) => {
                 if (el) {
@@ -435,44 +464,35 @@ const MobileEventCard = ({
             </div>
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
             <span className="text-[#5055A3] text-lg font-semibold">
               {event.basic.name.charAt(0)}
             </span>
           </div>
         )}
         <div className="flex-1">
-          <div className="font-semibold text-base leading-tight text-gray-900">
+          <div className="font-semibold text-base leading-tight text-gray-900 dark:text-gray-100">
             {event.basic.name}
           </div>
         </div>
       </div>
+
+      <div className="text-xs text-gray-700 dark:text-gray-300">{location}</div>
+
       <div className="flex gap-2 mt-1 flex-wrap">
         {categories}
+        {ratingBadge}
         {entryTypeBadges}
         {extraBadges}
         {rankingBadge}
+        {audienceZone}
         {trustScoreBadge}
         {reputationScoreBadge}
         {matchKeywordsBadge}
         {matchKeywordsScoreBadge}
         {audienceSpreadBadge}
-        {showValues.includes(Show.rating) &&
-        event.basic.rating &&
-        event.basic.rating > 0 ? (
-          <Badge
-            variant="outline"
-            className="text-gray-600 capitalize rounded-sm"
-          >
-            <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-            <span>{event.basic.rating}</span>
-          </Badge>
-        ) : (
-          ""
-        )}
       </div>
       {/* Date & Location */}
-      <div className="text-xs text-gray-500">{location}</div>
       {/* Stats */}
       <div className="flex flex-col gap-1">
         {showValues.includes(Show.estimatedExhibitors) &&
@@ -499,16 +519,16 @@ const MobileEventCard = ({
       {/* Insights & Scores */}
       {showValues.includes(Show.scores) && (
         <div className="flex justify-between">
-          <div className="text-xs text-gray-500 font-medium">
+          <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
             Insights & Scores
           </div>
           <div className="flex items-center gap-2 mt-2">
             <div className="flex flex-col items-center flex-1">
-              <div className="text-[11px] mb-1 border px-1">Inbound</div>
+              <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">Inbound</div>
               <CircularProgress value={inbound} />
             </div>
             <div className="flex flex-col items-center flex-1">
-              <div className="text-[11px] mb-1 border px-1">International</div>
+              <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">International</div>
               <CircularProgress value={international} />
             </div>
           </div>
@@ -526,6 +546,140 @@ const MobileEventCard = ({
           />
         </div>
       </div>
+    </div>
+      </Link>
+  );
+};
+
+const UnplannedCard = ({ event }: { event: Event }) => {
+  const { getFilterValue } = useFilterState();
+  const { data, setIsNewCall } = useTrackerContext();
+
+  const trackerLocationIds = Object?.keys(
+    data?.filterValues?.locationIds || {}
+  );
+
+  const date = formattedDateRange(
+    event.basic.startDateTime,
+    event.basic.endDateTime
+  );
+  const location = event.basic.eventLocation
+    ? formatLocationParts(event.basic.eventLocation, true)
+    : "Venue to be announced";
+
+  const categories = [
+    event.basic.primaryEventType && (
+      <Badge
+        key={event.basic.primaryEventType}
+        className="bg-pink-100 text-pink-800 rounded-sm px-2 py-0.5 text-xs font-medium capitalize"
+        style={{
+          color: eventTypeColors[event.basic.primaryEventType] || undefined,
+          backgroundColor: lightenColor(
+            eventTypeColors[event.basic.primaryEventType] || "#E5E7EB",
+            0.9
+          ),
+        }}
+      >
+        <span className="mr-1 capitalize">
+          {eventTypeIcons[event.basic.primaryEventType] || null}
+        </span>
+        {event.basic.primaryEventType}
+      </Badge>
+    ),
+    ...(event.basic.categories?.slice(0, 1).map((cat) => (
+      <Badge
+        key={cat.id}
+        variant="outline"
+        className="text-gray-700 rounded-sm px-2 py-0.5 text-xs font-medium"
+      >
+        {cat.name}
+      </Badge>
+    )) || []),
+  ];
+
+  const showHolidayScore =
+    getFilterValue("locationIds").split(",").filter(Boolean).length == 1 ||
+    trackerLocationIds.length == 1;
+
+  const business = (event.basic?.eventLocation as any)[0]?.businessScore;
+  const social = (event.basic?.eventLocation as any)[0]?.socialScore;
+
+  return (
+    <div className="bg-background dark:bg-[#171717] rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
+      <div className="text-xs text-gray-500 dark:text-gray-400">{date}</div>
+      {/* Top: Logo & Name */}
+      <div className="flex items-center gap-3">
+        {/* Logo logic with fallback */}
+        {event.basic.logoUrl ? (
+          <img
+            src={event.basic.logoUrl || "/placeholder.svg"}
+            alt={event.basic.name}
+            className="w-12 h-12 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
+          />
+        ) : event.basic.website ? (
+          <div className="w-12 h-12 relative">
+            <img
+              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+              alt={`${event.basic.name} website favicon`}
+              className="w-12 h-12 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                e.currentTarget.dataset.error = "true";
+              }}
+            />
+            {/* Fallback that shows when image errors */}
+            <div
+              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
+              style={{ display: "none" }}
+              ref={(el) => {
+                if (el) {
+                  const img = el.previousSibling as HTMLImageElement;
+                  if (img && img.dataset.error === "true") {
+                    el.style.display = "flex";
+                  }
+                }
+              }}
+            >
+              <span className="text-[#5055A3] text-lg font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
+            <span className="text-[#5055A3] text-lg font-semibold">
+              {event.basic.name.charAt(0)}
+            </span>
+          </div>
+        )}
+        <div className="flex-1">
+          <div className="font-semibold text-base leading-tight text-gray-900 dark:text-gray-100">
+            {event.basic.name}
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-2 mt-1 flex-wrap">{categories}</div>
+      {/* Date & Location */}
+      <div className="text-xs text-gray-700 dark:text-gray-300">{location}</div>
+      {/* Stats */}
+      {/* Insights & Scores */}
+      {showHolidayScore && (
+        <div className="flex justify-between">
+          <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Insights & Scores
+          </div>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex flex-col items-center flex-1">
+              <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">Social</div>
+              <CircularProgress value={social} />
+            </div>
+            <div className="flex flex-col items-center flex-1">
+              <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">Business</div>
+              <CircularProgress value={business} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

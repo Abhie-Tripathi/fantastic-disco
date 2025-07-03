@@ -606,7 +606,7 @@ export default function EventAccordion({
         )}
       </div>
       <div className="flex-grow overflow-y-auto">
-        <ul className="w-full space-y-6 list-none">
+        <ul className="w-full space-y-6 list-none px-4 md:px-0">
           {updatedEvents?.map((event: Event) => {
             if (isMobile) {
               return (

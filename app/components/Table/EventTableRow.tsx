@@ -316,9 +316,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </Link>
               )}
             </div>
-            <Link href={`/internal/company/${event.basic.organizer?.prospectId}`} className="text-sm text-muted-foreground !truncate">
+            {event.basic.organizer?.prospectId ? <Link
+  href={`/internal/company/${event.basic.organizer.prospectId}`}
+  className="text-sm text-muted-foreground truncate overflow-hidden whitespace-nowrap block max-w-xs"
+  title={event.basic.organizer?.name}
+>
+  {event.basic.organizer?.name}
+</Link> : <div className="text-sm text-muted-foreground truncate">
               {event.basic.organizer?.name}
-            </Link>
+            </div>}
           </div>
         </div>
       </TableCell>
