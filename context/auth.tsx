@@ -80,6 +80,7 @@ type authContextType = {
   isAuthenticating: boolean;
   isTentimesUser: boolean;
   showOTPMessage: boolean;
+  membershipData: any | null;
 };
 interface newUserResponse {
   user: {
@@ -116,6 +117,7 @@ const authContextDefaultValues: authContextType = {
   isAuthenticating: false,
   isTentimesUser: false,
   showOTPMessage: false,
+  membershipData: null,
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -135,7 +137,8 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
-
+   const [membershipData, setMembershipData] = useState<any>(null);
+    const { getMembershipData } = useProfileServices();
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
@@ -569,10 +572,19 @@ export const AuthContextProvider = ({ children }: any) => {
       const userData = window.localStorage.getItem("user");
       userData && setUser(JSON.parse(userData));
     } else {
+       fetchMembership();
       setWhrUser(user);
     }
   }, [user]);
 
+      const fetchMembership = async () => {
+        try {
+          const data = await getMembershipData();
+          setMembershipData(data);
+        } catch (e) {
+          setMembershipData(null);
+        }
+      };
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
     if (user) {
@@ -613,6 +625,7 @@ export const AuthContextProvider = ({ children }: any) => {
     isAuthenticating,
     isTentimesUser,
     showOTPMessage,
+    membershipData,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

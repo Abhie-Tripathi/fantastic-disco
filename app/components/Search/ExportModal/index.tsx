@@ -6,7 +6,7 @@ import Refresh from "/public/Refresh.svg";
 import HelpIcon from "/public/help.svg";
 import MinusIcon from "/public/minus.svg";
 import DownloadIcon from "/public/download.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Loading from "../../UI/Loading";
@@ -19,12 +19,121 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, X } from "lucide-react";
 import { isEventeli } from "@/config";
+import { MembershipPlan } from "@/data/membershipPlans";
+import { useTrackerServices } from "@/services/trackerServices";
+import ExportList from "./exportList";
+import { useToast } from "@/hooks/use-toast";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
   type?:string|undefined;
   source:string;
+  active?:string;
 }
+const sampleExports: ExportEntry[] = [
+  {
+    id: '1',
+    name: 'Event Export - Q4 2024',
+    type: 'CSV Export',
+    status: 'completed',
+    progress: 100,
+    createdAt: '2024-01-15T10:30:00Z',
+    createdBy: 'John Doe',
+    totalRecords: 1250,
+    processedRecords: 1250,
+    downloadUrl: '/exports/events-q4-2024.csv'
+  },
+  {
+    id: '2',
+    name: 'User Data Export',
+    type: 'Excel Export',
+    status: 'processing',
+    progress: 65,
+    createdAt: '2024-01-15T14:20:00Z',
+    createdBy: 'Jane Smith',
+    totalRecords: 5000,
+    processedRecords: 3250,
+  },
+  {
+    id: '3',
+    name: 'Analytics Export',
+    type: 'JSON Export',
+    status: 'failed',
+    progress: 0,
+    createdAt: '2024-01-14T09:15:00Z',
+    createdBy: 'Mike Johnson',
+    totalRecords: 890,
+    processedRecords: 0,
+  },
+  {
+    id: '4',
+    name: 'Monthly Report',
+    type: 'PDF Export',
+    status: 'pending',
+    progress: 0,
+    createdAt: '2024-01-15T16:45:00Z',
+    createdBy: 'Sarah Wilson',
+    totalRecords: 320,
+    processedRecords: 0,
+  },
+  {
+    id: '5',
+    name: 'Customer Database Backup',
+    type: 'CSV Export',
+    status: 'completed',
+    progress: 100,
+    createdAt: '2024-01-13T08:30:00Z',
+    createdBy: 'Alex Chen',
+    totalRecords: 8750,
+    processedRecords: 8750,
+    downloadUrl: '/exports/customer-backup.csv'
+  },
+  {
+    id: '6',
+    name: 'Product Inventory Report',
+    type: 'Excel Export',
+    status: 'processing',
+    progress: 35,
+    createdAt: '2024-01-15T11:20:00Z',
+    createdBy: 'Maria Rodriguez',
+    totalRecords: 2400,
+    processedRecords: 840,
+  },
+  {
+    id: '7',
+    name: 'Sales Analytics Q1',
+    type: 'PDF Export',
+    status: 'completed',
+    progress: 100,
+    createdAt: '2024-01-12T15:45:00Z',
+    createdBy: 'David Kim',
+    totalRecords: 1650,
+    processedRecords: 1650,
+    downloadUrl: '/exports/sales-q1.pdf'
+  },
+  {
+    id: '8',
+    name: 'User Activity Logs',
+    type: 'JSON Export',
+    status: 'failed',
+    progress: 0,
+    createdAt: '2024-01-14T13:10:00Z',
+    createdBy: 'Emily Davis',
+    totalRecords: 12000,
+    processedRecords: 0,
+  },
+  {
+    id: '9',
+    name: 'Financial Summary Report',
+    type: 'Excel Export',
+    status: 'pending',
+    progress: 0,
+    createdAt: '2024-01-15T17:30:00Z',
+    createdBy: 'Robert Taylor',
+    totalRecords: 950,
+    processedRecords: 0,
+  }
+];
 
 interface ExportContent {
   id: string;
@@ -62,110 +171,62 @@ function formatDate(dateString: string): string {
   return formattedDate;
 }
 
-const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) => {
+const ExportModal = ({ onClose, filterValue, type, source, active }: exportModalProps) => {
+  console.log("active",active);
+  
   const pathName = usePathname().split('/');
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
   const [exportList, setExportList] = useState<ExportContent[]>([]);
   const { theme } = useTheme();
+  const { toast } = useToast();
+  const [isLoading,setIsLoading] = useState<boolean>(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
+  const {membershipData, isTentimesUser} = useAuthContext();
   const [refreshState, setRefreshState] = useState<boolean>(false);
-
+  const {getExportData, postExportReq} = useTrackerServices();
   const fetchData = async () => {
+  try {
+    setIsLoading(true);
     setRefreshState(true);
-    if(type){
-      const { data, error } = await myFetch(`${baseUrl}/export/list?tracker=${pathName[pathName.length-2]}`);
-    console.log(data);
-    if (error) {
-      console.log(error);
-      return;
-    }
 
-    if (data) {
-      setExportList(data);
-      setTimeout(() => {
-        setRefreshState(false);;
-      }, 500);
-    }
-    }else{
-    const { data, error } = await myFetch(`${baseUrl}/export/list`);
-    console.log(data);
-    if (error) {
-      console.log(error);
-      return;
-    }
+    const data = await getExportData(`${pathName[pathName.length - 2]}`);
+    console.log("exportData", data);
 
-    if (data) {
-      setExportList(data);
-      setTimeout(() => {
-        setRefreshState(false);;
-      }, 500);
-    }
+    setExportList(data.trackerExports || []);
+  } catch (error) {
+    console.error("Error fetching export data:", error);
+  } finally {
+    setIsLoading(false);
+    setRefreshState(false);
   }
-  };
+};
   useEffect(() => {
-    if (showExportedFiles) {
+    // if (showExportedFiles) {
       fetchData();
-    }
-  }, [showExportedFiles]);
+    // }
+  }, []);
 
   const exportDataHandler = async () => {
-    if(type){
-      const dataToSend={
-          type:type,
-      }
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (error) {
-        console.log("Unable to send the post request", error);
-        return;
-      }
-  
-      // console.log(data);
-      if (data) {
-        console.log("Export Post Api", data);
-        GAEvent(
-          "trackers",
-          "Tracker Detail",
-          "View",
-          `${type.charAt(0)}${type.substring(1).toLowerCase()}`
-        )
-        showToast('success', "Export request raised", {closeButton: false});
-        setShowExportedFiles(true);
-      }
-    }else{
-    const formData = new URLSearchParams();
-    Object.entries(filterValue).forEach(([key, value]: [string, any]) => {
-      formData.append(key, value);
-    });
-
-    const { data, error } = await myFetch(`${baseUrl}/export`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData,
-    });
-
-    if (error) {
-      console.log("Unable to send the post request", error);
-      return;
-    }
-
-    // console.log(data);
-    if (data) {
-      console.log("Export Post Api", data);
-      showToast('success', "Export request raised", {closeButton: false});
-      setShowExportedFiles(true);
-    }
+    // if(type){
+    //   const dataToSend={
+    //       type:type,
+    //   }
+    //   const { data, error } = await postExportReq(`${pathName[pathName.length-2]}`, dataToSend);
+    try {
+    setIsLoading(true);
+    setRefreshState(true);
+    const fullUrl = window.location.href
+    const data = await postExportReq(pathName[pathName.length-2], active, fullUrl);
+    console.log("exportData", data);
+    toast({ title: "Success", description: data?.message })
+  } catch (error) {
+    console.error("Error fetching export data:", error);
+  } finally {
+    setIsLoading(false);
+    setRefreshState(false);
   }
+      
   };
 
   const deleteFileHandler = async (dataexportId: string) => {
@@ -215,6 +276,8 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
       `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
     );
   };
+  console.log(exportList);
+  
   return (
     <div className={styles.container}>
       {!showExportedFiles && (
@@ -272,6 +335,14 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
             You can check the progress of your export in the exported files
             dialog.
           </div>
+          <ExportList  exports={sampleExports} data={exportList} isLoading={isLoading}/>
+          {((membershipData && membershipData.membership !== MembershipPlan.Freemium) || (isTentimesUser)) ?
+          <div
+            className={`${styles.exportType_modal_button}`}
+            onClick={exportDataHandler}
+          >
+            Export
+          </div>:
           <div className="w-full pb-4 flex items-center justify-center gap-1">
              {/* <Badge variant="secondary" className="mx-auto">
             <Crown className="w-3 h-3 mr-1" />
@@ -287,13 +358,9 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
             <span className="hidden sm:inline">Upgrade</span>
           </Button>
           </div>
+          }
+          
           {/* <div
-            className={styles.exportType_modal_button}
-            onClick={exportDataHandler}
-          >
-            Export
-          </div>
-          <div
             className={styles.exportType_modal_button2}
             onClick={()=>setShowExportedFiles(true)}
           >
@@ -301,7 +368,7 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
           </div> */}
         </div>
       )}
-
+      
       {showExportedFiles &&
         (exportList.length < 0 ? (
           <div className={styles.exportedfiles_modal}>
@@ -364,7 +431,7 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
                   </div>
                 </div>
               </div>
-
+              
               {exportList.map((exportItem) => (
                 <div className={styles.exportedfile} key={exportItem.id}>
                   <div className={styles.exportedfile_info}>

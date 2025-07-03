@@ -1035,7 +1035,7 @@ const Page = ({ params }: { params: any }) => {
         </div>
       )}
       {showExport &&
-      <ExportModal onClose={exportModalHandler} source={"tracker"}/>
+      <ExportModal onClose={exportModalHandler} source={"tracker"} active={active}/>
       }
     </div>
   );

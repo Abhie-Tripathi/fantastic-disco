@@ -371,7 +371,24 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    
+    const getExportData = async (trackerId: string) => {
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/exports`, {
+        method: "GET",
+      });
+      return response;
+    }
+    const postExportReq = async(trackerId: string, eventType: string, redirectUrl: string) => {
+      console.log(`Posting export request for trackerId: ${trackerId}, eventType: ${eventType}, redirectUrl: ${redirectUrl}`);
+      
+      return api.request(`${endpoints.tracker.commonUrl}/${trackerId}/exports`, {
+        method: "POST",
+        data: { 
+          type:eventType, 
+          redirectUrl 
+        }
+      });
+
+    }
     return {
       getTrackerCount,
       removeBookmark,
@@ -400,6 +417,8 @@ export const useTrackerServices = () => {
       presetData,
       getIntelData,
       fetchCompanyData,
+      getExportData,
+      postExportReq,
       isLoading: api.isLoading,
       error: api.error,
     };
