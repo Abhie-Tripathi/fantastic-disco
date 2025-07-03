@@ -67,7 +67,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center px-5 pb-5 bg-white rounded-lg">
+      <div className="flex items-center justify-center px-5 pb-5 rounded-lg">
         <div className="w-6 h-6 border-4 border-gray-300 rounded-full animate-spin" style={{ borderTopColor: 'var(--primary-color)' }}/>
         <span className="ml-3 text-gray-500">Loading export data...</span>
       </div>
@@ -76,7 +76,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
 
   if (data.length === 0) {
     return (
-      <div className="border rounded-lg p-8 text-center bg-white mb-5 mx-5">
+      <div className="border rounded-lg p-8 text-center mb-5 mx-5">
         <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-500">No export entries yet</p>
         <p className="text-sm text-gray-400 mt-1">Your exported files will appear here</p>
@@ -86,7 +86,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
 
   // ✅ Main Table View
   return (
-    <div className="border rounded-lg bg-white max-h-[240px] mb-5 mx-5 overflow-scroll">
+    <div className="border rounded-lg max-h-[240px] mb-5 mx-5 overflow-scroll">
       <Table>
         <TableHeader className="p-2">
           <TableRow>

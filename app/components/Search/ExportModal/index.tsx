@@ -23,6 +23,7 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { useTrackerServices } from "@/services/trackerServices";
 import ExportList from "./exportList";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -180,6 +181,7 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
   const [exportList, setExportList] = useState<ExportContent[]>([]);
   const { theme } = useTheme();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const {membershipData, isTentimesUser} = useAuthContext();
@@ -188,7 +190,7 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
   const fetchData = async () => {
   try {
     setIsLoading(true);
-    setRefreshState(true);
+    // setRefreshState(true);
 
     const data = await getExportData(`${pathName[pathName.length - 2]}`);
     console.log("exportData", data);
@@ -198,7 +200,7 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
     console.error("Error fetching export data:", error);
   } finally {
     setIsLoading(false);
-    setRefreshState(false);
+    // setRefreshState(false);
   }
 };
   useEffect(() => {
@@ -215,16 +217,18 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
     //   const { data, error } = await postExportReq(`${pathName[pathName.length-2]}`, dataToSend);
     try {
     setIsLoading(true);
-    setRefreshState(true);
+    // setRefreshState(true);
     const fullUrl = window.location.href
     const data = await postExportReq(pathName[pathName.length-2], active, fullUrl);
     console.log("exportData", data);
     toast({ title: "Success", description: data?.message })
+    await fetchData();
   } catch (error) {
+    toast({ title: "Error", description: error?.message })
     console.error("Error fetching export data:", error);
   } finally {
     setIsLoading(false);
-    setRefreshState(false);
+    // setRefreshState(false);
   }
       
   };
@@ -276,15 +280,15 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
       `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
     );
   };
-  console.log(exportList);
+  console.log("exportList", isTentimesUser);
   
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container}`}>
       {!showExportedFiles && (
         <div
           className={`${styles.exportType_modal} ${
             theme === "light" && styles.exportType_modal_light
-          } flex flex-col`}
+          } flex flex-col relative ${isMobile? "w-[390px]": "w-[440px]"}`}
         >
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
@@ -302,14 +306,30 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
               </span> */}
               
             </div>
-            
+            {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) &&
+            <Button variant="outline" className="p-2 mr-12">
+            <div className={`${styles.refresh_button} text-xs`} style={{color:"var(--secondary-text-color)"}} onClick={fetchData}>
+                <Image
+                  src={Refresh}
+                  alt="refresh"
+                  width={16}
+                  height={24}
+                  className={`${iconClass} ${refreshState ?styles.rotating: ''}`}
+                />
+                <div>refresh</div>
+              </div>
+            </Button>}
             {/* <Image
               src={CloseIcon}
               alt="closeicon"
               onClick={() => onClose()}
               className={styles.closeIcon}
             /> */}
-            <X onClick={() => onClose()} className={styles.closeIcon} width={16}/>
+            <Button variant="outline" className="px-3 py-2  absolute right-5">
+            {/* <div className="absolute right-5"> */}
+            <X onClick={() => onClose()} className={`${styles.closeIcon}`} width={16}/>
+              {/* </div> */}
+            </Button>
           </div>
           {/* <div className={styles.tabs_container}>
             <div
@@ -330,19 +350,25 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
             </div>
           </div> */}
 
+          
+          {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) ?
+          <>
           <div className={styles.exportType_modal_description}>
-            Exporting a large number of records will take some time to process.
-            You can check the progress of your export in the exported files
-            dialog.
+             <div>
+                    Large exports may take some time. Exports will run in the
+                    background after you close this window and we will email you
+                    when they are done.
+              </div>
           </div>
           <ExportList  exports={sampleExports} data={exportList} isLoading={isLoading}/>
-          {((membershipData && membershipData.membership !== MembershipPlan.Freemium) || (isTentimesUser)) ?
           <div
             className={`${styles.exportType_modal_button}`}
             onClick={exportDataHandler}
           >
             Export
-          </div>:
+          </div>
+          </>
+          :
           <div className="w-full pb-4 flex items-center justify-center gap-1">
              {/* <Badge variant="secondary" className="mx-auto">
             <Crown className="w-3 h-3 mr-1" />

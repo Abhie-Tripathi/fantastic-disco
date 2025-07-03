@@ -879,6 +879,11 @@ const Page = ({ params }: { params: any }) => {
             
             {view==="list" && <SortDropdown compact/>}
           {/* {view==="list" && <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>} */}
+          <BulkImport
+                bulkActions={["Bulk Action", "Export"]}
+                setShowCheckBox={setShowCheckBox}
+                setShowExport={setShowExport}
+              />
           </div>
           {view === "table" && (
             <div className="flex-grow overflow-hidden">
