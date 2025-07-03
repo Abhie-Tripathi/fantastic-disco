@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, X } from "lucide-react";
 import { isEventeli } from "@/config";
+import { InformationFill } from "geist-icons";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -267,17 +268,19 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
             </div>
           </div> */}
 
-          <div className={styles.exportType_modal_description}>
+          {/* <div className={styles.exportType_modal_description}>
             Exporting a large number of records will take some time to process.
             You can check the progress of your export in the exported files
             dialog.
-          </div>
+          </div> */}
           <div className="w-full pb-4 flex items-center justify-center gap-1">
              {/* <Badge variant="secondary" className="mx-auto">
             <Crown className="w-3 h-3 mr-1" />
             Advance Plan Feature
           </Badge> */}
-          <span className="text-xs" style={{color:"var(--primary-color)"}}>Available only in the Advance and Above plan</span>
+          <span className="text-xs flex items-center" style={{color:"var(--primary-color)"}}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--primary-color)" height="12px" />
+            Available only in the Advance &amp; above plan</span>
           <Button
             variant="outline"
             size="sm"
