@@ -18,9 +18,10 @@ const CustomTrackerNullState = () => {
 
       {isTreeMapView && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
-          <span className="font-bold">Mandatory categories* and location* - </span>
+          <span className="font-bold">Select mandatory fields - </span>
           <span className={`w-full text-center text-[#666666] text-sm`}>
-            Choose multiple categories and a location to view the spread.
+            Choose one or more categories along with a location to view
+            distribution insights.
           </span>
         </div>
       )}
@@ -33,13 +34,25 @@ const CustomTrackerNullState = () => {
         </div>
       )}
 
-      <div className={`w-full text-[#666666] text-sm text-center`}>
-        <span className="font-bold">Apply filters - </span>
-        <span className={`w-full text-center text-[#666666] text-sm`}>
-          Explore the basic filters to quickly refine your results by category,
-          date, and location.
-        </span>
-      </div>
+      {!isTrends && (
+        <div className={`w-full text-[#666666] text-sm text-center`}>
+          <span className="font-bold">Apply filters - </span>
+          <span className={`w-full text-center text-[#666666] text-sm`}>
+            Explore the basic filters to quickly refine your results by
+            category, date, and location.
+          </span>
+        </div>
+      )}
+
+      {isTrends && (
+        <div className={`w-full text-[#666666] text-sm text-center`}>
+          <span className="font-bold">Apply filters - </span>
+          <span className={`w-full text-center text-[#666666] text-sm`}>
+            Explore the other filters to quickly refine your results by date,
+            event type.
+          </span>
+        </div>
+      )}
       {!isTrends && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
           <span className="font-bold">Explore analytics - </span>
