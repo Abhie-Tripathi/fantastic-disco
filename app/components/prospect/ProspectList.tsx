@@ -383,10 +383,11 @@ export const ProspectList: React.FC = () => {
 const orgWebsites: string[] = [];
 
 Object.values(selectedData).forEach((names) => {
-  if (names.orgName) {
-    orgNames.push(names.orgName);
-  } else if (names.orgWebsite) {
+  if (names.orgWebsite) {
     orgWebsites.push(names.orgWebsite);
+  }
+  else if (names.orgName) {
+    orgNames.push(names.orgName);
   }
 });
 
