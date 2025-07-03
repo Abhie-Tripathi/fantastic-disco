@@ -385,7 +385,6 @@ export const useTrackerServices = () => {
 };
 
     const postExportReq = async(trackerId: string, eventType: string, redirectUrl: string) => {
-      console.log(`Posting export request for trackerId: ${trackerId}, eventType: ${eventType}, redirectUrl: ${redirectUrl}`);
       
       return api.request(`${endpoints.tracker.commonUrl}/${trackerId}/exports`, {
         method: "POST",
