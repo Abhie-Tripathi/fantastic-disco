@@ -94,36 +94,17 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
   toggleSelection,
 }) => {
   const { checkCompanyLogo } = useCompanyService();
-  const [compLogo, setCompLogo] = useState<string | null>(null);
   const isMobile = useIsMobile();
+  const [faviconError, setFaviconError] = useState(false);
 
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        if (companyDetail.logo !== null) {
-          setCompLogo(companyDetail.logo);
-          return;
-        }
-
-        if (companyDetail.website !== null) {
-          const hasLogo = await checkCompanyLogo(companyDetail.website);
-          if (hasLogo) {
-            setCompLogo(`https://logo.clearbit.com/${companyDetail.website}`);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching company logo:", error);
-        setCompLogo(null);
-      }
-    };
-
-    fetchLogo();
-  }, [
-    companyDetail.id,
-    companyDetail.logo,
-    companyDetail.website,
-    checkCompanyLogo,
-  ]);
+  // Compute logo URL
+  const compLogo = useMemo(() => {
+    if (companyDetail.logo) return companyDetail.logo;
+    if (companyDetail.website && !faviconError) {
+      return `https://logo.clearbit.com/${companyDetail.website}`;
+    }
+    return null;
+  }, [companyDetail.logo, companyDetail.website, faviconError]);
 
   const locationDisplay = useMemo(() => {
     const { cityName, countryName } = companyDetail.location || {};
@@ -180,16 +161,45 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
       <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
       <Link href={`/internal/company/${companyDetail.id}`} className="block">
         <div className="p-4 flex gap-6">
-          {compLogo && (
-            <Image
-              src={compLogo}
-              alt={`${companyDetail.name} logo`}
-              className="flex h-16 w-16 rounded-lg shadow-lg"
-              width={200}
-              height={200}
-              priority={false}
-            />
-          )}
+          {/* Logo with fallbacks (updated to match list.tsx) */}
+          <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+            {companyDetail.logo ? (
+              <img
+                src={companyDetail.logo}
+                alt={`${companyDetail.name} logo`}
+                className="w-16 h-16 object-contain rounded-lg shadow-lg bg-white border"
+                width={64}
+                height={64}
+              />
+            ) : companyDetail.website && !faviconError ? (
+              <div className="w-16 h-16 relative">
+                <img
+                  src={`https://logo.clearbit.com/${companyDetail.website}`}
+                  alt={`${companyDetail.name} website favicon`}
+                  className="w-16 h-16 object-contain p-2 border rounded-md bg-white shadow-sm"
+                  onError={(e) => {
+                    setFaviconError(true);
+                  }}
+                />
+                {/* Fallback that shows when image errors */}
+                {faviconError && (
+                  <div
+                    className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                  >
+                    <span className="text-[#5055A3] text-lg font-semibold">
+                      {companyDetail.name?.charAt(0) || "?"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                <span className="text-[#5055A3] text-lg font-semibold">
+                  {companyDetail.name?.charAt(0) || "?"}
+                </span>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2 flex-col">
             <div className="text-lg md:text-xl font-semibold">
               {companyDetail.name}
