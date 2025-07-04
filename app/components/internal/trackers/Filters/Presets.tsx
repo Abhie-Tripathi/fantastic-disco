@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import styles from "./filters.style.module.css";
@@ -16,14 +17,14 @@ import AudienceSpreadSelector from "@/components/search/advancedFilters/audience
 import { useFilterContext } from "@/context/filterContext";
 
 interface Props {
-  template: any;
-  handlePresetClick: any;
+  template?: any;
+  handlePresetClick?: any;
   setShowTemplate?:(val:boolean)=>void;
 }
 
 const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-  console.log(template.name);
+  console.log(template?.name);
   
   const {getLocalFilterValue, localFilters}=useFilterContext();
   const { presetData } = useTrackerServices();
@@ -188,7 +189,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
             />
           </div>
         </div>
-        {template.name === "T_COMPETITOR" &&
+        {template?.name === "T_COMPETITOR" &&
         <div className="hidden md:w-[20%] md:block">
         <AudienceSpreadSelector source="preset"/>
         </div>
