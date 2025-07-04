@@ -22,6 +22,7 @@ import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const signUpSchema = z.object({
   email: z
@@ -236,9 +237,40 @@ export default function TeliSignUpForm() {
         )}
         {!hasSubIndustries && (
           <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
-            Choose an Industry Relevant to You
+            Let us know who you are and help us personalise your experience !
           </p>
         )}
+
+        {/* Tablist for Industry Insights and Location Insights */}
+        <div className="flex w-full justify-center mb-4">
+          <div className="w-fit">
+            <Tabs defaultValue="industry" className="w-full">
+              <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
+                <Link
+                  href={`${process.env.NEXT_PUBLIC_GTM_FRONTEND_URL}/signup`}
+                >
+                  <TabsTrigger
+                    value="industry"
+                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
+                  >
+                    Industry Insights
+                  </TabsTrigger>
+                </Link>
+                <Link
+                  href={`${process.env.NEXT_PUBLIC_GEO_FRONTEND_URL}/signup`}
+                >
+                  <TabsTrigger
+                    value="location"
+                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
+                  >
+                    Location Insights
+                  </TabsTrigger>
+                </Link>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+
         <Controller
           name={hasSubIndustries ? "subIndustry" : "industry"}
           control={control}
