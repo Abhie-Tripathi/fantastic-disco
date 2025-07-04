@@ -6,11 +6,12 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
 
 export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null, trackerType?:string) => {
-  const {isTentimesUser} = useAuthContext();
+  const {isTentimesUser} = useFilterContext();
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
+  console.log("isTentimesUser", isTentimesUser);
   
   useEffect(() => {
     if (events?.length > 0 && !isEventeli) {
