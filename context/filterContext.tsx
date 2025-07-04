@@ -209,7 +209,6 @@ useEffect(() => {
   }, []);
 const showIntel=["af8d2900-5ab2-47dd-abea-e3046786b47b","aace9785-9427-4fdd-88c2-2340d30e909c", "a5ea32fb-0c4e-486a-8a2f-81fabc3a87ee", "adada08d-e49f-48d9-80bf-2454d2aa36b7"];
 const isTentimesUser = useMemo(() => {
-    console.log("user data", user);
     
     return showIntel.includes(user?.accountId);
   }, [user]);
