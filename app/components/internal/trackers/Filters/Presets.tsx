@@ -167,7 +167,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
   };
   return (
     <div className="w-full">
-      <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
+      {/* <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
         <div className="flex items-center gap-1">
         <span className="text-lg">Get Started with Pre-sets</span>
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">
@@ -175,7 +175,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
         </span>
         </div>
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
-      </div>
+      </div> */}
       
       <div className="flex gap-2 mt-4 mx-auto w-full md:w-[95%]">
         <div className="w-full md:w-1/2 bg-background">
