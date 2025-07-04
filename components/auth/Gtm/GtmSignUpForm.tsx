@@ -107,10 +107,7 @@ const GtmSignUpForm = () => {
   }, [redirectPath]);
 
   useEffect(() => {
-    const isMappedCategory = industryData.find(
-      (indust) => indust.slug === industry
-    )?.subCategory;
-    if (!isMappedCategory) {
+    if (industry !== "Others") {
       deleteFilter("categories");
     }
   }, [industry]);
@@ -155,9 +152,9 @@ const GtmSignUpForm = () => {
     }
   }, [user, isAuthenticating]);
 
-  const isCategoryMapped = industryData.find(
+  const isOthersIndustry = industryData.find(
     (industryItem) => industryItem.slug === industry
-  )?.subCategory;
+  )?.slug === "Others";
 
   const obj = {
     email: email,
@@ -313,7 +310,7 @@ const GtmSignUpForm = () => {
             {errors.industry.message}
           </p>
         )}
-        {isCategoryMapped && (
+        {isOthersIndustry && (
           <Controller
             name={"industry"}
             control={control}
