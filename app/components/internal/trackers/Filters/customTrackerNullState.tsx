@@ -18,7 +18,7 @@ const CustomTrackerNullState = () => {
 
       {isTreeMapView && (
         <div className={`w-full text-[#666666] text-sm text-center`}>
-          <span className="font-bold">Select mandatory fields - </span>
+          <span className="font-bold">Mandatory fields - </span>
           <span className={`w-full text-center text-[#666666] text-sm`}>
             Choose one or more categories along with a location to view
             distribution insights.
