@@ -76,7 +76,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
         <TableHeader className="p-2">
           <TableRow>
             <TableHead>Requested</TableHead>
-            <TableHead>What Export</TableHead>
+            <TableHead>Data</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>

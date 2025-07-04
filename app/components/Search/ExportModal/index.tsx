@@ -60,6 +60,7 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
   const { theme } = useTheme();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [isFetched, setIsFetched] = useState<boolean>(false);
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const {membershipData, isTentimesUser} = useAuthContext();
@@ -71,11 +72,11 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
     // setRefreshState(true);
 
     const data = await getExportData(`${pathName[pathName.length - 2]}`);
-    console.log("exportData", data);
+    // console.log("exportData", data);
 
     setExportList(data?.trackerExports || []);
   } catch (error) {
-    console.error("Error fetching export data:", error);
+    // console.error("Error fetching export data:", error);
   } finally {
     setIsLoading(false);
     // setRefreshState(false);
@@ -93,12 +94,12 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
     // setRefreshState(true);
     const fullUrl = window.location.href
     const data = await postExportReq(pathName[pathName.length-2], active || "", fullUrl) as { message: string };
-    console.log("exportData", data);
+    setIsFetched(true);
     toast({ title: "Success", description: data?.message })
     await fetchData();
   } catch (error : any) {
     toast({ title: "Error", description: error?.message })
-    console.error("Error fetching export data:", error);
+    // console.error("Error fetching export data:", error);
   } finally {
     setIsLoading(false);
     // setRefreshState(false);
@@ -185,9 +186,9 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
               onClick={() => onClose()}
               className={styles.closeIcon}
             /> */}
-            <Button variant="outline" className="px-3 py-2  absolute right-5">
+            <Button onClick={() => onClose()} variant="outline" className="px-3 py-2  absolute right-5">
             {/* <div className="absolute right-5"> */}
-            <X onClick={() => onClose()} className={`${styles.closeIcon}`} width={16}/>
+            <X className={`${styles.closeIcon}`} width={16}/>
               {/* </div> */}
             </Button>
           </div>
@@ -203,12 +204,14 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
               </div>
           </div>
           <ExportList  data={exportList} isLoading={isLoading}/>
-          <div
-            className={`${styles.exportType_modal_button}`}
+          <Button 
+            variant="outline"
+            disabled={isFetched}
+            className={`mx-5 mb-5 bg-[var(--primary-color)] text-white hover:text-white hover:bg-[var(--primary-color)]`}
             onClick={exportDataHandler}
           >
             Export
-          </div>
+          </Button>
           </>
           :
           <div className="w-full pb-4 flex items-center justify-center gap-1">
