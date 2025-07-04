@@ -202,7 +202,7 @@ export default function TeliSignUpForm() {
             name="email"
             control={control}
             render={({ field }) => (
-              <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center border-b pb-6">
+              <div className="space-y-2 w-full max-w-96 self-center border-b pb-6">
                 <Input
                   className="rounded-sm bg-white ring-1
                   ring-primary outline outline-[#D2D2F3] outline-offset-2
