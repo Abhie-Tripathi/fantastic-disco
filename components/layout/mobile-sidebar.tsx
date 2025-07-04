@@ -128,11 +128,12 @@ const MobileSidebar = () => {
         )}
         {membershipData && membershipData.membership === MembershipPlan.Freemium && (
           <Button
-            variant="link"      
-            onClick={handleUpgradeClick}
-          >
-            <span className="font-semibold text-xs text-primary">Upgrade</span>
-          </Button>
+          variant="outline"
+          size="sm"
+          onClick={handleUpgradeClick}
+        >
+          <span className="hidden sm:inline">Upgrade</span>
+        </Button>
         )}
       </div>
       <nav className="flex-1">
