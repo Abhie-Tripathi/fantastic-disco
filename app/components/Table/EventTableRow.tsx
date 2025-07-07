@@ -614,7 +614,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               <Tooltip>
                 <TooltipTrigger>
                   <span className="flex items-center justify-center gap-1">
-                    {event.basic.matchedKeywords?.[0].split("_").join(" ")}
+                    {event.basic.matchedKeywords?.[0]}
                     {event.basic.matchedKeywords?.length > 1 && (
                       <span className="text-xs font-bold text-muted-foreground">
                         +{event.basic.matchedKeywords?.length - 1}
