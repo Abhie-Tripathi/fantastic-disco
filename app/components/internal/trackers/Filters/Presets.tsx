@@ -14,18 +14,19 @@ import { PresetData } from '@/types/trackers';
 import CategorySelector from "@/components/search/categorySelector";
 import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
+import { useRouter } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 
 interface Props {
+  isPublic?: boolean;
   template?: any;
   handlePresetClick?: any;
   setShowTemplate?:(val:boolean)=>void;
 }
 
-const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
   console.log(template?.name);
-  
   const {getLocalFilterValue, localFilters}=useFilterContext();
   const { presetData } = useTrackerServices();
   const [inputValue, setInputValue] = useState<string>("");
@@ -43,6 +44,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
   const loadingRef = useRef<HTMLDivElement>(null);
   const [totalCount,setTotalCount]=useState(0);
   const debounceTimer = useRef<NodeJS.Timeout>();
+  const router = useRouter();
   const sortOptions = [
     { value: "eventCount", label: "Event Count" },
     // { value: "newEventCount", label: "New Event Count" },
@@ -165,6 +167,14 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
     }
     return count;
   };
+  
+const handlePresetClicked = (item, id, trackerType, name) => {
+  if (!isPublic) {
+    handlePresetClick(item, id, trackerType, name);
+  } else {
+    router.push(`/usercollection/${id}/events?trackerType=${trackerType}&name=${name}`);
+  }
+};
   return (
     <div className="w-full">
       {/* <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
@@ -220,7 +230,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
               //     ? () => handlePresetClick(item, item.id, item.url, item.trackerName)
               //     : undefined
               // }
-              onClick={() => handlePresetClick(item, item.id, item.trackerType[0], item.name)}
+              onClick={() => handlePresetClicked(item, item.id, item.trackerType[0], item.name)}
               style={{cursor: "pointer"}}
             >
               <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">

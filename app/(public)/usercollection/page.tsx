@@ -5,7 +5,7 @@ const UserCollectionPage = () => {
   return (
 	<div>
 	  {/* <h1>User Collection</h1> */}
-	  <Presets/>
+	  <Presets isPublic = {true}/>
 	</div>
   );
 };
