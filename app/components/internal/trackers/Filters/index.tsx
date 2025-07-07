@@ -955,11 +955,6 @@ const stepsConfig =[
         }
       }catch(error){
         // console.log(error);
-        toast({
-          title: "Error",
-          description: error?.message,
-          variant: "destructive",
-        });
         setIsCreating(false);
       }
     } else {
