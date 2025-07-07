@@ -195,13 +195,23 @@ type FilterContextType = {
   isTentimesUser: boolean;
   filterEmptyValues: (filters: Filters) => Filters;
 };
-const isTentimesUser = false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+useEffect(() => {
+      const userData = window?.localStorage?.getItem("user");
+      if (userData)
+      setUser(JSON.parse(userData))
+  }, []);
+const showIntel=["af8d2900-5ab2-47dd-abea-e3046786b47b","aace9785-9427-4fdd-88c2-2340d30e909c", "a5ea32fb-0c4e-486a-8a2f-81fabc3a87ee", "adada08d-e49f-48d9-80bf-2454d2aa36b7", "790bd639-0cfc-49b8-bad4-6a3a3185b8f4"];
+const isTentimesUser = useMemo(() => {
+    
+    return showIntel.includes(user?.accountId);
+  }, [user]);
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
