@@ -24,6 +24,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isEventeli } from "@/config";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 const signUpSchema = z.object({
   email: z
@@ -156,6 +158,10 @@ export default function TeliSignUpForm() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
+      <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
       {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center mb-5">
@@ -163,7 +169,7 @@ export default function TeliSignUpForm() {
           </p>
           {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+              <div className="flex gap-4 w-full sm:w-[312px] mx-auto justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
@@ -205,7 +211,7 @@ export default function TeliSignUpForm() {
             name="email"
             control={control}
             render={({ field }) => (
-              <div className="space-y-2 w-full max-w-96 self-center border-b pb-6">
+              <div className="space-y-2 w-full max-w-[312px] self-center border-b">
                 <Input
                   className="rounded-sm bg-white ring-1
                   ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -240,7 +246,7 @@ export default function TeliSignUpForm() {
         )}
         {!hasSubIndustries && (
           <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
-            Let us know who you are and help us personalise your experience !
+            Select the primary focus of your business.
           </p>
         )}
 
@@ -297,11 +303,9 @@ export default function TeliSignUpForm() {
           )}
         />
 
-        <hr className="w-full sm:w-96 mt-6 self-center" />
-
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full max-w-[312px] self-center"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -331,7 +335,7 @@ export default function TeliSignUpForm() {
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <div className="text-center text-[#808080] text-[12px]">
+            <div className="text-center text-[#808080] text-[12px] mt-[-16px]">
               By signing up, you agree to our
               <Link
                 target="_blank"

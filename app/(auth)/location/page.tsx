@@ -32,6 +32,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./locationForm.module.css";
 import AddIcon from "/public/plus_radius.svg";
 import RemoveIcon from "/public/remove.svg";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -453,6 +455,11 @@ const LocationForm = () => {
   }
 
   return (
+    <div>
+      <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
     <div className={styles.container}>
       <h3>Choose a location to get started !</h3>
       <section className="w-96">
@@ -493,7 +500,7 @@ const LocationForm = () => {
           <div className="mt-4">
             <label className={styles.radius_label}>Radius</label>
             <div className="flex items-center justify-between gap-5">
-              <div className="flex items-center border rounded-md border-[#e0e1e4]">
+              <div className="flex items-center border rounded-md bg-background">
                 <button
                   onClick={() => setRadius(radius - 1)}
                   className="flex w-10 h-10 items-center justify-center"
@@ -507,13 +514,13 @@ const LocationForm = () => {
                 />
                 <button
                   onClick={() => setRadius(radius + 1)}
-                  className="flex w-10 h-10 items-center justify-center"
+                  className="flex w-10 h-10 items-center justify-center  "
                 >
                   <Image src={AddIcon} alt="add icon" />
                 </button>
               </div>
               <Select value={radiusUnit} onValueChange={setRadiusUnit}>
-                <SelectTrigger className="w-[180px] h-10">
+                <SelectTrigger className="w-[180px] h-10 bg-background">
                   <SelectValue
                     placeholder={
                       radiusUnit &&
@@ -556,6 +563,7 @@ const LocationForm = () => {
       <p className={styles.skip_button} onClick={handleSkip}>
         Skip for now
       </p>
+    </div>
     </div>
   );
 };

@@ -214,7 +214,7 @@ export default function NewVerificationForm() {
                             <InputOTPSlot
                               key={index}
                               index={index}
-                              className="w-8 sm:w-10 h-8 sm:h-10 text-sm sm:text-xl"
+                              className="w-8 sm:w-10 h-8 sm:h-10 text-sm sm:text-xl bg-background"
                             />
                           </InputOTPGroup>
                         ))}

@@ -32,10 +32,10 @@ const CategoryCards = ({
 }) => {
   return (
     <div className="flex flex-col items-center self-center max-w-4xl">
-      <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold my-6">
+      <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold mb-6">
         Choose a relevant Sub Industry
       </p>
-      <ol className="flex flex-row flex-wrap gap-2 w-full self-center justify-center mb-4">
+      <ol className="flex flex-row flex-wrap gap-2 w-full self-center justify-center">
         {(newCategories as Category[]).map((category) => (
           <li
             key={category.id}

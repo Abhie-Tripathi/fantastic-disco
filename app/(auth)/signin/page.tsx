@@ -20,6 +20,8 @@ import LinkedinIcon from "/public/linkedin.svg";
 import { signIn, useSession } from "next-auth/react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isEventeli } from "@/config";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
@@ -75,42 +77,21 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+    <div>
 
-    {/* Tablist for Industry Insights and Location Insights */}
-    <div className="flex w-full justify-center mb-4">
-          <div className="w-fit">
-            <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
-              <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
-                <Link
-                  href={`${process.env.NEXT_PUBLIC_GTM_FRONTEND_URL}/signup`}
-                >
-                  <TabsTrigger
-                    value="industry"
-                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
-                  >
-                    Industry Insights
-                  </TabsTrigger>
-                </Link>
-                <Link
-                  href={`${process.env.NEXT_PUBLIC_GEO_FRONTEND_URL}/signup`}
-                >
-                  <TabsTrigger
-                    value="location"
-                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
-                  >
-                    Location Insights
-                  </TabsTrigger>
-                </Link>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
+<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
+
+
+
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
 
       <p className="font-semibold  md:text-lg leading-6 text-center mb-3">
         Login to your account
       </p>
-      <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+      <div className="flex gap-4 w-full sm:w-[312px] mx-auto justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
@@ -137,7 +118,7 @@ export default function SignInForm() {
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-full max-w-96 self-center">
+            <div className="space-y-2 w-full max-w-[312px] self-center">
               <Input
                 className="rounded-sm bg-white ring-1
                ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -168,7 +149,7 @@ export default function SignInForm() {
         />
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full max-w-[312px] self-center"
           disabled={isLoading}
           onClick={() => clearErrors()}
         >
@@ -194,5 +175,7 @@ export default function SignInForm() {
         </Link>
       </div>
     </div>
+    </div>
+
   );
 }
