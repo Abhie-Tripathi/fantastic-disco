@@ -74,12 +74,12 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
           Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        <Badge
+        {/* <Badge
           variant={"outline"}
           className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
         >
           Demo
-        </Badge>
+        </Badge> */}
       </div>
      <>
   {isLoading ? (
@@ -107,8 +107,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.people_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.people_score ? intelData.people_score : "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
@@ -121,8 +121,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         </div>
 
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.purpose_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.purpose_score ? intelData?.purpose_score: "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
@@ -135,8 +135,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         </div>
 
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.prospect_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.prospect_score? intelData?.prospect_score : "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
