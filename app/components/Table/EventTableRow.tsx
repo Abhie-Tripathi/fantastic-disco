@@ -148,6 +148,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   trackerMaturity
 }) => {
   const {isTentimesUser} = useFilterContext();
+  
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
