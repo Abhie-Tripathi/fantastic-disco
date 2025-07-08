@@ -1036,8 +1036,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               >
                 {event.basic.matchedKeywords && event.basic.matchedKeywords.length > 0 ? (
                   expandedRows[event.basic.id] ? (
-                    // Show all keywords, comma-separated
-                    [...(event.basic.matchedKeywords ?? []), "technology", "doctor"]
+                    event.basic.matchedKeywords
                       .map((kw) => kw.split("_").join(" "))
                       .join(", ")
                   ) : (
