@@ -169,12 +169,13 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false}
     return count;
   };
   
-const handlePresetClicked = (item, id, trackerType, name) => {
+const handlePresetClicked = (item:PresetData, id:string, trackerType:string, name:string) => {
   if (!isPublic) {
     handlePresetClick(item, id, trackerType, name);
   }
 };
-const redirectUrl=(item, id, trackerType, name, index)=>{
+const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
+
  return encodeURIComponent(`/preset?presetId=${id}0&limit=1&offset=${index}&type=${trackerType}`);
 }
   return (
@@ -189,8 +190,8 @@ const redirectUrl=(item, id, trackerType, name, index)=>{
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
       </div> */}
       
-      <div className="flex gap-2 mt-4 mx-auto w-full md:w-[95%]">
-        <div className="w-full md:w-1/2 bg-background">
+      <div className="mt-4 mx-auto w-full md:w-[95%] grid justify-center gap-4 [grid-template-columns:repeat(auto-fill,_280px)]">
+        <div className="w-full bg-background">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
@@ -202,7 +203,7 @@ const redirectUrl=(item, id, trackerType, name, index)=>{
           </div>
         </div>
         {template?.name === "T_COMPETITOR" &&
-        <div className="hidden md:w-[20%] md:block">
+        <div className="hidden md:w-[100%] md:block">
         <AudienceSpreadSelector source="preset"/>
         </div>
         }
@@ -219,8 +220,15 @@ const redirectUrl=(item, id, trackerType, name, index)=>{
       </div>
 
       <div
-      className="h-[calc(100vh-313px)] pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-6"
+      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-6`}
       ref={containerRef}
+       style={{
+    height: isPublic
+      ? "100%"
+      : "calc(100vh - 313px)", // Default for mobile
+
+    // Override on medium screens and up (optional - can't do media queries in inline styles, so use JS breakpoint logic if needed)
+  }}
           >
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (

@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerServices } from "@/services/trackerServices";
 import { isEventeli } from "@/config";
 import Loading from "@/components/ui/Loading";
-
+import { PresetData } from '@/types/trackers';
 const Preset = () => {
   const searchParams = useSearchParams();
   const trackerType = searchParams.get("type");
@@ -19,7 +19,7 @@ const Preset = () => {
     console.log("params", searchParams.toString);
   const { presetData, createTracker } = useTrackerServices();
   const [isLoading, setIsLoading] = useState(false);
-  const [presetTemplateData, setPresetTemplateData] = useState();
+  const [presetTemplateData, setPresetTemplateData] = useState<PresetData>();
 
   const fetchPresetJson = useCallback(async () => {
     if (isLoading) return;
@@ -35,7 +35,7 @@ const Preset = () => {
 
       const result = await presetData(data);
       if (result) {
-        setPresetTemplateData(result?.trackers);
+        setPresetTemplateData(result?.trackers[0]);
         createTrackerHandler(result?.trackers[0]);
       }
     } catch (error) {
@@ -50,30 +50,61 @@ const Preset = () => {
   const redirectUrl = encodeURIComponent(
     `presetId=${presetId}&limit=${limit}&offset=${offset}&type=${trackerType}`
   );
-  const createTrackerHandler=async (presetData)=>{
-      const formData = {
-      name: presetData?.name,
-      // ...(type && type.length > 0 && {
-        type: trackerType,
-      // }),
-      // accessLevel: editData?.tracker?.accessLevel,
-      filterValues:{
-        includeKeywords: presetData?.data?.includeKeywords?.join(','),
-        excludeKeywords: presetData?.data?.excludeKeywords?.join(','),
-        userName: presetData?.data?.userName?.join(','),
-        userOrgWebsite: presetData?.data?.userOrgWebsite?.join(','),
-      }
-    };
-    console.log("formData", formData);
-    try{
-    const result = await createTracker(formData)
-    if(result){
-        router.replace(`/internal/trackers/${result?.id}/trackedEvents?type=${trackerType}&eventType=${isEventeli?"social":"active"}&view=table`);
-      }
-    }catch(error){
+  const createTrackerHandler = async (presetData: PresetData) => {
+  const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  const orgName: string[] = [];
+  const orgWebsite: string[] = [];
 
+  presetData?.data?.organizations?.forEach((item:string) => {
+    const value = item?.trim();
+    if (!value) return;
+
+    if (regex.test(value)) {
+      orgWebsite.push(value);
+    } else {
+      orgName.push(value);
     }
+  });
+
+  const formData = {
+    name: presetData?.name,
+    type: trackerType ?? undefined,
+    source: "preset",
+    filterValues: {
+      ...(presetData?.data?.includeKeywords?.length > 0 && {
+        includeKeywords: presetData.data.includeKeywords.join(","),
+      }),
+      ...(presetData?.data?.excludeKeywords?.length > 0 && {
+        excludeKeywords: presetData.data.excludeKeywords.join(","),
+      }),
+      ...(presetData?.data?.userName?.length > 0 && {
+        userName: presetData.data.userName.join(","),
+      }),
+      ...(presetData?.data?.userOrgWebsite?.length > 0 && {
+        userOrgWebsite: presetData.data.userOrgWebsite.join(","),
+      }),
+      ...(orgWebsite.length > 0 && {
+        orgWebsite: orgWebsite.join(","),
+      }),
+      ...(orgName.length > 0 && {
+        orgName: orgName.join(","),
+      }),
+    },
+  };
+
+  console.log("formData", formData);
+
+  // Optional: uncomment when needed
+  try {
+    const result = await createTracker(formData)as {id: string};
+    if (result) {
+      router.replace(`/internal/trackers/${result?.id}/trackedEvents?type=${trackerType}&eventType=${isEventeli ? "social" : "active"}&view=table`);
+    }
+  } catch (error) {
+    console.error("Tracker creation failed", error);
   }
+};
+
   console.log("presetData", presetTemplateData);
   
   return (

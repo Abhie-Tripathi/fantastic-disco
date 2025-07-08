@@ -191,7 +191,9 @@ export default function Navbar() {
 //       `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
 //     );
 //   };
-
+const signUpHandler=()=>{
+  router.push("/signup")
+}
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -250,7 +252,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button className="bg-primary px-[15px] py-[8px] rounded-[10px] text-white cursor-pointer">
+          <Button className="bg-primary px-[15px] py-[8px] rounded-[10px] text-white cursor-pointer" onClick={()=>signUpHandler()}>
             Sign Up
           </Button>
 
