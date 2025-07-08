@@ -25,6 +25,7 @@ import LinkedinIcon from "/public/linkedin.svg";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -167,6 +168,7 @@ const GtmSignUpForm = () => {
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
     setIndustry(industry);
+    clearErrors("industry");
     GAEvent(
       "Onboarding",
       "Onboarding",
@@ -298,7 +300,7 @@ const GtmSignUpForm = () => {
         {/* Tablist for Industry Insights and Location Insights */}
         <div className="flex w-full justify-center mb-4">
           <div className="w-fit">
-            <Tabs defaultValue="location" className="w-full">
+            <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
               <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
                 <Link
                   href={`${process.env.NEXT_PUBLIC_GTM_FRONTEND_URL}/signup`}

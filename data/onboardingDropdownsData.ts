@@ -117,12 +117,12 @@ export const industryData: TeliIndustry[] = [
     image: Media_and_Marketing,
     type: "city",
   },
-  {
-    name: "Infra and Technology",
-    slug: "Infra_Technology",
-    image: InfraAndTechnology,
-    type: "city",
-  },
+  // {
+  //   name: "Infra and Technology",
+  //   slug: "Infra_Technology",
+  //   image: InfraAndTechnology,
+  //   type: "city",
+  // },
   // {
   //   name: "Corporate and Brands",
   //   slug: "Corporate_Brands",
