@@ -16,6 +16,7 @@ import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import { useRouter } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
+import Link from "next/link";
 
 interface Props {
   isPublic?: boolean;
@@ -171,10 +172,11 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false}
 const handlePresetClicked = (item, id, trackerType, name) => {
   if (!isPublic) {
     handlePresetClick(item, id, trackerType, name);
-  } else {
-    router.push(`/usercollection/${id}/events?trackerType=${trackerType}&name=${name}`);
   }
 };
+const redirectUrl=(item, id, trackerType, name, index)=>{
+ return encodeURIComponent(`/preset?presetId=${id}0&limit=1&offset=${index}&type=${trackerType}`);
+}
   return (
     <div className="w-full">
       {/* <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
@@ -222,6 +224,8 @@ const handlePresetClicked = (item, id, trackerType, name) => {
           >
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (
+            <Link 
+                  href={`/signup?redirect=${redirectUrl(item, item.id, item.trackerType[0], item.name, index)}`}>
             <div
               key={`${item.id}-${index}`}
               className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
@@ -264,6 +268,7 @@ const handlePresetClicked = (item, id, trackerType, name) => {
                 <div className={styles.text}>{item?.description}</div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
         {/* Loading indicator that triggers infinite scroll */}
