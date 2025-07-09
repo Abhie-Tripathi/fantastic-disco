@@ -14,18 +14,28 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
   
   useEffect(() => {
     if (events?.length > 0 && !isEventeli) {
-      const fetchIntelData = async () => {
-        try {
-          setLoading(true);
-          const eventIds = events.map((event) => event.basic.id).join(",");
-          const response = await getIntelData(trackerId || "", eventIds, eventType||"");
-          setIntelScoreData(response);
-        } catch (err) {
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-      };
+    const fetchIntelData = async () => {
+    try {
+      setLoading(true);
+      let validEvents;
+      if(trackerType==="T_PRODUCT_KEYWORDS"){
+      validEvents = events.filter(
+        (event) => event.basic.matchedKeywords?.length !== 1
+      );
+    }else{
+      validEvents = events;
+    }
+      const eventIds = validEvents.map((event) => event.basic.id).join(",");
+      if (!eventIds) return;
+
+      const response = await getIntelData(trackerId || "", eventIds, eventType || "");
+      setIntelScoreData(response);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
       if(isTentimesUser && trackerId && trackerId.length > 0 && trackerType!=="T_EVENT_PARTICIPATION")
       fetchIntelData();
     }
