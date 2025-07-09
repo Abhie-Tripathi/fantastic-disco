@@ -80,6 +80,7 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         >
           Demo
         </Badge> */}
+        <VideoModal source="intelScore" />
       </div>
      <>
   {isLoading ? (
