@@ -73,6 +73,7 @@ export async function GET(
         plan: Number(plan),
         startDate: formattedStartDate,
         endDate: formattedEndDate,
+        planRenewalDate: formattedEndDate,
         subscriptionId: subscriptionId,
         planFrequency:
           frequency === "monthly"
@@ -106,6 +107,7 @@ interface updatePlanType {
   plan: number;
   startDate: string;
   endDate: string;
+  planRenewalDate: string;
   subscriptionId: string;
   planFrequency: string;
   planPurchaseValue: number;
