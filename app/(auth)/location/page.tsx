@@ -456,21 +456,20 @@ const LocationForm = () => {
 
   return (
     <div>
-      <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>
     <div className={styles.container}>
       <h3>Choose a location to get started !</h3>
-      <section className="w-96">
+      <section className="w-96 space-y-5">
         <div className={styles.tab_container}>
           <button className={locationType == "city" ? styles.active : ""}>
             {locationType === "city"
               ? "City, State, Country"
-              : " Centre Point & Radius"}
+              : " Center Point & Radius"}
           </button>
         </div>
-        <div className={styles.line}></div>
         <AutocompleteInput
           type={locationType === "city" ? "LocationId" : "GeoCoordinate"}
           multiple={locationType === "city"}
@@ -541,7 +540,7 @@ const LocationForm = () => {
 
         {locationType === "city" && (
           <p
-            className="mt-4 flex items-center gap-2 cursor-pointer text-[#6750a4]"
+            className="mt-4 flex items-center gap-2 cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             <Plus className="w-4 h-4" /> Add Multiple Location

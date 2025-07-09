@@ -157,8 +157,8 @@ export default function TeliSignUpForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4">
-      <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
+    <div className="flex flex-col justify-center items-center w-full space-y-2">
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>
@@ -195,7 +195,7 @@ export default function TeliSignUpForm() {
                   <span>LinkedIn</span>
                 </Button>
               </div>
-              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
+              <p className="text-xs mt-2 text-[var(--tertiary-text-color)]">
                 OR
               </p>
             </>
@@ -204,14 +204,14 @@ export default function TeliSignUpForm() {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full"
+        className="flex flex-col space-y-3 w-full"
       >
         {signUpFlow === "default" && (
           <Controller
             name="email"
             control={control}
             render={({ field }) => (
-              <div className="space-y-2 w-full max-w-[312px] self-center border-b">
+              <div className="space-y-2 w-full max-w-[312px] self-center">
                 <Input
                   className="rounded-sm bg-white ring-1
                   ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -245,7 +245,7 @@ export default function TeliSignUpForm() {
           />
         )}
         {!hasSubIndustries && (
-          <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
+          <p className="text-[var(--secondary-text-color)] text-center font-semibold">
             Select the primary focus of your business.
           </p>
         )}
@@ -323,7 +323,7 @@ export default function TeliSignUpForm() {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center py-2 text-sm">
+          <div className="text-center pb-3 text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}

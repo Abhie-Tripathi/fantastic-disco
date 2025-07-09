@@ -11,10 +11,7 @@ import "./../globals.css";
 import perspectiveGridTop from "/public/perspective-grid-top.svg";
 import perspectiveGridBottom from "/public/perspective-grid-bottom.svg";
 import waveRight from "/public/wave-right.svg";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
-import Outreach_Onboarding_Icon from "/public/outreach-onboarding.svg";
-import onboardingImage from "/public/onboarding_bg.svg";
+import BackgroundWrapper from "@/components/background-wrapper";
 
 export const metadata: Metadata = {
   title: "Whr.ai",
@@ -33,33 +30,34 @@ export default async function RootLayout({
       <ReactQueryProvider>
         <AuthContextProvider>
           <div
-            className={`relative md:p-8 p-2  bg-[#FAFAFF] min-h-screen flex items-center justify-center`}
+            className={`relative md:p-8  bg-[#FAFAFF] min-h-screen flex items-center justify-center`}
           >
             <Image
-              className="absolute bottom-0 w-full"
+              className="md:block hidden absolute bottom-0 w-full"
               src={perspectiveGridBottom}
               alt="Icon"
             />
 
             <Image
-              className="absolute top-0 w-full"
+              className="md:block hidden absolute top-0 w-full"
               src={perspectiveGridTop}
               alt="Icon"
             />
 
             <main className="flex justify-center w-full relative z-10">
-              <Image src={waveRight} alt="wave-left" className="absolute z-0 left-0 top-1/2 -translate-y-1/2 rotate-180" />
-              <div className="border border-[#E6E6E6] bg-[#FAFAFF] z-10 shadow-md rounded-[30px] w-full max-w-5xl p-4 h-full md:min-h-[680px] flex justify-center items-center">
-                <Image
-                  src={onboardingImage}
-                  alt="onboarding"
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-auto max-w-2xl"
-                />
-                <div className="relative z-10">
-                  <Providers session={session}>{children}</Providers>
-                </div>
-              </div>
-                <Image src={waveRight} alt="wave-right" className="absolute z-0  right-0 top-1/2 -translate-y-1/2"/>
+              <Image
+                src={waveRight}
+                alt="wave-left"
+                className="md:block hidden absolute z-0 left-0 top-1/2 -translate-y-1/2 rotate-180"
+              />
+              <BackgroundWrapper>
+                <Providers session={session}>{children}</Providers>
+              </BackgroundWrapper>
+              <Image
+                src={waveRight}
+                alt="wave-right"
+                className="md:block hidden absolute z-0  right-0 top-1/2 -translate-y-1/2"
+              />
             </main>
           </div>
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />

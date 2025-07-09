@@ -1,6 +1,6 @@
 import { newCategories } from "@/data/categories";
 import { Category } from "@/types/onboarding";
-import { CircleCheck } from "lucide-react";
+import { CheckIcon } from "@radix-ui/react-icons"
 
 const Card = ({
   category,
@@ -17,7 +17,7 @@ const Card = ({
         activeCategories.includes(id) ? "border border-primary gap-2" : "border"
       } bg-white rounded-lg cursor-pointer py-2 px-6 `}
     >
-      {isActive && <CircleCheck color="#6750a4" className="w-4 h-4" />}
+      {isActive && <CheckIcon className="w-4 h-4 bg-primary text-white rounded-full" />}
       <p className="text-xs">{name}</p>
     </div>
   );
@@ -32,7 +32,7 @@ const CategoryCards = ({
 }) => {
   return (
     <div className="flex flex-col items-center self-center max-w-4xl">
-      <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold mb-6">
+      <p className="text-[var(--secondary-text-color)] text-center font-semibold mb-6">
         Choose a relevant Sub Industry
       </p>
       <ol className="flex flex-row flex-wrap gap-2 w-full self-center justify-center">

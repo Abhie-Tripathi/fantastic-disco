@@ -86,7 +86,7 @@ export default function SignInForm() {
 
 
 
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[72dvh]">
 
       <p className="font-semibold  md:text-lg leading-6 text-center mb-3">
         Login to your account
@@ -109,7 +109,7 @@ export default function SignInForm() {
           <span>LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
+      <p className="text-xs text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
@@ -163,17 +163,19 @@ export default function SignInForm() {
           )}
         </Button>
       </form>
-      <div className="text-center">
-        <Link
+      <div className="text-center text-sm">
+      Don&apos;t have an account? 
+            <Link
           href="/signup"
           className="text-primary hover:underline"
           onClick={() =>
             GAEvent("Onboarding", "Onboarding", "Sign In", "Sign Up")
           }
         >
-          Don&apos;t have an account? Sign up
-        </Link>
-      </div>
+              {" "}
+              Sign up
+            </Link>
+          </div>
     </div>
     </div>
 
