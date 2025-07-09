@@ -1052,7 +1052,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                       textAlign: "center",
                       background: "var(--heading-background-color)",
                     }}>
-                    <span className={getAssociationColor("medium")}>
+                    <span className="text-[var(--secondary-text-color)]">
                       Matched
                     </span></TableCell>:
                     <TableCell
