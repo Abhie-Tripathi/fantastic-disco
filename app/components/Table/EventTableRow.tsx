@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { useState } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
 import {
@@ -190,14 +189,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
   const isCancelled = event.basic.status === "cancelled";
   const isPostponed = event.basic.status === "postponed";
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
-
-  const toggleRow = (eventId: string) => {
-    setExpandedRows((prev) => ({
-      ...prev,
-      [eventId]: !prev[eventId],
-    }));
-  };
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -763,7 +754,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="p-0 sticky right-[200px] bg-background z-0"
+                className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -771,85 +762,83 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                {(() => {
-                  const associations =
-                    getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation") || [];
-
-                  const isExpanded = expandedRows[event.basic.id];
-
-                  return (
-                    <span
-                      onClick={() => toggleRow(event.basic.id)}
-                      className="cursor-pointer whitespace-normal break-words"
-                    >
-                      {associations.length === 0 ? (
-                        "-"
-                      ) : isExpanded ? (
-                        associations
-                          .map((item: string) => {
-                            const [score, name, company] = item.split("_");
-                            return `${name} (${score}) : ${company}`;
-                          })
-                          .join(", ")
-                      ) : (
-                        <>
-                          {associations[0]?.split("_")[0]}
-                          {associations.length > 1 && (
-                            <span className="text-xs font-bold text-muted-foreground ml-1">
-                              +{associations.length - 1}
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </span>
-                  );
-                })()}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )[0]?.split("_")?.[0]
+                      }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )?.length-1}`}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "peopleFinderPersonAssociation"
+                      )[0]
+                        ?.split("_")
+                        ?.join(" ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
-
-              {isTentimesUser ? (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
-                >
-                  {intelLoading ? (
-                    <Skeleton className="h-16 w-full rounded-md" />
-                  ) : intelScoreData[0]?.value > 0 ? (
-                    <IntelScore width="100%" height="70px" intelScore={intelScoreData} />
-                  ) : (
-                    "-"
+              {isTentimesUser ?
+              <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:
+               <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
                   )}
-                </TableCell>
-              ) : (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
                 >
-                  <span
-                    className={getAssociationColor(
-                      getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")?.[0]
-                    )}
-                  >
-                    {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")?.[0] ?? "-"}
-                  </span>
-                </TableCell>
-              )}
+                  {
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
+                  }
+                </span>
+              </TableCell>
+              }
             </>
           )}
-
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="p-0 sticky right-[200px] bg-background z-0"
+                className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -857,265 +846,237 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   background: "var(--heading-background-color)",
                 }}
               >
-                {(() => {
-                  const associations =
-                    getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociation") || [];
-
-                  const isExpanded = expandedRows[event.basic.id];
-
-                  return (
-                    <span
-                      onClick={() => toggleRow(event.basic.id)}
-                      className="cursor-pointer whitespace-normal break-words"
-                    >
-                      {associations.length === 0 ? (
-                        "-"
-                      ) : isExpanded ? (
-                        associations
-                          .map((item: string) => {
-                            const [score, name] = item.split("_");
-                            return `${name.toLowerCase()} (${score})`;
-                          })
-                          .join(", ")
-                      ) : (
-                        <>
-                          {associations[0]?.split("_")[0]}
-                          {associations.length > 1 && (
-                            <span className="text-xs font-bold text-muted-foreground ml-1">
-                              +{associations.length - 1}
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </span>
-                  );
-                })()}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )[0].split("_")[0]
+                      }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )?.length-1}`}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "speakerPersonAssociation"
+                      )[0]
+                        .split("_")
+                        .join(" ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
-
-              {isTentimesUser ? (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
-                >
-                  {intelLoading ? (
-                    <Skeleton className="h-16 w-full rounded-md" />
-                  ) : intelScoreData[0]?.value > 0 ? (
-                    <IntelScore width="100%" height="70px" intelScore={intelScoreData} />
-                  ) : (
-                    "-"
+              {isTentimesUser?
+             <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:  
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "speakerPersonAssociationPercentage"
+                    )[0]
                   )}
-                </TableCell>
-              ) : (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
                 >
-                  <span
-                    className={getAssociationColor(
-                      getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")?.[0]
-                    )}
-                  >
-                    {getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")?.[0] ??
-                      "-"}
-                  </span>
-                </TableCell>
-              )}
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "speakerPersonAssociationPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>}
             </>
           )}
-
           {type === "T_COMPETITOR" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="p-0 sticky right-[200px] bg-background z-0"
+                className="sticky right-[200px] bg-background z-0"
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.[0].split("_")[0]
+                      }
+                      <span className="text-xs font-bold text-muted-foreground ml-1">
+                       {getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.length>1 &&`+${ getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.length-1}`}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "competitorDomainOrName"
+                      )?.map((item: string, index: number) => (
+                        <div key={index}>
+                          {item.split("_")[1].toLowerCase()} (
+                          {item.split("_")[0]})
+                        </div>
+                      ))}
+                      {/* {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[1].toLowerCase()} */}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+              {isTentimesUser?
+              <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-25 rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>:    
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "competitorPercentage"
+                    )[0]
+                  )}
+                >
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "competitorPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>}
+            </>
+          )}
+          {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
+            <>
+              <TableCell
+                className="sticky right-[200px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "100px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {event?.basic?.matchedKeywords?.[0]}{" "}
+                      <span className="text-xs font-bold text-muted-foreground">
+                      {event?.basic?.matchedKeywords?.length && event.basic.matchedKeywords.length > 1 && `+${event.basic.matchedKeywords.length - 1}`}
+                      </span>
+                      {/* Fixed variable name */}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {event?.basic?.matchedKeywords
+                        ?.map((item) => item)
+                        .join(" | ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+            {isTentimesUser?
+            <TableCell
+                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
+                :
+                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
+                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
+              </TableCell>
+            : <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
                   textAlign: "center",
                   background: "var(--heading-background-color)",
                 }}
               >
                 {(() => {
-                  const associations = getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "competitorDomainOrName"
-                  ) || [];
+                  const percentage =
+                    event.basic.matchedKeywordsPercentage ?? null;
 
-                  const isExpanded = expandedRows[event.basic.id];
+                  if (percentage === null) return "-";
+                  if (percentage > 20)
+                    return (
+                      <span className={getAssociationColor("high")}>High</span>
+                    );
+                  if (percentage >= 10 && percentage <= 20)
+                    return (
+                      <span className={getAssociationColor("medium")}>
+                        Medium
+                      </span>
+                    );
+                  if (percentage > 0 && percentage < 10)
+                    return (
+                      <span className={getAssociationColor("low")}>Low</span>
+                    );
 
-                  return (
-                    <span
-                      onClick={() => toggleRow(event.basic.id)}
-                      className="cursor-pointer"
-                    >
-                      {associations.length === 0 ? (
-                        "-"
-                      ) : isExpanded ? (
-                        associations
-                          .map((item: string) => {
-                            const [score, name] = item.split("_");
-                            return `${name.toLowerCase()} (${score})`;
-                          })
-                          .join(", ")
-                      ) : (
-                        <>
-                          {associations[0].split("_")[0]}
-                          {associations.length > 1 && (
-                            <span className="text-xs font-bold text-muted-foreground ml-1">
-                              +{associations.length - 1}
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </span>
-                  );
+                  return "-";
                 })()}
-              </TableCell>
-
-              {isTentimesUser ? (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
-                >
-                  {intelLoading ? (
-                    <Skeleton className="h-16 w-25 rounded-md" />
-                  ) : intelScoreData[0]?.value > 0 ? (
-                    <IntelScore width="100%" height="70px" intelScore={intelScoreData} />
-                  ) : (
-                    "-"
-                  )}
-                </TableCell>
-              ) : (
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
-                >
-                  <span
-                    className={getAssociationColor(
-                      getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0]
-                    )}
-                  >
-                    {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
-                  </span>
-                </TableCell>
-              )}
-            </>
-          )}
-
-          {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
-            <>
-              <TableCell
-                className="p-0 sticky right-[200px] bg-background z-0"
-                style={{
-                  zIndex: 0,
-                  minWidth: "100px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                  cursor: "pointer",
-                }}
-                onClick={() => toggleRow(event.basic.id)} // toggle on click
-              >
-                {event.basic.matchedKeywords && event.basic.matchedKeywords.length > 0 ? (
-                  expandedRows[event.basic.id] ? (
-                    event.basic.matchedKeywords
-                      .map((kw) => kw.split("_").join(" "))
-                      .join(", ")
-                  ) : (
-                    // Show first + count
-                    <>
-                      {event.basic.matchedKeywords[0].split("_").join(" ")}
-                      {event.basic.matchedKeywords.length > 1 && (
-                        <span className="text-xs font-bold text-muted-foreground">
-                          {" "}
-                          +{event.basic.matchedKeywords.length - 1}
-                        </span>
-                      )}
-                    </>
-                  )
-                ) : (
-                  "-"
-                )}
-              </TableCell>
-
-              {(isTentimesUser && event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1) ?
-                <TableCell
-                  className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
-                  style={{
-                    zIndex: 0,
-                    minWidth: "132px",
-                    textAlign: "center",
-                    background: "var(--heading-background-color)",
-                  }}
-                >
-                  {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
-                    :
-                    (intelScoreData[0]?.value > 0 ? (<IntelScore width="100%" height="70px" intelScore={intelScoreData} />) : "-")}
-                  {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-                </TableCell>
-                : ((event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1) ?
-                  <TableCell className="sticky right-[68px] bg-background z-0"
-                    style={{
-                      zIndex: 0,
-                      minWidth: "132px",
-                      textAlign: "center",
-                      background: "var(--heading-background-color)",
-                    }}>
-                    <span className={getAssociationColor("medium")}>
-                      Matched
-                    </span></TableCell>
-                  :
-                  <TableCell
-                    className="sticky right-[68px] bg-background z-0"
-                    style={{
-                      zIndex: 0,
-                      minWidth: "132px",
-                      textAlign: "center",
-                      background: "var(--heading-background-color)",
-                    }}
-                  >
-                    {(() => {
-                      const percentage =
-                        event.basic.matchedKeywordsPercentage ?? null;
-
-                      if (percentage === null) return "-";
-                      if (percentage > 20)
-                        return (
-                          <span className={getAssociationColor("high")}>High</span>
-                        );
-                      if (percentage >= 10 && percentage <= 20)
-                        return (
-                          <span className={getAssociationColor("medium")}>
-                            Medium
-                          </span>
-                        );
-                      if (percentage > 0 && percentage < 10)
-                        return (
-                          <span className={getAssociationColor("low")}>Low</span>
-                        );
-
-                      return "-";
-                    })()}
-                  </TableCell>)}
-
+              </TableCell>}
+            
             </>
           )}
         </>
