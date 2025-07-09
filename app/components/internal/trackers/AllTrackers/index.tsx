@@ -133,8 +133,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0
+        totalCount :  item?.groupedEventsCount?.[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0
       }
     })
     
@@ -143,8 +143,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.gtm.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount?.[key] || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount?.[key]?.new || 0,
+        totalCount :  item?.groupedEventsCount[key] || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
       }
     })
