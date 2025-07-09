@@ -148,6 +148,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   trackerMaturity
 }) => {
   const {isTentimesUser} = useFilterContext();
+  
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -1034,7 +1035,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-            {isTentimesUser?
+            {(isTentimesUser && event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1)?
             <TableCell
                 className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                 style={{
@@ -1049,7 +1050,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
-            : <TableCell
+            : ((event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1) ?
+                  <TableCell className="sticky right-[68px] bg-background z-0"
+                    style={{
+                      zIndex: 0,
+                      minWidth: "132px",
+                      textAlign: "center",
+                      background: "var(--heading-background-color)",
+                    }}>
+                    <span className="text-[var(--secondary-text-color)]">
+                      Matched
+                    </span></TableCell>:
+                    <TableCell
                 className="sticky right-[68px] bg-background z-0"
                 style={{
                   zIndex: 0,
@@ -1080,7 +1092,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
                   return "-";
                 })()}
-              </TableCell>}
+              </TableCell>
+                    )
+                    }
             
             </>
           )}
