@@ -41,8 +41,12 @@ import {
   CalendarDays,
   ClipboardList,
   Globe,
+  Info,
   MailIcon,
+  Map,
   MapPin,
+  Megaphone,
+  PencilRuler,
   PhoneIcon,
   Radio,
   Share2,
@@ -1125,6 +1129,40 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
         ) : (
           <>
+            <div className="flex justify-between border-b pb-3">
+              <div>
+                <div className="flex gap-2">
+                  <img
+                    src="/defaultProfilePic.png"
+                    alt="user image"
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div className="text-sm">
+                    Assign Owner
+                    <div className="text-xs text-[#7D7D7D]">
+                      30 Followers
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <ButtonUI variant="default" size="icon" >
+                  <Info className="h-4 w-4" />
+                </ButtonUI>
+                <ButtonUI variant="outline" size="icon" className="bg-muted" >
+                  <PencilRuler className="h-4 w-4" color="#8F8F8F" />
+                </ButtonUI>
+                <ButtonUI variant="outline" size="icon" >
+                  {/* <PencilRuler className="h-4 w-4" color="#8F8F8F" /> */}
+                </ButtonUI>
+                <ButtonUI variant="outline" size="icon" className="bg-accent" >
+                  <Map className="h-4 w-4" color="#8F8F8F" />
+                </ButtonUI>
+                <ButtonUI variant="outline" size="icon" className="bg-accent" >
+                  <Megaphone className="h-4 w-4" color="#8F8F8F" />
+                </ButtonUI>              
+              </div>
+            </div>
             <ul
               className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white 
               dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full"
