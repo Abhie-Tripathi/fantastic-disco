@@ -226,7 +226,7 @@ export default function EventAccordion({
   } = useIntelData(
     trackerId || "",
     events?.length > 0 ? events : [],
-    "past",
+    query.eventType,
     query.type
   );
   const mapping = {
