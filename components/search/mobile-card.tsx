@@ -437,7 +437,7 @@ const MobileEventCard = ({
         ) : event.basic.website ? (
           <div className="w-16 h-16 relative">
             <img
-              src={`https://logo.clearbit.com/${event.basic.website}&size=64`}
+              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
               alt={`${event.basic.name} website favicon`}
               className="w-16 h-16 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
               onError={(e) => {
@@ -619,7 +619,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
         ) : event.basic.website ? (
           <div className="w-16 h-16 relative">
             <img
-              src={`https://logo.clearbit.com/${event.basic.website}&size=64`}
+              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
               alt={`${event.basic.name} website favicon`}
               className="w-16 h-16 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
               onError={(e) => {
