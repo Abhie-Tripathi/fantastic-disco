@@ -266,7 +266,7 @@ export default function AutocompleteInput({
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
-            className="pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none text-sm h-9"
+            className="pl-2 py-0 pr-4 w-full border-none text-sm h-9 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 shadow-none"
             autoComplete="off"
             role="combobox"
             aria-expanded={open}

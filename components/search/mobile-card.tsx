@@ -111,10 +111,10 @@ const MobileEventCard = ({
   // Helper for stats
   const stat = (label: string, value: React.ReactNode) => (
     <div className="flex items-center justify-between py-1">
-      <span className="flex items-center gap-1 text-xs text-gray-500 font-medium">
+      <span className="flex items-center gap-1 text-sm text-gray-500 font-medium">
         {label}
       </span>
-      <span className="font-semibold text-primary text-sm">{value}</span>
+      <span className="font-semibold text-primary">{value}</span>
     </div>
   );
 
@@ -424,7 +424,7 @@ const MobileEventCard = ({
   return (
       <Link href={`/internal/event/${event.basic.id}`} className="block">
     <div className="bg-background rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
-      <div className="text-xs text-gray-600">{date}</div>
+      <div className="text-sm text-gray-600">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -432,14 +432,14 @@ const MobileEventCard = ({
           <img
             src={event.basic.logoUrl || "/placeholder.svg"}
             alt={event.basic.name}
-            className="w-12 h-12 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
+            className="w-16 h-16 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
           />
         ) : event.basic.website ? (
-          <div className="w-12 h-12 relative">
+          <div className="w-16 h-16 relative">
             <img
-              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+              src={`https://logo.clearbit.com/${event.basic.website}&size=64`}
               alt={`${event.basic.name} website favicon`}
-              className="w-12 h-12 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
+              className="w-16 h-16 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
                 e.currentTarget.dataset.error = "true";
@@ -447,7 +447,7 @@ const MobileEventCard = ({
             />
             {/* Fallback that shows when image errors */}
             <div
-              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
+              className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
               style={{ display: "none" }}
               ref={(el) => {
                 if (el) {
@@ -464,20 +464,20 @@ const MobileEventCard = ({
             </div>
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
+          <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
             <span className="text-[#5055A3] text-lg font-semibold">
               {event.basic.name.charAt(0)}
             </span>
           </div>
         )}
         <div className="flex-1">
-          <div className="font-semibold text-base leading-tight text-gray-900 dark:text-gray-100">
+          <div className="font-semibold text-xl leading-tight text-gray-900 dark:text-gray-100">
             {event.basic.name}
           </div>
         </div>
       </div>
 
-      <div className="text-xs text-gray-700 dark:text-gray-300">{location}</div>
+      <div className="text-sm text-gray-700 dark:text-gray-300">{location}</div>
 
       <div className="flex gap-2 mt-1 flex-wrap">
         {categories}
@@ -519,7 +519,7 @@ const MobileEventCard = ({
       {/* Insights & Scores */}
       {showValues.includes(Show.scores) && (
         <div className="flex justify-between">
-          <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+          <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             Insights & Scores
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -606,7 +606,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
 
   return (
     <div className="bg-background dark:bg-[#171717] rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
-      <div className="text-xs text-gray-500 dark:text-gray-400">{date}</div>
+      <div className="text-sm text-gray-500 dark:text-gray-400">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -614,14 +614,14 @@ const UnplannedCard = ({ event }: { event: Event }) => {
           <img
             src={event.basic.logoUrl || "/placeholder.svg"}
             alt={event.basic.name}
-            className="w-12 h-12 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
+            className="w-16 h-16 rounded-md object-contain border border-border dark:border-[#232323] bg-background dark:bg-[#232323]"
           />
         ) : event.basic.website ? (
-          <div className="w-12 h-12 relative">
+          <div className="w-16 h-16 relative">
             <img
-              src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+              src={`https://logo.clearbit.com/${event.basic.website}&size=64`}
               alt={`${event.basic.name} website favicon`}
-              className="w-12 h-12 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
+              className="w-16 h-16 object-contain border border-border dark:border-[#232323] rounded-md bg-background dark:bg-[#232323]"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
                 e.currentTarget.dataset.error = "true";
@@ -629,7 +629,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
             />
             {/* Fallback that shows when image errors */}
             <div
-              className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
+              className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0 dark:bg-[#232323] dark:border-[#232323]"
               style={{ display: "none" }}
               ref={(el) => {
                 if (el) {
@@ -646,26 +646,26 @@ const UnplannedCard = ({ event }: { event: Event }) => {
             </div>
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
+          <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center dark:bg-[#232323] dark:border-[#232323]">
             <span className="text-[#5055A3] text-lg font-semibold">
               {event.basic.name.charAt(0)}
             </span>
           </div>
         )}
         <div className="flex-1">
-          <div className="font-semibold text-base leading-tight text-gray-900 dark:text-gray-100">
+          <div className="font-semibold text-xl leading-tight text-gray-900 dark:text-gray-100">
             {event.basic.name}
           </div>
         </div>
       </div>
       <div className="flex gap-2 mt-1 flex-wrap">{categories}</div>
       {/* Date & Location */}
-      <div className="text-xs text-gray-700 dark:text-gray-300">{location}</div>
+      <div className="text-sm text-gray-700 dark:text-gray-300">{location}</div>
       {/* Stats */}
       {/* Insights & Scores */}
       {showHolidayScore && (
         <div className="flex justify-between">
-          <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+          <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             Insights & Scores
           </div>
           <div className="flex items-center gap-2 mt-2">

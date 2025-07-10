@@ -361,7 +361,7 @@ export default function MultiSelectSearchBar({
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyDown={handleKeyDown}
               onFocus={handleFocus}
-              className={`pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none ${
+              className={`pl-2 py-0 pr-4 w-full border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 shadow-none ${
                 isDashboard ? "text-base" : "text-sm"
               } ${
                 varient === "small"
