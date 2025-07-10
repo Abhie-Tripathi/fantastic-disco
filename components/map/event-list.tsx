@@ -855,7 +855,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full bg-background md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       } ${
         searchParams?.get("type") !== "T_CUSTOM" &&
