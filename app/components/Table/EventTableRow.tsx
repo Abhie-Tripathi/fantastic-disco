@@ -319,6 +319,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
             {event.basic.organizer?.prospectId ? <Link
   href={`/internal/company/${event.basic.organizer.prospectId}`}
+  target="blank"
   className="text-sm text-muted-foreground truncate overflow-hidden whitespace-nowrap block max-w-xs"
   title={event.basic.organizer?.name}
 >

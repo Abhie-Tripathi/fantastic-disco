@@ -736,10 +736,10 @@ const EventListItem = ({
       <span>
         <Radio className="w-4 h-4 mr-1 inline-block" />
         Hybrid&nbsp;-&nbsp;
-        {formatLocationParts(event.basic.eventLocation)}
+        {formatLocationParts(event.basic.eventLocation, true)}
       </span>
     ) : (
-      formatLocationParts(event.basic.eventLocation)
+      formatLocationParts(event.basic.eventLocation, true)
     )
   ) : (
     "Venue to be announced"
@@ -888,7 +888,7 @@ const EventListItem = ({
                   <div className="flex items-center gap-2">
                     <p
                       className={cn(
-                        "text-sm text-gray-600 mt-2",
+                        "text-sm text-gray-600 mt-4",
                         isCancelled || isPostponed ? "line-through" : ""
                       )}
                     >
@@ -1657,7 +1657,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                       .eventLocation as unknown as HolidayEventLocation[]
                   )}
                 </p>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-600 mt-4">
                   {formattedDateRange(
                     event.basic.startDateTime,
                     event.basic.endDateTime

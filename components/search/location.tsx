@@ -621,20 +621,20 @@ export default function LocationSelector({
 
       <PopoverContent
         className={
-          "border rounded-md shadow-sm p-0 w-[var(--radix-popover-trigger-width)] md:w-[392px]"
+          `border rounded-md shadow-sm p-0 w-[var(--radix-popover-trigger-width)] ${isEventeli ? "md:w-[392px]" : ""}`
         }
         align="start"
       >
-        <div className="flex justify-between items-center p-4 py-2 border-b">
+        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
           <span className="font-medium">Location</span>
           <Button
             variant="link"
             className="text-primary pr-0"
             onClick={applyHandler}
           >
-            {/* Apply */}
+            Apply
           </Button>
-        </div>
+        </div> */}
 
         {isEventeli ? (
           hideCenterPoint ? (
@@ -649,11 +649,11 @@ export default function LocationSelector({
                 <TabsTrigger value="city">City, State, Country</TabsTrigger>
                 <TabsTrigger value="center">Center Point & Radius</TabsTrigger>
               </TabsList>
-              <TabsContent value="city" className="p-4">
+              <TabsContent value="city" className="p-4 mt-0">
                 {renderCityInput()}
               </TabsContent>
 
-              <TabsContent value="center" className="p-4 space-y-4">
+              <TabsContent value="center" className="p-4 space-y-4 mt-0">
                 {renderCenterPointInput()}
               </TabsContent>
             </Tabs>

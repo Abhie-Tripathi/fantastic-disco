@@ -111,10 +111,10 @@ const MobileEventCard = ({
   // Helper for stats
   const stat = (label: string, value: React.ReactNode) => (
     <div className="flex items-center justify-between py-1">
-      <span className="flex items-center gap-1 text-sm text-gray-500 font-medium">
+      <span className="flex items-center gap-1 text-[15px] text-gray-500 font-medium">
         {label}
       </span>
-      <span className="font-semibold text-primary">{value}</span>
+      <span className="font-semibold text-primary text-sm">{value}</span>
     </div>
   );
 
@@ -495,6 +495,10 @@ const MobileEventCard = ({
       {/* Date & Location */}
       {/* Stats */}
       <div className="flex flex-col gap-1">
+        {stat(
+          "Estimated Visitors",
+          event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
+        )}
         {showValues.includes(Show.estimatedExhibitors) &&
           stat(
             "Estimated Exhibitors",
@@ -504,10 +508,6 @@ const MobileEventCard = ({
               ? formatExhibitorCount(event.insights?.estimatedExhibitors)
               : "-"
           )}
-        {stat(
-          "Estimated Visitors",
-          event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
-        )}
         {showValues.includes(Show.economicImpact) &&
           stat(
             "Economic Impact",

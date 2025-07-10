@@ -6,6 +6,7 @@ import { Search, Loader2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useDatabaseLocationcomplete } from "@/hooks/useLocationAutocomplete"
 import { useLocationService } from "@/services/locationService"
+import { isEventeli } from "@/config"
 
 interface Location {
   id: string
@@ -277,7 +278,7 @@ export default function AutocompleteInput({
         </div>
       </div>
 
-      {open && (
+      {(open || !isEventeli) && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
           {isLoading ? (
             <div className="flex items-center justify-center p-4 py-8">
