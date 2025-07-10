@@ -18,6 +18,10 @@ import * as z from "zod";
 import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
 import { signIn, useSession } from "next-auth/react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
@@ -73,11 +77,21 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
-      <p className="font-semibold text-lg leading-6 text-center mb-5">
+    <div>
+
+<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
+
+
+
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[72dvh]">
+
+      <p className="font-semibold  md:text-lg leading-6 text-center mb-3">
         Login to your account
       </p>
-      <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+      <div className="flex gap-4 w-full sm:w-[312px] mx-auto justify-center">
         <Button
           onClick={() => signIn("google")}
           variant={"outline"}
@@ -95,7 +109,7 @@ export default function SignInForm() {
           <span>LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p>
+      <p className="text-xs text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
@@ -104,7 +118,7 @@ export default function SignInForm() {
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center">
+            <div className="space-y-2 w-full max-w-[312px] self-center">
               <Input
                 className="rounded-sm bg-white ring-1
                ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -135,7 +149,7 @@ export default function SignInForm() {
         />
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full max-w-[312px] self-center"
           disabled={isLoading}
           onClick={() => clearErrors()}
         >
@@ -149,17 +163,21 @@ export default function SignInForm() {
           )}
         </Button>
       </form>
-      <div className="text-center">
-        <Link
+      <div className="text-center text-sm">
+      Don&apos;t have an account? 
+            <Link
           href="/signup"
           className="text-primary hover:underline"
           onClick={() =>
             GAEvent("Onboarding", "Onboarding", "Sign In", "Sign Up")
           }
         >
-          Don&apos;t have an account? Sign up
-        </Link>
-      </div>
+              {" "}
+              Sign up
+            </Link>
+          </div>
     </div>
+    </div>
+
   );
 }
