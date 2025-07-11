@@ -178,7 +178,7 @@ const handlePresetClicked = (item:PresetData, id:string, trackerType:string, nam
 };
 const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
 
- return encodeURIComponent(`/preset?presetId=${item?.id}0&limit=1&offset=${index}&type=${trackerType}`);
+ return encodeURIComponent(`/preset?presetId=${item?.id}&type=${trackerType}`);
 }
 const getCompFilterdData = (data: string[]) => {
   const res: string[] = [];
