@@ -14,6 +14,7 @@ import { Filter, Lock } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import PremiumModal from "../premium-modal";
+import PaymentSuccessModal from "@/app/components/payment/successModal";
 
 interface FilterSection {
   id: string;
@@ -85,11 +86,11 @@ const FilterContent = ({
                   // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
                   className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
                 >
-                  <div className="text-sm flex gap-2 items-center uppercase font-medium">
+                  <div className="text-sm flex gap-2 items-center uppercase font-medium w-full">
                     <Filter className="w-4 h-4"/>
                     {section.label}
                     {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) && (
-                      <RainbowButton size="sm"  className="ml-2 h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
+                      <RainbowButton size="sm"  className="ml-auto h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
                     )}
                   </div>
                 </AccordionTrigger>
@@ -215,12 +216,7 @@ const FilterContent = ({
         </div>
       </div>
     </div>
-      {
-        isPremiumModalOpen &&
-        <div className="fixed">
-        <PremiumModal/>
-        </div>
-      }
+        <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen}/>
       </>
   );
 };

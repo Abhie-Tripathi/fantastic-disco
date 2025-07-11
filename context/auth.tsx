@@ -37,6 +37,11 @@ const TENTIMES_USER_ACCOUNT_ID = isEventeli
   ? process.env.NEXT_PUBLIC_EVENTELI_TENTIMES_ACCOUNTID
   : process.env.NEXT_PUBLIC_EVENTGENI_TENTIMES_ACCOUNTID;
 
+interface MembershipData {
+  membership: number;
+  endDate: string;
+}
+
 type authContextType = {
   user: UserResponse | null;
   error:
@@ -80,7 +85,7 @@ type authContextType = {
   isAuthenticating: boolean;
   isTentimesUser: boolean;
   showOTPMessage: boolean;
-  membershipData: any | null;
+  membershipData: MembershipData | null;
 };
 interface newUserResponse {
   user: {
@@ -137,8 +142,8 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
-   const [membershipData, setMembershipData] = useState<any>(null);
-    const { getMembershipData } = useProfileServices();
+  const [membershipData, setMembershipData] = useState<any>(null);
+  const { getMembershipData } = useProfileServices();
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
@@ -556,7 +561,9 @@ export const AuthContextProvider = ({ children }: any) => {
 
       document.cookie = `${isEventeli ? "geoUser" : "gtmUser"}=${JSON.stringify(
         gtmUser
-      )}; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=${365 * 24 * 60 * 60}`;
+      )}; SameSite=None; Secure; Path=/; Domain=whr.ai; max-age=${
+        365 * 24 * 60 * 60
+      }`;
     } else
       document.cookie = `${
         isEventeli ? "geoUser" : "gtmUser"
@@ -572,19 +579,19 @@ export const AuthContextProvider = ({ children }: any) => {
       const userData = window.localStorage.getItem("user");
       userData && setUser(JSON.parse(userData));
     } else {
-       fetchMembership();
+      fetchMembership();
       setWhrUser(user);
     }
   }, [user]);
 
-      const fetchMembership = async () => {
-        try {
-          const data = await getMembershipData();
-          setMembershipData(data);
-        } catch (e) {
-          setMembershipData(null);
-        }
-      };
+  const fetchMembership = async () => {
+    try {
+      const data = await getMembershipData();
+      setMembershipData(data);
+    } catch (e) {
+      setMembershipData(null);
+    }
+  };
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
     if (user) {
