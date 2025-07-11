@@ -1,4 +1,5 @@
 import { filters, getFilterComponent } from "@/components/search/filterUtils";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 import {
   Accordion,
   AccordionContent,
@@ -11,7 +12,8 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import whrbotlogo from "@/public/whrbotlogo.svg";
 import { Filter, Lock } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import PremiumModal from "../premium-modal";
 
 interface FilterSection {
   id: string;
@@ -48,9 +50,13 @@ const FilterContent = ({
   trackerType
 }: FilterContentProps) => {
   const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
+  const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
   const isMobile = useIsMobile();
+
+  console.log("is", isPremiumModalOpen)
   
   return (
+    <>
     <div className="flex-1">
       <div className="overflow-y-auto w-full mt-0 flex-1">
         {source === "tracker" && isMobile && (
@@ -82,6 +88,9 @@ const FilterContent = ({
                   <div className="text-sm flex gap-2 items-center uppercase font-medium">
                     <Filter className="w-4 h-4"/>
                     {section.label}
+                    {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) && (
+                      <RainbowButton size="sm"  className="ml-2 h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
+                    )}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
@@ -206,6 +215,13 @@ const FilterContent = ({
         </div>
       </div>
     </div>
+      {
+        isPremiumModalOpen &&
+        <div className="fixed">
+        <PremiumModal/>
+        </div>
+      }
+      </>
   );
 };
 
