@@ -24,6 +24,10 @@ import GoogleIcon from "/public/google.svg";
 import LinkedinIcon from "/public/linkedin.svg";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isEventeli } from "@/config";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -107,10 +111,7 @@ const GtmSignUpForm = () => {
   }, [redirectPath]);
 
   useEffect(() => {
-    const isMappedCategory = industryData.find(
-      (indust) => indust.slug === industry
-    )?.subCategory;
-    if (!isMappedCategory) {
+    if (industry !== "Others") {
       deleteFilter("categories");
     }
   }, [industry]);
@@ -155,9 +156,9 @@ const GtmSignUpForm = () => {
     }
   }, [user, isAuthenticating]);
 
-  const isCategoryMapped = industryData.find(
+  const isOthersIndustry = industryData.find(
     (industryItem) => industryItem.slug === industry
-  )?.subCategory;
+  )?.slug === "Others";
 
   const obj = {
     email: email,
@@ -169,6 +170,7 @@ const GtmSignUpForm = () => {
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
     setIndustry(industry);
+    clearErrors("industry");
     GAEvent(
       "Onboarding",
       "Onboarding",
@@ -209,7 +211,13 @@ const GtmSignUpForm = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-4">
+    <div className="flex flex-col min-h-[80vh]">
+<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
+    <div className="flex-1 flex justify-self-center flex-col justify-center items-center w-full space-y-2">
+
       {signUpFlow === "default" && (
         <>
           <p className="font-semibold text-lg leading-6 text-center mb-5">
@@ -217,7 +225,7 @@ const GtmSignUpForm = () => {
           </p>
           {status === "unauthenticated" && (
             <>
-              <div className="flex gap-4 w-full sm:w-96 mx-auto mt-6 justify-center">
+              <div className="flex gap-4 w-full sm:w-[312px] mx-auto justify-center">
                 <Button
                   onClick={() => signIn("google")}
                   variant={"outline"}
@@ -243,7 +251,7 @@ const GtmSignUpForm = () => {
                   <span>LinkedIn</span>
                 </Button>
               </div>
-              <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">
+              <p className="text-xs mt-2 text-[var(--tertiary-text-color)]">
                 OR
               </p>
             </>
@@ -252,14 +260,14 @@ const GtmSignUpForm = () => {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-6 w-full mt-4"
+        className="flex flex-col space-y-3 w-full mt-4"
       >
         {signUpFlow === "default" && (
           <Controller
             name="email"
             control={control}
             render={({ field }) => (
-              <div className="space-y-2 w-auto sm:w-96 max-w-3xl self-center border-b pb-6">
+              <div className="space-y-2 w-full max-w-[312px] self-center">
                 <Input
                   className="rounded-sm bg-white ring-1
                   ring-primary outline outline-[#D2D2F3] outline-offset-2
@@ -293,9 +301,40 @@ const GtmSignUpForm = () => {
             )}
           />
         )}
-        <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
-          Choose an Industry Relevant to You
+        <p className="text-[var(--secondary-text-color)] text-center font-semibold">
+        Select the primary focus of your business.
         </p>
+
+        {/* Tablist for Industry Insights and Location Insights */}
+        <div className="flex w-full justify-center mb-4">
+          <div className="w-fit">
+            <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
+              <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
+                <Link
+                  href={`${process.env.NEXT_PUBLIC_GTM_FRONTEND_URL}/signup`}
+                >
+                  <TabsTrigger
+                    value="industry"
+                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
+                  >
+                    Industry Insights
+                  </TabsTrigger>
+                </Link>
+                <Link
+                  href={`${process.env.NEXT_PUBLIC_GEO_FRONTEND_URL}/signup`}
+                >
+                  <TabsTrigger
+                    value="location"
+                    className="font-semibold px-4 py-2 rounded-md transition-colors duration-200 border-2 border-transparent data-[state=active]:border-[#6750A4] data-[state=active]:text-[#6750A4] data-[state=active]:bg-white data-[state=inactive]:text-[#666]"
+                  >
+                    Location Insights
+                  </TabsTrigger>
+                </Link>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+
         <Controller
           name={"industry"}
           control={control}
@@ -308,7 +347,12 @@ const GtmSignUpForm = () => {
             </>
           )}
         />
-        {isCategoryMapped && (
+        {errors.industry && (
+          <p className="text-red-500 text-sm text-center">
+            {errors.industry.message}
+          </p>
+        )}
+        {isOthersIndustry && (
           <Controller
             name={"industry"}
             control={control}
@@ -323,11 +367,10 @@ const GtmSignUpForm = () => {
           />
         )}
 
-        <hr className="w-full sm:w-96 mt-6 self-center" />
 
         <Button
           type="submit"
-          className="w-40 sm:w-80 self-center"
+          className="w-full max-w-[312px] self-center"
           disabled={isSubmitting}
           onClick={() => clearErrors()}
         >
@@ -346,7 +389,7 @@ const GtmSignUpForm = () => {
 
       {signUpFlow === "default" && (
         <>
-          <div className="text-center py-2 text-sm">
+          <div className="text-center pb-3 text-sm">
             Already have an account?
             <Link
               onClick={() => signOut({ callbackUrl: "/signin" })}
@@ -358,7 +401,7 @@ const GtmSignUpForm = () => {
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <div className="text-center text-[#808080] text-[12px]">
+            <div className="text-center text-[#808080] text-[12px] mt-[-16px]">
               By signing up, you agree to our
               <Link
                 target="_blank"
@@ -379,6 +422,7 @@ const GtmSignUpForm = () => {
           </div>
         </>
       )}
+    </div>
     </div>
   );
 };
