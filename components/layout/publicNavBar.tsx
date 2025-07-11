@@ -3,49 +3,16 @@
 import React, { useEffect, useState } from "react";
 import styles from "./navbar.style.module.css";
 import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import WhrAIText from '@/public/whrai.svg'
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
-import {
-  Grip,
-  LogOut,
-  Megaphone,
-  Moon,
-  Settings,
-  Sun,
-  UserSearch,
-  Search,
-  Menu,
-  Bell,
-  ArrowUpRight,
-} from "lucide-react";
 import { useAuthContext } from "@/context/auth";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 // import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
 import Link from "next/link";
-import MobileSidebar from "./mobile-sidebar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import path from "path";
-import VideoModal from "@/components/layout/videoModal";
-import { GAEvent } from "@/utils/GAEvent";
-import { useProfileServices } from "@/services/profileService";
-import { MembershipPlan } from "@/data/membershipPlans";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -75,19 +42,18 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  // const { theme, toggleTheme } = useTheme();
 
-  function getRoute(path: string | undefined): string {
-    return gtmroutes[path || ""];
-  }
+  // function getRoute(path: string | undefined): string {
+  //   return gtmroutes[path || ""];
+  // }
   const router = useRouter();
-  const handleRoute = (route: string) => {
-    if (route === "research") {
-      router.push("/internal");
-    } else if (route === "promote") {
-      router.push("/widget/dashboard");
-    }
-  };
+  // const handleRoute = (route: string) => {
+  //   if (route === "research") {
+  //     router.push("/internal");
+  //   } else if (route === "promote") {
+  //     router.push("/widget/dashboard");
+  //   }
+  // };
 
   const route = pathname.split("/")[1];
   const handleClick = () => {
@@ -116,85 +82,6 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
   //   return "";
   // }, [user]);
 
-  const [storedUser, setStoredUser] = useState<any>(null);
-  const [emptyFields, setEmptyFields] = useState<string[]>([]);
-  const { getMembershipData } = useProfileServices();
-  const [membershipData, setMembershipData] = useState<any>(null);
-
-//   useEffect(() => {
-//     // Ensure this code runs only on the client side
-//     const user = localStorage.getItem("user");
-//     setStoredUser(user ? JSON.parse(user) : null);
-
-//     const handleStorageChange = () => {
-//       const updatedUser = localStorage.getItem("user");
-//       setStoredUser(updatedUser ? JSON.parse(updatedUser) : null);
-//     };
-
-//     window.addEventListener("storage", handleStorageChange);
-//     const interval = setInterval(handleStorageChange, 1000);
-
-//     return () => {
-//       window.removeEventListener("storage", handleStorageChange);
-//       clearInterval(interval);
-//     };
-//   }, []);
-
-//   useEffect(() => {
-//     if (storedUser) {
-//       const fields = [];
-//       if (!storedUser.imageURL || storedUser.imageURL === "") {
-//         fields.push("profilePicture");
-//       }
-//       setEmptyFields(fields);
-//     }
-//   }, [storedUser]);
-
-//   useEffect(() => {
-//     const fetchMembership = async () => {
-//       try {
-//         const data = await getMembershipData();
-//         setMembershipData(data);
-//       } catch (e) {
-//         setMembershipData(null);
-//       }
-//     };
-//     fetchMembership();
-//   }, []);
-
-//   const generateProfileName = () => {
-//     if (storedUser) {
-//       const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
-//       const lastNameInitial = storedUser?.lastname?.[0]?.toUpperCase() || "";
-//       return `${firstNameInitial}${lastNameInitial}`;
-//     }
-//     return "";
-//   };
-
-//   const handleSettingsClick = () => {
-//     if (route === "internal") {
-//       router.push("/internal/settings/product");
-//     }
-//     if (route === "widget") {
-//       router.push("/widget/settings/profile");
-//     }
-//   };
-
-//   const handleUpgradeClick = () => {
-//     window.open(
-//       `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
-//       "_blank"
-//     );
-//     GAEvent(
-//       "",
-//       "Plan Upgrade",
-//       "Navbar",
-//       `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
-//     );
-//   };
-// const signUpHandler=()=>{
-//   router.push("/signup")
-// }
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">

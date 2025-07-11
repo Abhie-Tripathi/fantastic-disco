@@ -1,9 +1,5 @@
 "use client"
 import React, { useState, useCallback, useEffect } from "react";
-import Image from "next/image";
-import TrackerPublic from "@/public/trackerPublic.jpg";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useTrackerServices } from "@/services/trackerServices";
 import { isEventeli } from "@/config";
@@ -17,7 +13,6 @@ const Preset = () => {
   const limit = searchParams.get("limit");
   const offset = searchParams.get("offset");
   const router = useRouter()
-    console.log("params", searchParams.toString);
   const { presetData, createTracker } = useTrackerServices();
   const [isLoading, setIsLoading] = useState(false);
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData>();
@@ -33,15 +28,12 @@ const Preset = () => {
       };
 
       const result = await presetData(data);
-      console.log("result",);
       
       if (result) {
         setPresetTemplateData(result?.trackers[0]);
         createTrackerHandler(result?.trackers[0]);
       }
       else {
-        console.log("error is error");
-        
         return (
       <NotFound />
     );
@@ -100,10 +92,6 @@ const Preset = () => {
       }),
     },
   };
-
-  console.log("formData", formData);
-
-  // Optional: uncomment when needed
   try {
     const result = await createTracker(formData)as {id: string};
     if (result) {
@@ -113,8 +101,6 @@ const Preset = () => {
     console.error("Tracker creation failed", error);
   }
 };
-
-  console.log("presetData", presetTemplateData);
   
   return (
     <div className="relative h-screen w-full">
@@ -125,5 +111,3 @@ const Preset = () => {
 };
 
 export default Preset;
-
-// http://localhost:3000/signup?redirect=%2Fpreset%3FpresetId%3D1d619e5d-c620-464e-abfd-44a59ccbb34b0%26limit%3D1%26offset%3D13%26type%3DT_PRODUCT_KEYWORDS

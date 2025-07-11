@@ -1275,6 +1275,7 @@ const stepsConfig =[
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
     }
+    if(searchParams.get("collectionId"))
     fetchPresetJson();
   }, [editData, searchParams]);
   // const [presetTemplateData1,setPresetTemplateData1]=useState();
@@ -1299,7 +1300,6 @@ const fetchPresetJson = async () => {
   }
 };
 
-  // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);

@@ -29,7 +29,7 @@ interface Props {
   selectedLocation?: string[];
   selectedCategory?: string[];
   template?: any;
-  handlePresetClick?: any;
+  handlePresetClick?: (item: any, id: string, trackerType: string, name: string) => void;
   setShowTemplate?:(val:boolean)=>void;
   isFull?:boolean;
   containerRef?:any;
@@ -37,14 +37,11 @@ interface Props {
 
 const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-  console.log(template?.name);
 //   const filterContext = useFilterContext();
 //   const getLocalFilterValue = !isPublic ? filterContext.getLocalFilterValue : () => "";
 // const localFilters = !isPublic ? filterContext.localFilters : {};
   const { presetData } = useTrackerServices();
   const [inputValue, setInputValue] = useState<string>("");
-  // const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
-  // const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
   const [sortBy, setSortBy] = useState({ value: "eventCount", label: "desc" });
   const [page, setPage] = useState(0);
@@ -63,14 +60,6 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
     // { value: "newEventCount", label: "New Event Count" },
     // { value: "start", label: "Rank" },
   ];
-  // const selectedLocation = useMemo(() =>
-  //   getLocalFilterValue("presetCountry")?.split(',').filter(Boolean) || [],
-  //   [localFilters.presetCountry]
-  // );
-  // const selectedCategory = useMemo(() =>
-  //   getLocalFilterValue("presetCategory")?.split(',').filter(Boolean) || [],
-  //   [localFilters.presetCategory]
-  // );
   
   // Fetch data function with pagination
   const fetchPresetJson = useCallback(async () => {
@@ -183,7 +172,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
   
 const handlePresetClicked = (item:PresetData, id:string, trackerType:string, name:string) => {
   if (!isPublic) {
-    handlePresetClick(item, id, trackerType, name);
+    handlePresetClick?.(item, id, trackerType, name);
   }
 };
 const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
@@ -233,8 +222,6 @@ const limit=3;
       .map((val, index) => (index === 0 ? val : `(${val})`))
       .join(" ");
   });
-
-  console.log("result", result);
   return result.join(", ");
 }
 
