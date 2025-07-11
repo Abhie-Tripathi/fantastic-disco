@@ -936,7 +936,7 @@ const Filters = ({
         }`}
       >
         {source !== "tracker" && (
-          <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-2">
+          <div className="sticky top-0 bg-background z-10 p-4 pb-2 md:p-0 md:pb-2">
             <Tabs defaultValue={type} value={type}>
               <TabsList
                 className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
