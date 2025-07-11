@@ -266,6 +266,7 @@ export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
+export type DetailPageView = "research" | "coordinate" | "outreach";
 export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
 
