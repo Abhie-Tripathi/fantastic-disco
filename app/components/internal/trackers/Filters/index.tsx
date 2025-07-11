@@ -1287,7 +1287,6 @@ const fetchPresetJson = async () => {
     };
 
     const result = await presetData(data);
-    console.log("result",result);
     
     if (result?.count > 0) {
       // setPresetTemplateData(result?.trackers);
