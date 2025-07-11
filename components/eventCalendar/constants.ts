@@ -53,3 +53,22 @@ export const heatmapColors = [
     color: "#FFCCCC",
   },
 ];
+
+export const darkModeHeatmapColors = [
+  {
+    name: "low",
+    color: "#675F4A",
+  },
+  {
+    name: "medium",
+    color: "#6A5D38",
+  },
+  {
+    name: "high",
+    color: "#71585B",
+  },
+  {
+    name: "critical",
+    color: "#713E3E",
+  },
+];

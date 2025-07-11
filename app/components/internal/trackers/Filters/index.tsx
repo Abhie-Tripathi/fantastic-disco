@@ -806,9 +806,17 @@ const stepsConfig =[
     const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
       (acc, [key, mappedKey]) => {
         const value = getLocalFilterValue(key as any);
-       
-        
-        if (Array.isArray(value) && value.length > 0) {
+        if (["includeKeywords", "excludeKeywords"].includes(mappedKey)) {
+  const structuredVal = value
+    .split(",")
+    .map((item) => item.trim().replaceAll(" ", "_"))
+    .filter(Boolean); 
+
+  if (structuredVal.length > 0) {
+    acc[mappedKey] = structuredVal.join(",");
+  }
+}
+        else if (Array.isArray(value) && value.length > 0) {
           acc[mappedKey] = value;
         } else if (typeof value === "string" && value === "true") {
           acc[mappedKey] = value;

@@ -38,7 +38,7 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
             .map((point, index) => (
               <div
                 key={`${point.name}-${index}`}
-                className="mb-1 flex justify-between items-center"
+                className="mb-1 flex justify-between items-center text-black"
               >
                 <span className="font-semibold">{point.name}</span>
                 <span className="ml-2">{point.count}</span>
@@ -51,7 +51,7 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
           )}
         </>
       ) : (
-        <div className="mb-1 flex justify-between items-center">
+        <div className="mb-1 flex justify-between  items-center text-black">
           <span className="font-semibold">
             {hoverInfo.feature.properties.name}
           </span>
