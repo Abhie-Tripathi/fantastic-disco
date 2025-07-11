@@ -28,9 +28,7 @@ const Preset = () => {
 
     try {
       const data = {
-        trackerType,
-        offset,
-        limit,
+        presetId
       };
 
       const result = await presetData(data);

@@ -196,6 +196,13 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     e.stopPropagation();
     hideTemplates(false);
   }}>Create</Button>
+  <Link
+  href="/usercollection"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">Collections</Button>
+  </Link>
 {!isMobile &&
 <Link
   href="/internal/trackers/savedevents?view=table"

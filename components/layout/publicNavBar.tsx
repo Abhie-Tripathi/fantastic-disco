@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import WhrAIText from '@/public/whrai.svg'
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,7 +70,7 @@ const geniroutes: Record<string, string> = {
   product: "Settings",
 };
 
-export default function Navbar() {
+export default function Navbar({isPublic}:{isPublic:boolean}) {
   const pathname = usePathname();
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
@@ -191,25 +192,18 @@ export default function Navbar() {
 //       `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
 //     );
 //   };
-const signUpHandler=()=>{
-  router.push("/signup")
-}
+// const signUpHandler=()=>{
+//   router.push("/signup")
+// }
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
+            <Link href="https://whr.ai/gtm">
             <Image src={HeroLogo} alt="logo" width={40} height={40} />
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 sm:max-w-64">
-              <MobileSidebar />
-            </SheetContent>
-          </Sheet>
+            </Link>
+            
+          <Link href="https://whr.ai/gtm">
           <div className="flex items-center lg:hidden mr-2 max-[570px]:hidden">
             <Image src={HeroLogo} alt="logo" width={34} height={34} />
             <Image
@@ -236,10 +230,13 @@ const signUpHandler=()=>{
               : pathname.split("/").slice(-2)[0] === "edit"
               ? "Edit Widget"
               : geniroutes[pathname.split("/").slice(-1)[0]]} */}
-              {pathname.split("/")[1] === "usercollection" && "User Collection"}
+              {/* {(pathname.split("/")[1] === "usercollection" && !isPublic) && "User Collection"} */}
+               <Image src={WhrAIText} alt="nav-logo" className="h-6 w-auto" />
           </div>
+          </Link>
         </div>
-        <div className="hidden max-[570px]:block">
+        <div className="hidden md:block">
+          <Link href="whr.ai/gtm">
           <div className="items-center flex">
             <Image src={HeroLogo} alt="logo" width={34} height={34} />
             <Image
@@ -250,12 +247,37 @@ const signUpHandler=()=>{
               style={theme === "dark" ? { filter: "invert(100%)" } : {}}
             />
           </div>
+          </Link>
+        </div>
+        <div className="hidden lg:flex space-x-6 py-2 ml-6 px-8 rounded-3xl transition-all duration-500 ease-in-out bg-white" style={{boxShadow:"var(--shadow-medium)"}}>
+          <Link href="https://whr.ai/geo" className="text-black hover:text-primary text-lg">
+            Geo
+          </Link>
+          <Link href="https://whr.ai/gtm" className="text-black hover:text-primary text-lg">
+            Gtm
+          </Link>
+          {/* <Link href="/geni" className="text-black hover:text-primary text-lg">
+            Geni
+          </Link> */}
+          <Link
+            href="https://whr.ai/about"
+            className="text-black hover:text-primary text-lg"
+          >
+            About
+          </Link>
+          <Link
+            href="https://whr.ai/pricing"
+            className="text-black hover:text-primary text-lg"
+          >
+            Pricing
+          </Link>
         </div>
         <div className="flex items-center gap-1">
-          <Button className="bg-primary px-[15px] py-[8px] rounded-[10px] text-white cursor-pointer" onClick={()=>signUpHandler()}>
+          <Link href="/signup">
+          <Button className="bg-primary px-[15px] py-[8px] rounded-[10px] text-white cursor-pointer">
             Sign Up
           </Button>
-
+          </Link>
           {/* {!isEventeli && (
             <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
               {theme === "dark" ? (

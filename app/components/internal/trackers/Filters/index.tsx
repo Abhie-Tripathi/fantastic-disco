@@ -84,7 +84,7 @@ import LocationTemplate from '@/components/search/locationTemplate'
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
-import Presets from "./Presets";
+import PrivatePresets from "./privatePreset";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
@@ -453,7 +453,7 @@ const Pages = () => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [showTemplate,setShowTemplate] = useState(false);
 
-  const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
+  const {getTrackerDetail,createTracker,editTracker, error, delTracker, presetData}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const [showFilters, setShowFilters]=useState(false);
@@ -705,7 +705,7 @@ const stepsConfig =[
 
     return result;
   }
-   const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+   const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
     let finalResult;
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
@@ -1267,8 +1267,29 @@ const stepsConfig =[
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
     }
-    
+    fetchPresetJson();
   }, [editData, searchParams]);
+  // const [presetTemplateData1,setPresetTemplateData1]=useState();
+const fetchPresetJson = async () => {
+  try {
+    const data = {
+      trackerType: type,
+      presetId: searchParams.get("collectionId"),
+    };
+
+    const result = await presetData(data);
+    console.log("result",result);
+    
+    if (result?.count > 0) {
+      // setPresetTemplateData(result?.trackers);
+      handlePresetClick(result?.trackers?.[0], `${result?.trackers?.[0]?.id}`, type || "", result?.trackers?.[0]?.name)
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
@@ -2033,7 +2054,7 @@ if(isLoading) return <Loading/>
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
       <div ref={!isMobile?refs.presetRef: null} className="flex items-center justify-between mb-4">
-        <Presets template={template} handlePresetClick={handlePresetClick}/> 
+        <PrivatePresets template={template} handlePresetClick={handlePresetClick}/> 
         </div>
     </div>
       }
@@ -2254,7 +2275,7 @@ if(isLoading) return <Loading/>
     }
     {showTemplate &&
     <div className={`card ${styles.competitor} max-h-[80vh]`}>
-      <Presets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
+      <PrivatePresets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
     </div>
     }
   </div>
