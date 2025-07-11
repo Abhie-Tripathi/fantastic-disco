@@ -61,6 +61,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
     // { value: "start", label: "Rank" },
   ];
   
+  
   // Fetch data function with pagination
   const fetchPresetJson = useCallback(async () => {
     if (!hasMore || isLoading) return;
@@ -177,7 +178,7 @@ const handlePresetClicked = (item:PresetData, id:string, trackerType:string, nam
 };
 const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
 
- return encodeURIComponent(`/preset?presetId=${item?.id}&type=${trackerType}`);
+ return encodeURIComponent(`/preset?presetId=${item?.id}0&limit=1&offset=${index}&type=${trackerType}`);
 }
 const getCompFilterdData = (data: string[]) => {
   const res: string[] = [];
