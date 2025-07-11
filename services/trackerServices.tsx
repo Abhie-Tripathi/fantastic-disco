@@ -296,6 +296,8 @@ export const useTrackerServices = () => {
    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
       
       const eventType = type;
+      console.log("");
+      
       const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
           type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION" ? '/similar':""}/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
@@ -305,13 +307,15 @@ export const useTrackerServices = () => {
         );
         return response;
     }
-   const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any, trackerType?:string) => {
+    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any, trackerType?:string) => {
       const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
-      const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
-    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?type=${eventTypeParam}&view=map`, {
+    console.log("eventType", eventType);
+    
+      const eventTypeParam = eventType !== null ? eventType :"";
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam!==""?`eventType=${eventTypeParam}&`:""}view=map`, {
       method: "GET",
       params: params
     },true);
