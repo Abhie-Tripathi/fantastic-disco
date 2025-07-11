@@ -1022,7 +1022,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      {event?.basic?.matchedKeywords?.[0]}{" "}
+                      {event?.basic?.matchedKeywords?.[0].replaceAll("_"," ")}{" "}
                       <span className="text-xs font-bold text-muted-foreground">
                       {event?.basic?.matchedKeywords?.length && event.basic.matchedKeywords.length > 1 && `+${event.basic.matchedKeywords.length - 1}`}
                       </span>
@@ -1030,7 +1030,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     </TooltipTrigger>
                     <TooltipContent>
                       {event?.basic?.matchedKeywords
-                        ?.map((item) => item)
+                        ?.map((item) => item.replaceAll("_"," "))
                         .join(" | ")}
                     </TooltipContent>
                   </Tooltip>
