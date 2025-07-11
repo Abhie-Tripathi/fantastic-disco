@@ -25,7 +25,7 @@ const UserCollectionPage = () => {
     <div className="h-full">
       {userToken ? (
         <FilterProvider>
-          <PrivatePresets isPublic={!userToken?false:true} />
+          <PrivatePresets isPublic={false} isFull={true}/>
         </FilterProvider>
       ) : (
         <PublicPresets isPublic={true} />

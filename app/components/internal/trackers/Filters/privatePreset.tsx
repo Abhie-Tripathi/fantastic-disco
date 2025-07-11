@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useRef } from "react";
 interface Props {
   isPublic?: boolean;
+  isFull?: boolean;
   template?: any;
   handlePresetClick?: (item: any, id: string, trackerType: string, name: string) => void;
   setShowTemplate?: (val: boolean) => void;
@@ -29,6 +30,7 @@ const PrivatePresets = (props: Props) => {
       containerRef={containerRef}
       selectedCategory={selectedCategory}
       isPublic={props.isPublic}
+      isFull = {props.isFull}
     />
   );
 };
