@@ -863,7 +863,7 @@ const stepsConfig =[
       accessLevel: editData?.tracker?.accessLevel,
       filterValues
     };
-    console.log("filterValues",formData, defaultType);
+    console.log(formData, defaultType);
     
 
       const secondLast = pathName[pathName.length - 2];
