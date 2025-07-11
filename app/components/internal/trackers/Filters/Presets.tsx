@@ -188,7 +188,7 @@ const handlePresetClicked = (item:PresetData, id:string, trackerType:string, nam
 };
 const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
 
- return encodeURIComponent(`/preset?presetId=${item?.id}&limit=1&offset=${index}&type=${trackerType}`);
+ return encodeURIComponent(`/preset?presetId=${item?.id}0&limit=1&offset=${index}&type=${trackerType}`);
 }
 const getCompFilterdData = (data: string[]) => {
   const res: string[] = [];
@@ -300,7 +300,7 @@ const limit=3;
                   key={index}>
             <div
               key={`${item.id}-${index}`}
-              className="w-full p-2 gap-3 flex items-center flex-col h-[350px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
+              className="w-full p-2 gap-3 flex items-center flex-col h-[350px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto hide-scrollbar"
               // onClick={
               //   item.enabled
               //     ? () => handlePresetClick(item, item.id, item.url, item.trackerName)

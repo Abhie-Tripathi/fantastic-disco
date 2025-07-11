@@ -198,7 +198,7 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
-        <div className="hidden md:flex items-center gap-2">
+        <div className="flex md:hidden items-center gap-2">
             <Link href="https://whr.ai/gtm">
             <Image src={HeroLogo} alt="logo" width={40} height={40} />
             </Link>

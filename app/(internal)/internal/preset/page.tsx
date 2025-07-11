@@ -4,11 +4,12 @@ import Image from "next/image";
 import TrackerPublic from "@/public/trackerPublic.jpg";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useTrackerServices } from "@/services/trackerServices";
 import { isEventeli } from "@/config";
 import Loading from "@/components/ui/Loading";
 import { PresetData } from '@/types/trackers';
+import NotFound from "@/app/not-found";
 const Preset = () => {
   const searchParams = useSearchParams();
   const trackerType = searchParams.get("type");
@@ -20,7 +21,7 @@ const Preset = () => {
   const { presetData, createTracker } = useTrackerServices();
   const [isLoading, setIsLoading] = useState(false);
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData>();
-
+  const [fetchError,setFetchError] = useState(false);
   const fetchPresetJson = useCallback(async () => {
     if (isLoading) return;
 
@@ -32,12 +33,22 @@ const Preset = () => {
       };
 
       const result = await presetData(data);
+      console.log("result",);
+      
       if (result) {
         setPresetTemplateData(result?.trackers[0]);
         createTrackerHandler(result?.trackers[0]);
       }
+      else {
+        console.log("error is error");
+        
+        return (
+      <NotFound />
+    );
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setFetchError(true);
     } finally {
       setIsLoading(false);
     }
@@ -107,6 +118,7 @@ const Preset = () => {
   
   return (
     <div className="relative h-screen w-full">
+      {fetchError && <NotFound/>}
       <Loading/>
     </div>
   );
