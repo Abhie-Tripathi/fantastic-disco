@@ -53,7 +53,7 @@ export default function KeywordFilter({
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
-  const enabled = morphedData.globalAndTourings.isEnabled;
+  const enabled = morphedData.keywords.isEnabled;
 
   useEffect(() => {
     const includeKeywords = [
