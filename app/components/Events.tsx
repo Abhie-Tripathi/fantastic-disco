@@ -114,7 +114,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
+            className={`flex justify-between items-center !sticky !top-[120px] md:!top-0  bg-background z-[5] transition-padding duration-200 pt-2 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div

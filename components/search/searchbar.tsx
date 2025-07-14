@@ -1,24 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import { debounce } from "lodash";
+import type React from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2, ChevronDown } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
-import { Event } from "@/types/events";
+import type { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formattedDateRange } from "@/utils/date";
@@ -28,7 +15,9 @@ interface MultiSelectSearchBar {
   varient?: "small" | "medium" | "large";
 }
 
-export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSearchBar) {
+export default function MultiSelectSearchBar({
+  varient = "medium",
+}: MultiSelectSearchBar) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
@@ -37,10 +26,75 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   const searchBarRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout>();
+
   const { getEvents, isLoading } = useEventsService();
   const isDashboard = pathName == "/internal";
+
+  // Debounced search effect
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [searchTerm]);
+
+  // Fetch search results when debounced term changes
+  useEffect(() => {
+    const fetchSearchResults = async (value: string) => {
+      if (value) {
+        try {
+          // Cancel any ongoing request
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+          }
+          // Create new AbortController for this request
+          abortControllerRef.current = new AbortController();
+
+          const response = await getEvents(
+            {
+              query: value,
+            },
+            abortControllerRef.current.signal
+          );
+
+          const filteredResults =
+            (response?.events as Event[])?.filter(
+              (event) =>
+                !selectedItems.some((item) => item.basic.id === event.basic.id)
+            ) || [];
+
+          setSearchResults(filteredResults);
+        } catch (err) {
+          // Only log error if it's not an abort error
+          if (err instanceof Error && err.name !== "AbortError") {
+            console.error("Error fetching search results:", err);
+          }
+          setSearchResults([]);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    };
+
+    fetchSearchResults(debouncedSearchTerm);
+  }, [debouncedSearchTerm, selectedItems]);
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -62,60 +116,58 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
     }
   }, [localFilters]);
 
-  const debouncedSearch = useCallback(
-    debounce(async (value: string) => {
-      if (value) {
-        try {
-          // Cancel any ongoing request
-          if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-          }
+  // Reset highlighted index when search results change
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [searchResults]);
 
-          // Create new AbortController for this request
-          abortControllerRef.current = new AbortController();
-
-          const response = await getEvents(
-            {
-              query: value,
-            },
-            abortControllerRef.current.signal
-          );
-
-          const filteredResults =
-            (response?.events as Event[])?.filter(
-              (event) =>
-                !selectedItems.some((item) => item.basic.id === event.basic.id)
-            ) || [];
-          setSearchResults(filteredResults);
-        } catch (err) {
-          // Only log error if it's not an abort error
-          if (err instanceof Error && err.name !== "AbortError") {
-            console.error("Error fetching search results:", err);
-          }
-          setSearchResults([]);
-        }
-      } else {
-        setSearchResults([]);
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+        setHighlightedIndex(-1);
       }
-    }, 300),
-    [selectedItems]
-  );
+    };
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchTerm(value);
-      setOpen(true);
-      debouncedSearch(value);
-    },
-    [debouncedSearch]
-  );
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Scroll highlighted item into view
+  useEffect(() => {
+    if (highlightedIndex >= 0 && listRef.current) {
+      const highlightedElement = listRef.current.children[
+        highlightedIndex
+      ] as HTMLElement;
+      if (highlightedElement) {
+        highlightedElement.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [highlightedIndex]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    setOpen(value.length > 0);
+    setHighlightedIndex(-1);
+  }, []);
 
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      // Select highlighted item if available
+      if (highlightedIndex >= 0 && searchResults[highlightedIndex]) {
+        handleItemSelect(searchResults[highlightedIndex]);
+      }
       setOpen(false);
     },
-    [selectedItems]
+    [highlightedIndex, searchResults]
   );
 
   const handleItemSelect = useCallback(
@@ -132,11 +184,16 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
         }
 
         router.push(`/internal/search/events?${newParams.toString()}`);
-
         return newSelectedItems;
       });
+
       setSearchTerm("");
       setSearchResults([]);
+      setOpen(false);
+      setHighlightedIndex(-1);
+
+      // Refocus input for continued searching
+      setTimeout(() => inputRef.current?.focus(), 0);
     },
     [router]
   );
@@ -147,6 +204,7 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
         const newSelectedItems = prev.filter(
           (item) => item.basic.id !== itemToRemove.basic.id
         );
+
         const eventIds = newSelectedItems
           .map((event) => event.basic.id)
           .join(",");
@@ -157,105 +215,208 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
         }
 
         router.push(`?${newParams.toString()}`);
-
         return newSelectedItems;
       });
+
+      // Refocus input after removing item
+      setTimeout(() => inputRef.current?.focus(), 0);
     },
     [router]
   );
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!open && e.key !== "ArrowDown" && e.key !== "Enter") return;
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!open && searchTerm.length > 0) {
+            setOpen(true);
+          } else {
+            setHighlightedIndex((prev) =>
+              prev < searchResults.length - 1 ? prev + 1 : prev
+            );
+          }
+          break;
+
+        case "ArrowUp":
+          e.preventDefault();
+          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+          break;
+
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && searchResults[highlightedIndex]) {
+            handleItemSelect(searchResults[highlightedIndex]);
+          }
+          break;
+
+        case "Escape":
+          e.preventDefault();
+          setOpen(false);
+          setHighlightedIndex(-1);
+          inputRef.current?.blur();
+          break;
+
+        case "Tab":
+          setOpen(false);
+          setHighlightedIndex(-1);
+          break;
+
+        case "Backspace":
+          if (searchTerm === "" && selectedItems.length > 0) {
+            e.preventDefault();
+            const lastItem = selectedItems[selectedItems.length - 1];
+            handleRemoveItem(lastItem);
+          }
+          break;
+      }
+    },
+    [
+      open,
+      highlightedIndex,
+      searchResults,
+      handleItemSelect,
+      searchTerm,
+      selectedItems,
+      handleRemoveItem,
+    ]
+  );
+
+  const handleFocus = () => {
+    if (searchTerm.length > 0) {
+      setOpen(true);
+    }
+  };
+
   useEffect(() => {
     return () => {
-      debouncedSearch.cancel();
       // Cancel any pending request when component unmounts
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
+      }
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
       }
     };
   }, []);
 
   return (
     <form onSubmit={handleSearchSubmit} className="w-full">
-      <div ref={searchBarRef} className="relative">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+      <div ref={containerRef} className="relative">
+        <div
+          ref={searchBarRef}
+          className={`flex items-center flex-wrap bg-background rounded-md shadow-sm border ${
+            isDashboard ? "p-2" : "p-0"
+          }`}
+        >
+          <Search
+            className={`ml-2 text-gray-400 flex-shrink-0 ${
+              isDashboard ? "" : "w-4 h-4"
+            } ${
+              varient === "small"
+                ? "w-3 h-3"
+                : varient === "large"
+                ? "w-5 h-5"
+                : "w-4 h-4"
+            }`}
+          />
+
+          {selectedItems.map((item) => (
             <div
-              className={`flex items-center flex-wrap bg-background rounded-md shadow-sm border ${
-                isDashboard ? "p-2" : "p-0"
+              key={item.basic.id}
+              className={`flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 ${
+                varient === "small"
+                  ? "text-xs"
+                  : varient === "large"
+                  ? "text-base"
+                  : "text-sm"
               }`}
             >
-              <Search
-                className={`ml-2 text-gray-400 ${isDashboard ? "" : "w-4 h-4"} ${
-                  varient === "small" ? "w-3 h-3" : 
-                  varient === "large" ? "w-5 h-5" : 
-                  "w-4 h-4"
-                }`}
-              />
-              {selectedItems.map((item) => (
-                <div
-                  key={item.basic.id}
-                  className={`flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 ${
-                    varient === "small" ? "text-xs" :
-                    varient === "large" ? "text-base" :
-                    "text-sm"
-                  }`}
-                >
-                  <span className="text-sm text-gray-900 dark:text-gray-100">
-                    {item.basic.name}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      handleRemoveItem(item);
-                      e.preventDefault();
-                    }}
-                    className="ml-2 focus:outline-none"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-              <div className="flex-grow flex items-center">
-                <Input
-                  type="text"
-                  placeholder={selectedItems.length ? "" : "Search Events"}
-                  value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className={`pl-2 py-0 pr-4 w-full border-none focus:ring-0 shadow-none ${
-                    isDashboard ? "text-base" : "text-sm"
-                  } ${
-                    varient === "small" ? "text-xs h-7" :
-                    varient === "large" ? "text-lg h-11" :
-                    "text-sm h-9"
-                  }`}
-                />
-              </div>
+              <span className="text-sm text-gray-900 dark:text-gray-100 truncate max-w-[150px]">
+                {item.basic.name}
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleRemoveItem(item);
+                }}
+                className="ml-2 focus:outline-none hover:bg-gray-300 rounded-full p-0.5"
+                tabIndex={-1}
+              >
+                <X size={12} />
+              </button>
             </div>
-          </PopoverTrigger>
-          <PopoverContent
-            className="p-0 w-[var(--radix-popover-trigger-width)] mt-1 border-none shadow-lg"
-            align="start"
-          >
-            <Command shouldFilter={false}>
-              <CommandInput
-                value={searchTerm}
-                onValueChange={handleSearchChange}
-              />
-              <CommandEmpty>
-                {isLoading ? "Searching..." : "No results found."}
-              </CommandEmpty>
-              {/* {error && (
-                <div className="p-2 text-red-500">Error: {error.message}</div>
-              )} */}
-              <CommandGroup>
-                <CommandList>
-                  {searchResults.map((event, index) => (
-                    <CommandItem
+          ))}
+
+          <div className="flex-grow flex items-center min-w-[120px]">
+            <Input
+              ref={inputRef}
+              type="text"
+              placeholder={selectedItems.length ? "" : "Search Events"}
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={handleFocus}
+              className={`pl-2 py-0 pr-4 w-full border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 shadow-none ${
+                isDashboard ? "text-base" : "text-sm"
+              } ${
+                varient === "small"
+                  ? "text-xs h-7"
+                  : varient === "large"
+                  ? "text-lg h-11"
+                  : "text-sm h-9"
+              }`}
+              autoComplete="off"
+              role="combobox"
+              aria-expanded={open}
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              aria-activedescendant={
+                highlightedIndex >= 0
+                  ? `event-option-${highlightedIndex}`
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+
+        {open && (
+          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+            {isLoading ? (
+              <div className="flex items-center justify-center p-4 py-8 text-center">
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <span className="text-sm text-gray-600">Searching...</span>
+              </div>
+            ) : searchResults.length === 0 ? (
+              <div className="p-4 py-8 text-center text-sm text-gray-600">
+                {searchTerm.trim() === ""
+                  ? "Type to search events..."
+                  : "No events found."}
+              </div>
+            ) : (
+              <ul ref={listRef} role="listbox" className="py-1">
+                {searchResults.map((event, index) => {
+                  const isHighlighted = index === highlightedIndex;
+
+                  return (
+                    <li
                       key={event.basic.id || index}
-                      onSelect={() => handleItemSelect(event)}
-                      className="flex flex-col items-start"
+                      id={`event-option-${index}`}
+                      role="option"
+                      aria-selected={isHighlighted}
+                      className={`px-2 py-1.5 cursor-pointer flex flex-col items-start transition-colors ${
+                        isHighlighted
+                          ? "bg-accent"
+                          : "hover:bg-gray-50"
+                      }`}
+                      onClick={() => handleItemSelect(event)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
                     >
-                      <div className="font-medium">
+                      <div className="font-medium text-sm">
                         <span>{event.basic.name}</span>
                         <span className="text-xs text-muted-foreground ml-2">
                           {formattedDateRange(
@@ -265,16 +426,16 @@ export default function MultiSelectSearchBar({varient = "medium"}:MultiSelectSea
                           )}
                         </span>
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                        <div className="text-sm text-gray-500">
                         {formatLocationParts(event.basic.eventLocation, true)}
                       </div>
-                    </CommandItem>
-                  ))}
-                </CommandList>
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
     </form>
   );

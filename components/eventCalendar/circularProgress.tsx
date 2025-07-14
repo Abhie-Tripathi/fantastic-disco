@@ -40,8 +40,8 @@ export default function NestedCircularProgress({
           alignItems: "center",
         }}
       >
-        <span className="text-sm font-bold text-gray-800">{total}</span>
-        <span className="text-[10px] text-gray-600">Events</span>
+        <span className="text-sm font-bold text-gray-800 dark:text-white">{total}</span>
+        <span className="text-[10px] text-gray-600 dark:text-white">Events</span>
       </div>
     </div>
   );

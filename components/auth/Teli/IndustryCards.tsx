@@ -21,7 +21,7 @@ const Card = ({
 
   return (
     <li
-      className={`shadow-[1.26px_2.53px_7.59px_0px_rgba(237,235,235,0.2)] relative flex flex-col gap-2 items-center justify-between p-4 border bg-white w-36 h-24 rounded-lg cursor-pointer ${
+      className={`shadow-[1.26px_2.53px_7.59px_0px_rgba(237,235,235,0.2)] relative flex flex-col gap-2 items-center justify-evenly p-2 border bg-white w-32 h-20 rounded-lg cursor-pointer ${
         activeIndustry === slug ? "border-primary" : "border-[#E6E6E6]"
       } hover:border-primary`}
       onClick={
@@ -31,10 +31,10 @@ const Card = ({
       }
     >
       <Image
-        className="w-8 h-8 aspect-square"
+        className="w-[30px] h-[30px] aspect-square"
         src={image ?? ""}
-        width={"32"}
-        height={"32"}
+        width={"30"}
+        height={"30"}
         alt={"Industry Icon"}
       />
       <p className="text-[var(--tertiary-text-color)] text-center text-xs font-medium">
@@ -102,7 +102,7 @@ const IndustryCards = ({
   handleBackButton: () => void;
 }) => {
   return (
-    <div className="max-w-5xl self-center">
+    <div className="max-w-4xl self-center">
       {hasSubIndustries && selectedIndustry && (
         <ActiveCard
           selectedIndustry={selectedIndustry}

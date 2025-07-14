@@ -138,7 +138,7 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
                         </Badge>
                       )}
                     </div>
-                    <h3 className="font-semibold text-sm mb-1.5 line-clamp-2">
+                    <h3 className="font-semibold text-sm mb-1.5 line-clamp-2 text-black">
                       {event.basic.name}
                     </h3>
                     <div className="text-xs text-gray-600 mb-1">
