@@ -302,7 +302,7 @@ export default function EventCalendar({
       console.log(start.toDate(), end.toDate());
       switch (view) {
         case Views.WEEK:
-          start.startOf("week").add(1, "day");
+          start.startOf("week");
           end.endOf("week");
           break;
         case Views.MONTH:
