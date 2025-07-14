@@ -15,6 +15,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import PremiumModal from "../premium-modal";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
+import { useAuthContext } from "@/context";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 interface FilterSection {
   id: string;
@@ -50,12 +52,12 @@ const FilterContent = ({
   refs,
   trackerType
 }: FilterContentProps) => {
-  const { localFilters, deleteMultipleLocalFilters } = useFilterContext();
   const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
+  const {membershipData} = useAuthContext()
+  const isPremium = !!membershipData && membershipData.membership > MembershipPlan.Freemium;
+  const isFreemium = !!membershipData && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
 
-  console.log("is", isPremiumModalOpen)
-  
   return (
     <>
     <div className="flex-1">
@@ -88,8 +90,9 @@ const FilterContent = ({
                 >
                   <div className="text-sm flex gap-2 items-center uppercase font-medium w-full">
                     <Filter className="w-4 h-4"/>
-                    {section.label}
-                    {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) && (
+                    <span className="">{section.label}</span>
+                    {isPremium && <span className="px-1 border bg-background">Premium</span>}
+                    {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label)&& isFreemium  && (
                       <RainbowButton size="sm"  className="ml-auto h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
                     )}
                   </div>
