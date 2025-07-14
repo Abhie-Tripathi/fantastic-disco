@@ -130,9 +130,10 @@ const MobileSidebar = () => {
           <Button
           variant="outline"
           size="sm"
+          className="ml-2"
           onClick={handleUpgradeClick}
         >
-          <span className="hidden sm:inline">Upgrade</span>
+          Upgrade
         </Button>
         )}
       </div>
