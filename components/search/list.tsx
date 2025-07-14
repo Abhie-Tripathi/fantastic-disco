@@ -888,7 +888,7 @@ const EventListItem = ({
                   <div className="flex items-center gap-2">
                     <p
                       className={cn(
-                        "text-sm text-gray-600 mt-4",
+                        "text-sm [color:var(--secondary-text-color)] mt-4",
                         isCancelled || isPostponed ? "line-through" : ""
                       )}
                     >
@@ -969,7 +969,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 {tag.name}
                               </Badge>
@@ -988,7 +988,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="text-gray-600 capitalize rounded-sm"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
                               <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
                               <span>{event.basic.rating}</span>
@@ -1010,7 +1010,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 <TicketPercent className="w-3 h-3 mr-1" />
                                 <span>Free</span>
@@ -1027,7 +1027,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 <TicketPercent className="w-3 h-3 mr-1" />
                                 <span>Paid</span>
@@ -1045,7 +1045,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="text-gray-600 capitalize rounded-sm"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
                               <TicketPercent className="w-3 h-3 mr-1" />
                               <span>Paid</span>
@@ -1068,7 +1068,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="text-gray-600 capitalize rounded-sm"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
                               {event.advance?.maturity}
                             </Badge>
@@ -1086,7 +1086,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 {event.advance?.frequency}
                               </Badge>
@@ -1141,7 +1141,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 Forecasted Next Edition :{" "}
                                 {format(event.advance?.rehostDate, "MMM yyyy")}
@@ -1160,7 +1160,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize rounded-sm"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                               >
                                 {(event.insights?.rankings as any).rank}
                                 <sup className="mr-1">
@@ -1187,7 +1187,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize"
+                                className="[color:var(--secondary-text-color)] capitalize"
                               >
                                 {event.audience.audienceZone} Audience
                               </Badge>
@@ -1207,7 +1207,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="text-gray-600 capitalize"
+                              className="[color:var(--secondary-text-color)] capitalize"
                             >
                               Trust Score: {event.insights?.trustScore}
                             </Badge>
@@ -1228,7 +1228,7 @@ const EventListItem = ({
                             <TooltipTrigger>
                               <Badge
                                 variant="outline"
-                                className="text-gray-600 capitalize"
+                                className="[color:var(--secondary-text-color)] capitalize"
                               >
                                 Reputation Score :{" "}
                                 {event.insights?.reputationScore}
@@ -1247,7 +1247,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                              className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
                               Match Keyword :{" "}
                               {event.basic.matchedKeywords?.join(" | ")}
@@ -1267,7 +1267,7 @@ const EventListItem = ({
                             <Badge
                               variant="outline"
                               className={cn(
-                                "flex items-center gap-2 text-gray-600 capitalize rounded-sm",
+                                "flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm",
                                 getMatchKeywordsColor(
                                   event.basic.matchedKeywordsPercentage
                                 )
@@ -1299,7 +1299,7 @@ const EventListItem = ({
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                              className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
                               <div className="flex gap-1">
                                 {Object.entries(event.audience.audienceSpread)
@@ -1363,7 +1363,7 @@ const EventListItem = ({
                         {showValues.includes(Show.estimatedExhibitors) &&
                           event.insights?.estimatedExhibitors !== undefined && (
                             <div>
-                              <p className="text-xs md:text-sm text-gray-600 font-medium">
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                                 Estimated Exhibitors
                               </p>
                               <p className="text-base md:text-lg font-semibold text-primary">
@@ -1375,7 +1375,7 @@ const EventListItem = ({
                           )}
                         {event.insights?.estimatedAttendance !== undefined && (
                           <div>
-                            <p className="text-xs md:text-sm text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                               Estimated Visitors
                             </p>
                             <p className="text-base md:text-lg font-semibold text-primary">
@@ -1389,7 +1389,7 @@ const EventListItem = ({
                           showValues.includes(Show.economicImpact) &&
                           event.insights?.economicImpact !== undefined && (
                             <div>
-                              <p className="text-xs md:text-sm text-gray-600 font-medium">
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                                 Economic Impact
                               </p>
                               <p className="text-base md:text-lg font-semibold text-primary">
@@ -1441,7 +1441,7 @@ const EventListItem = ({
                         {showValues.includes(Show.estimatedExhibitors) &&
                           event.insights?.estimatedExhibitors !== undefined && (
                             <div>
-                              <p className="text-xs md:text-sm text-gray-600 font-medium">
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                                 Estimated Exhibitors
                               </p>
                               <p className="text-base md:text-lg font-semibold text-primary">
@@ -1456,7 +1456,7 @@ const EventListItem = ({
                           )}
                         {event.insights?.estimatedAttendance !== undefined && (
                           <div>
-                            <p className="text-xs md:text-sm text-gray-600 font-medium">
+                            <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                               Estimated Visitors
                             </p>
                             <p className="text-base md:text-lg font-semibold text-primary">
@@ -1471,7 +1471,7 @@ const EventListItem = ({
                           showValues.includes(Show.economicImpact) &&
                           event.insights?.economicImpact !== undefined && (
                             <div>
-                              <p className="text-xs md:text-sm text-gray-600 font-medium">
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                                 Economic Impact
                               </p>
                               <p className="text-base md:text-lg font-semibold text-primary">
@@ -1657,7 +1657,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                       .eventLocation as unknown as HolidayEventLocation[]
                   )}
                 </p>
-                <p className="text-sm text-gray-600 mt-4">
+                <p className="text-sm [color:var(--secondary-text-color)] mt-4">
                   {formattedDateRange(
                     event.basic.startDateTime,
                     event.basic.endDateTime
@@ -1708,7 +1708,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         <TooltipTrigger>
                           <Badge
                             variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
+                            className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                           >
                             {eventType}
                           </Badge>
@@ -1727,7 +1727,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
                 <div className="max-w-[94px] h-full">
                   <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                    <p className="text-xs text-gray-600 font-medium text-center mb-1">
+                    <p className="text-xs [color:var(--secondary-text-color)] font-medium text-center mb-1">
                       {
                         (
                           event.basic?.eventLocation as any

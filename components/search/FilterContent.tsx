@@ -88,10 +88,19 @@ const FilterContent = ({
                   // ref={section.label==="Basic Filters"?refs?.basicFilterRef:refs?.advanceFilterRef}
                   className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
                 >
-                  <div className="text-sm flex gap-2 items-center uppercase font-medium w-full">
+                  <div className="text-sm flex gap-2 items-center w-full">
                     <Filter className="w-4 h-4"/>
-                    <span className="">{section.label}</span>
-                    {isPremium && <span className="px-1 border bg-background">Premium</span>}
+                    <span 
+  className={isPremium && ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) ? "bg-clip-text text-transparent capitalize" : ""}
+  style={isPremium && ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) ? {
+    background: "linear-gradient(96.48deg, #F3B28E 14.76%, #E579C6 36.95%, #AC75E5 71.57%, #AEBFFF 99.98%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent"
+  } : {}}
+>
+  {section.label}
+</span>
+                    {isPremium &&  ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) && <span className="px-2 border bg-background capitalize rounded-xl font-normal text-xs">Premium</span>}
                     {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label)&& isFreemium  && (
                       <RainbowButton size="sm"  className="ml-auto h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
                     )}
@@ -220,6 +229,7 @@ const FilterContent = ({
       </div>
     </div>
         <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen}/>
+        {/* <PaymentSuccessModal isSuccess={true} membership={40} onOpenChange={()=>{}} open={true}/> */}
       </>
   );
 };

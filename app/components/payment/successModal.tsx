@@ -17,7 +17,7 @@ type ModalProps = {
   membership: number;
 };
 
-const featureList: {
+export const featureList: {
   [item: string]: string[];
 } = {
   Essential: [
