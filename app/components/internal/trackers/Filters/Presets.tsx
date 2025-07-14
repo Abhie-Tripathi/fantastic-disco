@@ -228,7 +228,7 @@ const limit=3;
 
 
 }
-console.log("isFull",isFull);
+
 
   return (
     <div className="w-full">

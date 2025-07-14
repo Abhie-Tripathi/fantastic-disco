@@ -711,7 +711,6 @@ const stepsConfig =[
     // console.log("foundedTemplate", foundTemplate);
     
     // setTemplate(foundTemplate);
-    console.log("trackerType",trackerType);
     
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
