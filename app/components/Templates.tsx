@@ -868,7 +868,7 @@ Do not include the competitor platform names in the output. Only return publicly
               id="customTracker"
               className="flex justify-center items-center gap-2 flex-col md:flex-row"
             >
-              <Link href={`/usercollection`}>
+              <Link href={`/collections`}>
               <div className="text-[var(--primary-color)] hover:underline cursor-pointer block">Explore Curated Collections</div>
               </Link>
               or

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import { isEventeli } from "@/config";
 
-const UserCollectionPage = () => {
+const CollectionsPage = () => {
   const cookieStore = cookies();
   const userToken = cookieStore.get(
     process.env.NEXT_COOKIE_PREFIX
@@ -34,4 +34,4 @@ const UserCollectionPage = () => {
   );
 };
 
-export default UserCollectionPage;
+export default CollectionsPage;

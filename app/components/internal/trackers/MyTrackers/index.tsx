@@ -197,8 +197,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     hideTemplates(false);
   }}>Create</Button>
   <Link
-  href="/usercollection"
-  target="_blank"
+  href="/collections"
   rel="noopener noreferrer"
 >
   <Button className="h-[42px]" variant="outline">Collections</Button>

@@ -582,7 +582,7 @@ const stepsConfig =[
       const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
-      .map(value => value.replace(/,/g, ''))
+      .map(value => value?.replace(/,/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -707,6 +707,12 @@ const stepsConfig =[
   }
    const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
     let finalResult;
+    const foundTemplate = templates.find(t => t.name === searchParams.get("type"));
+    // console.log("foundedTemplate", foundTemplate);
+    
+    // setTemplate(foundTemplate);
+    console.log("trackerType",trackerType);
+    
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
@@ -721,7 +727,7 @@ const stepsConfig =[
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
-        template?.inputAreas?.map((field: InputArea, index: number) => (
+        (template || foundTemplate)?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
 
@@ -1275,8 +1281,9 @@ const stepsConfig =[
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
     }
-    if(searchParams.get("collectionId"))
+    if(searchParams.get("collectionId")){
     fetchPresetJson();
+    }
   }, [editData, searchParams]);
   // const [presetTemplateData1,setPresetTemplateData1]=useState();
 const fetchPresetJson = async () => {

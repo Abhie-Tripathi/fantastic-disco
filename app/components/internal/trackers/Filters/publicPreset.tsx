@@ -16,7 +16,7 @@ const PublicPresets = (props: Props) => {
   const segments = [
     { label: "Solutions", href: "https://whr.ai/gtm/solutions", external: true },
     { label: "Tracker", href: "https://whr.ai/gtm/solutions/competitor-tracking", external: true },
-    { label: "Collection", href: "/usercollection", external: false },
+    { label: "Collections", href: "/collections", external: false },
   ];
 
   return (
@@ -60,12 +60,13 @@ const PublicPresets = (props: Props) => {
       <div className="mx-[2.5%] text-[40px] max-[775px]:text-[28px]">
         {props.isPublic && (
           <>
-            <div>User Collections</div>
+            <div className="line leading-9">Collections</div>
             <div 
               className="text-[#171717] md:text-lg text-wrap break-words" 
               style={{
                 color: "var(--secondary-text-color)", 
-                fontSize: "14px"
+                fontSize: "14px",
+                lineHeight:"20px"
               }}
             >
               Activate intelligence with agents that gather and deliver precise data.

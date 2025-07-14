@@ -241,7 +241,7 @@ const limit=3;
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
       </div> */}
       
-      <div className="flex mx-auto w-full md:w-[95%] gap-4 sticky pt-4 bg-background">
+      <div className="flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background">
         <div className="w-full bg-background">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2 mx-2.5 md:mx-0">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
@@ -249,7 +249,7 @@ const limit=3;
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none w-full bg-transparent"
-              placeholder="Search by User Collections name, Country or Category"
+              placeholder="Search by Collection name, Country or Category"
             />
           </div>
         </div>
@@ -335,48 +335,42 @@ const limit=3;
   {/* <div className="border-t border-gray-200 -m-1" /> */}
 
   <div className="text-[var(--secondary-text-color)] h-auto">
-    {/* {structured(item?.data, item?.trackerType)?.substring(0, 60)} */}
-    <div className="">
-  {structured(item?.data, item?.trackerType)
-  ?.split(",")
-  ?.map((entry, i) => {
-    const isLong = entry.length > 35;
-    const truncated = isLong ? `${entry.substring(0, 35)}...` : entry;
+  <div className="flex flex-wrap items-center">
+    {structured(item?.data, item?.trackerType)
+      ?.split(",")
+      ?.map((entry, i) => {
+        const isLong = entry.length > 35;
+        const truncated = isLong ? `${entry.substring(0, 35)}...` : entry;
 
-    return (
-      <TooltipProvider key={i}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-1 mb-1 cursor-default"
-            >
-              {truncated}
-            </div>
-          </TooltipTrigger>
-          {isLong && (
-            <TooltipContent
-                  >
-                    <p>
-                      {entry}
-                    </p>
-                  </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
-    );
-  })}
+        return (
+          <TooltipProvider key={i}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-1 mb-1 cursor-default"
+                >
+                  {truncated}
+                </div>
+              </TooltipTrigger>
+              {isLong && (
+                <TooltipContent>
+                  <p>{entry}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      })}
 
+    {/* 👇 Make this inline with the tags */}
     <span
-  className="pl-1 text-[var(--secondary-text-color)] hover:underline cursor-pointer block"
-  style={{ fontSize: "12px" }}
->
-  +Show More
-</span>
-
-    </div>
-    
-    
+      className="text-[var(--secondary-text-color)] hover:underline cursor-pointer text-[12px] inline-block mb-1"
+    >
+      +Show More
+    </span>
   </div>
+</div>
+
 </div>
 
                 
