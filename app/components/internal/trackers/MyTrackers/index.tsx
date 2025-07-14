@@ -17,7 +17,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { PaginationComponent } from "@/components/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
-import { MoveUpRight, Route, Search } from "lucide-react";
+import { LibraryBig, MoveUpRight, Route, Search } from "lucide-react";
 import {
   MagnifyingGlass,
  
@@ -200,7 +200,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   href="/collections"
   rel="noopener noreferrer"
 >
-  <Button className="h-[42px]" variant="outline">Collections</Button>
+  <Button className="h-[42px]" variant="outline">{isMobile?<LibraryBig className="text-[]"/>:"Collections"}</Button>
   </Link>
 {!isMobile &&
 <Link
