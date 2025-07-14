@@ -294,7 +294,7 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
             >
               Premium
             </RainbowButton>
-          </div>
+            </div>
           {/* <div
             className={styles.exportType_modal_button}
             onClick={exportDataHandler}
