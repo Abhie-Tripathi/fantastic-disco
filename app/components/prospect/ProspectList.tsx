@@ -139,6 +139,10 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
     );
   };
 
+  const getHostURL = (url: string) => {
+    return new URL(url).hostname
+  }
+
   return (
      <div className="flex gap-4 w-full items-center">
       {isBulkActionActive && (
@@ -168,7 +172,7 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
             ) : companyDetail.website && !faviconError ? (
               <div className="w-16 h-16 relative">
                 <img
-                  src={`https://logo.clearbit.com/${companyDetail.website}`}
+                  src={`https://logo.clearbit.com/${getHostURL(companyDetail.website)}`}
                   alt={`${companyDetail.name} website favicon`}
                   className="w-16 h-16 object-contain p-2 border rounded-md bg-white shadow-sm"
                   onError={(e) => {
