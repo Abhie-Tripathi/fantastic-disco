@@ -153,11 +153,14 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
         <div className="p-4 flex gap-6">
           {/* Logo with fallbacks (updated to match list.tsx) */}
           <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
-            {companyDetail.logo ? (
+            {companyDetail.logo && !faviconError ? (
               <img
                 src={companyDetail.logo}
                 alt={`${companyDetail.name} logo`}
                 className="w-16 h-16 object-contain rounded-lg shadow-lg bg-white border"
+                onError={()=>{
+                  setFaviconError(true)
+                }}
                 width={64}
                 height={64}
               />
