@@ -183,7 +183,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   ];
 
   const showHolidayScore =
-  (getFilterValue("eventTypes").includes("holiday") || (view == "unattended")) &&
+  (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
   (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds.length == 1);
 
 
@@ -317,9 +317,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </Link>
               )}
             </div>
-            <div className="text-sm text-muted-foreground truncate">
+            {event.basic.organizer?.prospectId ? <Link
+  href={`/internal/company/${event.basic.organizer.prospectId}`}
+  target="blank"
+  className="text-sm text-muted-foreground truncate overflow-hidden whitespace-nowrap block max-w-xs"
+  title={event.basic.organizer?.name}
+>
+  {event.basic.organizer?.name}
+</Link> : <div className="text-sm text-muted-foreground truncate">
               {event.basic.organizer?.name}
-            </div>
+            </div>}
           </div>
         </div>
       </TableCell>
@@ -1015,7 +1022,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      {event?.basic?.matchedKeywords?.[0]}{" "}
+                      {event?.basic?.matchedKeywords?.[0].replaceAll("_"," ")}{" "}
                       <span className="text-xs font-bold text-muted-foreground">
                       {event?.basic?.matchedKeywords?.length && event.basic.matchedKeywords.length > 1 && `+${event.basic.matchedKeywords.length - 1}`}
                       </span>
@@ -1023,7 +1030,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     </TooltipTrigger>
                     <TooltipContent>
                       {event?.basic?.matchedKeywords
-                        ?.map((item) => item)
+                        ?.map((item) => item.replaceAll("_"," "))
                         .join(" | ")}
                     </TooltipContent>
                   </Tooltip>
