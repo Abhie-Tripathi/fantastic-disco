@@ -231,7 +231,7 @@ export default function Navbar() {
               </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
-              ? "Edit Widget"
+              ? "Edit Widget": pathname.split('/')[1] === "collections"? " Collections"
               : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
