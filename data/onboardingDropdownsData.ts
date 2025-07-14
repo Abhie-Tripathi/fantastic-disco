@@ -17,6 +17,8 @@ import Local_Government from "/public/teliAuthIcons/industryIcons/Local_Governme
 import Media_and_Marketing from "/public/teliAuthIcons/industryIcons/media_marketing.svg";
 import Corporate_and_Brands from "/public/teliAuthIcons/industryIcons/enterprises.svg";
 import Others from "/public/teliAuthIcons/industryIcons/others.svg";
+import InfraAndTechnology from "/public/authIcons/infra_technology.svg";
+
 
 export const industryData: TeliIndustry[] = [
   {
@@ -115,12 +117,18 @@ export const industryData: TeliIndustry[] = [
     image: Media_and_Marketing,
     type: "city",
   },
-  {
-    name: "Corporate and Brands",
-    slug: "Corporate_Brands",
-    image: Corporate_and_Brands,
-    type: "city",
-  },
+  // {
+  //   name: "Infra and Technology",
+  //   slug: "Infra_Technology",
+  //   image: InfraAndTechnology,
+  //   type: "city",
+  // },
+  // {
+  //   name: "Corporate and Brands",
+  //   slug: "Corporate_Brands",
+  //   image: Corporate_and_Brands,
+  //   type: "city",
+  // },
   {
     name: "Others",
     slug: "Others",
