@@ -371,7 +371,9 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    
+    const publicEvents = async ()=>{
+      
+    }
     return {
       getTrackerCount,
       removeBookmark,
