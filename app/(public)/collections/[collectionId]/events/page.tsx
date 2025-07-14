@@ -1,5 +1,6 @@
 // app/collections/[collectionId]/page.tsx
 "use client"
+import TrackedEvent from '@/app/(internal)/internal/trackers/[trackerId]/trackedEvents/page.tsx'
 import NotFound from '@/app/not-found';
 import { useTrackerServices } from '@/services/trackerServices';
 import { useParams } from 'next/navigation';
@@ -86,5 +87,11 @@ export default function CollectionPage() {
   console.log("formData", formData);
   
       },[presetTemplateData])
-  return <div>Collection ID: {collectionId}</div>;
+  return (
+    <div>
+    Collection ID: {collectionId}
+    <TrackedEvent/>
+    </div>
+  )
+  
 }
