@@ -93,18 +93,8 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
   selectedCompaniesIds,
   toggleSelection,
 }) => {
-  const { checkCompanyLogo } = useCompanyService();
   const isMobile = useIsMobile();
   const [faviconError, setFaviconError] = useState(false);
-
-  // Compute logo URL
-  const compLogo = useMemo(() => {
-    if (companyDetail.logo) return companyDetail.logo;
-    if (companyDetail.website && !faviconError) {
-      return `https://logo.clearbit.com/${companyDetail.website}`;
-    }
-    return null;
-  }, [companyDetail.logo, companyDetail.website, faviconError]);
 
   const locationDisplay = useMemo(() => {
     const { cityName, countryName } = companyDetail.location || {};
