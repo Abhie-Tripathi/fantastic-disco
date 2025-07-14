@@ -60,7 +60,7 @@ const PublicPresets = (props: Props) => {
       <div className="mx-[2.5%] text-[40px] max-[775px]:text-[28px]">
         {props.isPublic && (
           <>
-            <div className="line leading-9">Collections</div>
+            <div className="line leading-9 py-2">Collections</div>
             <div 
               className="text-[#171717] md:text-lg text-wrap break-words" 
               style={{

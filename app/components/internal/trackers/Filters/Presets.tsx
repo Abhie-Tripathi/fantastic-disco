@@ -241,7 +241,7 @@ const limit=3;
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
       </div> */}
       
-      <div className="flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background">
+      <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
         <div className="w-full bg-background">
           <div className="border border-input rounded px-3 py-2 flex items-center gap-2 mx-2.5 md:mx-0">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
@@ -271,7 +271,7 @@ const limit=3;
       </div>
       <div className="block">
       <div
-      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-6`}
+      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-4`}
       // ref={containerRef}
        style={{
     height: (isPublic || isFull)
