@@ -117,6 +117,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventSpeakerDataResult,
         // eventSponsorDataResult,
         eventCoOrganizerDataResult,
+        eventEnquiryDataResult,
       ] = await Promise.allSettled([
         // getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
@@ -126,6 +127,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventSpeakerDetails(params.eventId, 3, 0),
         // getEventSponsorDetails(params.eventId, 3, 0),
         getEventCoOrganizerDetails(params.eventId),
+        coordinateService.getEnquiryDetailByEventId(params.eventId),
       ]);
       // const eventData =
       //   eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
@@ -159,6 +161,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       //   eventSponsorDataResult.status === "fulfilled"
       //     ? eventSponsorDataResult.value
       //     : null;
+      const eventEnquiry =
+        eventEnquiryDataResult.status === "fulfilled"
+        ? eventEnquiryDataResult.value?.enquiries[0]
+        : null;
       return {
         // eventData: eventData,
         eventPOCData: eventPOCData,
@@ -168,6 +174,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
         // eventSponsorData: eventSponsorData,
+        eventEnquiry: eventEnquiry,
       };
     },
     refetchOnWindowFocus: false,
@@ -201,6 +208,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventExhibitorData,
     eventSpeakerData,
     // eventSponsorData,
+    eventEnquiry,
   } = event;
   const { basic, advance, insights, audience, interests }: Event =
     eventData || {};
@@ -1275,6 +1283,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 />
               )}
             </section>
+
+            {/* <Notes
+              eventId={id}
+              enquiryId={eventEnquiry.id}
+              stage={"COORDINATE"}
+            /> */}
           </>
         )}
       </div>
