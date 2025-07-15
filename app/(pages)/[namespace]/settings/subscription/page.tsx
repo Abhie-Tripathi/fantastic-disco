@@ -1,5 +1,4 @@
 "use client";
-import { MembershipData } from "@/types/user";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -13,22 +12,24 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
+import { useAuthContext } from "@/context";
+import FeedbackForm from "@/app/components/payment/feedbackForm";
 
 const Subscription = () => {
+  const { membershipData, setMembershipData } = useAuthContext();
   const { getMembershipData } = useProfileServices();
-  const [membershipData, setMembershipData] = useState<MembershipData>();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-  const { membership, endDate } = membershipData || {};
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const { membership, planRenewalDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
 
-  const [isLoading, setIsloading] = useState<boolean>(true);
+  const [isLoading, setIsloading] = useState<boolean>(false);
 
-  const formattedMembershipEndDate =
+  const formattedNextRenewalDate =
     membershipPlan === MembershipPlan[0]
       ? "-"
-      : endDate && endDate !== null
-      ? format(endDate, "dd MMM, yyyy")
+      : planRenewalDate && planRenewalDate !== null
+      ? format(planRenewalDate, "dd MMM, yyyy")
       : "-";
 
   const [paymentStatus, setPaymentStatus] = useState<any>(null);
@@ -50,39 +51,35 @@ const Subscription = () => {
     );
   };
 
-  const fetchMembershipData = async () => {
+  const updateMembershipData = async () => {
     try {
-      setIsloading(true);
       const data = await getMembershipData();
       if (data) setMembershipData(data);
     } catch (error) {
       console.error("Error fetching user membership data:", error);
-    } finally {
-      setIsloading(false);
     }
   };
-
-  // useEffect(() => {
-  //   fetchMembershipData();
-  // }, [paymentStatus]);
 
   useEffect(() => {
     const fetchCheckoutSession = async () => {
       try {
+        setIsloading(true);
         const res = await fetch(`/api/checkout-session/${session_id}`);
         const data = await res.json();
         // console.log("Payment Status:", data);
-        setPaymentStatus(data);
+        if (data) {
+          setPaymentStatus(data);
+          updateMembershipData();
+        }
       } catch (err) {
         console.error("Error fetching payment status:", err);
       } finally {
-        fetchMembershipData();
         setShowSuccessModal(true);
+        setIsloading(false);
       }
     };
 
-    if (!session_id) fetchMembershipData();
-    else fetchCheckoutSession();
+    if (session_id) fetchCheckoutSession();
   }, [session_id]);
 
   return (
@@ -94,7 +91,7 @@ const Subscription = () => {
           </div>
 
           <div className="flex col-span-1 gap-3 flex-wrap">
-            {isLoading ? (
+            {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
             ) : (
               <>
@@ -130,13 +127,16 @@ const Subscription = () => {
             Next renewal
           </div>
           <div className="flex col-span-1">
-            {isLoading ? (
+            {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
             ) : (
               <span className="text-sm font-medium">
-                {formattedMembershipEndDate}
+                {formattedNextRenewalDate}
               </span>
             )}
+            <Button size="sm" onClick={()=> setShowFeedbackModal(true)}>
+              Cancel Subscription
+            </Button>
           </div>
         </div>
 
@@ -168,11 +168,19 @@ const Subscription = () => {
           open={showSuccessModal}
           onOpenChange={setShowSuccessModal}
           isSuccess={
-            paymentStatus?.status === "paid" && paymentStatus?.updatePlan?.data?.id ? true : false
+            paymentStatus?.status === "paid" &&
+            paymentStatus?.updatePlan?.data?.id
+              ? true
+              : false
           }
           membership={membership || 0}
         />
       )}
+
+      <FeedbackForm
+        open={showFeedbackModal}
+        onOpenChange={setShowFeedbackModal}
+      />
     </div>
   );
 };

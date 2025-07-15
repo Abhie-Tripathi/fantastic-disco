@@ -83,11 +83,9 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { user, signOut } = useAuthContext();
+  const { user, signOut, membershipData } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
-  const [membershipData, setMembershipData] = useState<any>(null);
-  const { getMembershipData } = useProfileServices();
 
   useEffect(() => {
     if (user) setStoredUser(user);
@@ -107,18 +105,6 @@ const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
-  }, []);
-
-  useEffect(() => {
-    const fetchMembership = async () => {
-      try {
-        const data = await getMembershipData();
-        setMembershipData(data);
-      } catch (e) {
-        setMembershipData(null);
-      }
-    };
-    fetchMembership();
   }, []);
 
   const generateProfileName = () => {
