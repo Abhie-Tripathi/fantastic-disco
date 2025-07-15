@@ -296,7 +296,6 @@ export const useTrackerServices = () => {
    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
       
       const eventType = type;
-      console.log("eventType",eventType);
       
       const eventTypeParam = eventType !== null ? eventType : "";
         const response = await api.request<EventCount[]>(
@@ -312,10 +311,9 @@ export const useTrackerServices = () => {
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
-    console.log("eventType", eventType);
     
       const eventTypeParam = eventType !== null ? eventType :"";
-    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam!==""?`eventType=${eventTypeParam}&`:""}view=map`, {
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam===""?"":`eventType=${eventTypeParam}&`}view=map`, {
       method: "GET",
       params: params
     },true);
