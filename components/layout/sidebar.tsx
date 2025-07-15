@@ -317,7 +317,7 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal")
+          {(pathname.startsWith("/internal") || pathname.startsWith("/collections"))
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =

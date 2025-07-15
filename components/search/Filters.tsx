@@ -52,6 +52,9 @@ import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import whrbotlogo from "@/public/whrbotlogo.svg";
 import {
+  Building,
+  Building2,
+  Building2Icon,
   Calendar1,
   ChevronLeft,
   ChevronRight,
@@ -956,6 +959,7 @@ const Filters = ({
                     value="companies"
                     className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
+                    <Building2 className="w-4 h-4" />
                     Companies
                   </TabsTrigger>
                 </Link>
