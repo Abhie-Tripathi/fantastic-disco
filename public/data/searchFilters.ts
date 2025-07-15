@@ -560,7 +560,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     audienceZone: {
-      isEnabled: data?.audienceZone?.isZoneEnabled ?? true,
+      isEnabled: data?.audienceZone?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.audienceZone?.isZoneEnabled),
     },
 

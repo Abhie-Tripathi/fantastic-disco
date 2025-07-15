@@ -4,8 +4,14 @@ import ZeroStateIcon from "@/public/zero_state.svg";
 import Link from "next/link";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
+import { useAuthContext } from "@/context";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string, text?: string, errorStatusCode?: number; isGlobal?:boolean }) => {
+  const { membershipData } = useAuthContext();
+  const isPremium =
+    !!membershipData && membershipData?.membership > MembershipPlan.Freemium;
+    
   const handleUpgradeClick = () => {
     GAEvent("", "Plan Upgrade", "Research", `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`);
   }
@@ -19,6 +25,22 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
       {text && (
         <div className="w-full max-w-[400px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]">
           {errorStatusCode && errorStatusCode === 429 ? (
+          isPremium ? (
+            <div>
+              You can continue with basic search or{" "}
+              <Link
+                target="_blank"
+                href={`https://whr.ai/pricing?utm_source=${
+                  isEventeli ? "geo" : "gtm"
+                }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                className="text-primary cursor-pointer font-semibold"
+                onClick={handleUpgradeClick}
+              >
+                Upgrade the plan
+              </Link>{" "}
+              to increase the advance searches
+            </div>
+          ) : (
             <div>
               You have reached the maximum limit to view data.{" "}
               <Link
@@ -32,9 +54,10 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
                 Please Upgrade.
               </Link>
             </div>
-          ) : (
-            text
-          )}
+          )
+        ) : (
+          text
+        )}
         </div>
       )}
       {!isGlobal &&
