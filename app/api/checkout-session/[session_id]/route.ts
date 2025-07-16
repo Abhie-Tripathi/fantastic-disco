@@ -116,7 +116,7 @@ interface updatePlanType {
 
 const upgradePlan = async (data: updatePlanType) => {
   try {
-    const fetchToken = await fetch(`${BASE_URL}/me/account/membership-token`, {
+    const fetchToken = await fetch(`${BASE_URL}/me/account/membership`, {
       method: "POST",
       headers: {
         Cookie: cookieHeader,
@@ -132,8 +132,8 @@ const upgradePlan = async (data: updatePlanType) => {
       token: token,
     };
 
-    const updatePlan = await fetch(`${BASE_URL}/me/account/membership/create`, {
-      method: "PATCH",
+    const updatePlan = await fetch(`${BASE_URL}/me/account/membership`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Cookie: cookieHeader,
