@@ -41,7 +41,7 @@ export function PaginationComponent({
   onPageChange,
   onItemsPerPageChange,
   showEntriesCount = true,
-  paginationItems = ["10", "20", "50", "100"],
+  paginationItems = ["10", "50", "100"],
 }: PaginationComponentProps) {
   const pathname = usePathname();
   const {membershipData} = useAuthContext()

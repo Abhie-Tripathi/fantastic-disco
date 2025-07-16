@@ -36,9 +36,9 @@ export default function PremiumModal({
   const slides = [
     {
       id: 1,
-      title: "Advanced Filters",
+      // title: "Advanced Filters",
       planName: "Essential",
-      planType: "For individuals",
+      // planType: "For individuals",
       status: "Active",
       description: "Unleash the Power of Your Business\nwith Essential Plan.",
       features: featureList.Essential,
@@ -46,9 +46,9 @@ export default function PremiumModal({
     },
     {
       id: 2,
-      title: "Premium Analytics",
+      // title: "Premium Analytics",
       planName: "Scale",
-      planType: "For teams",
+      // planType: "For teams",
       status: "Recommended",
       description: "Unleash the Power of Your Business\nwith Scale Plan.",
       features: featureList.Scale,
@@ -56,9 +56,9 @@ export default function PremiumModal({
     },
     {
       id: 3,
-      title: "Enterprise Features",
+      // title: "Enterprise Features",
       planName: "Advance",
-      planType: "For organizations",
+      // planType: "For organizations",
       status: "Popular",
       description: "Unleash the Power of Your Business\nwith Advance Plan.",
       features: featureList.Advance,
@@ -66,9 +66,9 @@ export default function PremiumModal({
     },
     {
       id: 4,
-      title: "AI-Powered Tools",
+      // title: "AI-Powered Tools",
       planName: "Enterprise",
-      planType: "For power users",
+      // planType: "For power users",
       status: "New",
       description: "Unleash the Power of Your Business\nwith Enterprise Plan.",
       features: featureList.Enterprise,
@@ -113,10 +113,10 @@ export default function PremiumModal({
               </span>
             </div>
 
-            <p className="text-[#474747] dark:text-muted-foreground text-xs sm:text-sm font-normal mx-auto leading-relaxed px-2">
+            {/* <p className="text-[#474747] dark:text-muted-foreground text-xs sm:text-sm font-normal mx-auto leading-relaxed px-2">
               Your plan credits has been exhausted. Please upgrade your plan to
               continue
-            </p>
+            </p> */}
           </div>
 
           {/* Carousel Content */}
@@ -135,9 +135,9 @@ export default function PremiumModal({
               {/* Left Section - Plan Details */}
               <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-between md:border-r border-gray-100 dark:border-[#333]">
                 <div>
-                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                  {/* <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                     {currentSlideData.title}
-                  </h3>
+                  </h3> */}
                   <div className="flex items-start gap-2 sm:gap-3 mb-4 sm:mb-6">
                     <div
                       className="bg-[#FBFCFF] dark:bg-[#292929] rounded-xl p-1 h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center flex-shrink-0"
@@ -148,11 +148,17 @@ export default function PremiumModal({
                       <Image src={whrLogo} alt="tick" height={20} width={18} className="sm:h-[26px] sm:w-[24px]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      {/* <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="text-xs text-gray-500 dark:text-gray-300 font-normal">
                           {currentSlideData.planType}
                         </span>
-                        {membershipData && membershipData.membership === currentSlideData.planValue && (
+                       
+                      </div> */}
+                      <div className="flex items-center gap-2">
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
+                        {currentSlideData.planName}
+                      </h2>
+                      {membershipData && membershipData.membership === currentSlideData.planValue && (
                           <Badge
                             className="text-[var(--success-text-color)] bg-[var(--success-background-color)] rounded-2xl text-xs"
                             variant="secondary"
@@ -161,9 +167,6 @@ export default function PremiumModal({
                           </Badge>
                         )}
                       </div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-                        {currentSlideData.planName}
-                      </h2>
                       <p className="text-gray-500 dark:text-gray-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                         {currentSlideData.description}
                       </p>

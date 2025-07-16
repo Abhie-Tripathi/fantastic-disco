@@ -29,6 +29,7 @@ interface FilterItem {
   component: string;
   enabled: boolean;
   filterName?: string;
+  group?: string; // Added group property
 }
 
 interface FilterContentProps {
@@ -111,7 +112,42 @@ const FilterContent = ({
                     className="space-y-3 pt-2"
                     ref={refs?.advanceFilterRef}
                   >
-                    {type === "companies" || type === "people" ? (() => {
+                    {type === "events" && section.id === "advanced-details" ? (() => {
+                      // Group filters by 'group' property
+                      const grouped = section.filters.reduce((acc: any, filter: FilterItem) => {
+                        const group = filter.group || "Other";
+                        if (!acc[group]) acc[group] = [];
+                        acc[group].push(filter);
+                        return acc;
+                      }, {});
+                      return Object.entries(grouped).map(([groupName, filters]) => (
+                        <React.Fragment key={groupName}>
+                          <div className="text-xs font-semibold mt-2 mb-1" style={{ color: "var(--secondary-text-color)" }}>{groupName}</div>
+                          {(filters as FilterItem[]).map((filter) => {
+                            const Component = getFilterComponent(filter.component);
+                            if (!Component || (source === "tracker" && filter.id === "eventIds")) return null;
+                            return (
+                              <div
+                                key={filter.id}
+                                className="flex items-center justify-between group relative transition-opacity duration-200"
+                                style={{ opacity: filter.enabled ? 1 : 0.5 }}
+                              >
+                                <div className="w-full">
+                                  <Component
+                                    variant="accordion"
+                                    disabled={!filter.enabled}
+                                    filterName={filter.filterName}
+                                  />
+                                </div>
+                                {!filter.enabled && (
+                                  <Lock className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </React.Fragment>
+                      ));
+                    })() : type === "companies" || type === "people" ? (() => {
                       // Define groupings
                       const companiesFilters = [
                         "category",
