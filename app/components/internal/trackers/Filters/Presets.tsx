@@ -284,7 +284,7 @@ const limit=3;
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (
             <Link 
-                  href={isPublic?`/collections/${item.id}/events?eventType=active`:`/internal/trackers/create?type=${item.trackerType[0]}&collectionId=${item.id}`}
+                  href={isPublic?`/collections/${item.id}/events?view=table&eventType=active&type=${item.trackerType[0]}`:`/internal/trackers/create?type=${item.trackerType[0]}&collectionId=${item.id}`}
                   key={index}>
             <div
               key={`${item.id}-${index}`}

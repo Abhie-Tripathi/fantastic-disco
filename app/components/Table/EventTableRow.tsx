@@ -47,6 +47,7 @@ interface EventTableRowProps {
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
   trackerMaturity?:string[];
+  source?:string;
 }
 
 function getForecastedStatus(data: any) {
@@ -127,6 +128,7 @@ function getAssociationColor(value: string) {
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
+  source,
   toggleSelection,
   event,
   show,
@@ -147,8 +149,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading,
   trackerMaturity
 }) => {
-  // const {isTentimesUser} = useFilterContext();
-  const isTentimesUser=true;
+const { isTentimesUser } = source === "public" 
+  ? { isTentimesUser: false } 
+  : useFilterContext();
   console.log("event table called......");
   
   const { getFilterValue } = useFilterState();

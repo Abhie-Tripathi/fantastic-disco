@@ -93,6 +93,7 @@ const MobileEventCard = ({
   showMaturity,
   initialIntelScoreData,
   intelLoading,
+  source
 }: {
   isMobile: boolean;
   trackerId?: string;
@@ -107,6 +108,7 @@ const MobileEventCard = ({
   global?: string;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
+  source?:string;
 }) => {
   // Helper for stats
   const stat = (label: string, value: React.ReactNode) => (
@@ -535,6 +537,7 @@ const MobileEventCard = ({
         </div>
       )}
       <div className="flex justify-end">
+        {source!=="public" &&
         <div onClick={(e) => e.preventDefault()}>
           <ActionPopover
             eventId={event.basic.id}
@@ -544,7 +547,7 @@ const MobileEventCard = ({
             setEventId={setEventId}
             view={view}
           />
-        </div>
+        </div>}
       </div>
     </div>
       </Link>

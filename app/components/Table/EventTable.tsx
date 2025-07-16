@@ -41,6 +41,7 @@ interface EventTableProps {
   view?: string;
   showCheckBox?: boolean;
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
+  eventsData?:any
 }
 const EventTable = ({
   source,
@@ -49,6 +50,7 @@ const EventTable = ({
   view,
   showCheckBox,
   setShowCheckBox,
+  eventsData
 }: EventTableProps) => {
   const pathName = usePathname();
   // const { theme } = useTheme();
@@ -62,15 +64,17 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
 
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } =
     useFilterState();
-  const { createUserEventInterest, isLoading: isSubmitting } =
-    useIntent.createUserEventInterest();
+  const { createUserEventInterest, isLoading: isSubmitting } = 
+    source === "public"
+      ? { createUserEventInterest: () => Promise.resolve(), isLoading: false }
+      : useIntent.createUserEventInterest();
   const { removeBookmark } = useTrackerServices();
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [totalChecked, setTotalChecked] = useState<string[]>([]);
   const bulkOption = ["Attend", "Speak"];
    const { toast } = useToast();
   const { inTransition } = useTransition();
-  const { localFilters } = useFilterContext();
+  const { localFilters } = source === "public" ? {} : useFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
@@ -80,11 +84,18 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     interestConfiguration,
     isLoading: isConfigLoading,
     error: isConfigError,
-  } = useConfiguration.interest();
+  } = source === "public"
+    ? { interestConfiguration: null, isLoading: false, error: null }
+    : useConfiguration.interest();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
   let events, totalEvents, isLoading, error, isFetching;
+  if(source==="public"){
+    console.log(eventsData.events);
+    totalEvents = eventsData.count
+    events=eventsData.events;
+  }
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
 
   const sourceModule = pathName.includes("trackers")
@@ -95,23 +106,28 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error, isFetching } =
       useTrackerEvents.list(query, trackerId, view));
-  } else {
+  } else if(source==="reserach") {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-  const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
-  removeBookmark,
-  createUserEventInterest
-});
-  const {
-      intelScoreData,
-      loading: intelLoading,
-      error: intelError,
-    } = useIntelData(
-      trackerId || "",
-      events?.length > 0 ? events : [],
-      eventType || "",
-      query.type
-    );
+  const { executeBulkAction, isLoading: isBulkActionLoading } = 
+    source === "public"
+      ? { executeBulkAction: () => {}, isLoading: false }
+      : useBulkActions({
+          removeBookmark,
+          createUserEventInterest,
+        });
+   const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = source === "public" 
+    ? { intelScoreData: null, loading: false, error: null }
+    : useIntelData(
+        trackerId || "",
+        events?.length > 0 ? events : [],
+        query.eventType,
+        query.type
+      );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -310,6 +326,7 @@ function mapInterestsToInterestIds(
   }, [totalChecked, updatedEvents]);
 
   useEffect(() => {
+    if(source!=="public"){
     if (!events) return;
 
     setUpdatedEvents((prevEvents) => {
@@ -351,6 +368,7 @@ function mapInterestsToInterestIds(
 
       return newEvents;
     });
+    }
   }, [eventId, interest]);
 
   function handleCancel() {
@@ -504,6 +522,7 @@ function mapInterestsToInterestIds(
               {updatedEvents &&
                 updatedEvents.map((event: Event) => (
                   <EventTableRow
+                  source={source}
                     toggleSelection={toggleSelection}
                     totalChecked={totalChecked}
                     isChecked={isChecked}

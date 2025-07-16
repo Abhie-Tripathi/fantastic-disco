@@ -42,6 +42,8 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
+  console.log(pathName);
+  
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -124,9 +126,20 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
     if (last === "savedevents") {
       router.push(`/internal/trackers/savedevents?view=${view}`);
     } else
+      if(isPublic){
+        if(view==="map"){
+        router.push(
+      `/preset?presetId=${pathName[2]}&type=${type}`
+      );
+        }else
+        router.push(
+      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}`
+      );
+      }else{
       router.push(
         `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
       );
+    }
   };
   // const fetchData=async()=>{
   //     const result = await getTrackerDetail(secondLast)

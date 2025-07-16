@@ -1,12 +1,13 @@
 // app/collections/[collectionId]/page.tsx
 "use client"
-// import Table from "@/app/components/Table/EventTable";
+import TableView from "@/app/components/Table/EventTable";
 import { EventTableHeader } from "@/app/components/Table/EventTableHeader";
 import { EventTableRow } from "@/app/components/Table/EventTableRow";
 import NotFound from '@/app/not-found';
 import styles from "@/app/(internal)/internal/trackers/[trackerId]/trackedEvents/trackedEvents.style.module.css";
 import trackerNullState from "@/public/trackerNullState.svg";
 import { Button } from "@/components/ui/button";
+import List from "@/components/search/list";
 import Loading from "@/components/ui/Loading";
 import { useTrackerServices } from '@/services/trackerServices';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -33,8 +34,18 @@ export default function CollectionPage() {
   const [active, setActive] = useState(typeOfEvent);
   const [totalEvents,setTotalEvents] = useState(0)
   const [eventCount, setEventCount] = useState();
+  const viewType = searchParams.get("view");
   const {getFilterValue, setMultipleFilters} =
       useFilterState();
+  const [view, setView] = useState<string | null>(
+          ["table", "list", "map", "calendar"].includes(viewType || "")
+            ? viewType
+            : "table"
+        );
+  useEffect(() => {
+      setIsLoading(true);
+      setView(searchParams.get("view"));
+    }, [searchParams.get("view")]);
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
@@ -129,12 +140,118 @@ export default function CollectionPage() {
     }
     return count;
   };
+  useEffect(()=>{
+        setIsLoading(true);
+        const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  const orgName: string[] = [];
+  const orgWebsite: string[] = [];
+
+  presetTemplateData?.data?.organizations?.forEach((item:string) => {
+    const value = item?.trim();
+    if (!value) return;
+
+    if (regex.test(value)) {
+      orgWebsite.push(value);
+    } else {
+      orgName.push(value);
+    }
+  });
+  const formData: any = {};
+
+// formData.name = presetTemplateData?.name;
+if(presetTemplateData){
+
+  console.log("presetTemplateData?.trackerType?.[0]",presetTemplateData?.trackerType?.[0]);
   
+if (presetTemplateData?.trackerType?.includes("T_COMPETITOR")) {
+  formData.searchByEntity = "company";
+}
+if(presetTemplateData?.trackerType?.includes("T_PRODUCT_KEYWORDS")){
+  formData.searchByEntity = "keywords";
+}
+if(presetTemplateData?.trackerType?.includes("T_PEOPLE_FINDER")){
+  formData.searchByEntity = "user";
+}
+if(presetTemplateData?.trackerType?.includes("T_SPEAKING_OPPORTUNITY")){
+  formData.searchByEntity = "speaker"
+}
+formData.view = "list";
+formData.trackerEventStatus = active || "active";
+// Include conditional filter values
+if (presetTemplateData?.data?.includeKeywords?.length > 0) {
+  const updatedPositiveKeywords =presetTemplateData.data.includeKeywords.map((item:string)=>item.replaceAll(" ","_"))
+  formData.includeKeywords = updatedPositiveKeywords.slice(0,100).join(",");
+}
+
+if (presetTemplateData?.data?.excludeKeywords?.length > 0) {
+  const updatedNegativeKeywords =presetTemplateData.data.excludeKeywords.map((item:string)=>item.replaceAll(" ","_"))
+  formData.excludeKeywords = updatedNegativeKeywords.slice(0,100).join(",");
+}
+
+if (presetTemplateData?.data?.userName?.length > 0) {
+  formData.userName = presetTemplateData.data.userName.slice(0,100).join(",");
+}
+
+if (presetTemplateData?.data?.userOrgWebsite?.length > 0) {
+  formData.userOrgWebsite = presetTemplateData.data.userOrgWebsite.slice(0,100).join(",");
+}
+if(active==="past"){
+  const today = new Date();
+const yesterday = new Date(today);
+yesterday.setDate(today.getDate() - 1);
+
+const formatted = yesterday.toISOString().split('T')[0];
+  formData.active_lte = formatted;
+}
+if(active==="active"){
+  const today = new Date();
+  const formatted = today.toISOString().split('T')[0];
+  formData.active_gte = formatted;
+}
+if(active === "new"){
+  const today = new Date();
+  const formatted = today.toISOString().split('T')[0];
+  formData.createdAt = formatted;
+}
+if (orgWebsite.length > 0) {
+  formData.orgWebsite = orgWebsite.slice(0,100).join(",");
+}
+if (orgName.length > 0) {
+  formData.orgName = orgName.slice(0,100).join(",");
+}
+formData.limit = searchParams.get("limit") || "10";
+formData.offset = searchParams.get("offset") || "0";
+// setPayload(formData);
+getData(formData);
+  console.log("formData", formData);
+}
+      },[presetTemplateData, active, currentPage, view])
+    // useEffect(()=>{
+    //     setIsLoading(true)
+    //     getData(formData);
+    // },[active, currentPage])
+    const getData=async(formData)=>{
+    try{
+      const response = await publicEvents(formData)
+    //  if(response){
+    //   setIsLoading(false);
+    //  }
+     setTotalEvents(response.count);
+     setEventsData(response);
+     console.log(response);
+    }catch(error){
+        
+    }finally{
+      setIsLoading(false)
+    }
+     
+     
+  }
   return (
     <div className="flex flex-col gap-3 md:gap-6 w-full">
      <SideNav name={presetTemplateData?.name} isPublic={true}/>
       
-    <div className="px-8 flex flex-col gap-3 md:gap-6">
+    <div className="px-0 md:px-8 flex flex-col gap-3 md:gap-6">
     {/* Collection ID: {collectionId} */}
     <div className="hidden md:flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
                 {/* <div className={styles.new}></div> */}
@@ -253,7 +370,7 @@ export default function CollectionPage() {
                   {eventCount?.map((item, index) => (
                     <button
                       key={index}
-                      className={`${styles.eventStatusBtn} ${
+                      className={`${styles.eventStatusBtn} h-10 ${
                         item.type.toLowerCase() === active ? styles.active : ""
                       }`}
                       onClick={() => {
@@ -264,13 +381,13 @@ export default function CollectionPage() {
                       }}
                     >
                       {item.type} Events
-                      {
+                      {/* {
                         <div className={styles.circle}>
                           
                            { formatCount(item.totalCount)}
                           
                         </div>
-                      }
+                      } */}
                     </button>
                   ))}
                 </div>
@@ -337,7 +454,15 @@ export default function CollectionPage() {
                 </div>
               </div>
    
-    <PublicEventTable  presetTemplateData={presetTemplateData} active={active}/>
+    {/* <PublicEventTable  presetTemplateData={presetTemplateData} active={active}/> */}
+    {isLoading?<Loading/>:
+    <>
+    {(eventsData && view === "table") &&
+      <TableView source="public" eventsData={eventsData}/>
+    }
+    {(eventsData && view === "list")&&
+    <List source="public" eventsData={eventsData}/>}
+    </>}
     </div>
      </div>
   )
