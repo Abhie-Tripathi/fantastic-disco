@@ -371,8 +371,12 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    const publicEvents = async ()=>{
-      
+    const publicEvents = async (formData)=>{
+      const response = await api.request(`${endpoints.public.events}`,{
+        method:"POST",
+        data: formData
+      })
+      return response;
     }
     return {
       getTrackerCount,
@@ -402,6 +406,7 @@ export const useTrackerServices = () => {
       presetData,
       getIntelData,
       fetchCompanyData,
+      publicEvents,
       isLoading: api.isLoading,
       error: api.error,
     };

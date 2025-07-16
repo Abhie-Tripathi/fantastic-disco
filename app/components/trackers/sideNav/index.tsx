@@ -38,7 +38,7 @@ import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
-const Index = () => {
+const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
@@ -173,11 +173,9 @@ const Index = () => {
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link
             className="flex gap-1 cursor-pointer"
-            href={`/internal/trackers?skip=${skip}${
-              searchValue.length > 0
-                ? `&q=${encodeURIComponent(searchValue)}`
-                : ""
-            }`}
+            href={`${isPublic ? "/collections" : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""
+                }`
+              }`}
           >
             {/* <Button
           variant="link"
@@ -190,11 +188,11 @@ const Index = () => {
               <div className={styles.tooltipContainer}>Saved Events</div>
             ) : (
               <div className={styles.tooltipContainer}>
-                {data?.name?.length > 20
-                  ? data?.name?.substring(0, 20) + "..."
-                  : data?.name}
-                {data?.name?.length > 20 && (
-                  <span className={styles.tooltipText}>{data?.name}</span>
+                {(data?.name||name)?.length > 20
+                  ? (data?.name || name)?.substring(0, 20) + "..."
+                  : (data?.name || name)}
+                {(data?.name || name)?.length > 20 && (
+                  <span className={styles.tooltipText}>{(data?.name || name)}</span>
                 )}
               </div>
             )}
