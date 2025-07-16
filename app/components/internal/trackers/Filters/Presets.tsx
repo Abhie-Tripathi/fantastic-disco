@@ -229,17 +229,19 @@ const limit=3;
 
 }
 
+
   return (
     <div className="w-full">
-      {/* <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
+      {!isFull &&
+      <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
         <div className="flex items-center gap-1">
-        <span className="text-lg">Get Started with Pre-sets</span>
+        <span className="text-lg">Get Started with Collections</span>
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">
           {totalCount}
         </span>
         </div>
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
-      </div> */}
+      </div>}
       
       <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
         <div className="w-full bg-background">

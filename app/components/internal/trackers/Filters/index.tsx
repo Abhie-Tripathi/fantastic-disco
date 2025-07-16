@@ -711,7 +711,6 @@ const stepsConfig =[
     // console.log("foundedTemplate", foundTemplate);
     
     // setTemplate(foundTemplate);
-    console.log("trackerType",trackerType);
     
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
@@ -1721,7 +1720,7 @@ if(isLoading) return <Loading/>
                                      className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
                                    >
                                      <LayoutGrid height="15px" width="15px" />
-                                     {" "}Pre-sets
+                                     {" "}Collections
                                    </Badge>
                                  </TooltipTrigger>
                                  {!template?.isUploadEnable &&

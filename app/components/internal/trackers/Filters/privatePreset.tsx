@@ -30,7 +30,7 @@ const PrivatePresets = (props: Props) => {
       containerRef={containerRef}
       selectedCategory={selectedCategory}
       isPublic={props.isPublic}
-      isFull = {props.isFull}
+      isFull = {props.isFull || false}
     />
   );
 };
