@@ -12,7 +12,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { ArrowRight } from "geist-icons";
 
 interface Props {
-  membershipData: MembershipData | undefined;
+  membershipData: MembershipData | null;
 }
 
 const Pricing = ({ membershipData }: Props) => {

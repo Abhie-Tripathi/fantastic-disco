@@ -32,15 +32,12 @@ import {
 } from "react";
 import { SignUpDTO, TSignInFormSchema } from "../types";
 import { UserResponse } from "../types/user";
+import { MembershipData } from "@/types/user";
 
 const TENTIMES_USER_ACCOUNT_ID = isEventeli
   ? process.env.NEXT_PUBLIC_EVENTELI_TENTIMES_ACCOUNTID
   : process.env.NEXT_PUBLIC_EVENTGENI_TENTIMES_ACCOUNTID;
 
-interface MembershipData {
-  membership: number;
-  endDate: string;
-}
 
 type authContextType = {
   user: UserResponse | null;
@@ -86,6 +83,7 @@ type authContextType = {
   isTentimesUser: boolean;
   showOTPMessage: boolean;
   membershipData: MembershipData | null;
+  setMembershipData: Dispatch<SetStateAction<MembershipData | null>>;
 };
 interface newUserResponse {
   user: {
@@ -123,6 +121,7 @@ const authContextDefaultValues: authContextType = {
   isTentimesUser: false,
   showOTPMessage: false,
   membershipData: null,
+  setMembershipData: () => {},
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -142,7 +141,9 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
-  const [membershipData, setMembershipData] = useState<any>(null);
+  const [membershipData, setMembershipData] = useState<MembershipData | null>(
+    null
+  );
   const { getMembershipData } = useProfileServices();
   const searchParams = useSearchParams();
 
@@ -368,7 +369,7 @@ export const AuthContextProvider = ({ children }: any) => {
           sessionKeys.forEach((key) => sessionStorage.removeItem(key));
           if (redirectPath && redirectPath.includes("whr-pricing")) {
             pricingRedirect();
-          } else router.push(redirectPath ? `${redirectPath}` : "/internal");
+          } else router.push(redirectPath ? `/internal/${redirectPath}` : "/internal");
         } else {
           sessionStorage.setItem("newUser", JSON.stringify(true));
           // localStorage.removeItem("walkthroughCompleted");
@@ -633,6 +634,7 @@ export const AuthContextProvider = ({ children }: any) => {
     isTentimesUser,
     showOTPMessage,
     membershipData,
+    setMembershipData,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

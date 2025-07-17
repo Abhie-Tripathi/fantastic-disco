@@ -71,7 +71,7 @@ const geniroutes: Record<string, string> = {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuthContext();
+  const { membershipData } = useAuthContext();
   const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const { theme, toggleTheme } = useTheme();
@@ -117,8 +117,6 @@ export default function Navbar() {
 
   const [storedUser, setStoredUser] = useState<any>(null);
   const [emptyFields, setEmptyFields] = useState<string[]>([]);
-  const { getMembershipData } = useProfileServices();
-  const [membershipData, setMembershipData] = useState<any>(null);
 
   useEffect(() => {
     // Ensure this code runs only on the client side
@@ -148,18 +146,6 @@ export default function Navbar() {
       setEmptyFields(fields);
     }
   }, [storedUser]);
-
-  useEffect(() => {
-    const fetchMembership = async () => {
-      try {
-        const data = await getMembershipData();
-        setMembershipData(data);
-      } catch (e) {
-        setMembershipData(null);
-      }
-    };
-    fetchMembership();
-  }, []);
 
   const generateProfileName = () => {
     if (storedUser) {
@@ -231,7 +217,7 @@ export default function Navbar() {
               </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
-              ? "Edit Widget"
+              ? "Edit Widget": pathname.split('/')[1] === "collections"? " Collections"
               : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
