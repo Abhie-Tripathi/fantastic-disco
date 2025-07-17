@@ -56,7 +56,7 @@ const gtmFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
@@ -107,7 +107,7 @@ const gtmFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",
@@ -153,22 +153,31 @@ const gtmFilters: {
           group: "Insights & Scores",
         },
         {
-          id: "eventAnalytics",
-          component: "EventAnalyticsSelector",
-          enabled: true,
-          group: "Insights & Scores",
-        },
-        {
-          id: "economicImpact",
-          component: "EstimatedEconomicImpactSelector",
-          enabled: true,
-          group: "Insights & Scores",
-        },
-        {
           id: "eventRanking",
           component: "EventRankingSelector",
           enabled: true,
           group: "Insights & Scores",
+        },
+
+        //AudienceIntel
+        {
+          id: "audienceSpread",
+          component: "AudienceZoneSatusSelector",
+          enabled: true,
+          group: "Audience Intel"
+        },
+        {
+          id: "designations",
+          component: "AudienceDesAndDep",
+          enabled: true,
+          group: "Audience Intel"
+
+        },
+        {
+          id: "audienceSpreadRegions",
+          component: "AudienceSpread",
+          enabled: true,
+          group: "Audience Intel"
         },
       ],
     },
@@ -333,7 +342,7 @@ const geoFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
@@ -384,7 +393,7 @@ const geoFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",

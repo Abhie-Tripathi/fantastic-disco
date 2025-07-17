@@ -92,7 +92,7 @@ export default function PremiumModal({
 
   const handleUpgradeClick = () => {
     window.open(
-      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=premium_modal`,
       "_blank"
     );
   };
@@ -202,6 +202,16 @@ export default function PremiumModal({
                         </span>
                       </div>
                     ))}
+                    <div className="text-end">
+                      <a
+                        href="https://whr.ai/pricing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs sm:text-sm text-gray-800 dark:text-gray-200 hover:underline font-medium"
+                      >
+                        ... View all features
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

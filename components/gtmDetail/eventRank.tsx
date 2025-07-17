@@ -393,8 +393,8 @@ export const EventRank = ({
   const { morphedData } = useFilterContext();
   const { eventRanking } = morphedData;
 
-  const enableEventRank = eventRanking?.isEnabled || true;
-
+  const enableEventRank = eventRanking?.isEnabled ?? true;
+  
   const { category, category_country, country } = eventRankingDetails;
 
   const rankComponents = (

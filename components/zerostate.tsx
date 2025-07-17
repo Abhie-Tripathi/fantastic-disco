@@ -18,7 +18,7 @@ const ZeroState = ({
 }) => {
   const { membershipData } = useAuthContext();
   const isPremium =
-    !!membershipData && membershipData?.membership > MembershipPlan.Freemium;
+    !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
 
   const handleUpgradeClick = () => {
     GAEvent(
