@@ -652,7 +652,7 @@ const filterValues = {
                   count={count}
                   onPageChange={handlePageChange}
                   onItemsPerPageChange={handleItemsPerPageChange}
-                  // paginationItems={["5", "10"]}
+                  paginationItems={["5", "10"]}
                 />
               </div>
             </>
