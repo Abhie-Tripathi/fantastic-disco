@@ -221,13 +221,20 @@ export default function Navbar() {
             {pathname.split("/")[1] === "internal"
               ? (
               <div className="flex items-center">
-                {getRoute(pathname.split("/")[2])}
-                  <div className="ml-2 " >
+                <span className="relative inline-flex items-center">
+                  {getRoute(pathname.split("/")[2])}
+                  {pathname.split("/")[2] === "trends" && (
+                    <Badge
+                      variant="default"
+                      className="text-[10px] font-medium px-2 py-1 ml-1 h-4 align-super leading-none relative -top-2"
+                    >
+                      Beta
+                    </Badge>
+                  )}
+                </span>
+                <div className="ml-2" >
                   <VideoModal source={pathname.split("/")[2]} />
                 </div>
-                {pathname.split("/")[2] === "trends" && (
-                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
-                )}
               </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
