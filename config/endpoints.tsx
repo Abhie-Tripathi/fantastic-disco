@@ -99,6 +99,7 @@ export const endpoints = {
   membership: {
     getMembership: `${BASE_URL}/me/account/configuration/membership`,
     updateMembership: `${BASE_URL}/me/account/membership`,
+    cancelMembership: `${BASE_URL}/me/account/membership/cancel`,
   },
   prospect: {
     users: {

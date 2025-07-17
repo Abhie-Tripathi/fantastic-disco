@@ -25,6 +25,11 @@ const Subscription = () => {
 
   const [isLoading, setIsloading] = useState<boolean>(false);
 
+  const isPremium =
+    !!membershipData &&
+    membershipData.membership != null &&
+    membershipData.membership > MembershipPlan.Freemium;
+
   const formattedNextRenewalDate =
     membershipPlan === MembershipPlan[0]
       ? "-"
@@ -122,11 +127,11 @@ const Subscription = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 items-center">
+        <div className="grid grid-cols-2 gap-3">
           <div className="text-muted-foreground font-medium col-span-1">
             Next renewal
           </div>
-          <div className="flex col-span-1">
+          <div className="flex col-span-1 items-center gap-1 sm:gap-4 flex-wrap">
             {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
             ) : (
@@ -134,9 +139,11 @@ const Subscription = () => {
                 {formattedNextRenewalDate}
               </span>
             )}
-            <Button size="sm" onClick={()=> setShowFeedbackModal(true)}>
-              Cancel Subscription
-            </Button>
+            {isPremium && planRenewalDate !== null && (
+              <Button size="sm" onClick={() => setShowFeedbackModal(true)}>
+                Cancel Subscription
+              </Button>
+            )}
           </div>
         </div>
 
@@ -176,7 +183,6 @@ const Subscription = () => {
           membership={membership || 0}
         />
       )}
-
       <FeedbackForm
         open={showFeedbackModal}
         onOpenChange={setShowFeedbackModal}
