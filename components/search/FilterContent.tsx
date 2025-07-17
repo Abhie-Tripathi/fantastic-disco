@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import whrbotlogo from "@/public/whrbotlogo.svg";
-import { Filter, Lock } from "lucide-react";
+import { Filter, Lock, Unlock } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import PremiumModal from "../premium-modal";
@@ -59,6 +59,8 @@ const FilterContent = ({
   const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
 
+  console.log(isPremium, isFreemium)
+
   return (
     <>
     <div className="flex-1">
@@ -92,8 +94,8 @@ const FilterContent = ({
                   <div className="text-sm flex gap-2 items-center w-full">
                     <Filter className="w-4 h-4"/>
                     <span 
-  className={isPremium && ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) ? "bg-clip-text text-transparent capitalize" : ""}
-  style={isPremium && ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) ? {
+  className={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? "bg-clip-text text-transparent capitalize" : ""}
+  style={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? {
     background: "linear-gradient(96.48deg, #F3B28E 14.76%, #E579C6 36.95%, #AC75E5 71.57%, #AEBFFF 99.98%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent"
@@ -101,8 +103,10 @@ const FilterContent = ({
 >
   {section.label}
 </span>
-                    {isPremium &&  ["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label) && <span className="px-2 border bg-background capitalize rounded-xl font-normal text-xs">Premium</span>}
-                    {["Advanced Details", "Insights & Scores", "Audience Intel"].includes(section.label)&& isFreemium  && (
+                    {isPremium &&  ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) && <span className="flex items-center px-2 border bg-background capitalize rounded-xl font-normal text-xs">
+                      <Unlock className="w-3 h-3 mr-1"/>
+                      Premium</span>}
+                    {["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label)&& isFreemium  && (
                       <RainbowButton size="sm"  className="ml-auto h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
                     )}
                   </div>
@@ -122,7 +126,7 @@ const FilterContent = ({
                       }, {});
                       return Object.entries(grouped).map(([groupName, filters]) => (
                         <React.Fragment key={groupName}>
-                          <div className="text-xs font-semibold mt-2 mb-1" style={{ color: "var(--secondary-text-color)" }}>{groupName}</div>
+                          <div className="text-sm font-medium mt-2 mb-1 text-muted-foreground">{groupName}</div>
                           {(filters as FilterItem[]).map((filter) => {
                             const Component = getFilterComponent(filter.component);
                             if (!Component || (source === "tracker" && filter.id === "eventIds")) return null;
