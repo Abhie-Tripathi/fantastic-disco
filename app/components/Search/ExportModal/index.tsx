@@ -79,7 +79,7 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
   const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
 
 
-  const isAdvancedPlanOrAbove = !! membershipData && membershipData?.membership >= MembershipPlan.Advance  
+  const isAdvancedPlanOrAbove = !!membershipData && membershipData.membership != null && membershipData.membership >= MembershipPlan.Advance;
 
   const fetchData = async () => {
     setRefreshState(true);

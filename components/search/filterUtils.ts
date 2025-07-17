@@ -107,37 +107,37 @@ const gtmFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         // Insights & Scores
         {
@@ -393,37 +393,37 @@ const geoFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
-          group: "Advanced Details",
+          group: "Advanced",
         },
         // Insights & Scores
         {
