@@ -10,7 +10,7 @@ import { MembershipPlan } from "@/data/membershipPlans";
 const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string, text?: string, errorStatusCode?: number; isGlobal?:boolean }) => {
   const { membershipData } = useAuthContext();
   const isPremium =
-    !!membershipData && membershipData?.membership > MembershipPlan.Freemium;
+    !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
     
   const handleUpgradeClick = () => {
     GAEvent("", "Plan Upgrade", "Research", `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`);
