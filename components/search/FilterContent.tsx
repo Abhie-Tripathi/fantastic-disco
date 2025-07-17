@@ -124,7 +124,7 @@ const FilterContent = ({
                       }, {});
                       return Object.entries(grouped).map(([groupName, filters]) => (
                         <React.Fragment key={groupName}>
-                          <div className="text-sm font-medium text-muted-foreground">{groupName}</div>
+                          <div className="text-sm font-medium text-muted-foreground" style={{marginBottom: "-6px"}}>{groupName}</div>
                           {(filters as FilterItem[]).map((filter) => {
                             const Component = getFilterComponent(filter.component);
                             if (!Component || (source === "tracker" && filter.id === "eventIds")) return null;
