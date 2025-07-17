@@ -238,7 +238,7 @@ export default function EventAccordion({
       trackerId,
       view
     ));
-  } else if(source!== "public") {
+  } else if(source !== "tracker" && source !=="public") {
     ({ events, totalEvents, isLoading, error } = useEvents.list(
       query,
       inTransition

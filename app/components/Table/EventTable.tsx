@@ -111,7 +111,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error, isFetching } =
       useTrackerEvents.list(query, trackerId, view));
-  } else if(source==="reserach") {
+  } else if(source !== "tracker" && source !=="public") {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   const bulkActions = useBulkActions({
