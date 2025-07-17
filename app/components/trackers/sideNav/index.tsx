@@ -452,7 +452,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
+                    href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/editTracker?type=${type}`
+                  }
                     className="flex items-center"
                     ref={isMobile?refs.configRef:null}
                   >
@@ -479,7 +483,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
         </div>
         {/* Title */}
         <div className="font-medium text-base mb-3 text-[var(--primary-text-color)]">
-          {data?.name}
+          {data?.name || name}
         </div>
         {/* Tab Bar */}
         {last !== "savedevents" &&
@@ -490,7 +494,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
         >
           <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
             <Link
-              href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=list&eventType=active`}
+              href={
+                    isPublic
+                      ? `/collections/${pathName[2]}/events?view=list&eventType=active&type=${type}`
+                      : `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=list&eventType=active`
+                  }
               className="contents"
             >
               <TabsTrigger
@@ -506,7 +514,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
               </TabsTrigger>
             </Link>
             <Link
-              href={`/internal/trackers/${secondLast}/notesDiscussion?type=${type}`}
+              href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/notesDiscussion?type=${type}`
+                  }
               className="contents"
             >
               <TabsTrigger
@@ -523,7 +535,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
               </TabsTrigger>
             </Link>
             <Link
-              href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
+              href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/manageAccess?type=${type}`
+                  }
               className="contents"
             >
               <TabsTrigger
