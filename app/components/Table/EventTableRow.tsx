@@ -26,6 +26,7 @@ import Link from "next/link";
 import type React from "react";
 import { ActionPopover } from "./ActionPopover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 
 interface EventTableRowProps {
   toggleSelection?: (id: string, event: Event) => void;
@@ -149,10 +150,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading,
   trackerMaturity
 }) => {
-const { isTentimesUser } = source === "public" 
-  ? { isTentimesUser: false } 
-  : useFilterContext();
-  console.log("event table called......");
+const { isTentimesUser } = useSafeFilterContext();
+  // console.log("event table called......");
   
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -766,7 +765,7 @@ const { isTentimesUser } = source === "public"
           {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -806,7 +805,7 @@ const { isTentimesUser } = source === "public"
               </TableCell>
               {isTentimesUser ?
               <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -820,7 +819,7 @@ const { isTentimesUser } = source === "public"
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:
                <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -850,7 +849,7 @@ const { isTentimesUser } = source === "public"
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -890,7 +889,7 @@ const { isTentimesUser } = source === "public"
               </TableCell>
               {isTentimesUser?
              <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -904,7 +903,7 @@ const { isTentimesUser } = source === "public"
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:  
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -931,7 +930,7 @@ const { isTentimesUser } = source === "public"
           {type === "T_COMPETITOR" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -975,7 +974,7 @@ const { isTentimesUser } = source === "public"
               </TableCell>
               {isTentimesUser?
               <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -989,7 +988,7 @@ const { isTentimesUser } = source === "public"
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:    
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1016,7 +1015,7 @@ const { isTentimesUser } = source === "public"
           {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -1043,7 +1042,7 @@ const { isTentimesUser } = source === "public"
               </TableCell>
             {(isTentimesUser && event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1)?
             <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1057,7 +1056,7 @@ const { isTentimesUser } = source === "public"
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             : ((event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1) ?
-                  <TableCell className="sticky right-[68px] bg-background z-0"
+                  <TableCell className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                     style={{
                       zIndex: 0,
                       minWidth: "132px",
@@ -1068,7 +1067,7 @@ const { isTentimesUser } = source === "public"
                       Matched
                     </span></TableCell>:
                     <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1111,7 +1110,7 @@ const { isTentimesUser } = source === "public"
           className="sticky right-0 bg-background z-0 w-[68px]"
           style={{ zIndex: 0, background: "var(--heading-background-color)" }}
         >
-          {/* {event.basic.primaryEventType !== "holiday" && (
+          {(event.basic.primaryEventType !== "holiday" && source!=="public") && (
             <ActionPopover
               view={view}
               setEventId={setEventId}
@@ -1120,7 +1119,7 @@ const { isTentimesUser } = source === "public"
               eventId={event.basic.id}
               interests={event.interests}
             />
-          )} */}
+          )}
         </TableCell>
       )}
     </TableRow>

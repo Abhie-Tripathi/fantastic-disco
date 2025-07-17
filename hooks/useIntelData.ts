@@ -4,9 +4,10 @@ import { useAuthContext } from "@/context/auth";
 import { useFilterContext } from "@/context/filterContext";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEffect, useState } from "react";
+import { useSafeFilterContext } from "./useSafeFilterContext";
 
 export const useIntelData = (trackerId: string | null, events: any[], eventType: string | null, trackerType?:string) => {
-  const {isTentimesUser} = useFilterContext();
+  const {isTentimesUser} = useSafeFilterContext();
   const [intelScoreData, setIntelScoreData] = useState<any>(null);
   const {getIntelData} = useTrackerServices();
   const [loading, setLoading] = useState(false);

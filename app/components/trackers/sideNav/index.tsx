@@ -38,7 +38,7 @@ import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
-const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
+const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
@@ -127,9 +127,9 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
       router.push(`/internal/trackers/savedevents?view=${view}`);
     } else
       if(isPublic){
-        if(view==="map"){
+        if(view==="map" || view === "calendar"){
         router.push(
-      `/preset?presetId=${pathName[2]}&type=${type}`
+      `/preset?presetId=${pathName[2]}&type=${type}&view=${view}`
       );
         }else
         router.push(
@@ -341,7 +341,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
             {last !== "savedevents" && (
               <>
                 <Link
-                  href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
+                  href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/editTracker?type=${type}`
+                  }
                   onClick={() => {
                     GAEvent(
                       "trackers",
@@ -383,7 +387,11 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic:boolean}) => {
                   </div>
                 </Link>
                 <Link
-                  href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
+                  href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/manageAccess?type=${type}`
+                  }
                   onClick={() => {
                     GAEvent(
                       "trackers",

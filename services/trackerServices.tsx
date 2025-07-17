@@ -1,7 +1,7 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData, PublicEvents } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
@@ -371,8 +371,8 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    const publicEvents = async (formData)=>{
-      const response = await api.request(`${endpoints.public.events}`,{
+    const publicEvents = async (formData:PublicEvents)=>{
+      const response = await api.request<EventResponse>(`${endpoints.public.events}`,{
         method:"POST",
         data: formData
       })

@@ -1,11 +1,12 @@
 // app/collections/[collectionId]/page.tsx
 "use client"
 import TableView from "@/app/components/Table/EventTable";
-import { EventTableHeader } from "@/app/components/Table/EventTableHeader";
-import { EventTableRow } from "@/app/components/Table/EventTableRow";
+import { PresetData } from '@/types/trackers';
 import NotFound from '@/app/not-found';
+import { Event } from "@/types/events";
+import NullState from "@/app/components/trackers/nullState";
 import styles from "@/app/(internal)/internal/trackers/[trackerId]/trackedEvents/trackedEvents.style.module.css";
-import trackerNullState from "@/public/trackerNullState.svg";
+import TrackerNullState from "@/public/trackerNullState.svg";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
 import Loading from "@/components/ui/Loading";
@@ -21,19 +22,22 @@ import { NotebookPen, Share2 } from "lucide-react";
 import SortDropdown from "@/components/search/sortDropdown";
 import BulkImport from "@/components/bulk-import";
 import { PaginationComponent } from "@/components/pagination";
-import NullState from "@/app/components/trackers/nullState";
-import PublicEventTable from "@/app/components/Table/PublicEventTable";
+import { PublicEvents } from "@/types/trackers";
+interface EventsData{
+  count:number;
+  events: Event[];
+}
 export default function CollectionPage() {
   const params = useParams();
     const { setFilter } = useFilterState();
    const searchParams = useSearchParams();
   const typeOfEvent = searchParams.get("eventType");
   const [payload,setPayload]= useState();
-  const [eventsData,setEventsData] = useState();
+  const [eventsData, setEventsData] = useState<EventsData | null | undefined>(null);
   const collectionId = params.collectionId;
   const [active, setActive] = useState(typeOfEvent);
   const [totalEvents,setTotalEvents] = useState(0)
-  const [eventCount, setEventCount] = useState();
+  const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const viewType = searchParams.get("view");
   const {getFilterValue, setMultipleFilters} =
       useFilterState();
@@ -52,7 +56,7 @@ export default function CollectionPage() {
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
      const { presetData, createTracker, publicEvents } = useTrackerServices();
       const [isLoading, setIsLoading] = useState(true);
-      const [presetTemplateData, setPresetTemplateData] = useState<PresetData>();
+      const [presetTemplateData, setPresetTemplateData] = useState<PresetData | null>(null);
       const [fetchError,setFetchError] = useState(false);
       const fetchPresetJson = useCallback(async () => {
         // if (isLoading) return;
@@ -101,11 +105,11 @@ export default function CollectionPage() {
           };
         });
   
-        transformedData.push({
-          type: "Bookmarked",
-          totalCount:  0,
-          newCount: 0,
-        });
+        // transformedData.push({
+        //   type: "Bookmarked",
+        //   totalCount:  0,
+        //   newCount: 0,
+        // });
   
         setEventCount(transformedData);
       } else {
@@ -120,11 +124,11 @@ export default function CollectionPage() {
           };
         });
   
-        transformedData.push({
-          type: "Bookmarked",
-          totalCount: 0,
-          newCount: 0,
-        });
+        // transformedData.push({
+        //   type: "Bookmarked",
+        //   totalCount: 0,
+        //   newCount: 0,
+        // });
         setEventCount(transformedData);
       }
   
@@ -156,7 +160,7 @@ export default function CollectionPage() {
       orgName.push(value);
     }
   });
-  const formData: any = {};
+  const formData: PublicEvents = {};
 
 // formData.name = presetTemplateData?.name;
 if(presetTemplateData){
@@ -230,13 +234,13 @@ getData(formData);
     //     setIsLoading(true)
     //     getData(formData);
     // },[active, currentPage])
-    const getData=async(formData)=>{
+    const getData=async(formData: PublicEvents)=>{
     try{
-      const response = await publicEvents(formData)
+      const response: EventsData | undefined = await publicEvents(formData)
     //  if(response){
     //   setIsLoading(false);
     //  }
-     setTotalEvents(response.count);
+     setTotalEvents(response?.count || 0);
      setEventsData(response);
      console.log(response);
     }catch(error){
@@ -392,6 +396,7 @@ getData(formData);
                   ))}
                 </div>
                 <div className="flex gap-2" >
+                  <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}>
                   <Button
                     variant="outline"
                     className="flex gap-1"
@@ -401,8 +406,9 @@ getData(formData);
                     <Share2 width={16} height={16} />
                     Share
                   </Button>
+                  </Link>
                   <Link
-                    href={`#`}
+                    href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
                     onClick={() => {
                       // GAEvent(
                       //   "trackers",
@@ -443,7 +449,9 @@ getData(formData);
                     </Button>
                   </Link>
                   <div>
+                  <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}>
                   <SortDropdown />
+                  </Link>
                   </div>
                   {/* {(view === "table" || view === "list")&&
                   <BulkImport
@@ -456,6 +464,15 @@ getData(formData);
    
     {/* <PublicEventTable  presetTemplateData={presetTemplateData} active={active}/> */}
     {isLoading?<Loading/>:
+    eventsData?.events.length===0?
+    <NullState
+                image={TrackerNullState}
+                // title="We couldn't find any events matching your tracker criteria at the moment."
+                text="No events found. Sign up to get personalized recommendations."
+                buttonText="Sign Up"
+                buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
+              />
+    :
     <>
     {(eventsData && view === "table") &&
       <TableView source="public" eventsData={eventsData}/>

@@ -64,6 +64,7 @@ import { useTransition } from "@/context/transition";
 import { useBulkActions } from "@/hooks/useBulkAction";
 import { useFilterContext } from "@/context/filterContext";
 import MobileEventCard from "./mobile-card";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -139,7 +140,10 @@ interface EventListProps {
   source?: string;
   view?: string;
   showCheckBox?: boolean;
-  eventsData?:any;
+  eventsData?:{
+    count: number,
+    events: Event[]
+  }
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -206,20 +210,22 @@ export default function EventAccordion({
   const [interest, setInterest] = useState();
   // const [interest, setInterest] = useState<Record<string, Interest>>({});
   const [eventId, setEventId] = useState();
-  let events, totalEvents, isLoading, error;
+  let events: Event[] | undefined; 
+    let totalEvents:number | undefined; 
+    let isLoading, error, isFetching;
   if(source==="public"){
-    console.log(eventsData.events);
-    totalEvents = eventsData.count
-    events=eventsData.events;
+    totalEvents = eventsData?.count
+    events=eventsData?.events;
   }
   const { data } = useTrackerContext();
-  const { executeBulkAction, isLoading: isBulkActionLoading } = 
-  source === "public"
-    ? { executeBulkAction: () => {}, isLoading: false }
-    : useBulkActions({
-        removeBookmark,
-        createUserEventInterest,
-      });
+  const bulkActions = useBulkActions({
+    removeBookmark,
+    createUserEventInterest,
+  });
+  const { executeBulkAction, isLoading: isBulkActionLoading } =
+    source === "public"
+      ? { executeBulkAction: () => Promise.resolve(), isLoading: false }
+      : bulkActions;
   const sourceModule = pathName.includes("trackers")
     ? "TRACKER"
     : pathName === "/internal/search/events"
@@ -242,11 +248,9 @@ export default function EventAccordion({
   intelScoreData,
   loading: intelLoading,
   error: intelError,
-} = source === "public" 
-  ? { intelScoreData: null, loading: false, error: null }
-  : useIntelData(
+} = useIntelData(
       trackerId || "",
-      events?.length > 0 ? events : [],
+      (events && events?.length > 0) ? events : [],
       query.eventType,
       query.type
     );
@@ -326,7 +330,7 @@ export default function EventAccordion({
     Math.floor(
       Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage
     ) + 1;
-  const totalPages = Math.ceil(totalEvents / itemsPerPage);
+  const totalPages = Math.ceil((totalEvents || 0) / itemsPerPage);
 
   let showValues: Show[] = getFilterValue("show")
     .split(",")
@@ -338,13 +342,14 @@ export default function EventAccordion({
       .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events?.length > 0) {
+    if (events && events?.length > 0) {
       setUpdatedEvents(events);
     }
   }, [events]);
   const handleCheckboxChange = (checked: boolean) => {
     if (checked) {
-      const resultId = events.map((event) => event.basic.id);
+      const resultId = events?.map((event) => event.basic.id);
+      if(resultId)
       setTotalChecked(resultId);
     } else {
       setTotalChecked([]);
@@ -691,7 +696,7 @@ export default function EventAccordion({
           currentPage={currentPage}
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
-          count={totalEvents}
+          count={totalEvents || 0}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
         />
@@ -748,9 +753,7 @@ const EventListItem = ({
   source?:string;
 }) => {
   const { getFilterValue } = useFilterState();
-  const { isTentimesUser } = source === "public" 
-  ? { isTentimesUser: false } 
-  : useFilterContext();
+ const { isTentimesUser } = useSafeFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">

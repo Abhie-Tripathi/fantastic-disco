@@ -34,6 +34,7 @@ import { useIntelData } from "@/hooks/useIntelData";
 import { intelScore } from "@/types/trackers";
 import { useBulkActions } from "@/hooks/useBulkAction";
 import { useToast } from "@/hooks/use-toast";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
@@ -41,7 +42,10 @@ interface EventTableProps {
   view?: string;
   showCheckBox?: boolean;
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
-  eventsData?:any
+  eventsData?:{
+    count: number,
+    events: Event[]
+  }
 }
 const EventTable = ({
   source,
@@ -74,7 +78,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const bulkOption = ["Attend", "Speak"];
    const { toast } = useToast();
   const { inTransition } = useTransition();
-  const { localFilters } = source === "public" ? {} : useFilterContext();
+  const { localFilters } = useSafeFilterContext();
   const { data, editTrue } = useTrackerContext();
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
@@ -90,11 +94,12 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   delete query.show;
-  let events, totalEvents, isLoading, error, isFetching;
+  let events: Event[] | undefined; 
+  let totalEvents:number | undefined; 
+  let isLoading, error, isFetching;
   if(source==="public"){
-    console.log(eventsData.events);
-    totalEvents = eventsData.count
-    events=eventsData.events;
+    totalEvents = eventsData?.count
+    events=eventsData?.events;
   }
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
 
@@ -109,25 +114,24 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   } else if(source==="reserach") {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-  const { executeBulkAction, isLoading: isBulkActionLoading } = 
-    source === "public"
-      ? { executeBulkAction: () => {}, isLoading: false }
-      : useBulkActions({
-          removeBookmark,
-          createUserEventInterest,
-        });
+  const bulkActions = useBulkActions({
+      removeBookmark,
+      createUserEventInterest,
+    });
+    const { executeBulkAction, isLoading: isBulkActionLoading } =
+      source === "public"
+        ? { executeBulkAction: () => Promise.resolve(), isLoading: false }
+        : bulkActions;
    const {
-    intelScoreData,
-    loading: intelLoading,
-    error: intelError,
-  } = source === "public" 
-    ? { intelScoreData: null, loading: false, error: null }
-    : useIntelData(
-        trackerId || "",
-        events?.length > 0 ? events : [],
-        query.eventType,
-        query.type
-      );
+     intelScoreData,
+     loading: intelLoading,
+     error: intelError,
+   } = useIntelData(
+         trackerId || "",
+         (events && events?.length > 0) ? events : [],
+         query.eventType,
+         query.type
+       );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -206,7 +210,7 @@ const handleBulkSubmit = async () => {
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
-  const totalPages = Math.ceil(totalEvents / itemsPerPage);
+  const totalPages = Math.ceil((totalEvents || 0) / itemsPerPage);
   let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
@@ -223,7 +227,7 @@ const handleBulkSubmit = async () => {
     });
   };
   useEffect(() => {
-    if (events?.length > 0) {
+    if (events && events?.length > 0) {
       // setTotalChecked([]);
       setIsChecked(false);
       setUpdatedEvents(events);
@@ -231,7 +235,8 @@ const handleBulkSubmit = async () => {
   }, [events]);
   const handleCheckboxChange = (checked: boolean) => {
     if (checked) {
-      const resultId = events.map((event) => event.basic.id);
+      const resultId = events?.map((event) => event.basic.id);
+      if(resultId)
       setTotalChecked(resultId);
     } else {
       setTotalChecked([]);
@@ -420,7 +425,7 @@ function mapInterestsToInterestIds(
     );
   }
 
-  if (events.length === 0) {
+  if (events?.length === 0) {
     if (source === "tracker") {
       if (query.eventType === "bookmarked") {
         return (
@@ -515,8 +520,9 @@ function mapInterestsToInterestIds(
               locationIds = {locationIds}
               type={query.type}
               view={query.eventType}
-              localFilters={localFilters}
+              localFilters={localFilters || {}}
               trackerMaturity={trackerMaturity}
+              source={source}
             />
             <TableBody className="overflow-auto">
               {updatedEvents &&
@@ -539,7 +545,7 @@ function mapInterestsToInterestIds(
                     key={event.basic.id}
                     event={event}
                     show={showValues}
-                    localFilters={localFilters}
+                    localFilters={localFilters || {}}
                     trackerId={trackerId}
                     intelLoading={intelLoading}
                     initialIntelScoreData={
@@ -560,7 +566,7 @@ function mapInterestsToInterestIds(
             currentPage={currentPage}
             totalPages={totalPages}
             itemsPerPage={itemsPerPage}
-            count={totalEvents}
+            count={totalEvents || 0}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
           />

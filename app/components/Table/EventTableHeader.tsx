@@ -11,6 +11,7 @@ interface EventTableHeaderProps {
   localFilters?: Filters;
   locationIds?: string[]
   trackerMaturity?: string[];
+  source?:string;
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
@@ -20,6 +21,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   locationIds,
   localFilters,
   trackerMaturity,
+  source
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -179,7 +181,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
           view !== "bookmarked" && (
             <>
               <TableHead
-                className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} z-40 h-12 bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">
@@ -188,7 +190,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
 
               <TableHead
-                className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">

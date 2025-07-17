@@ -125,6 +125,8 @@ export const dynamicPathPatterns = [
     new RegExp(`^/widget/events/manage/${idPattern}/overview$`).test(p),
   (p: string) =>
     new RegExp(`^/widget/events/manage/${idPattern}/settings$`).test(p),
+  // (p: string) =>
+  // new RegExp(`^/preset\\?presetId=${idPattern}([&].*)?$`).test(p),
 
   // ... (keep other static/simple routes as-is below this)
 ];
@@ -163,7 +165,7 @@ export const staticPathPatterns = [
   (p: string) => p === "/settings/configurations",
   (p: string) => p === "/settings/pricingplans",
   (p: string) => p === "/settings/usermanagement",
-
+  // (p: string) => p === "/preset",
   // Widget paths
   (p: string) => p === "/widget",
   (p: string) => p === "/widget/add",
@@ -173,7 +175,7 @@ export const staticPathPatterns = [
   (p: string) => p === "/widget/list",
   (p: string) => p === "/widget/setting",
   (p: string) => p === "/widget/setting/notifications",
-
+  (p: string) => p === "/preset",
   // Other paths
   (p: string) => p === "whr-pricing",
 ];
