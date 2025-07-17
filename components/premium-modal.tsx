@@ -202,6 +202,16 @@ export default function PremiumModal({
                         </span>
                       </div>
                     ))}
+                    <div className="text-end">
+                      <a
+                        href="https://whr.ai/pricing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs sm:text-sm text-[#4A3AFF] hover:underline font-medium"
+                      >
+                        ... View all features
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
