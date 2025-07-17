@@ -55,8 +55,8 @@ const FilterContent = ({
 }: FilterContentProps) => {
   const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
   const {membershipData} = useAuthContext()
-  const isPremium = !!membershipData && membershipData.membership > MembershipPlan.Freemium;
-  const isFreemium = !!membershipData && membershipData.membership === MembershipPlan.Freemium;
+  const isPremium = !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
+  const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
 
   return (
