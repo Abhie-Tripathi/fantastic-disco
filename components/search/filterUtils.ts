@@ -153,22 +153,31 @@ const gtmFilters: {
           group: "Insights & Scores",
         },
         {
-          id: "eventAnalytics",
-          component: "EventAnalyticsSelector",
-          enabled: true,
-          group: "Insights & Scores",
-        },
-        {
-          id: "economicImpact",
-          component: "EstimatedEconomicImpactSelector",
-          enabled: true,
-          group: "Insights & Scores",
-        },
-        {
           id: "eventRanking",
           component: "EventRankingSelector",
           enabled: true,
           group: "Insights & Scores",
+        },
+
+        //AudienceIntel
+        {
+          id: "audienceSpread",
+          component: "AudienceZoneSatusSelector",
+          enabled: true,
+          group: "Audience Intel"
+        },
+        {
+          id: "designations",
+          component: "AudienceDesAndDep",
+          enabled: true,
+          group: "Audience Intel"
+
+        },
+        {
+          id: "audienceSpreadRegions",
+          component: "AudienceSpread",
+          enabled: true,
+          group: "Audience Intel"
         },
       ],
     },
