@@ -52,7 +52,7 @@ export default function SignInForm() {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
   }, [redirectPath]);
 

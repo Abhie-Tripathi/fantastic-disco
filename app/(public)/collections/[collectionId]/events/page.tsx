@@ -164,8 +164,6 @@ export default function CollectionPage() {
 
 // formData.name = presetTemplateData?.name;
 if(presetTemplateData){
-
-  console.log("presetTemplateData?.trackerType?.[0]",presetTemplateData?.trackerType?.[0]);
   
 if (presetTemplateData?.trackerType?.includes("T_COMPETITOR")) {
   formData.searchByEntity = "company";
@@ -227,7 +225,6 @@ formData.limit = searchParams.get("limit") || "10";
 formData.offset = searchParams.get("offset") || "0";
 // setPayload(formData);
 getData(formData);
-  console.log("formData", formData);
 }
       },[presetTemplateData, active, currentPage, view])
     // useEffect(()=>{
@@ -260,117 +257,6 @@ getData(formData);
     <div className="hidden md:flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
                 {/* <div className={styles.new}></div> */}
                 <div className="flex gap-2">
-                  {/* <button
-                   className={`${styles.eventStatusBtn} ${
-                    active === "Active Events" ? styles.active : ""
-                  }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker Detail",
-                      "View",
-                      "Active Events"
-                    );
-                    setFilter("skip","0");
-                    setActive("Active Events");
-                    addQueryString("activeEvent");
-                  }}
-                >
-                  Active Events
-                  {
-                    <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
-                      {loading ? (
-                        formatCount(
-                          data?.groupedEventsCount?.active
-                        )
-                      ) : (
-                        <div className={styles.loader}></div>
-                      )}
-                    </div>
-                  }
-                </button>
-                <button
-                 className={`${styles.eventStatusBtn} ${
-                  active === "New Events" ? styles.active : ""
-                }`}
-                  onClick={() => {
-                    GAEvent("trackers", "Tracker Detail", "View", "New Events");
-                    // deleteFilter("skip")
-                    setActive("New Events");
-                    addQueryString("newEvent");
-                  }}
-                >
-                  New Events
-                  {
-                    <div className={styles.circle}>
-                      {loading ? (
-                        formatCount(
-                          data?.groupedEventsCount?.new
-                        )
-                      ) : (
-                        <div className={styles.loader}></div>
-                      )}
-                    </div>
-                  }
-                </button>
-                <button
-                  className={`${styles.eventStatusBtn} ${
-                    active === "Expired Events" ? styles.active : ""
-                  }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker Detail",
-                      "View",
-                      "Expired Events"
-                    );
-                    // deleteFilter("skip")
-                    setActive("Expired Events");
-                    addQueryString("expiredEvent");
-                  }}
-                >
-                  Past Events
-                  {
-                    <div className={styles.circle}>
-                      {loading ? (
-                        formatCount(
-                          data?.groupedEventsCount?.past
-                        )
-                      ) : (
-                        <div className={styles.loader}></div>
-                      )}
-                    </div>
-                  }
-                </button>
-                <button
-                   className={`${styles.eventStatusBtn} ${
-                    active === "Saved Events" ? styles.active : ""
-                  }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker Detail",
-                      "View",
-                      "Active Events"
-                    );
-                    // deleteFilter("skip")
-                    setActive("Saved Events");
-                    addQueryString("savedEvent");
-                  }}
-                >
-                  Bookmarked Events
-                  {
-                    <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
-                      {loading ? (
-                        formatCount(
-                         savedEventCount                     
-                        )
-                      ) : (
-                        <div className={styles.loader}></div>
-                      )}
-                    </div>
-                  }
-                </button> */}
                   {eventCount?.map((item, index) => (
                     <button
                       key={index}

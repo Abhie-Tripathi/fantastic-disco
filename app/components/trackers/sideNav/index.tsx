@@ -42,7 +42,6 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
-  console.log(pathName);
   
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();

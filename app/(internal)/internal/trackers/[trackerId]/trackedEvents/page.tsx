@@ -84,7 +84,6 @@ interface LocationObject {
 const Page = ({ params }: { params: any }) => {
   const isMobile = useIsMobile();
   const { data, savedEventCount, setIsNewCall, editTrue } = useTrackerContext();
-  console.log(params);
   const [share, setShare] = useState(false);
   const pathname = usePathname();
   const { getCalendarViewEvents, getTrackerEvents, getSavedEvents } =
