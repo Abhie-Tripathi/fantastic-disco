@@ -56,7 +56,7 @@ const gtmFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
@@ -342,7 +342,7 @@ const geoFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
