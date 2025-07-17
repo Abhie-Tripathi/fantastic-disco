@@ -9,6 +9,7 @@ import Manage from "/public/manageTracker.svg";
 import Image from "next/image";
 import styles from "./sideNav.style.module.css";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 import { GAEvent } from "@/utils/GAEvent";
 import { Settings, Share, Share2, User } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
@@ -42,7 +43,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
-  
+  const { toast } = useToast();
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -132,7 +133,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
       );
         }else
         router.push(
-      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}`
+      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`
       );
       }else{
       router.push(
@@ -173,7 +174,16 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
       closeShareModal();
     }
   };
-
+  
+   const handleShare = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl);
+    toast({
+      title: "URL Copied",
+      description: "Link copied to clipboard",
+      duration: 2000,
+    });
+  };
   return (
     <>
       <div
@@ -468,7 +478,15 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger onClick={() => setShare(!share)} >
+                  <TooltipTrigger
+                    onClick={() => {
+                      if (isPublic) {
+                        handleShare(); 
+                      } else {
+                        setShare(!share);
+                      }
+                    }}
+                  >
                   <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -484,7 +502,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
           {data?.name || name}
         </div>
         {/* Tab Bar */}
-        {last !== "savedevents" &&
+        {(last !== "savedevents" && !isPublic) &&
           <Tabs
           defaultValue={type ?? undefined}
           value={type ?? undefined}

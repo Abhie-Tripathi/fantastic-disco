@@ -15,6 +15,13 @@ export function middleware(request: NextRequest) {
 
   if (!cookie) {
     if (pathName && pathName != "/") {
+      const presetRegex = /^\/preset\?presetId=[a-zA-Z0-9-]+&type=[a-zA-Z0-9_]+$/;
+
+  if (presetRegex.test(pathName)) {
+    return NextResponse.redirect(
+      new URL(`/signup?redirect=${encodeURIComponent(pathName)}`, request.url)
+    );
+  }else 
       return NextResponse.redirect(
         new URL(`/signin?redirect=${encodeURIComponent(pathName)}`, request.url)
       );
