@@ -113,31 +113,31 @@ const gtmFilters: {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         // Insights & Scores
         {
@@ -399,31 +399,31 @@ const geoFilters: {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
-          group: "Advanced",
+          group: "Advanced Details",
         },
         // Insights & Scores
         {
