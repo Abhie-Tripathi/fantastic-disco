@@ -75,7 +75,7 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          includeKeywords[0]
+          includeKeywords[0].replaceAll("_"," ")
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -92,7 +92,7 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          excludeKeywords[0]
+          excludeKeywords[0].replaceAll("_"," ")
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
