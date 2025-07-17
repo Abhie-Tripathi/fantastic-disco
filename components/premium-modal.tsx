@@ -207,7 +207,7 @@ export default function PremiumModal({
                         href="https://whr.ai/pricing"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs sm:text-sm text-[#4A3AFF] hover:underline font-medium"
+                        className="text-xs sm:text-sm text-gray-800 dark:text-gray-200 hover:underline font-medium"
                       >
                         ... View all features
                       </a>
