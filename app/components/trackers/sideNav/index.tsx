@@ -436,10 +436,8 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
           >
             <Link
               className="flex items-center gap-2 text-[var(--primary-color)] p-0 h-auto font-medium text-sm hover:bg-transparent"
-              href={`/internal/trackers?skip=${skip}${
-                searchValue.length > 0
-                  ? `&q=${encodeURIComponent(searchValue)}`
-                  : ""
+              href={`${isPublic ? "/collections" : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""
+                }`
               }`}
             >
               <ArrowLeft className="w-4 h-4" />
