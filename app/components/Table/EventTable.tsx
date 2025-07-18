@@ -98,6 +98,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
+  console.log("events-->",events);
   const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
   removeBookmark,
   createUserEventInterest

@@ -54,8 +54,10 @@ export default function KeywordFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
   const enabled = morphedData.globalAndTourings.isEnabled;
-
+  
   useEffect(() => {
+    console.log(getLocalFilterValue("includeKeywords"));
+    
     const includeKeywords = [
       ...getLocalFilterValue("includeKeywords")
         ?.split(",")

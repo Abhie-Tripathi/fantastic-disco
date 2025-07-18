@@ -546,9 +546,78 @@ const stepsConfig =[
         ? ["basicFilterRef", "advanceFilterRef"]
         : (isEventeli || type==="T_CUSTOMER_ICP" || type==="T_EVENT_PARTICIPATION")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
-  useEffect(() => { 
+
+  const fetchAISuggestion = async(promptText:string)=>{
+    // console.log(val);
+    try{
+      let aiResponse: any = await suggestionGenerator(promptText);
+      
+      let temp = JSON.parse(aiResponse.choices[0].message.content);  
+      if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0){
+        setSuggestions(temp.data)
+      }
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      setSuggestions([]);
+    }
+  }
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
+  const scrollablePresetRef = useRef<HTMLDivElement>(null);
+  function transformedData(data: Record<string, any[]>, val: string[]) {
+    if (!val.length || !data[val[0]]) return []; // Handle empty cases
+
+    const result = data[val[0]].map((_, index) =>
+      val.map(key => data[key]?.[index]) // Optional chaining for safety
+    );
+
+    return result;
+  }
+   const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
+    let finalResult;
+    const foundTemplate = templates.find(t => t.name === searchParams.get("type"));
+    // console.log("foundedTemplate", foundTemplate);
+    
+    // setTemplate(foundTemplate);
+    
+    setHideSuggestion(false);
+    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
+
+    // presetItem[]
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType === "T_BRAND_BUILDING") {
+      if (trackerType === 'T_COMPETITOR') {
+        finalResult = transformedData(presetItem.data, ["organizations"])
+      }
+      if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
+        finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
+      }
+      const presetData: any = [];
+      finalResult?.map((item: any) => {
+        const temp: any = {};
+        (template || foundTemplate)?.inputAreas?.map((field: InputArea, index: number) => (
+          temp[field.placeholder] = item[index]
+        ))
+
+        presetData.push(temp);
+      })
+      setCustomData(presetData);
+      setTrackerName(trackerName);
+    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+      setTrackerName(trackerName);
+      setLocalFilter("includeKeywords", presetItem?.data?.includeKeywords?.join(","));
+      setLocalFilter("excludeKeywords", presetItem?.data?.excludeKeywords?.join(","))
+    }
+
+    setSelectedPresetName(trackerName);
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+    useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
+      
+      
       if(customData.length > 0 && Object.values(customData[0])[0]) {
+        console.log("customData---->",customData);
         // let placeholder = template?.inputAreas?.[0]?.placeholder || "";
         const value = Object?.values(customData[0])[0];
 
@@ -680,72 +749,6 @@ const stepsConfig =[
       }
     }
   }, [type, customData])
-  const fetchAISuggestion = async(promptText:string)=>{
-    // console.log(val);
-    try{
-      let aiResponse: any = await suggestionGenerator(promptText);
-      
-      let temp = JSON.parse(aiResponse.choices[0].message.content);  
-      if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0){
-        setSuggestions(temp.data)
-      }
-    } catch (err) {
-      console.error("Fetch failed:", err);
-      setSuggestions([]);
-    }
-  }
-  const scrollableDivRef = useRef<HTMLDivElement>(null);
-  const scrollablePresetRef = useRef<HTMLDivElement>(null);
-  function transformedData(data: Record<string, any[]>, val: string[]) {
-    if (!val.length || !data[val[0]]) return []; // Handle empty cases
-
-    const result = data[val[0]].map((_, index) =>
-      val.map(key => data[key]?.[index]) // Optional chaining for safety
-    );
-
-    return result;
-  }
-   const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
-    let finalResult;
-    const foundTemplate = templates.find(t => t.name === searchParams.get("type"));
-    // console.log("foundedTemplate", foundTemplate);
-    
-    // setTemplate(foundTemplate);
-    
-    setHideSuggestion(false);
-    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
-
-    // presetItem[]
-    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType === "T_BRAND_BUILDING") {
-      if (trackerType === 'T_COMPETITOR') {
-        finalResult = transformedData(presetItem.data, ["organizations"])
-      }
-      if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
-        finalResult = transformedData(presetItem.data, ["userName", "userOrgWebsite"])
-      }
-      const presetData: any = [];
-      finalResult?.map((item: any) => {
-        const temp: any = {};
-        (template || foundTemplate)?.inputAreas?.map((field: InputArea, index: number) => (
-          temp[field.placeholder] = item[index]
-        ))
-
-        presetData.push(temp);
-      })
-      setCustomData(presetData);
-      setTrackerName(trackerName);
-    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
-      setTrackerName(trackerName);
-      setLocalFilter("includeKeywords", presetItem?.data?.includeKeywords?.join(","));
-      setLocalFilter("excludeKeywords", presetItem?.data?.excludeKeywords?.join(","))
-    }
-
-    setSelectedPresetName(trackerName);
-    if (scrollableDivRef.current) {
-      scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-  
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -1283,7 +1286,7 @@ const stepsConfig =[
     if(searchParams.get("collectionId")){
     fetchPresetJson();
     }
-  }, [editData, searchParams]);
+  }, [editData]);
   // const [presetTemplateData1,setPresetTemplateData1]=useState();
 const fetchPresetJson = async () => {
   try {
