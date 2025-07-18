@@ -34,21 +34,7 @@ import { MembershipPlan } from "@/data/membershipPlans";
 const MobileSidebar = () => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { signOut } = useAuthContext();
-  const [membershipData, setMembershipData] = useState<any>(null);
-  const { getMembershipData } = useProfileServices();
-
-  useEffect(() => {
-    const fetchMembership = async () => {
-      try {
-        const data = await getMembershipData();
-        setMembershipData(data);
-      } catch (e) {
-        setMembershipData(null);
-      }
-    };
-    fetchMembership();
-  }, []);
+  const { signOut, membershipData } = useAuthContext();
 
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
