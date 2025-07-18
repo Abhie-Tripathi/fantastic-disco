@@ -284,6 +284,11 @@ const templates = [
       {
         type: "text",
         required:false,
+        placeholder: "Designation",
+      },
+      {
+        type: "text",
+        required:false,
         placeholder: "Seniority",
       },
       {
@@ -684,22 +689,25 @@ const stepsConfig =[
     }
    else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
   console.log("customData", customData);
-
+   
   const flattened = customData.flatMap(obj =>
-    Object.entries(obj)
-      .filter(([, value]) => value !== undefined && value.trim() !== "")
-      .map(([key, value]) => ({ Role: `${value}_${key}` }))
-  );
-  console.log("flattened", flattened);
+  Object.entries(obj)
+    .filter(([, value]) => value !== undefined && value.trim() !== "")
+    .map(([key, value]) => `${value}_${key}`)
+);
   
-  // Avoid unnecessary state updates to prevent infinite loop
-  const isAlreadyFlattened =
-    flattened.length === customData.length &&
-    flattened.every((entry, idx) => entry.Role.split("_")?.[0] === `${customData[idx]?.Role?.split("_")?.[0]}`);
+const final = { Role: flattened.join(",") };
 
-  if (!isAlreadyFlattened) {
-    setCustomData(flattened);
-  }
+  console.log("flattened", final);
+  
+  // // Avoid unnecessary state updates to prevent infinite loop
+  // const isAlreadyFlattened =
+  //   flattened.length === customData.length &&
+  //   flattened.every((entry, idx) => entry.Role.split("_")?.[0] === `${customData[idx]?.Role?.split("_")?.[0]}`);
+
+  // if (!isAlreadyFlattened) {
+  //   setCustomData(final);
+  // }
 }
 
   }, [type, customData])
