@@ -1,11 +1,18 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config";
+import { signOut as signOutSSO } from "next-auth/react";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 120000,
   withCredentials: true,
 });
+
+const signOut = () => {
+  window.localStorage.removeItem("user");
+  signOutSSO();
+  window.location.href = "/signin";
+};
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -18,7 +25,7 @@ axiosInstance.interceptors.response.use(
   ) => {
     if (error.response?.status === 401) {
       // Redirect to login page or refresh token
-      window.location.href = "/signin";
+      signOut();
     }
     return error.response;
   }
