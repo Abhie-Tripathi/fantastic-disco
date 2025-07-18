@@ -113,7 +113,7 @@ const MobileEventCard = ({
   // Helper for stats
   const stat = (label: string, value: React.ReactNode) => (
     <div className="flex items-center justify-between py-1">
-      <span className="flex items-center gap-1 text-[15px] text-gray-500 font-medium">
+      <span className="flex items-center gap-1 text-[15px] [color:var(--secondary-text-color)] font-medium">
         {label}
       </span>
       <span className="font-semibold text-primary text-sm">{value}</span>
@@ -143,14 +143,14 @@ const MobileEventCard = ({
 
   // Helper for match keywords color
   const getMatchKeywordsColor = (percentage: number | null) => {
-    if (percentage === null) return "text-gray-500";
+    if (percentage === null) return "[color:var(--secondary-text-color)]";
     if (percentage > 20)
       return "text-green-500 bg-[var(--success-background-color)] ";
     if (percentage >= 10 && percentage <= 20)
       return "text-blue-500 bg-[#eeeaf9]";
     if (percentage > 0 && percentage < 10)
       return "text-red-500 bg-[var(--danger-background-color)]";
-    return "text-gray-500";
+    return "[color:var(--secondary-text-color)]";
   };
 
   // Category badges (primary event type and first category)
@@ -177,7 +177,7 @@ const MobileEventCard = ({
       <Badge
         key={cat.id}
         variant="outline"
-        className="text-gray-600 rounded-sm px-2 py-0.5 text-xs font-medium"
+        className="[color:var(--secondary-text-color)] rounded-sm px-2 py-0.5 text-xs font-medium"
       >
         {cat.name}
       </Badge>
@@ -226,13 +226,13 @@ const MobileEventCard = ({
         <>
           <Badge
             variant="outline"
-            className="text-gray-600 capitalize rounded-sm text-xs font-medium mr-1"
+            className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium mr-1"
           >
             Free
           </Badge>
           <Badge
             variant="outline"
-            className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+            className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
           >
             Paid
           </Badge>
@@ -242,7 +242,7 @@ const MobileEventCard = ({
       entryTypeBadges = (
         <Badge
           variant="outline"
-          className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+          className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
         >
           Paid
         </Badge>
@@ -256,7 +256,7 @@ const MobileEventCard = ({
       <Badge
         key="maturity"
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         {event.advance?.maturity}
       </Badge>
@@ -265,7 +265,7 @@ const MobileEventCard = ({
       <Badge
         key="frequency"
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         {event.advance?.frequency}
       </Badge>
@@ -292,7 +292,7 @@ const MobileEventCard = ({
       <Badge
         key="forecasted"
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         Forecasted:{" "}
         {event.advance?.rehostDate
@@ -311,7 +311,7 @@ const MobileEventCard = ({
     rankDisplay !== "-" && (
       <Badge
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         {rankDisplay}
       </Badge>
@@ -322,7 +322,7 @@ const MobileEventCard = ({
     event.insights?.trustScore > 0 ? (
       <Badge
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         Trust Score: {event.insights?.trustScore}
       </Badge>
@@ -334,7 +334,7 @@ const MobileEventCard = ({
     event.insights?.reputationScore && (
       <Badge
         variant="outline"
-        className="text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="[color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         Reputation Score: {event.insights?.reputationScore}
       </Badge>
@@ -346,7 +346,7 @@ const MobileEventCard = ({
     event.basic.matchedKeywords.length > 0 && (
       <Badge
         variant="outline"
-        className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         Match Keyword: {event.basic.matchedKeywords?.join(" | ")}
       </Badge>
@@ -354,7 +354,7 @@ const MobileEventCard = ({
   const matchKeywordsScoreBadge = showMatchKeywords && (
     <Badge
       variant="outline"
-      className={`flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium ${getMatchKeywordsColor(
+      className={`flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium ${getMatchKeywordsColor(
         event.basic.matchedKeywordsPercentage ?? null
       )}`}
     >
@@ -371,7 +371,7 @@ const MobileEventCard = ({
 
   const audienceZone = showValues.includes(Show.audienceZone) &&
     event.audience?.audienceZone && (
-      <Badge variant="outline" className="text-gray-600 capitalize">
+      <Badge variant="outline" className="[color:var(--secondary-text-color)] capitalize">
         {event.audience.audienceZone} Audience
       </Badge>
     );
@@ -381,7 +381,7 @@ const MobileEventCard = ({
   event.basic.rating > 0 ? (
     <Badge
       variant="outline"
-      className="text-gray-600 capitalize rounded-sm"
+      className="[color:var(--secondary-text-color)] capitalize rounded-sm"
     >
       <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
       <span>{event.basic.rating}</span>
@@ -395,7 +395,7 @@ const MobileEventCard = ({
     event.audience?.audienceSpread && (
       <Badge
         variant="outline"
-        className="flex items-center gap-2 text-gray-600 capitalize rounded-sm text-xs font-medium"
+        className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm text-xs font-medium"
       >
         <div className="flex gap-1">
           {Object.entries(event.audience.audienceSpread)
@@ -426,7 +426,7 @@ const MobileEventCard = ({
   return (
       <Link href={`/internal/event/${event.basic.id}`} className="block">
     <div className="bg-background rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
-      <div className="text-sm text-gray-600">{date}</div>
+      <div className="text-sm [color:var(--secondary-text-color)]">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -521,7 +521,7 @@ const MobileEventCard = ({
       {/* Insights & Scores */}
       {showValues.includes(Show.scores) && (
         <div className="flex justify-between">
-          <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+          <div className="text-sm [color:var(--secondary-text-color)] dark:text-gray-400 font-medium">
             Insights & Scores
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -609,7 +609,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
 
   return (
     <div className="bg-background dark:bg-[#171717] rounded-lg shadow border border-border dark:border-[#232323] p-4 flex flex-col gap-3 w-full">
-      <div className="text-sm text-gray-500 dark:text-gray-400">{date}</div>
+      <div className="text-sm [color:var(--secondary-text-color)] dark:text-gray-400">{date}</div>
       {/* Top: Logo & Name */}
       <div className="flex items-center gap-3">
         {/* Logo logic with fallback */}
@@ -668,7 +668,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
       {/* Insights & Scores */}
       {showHolidayScore && (
         <div className="flex justify-between">
-          <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+          <div className="text-sm [color:var(--secondary-text-color)] font-medium">
             Insights & Scores
           </div>
           <div className="flex items-center gap-2 mt-2">

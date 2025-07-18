@@ -447,32 +447,6 @@ export const PeopleList: React.FC = () => {
     );
   }, [filteredUsers, selectedData]);
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 items-center justify-center min-h-svh">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <NullState
-        image={coordinateNullState}
-        title={(error as ApiError).message}
-      />
-    );
-  }
-
-  if (count === 0) {
-    return (
-      <NullState
-        image={coordinateNullState}
-        title="No Results Found"
-        text="Try adjusting the filter criteria to refine your search"
-      />
-    );
-  }
 
   return (
     <div className="flex flex-col w-full">

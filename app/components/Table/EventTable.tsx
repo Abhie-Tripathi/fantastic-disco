@@ -396,10 +396,10 @@ function mapInterestsToInterestIds(
   if (error) {
     if (source === "tracker") {
       return (
-        <NullState
-          image={trackerNullState}
-          title={(error as ApiError).message}
-        />
+        <ZeroState
+        text={(error as ApiError).message}
+        errorStatusCode={(error as ApiError)?.statusCode}
+      />
       );
     } else
       return error.message == "Location is required" ? (

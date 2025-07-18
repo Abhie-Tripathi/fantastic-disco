@@ -47,6 +47,7 @@ interface FilterItem {
   component: string;
   enabled: boolean;
   filterName?: string;
+  group?: string;
 }
 
 const gtmFilters: {
@@ -55,7 +56,7 @@ const gtmFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
@@ -106,74 +107,77 @@ const gtmFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
+          group: "Advanced Details",
         },
-      ],
-    },
-    {
-      id: "insights-scores",
-      label: "Insights & Scores",
-      filters: [
+        // Insights & Scores
         {
           id: "estimatedVisitors",
           component: "EstimatedVisitorsSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "estimatedExhibitors",
           component: "EstimatedExhibitorsSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "eventRanking",
           component: "EventRankingSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
-      ],
-    },
-    {
-      id: "audience-intel",
-      label: "Audience Intel",
-      filters: [
+
+        //AudienceIntel
         {
           id: "audienceSpread",
           component: "AudienceZoneSatusSelector",
           enabled: true,
+          group: "Audience Intel"
         },
         {
           id: "designations",
           component: "AudienceDesAndDep",
           enabled: true,
+          group: "Audience Intel"
+
         },
         {
           id: "audienceSpreadRegions",
           component: "AudienceSpread",
           enabled: true,
+          group: "Audience Intel"
         },
       ],
     },
@@ -338,7 +342,7 @@ const geoFilters: {
   events: [
     {
       id: "basic-filters",
-      label: "Basic Filters",
+      label: "Basic",
       filters: [
         {
           id: "eventIds",
@@ -389,77 +393,71 @@ const geoFilters: {
     },
     {
       id: "advanced-details",
-      label: "Advanced Details",
+      label: "Advanced",
       filters: [
         {
           id: "edition",
           component: "EditionSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "brand",
           component: "GlobalAndTouringSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "status",
           component: "ForecastedStatusSelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "frequencies",
           component: "FrequencySelector",
           enabled: true,
+          group: "Advanced Details",
         },
         {
           id: "productTopics",
           component: "ProductTopics",
           enabled: true,
+          group: "Advanced Details",
         },
-      ],
-    },
-    {
-      id: "insights-scores",
-      label: "Insights & Scores",
-      filters: [
+        // Insights & Scores
         {
           id: "estimatedVisitors",
           component: "EstimatedVisitorsSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "estimatedExhibitors",
           component: "EstimatedExhibitorsSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "eventAnalytics",
           component: "EventAnalyticsSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "economicImpact",
           component: "EstimatedEconomicImpactSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
         {
           id: "eventRanking",
           component: "EventRankingSelector",
           enabled: true,
+          group: "Insights & Scores",
         },
       ],
     },
-    // {
-    //   id: "audience-intel",
-    //   label: "Audience Intel",
-    //   filters: [
-    //     {
-    //       id: "designations",
-    //       component: "AudienceDesAndDep",
-    //       enabled: true,
-    //     },
-    //   ],
-    // },
   ],
   companies: [
     {

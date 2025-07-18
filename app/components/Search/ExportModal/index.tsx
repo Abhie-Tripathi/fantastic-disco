@@ -6,7 +6,7 @@ import Refresh from "/public/Refresh.svg";
 import HelpIcon from "/public/help.svg";
 import MinusIcon from "/public/minus.svg";
 import DownloadIcon from "/public/download.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Loading from "../../UI/Loading";
@@ -20,6 +20,9 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, X } from "lucide-react";
 import { isEventeli } from "@/config";
 import { InformationFill } from "geist-icons";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
+import PremiumModal from "@/components/premium-modal";
+import { MembershipPlan } from "@/data/membershipPlans";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -65,6 +68,7 @@ function formatDate(dateString: string): string {
 
 const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) => {
   const pathName = usePathname().split('/');
+  const {membershipData} = useAuthContext()
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
   const [exportList, setExportList] = useState<ExportContent[]>([]);
@@ -72,6 +76,10 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [refreshState, setRefreshState] = useState<boolean>(false);
+  const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
+
+
+  const isAdvancedPlanOrAbove = !!membershipData && membershipData.membership != null && membershipData.membership >= MembershipPlan.Advance;
 
   const fetchData = async () => {
     setRefreshState(true);
@@ -281,15 +289,17 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
           <span className="text-xs flex items-center" style={{color:"var(--primary-color)"}}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--primary-color)" height="12px" />
             Available only in the Advance &amp; above plan</span>
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden md:flex"
-            onClick={handleUpgradeClick}
-          >
-            <span className="hidden sm:inline">Upgrade</span>
-          </Button>
-          </div>
+            {!isAdvancedPlanOrAbove && <RainbowButton
+              size="sm"
+              className="hidden sm:inline ml-2 h-6 rounded-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPremiumModalOpen(true);
+              }}
+            >
+              Premium
+            </RainbowButton>}
+            </div>
           {/* <div
             className={styles.exportType_modal_button}
             onClick={exportDataHandler}
@@ -446,6 +456,7 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
             </div>
           </div>
         ))}
+      <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen} />
     </div>
   );
 };
