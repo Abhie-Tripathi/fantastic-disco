@@ -21,7 +21,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
 import { myFetch } from "@/utils/myFetch";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle2, Copy, ExternalLink } from "lucide-react";
+import { CheckCircle2, Copy, ExternalLink, Search } from "lucide-react";
 import { isEventeli } from "@/config";
 
 interface CreateTrackerDialog {
@@ -368,6 +368,7 @@ export default function CreateTrackerDialog({
                 className="w-full"
                 onClick={() => handleOpenChange(false)}
               >
+                <Search className="mr-2 h-4 w-4" />
                 Continue Search
               </Button>
             </div>

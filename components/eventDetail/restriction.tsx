@@ -1,16 +1,23 @@
-import LockRestriction from "/public/lock_restriction.svg";
-import Image from "next/image";
 import clsx from "clsx";
+import PremiumModal from "../premium-modal";
+import { useState } from "react";
+import { RainbowButton } from "../magicui/rainbow-button";
 
 const Restriction = ({ className = "" }) => {
+  const [isPremiumModalOpen, setPremiumModalOpen] = useState(false);
   return (
-    <div
-      className={clsx(
-        "flex items-center justify-center p-2 border border-[var(--neutral-light-color)] rounded-md bg-white shadow-md w-8 h-8 aspect-square",
-        className
-      )}
-    >
-      <Image src={LockRestriction} alt="Lock" />
+    <div>
+      <RainbowButton
+        size="sm"
+        className="ml-auto h-6 rounded-sm"
+        onClick={() => setPremiumModalOpen(true)}
+      >
+        Premium
+      </RainbowButton>
+      <PremiumModal
+        open={isPremiumModalOpen}
+        onOpenChange={setPremiumModalOpen}
+      />
     </div>
   );
 };

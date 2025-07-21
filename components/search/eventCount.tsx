@@ -20,7 +20,7 @@ const EventCount = ({ view }: { view: string }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
-    enabled: isEventeli
+    enabled: (isEventeli && !params.get("eventIds"))
       ? !!(
           isEventeli &&
           (searchParams.get("locationIds") || searchParams.get("viewBound"))

@@ -33,7 +33,7 @@ type FormData = z.infer<typeof SignUpFormSchema>;
 
 const GtmSignUpForm = () => {
   const params = useSearchParams();
-  const redirectParams = params.get("redirect");
+  const redirectParams = params.get("redirect") || sessionStorage.getItem("redirect");
   const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const {
     signup,

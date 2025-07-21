@@ -457,7 +457,7 @@ export const PlatformInsightsView = ({ eventDetails }: Props) => {
   const economicImpactEnabled =
     (morphedData &&
       morphedData.economicImpact &&
-      morphedData.economicImpact.isEnabled) ||
+      morphedData.economicImpact.isEnabled) ??
     true;
 
   return isEventeli ? (

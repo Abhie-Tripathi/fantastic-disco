@@ -22,8 +22,6 @@ import Pricing from "@/app/components/internal/Dashboard/Pricing";
 import Loading from "@/components/ui/Loading";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useConfigurationService } from "@/services/configurationService";
-import { MembershipPlan } from "@/data/membershipPlans";
-import { MembershipData } from "@/types/user";
 import { isEventeli } from "@/config";
 import { TrackerData } from "@/types/dashboard";
 
@@ -68,7 +66,6 @@ const Dashboard = () => {
     enquiryStatus: "",
   });
   const [value, setValue] = useState<string>("");
-  const [membershipData, setMembershipData] = useState<MembershipData>();
   const [profileData, setProfileData] = useState<ProfileData>({
     name: "",
     email: "",
@@ -85,11 +82,11 @@ const Dashboard = () => {
   const { getUpcomingEvents } = useEventServices();
   const { getRecentSearch } = useEventsService();
   const { getTrackers } = useTrackerServices();
-  const { getMyProfileData, getMembershipData } = useProfileServices();
+  const { getMyProfileData } = useProfileServices();
   const { setLocalFilter } = useFilterContext();
   const { getOutreachConfiguration, getInterestConfiguration } =
     useConfigurationService();
-  const { user } = useAuthContext();
+  const { user, membershipData } = useAuthContext();
 
   const fetchCoordinateData = async () => {
     const apiData: any = await getInterestConfiguration();
@@ -244,14 +241,6 @@ const Dashboard = () => {
     // console.log("user", user)
   };
 
-  const fetchMembershipData = async () => {
-    try {
-      const data = await getMembershipData();
-      if (data) setMembershipData(data);
-    } catch (error) {
-      console.error("Error fetching user membership data:", error);
-    }
-  };
   useEffect(() => {
     const fetchData = async () => {
       // Call all fetch functions in parallel
@@ -263,7 +252,6 @@ const Dashboard = () => {
         fetchOutreachMessage(),
         fetchPromoteData(),
         fetchProfileData(),
-        fetchMembershipData(),
       ]);
       setLoading(false);
     };

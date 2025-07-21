@@ -34,21 +34,7 @@ import { MembershipPlan } from "@/data/membershipPlans";
 const MobileSidebar = () => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { signOut } = useAuthContext();
-  const [membershipData, setMembershipData] = useState<any>(null);
-  const { getMembershipData } = useProfileServices();
-
-  useEffect(() => {
-    const fetchMembership = async () => {
-      try {
-        const data = await getMembershipData();
-        setMembershipData(data);
-      } catch (e) {
-        setMembershipData(null);
-      }
-    };
-    fetchMembership();
-  }, []);
+  const { signOut, membershipData } = useAuthContext();
 
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
@@ -128,11 +114,13 @@ const MobileSidebar = () => {
         )}
         {membershipData && membershipData.membership === MembershipPlan.Freemium && (
           <Button
-            variant="link"      
-            onClick={handleUpgradeClick}
-          >
-            <span className="font-semibold text-xs text-primary">Upgrade</span>
-          </Button>
+          variant="outline"
+          size="sm"
+          className="ml-2"
+          onClick={handleUpgradeClick}
+        >
+          Upgrade
+        </Button>
         )}
       </div>
       <nav className="flex-1">

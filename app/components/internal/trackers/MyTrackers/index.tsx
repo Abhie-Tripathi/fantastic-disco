@@ -196,6 +196,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     e.stopPropagation();
     hideTemplates(false);
   }}>Create</Button>
+  <Link
+  href="/collections"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">Collections</Button>
+  </Link>
 {!isMobile &&
 <Link
   href="/internal/trackers/savedevents?view=table"
@@ -277,7 +283,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             <Map
                               isGlobal={true}
                               source="tracker"
-                              eventType={eventType}
+                              eventType=""
                               searchParams="active"
                               trackerId={item?.id || ""}
                             trackerLoc={

@@ -102,7 +102,7 @@ const IndustryCards = ({
   handleBackButton: () => void;
 }) => {
   return (
-    <div className="max-w-4xl self-center">
+    <div className="max-w-3xl self-center">
       {hasSubIndustries && selectedIndustry && (
         <ActiveCard
           selectedIndustry={selectedIndustry}
