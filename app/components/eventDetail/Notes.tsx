@@ -151,12 +151,16 @@ export const Notes = ({
         const data = await getCoordinateNotes(
           enquiryId,
           `offset=${page}&limit=10`,
-          path[2] === "event" ? "outreach" : path[2]
+          path[2] === "event" ? stage?.toLowerCase() : path[2]
         );
         if (data && data.comments) {
           if (data.comments && data.comments?.length > 0) {
             setZeroState(false);
-            setNotes((prevNotes) => [...data.comments.reverse(), ...prevNotes]);
+            if (page === 0) {
+              setNotes(data.comments.reverse());
+            } else {
+              setNotes((prevNotes) => [...data.comments.reverse(), ...prevNotes]);
+            }
           }
           if (data.comments.length === 0 && page === 0) {
             setZeroState(true);
@@ -625,7 +629,7 @@ export const Notes = ({
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, stage]);
   // setTimeout(() => {
   //   console.log("data is: " + notes);
   // }, 5000);

@@ -294,11 +294,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isOverviewVisible = true;
   const typeOfEvent = rawFormat.toLowerCase();
 
-  const tabs = [
+  const eventTabs = [
     { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
     { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
     { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
   ];
+
+  const coordinateTabs = [
+    { tabName: "Activity", path: "activity", isVisible: true },
+    { tabName: "Team Requests", path: "teamRequest", isVisible: true },
+    { tabName: "Notes & Discussions", path: "notes", isVisible: true },
+    { tabName: "Documents", path: "documents", isVisible: true },
+  ];
+
+  const tabs = view === "research" ? eventTabs : view === "coordinate" ? coordinateTabs : [];
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -1253,42 +1262,60 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 
               w-full pr-4 overflow-y-auto scroll-smooth"
             >
-              <Overview
-                eventDetails={eventData}
-                scrollSection={tabs[0].path}
-                setActiveTab={setActiveTab}
-              />
-              <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
-              <AdvancedDetails
-                eventDetails={advance}
-                eventEditionData={eventEditionData}
-                eventId={params.eventId}
-              />
-              {isInsightVisible && (
-                <InsightsAndScores
-                  eventDetails={eventData}
-                  eventRankingDetails={eventRankingDetails}
-                  scrollSection={tabs[1].path}
-                  setActiveTab={setActiveTab}
-                />
-              )}
-              {isAudienceVisible && (
-                <AudienceIntel
-                  eventDetails={eventData}
-                  eventExhibitorData={eventExhibitorData}
-                  eventSpeakerData={eventSpeakerData}
-                  // eventSponsorData={eventSponsorData}
-                  scrollSection={tabs[2].path}
-                  setActiveTab={setActiveTab}
-                />
+              {view === "research" ? (
+                <>
+                  <Overview
+                    eventDetails={eventData}
+                    scrollSection={tabs[0].path}
+                    setActiveTab={setActiveTab}
+                  />
+                  <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
+                  <AdvancedDetails
+                    eventDetails={advance}
+                    eventEditionData={eventEditionData}
+                    eventId={params.eventId}
+                  />
+                  {isInsightVisible && (
+                    <InsightsAndScores
+                      eventDetails={eventData}
+                      eventRankingDetails={eventRankingDetails}
+                      scrollSection={tabs[1].path}
+                      setActiveTab={setActiveTab}
+                    />
+                  )}
+                  {isAudienceVisible && (
+                    <AudienceIntel
+                      eventDetails={eventData}
+                      eventExhibitorData={eventExhibitorData}
+                      eventSpeakerData={eventSpeakerData}
+                      // eventSponsorData={eventSponsorData}
+                      scrollSection={tabs[2].path}
+                      setActiveTab={setActiveTab}
+                    />
+                  )}
+                </>
+              ) : view === "coordinate" ? (
+                <>
+                  <div>Coordinate Notes</div>
+                  <Notes
+                    eventId={id}
+                    enquiryId={eventEnquiry.id}
+                    stage={"COORDINATE"}
+                  />
+                </>
+              ) : view === "outreach" ? (
+                <>
+                  <div>Outreach Notes</div>
+                  <Notes
+                    eventId={id}
+                    enquiryId={eventEnquiry.id}
+                    stage={"OUTREACH"}
+                  />
+                </>
+              ) : (
+                <></>
               )}
             </section>
-
-            {/* <Notes
-              eventId={id}
-              enquiryId={eventEnquiry.id}
-              stage={"COORDINATE"}
-            /> */}
           </>
         )}
       </div>
