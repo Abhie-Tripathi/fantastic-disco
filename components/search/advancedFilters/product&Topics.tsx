@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -54,19 +54,7 @@ export default function KeywordFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
   const enabled = morphedData?.keywords?.isEnabled;
-  // const [rawInclude,setRawInclude] = useState();
-  const [rawExclude,setRawExclude] = useState();
-  const rawInclude = useMemo(() => {
-  return getLocalFilterValue("includeKeywords");
-}, [getLocalFilterValue]);
-  // useEffect(()=>{
-  //   const excludeKeywords = [
-  //     ...getLocalFilterValue("excludeKeywords")
-  //       ?.split(",")
-  //       .filter((keyword) => keyword.trim() !== ""),
-  //   ];
-  //   setExcludeKeywords(excludeKeywords);
-  // },[getLocalFilterValue("excludeKeywords")])
+
   useEffect(() => {
     const includeKeywords = [
       ...getLocalFilterValue("includeKeywords")
@@ -87,7 +75,7 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          includeKeywords[0].replaceAll("_"," ")
+          includeKeywords[includeKeywords.length-1]?.replaceAll("_"," ")
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -104,7 +92,7 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          excludeKeywords[0].replaceAll("_"," ")
+          excludeKeywords[excludeKeywords.length-1]?.replaceAll("_"," ")
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -115,7 +103,8 @@ export default function KeywordFilter({
       );
     }
   }, [
-    rawInclude
+    getLocalFilterValue("includeKeywords"),
+    getLocalFilterValue("excludeKeywords"),
   ]);
 
   useEffect(() => {
