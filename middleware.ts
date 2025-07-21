@@ -12,7 +12,6 @@ export function middleware(request: NextRequest) {
   const cookie = request.cookies.get(key)?.value;
 
   const pathName = request.nextUrl.pathname + request.nextUrl.search || "";
-  console.log(pathName);
   
   if (!cookie) {
     if (pathName && pathName != "/") {

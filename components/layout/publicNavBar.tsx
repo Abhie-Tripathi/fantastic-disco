@@ -55,12 +55,6 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
   //     router.push("/widget/dashboard");
   //   }
   // };
-  useEffect(()=>{
-    if(pathname.includes("events")){
-      console.log(pathname.split("/")[2], searchParams.get("type"));
-      
-    }
-  },[pathname])
   const route = pathname.split("/")[1];
   const handleClick = () => {
     if (route === "internal") {
