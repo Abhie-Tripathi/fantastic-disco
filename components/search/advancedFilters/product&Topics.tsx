@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -54,9 +54,9 @@ export default function KeywordFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
   const enabled = morphedData?.keywords?.isEnabled;
-  const [isClicked,setIsClicked] = useState(0);
+   const count = useRef(0);
+
   useEffect(() => {
-    setIsClicked(prev=>prev+1);
     const includeKeywords = [
       ...getLocalFilterValue("includeKeywords")
         ?.split(",")
@@ -73,11 +73,13 @@ export default function KeywordFilter({
       type === "T_PRODUCT_KEYWORDS" &&
       activeTab === "include" &&
       !hideSuggestion &&
-      isClicked === 1
+      count.current%2===0
     ) {
+      console.log("count is",count)
+      count.current += 1;
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          includeKeywords[includeKeywords?.length-1]?.replaceAll("_"," ")
+          includeKeywords[0]
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -90,12 +92,11 @@ export default function KeywordFilter({
       excludeKeywords.length > 0 &&
       type === "T_PRODUCT_KEYWORDS" &&
       activeTab === "exclude" &&
-      !hideSuggestion &&
-      isClicked === 1
+      !hideSuggestion
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          excludeKeywords[excludeKeywords?.length-1]?.replaceAll("_"," ")
+          excludeKeywords[0]
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -106,10 +107,10 @@ export default function KeywordFilter({
       );
     }
   }, [
-    getLocalFilterValue("includeKeywords"),
-    getLocalFilterValue("excludeKeywords"),
+    localFilters?.includeKeywords,
+    localFilters?.excludeKeywords,
   ]);
-  
+
   useEffect(() => {
     const savedIncludeKeywords = localFilters?.includeKeywords;
     const savedExcludeKeywords = localFilters?.excludeKeywords;
@@ -127,7 +128,6 @@ export default function KeywordFilter({
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsClicked(0);
     if (inputValue.trim()) {
       const newKeywords = inputValue
         .trim()
@@ -166,7 +166,6 @@ export default function KeywordFilter({
     keyword: string,
     keyType: "include" | "exclude"
   ) => {
-     setIsClicked(0);
     if (keyType === "include") {
       setIncludeKeywords(includeKeywords.filter((k) => k !== keyword));
       setLocalFilter(
