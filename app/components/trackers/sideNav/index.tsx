@@ -125,8 +125,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
     setView(view);
     if (last === "savedevents") {
       router.push(`/internal/trackers/savedevents?view=${view}`);
-    } else
-      if(isPublic){
+    } else if(isPublic){
         if(view==="map" || view === "calendar"){
         router.push(
       `/preset?presetId=${pathName[2]}&type=${type}&view=${view}`
@@ -136,6 +135,10 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
       `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`
       );
       }else{
+      if(pathName.includes("collections")){
+          router.push(
+      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`)
+        }else
       router.push(
         `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
       );
@@ -259,7 +262,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
                 </div>
               </div>
               {/* </Link> */}
-              {last !== "savedevents" && (
+              {(last !== "savedevents" && !(!isPublic && pathName.includes("collections")) ) && (
                 <>
                   <div className="cursor-pointer">
                     <div
@@ -353,7 +356,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
                   href={
                     isPublic
                       ? `/preset?presetId=${pathName[2]}&type=${type}`
-                      : `/internal/trackers/${secondLast}/editTracker?type=${type}`
+                      : pathName.includes("collections")?`/internal/trackers/create?type=${type}&collectionId=${secondLast}`:`/internal/trackers/${secondLast}/editTracker?type=${type}`
                   }
                   onClick={() => {
                     GAEvent(
@@ -395,6 +398,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
                     <span>Configurations</span>
                   </div>
                 </Link>
+                {!(!isPublic && pathName.includes("collections")) && 
                 <Link
                   href={
                     isPublic
@@ -429,7 +433,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
                     />
                     <span>Manage Access</span>
                   </div>
-                </Link>
+                </Link>}
               </>
             )}
           </div>
@@ -463,7 +467,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
                     href={
                     isPublic
                       ? `/preset?presetId=${pathName[2]}&type=${type}`
-                      : `/internal/trackers/${secondLast}/editTracker?type=${type}`
+                      : pathName.includes("collections")?`/internal/trackers/create?type=${type}&collectionId=${secondLast}`:`/internal/trackers/${secondLast}/editTracker?type=${type}`
                   }
                     className="flex items-center"
                     ref={isMobile?refs.configRef:null}
@@ -502,7 +506,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
           {data?.name || name}
         </div>
         {/* Tab Bar */}
-        {(last !== "savedevents" && !isPublic) &&
+        {(last !== "savedevents" && !pathName.includes("collections")) &&
           <Tabs
           defaultValue={type ?? undefined}
           value={type ?? undefined}

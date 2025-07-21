@@ -40,6 +40,8 @@ import SortDropdown from "@/components/search/sortDropdown";
 import BulkImport from "@/components/bulk-import";
 import { PaginationComponent } from "@/components/pagination";
 import { PublicEvents } from "@/types/trackers";
+import { useAuthContext } from "@/context";
+// import { cookies } from "next/headers";
 interface EventsData {
   count: number;
   events: Event[];
@@ -50,6 +52,7 @@ export default function CollectionPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
+  const {user} = useAuthContext();
   const typeOfEvent = searchParams.get("eventType");
   const [payload, setPayload] = useState();
   const [showViewDropdown, setShowViewDropdown] = useState(false);
@@ -59,6 +62,7 @@ export default function CollectionPage() {
   const [totalEvents, setTotalEvents] = useState(0)
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const viewType = searchParams.get("view");
+  
   const { getFilterValue, setMultipleFilters } =
     useFilterState();
   const [view, setView] = useState<string | null>(
@@ -294,7 +298,7 @@ export default function CollectionPage() {
   };
   return (
     <div className="flex flex-col gap-3 md:gap-6 w-full">
-      <SideNav name={presetTemplateData?.name} isPublic={true} />
+      <SideNav name={presetTemplateData?.name} isPublic={!user?true:false} />
 
       <div className="px-0 md:px-8 flex flex-col gap-3 md:gap-6 -mt-5 md:mt-0">
         <div className="hidden md:flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
@@ -324,18 +328,31 @@ export default function CollectionPage() {
             ))}
           </div>
           <div className="flex gap-2" >
-            {/* <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}> */}
-            <Button
-              variant="outline"
-              className="flex gap-1"
-              onClick={handleShare}
-            // onClick={() => setShare(!share)}
-            // ref={!isMobile?refs.shareRef:null}
+            <div>
+            <Link
+              href={
+                    user
+                      ? `/internal/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`
+                      : `/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`
+                  }
+              onClick={() => {
+                // GAEvent(
+                //   "trackers",
+                //   "Tracker Detail",
+                //   "View",
+                //   "Notes and Discussion"
+                // );
+              }}
+              className="flex items-center"
             >
-              <Share2 width={16} height={16} />
-              Share
-            </Button>
-            {/* </Link> */}
+              <Button variant="outline" className="flex gap-1">
+                Save
+
+              </Button>
+            </Link>
+            </div>
+            {!user &&
+            <div>
             <Link
               href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
               onClick={() => {
@@ -349,23 +366,47 @@ export default function CollectionPage() {
               className="flex items-center"
             >
               <Button variant="outline" className="flex gap-1">
-                <NotebookPen width={16} height={16} />
-                Notes
+                Export
 
               </Button>
             </Link>
+            </div>}
             <div>
-              <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}>
-                <Button
-                  variant="outline" className="flex gap-1"
-                >
-                  <ArrowDown width={16} height={16} />
-                  Popularity
-                </Button>
-              </Link>
-            </div>
-          </div>
+            <Link
+              href={user?
+                `/internal/trackers/create?type=${presetTemplateData?.trackerType[0]}&collectionId=${presetTemplateData?.id}`
+                :
+                `/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
+              onClick={() => {
+                // GAEvent(
+                //   "trackers",
+                //   "Tracker Detail",
+                //   "View",
+                //   "Notes and Discussion"
+                // );
+              }}
+              className="flex items-center"
+            >
+              <Button variant="outline" className="flex gap-1">
+                Edit
 
+              </Button>
+            </Link>
+            </div>
+            {/* <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}> */}
+            <Button
+              variant="outline"
+              className="flex gap-1"
+              onClick={handleShare}
+            // onClick={() => setShare(!share)}
+            // ref={!isMobile?refs.shareRef:null}
+            >
+              {/* <Share2 width={16} height={16} /> */}
+              Share
+            </Button>
+            {/* </Link> */}
+          </div>
+          
         </div>
         <div className="md:hidden flex items-center justify-between gap-2 px-4 py-1">
           {/* Badge for event count */}
@@ -404,7 +445,15 @@ export default function CollectionPage() {
               </SelectContent>
             </div>
           </Select>
+          <Link href={
+                    user
+                      ? `/internal/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`
+                      : `/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`
+                  }>
+          <Button variant="outline">Save</Button>
+          </Link>
           <div>
+            {!user &&
             <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}>
               <Button
                 variant="ghost"
@@ -421,10 +470,11 @@ export default function CollectionPage() {
                   <CalendarIcon className="w-4 h-4" />
                 )}
               </Button>
-            </Link>
+            </Link>}
+
           </div>
 
-          {view === "list" &&
+          {(view === "list" && !user) &&
             <Link href={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}>
               <Button
                 id="sorting-dropdown-mobile"
@@ -445,7 +495,7 @@ export default function CollectionPage() {
             <NullState
               image={TrackerNullState}
               // title="We couldn't find any events matching your tracker criteria at the moment."
-              text="Don’t miss out - Signup now to view events"
+              text="Browse all events or tailor your collections with basic and advanced filters to suit your needs."
               buttonText="Sign Up"
               buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
             />
@@ -453,8 +503,9 @@ export default function CollectionPage() {
             eventsData?.events.length === 0 ?
               <NullState
                 image={TrackerNullState}
-                // title="We couldn't find any events matching your tracker criteria at the moment."
-                text="Sign up to get personalized recommendations."
+                title="Don’t miss out on events made just for you—sign up now to get personalized recommendations."
+                text="Instantly narrow your search with basic filters (category, date, location), then unlock advanced options for deeper, targeted insights.
+Join today and discover your next must-attend event!"
                 buttonText="Sign Up"
                 buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
               />
