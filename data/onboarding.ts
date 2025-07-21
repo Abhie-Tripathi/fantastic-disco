@@ -176,4 +176,5 @@ export const staticPathPatterns = [
 
   // Other paths
   (p: string) => p === "whr-pricing",
+  (p: string) => p === "/preset",
 ];
