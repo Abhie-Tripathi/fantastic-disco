@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import whrbotlogo from "@/public/whrbotlogo.svg";
 import { Filter, Lock, Unlock } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PremiumModal from "../premium-modal";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
 import { useAuthContext } from "@/context";
@@ -55,9 +55,54 @@ const FilterContent = ({
 }: FilterContentProps) => {
   const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
   const {membershipData} = useAuthContext()
+  const { localFilters } = useFilterContext();
   const isPremium = !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
   const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
+
+
+  const totalFilterCount = useMemo(() => {
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
+    return Object.keys(localFilters).filter(
+      (key) => !excludedFilters.includes(key)
+    ).length;
+  }, [localFilters]);
+
+
+  const basicFilterCount = useMemo(() => {
+    // Find the "Basic Filters" section for events
+    const basicSection = filters["events"].find(
+      (section: any) => section.label === "Basic"
+    );
+    if (!basicSection) return 0;
+  
+    // List of filter keys in the basic section
+    const basicFilterKeys = basicSection.filters.map((f: any) => f.filterName || f.id);
+  
+    // Exclude keys that should not be counted (if any)
+    const excludedFilters = [
+      "active_gte",
+      "active_lte",
+      "show",
+      "limit",
+      "offset",
+      "skip",
+    ];
+  
+    // Count how many basic filters are applied
+    return basicFilterKeys.filter((key: string) => {
+      if (excludedFilters.includes(key)) return false;
+      const value = (localFilters as any)[key];
+      return value && value !== "" && value !== "[]";
+    }).length;
+  }, [localFilters]);
 
   return (
     <>
@@ -101,6 +146,16 @@ const FilterContent = ({
 >
   {section.label}
 </span>
+                  {(["Advanced"].includes(section.label) && (totalFilterCount - basicFilterCount) > 0) &&
+                        <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
+                          {totalFilterCount - basicFilterCount}
+                        </span>}
+
+                        {(["Basic"].includes(section.label) && basicFilterCount > 0) &&
+                        <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
+                          {basicFilterCount}
+                        </span>}
+                      
                     {isPremium &&  ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) && <span className="flex items-center px-2 border bg-background capitalize rounded-xl font-normal text-xs">
                       <Unlock className="w-3 h-3 mr-1"/>
                       Premium</span>}
