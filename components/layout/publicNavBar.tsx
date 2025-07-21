@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./navbar.style.module.css";
 import Image from "next/image";
 import WhrAIText from '@/public/whrai.svg'
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
@@ -39,6 +39,7 @@ const geniroutes: Record<string, string> = {
 
 export default function Navbar({isPublic}:{isPublic:boolean}) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -54,7 +55,12 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
   //     router.push("/widget/dashboard");
   //   }
   // };
-
+  useEffect(()=>{
+    if(pathname.includes("events")){
+      console.log(pathname.split("/")[2], searchParams.get("type"));
+      
+    }
+  },[pathname])
   const route = pathname.split("/")[1];
   const handleClick = () => {
     if (route === "internal") {
@@ -160,7 +166,11 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
           </Link>
         </div>
         <div className="flex items-center gap-1">
-          <Link href="/signup">
+          <Link href={
+                    pathname.includes("events")
+                      ? `/preset?presetId=${pathname.split("/")[2]}&type=${searchParams.get("type")}`
+                      : `/trackers?showTemplates=true`
+                  }>
           <Button className="bg-primary px-[15px] py-[8px] rounded-[10px] text-white cursor-pointer">
             Sign Up
           </Button>

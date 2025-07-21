@@ -445,7 +445,7 @@ export default function CollectionPage() {
             <NullState
               image={TrackerNullState}
               // title="We couldn't find any events matching your tracker criteria at the moment."
-              text="Don’t miss out — Signup now to view events"
+              text="Don’t miss out - Signup now to view events"
               buttonText="Sign Up"
               buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
             />
