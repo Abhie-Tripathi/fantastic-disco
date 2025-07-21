@@ -54,8 +54,9 @@ export default function KeywordFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
   const enabled = morphedData?.keywords?.isEnabled;
-
+  const [isClicked,setIsClicked] = useState(0);
   useEffect(() => {
+    setIsClicked(prev=>prev+1);
     const includeKeywords = [
       ...getLocalFilterValue("includeKeywords")
         ?.split(",")
@@ -71,7 +72,8 @@ export default function KeywordFilter({
       includeKeywords.length > 0 &&
       type === "T_PRODUCT_KEYWORDS" &&
       activeTab === "include" &&
-      !hideSuggestion
+      !hideSuggestion &&
+      isClicked === 1
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
@@ -88,7 +90,8 @@ export default function KeywordFilter({
       excludeKeywords.length > 0 &&
       type === "T_PRODUCT_KEYWORDS" &&
       activeTab === "exclude" &&
-      !hideSuggestion
+      !hideSuggestion &&
+      isClicked === 1
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
@@ -106,7 +109,7 @@ export default function KeywordFilter({
     getLocalFilterValue("includeKeywords"),
     getLocalFilterValue("excludeKeywords"),
   ]);
-
+  
   useEffect(() => {
     const savedIncludeKeywords = localFilters?.includeKeywords;
     const savedExcludeKeywords = localFilters?.excludeKeywords;
@@ -124,6 +127,7 @@ export default function KeywordFilter({
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsClicked(0);
     if (inputValue.trim()) {
       const newKeywords = inputValue
         .trim()
@@ -162,6 +166,7 @@ export default function KeywordFilter({
     keyword: string,
     keyType: "include" | "exclude"
   ) => {
+     setIsClicked(0);
     if (keyType === "include") {
       setIncludeKeywords(includeKeywords.filter((k) => k !== keyword));
       setLocalFilter(
