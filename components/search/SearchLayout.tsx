@@ -46,7 +46,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
       )}
       <div
         className={`transition-all duration-300 sticky top-0 h-[calc(100dvh-84px)] overflow-hidden ${
-          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[412px]"
+          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[364px]"
         } `}
       >
         <div

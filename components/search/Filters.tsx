@@ -948,7 +948,7 @@ const Filters = ({
                 <Link href="/internal/search/events" className="contents">
                   <TabsTrigger
                     value="events"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
                     <Calendar1 className="w-4 h-4" />
                     Events
@@ -957,7 +957,7 @@ const Filters = ({
                 <Link href="/internal/search/companies" className="contents">
                   <TabsTrigger
                     value="companies"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
                     <Building2 className="w-4 h-4" />
                     Companies
@@ -966,7 +966,7 @@ const Filters = ({
                 <Link href="/internal/search/people" className="contents">
                   <TabsTrigger
                     value="people"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
                     <UserSearch className="w-4 h-4" />
                     People
