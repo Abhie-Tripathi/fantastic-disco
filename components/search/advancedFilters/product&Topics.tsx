@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -53,11 +53,21 @@ export default function KeywordFilter({
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
-  const enabled = morphedData.globalAndTourings.isEnabled;
-  
+  const enabled = morphedData?.keywords?.isEnabled;
+  // const [rawInclude,setRawInclude] = useState();
+  const [rawExclude,setRawExclude] = useState();
+  const rawInclude = useMemo(() => {
+  return getLocalFilterValue("includeKeywords");
+}, [getLocalFilterValue]);
+  // useEffect(()=>{
+  //   const excludeKeywords = [
+  //     ...getLocalFilterValue("excludeKeywords")
+  //       ?.split(",")
+  //       .filter((keyword) => keyword.trim() !== ""),
+  //   ];
+  //   setExcludeKeywords(excludeKeywords);
+  // },[getLocalFilterValue("excludeKeywords")])
   useEffect(() => {
-    console.log(getLocalFilterValue("includeKeywords"));
-    
     const includeKeywords = [
       ...getLocalFilterValue("includeKeywords")
         ?.split(",")
@@ -105,8 +115,7 @@ export default function KeywordFilter({
       );
     }
   }, [
-    getLocalFilterValue("includeKeywords"),
-    getLocalFilterValue("excludeKeywords"),
+    rawInclude
   ]);
 
   useEffect(() => {
