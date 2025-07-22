@@ -38,7 +38,7 @@ export const useDatabaseLocationcomplete = (input: string, locationType?: string
   const debouncedInput = useDebounce(input, DEBOUNCE_DELAY);
   const { getDatabaseLocationAutocomplete } = useLocationService();
   const { data, error, isLoading } = useQuery({
-    queryKey: ["databaseLocationAutocomplete", debouncedInput],
+    queryKey: ["databaseLocationAutocomplete", debouncedInput, locationType],
     queryFn: () =>
       getDatabaseLocationAutocomplete(debouncedInput, locationType),
     enabled: !!debouncedInput,

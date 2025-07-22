@@ -14,7 +14,7 @@ const NullState = ({
   global?:string;
   image: string;
   title?: string;
-  text?: string;
+  text?: React.ReactNode;
   buttonText?: string;
   buttonUrl?: string;
 }) => {
@@ -43,7 +43,7 @@ const NullState = ({
           />
         </div>}
         {buttonText && buttonText.length > 0 && (
-          <div className="text-center">
+          <div className="text-center ml-6">
             <Link href={`${buttonUrl}`}>
               <Button className="text-white w-auto px-4 py-1 text-xs sm:text-sm">
                 {buttonText}

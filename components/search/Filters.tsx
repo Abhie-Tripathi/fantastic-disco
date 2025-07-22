@@ -83,6 +83,7 @@ import { useBulkAction } from "@/context/bulkAction";
 import FilterContent from "./FilterContent";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
+import { basicFilters, advancedFilter as advancedFilterValues, countFilters } from "@/constants/filters";
 
 interface FilterSection {
   id: string;
@@ -729,18 +730,10 @@ const Filters = ({
   const { theme } = useTheme();
   const path = useSearchParams();
   const pathName = usePathname();
+
   const filterCount = useMemo(() => {
-    const excludedFilters = [
-      "active_gte",
-      "active_lte",
-      "show",
-      "limit",
-      "offset",
-      "skip",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
+    const allFilterKeys = [...basicFilters, ...advancedFilterValues];
+    return countFilters(localFilters, allFilterKeys);
   }, [localFilters]);
 
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
