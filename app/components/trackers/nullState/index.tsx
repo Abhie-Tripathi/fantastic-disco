@@ -14,7 +14,7 @@ const NullState = ({
   global?:string;
   image: string;
   title?: string;
-  text?: string;
+  text?: React.ReactNode;
   buttonText?: string;
   buttonUrl?: string;
 }) => {
