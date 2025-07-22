@@ -1247,9 +1247,6 @@ const final = { Role: flattened.join(",") };
 
         setCustomData(updatedData);
       }
-      if(type === "T_AUDIENCE_DEPT_PROFILE"){
-        
-      }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
