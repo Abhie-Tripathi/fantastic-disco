@@ -79,10 +79,10 @@ const FeedbackForm = ({ open, onOpenChange }: ModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[calc(100%-2rem)] max-w-md mx-auto p-4 sm:p-6 rounded-xl gap-6">
         <div className="text-center pt-2">
-          <h2 className="text-xl font-bold mb-1">We're sorry to see you go</h2>
+          <h2 className="text-xl font-bold mb-1">We&apos;re sorry to see you go</h2>
 
           <p className="text-sm">
-            Before you cancel, here's what you'll miss out on:
+            Before you cancel, here&apos;s what you&apos;ll miss out on:
           </p>
         </div>
 
@@ -104,7 +104,7 @@ const FeedbackForm = ({ open, onOpenChange }: ModalProps) => {
 
         <form>
           <label htmlFor="reason" className="block font-medium mb-2">
-            Tell us why you're leaving
+            Tell us why you&apos;re leaving
           </label>
           <select
             id="reason"
