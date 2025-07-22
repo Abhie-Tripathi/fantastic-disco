@@ -148,7 +148,7 @@ const Subscription = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="text-muted-foreground font-medium text-sm col-span-2 mt-4">
+          <div className="text-muted-foreground font-medium text-base col-span-2 mt-4">
             For any payment-related queries, please contact us at
             <Link
               href="mailto:payment@whr.ai"
@@ -157,6 +157,17 @@ const Subscription = () => {
               {" "}
               payment@whr.ai
             </Link>
+          </div>
+          <div className="text-muted-foreground text-sm">
+            Do not want to continue?
+            <Button
+              variant="link"
+              size="sm"
+              className="hover:text-[var(--danger-text-color)] text-muted-foreground"
+              onClick={() => setShowFeedbackModal(true)}
+            >
+              Cancel Subscription
+            </Button>
           </div>
           {/* <div className="flex col-span-1">
             <Link
@@ -183,10 +194,12 @@ const Subscription = () => {
           membership={membership || 0}
         />
       )}
-      <FeedbackForm
-        open={showFeedbackModal}
-        onOpenChange={setShowFeedbackModal}
-      />
+      {isPremium && (
+        <FeedbackForm
+          open={showFeedbackModal}
+          onOpenChange={setShowFeedbackModal}
+        />
+      )}
     </div>
   );
 };
