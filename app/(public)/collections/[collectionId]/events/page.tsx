@@ -273,7 +273,6 @@ export default function CollectionPage() {
       //  }
       setTotalEvents(response?.count || 0);
       setEventsData(response);
-      console.log(response);
     } catch (error) {
       setEventError(error as any)
     } finally {
