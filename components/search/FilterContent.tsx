@@ -69,6 +69,7 @@ const FilterContent = ({
       "limit",
       "offset",
       "skip",
+      "view"
     ];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
@@ -94,6 +95,7 @@ const FilterContent = ({
       "limit",
       "offset",
       "skip",
+      "view"
     ];
   
     // Count how many basic filters are applied
