@@ -17,6 +17,7 @@ import PremiumModal from "../premium-modal";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
 import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { basicFilters, advancedFilter, countFilters } from "@/constants/filters";
 
 interface FilterSection {
   id: string;
@@ -60,50 +61,13 @@ const FilterContent = ({
   const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
 
-
   const totalFilterCount = useMemo(() => {
-    const excludedFilters = [
-      "active_gte",
-      "active_lte",
-      "show",
-      "limit",
-      "offset",
-      "skip",
-      "view"
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
   }, [localFilters]);
 
-
   const basicFilterCount = useMemo(() => {
-    // Find the "Basic Filters" section for events
-    const basicSection = filters["events"].find(
-      (section: any) => section.label === "Basic"
-    );
-    if (!basicSection) return 0;
-  
-    // List of filter keys in the basic section
-    const basicFilterKeys = basicSection.filters.map((f: any) => f.filterName || f.id);
-  
-    // Exclude keys that should not be counted (if any)
-    const excludedFilters = [
-      "active_gte",
-      "active_lte",
-      "show",
-      "limit",
-      "offset",
-      "skip",
-      "view"
-    ];
-  
-    // Count how many basic filters are applied
-    return basicFilterKeys.filter((key: string) => {
-      if (excludedFilters.includes(key)) return false;
-      const value = (localFilters as any)[key];
-      return value && value !== "" && value !== "[]";
-    }).length;
+    return countFilters(localFilters, basicFilters);
   }, [localFilters]);
 
   return (
