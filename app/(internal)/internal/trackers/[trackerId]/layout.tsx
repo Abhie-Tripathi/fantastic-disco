@@ -55,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div> */}
         {/* {isVerifiedToken===false? <Loading/>: */}
         {/* <div className={styles.containerLeft}> */}
-          <SideNav/>
+          <SideNav isPublic={false}/>
         {/* </div> */}
         {/* <div className={styles.containerRight}> */}
         <Suspense fallback={<Loading/>}>

@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/navbar";
 import { AuthContextProvider, ThemeProvider } from "@/context";
 import PublicNavBar from "@/components/layout/publicNavBar";
 import { Toaster } from "@/components/ui/toaster";
-import "./../globals.css";
+import "@/app/globals.css";
 import Sidebar from "@/components/layout/sidebar";
 
 export default function RootLayout({

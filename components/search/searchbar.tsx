@@ -326,7 +326,7 @@ export default function MultiSelectSearchBar({
           {selectedItems.map((item) => (
             <div
               key={item.basic.id}
-              className={`flex items-center bg-gray-200 rounded-full px-3 py-1 m-1 ${
+              className={`flex items-center bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 m-1 ${
                 varient === "small"
                   ? "text-xs"
                   : varient === "large"
@@ -344,7 +344,7 @@ export default function MultiSelectSearchBar({
                   e.stopPropagation();
                   handleRemoveItem(item);
                 }}
-                className="ml-2 focus:outline-none hover:bg-gray-300 rounded-full p-0.5"
+                className="ml-2 focus:outline-none hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-0.5"
                 tabIndex={-1}
               >
                 <X size={12} />
@@ -385,14 +385,14 @@ export default function MultiSelectSearchBar({
         </div>
 
         {open && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-50 w-full mt-1 bg-background border rounded-md shadow-lg max-h-60 overflow-auto">
             {isLoading ? (
               <div className="flex items-center justify-center p-4 py-8 text-center">
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                <span className="text-sm text-gray-600">Searching...</span>
+                <span className="text-sm text-[var(--secondary-text-color)]">Searching...</span>
               </div>
             ) : searchResults.length === 0 ? (
-              <div className="p-4 py-8 text-center text-sm text-gray-600">
+              <div className="p-4 py-8 text-center text-sm text-[var(--secondary-text-color)]">
                 {searchTerm.trim() === ""
                   ? "Type to search events..."
                   : "No events found."}

@@ -23,6 +23,7 @@ import AudienceSpreadSelector from "@/components/search/advancedFilters/audience
 import { useRouter, useSearchParams } from "next/navigation";
 // import { useFilterContext } from "@/context/filterContext";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Props {
   isPublic?: boolean;
@@ -41,6 +42,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
 //   const getLocalFilterValue = !isPublic ? filterContext.getLocalFilterValue : () => "";
 // const localFilters = !isPublic ? filterContext.localFilters : {};
   const { presetData } = useTrackerServices();
+  const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState<string>("");
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
   const [sortBy, setSortBy] = useState({ value: "eventCount", label: "desc" });
@@ -286,7 +288,9 @@ const limit=3;
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (
             <Link 
-                  href={isPublic?`/preset?presetId=${item.id}&type=${item.trackerType[0]}`:`/internal/trackers/create?type=${item.trackerType[0]}&collectionId=${item.id}`}
+                  href={isFull 
+      ? `/collections/${item.id}/events?view=${isMobile ? "list" : "table"}&eventType=active&type=${item.trackerType[0]}`
+      : `/internal/trackers/create?type=${item.trackerType[0]}&collectionId=${item.id}`}
                   key={index}>
             <div
               key={`${item.id}-${index}`}

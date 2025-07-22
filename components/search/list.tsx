@@ -64,6 +64,7 @@ import { useTransition } from "@/context/transition";
 import { useBulkActions } from "@/hooks/useBulkAction";
 import { useFilterContext } from "@/context/filterContext";
 import MobileEventCard from "./mobile-card";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 interface CircularProgressProps {
   value: number | null;
   label: string;
@@ -139,6 +140,10 @@ interface EventListProps {
   source?: string;
   view?: string;
   showCheckBox?: boolean;
+  eventsData?:{
+    count: number,
+    events: Event[]
+  }
   setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -149,6 +154,7 @@ export default function EventAccordion({
   view,
   showCheckBox,
   setShowCheckBox,
+  eventsData
 }: EventListProps) {
   const pathName = usePathname();
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -169,12 +175,16 @@ export default function EventAccordion({
   >(new Map());
 
   const {
-    interestConfiguration,
-    isLoading: isConfigLoading,
-    error: isConfigError,
-  } = useConfiguration.interest();
-  const { createUserEventInterest, isLoading: isSubmitting } =
-    useIntent.createUserEventInterest();
+  interestConfiguration,
+  isLoading: isConfigLoading,
+  error: isConfigError,
+} = source === "public"
+  ? { interestConfiguration: null, isLoading: false, error: null }
+  : useConfiguration.interest();
+  const { createUserEventInterest, isLoading: isSubmitting } = 
+  source === "public"
+    ? { createUserEventInterest: () => Promise.resolve(), isLoading: false }
+    : useIntent.createUserEventInterest();
   const { removeBookmark } = useTrackerServices();
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
@@ -201,12 +211,22 @@ export default function EventAccordion({
   const [interest, setInterest] = useState();
   // const [interest, setInterest] = useState<Record<string, Interest>>({});
   const [eventId, setEventId] = useState();
-  let events, totalEvents, isLoading, error;
+  let events: Event[] | undefined; 
+    let totalEvents:number | undefined; 
+    let isLoading, error, isFetching;
+  if(source==="public"){
+    totalEvents = eventsData?.count
+    events=eventsData?.events;
+  }
   const { data } = useTrackerContext();
-  const { executeBulkAction, isLoading: isBulkActionLoading } = useBulkActions({
+  const bulkActions = useBulkActions({
     removeBookmark,
     createUserEventInterest,
   });
+  const { executeBulkAction, isLoading: isBulkActionLoading } =
+    source === "public"
+      ? { executeBulkAction: () => Promise.resolve(), isLoading: false }
+      : bulkActions;
   const sourceModule = pathName.includes("trackers")
     ? "TRACKER"
     : pathName === "/internal/search/events"
@@ -219,22 +239,22 @@ export default function EventAccordion({
       trackerId,
       view
     ));
-  } else {
+  } else if(source !== "tracker" && source !=="public") {
     ({ events, totalEvents, isLoading, error } = useEvents.list(
       query,
       inTransition
     ));
   }
   const {
-    intelScoreData,
-    loading: intelLoading,
-    error: intelError,
-  } = useIntelData(
-    trackerId || "",
-    events?.length > 0 ? events : [],
-    query.eventType,
-    query.type
-  );
+  intelScoreData,
+  loading: intelLoading,
+  error: intelError,
+} = useIntelData(
+      trackerId || "",
+      (events && events?.length > 0) ? events : [],
+      query.eventType,
+      query.type
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -311,7 +331,7 @@ export default function EventAccordion({
     Math.floor(
       Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage
     ) + 1;
-  const totalPages = Math.ceil(totalEvents / itemsPerPage);
+  const totalPages = Math.ceil((totalEvents || 0) / itemsPerPage);
 
   let showValues: Show[] = getFilterValue("show")
     .split(",")
@@ -323,13 +343,14 @@ export default function EventAccordion({
       .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events?.length > 0) {
+    if (events && events?.length > 0) {
       setUpdatedEvents(events);
     }
   }, [events]);
   const handleCheckboxChange = (checked: boolean) => {
     if (checked) {
-      const resultId = events.map((event) => event.basic.id);
+      const resultId = events?.map((event) => event.basic.id);
+      if(resultId)
       setTotalChecked(resultId);
     } else {
       setTotalChecked([]);
@@ -432,6 +453,7 @@ export default function EventAccordion({
     }
   }, [actions]);
   useEffect(() => {
+    if(source!=="public"){
     if (!events) return;
 
     setUpdatedEvents((prevEvents) => {
@@ -472,6 +494,7 @@ export default function EventAccordion({
       }
       return newEvents;
     });
+  }
   }, [eventId, interest]);
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -528,7 +551,7 @@ export default function EventAccordion({
     );
   }
 
-  if (events.length === 0) {
+  if (events?.length === 0) {
     if (source === "tracker") {
       if (query.eventType === "bookmarked") {
         return (
@@ -630,6 +653,7 @@ export default function EventAccordion({
                       (item: intelScore) => item?.event === event.basic.id
                     ) || null
                   }
+                  source={source}
                 />
               );
             }
@@ -662,6 +686,7 @@ export default function EventAccordion({
                     (item: intelScore) => item?.event === event.basic.id
                   ) || null
                 }
+                source={source}
               />
             );
           })}
@@ -672,7 +697,7 @@ export default function EventAccordion({
           currentPage={currentPage}
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
-          count={totalEvents}
+          count={totalEvents || 0}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
         />
@@ -703,6 +728,7 @@ const EventListItem = ({
   showMaturity,
   initialIntelScoreData,
   intelLoading,
+  source
 }: {
   interest: any;
   toggleSelection: (id: string, event: Event) => void;
@@ -725,9 +751,10 @@ const EventListItem = ({
   itemsPerPage: number;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
+  source?:string;
 }) => {
   const { getFilterValue } = useFilterState();
-  const { isTentimesUser } = useFilterContext();
+ const { isTentimesUser } = useSafeFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -871,7 +898,7 @@ const EventListItem = ({
                   <h2 className="text-xl md:text-2xl font-semibold ">
                     {event.basic.name}
                   </h2>
-                  {isMobile && global !== "global" && (
+                  {(isMobile && global !== "global" && source!=="public") && (
                     <div onClick={(e) => e.preventDefault()}>
                       <ActionPopover
                         eventId={event.basic.id}
@@ -1421,7 +1448,7 @@ const EventListItem = ({
                           )}
                       </div>
 
-                      {global !== "global" && !isMobile && (
+                      {(global !== "global" && !isMobile && source!=="public")&& (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}
@@ -1513,7 +1540,7 @@ const EventListItem = ({
                           </>
                         )}
 
-                      {global !== "global" && !isMobile && (
+                      {(global !== "global" && !isMobile && source!=="public") && (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}
