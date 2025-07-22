@@ -67,7 +67,6 @@ export default function KeywordFilter({
         ?.split(",")
         .filter((keyword) => keyword.trim() !== ""),
     ];
-
     if (
       includeKeywords.length > 0 &&
       type === "T_PRODUCT_KEYWORDS" &&
@@ -75,8 +74,7 @@ export default function KeywordFilter({
       !hideSuggestion &&
       count.current%2===0
     ) {
-      console.log("count is",count)
-      count.current += 1;
+      console.log("count is",count.current)
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
           includeKeywords[0]
@@ -107,8 +105,7 @@ export default function KeywordFilter({
       );
     }
   }, [
-    localFilters?.includeKeywords,
-    localFilters?.excludeKeywords,
+    
   ]);
 
   useEffect(() => {

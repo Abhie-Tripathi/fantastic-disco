@@ -83,7 +83,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { user, signOut, membershipData } = useAuthContext();
+  const { user, signOut, membershipData, isTentimesUser } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
 
@@ -458,7 +458,7 @@ const Sidebar = () => {
               )}
             </AccordionItem>
           </Accordion>
-          {!isEventeli && (
+          {((isEventeli && isTentimesUser) || !isEventeli) && (
             <Button
               variant="ghost"
               size="icon"
