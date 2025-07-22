@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Filter, LayoutGrid, Search } from "lucide-react";
 import { showToast } from '@/utils/showToast';
@@ -94,6 +94,7 @@ import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { log } from "console";
+import { update } from "firebase/database";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -690,16 +691,17 @@ const stepsConfig =[
    else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
   console.log("customData", customData);
    
-  const flattened = customData.flatMap(obj =>
-  Object.entries(obj)
-    .filter(([, value]) => value !== undefined && value.trim() !== "")
-    .map(([key, value]) => `${value}_${key}`)
-);
+//   const flattened = customData?.flatMap(obj =>
+//   Object?.entries(obj)
+//     ?.filter(([, value]) => value !== undefined && value?.trim() !== "")
+//     ?.map(([key, value]) => `${value}_${key}`)
+// );
+//   console.log("customData", customData);
   
-const final = { Role: flattened.join(",") };
+// const final = { Role: flattened.join(",") };
 
-  console.log("flattened", final);
-  
+//   console.log("flattened", final);
+  // setCustomData([{ 0: { Role: "xyz" } }]);
   // // Avoid unnecessary state updates to prevent infinite loop
   // const isAlreadyFlattened =
   //   flattened.length === customData.length &&
@@ -1363,6 +1365,7 @@ const final = { Role: flattened.join(",") };
     }));
   };
   const [valid,setValid]=useState(true);
+  const [isNew, setIsNew] = useState(false);
   const addNew = () => {
     setHideSuggestion(false);
     if (!template) {
@@ -1399,7 +1402,7 @@ const final = { Role: flattened.join(",") };
 }, {});
 
 
-      if (isValid && template?.type === "enabled" && !isPresent) {
+ if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
           newEntry,
           ...prevData,
@@ -1901,6 +1904,7 @@ if(isLoading) return <Loading/>
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
                     }
+                    <div onClick={()=>setIsNew(true)}>OR</div>
                   </div>
 
                 }
@@ -2091,7 +2095,7 @@ if(isLoading) return <Loading/>
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type}/>
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type} isNew={isNew} setIsNew={setIsNew}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>

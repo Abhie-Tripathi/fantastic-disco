@@ -1,11 +1,12 @@
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import styles from "./templatetable.style.module.css";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
 import { formattedDateRange } from "@/utils/date";
 import { formatLocationParts } from "@/utils/locationFormat";
 import { Event } from "@/types/events";
+import React from "react";
 interface Props {
   eventSuggestion?: string[];
   setEventSuggestion?: (value: string[]) => void;
@@ -15,8 +16,10 @@ interface Props {
   type?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type }: Props) => { 
-  
+const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew }: Props) => { 
+  const [des, setDes] = useState([]);
+  const [dep, setDep] = useState([]);
+  const [sen, setSen] = useState<string[]>([]);
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
 
@@ -30,6 +33,43 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
       );
     }
   };
+const [allEntries, setAllEntries] = useState<string[][]>([]); // Now a 2D array
+const [currentEntries, setCurrentEntries] = useState<string[]>([]); // Temporary storage
+
+useEffect(() => {
+  if (type !== "T_AUDIENCE_DEPT_PROFILE" || !customData?.length) return;
+  
+  const firstItem = customData[0];
+  const newEntries: string[] = [];
+
+  // Process Designation
+  if (firstItem?.Designation?.length > 0) {
+    newEntries.push(`${firstItem.Designation}_Designation`);
+    setDes(prev => [...prev, firstItem.Designation]);
+  }
+
+  // Process Department
+  if (firstItem?.Department?.length > 0) {
+    newEntries.push(`${firstItem.Department}_Department`);
+    setDep(prev => [...prev, firstItem.Department]);
+  }
+
+  // Process Seniority
+  if (firstItem?.Seniority?.length > 0) {
+    newEntries.push(`${firstItem.Seniority}_Seniority`);
+    setSen(prev => [...prev, firstItem.Seniority]);
+  }
+
+  setCurrentEntries(newEntries);
+}, [customData, type]);
+
+useEffect(() => {
+  if (isNew && currentEntries.length > 0) {
+    setAllEntries(prev => [...prev, currentEntries]);
+    setCurrentEntries([]); // Reset for next batch
+  }
+}, [isNew, currentEntries]);
+console.log("des",des);
 
    const removeCustomData = () => {
     const filteredData = customData.filter(
@@ -85,6 +125,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
       )} */}
       <div className="max-h-[300px] overflow-y-auto">
         <table className={`${styles.allCustomData} w-[100%] bg-[var(--primary-foreground)]`}>
+          
           <thead>
             <tr>
               <th>
@@ -94,110 +135,39 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
                   checked={selectedIdArray.length === customData.length}
                 />
               </th>
-              {customData?.length > 0 && Object?.entries(customData[0]).map(([entryKey, value]) => (
-                <th key={entryKey} className={styles.dataColoumn}>
-                  {entryKey==="Search By Event Name"?"Event Name":entryKey as string}
-                </th>
-              ))}
+              <th>Role</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {expandTable
-              ? customData.map((item: any, index: number) => (
-                  <tr key={index}>
+                  <tr>
                     <td>
                       {/* <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div> */}
-                      <CheckboxInput
+                      {/* <CheckboxInput
                         id={"abc"}
                         onChange={() => deleteEntry(item, index)}
                         checked={selectedIdArray.includes(index)}
-                      />
+                      /> */}
                     </td>
-                    {Object.entries(item).map(([entryKey, value]) => {
-                  const stringValue = String(value);
-                  const parts = stringValue.split('_');
-                  
-                  return (
-                    <td key={entryKey} className={styles.dataColoumn}>
-                      <div>
-                        <div>
-                          {parts[0]}
-                          {parts.length > 1 &&
-                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{type==="T_AUDIENCE_DEPT_PROFILE"?parts[1]:formattedDateRange(
-                                                     parts[5],
-                                                     parts[6],
-                                                      false
-                                                    )}</span>}
-                        </div>
-                        {(parts.length > 1 && type!=="T_AUDIENCE_DEPT_PROFILE") && (
-                          <div className='text-[var(--secondary-text-color)]'>
-                            <span className='text-sm'>
-                              {formatLocationParts({
-                                name: parts?.[1]?.trim() ?? "",
-                                cityName: parts?.[2]?.trim() ?? "",
-                                countryName: parts?.[3]?.trim() ?? "",
-                                locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
-                              } as Event["basic"]["eventLocation"], true)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-                    <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
-                    <Trash />
-                    </td>
-                  </tr>
-                ))
-              : customData.slice(0, 5).map((item: any, index: number) => (
-                  <tr key={index}>
                     <td>
-                      {/* <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div> */}
-                      <CheckboxInput
-                        id={"abc"}
-                        onChange={() => deleteEntry(item, index)}
-                        checked={selectedIdArray.includes(index)}
-                      />
-                    </td>
-                    {Object.entries(item).map(([entryKey, value]) => {
-                  const stringValue = String(value);
-                  const parts = stringValue.split('_');
-                  
-                  return (
-                    <td key={entryKey} className={styles.dataColoumn}>
-                      <div>
-                        <div>
-                          {parts[0]}
-                          {parts.length > 1 &&
-                          <span className='text-[var(--secondary-text-color)] pl-1' style={{fontSize:"12px"}}>{type==="T_AUDIENCE_DEPT_PROFILE"?parts[1]:formattedDateRange(
-                                                     parts[5],
-                                                     parts[6],
-                                                      false
-                                                    )}</span>}
-                        </div>
-                        {(parts.length > 1 && type!=="T_AUDIENCE_DEPT_PROFILE") && (
-                          <div className='text-[var(--secondary-text-color)]'>
-                            <span className='text-sm'>
-                              {formatLocationParts({
-                                name: parts?.[1]?.trim() ?? "",
-                                cityName: parts?.[2]?.trim() ?? "",
-                                countryName: parts?.[3]?.trim() ?? "",
-                                locationType: (parts?.[4]?.trim().toUpperCase()) as "VENUE" | "CITY" | "STATE" | "COUNTRY"
-                              } as Event["basic"]["eventLocation"], true)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-                    <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
+  {allEntries.map((entryGroup, groupIndex) => (
+    <div key={`group-${groupIndex}`}>
+      {entryGroup.map((item, itemIndex) => (
+        <div
+          key={`item-${groupIndex}-${itemIndex}`}
+          className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-1 mb-1 cursor-default"
+        >
+          {item?.split("_")[0]}
+        </div>
+      ))}
+    </div>
+  ))}
+</td>
+                    <td className="w-[35px] cursor-pointer" >
                     <Trash />
                     </td>
                   </tr>
-                ))}
+               
           </tbody>
         </table>
       </div>
