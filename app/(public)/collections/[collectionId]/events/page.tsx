@@ -530,7 +530,7 @@ export default function CollectionPage() {
                   <>
                     Instantly narrow your search with <strong>basic filters</strong> (category, date, location), then unlock <strong>advanced options</strong> for deeper, targeted insights.
                     <br />
-                    <strong>Join today</strong> and discover your next must-attend event!
+                    Join today and discover your next must-attend event!
                   </>
                 }
                 buttonText="Sign Up"
