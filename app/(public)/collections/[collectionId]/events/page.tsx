@@ -177,6 +177,7 @@ export default function CollectionPage() {
   };
   useEffect(() => {
     if (view !== "map" && view !== "calendar") {
+      setEventError(undefined);
       setIsLoading(true);
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const orgName: string[] = [];
@@ -518,7 +519,7 @@ export default function CollectionPage() {
               image={TrackerNullState}
               // title="We couldn't find any events matching your tracker criteria at the moment."
               text="Browse all events or tailor your collections with basic and advanced filters to suit your needs."
-              buttonText="Sign Up"
+              buttonText={!user?"Sign Up":""}
               buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
             />
           ) :
@@ -533,7 +534,7 @@ export default function CollectionPage() {
                     Join today and discover your next must-attend event!
                   </>
                 }
-                buttonText="Sign Up"
+                buttonText={!user?"Sign Up":""}
                 buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
               />
               :
