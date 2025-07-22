@@ -1,5 +1,6 @@
+
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -54,7 +55,6 @@ export default function KeywordFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { morphedData } = useFilterContext();
   const enabled = morphedData?.keywords?.isEnabled;
-   const count = useRef(0);
 
   useEffect(() => {
     const includeKeywords = [
@@ -67,17 +67,16 @@ export default function KeywordFilter({
         ?.split(",")
         .filter((keyword) => keyword.trim() !== ""),
     ];
+
     if (
       includeKeywords.length > 0 &&
       type === "T_PRODUCT_KEYWORDS" &&
       activeTab === "include" &&
-      !hideSuggestion &&
-      count.current%2===0
+      !hideSuggestion
     ) {
-      console.log("count is",count.current)
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          includeKeywords[0]
+          includeKeywords[includeKeywords.length - 1]
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -94,7 +93,7 @@ export default function KeywordFilter({
     ) {
       fetchAISuggestion?.(
         `List top 5 keywords similar to ${
-          excludeKeywords[0]
+          excludeKeywords[excludeKeywords.length - 1]
         }. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
              keyword 1, keyword 2, keyword 3, keyword 4 , keyword 5
@@ -105,7 +104,8 @@ export default function KeywordFilter({
       );
     }
   }, [
-    
+    getLocalFilterValue("includeKeywords"),
+    getLocalFilterValue("excludeKeywords"),
   ]);
 
   useEffect(() => {
