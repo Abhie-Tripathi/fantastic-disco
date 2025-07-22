@@ -43,7 +43,7 @@ export const procesEvents = (
       impactScore: 0,
     }));
 
-    const filteredEvents = ((eventsData.events as WeekEvent[]) || [])?.filter(
+    const filteredEvents = ((eventsData.events as WeekEvent[]) || []).filter(
       (event) => event.eventType !== "holiday"
     );
 

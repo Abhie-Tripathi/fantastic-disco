@@ -45,7 +45,7 @@ const config = {
     // }
     return config;
   },
-  reactStrictMode: false,
+  reactStrictMode: true
 };
 
 export default config;
