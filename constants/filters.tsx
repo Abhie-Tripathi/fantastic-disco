@@ -32,17 +32,29 @@ export const filterGroups = [
   ["onlyBranded", "onlySeries"],
   ["includeKeywords", "excludeKeywords"],
   ["trust_score_lte", "trust_score_gte"],
-  ["international_score_lte", "international_score_gte"],
-  ["inbound_score_lte", "inbound_score_gte"],
+  [
+    "international_score_lte",
+    "international_score_gte",
+    "inbound_score_lte",
+    "inbound_score_gte",
+  ],
 ];
 
 export function countFilters(localFilters: any, filterKeys: string[]) {
   let count = 0;
   const usedKeys = new Set<string>();
   for (const group of filterGroups) {
-    if (group.some(key => filterKeys.includes(key) && localFilters[key] && localFilters[key] !== "" && localFilters[key] !== "[]")) {
+    if (
+      group.some(
+        (key) =>
+          filterKeys.includes(key) &&
+          localFilters[key] &&
+          localFilters[key] !== "" &&
+          localFilters[key] !== "[]"
+      )
+    ) {
       count++;
-      group.forEach(key => usedKeys.add(key));
+      group.forEach((key) => usedKeys.add(key));
     }
   }
   for (const key of filterKeys) {
