@@ -20,7 +20,7 @@ const Subscription = () => {
   const { getMembershipData } = useProfileServices();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const { membership, planRenewalDate } = membershipData || {};
+  const { membership, planRenewalDate, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
 
   const [isLoading, setIsloading] = useState<boolean>(false);
@@ -36,6 +36,9 @@ const Subscription = () => {
       : planRenewalDate && planRenewalDate !== null
       ? format(planRenewalDate, "dd MMM, yyyy")
       : "-";
+
+  const planEndDate =
+    endDate && endDate !== null ? format(endDate, "dd MMM, yyyy") : "";
 
   const [paymentStatus, setPaymentStatus] = useState<any>(null);
   const searchParams = useSearchParams();
@@ -90,6 +93,22 @@ const Subscription = () => {
   return (
     <div className="p-6 pt-0">
       <div className="space-y-4 md:w-4/5">
+        <div className="text-muted-foreground text-sm">
+          Stay on board for uninterrupted access - your subscription auto-renews
+          so you never miss out. Upgrade or{" "}
+          {isPremium && planRenewalDate !== null ? (
+            <span
+              onClick={() => setShowFeedbackModal(true)}
+              className="cursor-pointer underline-offset-2 underline"
+            >
+              cancel
+            </span>
+          ) : (
+            "cancel"
+          )}{" "}
+          anytime.
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div className="text-muted-foreground font-medium col-span-1 md:col-span-1">
             Current Plan
@@ -134,6 +153,13 @@ const Subscription = () => {
           <div className="flex col-span-1 items-center gap-1 sm:gap-4 flex-wrap">
             {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
+            ) : isPremium && planRenewalDate === null ? (
+              <span className="text-sm font-medium">
+                Disabled{" "}
+                <span className="text-muted-foreground">
+                  (Subscription will end on {planEndDate})
+                </span>
+              </span>
             ) : (
               <span className="text-sm font-medium">
                 {formattedNextRenewalDate}
@@ -153,19 +179,6 @@ const Subscription = () => {
               payment@whr.ai
             </Link>
           </div>
-          {isPremium && planRenewalDate !== null && (
-            <div className="text-muted-foreground text-sm col-span-2">
-              Do not want to continue?
-              <Button
-                variant="link"
-                size="sm"
-                className="hover:text-[var(--danger-text-color)] text-muted-foreground"
-                onClick={() => setShowFeedbackModal(true)}
-              >
-                Cancel Subscription
-              </Button>
-            </div>
-          )}
           {/* <div className="flex col-span-1">
             <Link
               className="text-primary text-sm font-semibold flex items-center gap-1"

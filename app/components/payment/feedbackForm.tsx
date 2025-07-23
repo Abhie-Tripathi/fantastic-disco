@@ -13,6 +13,8 @@ import { CancelSubscriptionFormData } from "@/types/subscription";
 import { useState } from "react";
 import { featureList } from "./successModal";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { GAEvent } from "@/utils/GAEvent";
+import { isEventeli } from "@/config";
 
 type ModalProps = {
   open: boolean;
@@ -73,23 +75,41 @@ const FeedbackForm = ({ open, onOpenChange }: ModalProps) => {
       setFeedback("");
       setReason("");
       setIsSubmitting(false);
+      GAEvent(
+        "",
+        "Subscription Cancelled",
+        "Settings",
+        `${isEventeli ? "geo" : "gtm"} | subscription | web | subscription_cancelled`
+      );
     }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100%-2rem)] max-w-md mx-auto p-4 sm:p-6 rounded-xl gap-6">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-xl mx-auto p-4 sm:p-6 rounded-xl gap-6">
         <div className="text-center pt-2">
-          <h2 className="text-xl font-bold mb-1">We&apos;re sorry to see you go</h2>
+          <h2 className="text-xl font-bold mb-1">
+            We&apos;re sorry to see you go
+          </h2>
 
-          <p className="text-sm">
+          <p className="text-sm text-muted-foreground">
             Before you cancel, here&apos;s what you&apos;ll miss out on:
           </p>
         </div>
 
-        <ul className="list-disc list-inside text-muted-foreground space-y-1 text-base">
+        <ul className="list-disc list-inside text-[var(--secondary-text-color)] space-y-1 text-base">
           {featureList[currentMembershipPlan].map((feature, index) => (
             <li key={index}>{feature}</li>
           ))}
+          <div>
+            <a
+              href="https://whr.ai/pricing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--secondary-text-color)] text-sm font-medium hover:underline"
+            >
+              and more
+            </a>
+          </div>
         </ul>
 
         {/* <div className="bg-secondary p-3 rounded-lg">
@@ -104,7 +124,7 @@ const FeedbackForm = ({ open, onOpenChange }: ModalProps) => {
 
         <form>
           <label htmlFor="reason" className="block font-medium mb-2">
-            Tell us why you&apos;re leaving
+            Tell us why you&apos;re leaving*
           </label>
           <select
             id="reason"
@@ -116,20 +136,23 @@ const FeedbackForm = ({ open, onOpenChange }: ModalProps) => {
             <option value="" disabled>
               Select a reason
             </option>
-            <option>Too Expensive</option>
             <option>Missing Features</option>
             <option>Not using it enough</option>
             <option>Switched to another tool</option>
             <option>Other (please specify below)</option>
           </select>
-          <textarea
-            rows={3}
-            placeholder="Your feedback here..."
-            className="w-full border focus-visible:outline-none rounded-lg p-2 mb-4 bg-accent"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-          ></textarea>
-
+          <div className="relative mb-4">
+            <textarea
+              rows={4}
+              placeholder="Your feedback helps us improve..."
+              className="w-full border focus-visible:outline-none rounded-lg p-2 mb-4 bg-accent"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+            ></textarea>
+            <span className="absolute bottom-0 right-0 text-muted-foreground text-xs text-end">
+              Atleast 50 characters
+            </span>
+          </div>
           <div className="flex flex-wrap justify-center gap-4 items-center">
             <Button
               size="sm"
