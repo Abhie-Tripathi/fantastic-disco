@@ -18,12 +18,12 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
   return (
     <div className={`flex flex-col items-center justify-center gap-4 [color:var(--primary-color)] font-medium p-6 ${isGlobal?"min-h-[180px]":"min-h-[300px]"} animate-fadeIn`}>
       {title && (
-        <div className="w-full max-w-[600px] text-center text-lg md:text-xl transition-all duration-200 hover:scale-[1.02]">
+        <div className="w-full max-w-[400px] text-center text-lg md:text-xl transition-all duration-200 hover:scale-[1.02]">
           {title}
         </div>
       )}
       {text && (
-        <div className="w-full max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]">
+        <div className={`w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]`}>
           {errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
@@ -57,7 +57,9 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
             </div>
           )
         ) : (
-          text
+          <div className="max-w-[400px]">
+          {text}
+          </div>
         )}
         </div>
       )}
