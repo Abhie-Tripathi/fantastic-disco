@@ -175,6 +175,8 @@ export default function MapComponent({
     return null;
   }, [searchParams, trackerLoc]);
 
+  const shouldFetchEventsDirectly = location?.type === "geoCoordinates";
+
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
@@ -183,6 +185,7 @@ export default function MapComponent({
         ? ["eventCounts", searchParams.toString()]
         : ["eventCounts", currentZoomGroup, searchParams.toString(), location],
     queryFn: async () => {
+      if (shouldFetchEventsDirectly) return [];
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", eventType, isGlobal?trackerType:searchParams.get("type"));
         return response || [];
@@ -195,8 +198,65 @@ export default function MapComponent({
         return response || [];
       }
     },
-    retry:true
+    retry:true,
+    enabled: !shouldFetchEventsDirectly,
   });
+
+  const directEventsQuery = useQuery<MapEvents[], Error>({
+    queryKey: [
+      "directEvents",
+      source === "tracker" ? trackerId : searchParams.toString(),
+      location,
+      eventType,
+      trackerType,
+    ],
+    queryFn: async () => {
+      if (!shouldFetchEventsDirectly) return [];
+  
+      const { coordinates } = source === "tracker" ? location.trackerGeoCordinates : location;
+      const viewBound = {
+        boundType: "point",
+        coordinates: {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          radius: coordinates.radius,
+        },
+      };
+  
+      try {
+        let eventsData: any = {};
+        if (source === "tracker") {
+          eventsData = await getEventsLatLongData(
+            trackerId,
+            `viewBound=${encodeURIComponent(JSON.stringify(viewBound))}`,
+            searchParams,
+            trackerType,
+          );
+        } else {
+          const modifiedSearchParams = searchParams
+            ?.toString()
+            .replace(/locationIds=[^&]*&?/, "")
+            .replace(/viewBound=[^&]*&?/, "");
+          const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+          const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
+          eventsData = await getEventsWithSearchParams(finalSearchParams);
+        }
+  
+        return (eventsData?.events as MapEvents[]) || [];
+      } catch (error) {
+        console.error("Error fetching direct events:", error);
+        return [];
+      }
+    },
+    retry: true,
+    enabled: shouldFetchEventsDirectly,
+  });
+
+  useEffect(() => {
+    if (shouldFetchEventsDirectly && directEventsQuery.data) {
+      setEvents(directEventsQuery.data);
+    }
+  }, [shouldFetchEventsDirectly, directEventsQuery.data]);
 
   const handleMapClick = async (e: any) => {
     setHoverInfo(null);
@@ -563,6 +623,7 @@ export default function MapComponent({
   }, [events]);
 
   const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
+    if (shouldFetchEventsDirectly) return "event";
     if (zoomLevel >= 11.5) {
       return "event";
     } else {
@@ -740,8 +801,8 @@ export default function MapComponent({
     [iconUrls, onMove]
   );
 
-  const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
-  const showEvent = viewport.zoom >= 12;
+const showEventCount = !shouldFetchEventsDirectly && viewport.zoom < 12 && eventCountsQuery.isSuccess;
+const showEvent = shouldFetchEventsDirectly || viewport.zoom >= 12;
 
   const handleEventHover = (event: Event) => {
     setHighlightedEvent(event);
@@ -766,13 +827,13 @@ export default function MapComponent({
   }
   return (
     <div className="relative px-4 md:px-0 w-full">
-      {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
-        (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
-      ) : eventCountsQuery.error ? (
-        <ZeroState text={eventCountsQuery.error.message} isGlobal={isGlobal}/>
-      ) : (
+      {(shouldFetchEventsDirectly ? directEventsQuery.isLoading : (eventCountsQuery.isLoading && currentZoomGroup === "city")) ? (
+  (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
+) : (shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error) ? (
+  <ZeroState text={(shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error).message} isGlobal={isGlobal}/>
+) : (
         <>
-          {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
+          {source === "tracker" && (shouldFetchEventsDirectly ? directEventsQuery?.data?.length === 0 : eventCountsQuery?.data?.length === 0) ? (
             <NullState
               image={TrackerNullState}
               global={isGlobal}
