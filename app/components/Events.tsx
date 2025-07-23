@@ -31,8 +31,9 @@ import {
   Save,
   TableIcon,
 } from "lucide-react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import ExportModal from "./Search/ExportModal";
+import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -74,20 +75,10 @@ const Events = () => {
     }
   }, [isMobile, searchParams, selectedView]);
 
-  const filtersCount = (function () {
-    const excludedFilters = [
-      "view",
-      "sortBy",
-      "offset",
-      "limit",
-      "active_gte",
-      "active_lte",
-      "show",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  })();
+  const filtersCount = useMemo(() => {
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
+  }, [localFilters]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");

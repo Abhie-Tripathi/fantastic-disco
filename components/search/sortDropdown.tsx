@@ -55,10 +55,12 @@ const geoSortOptions: SortOption[] = [
 interface SortDropdownProps {
   compact?: boolean;
   value?: string;
+  isPubic?: boolean;
   onSort?: (value: string) => void;
 }
 
 const SortDropdown = ({
+  isPubic=false,
   compact = false,
   value,
   onSort,

@@ -233,15 +233,20 @@ export default function AutocompleteInput({
   }
 
   return (
-    <div ref={containerRef} className="relative w-full">
-      <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border">
-        <Search className="ml-2 h-4 w-4 text-gray-400 flex-shrink-0" />
+    <div
+      ref={containerRef}
+      className="relative w-full"
+    >
+      <div
+        className="flex items-center flex-wrap rounded-md shadow-sm border border-border bg-background"
+      >
+        <Search className="ml-2 h-4 w-4 text-gray-400 flex-shrink-0 dark:text-[var(--secondary-text-color)]" />
         {selectedLocations.map((location, index) => (
           <div
             key={location.id}
-            className="flex items-center bg-secondary text-secondary-foreground rounded-full px-3 py-1 m-1 text-xs"
+            className="flex items-center rounded-full px-3 py-1 m-1 text-xs bg-secondary text-secondary-foreground"
           >
-            <span className="text-xs font-medium dark:text-gray-100 truncate max-w-[100px] sm:max-w-[200px]">
+            <span className="text-xs font-medium truncate max-w-[100px] sm:max-w-[200px] dark:text-[var(--primary-text-color)]">
               {location.description}
             </span>
             <button
@@ -251,7 +256,7 @@ export default function AutocompleteInput({
                 e.stopPropagation()
                 handleRemove(location)
               }}
-              className="ml-2 focus:outline-none hover:bg-gray-300 rounded-full p-0.5"
+              className="ml-2 focus:outline-none hover:bg-gray-300 rounded-full p-0.5 dark:hover:bg-[var(--border-color)] text-secondary-foreground"
               tabIndex={-1}
             >
               <X size={12} />
@@ -267,7 +272,7 @@ export default function AutocompleteInput({
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
-            className="pl-2 py-0 pr-4 w-full border-none text-sm h-9 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 shadow-none"
+            className="pl-2 py-0 pr-4 w-full border-none text-sm h-9 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 shadow-none bg-transparent text-foreground placeholder:text-muted-foreground dark:bg-transparent dark:text-[var(--primary-text-color)] dark:placeholder:text-[var(--secondary-text-color)]"
             autoComplete="off"
             role="combobox"
             aria-expanded={open}
@@ -279,16 +284,18 @@ export default function AutocompleteInput({
       </div>
 
       {(open || !isEventeli) && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div
+          className="absolute z-50 w-full mt-1 border rounded-md bg-background  shadow-lg max-h-60 overflow-auto" 
+        >
           {isLoading ? (
             <div className="flex items-center justify-center p-4 py-8">
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              <span className="text-sm text-gray-600">Searching...</span>
+              <Loader2 className="h-4 w-4 animate-spin mr-2 text-foreground dark:text-[var(--primary-text-color)]" />
+              <span className="text-sm text-[var(--secondary-text-color)]">Searching...</span>
             </div>
           ) : isError ? (
-            <div className="p-4 py-8 text-sm text-center">Error fetching locations.</div>
+            <div className="p-4 py-8 text-sm text-center text-[var(--secondary-text-color)]">Error fetching locations.</div>
           ) : predictions.length === 0 ? (
-            <div className="p-4 py-8 text-sm text-gray-600 text-center">
+            <div className="p-4 py-8 text-sm text-[var(--secondary-text-color)] text-center">
               {inputValue.trim() === "" ? "Type to search locations..." : "No locations found."}
             </div>
           ) : (
@@ -306,14 +313,14 @@ export default function AutocompleteInput({
                     id={`option-${index}`}
                     role="option"
                     aria-selected={isHighlighted}
-                    className={`px-2 py-1.5 cursor-pointer flex flex-col items-start transition-colors ${
-                      isHighlighted ? "bg-accent" : "hover:bg-gray-50"
+                    className={`px-2 py-1.5 cursor-pointer flex flex-col items-start transition-colors text-foreground ${
+                      isHighlighted ? "bg-accent dark:bg-[var(--accent-color)]" : "hover:bg-gray-50 dark:hover:bg-[var(--background-color-hover)]"
                     }`}
                     onClick={() => handleSelect(prediction)}
                     onMouseEnter={() => setHighlightedIndex(index)}
                   >
-                    <span className="font-medium text-sm">{city}</span>
-                    <span className="text-sm text-gray-500">
+                    <span className="font-medium text-sm dark:text-[var(--primary-text-color)]">{city}</span>
+                    <span className="text-sm text-gray-500 dark:text-[var(--secondary-text-color)]">
                       {state && `${state}, `}
                       {country}
                     </span>

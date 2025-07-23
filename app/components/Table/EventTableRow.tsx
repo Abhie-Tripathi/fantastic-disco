@@ -26,27 +26,29 @@ import Link from "next/link";
 import type React from "react";
 import { ActionPopover } from "./ActionPopover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 
 interface EventTableRowProps {
-  toggleSelection: (id: string, event: Event) => void;
+  toggleSelection?: (id: string, event: Event) => void;
   event: Event;
   trackerId?: string;
-  show: Show[];
+  show?: Show[];
   type?: string;
-  locationIds: string[]
+  locationIds?: string[]
   setEventId?: any;
   setInterest?: any;
   global?: string;
   view?: string;
-  localFilters: Filters;
+  localFilters?: Filters;
   showCheckBox?: boolean;
-  totalChecked: string[];
+  totalChecked?: string[];
   setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
-  isChecked: boolean;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  isChecked?: boolean;
+  setIsChecked?: React.Dispatch<React.SetStateAction<boolean>>;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
   trackerMaturity?:string[];
+  source?:string;
 }
 
 function getForecastedStatus(data: any) {
@@ -127,6 +129,7 @@ function getAssociationColor(value: string) {
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
+  source,
   toggleSelection,
   event,
   show,
@@ -147,7 +150,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   intelLoading,
   trackerMaturity
 }) => {
-  const {isTentimesUser} = useFilterContext();
+const { isTentimesUser } = useSafeFilterContext();
+  // console.log("event table called......");
   
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -167,10 +171,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     includeKeywords.length + excludeKeywords.length >= 5;
   const handleCheckboxChange = (checked: CheckedState, id: string) => {
     if (checked) {
-      if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+      if (totalChecked?.length === itemsPerPage - 1) setIsChecked?.(!isChecked);
       setTotalChecked?.((prev) => [...prev, id]);
     } else {
-      if (isChecked) setIsChecked(!isChecked);
+      if (isChecked) setIsChecked?.(!isChecked);
       setTotalChecked?.((prev) => prev.filter((item) => item !== id));
     }
   };
@@ -184,7 +188,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
   const showHolidayScore =
   (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
-  (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds.length == 1);
+  (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds?.length == 1);
 
 
   const isCancelled = event.basic.status === "cancelled";
@@ -200,8 +204,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {showCheckBox && (
             <Checkbox
               className=""
-              checked={totalChecked.includes(event.basic.id)}
-              onCheckedChange={() => toggleSelection(event.basic.id, event)}
+              checked={totalChecked?.includes(event.basic.id)}
+              onCheckedChange={() => toggleSelection?.(event.basic.id, event)}
             />
           )}
           {/* Logo Section */}
@@ -287,7 +291,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               )}
-              {show.includes(Show.branded) && event.advance?.isBranded && (
+              {show?.includes(Show.branded) && event.advance?.isBranded && (
                 <Badge
                   variant="outline"
                   className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
@@ -295,7 +299,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   Brand
                 </Badge>
               )}
-              {show.includes(Show.series) && event.advance?.isSeries && (
+              {show?.includes(Show.series) && event.advance?.isSeries && (
                 <Badge
                   variant="outline"
                   className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
@@ -500,7 +504,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Estimated Exhibitors Column */}
-      {show.includes(Show.estimatedExhibitors) &&
+      {show?.includes(Show.estimatedExhibitors) &&
         event.insights?.estimatedExhibitors !== undefined && (
           <TableCell className="text-center">
             {formatExhibitorCount(event.insights?.estimatedExhibitors)}
@@ -508,7 +512,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Event Rank Column */}
-      {show.includes(Show.rankings) &&
+      {show?.includes(Show.rankings) &&
         event.insights?.rankings !== undefined && (
           <TableCell style={{ textAlign: "center" }}>
             {event.insights?.rankings ? (
@@ -536,7 +540,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Event Rating Column */}
-      {show.includes(Show.rating) && event.basic.rating !== undefined && (
+      {show?.includes(Show.rating) && event.basic.rating !== undefined && (
         <TableCell style={{ textAlign: "center" }}>
           {event.basic.rating !== null && event.basic.rating > 0 ? (
             <div className="grid grid-cols-3 px-4 items-center justify-items-center">
@@ -564,7 +568,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Reputation Column */}
-      {show.includes(Show.rankings) &&
+      {show?.includes(Show.rankings) &&
         event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.trustScore !== null &&
@@ -593,7 +597,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Frequency Column */}
-      {show.includes(Show.frequency) &&
+      {show?.includes(Show.frequency) &&
         event.advance?.frequency !== undefined && (
           <TableCell className="text-center">
             {event.advance?.frequency ? (
@@ -607,7 +611,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Forecasted Column */}
-      {show.includes(Show.forecasted) && (
+      {show?.includes(Show.forecasted) && (
         <TableCell className="text-center">
           {getForecastedStatus(event.advance?.rehostDate)}
         </TableCell>
@@ -684,7 +688,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Inbound Score Column */}
       {isEventeli &&
-        show.includes(Show.scores) &&
+        show?.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.inboundScore !== 0 &&
@@ -696,7 +700,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* International Score Column */}
       {isEventeli &&
-        show.includes(Show.scores) &&
+        show?.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.internationalScore !== 0 &&
@@ -708,7 +712,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Economic Impact Column */}
       {isEventeli &&
-        show.includes(Show.economicImpact) &&
+        show?.includes(Show.economicImpact) &&
         event.insights?.economicImpact !== undefined && (
           <TableCell className="text-right">
             {formatEstimatedSpend(event.insights.economicImpact)}
@@ -716,7 +720,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Audience Zone Column */}
-      {show.includes(Show.audienceZone) &&
+      {show?.includes(Show.audienceZone) &&
         event.audience?.audienceZone !== undefined && (
           <TableCell className="text-center">
             {event.audience?.audienceZone ? (
@@ -761,7 +765,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -801,7 +805,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               </TableCell>
               {isTentimesUser ?
               <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -815,7 +819,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:
                <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -845,7 +849,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -885,7 +889,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               </TableCell>
               {isTentimesUser?
              <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -899,7 +903,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:  
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -926,7 +930,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {type === "T_COMPETITOR" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -970,7 +974,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               </TableCell>
               {isTentimesUser?
               <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -984,7 +988,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>:    
               <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1011,7 +1015,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
             <>
               <TableCell
-                className="sticky right-[200px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -1038,7 +1042,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               </TableCell>
             {(isTentimesUser && event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1)?
             <TableCell
-                className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1052,7 +1056,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
               </TableCell>
             : ((event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1) ?
-                  <TableCell className="sticky right-[68px] bg-background z-0"
+                  <TableCell className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                     style={{
                       zIndex: 0,
                       minWidth: "132px",
@@ -1063,7 +1067,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                       Matched
                     </span></TableCell>:
                     <TableCell
-                className="sticky right-[68px] bg-background z-0"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "132px",
@@ -1106,7 +1110,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           className="sticky right-0 bg-background z-0 w-[68px]"
           style={{ zIndex: 0, background: "var(--heading-background-color)" }}
         >
-          {event.basic.primaryEventType !== "holiday" && (
+          {(event.basic.primaryEventType !== "holiday" && source!=="public") && (
             <ActionPopover
               view={view}
               setEventId={setEventId}
