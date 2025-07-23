@@ -560,29 +560,43 @@ export default function MapComponent({
     hasInitiallyFetchedForGeoCoordinates.current = false;
   }, [location]);
 
+  // Calculate the total count of 'online' events
+  const onlineEventCount = React.useMemo(() => {
+    if (!eventCountsQuery.data) return 0;
+    console.log(eventCountsQuery.data)
+    return eventCountsQuery.data
+      .filter((count: EventCount) => count.name.toLowerCase() === "online")
+      .reduce((sum: number, count: EventCount) => sum + (count.count || 0), 0);
+  }, [eventCountsQuery.data]);
+
+
+  // Filter out 'online' events from the features
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
       type: "FeatureCollection",
       features: eventCountsQuery.data
-        ? eventCountsQuery?.data?.map((count: EventCount) => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(count.longitude),
-                parseFloat(count.latitude),
-              ],
-            },
-            properties: {
-              count: count.count,
-              id: count.cityId,
-              name: count.name,
-              type: currentZoomGroup, // "country" or "city"
-            },
-          }))
+        ? eventCountsQuery.data
+            .filter((count: EventCount) => count.name.toLowerCase() !== "online")
+            .map((count: EventCount) => ({
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [
+                  parseFloat(count.longitude),
+                  parseFloat(count.latitude),
+                ],
+              },
+              properties: {
+                count: count.count,
+                id: count.cityId,
+                name: count.name,
+                type: currentZoomGroup, // "country" or "city"
+              },
+            }))
         : [],
     };
   }, [eventCountsQuery.data, currentZoomGroup, location]);
+
 
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
@@ -804,6 +818,9 @@ export default function MapComponent({
 const showEventCount = !shouldFetchEventsDirectly && viewport.zoom < 12 && eventCountsQuery.isSuccess;
 const showEvent = shouldFetchEventsDirectly || viewport.zoom >= 12;
 
+
+const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("online")
+
   const handleEventHover = (event: Event) => {
     setHighlightedEvent(event);
   };
@@ -919,14 +936,22 @@ const showEvent = shouldFetchEventsDirectly || viewport.zoom >= 12;
                   {...viewport}
                 >
                   {!isGlobal && (
-                    <Button
-                      variant="default"
-                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:transform-none md:left-auto md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
-                      onClick={() => setShowEventList("all")}
-                    >
-                      <AlignLeft className="w-5 h-5" />
-                      <span>Event List</span>
-                    </Button>
+                    <div className="absolute h-min bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3 md:transform-none md:left-auto md:top-4 md:right-4 z-10">
+                      {onlineEventCount > 0 && (
+                        <div className="flex items-center bg-white/90 shadow-md rounded-full px-3 py-1 hover:bg-white transition group cursor-pointer" title="Online Events">
+                          <img src="/video.svg" alt="Online Events" className="w-5 h-5 mr-2 opacity-80 group-hover:opacity-100" />
+                          <span className="text-sm font-semibold text-gray-700 group-hover:text-primary transition">{onlineEventCount} Online</span>
+                        </div>
+                      )}
+                      <Button
+                        variant="default"
+                        className="bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2 shadow-md"
+                        onClick={() => setShowEventList("all")}
+                      >
+                        <AlignLeft className="w-5 h-5" />
+                        <span>Event List</span>
+                      </Button>
+                    </div>
                   )}
 
                   {isHolidaySelected && (
@@ -959,6 +984,7 @@ const showEvent = shouldFetchEventsDirectly || viewport.zoom >= 12;
                       mapRef={mapRef}
                       onEventHover={handleEventHover}
                       onEventLeave={handleEventLeave}
+                      onlineEventCount={onlineEventCount}
                     />
                   )}
 

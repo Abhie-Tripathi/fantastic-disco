@@ -40,6 +40,10 @@ import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context/auth";
 import { useFilterContext } from "@/context/filterContext";
+import Image from "next/image";
+import { Switch } from "@/components/ui/switch";
+import { Globe } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 const EventCard = memo(
   ({
     event,
@@ -428,6 +432,7 @@ function EventList({
   onEventHover,
   onEventLeave,
   searchParam,
+  onlineEventCount, // new prop
 }: {
   eventType?: string;
   showEventType: string;
@@ -438,6 +443,7 @@ function EventList({
   onEventHover: (event: Event) => void;
   onEventLeave: () => void;
   searchParam?: string | undefined;
+  onlineEventCount?: number;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [mapBounds, setMapBounds] = useState<(number | undefined)[]>();
@@ -446,6 +452,8 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const isOnlyOnlineSelected = searchParams.get("eventFormats") === "online"
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -513,6 +521,20 @@ function EventList({
     params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
+    // Add or remove eventFormats=online based on toggle
+    if (showOnlineOnly) {
+      params.set("eventFormats", "online");
+    } else {
+      if (params.get("eventFormats")?.split(",").includes("online")) {
+        const filtered = params.get("eventFormats")!.split(",").filter(v => v !== "online").join(",");
+        if (filtered) {
+          params.set("eventFormats", filtered);
+        } else {
+          params.set("eventFormats", "in_person,hybrid");
+        }
+      }
+    }
+
     if (mapBounds && showEventType != "unAttended") {
       const viewBound = {
         boundType: "box",
@@ -563,7 +585,7 @@ function EventList({
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapBounds, sortBy]);
+  }, [searchParams, currentPage, showEventType, mapBounds, sortBy, showOnlineOnly]);
 
   const { data, error, isLoading } = useQuery({
     queryKey: [
@@ -774,6 +796,41 @@ function EventList({
               >
                 <X className="w-4 h-4" />
               </Button>
+            </div>
+          </div>
+          {/* Online Only toggle in its own row, styled as a card */}
+          <div className="w-full flex justify-center">
+            <div
+              className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
+                ${showOnlineOnly ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="flex items-center gap-2 cursor-pointer select-none"
+                      tabIndex={0}
+                      aria-label="Show only online events"
+                    >
+                      <Switch
+                        id="online-toggle"
+                        checked={showOnlineOnly}
+                        onCheckedChange={setShowOnlineOnly}
+                        aria-label="Online Only"
+                      />
+                      <label
+                        htmlFor="online-toggle"
+                        className={`text-sm font-medium transition-colors duration-200 ${showOnlineOnly ? 'text-blue-700 font-semibold' : 'text-gray-700'}`}
+                      >
+                        Show Online
+                      </label>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="center">
+                    Show only online events in the list
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
