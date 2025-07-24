@@ -756,7 +756,7 @@ export const ProspectList: React.FC = () => {
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="upcoming">Upcoming</SelectItem>
-              <SelectItem value="bookmarks">Bookmarks</SelectItem>
+              <SelectItem value="bookmarks">Bookmarked</SelectItem>
               <SelectItem
                 value="newly-listed"
                 disabled
@@ -834,7 +834,7 @@ export const ProspectList: React.FC = () => {
                 className="flex items-center gap-2 py-2 px-4"
               >
                 {/* <ListIcon className="h-4 w-4" /> */}
-                <span>Bookmarks</span>
+                <span>Bookmarked</span>
               </TabsTrigger>
               <TabsTrigger
                 value="newly-listed"
