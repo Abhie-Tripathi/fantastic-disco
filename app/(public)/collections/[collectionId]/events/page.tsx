@@ -67,7 +67,7 @@ export default function CollectionPage() {
   const [totalEvents, setTotalEvents] = useState(0)
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const viewType = searchParams.get("view");
-
+  
   const { getFilterValue, setMultipleFilters } =
     useFilterState();
   const [view, setView] = useState<string | null>(
@@ -260,7 +260,7 @@ export default function CollectionPage() {
         getData(formData);
       }
     }
-  }, [presetTemplateData, active, currentPage, view])
+  }, [presetTemplateData, searchParams])
   // useEffect(()=>{
   //     setIsLoading(true)
   //     getData(formData);
@@ -514,6 +514,14 @@ export default function CollectionPage() {
         {/* <PublicEventTable  presetTemplateData={presetTemplateData} active={active}/> */}
         {isLoading ? <Loading /> :
           eventError ? (
+            user?
+              <NullState
+              image={TrackerNullState}
+              // title="We couldn't find any events matching your tracker criteria at the moment."
+              text="Save the tracker to view more events"
+              buttonUrl={`/preset?presetId=${presetTemplateData?.id}&type=${presetTemplateData?.trackerType[0]}`}
+            />
+              :
             <NullState
               image={TrackerNullState}
               // title="We couldn't find any events matching your tracker criteria at the moment."
