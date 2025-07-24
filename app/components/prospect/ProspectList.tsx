@@ -69,76 +69,8 @@ const EXCLUDED_COMPANY_NAMES: string[] = [
 
 interface CircularProgressProps {
   value: number | null;
-  label: string;
-}
-
-const MobileCircularProgress = ({
-  value = 0,
-  label,
-}: {
-  value: number | null;
   label?: string;
-}) => {
-  const radius = 18;
-  const circumference = 2 * Math.PI * radius;
-  const getColorByValue = (value: number | null): string => {
-    if (value == null) return "text-[#398e4a]";
-    if (value <= 25) return "text-[#398e4a]";
-    if (value <= 50) return "text-[#FFD70A]";
-    if (value <= 75) return "text-[#FF990A]";
-    return "text-[#DA2F35]";
-  };
-  const className = getColorByValue(value);
-  return (
-    <div className="text-center">
-      <div className="relative inline-flex">
-        {/* Coming Soon overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-white/10 rounded-full dark:bg-black/60 backdrop-blur-sm z-10">
-          <span className="text-[10px] font-semibold text-gray-600">
-            Coming Soon
-          </span>
-        </div>
-        <svg className="w-[40px] h-[40px]" aria-hidden="true">
-          <circle
-            className="text-gray-200"
-            strokeWidth="4"
-            stroke="currentColor"
-            fill="transparent"
-            r={radius}
-            cx="20"
-            cy="20"
-          />
-          <circle
-            className={className}
-            strokeWidth="4"
-            strokeDasharray={circumference}
-            strokeDashoffset={
-              circumference - (value ? (value / 100) * circumference : 0)
-            }
-            strokeLinecap="round"
-            stroke="currentColor"
-            fill="transparent"
-            r={radius}
-            cx="20"
-            cy="20"
-          />
-        </svg>
-        <span
-          className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
-          aria-hidden="true"
-        >
-          {value ? value : "-"}
-        </span>
-      </div>
-      {label && (
-        <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1 mt-1">
-          {label}
-        </p>
-      )}
-    </div>
-  );
-};
-
+}
 
 const CircularProgress: React.FC<CircularProgressProps> = ({
   value = 0,
@@ -197,9 +129,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
+      {label && <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
         {label}
-      </p>
+      </p>}
     </div>
   );
 };
@@ -496,11 +428,10 @@ const ProspectCard: React.FC<
             </div>
             {isMobile && <div className="flex items-start justify-between gap-2 w-full">
               <div className="text-sm [color:var(--secondary-text-color)] dark:text-gray-400 font-medium">
-            Insights & Scores
+              Relevance Score
           </div>
                       <div className="flex flex-col items-center">
-                        <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">Relevance</div>
-                        <MobileCircularProgress value={20} label={''} />
+                      <CircularProgress value={20} />
                       </div>
                     </div>}
 
@@ -834,7 +765,7 @@ export const ProspectList: React.FC = () => {
                 aria-disabled="true"
               >
                 <span>Newly Listed</span>
-                <span className="w-min ml-2 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">
+                <span className="ml-2 px-1 rounded w-min text-[9px] bg-white text-black whitespace-nowrap shadow-sm select-none">
                   Coming Soon
                 </span>
               </SelectItem>
