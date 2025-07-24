@@ -18,10 +18,10 @@ import { useCompanyService } from "@/services/companyService";
 import { ApiError } from "@/types/api";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
 import { useQuery } from "@tanstack/react-query";
-
+import { localStorage as localStore } from "@/services/storageService";
+import { isEventeli } from "@/config";
 import { Buildings, Location } from "geist-icons";
-import { Filter, FilterX } from "lucide-react";
-import Image from "next/image";
+import { Bookmark, BookmarkCheck, Filter, FilterX } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -33,6 +33,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { CircularProgress } from "@/components/search/list";
 
 // Constants
 const EXCLUDED_TAGS = [
@@ -54,6 +56,8 @@ const DEFAULT_ITEMS_PER_PAGE = 10;
 const CACHE_TIME = 300000; // 5 minutes
 const STALE_TIME = 300000; // 5 minutes
 
+const BOOKMARK_KEY = `whr.${isEventeli ? "geo" : "gtm"}.company.bookmark`;
+
 // Types
 interface ProspectCardProps {
   companyDetail: companyListData;
@@ -65,7 +69,11 @@ interface ProspectCardProps {
       orgName?: string;
     }
   >;
-  toggleSelection: (id: string, website?: string | null | undefined, name?: string | null | undefined) => void;
+  toggleSelection: (
+    id: string,
+    website?: string | null | undefined,
+    name?: string | null | undefined
+  ) => void;
 }
 
 interface StatsBadgeProps {
@@ -87,15 +95,42 @@ const StatsBadge: React.FC<StatsBadgeProps> = ({ label, value }) => {
   );
 };
 
-const ProspectCard: React.FC<ProspectCardProps> = ({
+const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void }> = ({
   companyDetail,
   isBulkActionActive,
   selectedCompaniesIds,
   toggleSelection,
+  onBookmarkChange,
 }) => {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [faviconError, setFaviconError] = useState(false);
   const [sourceLogoError, setSourceLogoError] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  useEffect(() => {
+    const bookmarks = localStore.get<string[]>(BOOKMARK_KEY) || [];
+    setIsBookmarked(bookmarks.includes(companyDetail.id));
+  }, [companyDetail.id]);
+
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.preventDefault();
+    let bookmarks = localStore.get<string[]>(BOOKMARK_KEY) || [];
+    if (bookmarks.includes(companyDetail.id)) {
+      bookmarks = bookmarks.filter((id) => id !== companyDetail.id);
+      setIsBookmarked(false);
+    } else {
+      bookmarks = [...bookmarks, companyDetail.id];
+      setIsBookmarked(true);
+    }
+    localStore.set(BOOKMARK_KEY, bookmarks);
+    if (onBookmarkChange) onBookmarkChange();
+    toast({
+      title: "Success",
+      description: "Your interest has been recorded",
+      variant: "default",
+    });
+  };
 
   const locationDisplay = useMemo(() => {
     const { cityName, countryName } = companyDetail.location || {};
@@ -140,126 +175,157 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
   };
 
   const getHostURL = (url: string) => {
-    return new URL(url).hostname
-  }
+    return new URL(url).hostname;
+  };
 
   return (
-     <div className="flex gap-4 w-full items-center">
+    <div className="flex gap-4 w-full items-center">
       {isBulkActionActive && (
         <Checkbox
           checked={companyDetail.id in selectedCompaniesIds}
           onCheckedChange={() =>
-            toggleSelection(companyDetail.id, companyDetail.website, companyDetail.name)
+            toggleSelection(
+              companyDetail.id,
+              companyDetail.website,
+              companyDetail.name
+            )
           }
         />
       )}
-      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full">
-      <Link href={`/internal/company/${companyDetail.id}`} className="block">
-        <div className="p-4 flex gap-6">
-          {/* Logo with fallbacks (updated to match list.tsx) */}
-          <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
-            {companyDetail.logo && !sourceLogoError ? (
-              <img
-                src={companyDetail.logo}
-                alt={`${companyDetail.name} logo`}
-                className="w-16 h-16 object-contain rounded-lg shadow-lg bg-white border"
-                onError={()=>{
-                  setSourceLogoError(true)
-                }}
-                width={64}
-                height={64}
-              />
-            ) : companyDetail.website && !faviconError ? (
-              <div className="w-16 h-16 relative">
+      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full transition-colors duration-200 hover:bg-accent cursor-pointer">
+        {/* Bookmark Icon */}
+        <Button
+          className="absolute top-3 right-3 p-1"
+          onClick={handleBookmark}
+          variant="ghost"
+          size="icon"
+          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+        >
+          {isBookmarked ? (
+            <BookmarkCheck className="w-5 h-5 text-primary" />
+          ) : (
+            <Bookmark className="w-5 h-5 text-primary" />
+          )}
+        </Button>
+        <Link href={`/internal/company/${companyDetail.id}`} className="block">
+          <div className="p-4 flex gap-6">
+            {/* Logo with fallbacks (updated to match list.tsx) */}
+            <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+              {companyDetail.logo && !sourceLogoError ? (
                 <img
-                  src={`https://logo.clearbit.com/${getHostURL(companyDetail.website)}`}
-                  alt={`${companyDetail.name} website favicon`}
-                  className="w-16 h-16 object-contain p-2 border rounded-md bg-white shadow-sm"
-                  onError={(e) => {
-                    setFaviconError(true);
+                  src={companyDetail.logo}
+                  alt={`${companyDetail.name} logo`}
+                  className="w-16 h-16 object-contain rounded-lg shadow-lg bg-white border"
+                  onError={() => {
+                    setSourceLogoError(true);
                   }}
+                  width={64}
+                  height={64}
                 />
-                {/* Fallback that shows when image errors */}
-                {faviconError && (
-                  <div
-                    className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
-                  >
-                    <span className="text-[#5055A3] text-lg font-semibold">
-                      {companyDetail.name?.charAt(0) || "?"}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
-                <span className="text-[#5055A3] text-lg font-semibold">
-                  {companyDetail.name?.charAt(0) || "?"}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className="flex gap-2 flex-col">
-            <div className="text-lg md:text-xl font-semibold">
-              {companyDetail.name}
-            </div>
-            {companyDetail?.description &&
-              companyDetail.description.length > 10 && (
-                <div className="text-xs md:text-sm text-[#707287] line-clamp-2">
-                  {companyDetail.description}
+              ) : companyDetail.website && !faviconError ? (
+                <div className="w-16 h-16 relative">
+                  <img
+                    src={`https://logo.clearbit.com/${getHostURL(
+                      companyDetail.website
+                    )}`}
+                    alt={`${companyDetail.name} website favicon`}
+                    className="w-16 h-16 object-contain p-2 border rounded-md bg-white shadow-sm"
+                    onError={(e) => {
+                      setFaviconError(true);
+                    }}
+                  />
+                  {/* Fallback that shows when image errors */}
+                  {faviconError && (
+                    <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0">
+                      <span className="text-[#5055A3] text-lg font-semibold">
+                        {companyDetail.name?.charAt(0) || "?"}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-
-            <div className="flex flex-wrap gap-2">
-              {locationDisplay && (
-                <div className="flex gap-2 items-center border-r w-fit pr-3">
-                  <Location color="#666666" width="14px" height="14px" />
-                  <span className="text-xs md:text-sm text-[#6E6F89]">
-                    {locationDisplay}
+              ) : (
+                <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                  <span className="text-[#5055A3] text-lg font-semibold">
+                    {companyDetail.name?.charAt(0) || "?"}
                   </span>
                 </div>
               )}
-
-              <div className="flex gap-2 items-center w-fit">
-                {companyDetail.event_categoryName?.length > 0 && (
-                  <>
-                    <Buildings color="#666666" width="14px" height="14px" />
-                    {renderTags(companyDetail.event_categoryName)}
-                  </>
+            </div>
+            <div className="flex gap-2 flex-col w-full">
+              <div className="text-lg md:text-xl font-semibold">
+                {companyDetail.name}
+              </div>
+              {companyDetail?.description &&
+                companyDetail.description.length > 10 && (
+                  <div className="text-xs md:text-sm text-[#707287] line-clamp-2">
+                    {companyDetail.description}
+                  </div>
                 )}
 
-                <span className="hidden md:block">
-                  {filteredTags?.length > 0 && renderTags(filteredTags, "#")}
-                </span>
+              <div className="flex justify-between flex-col gap-2 md:flex-row ">
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {locationDisplay && (
+                      <div className="flex gap-2 items-center border-r w-fit pr-3">
+                        <Location color="#666666" width="14px" height="14px" />
+                        <span className="text-xs md:text-sm text-[#6E6F89]">
+                          {locationDisplay}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 items-center w-fit">
+                      {companyDetail.event_categoryName?.length > 0 && (
+                        <>
+                          <Buildings
+                            color="#666666"
+                            width="14px"
+                            height="14px"
+                          />
+                          {renderTags(companyDetail.event_categoryName)}
+                        </>
+                      )}
+
+                      <span className="hidden md:block">
+                        {filteredTags?.length > 0 &&
+                          renderTags(filteredTags, "#")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="hidden md:flex flex-wrap gap-2 items-center w-fit ">
+                    <StatsBadge
+                      label="Total Events"
+                      value={companyDetail.stats?.totalEvents}
+                    />
+                    <StatsBadge
+                      label="Upcoming Events"
+                      value={companyDetail.stats?.upcomingEvents}
+                    />
+                    <StatsBadge
+                      label="Events Exhibited"
+                      value={companyDetail.stats?.totalExhibit}
+                    />
+                    <StatsBadge
+                      label="Events Sponsored"
+                      value={companyDetail.stats?.totalSponsor}
+                    />
+                    <StatsBadge
+                      label="Events Visited"
+                      value={companyDetail.stats?.totalVisitor}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                  <CircularProgress value={10} label="Inbound" />
+                  <CircularProgress value={20} label="International" />
+                </div>
               </div>
             </div>
-
-            <div className="hidden md:flex flex-wrap gap-2 items-center w-fit ">
-              <StatsBadge
-                label="Total Events"
-                value={companyDetail.stats?.totalEvents}
-              />
-              <StatsBadge
-                label="Upcoming Events"
-                value={companyDetail.stats?.upcomingEvents}
-              />
-              <StatsBadge
-                label="Events Exhibited"
-                value={companyDetail.stats?.totalExhibit}
-              />
-              <StatsBadge
-                label="Events Sponsored"
-                value={companyDetail.stats?.totalSponsor}
-              />
-              <StatsBadge
-                label="Events Visited"
-                value={companyDetail.stats?.totalVisitor}
-              />
-            </div>
           </div>
-        </div>
         </Link>
+      </div>
     </div>
-  </div>
   );
 };
 
@@ -267,8 +333,15 @@ export const ProspectList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
-  const selectedView = getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"; // "all" || "upcoming"
-  
+  const selectedView =
+    getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"; // "all" || "upcoming"
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setBookmarkedIds(localStore.get<string[]>(BOOKMARK_KEY) || []);
+  }, []);
+
   const { getCompanyList } = useCompanyService();
   const {
     isBulkActionActive,
@@ -284,7 +357,7 @@ export const ProspectList: React.FC = () => {
   const { localFilters, deleteMultipleLocalFilters, applyFilters } =
     useFilterContext();
   const [showFilters, setShowFilter] = useState(false);
-  
+
   const {
     data: companyData,
     error,
@@ -296,11 +369,10 @@ export const ProspectList: React.FC = () => {
     gcTime: CACHE_TIME,
     staleTime: STALE_TIME,
   });
-  const value=Object.values(selectedData)
-        .map((names) => names.orgWebsite)
-        .join(",");
-  
-  
+  const value = Object.values(selectedData)
+    .map((names) => names.orgWebsite)
+    .join(",");
+
   const companies = useMemo(
     () => companyData?.companyData || [],
     [companyData]
@@ -337,15 +409,15 @@ export const ProspectList: React.FC = () => {
       if (checked) {
         // ADD all companies to next
         companies.forEach((company) => {
-          if(company.website){
-          next[company.id] = {
-            orgWebsite: company.website || "",
-          };
-        }else{
-          next[company.id] = {
-            orgName: (company.name || "").replace(/,/g, ""),
-          };
-        }
+          if (company.website) {
+            next[company.id] = {
+              orgWebsite: company.website || "",
+            };
+          } else {
+            next[company.id] = {
+              orgName: (company.name || "").replace(/,/g, ""),
+            };
+          }
         });
       } else {
         // REMOVE all companies from next
@@ -360,20 +432,24 @@ export const ProspectList: React.FC = () => {
     });
   }
 
-  function toggleSelection(id: string, website?: string | null | undefined, name?: string | null | undefined) {
+  function toggleSelection(
+    id: string,
+    website?: string | null | undefined,
+    name?: string | null | undefined
+  ) {
     setSelectedData((prev) => {
       const next = { ...prev };
       if (id in next) {
         delete next[id];
       } else {
-        if(website){
-        next[id] = {
-          orgWebsite: website || "",
-        };
-        }else{
+        if (website) {
           next[id] = {
-          orgName: name || "",
-        };
+            orgWebsite: website || "",
+          };
+        } else {
+          next[id] = {
+            orgName: name || "",
+          };
         }
       }
       return next;
@@ -388,23 +464,21 @@ export const ProspectList: React.FC = () => {
   function handleCreate() {
     setTrackerModalOpen(true);
     const orgNames: string[] = [];
-const orgWebsites: string[] = [];
+    const orgWebsites: string[] = [];
 
-Object.values(selectedData).forEach((names) => {
-  if (names.orgWebsite) {
-    orgWebsites.push(names.orgWebsite);
-  }
-  else if (names.orgName) {
-    orgNames.push(names.orgName);
-  }
-});
+    Object.values(selectedData).forEach((names) => {
+      if (names.orgWebsite) {
+        orgWebsites.push(names.orgWebsite);
+      } else if (names.orgName) {
+        orgNames.push(names.orgName);
+      }
+    });
 
-const filterValues = {
-   ...(orgNames.length > 0 && { orgName: orgNames.join(",") }),
-  ...(orgWebsites.length > 0 && { orgWebsite: orgWebsites.join(",") }),
-};
+    const filterValues = {
+      ...(orgNames.length > 0 && { orgName: orgNames.join(",") }),
+      ...(orgWebsites.length > 0 && { orgWebsite: orgWebsites.join(",") }),
+    };
 
-    
     setFilterValues({ filterValues });
   }
 
@@ -426,10 +500,8 @@ const filterValues = {
   })();
 
   const onTabsChange = (value: string) => {
-    if (value === "all")
-      setFilter("upcomingEvents", "false");
-    else if (value === "upcoming")
-      setFilter("upcomingEvents", "true");
+    if (value === "all") setFilter("upcomingEvents", "false");
+    else if (value === "upcoming") setFilter("upcomingEvents", "true");
     setShowViewDropdown(false);
   };
 
@@ -440,28 +512,95 @@ const filterValues = {
       setShowFilter(true);
     }
   };
-  
+
+  // Helper to update bookmarks after toggling
+  const refreshBookmarks = useCallback(() => {
+    setBookmarkedIds(localStore.get<string[]>(BOOKMARK_KEY) || []);
+  }, []);
+
+  // Filter companies based on bookmarks if showBookmarkedOnly is true
+  const filteredCompanies = useMemo(() => {
+    if (showBookmarkedOnly) {
+      return companies.filter((company) => bookmarkedIds.includes(company.id));
+    }
+    return companies;
+  }, [companies, showBookmarkedOnly, bookmarkedIds]);
+
+  // Update count for badge
+  const filteredCount = showBookmarkedOnly ? filteredCompanies.length : count;
 
   return (
     <div className="flex flex-col w-full md:px-6">
-      <div
-        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 pb-4 px-4 md:px-0`}
-      >
+      {/* Mobile heading: flex, visible only on mobile */}
+      <div className="flex justify-between items-center !sticky !top-[68px] md:!top-0 bg-background z-50 transition-padding duration-200 md:py-3 pt-4 pb-4 px-4 md:px-0 md:hidden">
         <div className="flex items-center gap-2">
           <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
             {new Intl.NumberFormat("en", {
               notation: "compact",
               maximumFractionDigits: 1,
-            }).format(count)}
+            }).format(filteredCount)}
           </Badge>
-          {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
-            Companies
-          </p> */}
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Tabs for All, Upcoming, Newly Listed (disabled) */}
+          <Select value={selectedView} onValueChange={onTabsChange}>
+            <SelectTrigger className="w-[110px] border-gray-300">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="upcoming">Upcoming</SelectItem>
+              <SelectItem value="newly-listed" disabled className="flex items-center gap-2 pointer-events-none" tabIndex={-1} aria-disabled="true">
+                <span>Newly Listed</span>
+                <span className="w-min ml-2 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">Coming Soon</span>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          {/* Bookmarks CTA for mobile */}
+          <Button
+            variant={showBookmarkedOnly ? "secondary" : "outline"}
+            size="icon"
+            className="h-8"
+            onClick={() => setShowBookmarkedOnly((prev) => !prev)}
+          >
+            <Bookmark className="w-4 h-4" />
+          </Button>
+          <Button
+            onClick={toggleFilterHandler}
+            variant={filtersCount > 0 ? "secondary" : "ghost"}
+            size="icon"
+            className="h-8 w-8 border relative"
+          >
+            <Filter className="w-4 h-4" />
+            {filtersCount > 0 && (
+              <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                {filtersCount}
+              </div>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Desktop heading: grid, visible only on md+ */}
+      <div
+        className={
+          `hidden md:grid grid-cols-10 items-center !sticky !top-[76px] md:!top-0 bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 pb-4 px-4 md:px-0`
+        }
+      >
+        {/* First part: Badge (col-span-2) */}
+        <div className="col-span-2 flex items-center gap-2">
+          <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
+            {new Intl.NumberFormat("en", {
+              notation: "compact",
+              maximumFractionDigits: 1,
+            }).format(filteredCount)}
+          </Badge>
         </div>
 
+        {/* Second part: Tabs (col-span-6) */}
         <div
           id="company-view-desktop"
-          className="justify-center hidden md:flex"
+          className="col-span-6 justify-center flex"
         >
           <Tabs
             defaultValue="all"
@@ -469,7 +608,7 @@ const filterValues = {
             onValueChange={onTabsChange}
             className="mt-0"
           >
-            <TabsList className="grid w-fit grid-cols-2 h-auto bg-muted/50 p-1 rounded-lg">
+            <TabsList className="grid w-fit grid-cols-3 h-auto bg-muted/50 p-1 rounded-lg">
               <TabsTrigger
                 value="all"
                 className="flex items-center gap-2 py-2 px-4"
@@ -484,37 +623,30 @@ const filterValues = {
                 {/* <ListIcon className="h-4 w-4" /> */}
                 <span>Upcoming</span>
               </TabsTrigger>
+              <TabsTrigger
+                value="newly-listed"
+                className="flex items-center gap-2 py-2 px-4 pointer-events-none"
+                tabIndex={-1}
+                aria-disabled="true"
+              >
+                <span>Newly Listed</span>
+                <span className="w-min mt-1 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">
+                  Coming Soon
+                </span>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
 
-        {/* <div className="flex justify-center"></div> */}
-        <div className="flex items-center md:hidden justify-end gap-2">
-          <Select
-            value={selectedView}
-            onValueChange={onTabsChange}
-          >
-            <SelectTrigger className="w-[110px] border-gray-300">
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="upcoming">Upcoming</SelectItem>
-            </SelectContent>
-          </Select>
-
+        {/* Third part: Bookmark CTA (col-span-2) */}
+        <div className="col-span-2 flex justify-end items-center gap-2">
           <Button
-            onClick={toggleFilterHandler}
-            variant={filtersCount > 0 ? "secondary" : "ghost"}
-            size="icon"
-            className="h-8 w-8 border relative  md:hidden"
+            variant={showBookmarkedOnly ? "secondary" : "outline"}
+            className="h-8"
+            onClick={() => setShowBookmarkedOnly((prev) => !prev)}
           >
-            <Filter className="w-4 h-4" />
-            {filtersCount > 0 && (
-              <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
-                {filtersCount}
-              </div>
-            )}
+            <Bookmark className="w-4 h-4 mr-1" />
+            Bookmarks
           </Button>
         </div>
       </div>
@@ -529,10 +661,10 @@ const filterValues = {
             <label className="text-sm items-center justify-center">
               Select companies to create company tracker
               {Object.keys(selectedData).length > 0 && (
-              <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px] ml-1">
-                ({Object.keys(selectedData).length} Selected)
-              </span>
-            )}
+                <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px] ml-1">
+                  ({Object.keys(selectedData).length} Selected)
+                </span>
+              )}
             </label>
           </div>
           <div className="flex gap-2 item-center">
@@ -623,7 +755,10 @@ const filterValues = {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
+              <ZeroState
+                text={(error as ApiError).message}
+                errorStatusCode={(error as ApiError)?.statusCode}
+              />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
@@ -635,26 +770,30 @@ const filterValues = {
             </div>
           ) : (
             <>
-              {companies.map((item) => (
+              {filteredCompanies.map((item) => (
                 <ProspectCard
-          key={item.id}
-          companyDetail={item}
-          isBulkActionActive={isBulkActionActive}
-          selectedCompaniesIds={selectedData}
-          toggleSelection={toggleSelection}
-        />
-              ))}
-              <div className="bg-background py-3">
-                <PaginationComponent
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  itemsPerPage={itemsPerPage}
-                  count={count}
-                  onPageChange={handlePageChange}
-                  onItemsPerPageChange={handleItemsPerPageChange}
-                  paginationItems={["5", "10"]}
+                  key={item.id}
+                  companyDetail={item}
+                  isBulkActionActive={isBulkActionActive}
+                  selectedCompaniesIds={selectedData}
+                  toggleSelection={toggleSelection}
+                  onBookmarkChange={refreshBookmarks}
                 />
-              </div>
+              ))}
+              {/* For pagination: only show if not showing bookmarks */}
+              {!showBookmarkedOnly && (
+                <div className="bg-background py-3">
+                  <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itemsPerPage}
+                    count={count}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    paginationItems={["5", "10"]}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
