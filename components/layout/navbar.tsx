@@ -241,10 +241,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          {!isEventeli && (
-            <>
-              <div className="flex items-center gap-1 max-[570px]:hidden">
-                {membershipData &&
+        {membershipData &&
                   membershipData.membership === MembershipPlan.Freemium && (
                     <>
                       <Button
@@ -257,6 +254,10 @@ export default function Navbar() {
                       </Button>
                     </>
                   )}
+          {!isEventeli && (
+            <>
+              <div className="flex items-center gap-1 max-[570px]:hidden">
+               
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => handleRoute("research")}
