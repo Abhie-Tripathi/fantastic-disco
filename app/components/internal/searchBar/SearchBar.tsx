@@ -31,27 +31,30 @@ interface EventSuggestionItem {
   interface SearchBarProps {
     searchInput: string;
     setEventSearchLoader: (loading: boolean) => void;
-    handleSelect: (id: number, name: string) => void;
+    handleSelect: (id: number, name: string, index: number) => void;
     endpoint: string; 
     type?: string;
      index?: number;
   }
 const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index}:SearchBarProps) => {
+  
     const { theme } = useTheme();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
-    const [eventSuggestion,setEventSuggestion]=useState([]);
+    const [eventSuggestion,setEventSuggestion]=useState<any>([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
         if(type==="T_AUDIENCE_DEPT_PROFILE"){
           console.log("searchInput", searchInput);
-          let filterDesValue = [];
+          let filterDesValue;
           if(index===0)
-          filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
+          filterDesValue = DesDep.data.designation.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()))
           else if(index===1)
+          filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
+          else if(index===2)
           filterDesValue = DesDep.data.department.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
           setEventSuggestion(filterDesValue);
           
@@ -142,7 +145,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     name: item.name || '',
                     // city: item?.location?.cityName || '',
                     // country: item?.location?.countryName || '',
-                    tableEntry: item.name || ''
+                    tableEntry: `${item.name}_${item.id}` || ''
                   }));
                   console.log("updatedData", updatedData);
                   setRestructureData(updatedData);
@@ -191,12 +194,12 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-        handleSelect(id,name, index);
+        handleSelect(id,name, index || 0);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
       }
-      console.log(restructureData);
+      console.log("restructureData",restructureData);
       
   return (
         <>

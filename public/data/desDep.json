@@ -55,6 +55,48 @@
         "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
         "name": "Operations"
       }
+    ],
+    "designation": [
+      {
+        "id": "7192a484-6e2b-5a19-8d38-df07021e5b64",
+        "name": "Intern"
+      },
+      {
+        "id": "0fb85b1f-1bce-5b86-960b-a0dc1e4fcff6",
+        "name": "Lawyer"
+      },
+      {
+        "id": "3e6b44a6-424c-5c6e-b578-4c063a8d0745",
+        "name": "Member"
+      },
+      {
+        "id": "3155d7f8-fa48-5571-b6f9-a8f79b3ac144",
+        "name": "Pastor"
+      },
+      {
+        "id": "1cde5823-2e7f-5201-a680-69c7b37176e6",
+        "name": "Trader"
+      },
+      {
+        "id": "0b8a392f-b3c5-5dfd-9b15-c9c5af442f22",
+        "name": "Welder"
+      },
+      {
+        "id": "4aaeae78-ed16-5f0d-8eb9-2071ea653ff2",
+        "name": "Worker"
+      },
+      {
+        "id": "121b8afa-9b96-5d57-8fd1-3c05834bf69c",
+        "name": "Writer"
+      },
+      {
+        "id": "b1fdf9d1-5b72-5693-817c-04f2e64cf2ab",
+        "name": "Actuary"
+      },
+      {
+        "id": "da31b1b8-3eef-56ed-a4eb-6384534533c4",
+        "name": "Advisor"
+      }
     ]
 }
 }

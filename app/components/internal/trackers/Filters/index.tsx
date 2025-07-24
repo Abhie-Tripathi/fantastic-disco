@@ -98,6 +98,7 @@ import { update } from "firebase/database";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
+  required?: boolean;
   placeholder: string;
 }
 export interface LocationItem {
@@ -107,6 +108,11 @@ export interface LocationItem {
 interface Filters {
   shows: string;
   [key: string]: any; 
+}
+interface UpdatedProfileData{
+  designationIds?: string[];
+  departmentIds?: string[];
+  seniorityIds?: string[];
 }
 export type Location =  LocationItem[];
 // interface Toggle{
@@ -251,10 +257,12 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: false,
         placeholder: "Designation",
       },
       {
         type: "text",
+        required: false,
         placeholder: "Department"
       }
     ],
@@ -333,6 +341,7 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: true,
         placeholder: "Designation",
       },
       // {
@@ -461,7 +470,7 @@ const Pages = () => {
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [showTemplate,setShowTemplate] = useState(false);
-
+  const [profileIds,setProfileIds] = useState<UpdatedProfileData[]>([]);
   const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
@@ -1342,7 +1351,7 @@ const stepsConfig =[
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION") {
+    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION" && type !== "T_AUDIENCE_DEPT_PROFILE") {
       addNew();
     }
   }
@@ -1401,6 +1410,7 @@ const stepsConfig =[
   return acc;
 }, {});
 
+console.log("newEntry", newEntry);
 
  if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
@@ -1432,11 +1442,12 @@ const stepsConfig =[
     if (isMandatory) setIsMandatory(false);
   }, [inputValues])
   const [selected, setSelected] = useState(false);
-  const [departmentIds, setDepartmentIds]=useState([]);
-   const [seniorityIds, setSeniorityIds]=useState([]);
-   const [suggestionIds,setSuggestionIds]=useState([]);
-  const addCompany = (id: number, val: any, ind) => {
-    console.log("val", val);
+  const [designationIds, setDesignationIds] = useState<string[]>([]);
+  const [departmentIds, setDepartmentIds]=useState<string[]>([]);
+   const [seniorityIds, setSeniorityIds]=useState<string[]>([]);
+   const [suggestionIds,setSuggestionIds]=useState<string[]>([]);
+  const addCompany = (id: number, val: any, ind:number) => {
+    console.log("val", id);
     if (type === "T_EVENT_PARTICIPATION") {
       setSuggestionIds((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString())
@@ -1458,18 +1469,22 @@ const stepsConfig =[
       console.log("inputValues", inputValues);
       
       setSuggestionIds((prev: string[]) => {
-        const alreadyExists = prev.find(entry => entry === id.toString())
+        const alreadyExists = seniorityIds.find(entry => entry === id.toString()) || departmentIds.find(entry => entry === id.toString()) || designationIds.find(entry => entry === id.toString());
 
         if (alreadyExists) {
+          console.log("entry already exists");
+          
           setInputValues({});
           return prev;
         } else {
-          if(ind===0){
+          if(ind === 0){
+            setDesignationIds((prev: string[])=>[...prev, id.toString()])
+          }else if(ind===1){
             console.log("ids",id);
             
-            setSeniorityIds(prev=>[...prev, id])
+            setSeniorityIds((prev: string[])=>[...prev, id.toString()])
           }else{
-            setDepartmentIds(prev=>[...prev, id])
+            setDepartmentIds((prev: string[])=>[...prev, id.toString()])
           }
           setInputValues(prevValues => ({
             ...prevValues,
@@ -1505,6 +1520,10 @@ const finalDepartmentIds = departmentIds.filter(
   (item) => suggestionIds.includes(item)
 );
 setDepartmentIds(finalDepartmentIds);
+const finalDesignationIds = designationIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDesignationIds(finalDesignationIds);
 const finalEventSuggestion = eventSuggestion.filter(
   (item) => suggestionIds.includes(item)
 );
@@ -1512,6 +1531,22 @@ setEventSuggestion(finalEventSuggestion);
 console.log("finalSeniroityIds",finalSeniroityIds);
 
   },[suggestionIds])
+  useEffect(()=>{
+    if(isNew){
+    const res = {
+      "departmentIds": departmentIds,
+      "seniorityIds": seniorityIds,
+      "designationIds": designationIds,
+    }
+    setProfileIds((prev=[])=>[...prev, res]);
+    setDepartmentIds([]);
+    setDesignationIds([]);
+    setSeniorityIds([]);
+  }
+  
+  },[isNew])
+  console.log("profileIds",profileIds);
+  
   useEffect(() => {
     if (selected) {
       addNew();
@@ -1931,7 +1966,7 @@ if(isLoading) return <Loading/>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -2095,7 +2130,7 @@ if(isLoading) return <Loading/>
        {type !== "T_PRODUCT_KEYWORDS" && 
   (customData && customData.length > 0 ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type} isNew={isNew} setIsNew={setIsNew}/>
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>
@@ -2270,7 +2305,7 @@ if(isLoading) return <Loading/>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -2385,7 +2420,7 @@ if(isLoading) return <Loading/>
 
             )}
   </div>
-  </>
+ </>
 );
  };
  export default Pages;
