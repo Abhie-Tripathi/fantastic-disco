@@ -57,6 +57,12 @@ const STALE_TIME = 300000; // 5 minutes
 
 const BOOKMARK_KEY = `whr.${isEventeli ? "geo" : "gtm"}.company.bookmark`;
 
+const EXCLUDED_COMPANY_NAMES: string[] = [
+  "Ten Times Online Private Limited.",
+  "Unknown Organisers",
+  "To be mapped",
+];
+
 
 interface CircularProgressProps {
   value: number | null;
@@ -441,7 +447,10 @@ export const ProspectList: React.FC = () => {
     .join(",");
 
   const companies = useMemo(
-    () => companyData?.companyData || [],
+    () =>
+      (companyData?.companyData || []).filter(
+        (company) => !EXCLUDED_COMPANY_NAMES.includes(company.name?.trim())
+      ),
     [companyData]
   );
   const count = useMemo(() => companyData?.totalCount || 0, [companyData]);
