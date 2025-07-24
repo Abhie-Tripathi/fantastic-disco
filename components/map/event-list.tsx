@@ -521,10 +521,9 @@ function EventList({
     params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
-    // Add or remove eventFormats=online based on toggle
     if (showOnlineOnly || isOnlyOnlineSelected) {
       params.set("eventFormats", "online");
-      params.delete("viewBound"); // Remove viewBound if online only
+      params.delete("viewBound");
     } else {
       if (params.get("eventFormats")?.split(",").includes("online")) {
         const filtered = params.get("eventFormats")!.split(",").filter(v => v !== "online").join(",");
@@ -533,6 +532,8 @@ function EventList({
         } else {
           params.set("eventFormats", "in_person,hybrid");
         }
+      } else if (!params.has("eventFormats")) {
+        params.set("eventFormats", "in_person,hybrid");
       }
     }
 
