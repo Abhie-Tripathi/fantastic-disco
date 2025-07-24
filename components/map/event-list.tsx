@@ -522,8 +522,9 @@ function EventList({
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     // Add or remove eventFormats=online based on toggle
-    if (showOnlineOnly) {
+    if (showOnlineOnly || isOnlyOnlineSelected) {
       params.set("eventFormats", "online");
+      params.delete("viewBound"); // Remove viewBound if online only
     } else {
       if (params.get("eventFormats")?.split(",").includes("online")) {
         const filtered = params.get("eventFormats")!.split(",").filter(v => v !== "online").join(",");
@@ -535,7 +536,7 @@ function EventList({
       }
     }
 
-    if (mapBounds && showEventType != "unAttended") {
+    if (mapBounds && showEventType != "unAttended" && !(showOnlineOnly || isOnlyOnlineSelected)) {
       const viewBound = {
         boundType: "box",
         coordinates: mapBounds,
@@ -582,10 +583,12 @@ function EventList({
         }
       }
       params.set("sortBy", sortBy);
+    } else if (showOnlineOnly || isOnlyOnlineSelected) {
+      params.delete("viewBound");
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapBounds, sortBy, showOnlineOnly]);
+  }, [searchParams, currentPage, showEventType, mapBounds, sortBy, showOnlineOnly, isOnlyOnlineSelected]);
 
   const { data, error, isLoading } = useQuery({
     queryKey: [
@@ -597,7 +600,14 @@ function EventList({
     ],
     queryFn: async () => {
       if (source === "tracker") {
-        if (mapBounds) {
+        if ((showOnlineOnly || isOnlyOnlineSelected)) {
+          // Don't pass viewBound if online only
+          return getTrackerMapEvents(
+            trackerId ?? "",
+            `${eventType}`,
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+          );
+        } else if (mapBounds) {
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
@@ -814,13 +824,20 @@ function EventList({
                     >
                       <Switch
                         id="online-toggle"
-                        checked={showOnlineOnly}
-                        onCheckedChange={setShowOnlineOnly}
+                        checked={isOnlyOnlineSelected ? true : showOnlineOnly}
+                        onCheckedChange={isOnlyOnlineSelected ? undefined : setShowOnlineOnly}
                         aria-label="Online Only"
+                        disabled={isOnlyOnlineSelected}
                       />
                       <label
                         htmlFor="online-toggle"
-                        className={`text-sm font-medium transition-colors duration-200 ${showOnlineOnly ? 'text-blue-700 font-semibold' : 'text-gray-700'}`}
+                        className={`text-sm font-medium transition-colors duration-200 ${
+                          isOnlyOnlineSelected
+                            ? 'text-primary font-semibold opacity-60 cursor-not-allowed'
+                            : showOnlineOnly
+                            ? 'text-primary font-semibold'
+                            : 'text-gray-700'
+                        }`}
                       >
                         Show Online
                       </label>
