@@ -16,7 +16,11 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { useCompanyService } from "@/services/companyService";
 import { ApiError } from "@/types/api";
-import { companyListData, CompanyListResponse } from "@/types/prospect";
+import {
+  companyListData,
+  CompanyListResponse,
+  CompanyDetail,
+} from "@/types/prospect";
 import { useQuery } from "@tanstack/react-query";
 import { localStorage as localStore } from "@/services/storageService";
 import { isEventeli } from "@/config";
@@ -58,16 +62,83 @@ const STALE_TIME = 300000; // 5 minutes
 const BOOKMARK_KEY = `whr.${isEventeli ? "geo" : "gtm"}.company.bookmark`;
 
 const EXCLUDED_COMPANY_NAMES: string[] = [
-  "Ten Times Online Private Limited.",
-  "Unknown Organisers",
-  "To be mapped",
+  "ten times online private limited.",
+  "unknown organisers",
+  "to be mapped",
 ];
-
 
 interface CircularProgressProps {
   value: number | null;
   label: string;
 }
+
+const MobileCircularProgress = ({
+  value = 0,
+  label,
+}: {
+  value: number | null;
+  label?: string;
+}) => {
+  const radius = 18;
+  const circumference = 2 * Math.PI * radius;
+  const getColorByValue = (value: number | null): string => {
+    if (value == null) return "text-[#398e4a]";
+    if (value <= 25) return "text-[#398e4a]";
+    if (value <= 50) return "text-[#FFD70A]";
+    if (value <= 75) return "text-[#FF990A]";
+    return "text-[#DA2F35]";
+  };
+  const className = getColorByValue(value);
+  return (
+    <div className="text-center">
+      <div className="relative inline-flex">
+        {/* Coming Soon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-white/10 rounded-full dark:bg-black/60 backdrop-blur-sm z-10">
+          <span className="text-[10px] font-semibold text-gray-600">
+            Coming Soon
+          </span>
+        </div>
+        <svg className="w-[40px] h-[40px]" aria-hidden="true">
+          <circle
+            className="text-gray-200"
+            strokeWidth="4"
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx="20"
+            cy="20"
+          />
+          <circle
+            className={className}
+            strokeWidth="4"
+            strokeDasharray={circumference}
+            strokeDashoffset={
+              circumference - (value ? (value / 100) * circumference : 0)
+            }
+            strokeLinecap="round"
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx="20"
+            cy="20"
+          />
+        </svg>
+        <span
+          className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
+          aria-hidden="true"
+        >
+          {value ? value : "-"}
+        </span>
+      </div>
+      {label && (
+        <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1 mt-1">
+          {label}
+        </p>
+      )}
+    </div>
+  );
+};
+
 
 const CircularProgress: React.FC<CircularProgressProps> = ({
   value = 0,
@@ -89,9 +160,11 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   return (
     <div className="text-center">
       <div className="relative inline-flex">
-      <div className="absolute inset-0 flex items-center justify-center bg-white/10 rounded-full dark:bg-black/60 backdrop-blur-sm z-10">
-                      <span className="text-[10px] font-semibold text-gray-600">Coming Soon</span>
-                    </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-white/10 rounded-full dark:bg-black/60 backdrop-blur-sm z-10">
+          <span className="text-[10px] font-semibold text-gray-600">
+            Coming Soon
+          </span>
+        </div>
         <svg className="w-[52px] h-[52px]" aria-hidden="true">
           <circle
             className="text-gray-200"
@@ -131,7 +204,6 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   );
 };
 
-
 // Types
 interface ProspectCardProps {
   companyDetail: companyListData;
@@ -169,7 +241,9 @@ const StatsBadge: React.FC<StatsBadgeProps> = ({ label, value }) => {
   );
 };
 
-const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void }> = ({
+const ProspectCard: React.FC<
+  ProspectCardProps & { onBookmarkChange?: () => void }
+> = ({
   companyDetail,
   isBulkActionActive,
   selectedCompaniesIds,
@@ -266,24 +340,13 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
           }
         />
       )}
-      <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative w-full transition-colors duration-200 hover:bg-accent cursor-pointer">
+      <div className="bg-background rounded-lg border shadow-sm relative w-full transition-colors duration-200 hover:bg-accent cursor-pointer">
         {/* Bookmark Icon */}
-        <Button
-          className="absolute top-3 right-3 p-1"
-          onClick={handleBookmark}
-          variant="ghost"
-          size="icon"
-          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-        >
-          {isBookmarked ? (
-            <BookmarkCheck className="w-5 h-5 text-primary" />
-          ) : (
-            <Bookmark className="w-5 h-5 text-primary" />
-          )}
-        </Button>
+  
         <Link href={`/internal/company/${companyDetail.id}`} className="block">
-          <div className="p-4 flex gap-6">
-            {/* Logo with fallbacks (updated to match list.tsx) */}
+        <div className="p-4">
+          <div className="flex gap-2 md:gap-6">
+            {/* Logo with fallbacks (unchanged) */}
             <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
               {companyDetail.logo && !sourceLogoError ? (
                 <img
@@ -325,19 +388,36 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
                 </div>
               )}
             </div>
+            {/* Main grid content for info and relevance */}
             <div className="flex gap-2 flex-col w-full">
-              <div className="text-lg md:text-xl font-semibold">
-                {companyDetail.name}
-              </div>
-              {companyDetail?.description &&
-                companyDetail.description.length > 10 && (
-                  <div className="text-xs md:text-sm text-[#707287] line-clamp-2">
-                    {companyDetail.description}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
+                {/* Left: Main info */}
+                <div className="col-span-1 md:col-span-9 flex flex-col gap-2">
+                  <div className="flex justify-between">
+                  <div className="text-lg md:text-xl font-semibold">
+                    {companyDetail.name}
                   </div>
-                )}
+                  <Button
+                  className="md:hidden "
+          onClick={handleBookmark}
+          variant="ghost"
+          size="icon"
+          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+        >
+          {isBookmarked ? (
+            <BookmarkCheck className="w-5 h-5 text-primary" />
+          ) : (
+            <Bookmark className="w-5 h-5 text-primary" />
+          )}
+        </Button>
 
-              <div className="flex justify-between flex-col gap-2 md:flex-row ">
-                <div className="flex flex-col gap-2">
+                  </div>
+                  {companyDetail?.description &&
+                    companyDetail.description.length > 10 && (
+                      <div className="text-xs md:text-sm text-[#707287] line-clamp-2">
+                        {companyDetail.description}
+                      </div>
+                    )}
                   <div className="flex flex-wrap gap-2">
                     {locationDisplay && (
                       <div className="flex gap-2 items-center border-r w-fit pr-3">
@@ -347,7 +427,6 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
                         </span>
                       </div>
                     )}
-
                     <div className="flex gap-2 items-center w-fit">
                       {companyDetail.event_categoryName?.length > 0 && (
                         <>
@@ -359,14 +438,12 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
                           {renderTags(companyDetail.event_categoryName)}
                         </>
                       )}
-
                       <span className="hidden md:block">
                         {filteredTags?.length > 0 &&
                           renderTags(filteredTags, "#")}
                       </span>
                     </div>
                   </div>
-
                   <div className="hidden md:flex flex-wrap gap-2 items-center w-fit ">
                     <StatsBadge
                       label="Total Events"
@@ -390,11 +467,43 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
                     />
                   </div>
                 </div>
-                <div className="border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                  <CircularProgress value={20} label="Relevance" />
+                {/* Right: Relevance/score */}
+                <div className="col-span-1 md:col-span-3 flex gap-2 justify-end">
+                  {/* Mobile: show two scores in a row, like mobile card */}
+                  {!isMobile && 
+                    <div className="w-min h-min border border-[#EBEBEB] dark:border-[#222] bg-[#FAFAFA] dark:bg-[#18181b] p-2 rounded">
+                      <CircularProgress value={20} label="Relevance" />
+                    </div>
+                  }
+                  <Button
+                  className="hidden md:flex"
+                    onClick={handleBookmark}
+                    variant="ghost"
+                    size="icon"
+                    aria-label={
+                      isBookmarked ? "Remove bookmark" : "Add bookmark"
+                    }
+                  >
+                    {isBookmarked ? (
+                      <BookmarkCheck className="w-5 h-5 text-primary" />
+                    ) : (
+                      <Bookmark className="w-5 h-5 text-primary" />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
+            </div>
+            {isMobile && <div className="flex items-start justify-between gap-2 w-full">
+              <div className="text-sm [color:var(--secondary-text-color)] dark:text-gray-400 font-medium">
+            Insights & Scores
+          </div>
+                      <div className="flex flex-col items-center">
+                        <div className="text-[11px] mb-1 border border-border dark:border-[#232323] px-1 bg-white dark:bg-[#171717]">Relevance</div>
+                        <MobileCircularProgress value={20} label={''} />
+                      </div>
+                    </div>}
+
           </div>
         </Link>
       </div>
@@ -406,16 +515,22 @@ export const ProspectList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
-  const selectedView =
-    getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"; // "all" || "upcoming"
+  const [selectedView, setSelectedView] = useState(
+    getFilterValue("upcomingEvents") === "true" ? "upcoming" : "all"
+  ); // "all" || "upcoming" || "bookmarks"
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const [bookmarkedCompanyDetails, setBookmarkedCompanyDetails] = useState<
+    CompanyDetail[]
+  >([]);
+  const [loadingBookmarkedDetails, setLoadingBookmarkedDetails] =
+    useState(false);
 
   useEffect(() => {
     setBookmarkedIds(localStore.get<string[]>(BOOKMARK_KEY) || []);
   }, []);
 
-  const { getCompanyList } = useCompanyService();
+  const { getCompanyList, getCompanyDetailById } = useCompanyService();
   const {
     isBulkActionActive,
     selectedData,
@@ -449,7 +564,8 @@ export const ProspectList: React.FC = () => {
   const companies = useMemo(
     () =>
       (companyData?.companyData || []).filter(
-        (company) => !EXCLUDED_COMPANY_NAMES.includes(company.name?.trim())
+        (company) =>
+          !EXCLUDED_COMPANY_NAMES.includes(company.name?.trim().toLowerCase())
       ),
     [companyData]
   );
@@ -576,8 +692,21 @@ export const ProspectList: React.FC = () => {
   })();
 
   const onTabsChange = (value: string) => {
-    if (value === "all") setFilter("upcomingEvents", "false");
-    else if (value === "upcoming") setFilter("upcomingEvents", "true");
+    if (value === "all") {
+      setFilter("upcomingEvents", "false");
+      setShowBookmarkedOnly(false);
+      setSelectedView("all");
+    } else if (value === "upcoming") {
+      setFilter("upcomingEvents", "true");
+      setShowBookmarkedOnly(false);
+      setSelectedView("upcoming");
+    } else if (value === "bookmarks") {
+      setShowBookmarkedOnly(true);
+      setSelectedView("bookmarks");
+    } else {
+      setShowBookmarkedOnly(false);
+      setSelectedView(value);
+    }
     setShowViewDropdown(false);
   };
 
@@ -594,13 +723,83 @@ export const ProspectList: React.FC = () => {
     setBookmarkedIds(localStore.get<string[]>(BOOKMARK_KEY) || []);
   }, []);
 
+  // Fetch details for all bookmarked companies when bookmarks view is active
+  useEffect(() => {
+    const fetchBookmarkedDetails = async () => {
+      if (!showBookmarkedOnly || bookmarkedIds.length === 0) {
+        setBookmarkedCompanyDetails([]);
+        setLoadingBookmarkedDetails(false);
+        return;
+      }
+      setLoadingBookmarkedDetails(true);
+      try {
+        const details = await Promise.all(
+          bookmarkedIds.map(async (id) => {
+            try {
+              const res = await getCompanyDetailById(id);
+              return res?.companyData || null;
+            } catch {
+              return null;
+            }
+          })
+        );
+        setBookmarkedCompanyDetails(details.filter(Boolean) as CompanyDetail[]);
+      } finally {
+        setLoadingBookmarkedDetails(false);
+      }
+    };
+    fetchBookmarkedDetails();
+    // Only refetch when bookmarks view or ids change
+  }, [showBookmarkedOnly, bookmarkedIds]);
+
   // Filter companies based on bookmarks if showBookmarkedOnly is true
   const filteredCompanies = useMemo(() => {
     if (showBookmarkedOnly) {
-      return companies.filter((company) => bookmarkedIds.includes(company.id));
+      // If we have loaded detailed data, use it
+      if (bookmarkedCompanyDetails.length > 0) {
+        // Map CompanyDetail to companyListData shape for ProspectCard
+        return bookmarkedCompanyDetails.map((detail) => ({
+          id: detail.id,
+          name: detail.name,
+          logo: detail.logo,
+          description: detail.description,
+          website: detail.website,
+          location: {
+            cityId:
+              detail.location.cityId === null
+                ? null
+                : String(detail.location.cityId),
+            cityName: detail.location.cityName,
+            countryId: detail.location.countryId,
+            countryName: detail.location.countryName,
+            countryZone: null, // Ensure required property for companyListData
+          },
+          stats: {
+            totalEvents: detail.stats.totalEvents,
+            upcomingEvents: detail.stats.upcomingEvents,
+            totalLeads: detail.stats.totalLeads,
+            totalExhibit: detail.eventExhibited ?? null,
+            totalVisitor: detail.visitor ?? null,
+            totalSponsor: detail.eventSponsored ?? null,
+            lastLogin: null,
+          },
+          company_linkedEvents: detail.linkedEvent ?? null,
+          company_tag: detail.company_tag,
+          event_categoryName:
+            detail.industries?.asOrganizer?.map((i) => i.name) || [],
+          event_tagName: [],
+          social: {
+            facebookId: null,
+            linkedinId: null,
+            twitterId: null,
+          },
+        }));
+      }
+      // If not loaded yet, return empty array to avoid showing stale data
+      return [];
     }
     return companies;
-  }, [companies, showBookmarkedOnly, bookmarkedIds]);
+  }, [companies, showBookmarkedOnly, bookmarkedCompanyDetails]);
 
   // Update count for badge
   const filteredCount = showBookmarkedOnly ? filteredCompanies.length : count;
@@ -626,21 +825,23 @@ export const ProspectList: React.FC = () => {
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="upcoming">Upcoming</SelectItem>
-              <SelectItem value="newly-listed" disabled className="flex items-center gap-2 pointer-events-none" tabIndex={-1} aria-disabled="true">
+              <SelectItem value="bookmarks">Bookmarks</SelectItem>
+              <SelectItem
+                value="newly-listed"
+                disabled
+                className="flex items-center gap-2 pointer-events-none"
+                tabIndex={-1}
+                aria-disabled="true"
+              >
                 <span>Newly Listed</span>
-                <span className="w-min ml-2 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">Coming Soon</span>
+                <span className="w-min ml-2 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">
+                  Coming Soon
+                </span>
               </SelectItem>
             </SelectContent>
           </Select>
           {/* Bookmarks CTA for mobile */}
-          <Button
-            variant={showBookmarkedOnly ? "secondary" : "outline"}
-            size="icon"
-            className="h-8"
-            onClick={() => setShowBookmarkedOnly((prev) => !prev)}
-          >
-            <Bookmark className="w-4 h-4" />
-          </Button>
+
           <Button
             onClick={toggleFilterHandler}
             variant={filtersCount > 0 ? "secondary" : "ghost"}
@@ -659,12 +860,10 @@ export const ProspectList: React.FC = () => {
 
       {/* Desktop heading: grid, visible only on md+ */}
       <div
-        className={
-          `hidden md:grid grid-cols-10 items-center !sticky !top-[76px] md:!top-0 bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 pb-4 px-4 md:px-0`
-        }
+        className={`hidden md:grid grid-cols-10 items-center !sticky !top-[76px] md:!top-0 bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 pb-4 px-4 md:px-0`}
       >
         {/* First part: Badge (col-span-2) */}
-        <div className="col-span-2 flex items-center gap-2">
+        <div className="col-span-1 flex items-center gap-2">
           <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
             {new Intl.NumberFormat("en", {
               notation: "compact",
@@ -673,10 +872,10 @@ export const ProspectList: React.FC = () => {
           </Badge>
         </div>
 
-        {/* Second part: Tabs (col-span-6) */}
+        {/* Second part: Tabs (col-span-8) with bookmark button inside TabsList */}
         <div
           id="company-view-desktop"
-          className="col-span-6 justify-center flex"
+          className="col-span-8 justify-center flex"
         >
           <Tabs
             defaultValue="all"
@@ -684,7 +883,7 @@ export const ProspectList: React.FC = () => {
             onValueChange={onTabsChange}
             className="mt-0"
           >
-            <TabsList className="grid w-fit grid-cols-3 h-auto bg-muted/50 p-1 rounded-lg">
+            <TabsList className="grid w-fit grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg relative">
               <TabsTrigger
                 value="all"
                 className="flex items-center gap-2 py-2 px-4"
@@ -700,31 +899,29 @@ export const ProspectList: React.FC = () => {
                 <span>Upcoming</span>
               </TabsTrigger>
               <TabsTrigger
+                value="bookmarks"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                {/* <ListIcon className="h-4 w-4" /> */}
+                <span>Bookmarks</span>
+              </TabsTrigger>
+              <TabsTrigger
                 value="newly-listed"
-                className="flex items-center gap-2 py-2 px-4 pointer-events-none"
+                className="flex items-center gap-2 py-2 px-4 pointer-events-none relative"
                 tabIndex={-1}
                 aria-disabled="true"
               >
                 <span>Newly Listed</span>
-                <span className="w-min mt-1 text-[9px] px-1 rounded bg-primary text-white whitespace-nowrap shadow-sm select-none">
+                <span className="absolute bottom-7 right-[-16px] w-min text-[9px] px-1 rounded bg-white text-black whitespace-nowrap shadow-sm select-none">
                   Coming Soon
                 </span>
               </TabsTrigger>
+              {/* Bookmark button inside TabsList, right-aligned */}
             </TabsList>
           </Tabs>
         </div>
-
-        {/* Third part: Bookmark CTA (col-span-2) */}
-        <div className="col-span-2 flex justify-end items-center gap-2">
-          <Button
-            variant={showBookmarkedOnly ? "secondary" : "outline"}
-            className="h-8"
-            onClick={() => setShowBookmarkedOnly((prev) => !prev)}
-          >
-            <Bookmark className="w-4 h-4 mr-1" />
-            Bookmarks
-          </Button>
-        </div>
+        <div className="col-span-1"></div>
+        {/* Removed the old col-span-2 bookmark button */}
       </div>
       {isBulkActionActive && (
         <div className="flex justify-between w-full items-center">
@@ -825,7 +1022,7 @@ export const ProspectList: React.FC = () => {
         </>
       ) : (
         <div className="flex-1 flex gap-3 flex-col px-4 md:px-0">
-          {isLoading ? (
+          {isLoading || (showBookmarkedOnly && loadingBookmarkedDetails) ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
               <Loading />
             </div>
@@ -836,12 +1033,20 @@ export const ProspectList: React.FC = () => {
                 errorStatusCode={(error as ApiError)?.statusCode}
               />
             </div>
-          ) : count === 0 ? (
+          ) : count === 0 && !showBookmarkedOnly ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
               <NullState
                 image={coordinateNullState}
                 title="No Results Found"
                 text="Try adjusting the filter criteria to refine your search"
+              />
+            </div>
+          ) : showBookmarkedOnly && filteredCompanies.length === 0 ? (
+            <div className="flex-1 items-center justify-center min-h-[400px]">
+              <NullState
+                image={coordinateNullState}
+                title="No Bookmarks Found"
+                text="You have not bookmarked any companies yet."
               />
             </div>
           ) : (
