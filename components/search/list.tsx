@@ -75,7 +75,7 @@ interface rankTag {
   name: string;
 }
 
-export const CircularProgress: React.FC<CircularProgressProps> = ({
+const CircularProgress: React.FC<CircularProgressProps> = ({
   value = 0,
   label,
 }) => {

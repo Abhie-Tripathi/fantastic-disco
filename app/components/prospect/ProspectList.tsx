@@ -34,7 +34,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { CircularProgress } from "@/components/search/list";
 
 // Constants
 const EXCLUDED_TAGS = [
@@ -57,6 +56,75 @@ const CACHE_TIME = 300000; // 5 minutes
 const STALE_TIME = 300000; // 5 minutes
 
 const BOOKMARK_KEY = `whr.${isEventeli ? "geo" : "gtm"}.company.bookmark`;
+
+
+interface CircularProgressProps {
+  value: number | null;
+  label: string;
+}
+
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  value = 0,
+  label,
+}) => {
+  const radius = 22;
+  const circumference = 2 * Math.PI * radius;
+
+  const getColorByValue = (value: number | null): string => {
+    if (value == null) return "text-[#398e4a]";
+    if (value <= 25) return "text-[#398e4a]";
+    if (value <= 50) return "text-[#FFD70A]";
+    if (value <= 75) return "text-[#FF990A]";
+    return "text-[#DA2F35]";
+  };
+
+  const className = getColorByValue(value);
+
+  return (
+    <div className="text-center">
+      <div className="relative inline-flex">
+      <div className="absolute inset-0 flex items-center justify-center bg-white/10 rounded-full dark:bg-black/60 backdrop-blur-sm z-10">
+                      <span className="text-[10px] font-semibold text-gray-600">Coming Soon</span>
+                    </div>
+        <svg className="w-[52px] h-[52px]" aria-hidden="true">
+          <circle
+            className="text-gray-200"
+            strokeWidth="4"
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx="26"
+            cy="26"
+          />
+          <circle
+            className={className}
+            strokeWidth="4"
+            strokeDasharray={circumference}
+            strokeDashoffset={
+              circumference - (value ? (value / 100) * circumference : 0)
+            }
+            strokeLinecap="round"
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx="26"
+            cy="26"
+          />
+        </svg>
+        <span
+          className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
+          aria-hidden="true"
+        >
+          {value ? value : "-"}
+        </span>
+      </div>
+      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
+        {label}
+      </p>
+    </div>
+  );
+};
+
 
 // Types
 interface ProspectCardProps {
@@ -316,9 +384,8 @@ const ProspectCard: React.FC<ProspectCardProps & { onBookmarkChange?: () => void
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                  <CircularProgress value={10} label="Inbound" />
-                  <CircularProgress value={20} label="International" />
+                <div className="border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                  <CircularProgress value={20} label="Relevance" />
                 </div>
               </div>
             </div>
