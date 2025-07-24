@@ -570,72 +570,6 @@ export default function MapComponent({
   }, [eventCountsQuery.data]);
 
 
-  // Filter out 'online' events from the features
-  const eventCountsGeoJSON = React.useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: eventCountsQuery.data
-        ? eventCountsQuery.data
-            .filter((count: EventCount) => count.name.toLowerCase() !== "online")
-            .map((count: EventCount) => ({
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [
-                  parseFloat(count.longitude),
-                  parseFloat(count.latitude),
-                ],
-              },
-              properties: {
-                count: count.count,
-                id: count.cityId,
-                name: count.name,
-                type: currentZoomGroup, // "country" or "city"
-              },
-            }))
-        : [],
-    };
-  }, [eventCountsQuery.data, currentZoomGroup, location]);
-
-
-  const eventsGeoJSON = React.useMemo(() => {
-    const locationInfo: { [key: string]: any } = {};
-    events.forEach((event) => {
-      const coordKey = `${event.longitude},${event.latitude}`;
-      if (!locationInfo[coordKey]) {
-        locationInfo[coordKey] = { count: 0, ids: [] };
-      }
-      locationInfo[coordKey].count += 1;
-      locationInfo[coordKey].ids.push(event.id);
-    });
-
-    return {
-      type: "FeatureCollection",
-      features: events.length
-        ? events.map((event: MapEvents) => {
-            const coordKey = `${event.longitude},${event.latitude}`;
-            return {
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [
-                  parseFloat(event.longitude),
-                  parseFloat(event.latitude),
-                ],
-              },
-              properties: {
-                id: event.id,
-                eventType: event.eventType,
-                eventImpactScore: event.eventImpactScore,
-                eventCount: locationInfo[coordKey].count,
-                eventIds: locationInfo[coordKey].ids,
-              },
-            };
-          })
-        : [],
-    };
-  }, [events]);
-
   const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
     if (shouldFetchEventsDirectly) return "event";
     if (zoomLevel >= 11.5) {
@@ -938,7 +872,7 @@ const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("onl
                   {!isGlobal && (
                     <div className="absolute h-min bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3 md:transform-none md:left-auto md:top-4 md:right-4 z-10">
                       {onlineEventCount > 0 && (
-                        <div className="flex items-center bg-white/90 shadow-md rounded-full px-3 py-1 hover:bg-white transition group cursor-pointer" title="Online Events">
+                        <div onClick={() => setShowEventList("all")} className="flex items-center bg-white/90 shadow-md rounded-full px-3 py-1 hover:bg-white transition group cursor-pointer" title="Online Events">
                           <img src="/video.svg" alt="Online Events" className="w-5 h-5 mr-2 opacity-80 group-hover:opacity-100" />
                           <span className="text-sm font-semibold text-gray-700 group-hover:text-primary transition">{onlineEventCount} Online</span>
                         </div>

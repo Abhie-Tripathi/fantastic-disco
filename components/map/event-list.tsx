@@ -267,7 +267,7 @@ const EventCard = memo(
                         event.basic.endDateTime
                       )}
                     </div>
-                    <Button
+                    {event.basic.format.toLowerCase() !== "online" && <Button
                       variant="ghost"
                       size="sm"
                       className="h-6 px-2 text-xs text-primary"
@@ -275,7 +275,7 @@ const EventCard = memo(
                     >
                       <Focus className="w-3 h-3 mr-1" />
                       Zoom
-                    </Button>
+                    </Button>}
                   </div>
                 </div>
               </div>
@@ -454,6 +454,10 @@ function EventList({
   const [sortBy, setSortBy] = useState("-score");
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const isOnlyOnlineSelected = searchParams.get("eventFormats") === "online"
+
+  const eventFormats = searchParams.get("eventFormats");
+  const shouldShowOnlineToggle =
+    !eventFormats || eventFormats.split(",").includes("online");
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -810,47 +814,49 @@ function EventList({
             </div>
           </div>
           {/* Online Only toggle in its own row, styled as a card */}
-          <div className="w-full flex justify-center">
-            <div
-              className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
+          {shouldShowOnlineToggle && (
+            <div className="w-full flex justify-center">
+              <div
+                className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
                 ${showOnlineOnly ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className="flex items-center gap-2 cursor-pointer select-none"
-                      tabIndex={0}
-                      aria-label="Show only online events"
-                    >
-                      <Switch
-                        id="online-toggle"
-                        checked={isOnlyOnlineSelected ? true : showOnlineOnly}
-                        onCheckedChange={isOnlyOnlineSelected ? undefined : setShowOnlineOnly}
-                        aria-label="Online Only"
-                        disabled={isOnlyOnlineSelected}
-                      />
-                      <label
-                        htmlFor="online-toggle"
-                        className={`text-sm font-medium transition-colors duration-200 ${
-                          isOnlyOnlineSelected
-                            ? 'text-primary font-semibold opacity-60 cursor-not-allowed'
-                            : showOnlineOnly
-                            ? 'text-primary font-semibold'
-                            : 'text-gray-700'
-                        }`}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className="flex items-center gap-2 cursor-pointer select-none"
+                        tabIndex={0}
+                        aria-label="Show only online events"
                       >
-                        Show Online
-                      </label>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" align="center">
-                    Show only online events in the list
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                        <Switch
+                          id="online-toggle"
+                          checked={isOnlyOnlineSelected ? true : showOnlineOnly}
+                          onCheckedChange={isOnlyOnlineSelected ? undefined : setShowOnlineOnly}
+                          aria-label="Online Only"
+                          disabled={isOnlyOnlineSelected}
+                        />
+                        <label
+                          htmlFor="online-toggle"
+                          className={`text-sm font-medium transition-colors duration-200 ${
+                            isOnlyOnlineSelected
+                              ? 'text-primary font-semibold opacity-60 cursor-not-allowed'
+                              : showOnlineOnly
+                              ? 'text-primary font-semibold'
+                              : 'text-gray-700'
+                          }`}
+                        >
+                          Online Only
+                        </label>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="center">
+                      Show only online events in the list
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => {
