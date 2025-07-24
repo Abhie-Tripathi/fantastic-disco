@@ -168,7 +168,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             {audienceSpread.length > 0 && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
-                  Audience Spread
+                  Audience Country
                 </div>
               </TableHead>
             )}

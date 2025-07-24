@@ -18,6 +18,7 @@ import PaymentSuccessModal from "@/app/components/payment/successModal";
 import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { basicFilters, advancedFilter, countFilters } from "@/constants/filters";
+import { Switch } from "@/components/ui/switch";
 
 interface FilterSection {
   id: string;
@@ -56,7 +57,7 @@ const FilterContent = ({
 }: FilterContentProps) => {
   const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
   const {membershipData} = useAuthContext()
-  const { localFilters } = useFilterContext();
+  const { localFilters, setMultipleLocalFilters } = useFilterContext();
   const isPremium = !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
   const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
   const isMobile = useIsMobile();
@@ -84,7 +85,11 @@ const FilterContent = ({
           <Accordion
             type="multiple"
             className="space-y-4"
-            defaultValue={[filters[type][0]?.id]}
+            defaultValue={
+              type === "events"
+                ? ["basic-filters", "advanced-details"]
+                : [filters[type][0]?.id]
+            }
           >
             {filters[type].map((section: FilterSection) => (
               <>
@@ -101,27 +106,43 @@ const FilterContent = ({
                   className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-muted"
                 >
                   <div className="text-sm flex gap-2 items-center w-full">
-                    <Filter className="w-4 h-4"/>
+                    {/* Remove Filter icon for both Basic and Advanced */}
                     <span 
-  className={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? "bg-clip-text text-transparent capitalize" : ""}
-  style={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? {
-    background: "linear-gradient(96.48deg, #F3B28E 14.76%, #E579C6 36.95%, #AC75E5 71.57%, #AEBFFF 99.98%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent"
-  } : {}}
->
-  {section.label}
-</span>
-                  {(["Advanced"].includes(section.label) && (totalFilterCount - basicFilterCount) > 0) &&
-                        <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
-                          {totalFilterCount - basicFilterCount}
-                        </span>}
-
-                        {(["Basic"].includes(section.label) && basicFilterCount > 0) &&
-                        <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
-                          {basicFilterCount}
-                        </span>}
-                      
+                      className={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? "bg-clip-text text-transparent capitalize" : ""}
+                      style={isPremium && ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) ? {
+                        background: "linear-gradient(96.48deg, #F3B28E 14.76%, #E579C6 36.95%, #AC75E5 71.57%, #AEBFFF 99.98%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent"
+                      } : {}}
+                    >
+                      {section.label}
+                    </span>
+                    {/* Advanced Toggle */}
+                    {section.id === "advanced-details" && (
+                      <Switch
+                        className="ml-2"
+                        checked={advancedFilter.some(key => localFilters[key as keyof typeof localFilters] && localFilters[key as keyof typeof localFilters] !== "" && localFilters[key as keyof typeof localFilters] !== "[]")}
+                        onCheckedChange={checked => {
+                          if (!checked) {
+                            // Clear all advanced filters
+                            const cleared = Object.fromEntries(advancedFilter.map(key => [key, ""]));
+                            setMultipleLocalFilters(cleared);
+                          }
+                        }}
+                        disabled={section.filters.every(f => !f.enabled)}
+                        aria-label="Enable/Disable all advanced filters"
+                        onClick={e => e.stopPropagation()}
+                      />
+                    )}
+                    {/* End Advanced Toggle */}
+                    {(["Advanced"].includes(section.label) && (totalFilterCount - basicFilterCount) > 0) &&
+                      <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
+                        {totalFilterCount - basicFilterCount}
+                      </span>}
+                    {(["Basic"].includes(section.label) && basicFilterCount > 0) &&
+                      <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
+                        {basicFilterCount}
+                      </span>}
                     {isPremium &&  ["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label) && <span className="flex items-center px-2 border bg-background capitalize rounded-xl font-normal text-xs">
                       <Unlock className="w-3 h-3 mr-1"/>
                       Premium</span>}
@@ -145,7 +166,7 @@ const FilterContent = ({
                       }, {});
                       return Object.entries(grouped).map(([groupName, filters]) => (
                         <React.Fragment key={groupName}>
-                          <div className="text-sm font-medium text-muted-foreground" style={{marginBottom: "-6px"}}>{groupName}</div>
+                          <div className="text-sm text-muted-foreground" style={{marginBottom: "-6px"}}>{groupName}</div>
                           {(filters as FilterItem[]).map((filter) => {
                             const Component = getFilterComponent(filter.component);
                             if (!Component || (source === "tracker" && filter.id === "eventIds")) return null;
