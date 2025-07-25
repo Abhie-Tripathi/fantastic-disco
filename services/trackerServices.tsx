@@ -210,7 +210,7 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitors":'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(

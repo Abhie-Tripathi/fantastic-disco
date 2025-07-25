@@ -1,6 +1,6 @@
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import styles from "./templatetable.style.module.css";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { InformationFill, Trash } from "geist-icons";
 import { formatEventDates } from "@/utils/dateFormat";
 import { formattedDateRange } from "@/utils/date";
@@ -25,6 +25,8 @@ interface Props {
   setIsNew?: (value: boolean) => void;
   profileIds?: UpdatedProfileData[] | undefined;
   setProfileIds?: React.Dispatch<React.SetStateAction<UpdatedProfileData[]>>;
+  allEntries?: string[][];
+  setAllEntries?: React.Dispatch<React.SetStateAction<string[][]>>;
 
 }
 interface TableViewProps {
@@ -36,13 +38,21 @@ interface TableViewProps {
   handleRemove: (id: number, groupIndex: number, itemIndex: number) => void;
   deleteSingleEntry: (index: number) => void;
 }
-const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew, profileIds, setProfileIds }: Props) => { 
-  const [des, setDes] = useState<string[]>([]);
+const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew, profileIds, setProfileIds, allEntries, setAllEntries }: Props) => { 
+  console.log("allEntries", allEntries);
+  
+  const [des, setDes]= useState<string[]>([]);
   const [dep, setDep] = useState<string[]>([]);
   const [sen, setSen] = useState<string[]>([]);
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
-
+  const prevIsNewRef = useRef<boolean | undefined>(false);
+    useEffect(() => {
+    if (isNew && !prevIsNewRef.current) {
+      setCurrentEntries([]);
+    }
+    prevIsNewRef.current = isNew;
+  }, [isNew]);
   const deleteEntry = (entryKey: string, itemIndex: number) => {
     
     if (!selectedIdArray.includes(itemIndex)) {
@@ -53,7 +63,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName, setEventSugge
       );
     }
   };
- const [allEntries, setAllEntries] = useState<string[][]>([[]]);
+//  const [allEntries, setAllEntries] = useState<string[][]>([[]]);
 const [currentEntries, setCurrentEntries] = useState<string[]>([]);
 useEffect(() => {
   if (type !== "T_AUDIENCE_DEPT_PROFILE" || !customData?.length) return;
@@ -83,9 +93,10 @@ useEffect(() => {
 }, [customData, type]);
 
 useEffect(() => {
-   setAllEntries(prev => {
+   setAllEntries?.(prev => {
     if (isNew) {
       const newState = [...prev, []];
+      
       setCurrentEntries([]);
       return newState;
     } else {
@@ -108,10 +119,10 @@ console.log("des",allEntries);
 
    const removeCustomData = () => {
     console.log("selectedIdArray", selectedIdArray);
-    const updatedEntries = allEntries.filter((_, index) => !selectedIdArray.includes(index));
+    const updatedEntries = allEntries?.filter((_, index) => !selectedIdArray.includes(index));
     const updatedProfileIds = profileIds?.filter((_, index) => !selectedIdArray.includes(index));
     setProfileIds?.(updatedProfileIds || []);
-    setAllEntries(updatedEntries);
+    setAllEntries?.(updatedEntries || []);
     // const filteredData = customData.filter(
     //   (item, index) => !selectedIdArray.includes(index)
     // );
@@ -130,7 +141,7 @@ console.log("des",allEntries);
   const deleteSingleEntry = (index: number) => {
     
     if(type==="T_AUDIENCE_DEPT_PROFILE"){
-    setAllEntries(prev => prev.filter((_, id) => id !== index))
+    setAllEntries?.(prev => prev.filter((_, id) => id !== index))
     const updatedProfileIds = profileIds?.filter((_, id) => id !== index);
     setProfileIds?.(updatedProfileIds || []);
     }else{
@@ -145,7 +156,7 @@ console.log("des",allEntries);
   const handleRemove =(id:number, groupIndex:number, itemIndex:number)=>{
     console.log("id",id);
     
-       setAllEntries(prev => {
+       setAllEntries?.(prev => {
     const updatedEntries = prev.map(group => [...group]);
     updatedEntries[groupIndex].splice(itemIndex, 1);
     if (updatedEntries[groupIndex].length === 0) {
@@ -174,6 +185,8 @@ console.log("des",allEntries);
 });
 }
   }
+  console.log("selectedIdArray", selectedIdArray);  
+  
   return (
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
       
@@ -187,7 +200,7 @@ console.log("des",allEntries);
             <span title={presetName} className="mr-3 p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs rounded-md text-[var(--primary-color)]" >Preset Selected</span>
           } */}
           <span className="hidden md:block">
-          Total {type==="T_AUDIENCE_DEPT_PROFILE"?(allEntries[allEntries.length-1].length===0?allEntries.length-1:allEntries.length):customData.length} records
+          Total {type==="T_AUDIENCE_DEPT_PROFILE"?(allEntries?.[allEntries?.length-1]?.length===0?allEntries?.length-1:allEntries?.length):customData.length} records
           </span>
         </div>
         {selectedIdArray.length > 0 && (
@@ -203,7 +216,7 @@ console.log("des",allEntries);
       )} */}
       <div className="max-h-[300px] overflow-y-auto">
         {type === "T_AUDIENCE_DEPT_PROFILE" ?
-        <TableView selectAllData={selectAllData} selectedIdArray={selectedIdArray} customData={customData} allEntries={expandTable?allEntries:allEntries.slice(0,5)} deleteEntry={deleteEntry} handleRemove={handleRemove} deleteSingleEntry={deleteSingleEntry}/>:
+        <TableView selectAllData={selectAllData} selectedIdArray={selectedIdArray} customData={customData} allEntries={expandTable?(allEntries || []):(allEntries?.slice(0,5) || [])} deleteEntry={deleteEntry} handleRemove={handleRemove} deleteSingleEntry={deleteSingleEntry}/>:
         <table className={`${styles.allCustomData} w-[100%] bg-[var(--primary-foreground)]`}>
           <thead>
             <tr>
@@ -321,10 +334,10 @@ console.log("des",allEntries);
           </tbody>
         </table>}
       </div>
-      {(type === "T_AUDIENCE_DEPT_PROFILE" && allEntries[allEntries.length-1].length===0?allEntries.length-1>5:allEntries.length>5) && (
+      {(type === "T_AUDIENCE_DEPT_PROFILE" && allEntries?.[allEntries?.length-1].length===0?allEntries?.length-1>5:(allEntries?.length || 0)>5) && (
         <div className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer flex gap-1" onClick={() => setExpandTable((prev) => !prev)}>
           {expandTable ? "Show Less" : "Show All"}
-          <span className="block md:hidden">({allEntries.length})</span>
+          <span className="block md:hidden">({allEntries?.length})</span>
         </div>
       )}
       {(customData.length > 5 && type!=="T_AUDIENCE_DEPT_PROFILE") && (
@@ -350,7 +363,7 @@ const  TableView=({selectAllData, selectedIdArray, customData, allEntries, delet
                 <CheckboxInput
                   id={"abc"}
                   onChange={selectAllData}
-                  checked={selectedIdArray.length === customData.length}
+                  checked={selectedIdArray.length === (customData.length || allEntries?.length)}
                 />
               </th>
               <th>Role</th>
@@ -358,7 +371,7 @@ const  TableView=({selectAllData, selectedIdArray, customData, allEntries, delet
             </tr>
           </thead>
           <tbody>
-            {allEntries.map((entryGroup:string[], groupIndex:number) => (
+            {allEntries?.map((entryGroup:string[], groupIndex:number) => (
               entryGroup.length>0 &&
                   <tr>
                     <td>

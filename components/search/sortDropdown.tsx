@@ -25,6 +25,7 @@ interface SortOption {
 }
 
 const gtmSortOptions: SortOption[] = [
+  {value: "visitors", label: "Relevance"},
   { value: "score", label: "Popularity" },
   { value: "title", label: "Title" },
   { value: "start", label: "Start Date" },
@@ -65,8 +66,8 @@ const SortDropdown = ({
 }: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-
-  const sortParam = value || getFilterValue("sortBy") || "-score";
+  const type = getFilterValue("type") || "";
+  const sortParam = value || getFilterValue("sortBy") || (type==="T_AUDIENCE_DEPT_PROFILE"?"-visitors":"-score");
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
@@ -100,11 +101,15 @@ const SortDropdown = ({
     }
   };
 
-  useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "-score";
-    setSortField(newSortParam.replace("-", ""));
-    setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
-  }, [getFilterValue, value]);
+ useEffect(() => {
+  const dynamicDefault =
+    value ||
+    getFilterValue("sortBy") ||
+    (type === "T_AUDIENCE_DEPT_PROFILE" ? "-visitors" : "-score");
+
+  setSortField(dynamicDefault.replace("-", ""));
+  setSortOrder(dynamicDefault.startsWith("-") ? "desc" : "asc");
+}, [getFilterValue, value, type]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -93,7 +93,6 @@ import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { log } from "console";
 import { update } from "firebase/database";
 type EventGroupType = "social" | "business";
 interface InputArea {
@@ -469,6 +468,7 @@ const Pages = () => {
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
+  const [allEntries, setAllEntries] = useState<string[][]>([[]]);
   const [showTemplate,setShowTemplate] = useState(false);
   const [profileIds,setProfileIds] = useState<UpdatedProfileData[]>([]);
   const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
@@ -505,7 +505,7 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
-
+  const [isNew, setIsNew] = useState(false);
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -782,7 +782,22 @@ const stepsConfig =[
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+   useEffect(()=>{
+    if(isNew){
+    const res = {
+      "departmentIds": departmentIds,
+      "seniorityIds": seniorityIds,
+      "designationIds": designationIds,
+    }
+    console.log("res is", res);
+    
+    setProfileIds((prev=[])=>[...prev, res]);
+    setDepartmentIds([]);
+    setDesignationIds([]);
+    setSeniorityIds([]);
+  }
   
+  },[isNew, allEntries])
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -825,7 +840,9 @@ const stepsConfig =[
     rankings: "rankings",
     economicImpact: "economicImpact"
   };
+  const [shouldCallApi, setShouldCallApi] = useState(false);
   const saveTrackerHandler = async () => {
+    // setIsNew(true);
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -862,18 +879,48 @@ const stepsConfig =[
       },
       {} as Record<string, any>
     );
+    console.log(profileIds, "profileIdssss");
     
-    const jobComposite={
-  "designationIds": [],
+  // For Designation IDs
+const flattendDesignationIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.designationIds || []).filter(Boolean) || []),
+    ...(designationIds || [])
+  ])
+);
+
+// For Department IDs
+const flattendDepartmentIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.departmentIds || []).filter(Boolean) || []),
+    ...(departmentIds || [])
+  ])
+);
+
+// For Seniority IDs
+const flattendSeniorityIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.seniorityIds || []).filter(Boolean) || []),
+    ...(seniorityIds || [])
+  ])
+);
+    // const updatedEntries = allEntries.map((entry)=>) 
+const jobComposite = {
+  "designationIds": flattendDesignationIds,
+  "logic":"OR",
   "conditions": {
-    "logic": "OR",
-    "departmentIds": departmentIds,
-    "seniorityIds": seniorityIds
+    "logic": "AND",
+    "departmentIds": flattendDepartmentIds,
+    "seniorityIds": flattendSeniorityIds
+  },
+  "properties":{
+      "allEntries":allEntries[allEntries.length-1].length===0?allEntries.slice(0, allEntries.length-1):allEntries,
   }
 }
-    if(departmentIds?.length > 0 || seniorityIds?.length > 0){
+
+    // if(departmentIds?.length > 0 || seniorityIds?.length > 0){
       filterValues.jobComposite = JSON.stringify(jobComposite);
-    }
+    // }
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -1199,6 +1246,29 @@ const stepsConfig =[
       setLocalFilter("includeKeywords", inc?.join(","));
     }
   },[inc])
+  const processEntryGroups = (entryGroups: string[][]): UpdatedProfileData[] => {
+  return entryGroups.map(group => {
+    const profile: UpdatedProfileData = {
+      designationIds: [],
+      departmentIds: [],
+      seniorityIds: []
+    };
+
+    group.forEach(entry => {
+      const [value, id, type] = entry.split('_'); // Split each entry
+      
+      if (type === 'Designation') {
+        profile?.designationIds?.push(id);
+      } else if (type === 'Department') {
+        profile?.departmentIds?.push(id);
+      } else if (type === 'Seniority') {
+        profile?.seniorityIds?.push(id);
+      }
+    });
+
+    return profile;
+  });
+};
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
@@ -1236,6 +1306,24 @@ const stepsConfig =[
           "Company Name": speakerOrgs?.[index]?.trim()
         }));
         setCustomData(presentCustomData);
+      }
+      if(type==="T_AUDIENCE_DEPT_PROFILE"){
+        const updatedProfileData = JSON.parse(editData?.filterValues?.jobComposite)
+        console.log("updatedProfileData", updatedProfileData?.properties?.allEntries);
+        const updatedProfileIds = updatedProfileData?.designationIds?.map((id: string) => ({ designationIds: [id] })) || [];
+        const updatedProfileEntries=processEntryGroups(updatedProfileData?.properties?.allEntries)
+        const entriesWithEmpty = [
+  ...updatedProfileEntries,
+  { designationIds: [], departmentIds: [], seniorityIds: [] } // Empty entry
+];
+
+
+setProfileIds(entriesWithEmpty);
+const currentEntries = updatedProfileData?.properties?.allEntries || [];
+
+// Add an empty array at the end
+const entriesWithEmpty1 = [...currentEntries, []];
+        setAllEntries(entriesWithEmpty1);
       }
       if (type === "T_PEOPLE_FINDER") {
         const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
@@ -1292,7 +1380,6 @@ const stepsConfig =[
         return (eventType as { slug: string })?.slug;
       });
     console.log(eventTypes);
-    
     setLocalFilter("eventTypes",eventTypes.join(","))
     if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
       const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
@@ -1374,7 +1461,7 @@ const stepsConfig =[
     }));
   };
   const [valid,setValid]=useState(true);
-  const [isNew, setIsNew] = useState(false);
+  
   const addNew = () => {
     setHideSuggestion(false);
     if (!template) {
@@ -1531,20 +1618,7 @@ setEventSuggestion(finalEventSuggestion);
 console.log("finalSeniroityIds",finalSeniroityIds);
 
   },[suggestionIds])
-  useEffect(()=>{
-    if(isNew){
-    const res = {
-      "departmentIds": departmentIds,
-      "seniorityIds": seniorityIds,
-      "designationIds": designationIds,
-    }
-    setProfileIds((prev=[])=>[...prev, res]);
-    setDepartmentIds([]);
-    setDesignationIds([]);
-    setSeniorityIds([]);
-  }
-  
-  },[isNew])
+ 
   console.log("profileIds",profileIds);
   
   useEffect(() => {
@@ -1620,6 +1694,8 @@ const handleShowTemplate=()=>{
     scrollablePresetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
+console.log("profileIds", allEntries.length);
+
 if(isLoading) return <Loading/>
 
 
@@ -1932,14 +2008,15 @@ if(isLoading) return <Loading/>
 
                       </>
                     ))}
-                    {type!=="T_EVENT_PARTICIPATION" &&
+                    {(type!=="T_EVENT_PARTICIPATION" && type!=="T_AUDIENCE_DEPT_PROFILE") &&
                     <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
                     }
-                    <div onClick={()=>setIsNew(true)}>OR</div>
+                    {type==="T_AUDIENCE_DEPT_PROFILE"&&
+                    <div className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-sm" onClick={()=>setIsNew(true)}>OR</div>}
                   </div>
 
                 }
@@ -2128,9 +2205,10 @@ if(isLoading) return <Loading/>
       </Tabs>
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
-  (customData && customData.length > 0 ? (
+  ((customData && customData.length > 0 || allEntries?.[0].length>0) ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds}/>
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds} allEntries={allEntries}
+          setAllEntries={setAllEntries}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>
