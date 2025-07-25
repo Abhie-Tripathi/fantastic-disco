@@ -117,26 +117,10 @@ const FilterContent = ({
                     >
                       {section.label}
                     </span>
-                    {/* Advanced Toggle */}
-                    {section.id === "advanced-details" && (
-                      <Switch
-                        className="ml-2"
-                        checked={advancedFilter.some(key => localFilters[key as keyof typeof localFilters] && localFilters[key as keyof typeof localFilters] !== "" && localFilters[key as keyof typeof localFilters] !== "[]")}
-                        onCheckedChange={checked => {
-                          if (!checked) {
-                            // Clear all advanced filters
-                            const cleared = Object.fromEntries(advancedFilter.map(key => [key, ""]));
-                            setMultipleLocalFilters(cleared);
-                          }
-                        }}
-                        disabled={section.filters.every(f => !f.enabled)}
-                        aria-label="Enable/Disable all advanced filters"
-                        onClick={e => e.stopPropagation()}
-                      />
-                    )}
+  
                     {/* End Advanced Toggle */}
                     {(["Advanced"].includes(section.label) && (totalFilterCount - basicFilterCount) > 0) &&
-                      <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
+                      <span className="px-2 py-0.5 rounded-full bg-primary text-white text-xs font-semibold">
                         {totalFilterCount - basicFilterCount}
                       </span>}
                     {(["Basic"].includes(section.label) && basicFilterCount > 0) &&
@@ -147,7 +131,32 @@ const FilterContent = ({
                       <Unlock className="w-3 h-3 mr-1"/>
                       Premium</span>}
                     {["Advanced", "Insights & Scores", "Audience Intel"].includes(section.label)&& isFreemium  && (
-                      <RainbowButton size="sm"  className="ml-auto h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
+                      <RainbowButton size="sm"  className="h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
+                    )}
+                     {/* Advanced Toggle */}
+                     {section.id === "advanced-details" && (
+                      <Switch
+                        className="ml-auto mr-[13px]"
+                        checked={
+                          advancedFilter.some(key =>
+                            localFilters[key as keyof typeof localFilters] &&
+                            localFilters[key as keyof typeof localFilters] !== "" &&
+                            localFilters[key as keyof typeof localFilters] !== "[]"
+                          ) ||
+                          (typeof localFilters.show !== "undefined" && localFilters.show !== "" && localFilters.show !== "[]")
+                        }
+                        onCheckedChange={checked => {
+                          if (!checked) {
+                            // Clear all advanced filters
+                            let cleared = Object.fromEntries(advancedFilter.map(key => [key, ""]));
+                            cleared = {...cleared, show : ""}
+                            setMultipleLocalFilters(cleared);
+                          }
+                        }}
+                        disabled={section.filters.every(f => !f.enabled)}
+                        aria-label="Enable/Disable all advanced filters"
+                        onClick={e => e.stopPropagation()}
+                      />
                     )}
                   </div>
                 </AccordionTrigger>
@@ -166,7 +175,7 @@ const FilterContent = ({
                       }, {});
                       return Object.entries(grouped).map(([groupName, filters]) => (
                         <React.Fragment key={groupName}>
-                          <div className="text-sm text-muted-foreground" style={{marginBottom: "-6px"}}>{groupName}</div>
+                          <div className="text-xs text-muted-foreground" style={{marginBottom: "-6px"}}>{groupName}</div>
                           {(filters as FilterItem[]).map((filter) => {
                             const Component = getFilterComponent(filter.component);
                             if (!Component || (source === "tracker" && filter.id === "eventIds")) return null;
