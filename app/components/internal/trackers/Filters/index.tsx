@@ -2374,18 +2374,25 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[0]?.length > 0  &&
          <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
         }
                         </div>
 
                       </>
                     ))}
+                    {type!=="T_AUDIENCE_DEPT_PROFILE" &&
                     <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >Add
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
-                    </div>
+                    </div>}
+                    {type==="T_AUDIENCE_DEPT_PROFILE" &&
+                    <div onClick={() => template?.type === "enabled" && setIsNew(true)} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    >OR
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
+                    </div>}
                     {/* <div className="flex items-center w-full gap-2">
                     <div className="flex-1 h-px bg-gray-400"></div>
                     <span className="font-semibold">OR</span>
