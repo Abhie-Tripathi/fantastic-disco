@@ -25,7 +25,6 @@ interface SortOption {
 }
 
 const gtmSortOptions: SortOption[] = [
-  {value: "visitors", label: "Relevance"},
   { value: "score", label: "Popularity" },
   { value: "title", label: "Title" },
   { value: "start", label: "Start Date" },
@@ -69,13 +68,13 @@ const SortDropdown = ({
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
   const type = getFilterValue("type") || "";
-  const sortParam = value || getFilterValue("sortBy") || (type==="T_AUDIENCE_DEPT_PROFILE"?"-visitors":"-score");
+  const sortParam = value || getFilterValue("sortBy") || (type==="T_AUDIENCE_DEPT_PROFILE"?"-visitor":"-score");
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
   );
-
-  const sortOptions = isEventeli ? geoSortOptions : gtmSortOptions;
+  const updatedGtmSortOperations = type==="T_AUDIENCE_DEPT_PROFILE"?[{ value: "visitor", label: "Relevance" }, ...gtmSortOptions]: gtmSortOptions;
+  const sortOptions = isEventeli ? geoSortOptions : updatedGtmSortOperations;
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortField);
@@ -107,7 +106,7 @@ const SortDropdown = ({
   const dynamicDefault =
     value ||
     getFilterValue("sortBy") ||
-    (type === "T_AUDIENCE_DEPT_PROFILE" ? "-visitors" : "-score");
+    (type === "T_AUDIENCE_DEPT_PROFILE" ? "-visitor" : "-score");
 
   setSortField(dynamicDefault.replace("-", ""));
   setSortOrder(dynamicDefault.startsWith("-") ? "desc" : "asc");
