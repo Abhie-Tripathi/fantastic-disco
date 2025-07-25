@@ -27,6 +27,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "../ui/input";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
+import Image from "next/image";
 
 const otpSchema = z.object({
   otpCode: z
@@ -157,120 +160,129 @@ export default function NewVerificationForm() {
   }, [time]);
 
   return (
-    <div className="flex flex-col gap-24 h-full w-full mx-0 sm:w-fit sm:mx-auto p-8">
-      <div className="flex flex-col justify-center items-center w-full space-y-8">
-        <p className="font-semibold text-lg leading-6 text-center">
-          Create your account
-        </p>
-        <div className="space-y-2 w-full sm:w-96 max-w-3xl self-center border-b pb-6">
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            disabled
-            placeholder="Email"
-          />
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col space-y-6 w-full"
-          >
-            <p
-              className="flex items-center gap-1 text-primary cursor-pointer"
-              onClick={handleBack}
-            >
-              <ArrowLeft width={18} height={18} />
-              <span>Back</span>
-            </p>
-            {showOTPMessage && (
-              <p className="text-sm text-center">
-                {showResendOtpMessage
-                  ? "A new 6 digit OTP has been resent to your email"
-                  : showOTPMessage
-                  ? "We have sent a 6 digit OTP to your email"
-                  : ""}
-              </p>
-            )}
-
-            <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
-            <FormField
-              control={form.control}
-              name="otpCode"
-              render={({ field }) => (
-                <FormItem className="flex justify-center flex-col items-center">
-                  <FormControl className="w-full flex justify-center">
-                    <InputOTP
-                      maxLength={6}
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setError(null);
-                      }}
-                    >
-                      <div className="flex justify-between w-full gap-4">
-                        {Array.from({ length: 6 }).map((_, index) => (
-                          <InputOTPGroup key={index}>
-                            <InputOTPSlot
-                              key={index}
-                              index={index}
-                              className="w-8 sm:w-10 h-8 sm:h-10 text-sm sm:text-xl"
-                            />
-                          </InputOTPGroup>
-                        ))}
-                      </div>
-                    </InputOTP>
-                  </FormControl>
-                  <FormMessage className="!mt-6" />
-                </FormItem>
-              )}
+    <div>
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+        <Image src={logo} alt="logo" width={45} height={55} />
+        <Image src={whr} alt="whr" />
+      </div>
+      <div className="flex flex-col justify-center items-center mx-0 sm:w-fit sm:mx-auto p-3 pb-0 h-[72dvh]">
+        <div className="flex flex-col justify-center items-center w-full space-y-3">
+          <p className="font-semibold text-lg leading-6 text-center">
+            Create your account
+          </p>
+          <div className="space-y-2 w-full self-center">
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              className="bg-white border border-primary !opacity-100 !text-muted-foreground"
+              disabled
+              placeholder="Email"
             />
-            {error && (
-              <Alert
-                variant="destructive"
-                className="w-fit border-none self-center p-0"
-              >
-                <AlertDescription className="captilize flex items-start">
-                  <TriangleAlert color="#EF4444" className="w-4 h-4" />
-                  <span className="ml-2">{error.message}</span>
-                </AlertDescription>
-              </Alert>
-            )}
-            <Button
-              type="submit"
-              className="w-full sm:w-80 self-center"
-              disabled={isLoading}
-              onClick={() => clearErrors}
+          </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col space-y-3 w-full"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Verifying...
-                </>
-              ) : (
-                "Verify OTP"
+              <p
+                className="flex items-center gap-1 text-primary cursor-pointer"
+                onClick={handleBack}
+              >
+                <ArrowLeft width={18} height={18} />
+                <span>Back</span>
+              </p>
+              {showOTPMessage && (
+                <p className="text-sm text-center">
+                  {showResendOtpMessage
+                    ? "A new 6 digit OTP has been resent to your email"
+                    : showOTPMessage
+                    ? "We have sent a 6 digit OTP to your email"
+                    : ""}
+                </p>
               )}
+
+              <h1 className="text-center font-medium text-sm">
+                Enter your OTP
+              </h1>
+              <FormField
+                control={form.control}
+                name="otpCode"
+                render={({ field }) => (
+                  <FormItem className="flex justify-center flex-col items-center">
+                    <FormControl className="w-full flex justify-center">
+                      <InputOTP
+                        maxLength={6}
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setError(null);
+                        }}
+                      >
+                        <div className="flex justify-between w-full gap-4">
+                          {Array.from({ length: 6 }).map((_, index) => (
+                            <InputOTPGroup key={index}>
+                              <InputOTPSlot
+                                key={index}
+                                index={index}
+                                className="w-8 sm:w-10 h-8 sm:h-10 text-sm sm:text-xl bg-background"
+                              />
+                            </InputOTPGroup>
+                          ))}
+                        </div>
+                      </InputOTP>
+                    </FormControl>
+                    <FormMessage className="!mt-6" />
+                  </FormItem>
+                )}
+              />
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="w-fit border-none self-center p-0"
+                >
+                  <AlertDescription className="captilize flex items-start">
+                    <TriangleAlert color="#EF4444" className="w-4 h-4" />
+                    <span className="ml-2">{error.message}</span>
+                  </AlertDescription>
+                </Alert>
+              )}
+              <Button
+                type="submit"
+                className="w-full sm:w-80 self-center"
+                disabled={isLoading}
+                onClick={() => clearErrors}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  "Verify OTP"
+                )}
+              </Button>
+            </form>
+          </Form>
+          {time === 0 ? (
+            <Button
+              variant="link"
+              className="w-full py-0"
+              onClick={() => {
+                resendOTP(email);
+              }}
+            >
+              Resend OTP
             </Button>
-          </form>
-        </Form>
-        {time === 0 ? (
-          <Button
-            variant="link"
-            className="w-full"
-            onClick={() => {
-              resendOTP(email);
-            }}
-          >
-            Resend OTP
-          </Button>
-        ) : (
-          <span className="flex justify-center self-center">
-            00 : {time > 9 ? time : `0${time}`}
+          ) : (
+            <span className="flex justify-center self-center">
+              00 : {time > 9 ? time : `0${time}`}
+            </span>
+          )}
+          <span className="text-xs">
+            {"Didn’t find the OTP? Check your spam box"}
           </span>
-        )}
-        <span className="text-gray-400 text-xs">
-          {"Didn’t find the OTP? Check your spam box"}
-        </span>
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,9 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
+  public:{
+    events:`${BASE_URL}/public/events`
+  },
 
   auth: {
     me: `${BASE_URL}/me`,

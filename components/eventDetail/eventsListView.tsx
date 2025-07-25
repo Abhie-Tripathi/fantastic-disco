@@ -34,8 +34,8 @@ const EventsListView: React.FC<MapProps> = ({
   const { getEvents } = useEventsService();
 
   const iconUrls: Record<string, string> = {
-    "performing-arts": "/eventType/arts.png",
-    community: "/eventType/community.png",
+    "stage-performance": "/eventType/arts.png",
+    "community-group": "/eventType/community.png",
     concert: "/eventType/concert.png",
     conferences: "/eventType/conference.png",
     festival: "/eventType/festival.png",
@@ -73,7 +73,7 @@ const EventsListView: React.FC<MapProps> = ({
         view: "list",
         status: "active,cancelled,postponed",
         eventTypes:
-          "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences",
+          "community-group,concert,stage-performance,sport,festival,workshops,tradeshows,conferences",
         ...(startDate && { active_gte: new Date(startDate).toISOString() }),
         ...((typeOfEvent === "online" || typeOfEvent === "hybrid") && {
           eventFormats: typeOfEvent,

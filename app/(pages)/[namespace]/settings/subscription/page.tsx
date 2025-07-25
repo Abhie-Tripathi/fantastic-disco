@@ -12,10 +12,12 @@ import { useEffect, useState } from "react";
 // import { Mail } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import PaymentSuccessModal from "@/app/components/payment/successModal";
 
 const Subscription = () => {
   const { getMembershipData } = useProfileServices();
   const [membershipData, setMembershipData] = useState<MembershipData>();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { membership, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
@@ -64,19 +66,18 @@ const Subscription = () => {
   //   fetchMembershipData();
   // }, [paymentStatus]);
 
-  useEffect(() => {    
+  useEffect(() => {
     const fetchCheckoutSession = async () => {
       try {
-        const res = await fetch(
-          `/api/checkout-session/${session_id}`
-        );
+        const res = await fetch(`/api/checkout-session/${session_id}`);
         const data = await res.json();
-        console.log("Payment Status:", data);
+        // console.log("Payment Status:", data);
         setPaymentStatus(data);
       } catch (err) {
         console.error("Error fetching payment status:", err);
       } finally {
         fetchMembershipData();
+        setShowSuccessModal(true);
       }
     };
 
@@ -161,6 +162,17 @@ const Subscription = () => {
           </div> */}
         </div>
       </div>
+
+      {!isLoading && (
+        <PaymentSuccessModal
+          open={showSuccessModal}
+          onOpenChange={setShowSuccessModal}
+          isSuccess={
+            paymentStatus?.status === "paid" && paymentStatus?.updatePlan?.data?.id ? true : false
+          }
+          membership={membership || 0}
+        />
+      )}
     </div>
   );
 };

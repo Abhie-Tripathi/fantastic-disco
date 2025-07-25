@@ -52,12 +52,25 @@ export default function CategorySelector({
     return categories?.some((cat: any) => !cat.isEnabled) || false;
   }, [categories]);
 
+  const sortCategoriesSelectedOnTop = useCallback(
+    (cats: any[]) => {
+      if (!cats) return [];
+      return [
+        ...cats.filter((cat) => selectedCategories.includes(cat.slug)),
+        ...cats.filter((cat) => !selectedCategories.includes(cat.slug)),
+      ];
+    },
+    [selectedCategories]
+  );
+
   const filteredCategories = useMemo(() => {
-    if (!searchQuery || !categories) return categories || [];
-    return categories.filter((cat: any) =>
-      cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    if (!searchQuery || !categories) return sortCategoriesSelectedOnTop(categories || []);
+    return sortCategoriesSelectedOnTop(
+      categories.filter((cat: any) =>
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-  }, [categories, searchQuery]);
+  }, [categories, searchQuery, sortCategoriesSelectedOnTop]);
 
   const handleCategoryToggle = useCallback(
     (categorySlug: string) => {
@@ -124,6 +137,7 @@ export default function CategorySelector({
     if (!categories) return null;
 
     const columnCount = 3;
+    const sortedCategories = sortCategoriesSelectedOnTop(categories);
     const allCategories = [
       source !== "preset" && {
         id: "all",
@@ -131,7 +145,7 @@ export default function CategorySelector({
         slug: "all",
         isEnabled: true,
       },
-      ...categories,
+      ...sortedCategories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
 

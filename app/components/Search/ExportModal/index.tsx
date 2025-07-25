@@ -6,7 +6,7 @@ import Refresh from "/public/Refresh.svg";
 import HelpIcon from "/public/help.svg";
 import MinusIcon from "/public/minus.svg";
 import DownloadIcon from "/public/download.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Loading from "../../UI/Loading";
@@ -15,10 +15,19 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Crown, X } from "lucide-react";
+import { isEventeli } from "@/config";
+import { InformationFill } from "geist-icons";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
+import PremiumModal from "@/components/premium-modal";
+import { MembershipPlan } from "@/data/membershipPlans";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
   type?:string|undefined;
+  source:string;
 }
 
 interface ExportContent {
@@ -57,8 +66,9 @@ function formatDate(dateString: string): string {
   return formattedDate;
 }
 
-const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
+const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) => {
   const pathName = usePathname().split('/');
+  const {membershipData} = useAuthContext()
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
   const [exportList, setExportList] = useState<ExportContent[]>([]);
@@ -66,6 +76,10 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [refreshState, setRefreshState] = useState<boolean>(false);
+  const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
+
+
+  const isAdvancedPlanOrAbove = !!membershipData && membershipData.membership != null && membershipData.membership >= MembershipPlan.Advance;
 
   const fetchData = async () => {
     setRefreshState(true);
@@ -198,27 +212,51 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
       console.log(data);
     }
   };
-
+ const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=${source}_export`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      `${source}`,
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
+    );
+  };
   return (
     <div className={styles.container}>
       {!showExportedFiles && (
         <div
           className={`${styles.exportType_modal} ${
             theme === "light" && styles.exportType_modal_light
-          }`}
+          } flex flex-col`}
         >
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
-              Export Events
+              Export
+              {/* <span className="text-xs font-norma">
+                Available only in the Advance plan.
+                <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex"
+                        // onClick={handleUpgradeClick}
+                      >
+                        <span className="hidden sm:inline">Upgrade</span>
+                      </Button>
+              </span> */}
+              
             </div>
-            <Image
+            
+            {/* <Image
               src={CloseIcon}
               alt="closeicon"
               onClick={() => onClose()}
               className={styles.closeIcon}
-            />
+            /> */}
+            <X onClick={() => onClose()} className={styles.closeIcon} width={16}/>
           </div>
-
           {/* <div className={styles.tabs_container}>
             <div
               className={`${styles.tab} ${
@@ -238,13 +276,31 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             </div>
           </div> */}
 
-          <div className={styles.exportType_modal_description}>
+          {/* <div className={styles.exportType_modal_description}>
             Exporting a large number of records will take some time to process.
             You can check the progress of your export in the exported files
             dialog.
-          </div>
-
-          <div
+          </div> */}
+          <div className="w-full pb-4 flex items-center justify-center gap-1">
+             {/* <Badge variant="secondary" className="mx-auto">
+            <Crown className="w-3 h-3 mr-1" />
+            Advance Plan Feature
+          </Badge> */}
+          <span className="text-xs flex items-center" style={{color:"var(--primary-color)"}}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--primary-color)" height="12px" />
+            Available only in the Advance &amp; above plan</span>
+            {!isAdvancedPlanOrAbove && <RainbowButton
+              size="sm"
+              className="hidden sm:inline ml-2 h-6 rounded-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPremiumModalOpen(true);
+              }}
+            >
+              Premium
+            </RainbowButton>}
+            </div>
+          {/* <div
             className={styles.exportType_modal_button}
             onClick={exportDataHandler}
           >
@@ -255,7 +311,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             onClick={()=>setShowExportedFiles(true)}
           >
             See previous exported files
-          </div>
+          </div> */}
         </div>
       )}
 
@@ -400,6 +456,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             </div>
           </div>
         ))}
+      <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen} />
     </div>
   );
 };

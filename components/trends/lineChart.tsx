@@ -337,6 +337,10 @@ const LineChartComponent = ({
   const CustomDot = (props: any) => {
     const { cx, cy, payload, index } = props;
 
+    if (typeof cy !== "number" || isNaN(cy)) {
+      return null;
+    }
+
     // Don't render custom dot if multiple metrics are selected or comparison is enabled
     if (metrics.length > 1 || (compareFrom && compareTo)) {
       return null;

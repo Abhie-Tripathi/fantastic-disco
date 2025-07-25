@@ -17,7 +17,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { PaginationComponent } from "@/components/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
-import { MoveUpRight, Route, Search } from "lucide-react";
+import { LibraryBig, MoveUpRight, Route, Search } from "lucide-react";
 import {
   MagnifyingGlass,
  
@@ -196,6 +196,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     e.stopPropagation();
     hideTemplates(false);
   }}>Create</Button>
+  <Link
+  href="/collections"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">{isMobile?<LibraryBig className="text-[]"/>:"Collections"}</Button>
+  </Link>
 {!isMobile &&
 <Link
   href="/internal/trackers/savedevents?view=table"
@@ -212,7 +218,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           </div>
           <div className="flex-col gap-4 px-6 pb-3 flex md:hidden">
                   <Link 
-                  href={`/internal/trackers/savedevents?view=table`}
+                  href={`/internal/trackers/savedevents?view=list`}
                   target="_blank"
                   rel="noopener noreferrer"
                   >
@@ -277,7 +283,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
                             <Map
                               isGlobal={true}
                               source="tracker"
-                              eventType={eventType}
+                              eventType=""
                               searchParams="active"
                               trackerId={item?.id || ""}
                             trackerLoc={

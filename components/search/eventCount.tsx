@@ -20,7 +20,7 @@ const EventCount = ({ view }: { view: string }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
-    enabled: isEventeli
+    enabled: (isEventeli && !params.get("eventIds"))
       ? !!(
           isEventeli &&
           (searchParams.get("locationIds") || searchParams.get("viewBound"))
@@ -61,9 +61,9 @@ const EventCount = ({ view }: { view: string }) => {
           }).format((data as any)?.count || 0)}
         </Badge>
       )}
-      <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+      {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
         {label[view]}
-      </p>
+      </p> */}
     </div>
   );
 };

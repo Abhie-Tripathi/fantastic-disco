@@ -1,8 +1,8 @@
 // @ts-nocheck
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { PlusCircle, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,12 +18,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Filters, useFilterContext } from "@/context/filterContext";
+import { type Filters, useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
 import { usePathname } from "next/navigation";
 import { sessionService } from "@/services/sessionService";
+
 export interface GeoLocation {
   locationType: "GeoJSON";
   lat: number;
@@ -39,12 +40,14 @@ export interface LocationItem {
 }
 
 export type Location = GeoLocation | LocationItem[];
+
 export interface LocationProps {
   type?: string;
   isMandatory?: boolean;
   filterName?: string;
   disableCenterPoint?: boolean;
 }
+
 export default function LocationSelector({
   type,
   isMandatory,
@@ -56,10 +59,12 @@ export default function LocationSelector({
     disableCenterPoint ||
     pathName === "/internal/search/people" ||
     pathName === "/internal/search/companies";
+
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
+
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
@@ -69,12 +74,19 @@ export default function LocationSelector({
     lat?: string;
     lng?: string;
   }>({});
+
+  // Add refs for autofocus
+  const cityAutocompleteRef = useRef<any>(null);
+  const centerAutocompleteRef = useRef<any>(null);
+  const nonEventeliAutocompleteRef = useRef<any>(null);
+
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
 
   const fetchUrlLocation = async () => {
     const geoCoordinate = localFilters?.viewBound
       ? JSON.parse(localFilters.viewBound)
       : null;
+
     const locationIds = localFilters?.[filterName as keyof Filters]?.length
       ? localFilters[filterName as keyof Filters].split(",")
       : null;
@@ -103,6 +115,7 @@ export default function LocationSelector({
           };
         })
       );
+
       setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
@@ -114,19 +127,44 @@ export default function LocationSelector({
   }, [localFilters]);
 
   // Add new useEffect for trends page default location
+  // useEffect(() => {
+  //   if (
+  //     pathName !== "/internal" &&
+  //     !localFilters.locationIds &&
+  //     !localFilters.viewBound
+  //   ) {
+  //     replaceLocalFilter(
+  //       "viewBound",
+  //       "locationIds",
+  //       "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
+  //     );
+  //   }
+  // }, [pathName]);
+
+  // Autofocus when popover opens
   useEffect(() => {
-    if (
-      pathName === "/internal" &&
-      !localFilters.locationIds &&
-      !localFilters.viewBound
-    ) {
-      replaceLocalFilter(
-        "viewBound",
-        "locationIds",
-        "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
-      );
+    if (isOpen) {
+      // Small delay to ensure the component is rendered
+      setTimeout(() => {
+        if (isEventeli) {
+          if (hideCenterPoint) {
+            // Focus city input when only city tab is available
+            cityAutocompleteRef.current?.focus();
+          } else {
+            // Focus based on active tab
+            if (activeTab === "city") {
+              cityAutocompleteRef.current?.focus();
+            } else if (activeTab === "center") {
+              centerAutocompleteRef.current?.focus();
+            }
+          }
+        } else {
+          // Focus non-eventeli autocomplete
+          nonEventeliAutocompleteRef.current?.focus();
+        }
+      }, 100);
     }
-  }, [pathName]);
+  }, [isOpen, activeTab, isEventeli, hideCenterPoint]);
 
   const labels: Record<string, string> = {
     companyLocationIds: "Company Location",
@@ -134,13 +172,13 @@ export default function LocationSelector({
   };
 
   // Add cleanup effect
-  useEffect(() => {
-    return () => {
-      if (pathName === "/internal" || pathName === "/internal/search") {
-        replaceLocalFilter("viewBound", "locationIds", "");
-      }
-    };
-  }, [pathName]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (pathName === "/internal" || pathName === "/internal/search") {
+  //       replaceLocalFilter("viewBound", "locationIds", "");
+  //     }
+  //   };
+  // }, [pathName]);
 
   const validateCenterPoint = (): boolean => {
     const errors: { radius?: string; lat?: string; lng?: string } = {};
@@ -185,6 +223,7 @@ export default function LocationSelector({
 
         // Additional check for empty coordinates
         const geoLocation = selectedLocation as GeoLocation;
+
         if (geoLocation.lat === undefined || geoLocation.lng === undefined) {
           // Update validation errors for any missing coordinates
           const errors = { ...validationErrors };
@@ -192,6 +231,7 @@ export default function LocationSelector({
             errors.lat = "Latitude is required";
           if (geoLocation.lng === undefined)
             errors.lng = "Longitude is required";
+
           setValidationErrors(errors);
           return; // Don't proceed with applying the filter
         }
@@ -220,10 +260,12 @@ export default function LocationSelector({
             },
           })
         );
+
         saveLastSearchedLocation(geoLocation);
       } else {
         // Non-center point case
         const geoLocation = selectedLocation as GeoLocation;
+
         const radiusInKm =
           radiusUnit === "mi"
             ? (geoLocation.radius || 5) * 1.60934
@@ -248,6 +290,7 @@ export default function LocationSelector({
             },
           })
         );
+
         saveLastSearchedLocation(geoLocation);
       }
     } else if (
@@ -260,11 +303,13 @@ export default function LocationSelector({
         filterName,
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
+
       saveLastSearchedLocation(selectedLocation);
     } else {
       deleteMultipleLocalFilters([filterName, "viewBound"]);
       clearLastSearchedLocation();
     }
+
     setIsOpen(false);
   };
 
@@ -277,6 +322,7 @@ export default function LocationSelector({
 
   const handleRadiusChange = (value: string) => {
     const numValue = value === "" ? null : Number(value);
+
     setSelectedLocation?.((prev) =>
       prev
         ? {
@@ -310,11 +356,13 @@ export default function LocationSelector({
             }
           : null
       );
+
       setValidationErrors((prev) => ({ ...prev, lat: "Latitude is required" }));
       return;
     }
 
     const numValue = Number(value);
+
     setSelectedLocation?.((prev) =>
       prev
         ? {
@@ -344,6 +392,7 @@ export default function LocationSelector({
             }
           : null
       );
+
       setValidationErrors((prev) => ({
         ...prev,
         lng: "Longitude is required",
@@ -352,6 +401,7 @@ export default function LocationSelector({
     }
 
     const numValue = Number(value);
+
     setSelectedLocation?.((prev) =>
       prev
         ? {
@@ -372,6 +422,7 @@ export default function LocationSelector({
 
   const renderCityInput = () => (
     <AutocompleteInput
+      ref={cityAutocompleteRef}
       multiple
       type="LocationId"
       placeholder="E.g. Bengaluru, Karnataka"
@@ -390,6 +441,7 @@ export default function LocationSelector({
   const renderCenterPointInput = () => (
     <>
       <AutocompleteInput
+        ref={centerAutocompleteRef}
         type="GeoCoordinate"
         placeholder="E.g. Novotel, Hyderabad"
         onSelect={setSelectedLocation}
@@ -422,6 +474,7 @@ export default function LocationSelector({
             </p>
           )}
         </div>
+
         <div className="col-span-2">
           <label htmlFor="unit" className="text-sm font-medium">
             Unit
@@ -440,6 +493,7 @@ export default function LocationSelector({
             </SelectContent>
           </Select>
         </div>
+
         <div className="col-span-3">
           <label htmlFor="latitude" className="text-sm font-medium">
             Latitude
@@ -455,6 +509,7 @@ export default function LocationSelector({
             <p className="text-xs text-red-500 mt-1">{validationErrors.lat}</p>
           )}
         </div>
+
         <div className="col-span-3">
           <label htmlFor="longitude" className="text-sm font-medium">
             Longitude
@@ -555,6 +610,7 @@ export default function LocationSelector({
               </span>
             )}
           </div>
+
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
               isOpen ? "rotate-180 transform" : ""
@@ -562,22 +618,23 @@ export default function LocationSelector({
           />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent
         className={
-          "border rounded-md shadow-sm p-0 w-[var(--radix-popover-trigger-width)] md:w-[392px]"
+          `border rounded-md shadow-sm p-0 w-[var(--radix-popover-trigger-width)] ${isEventeli ? "md:w-[392px]" : ""}`
         }
         align="start"
       >
-        <div className="flex justify-between items-center p-4 py-2 border-b">
+        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
           <span className="font-medium">Location</span>
           <Button
             variant="link"
             className="text-primary pr-0"
             onClick={applyHandler}
           >
-            {/* Apply */}
+            Apply
           </Button>
-        </div>
+        </div> */}
 
         {isEventeli ? (
           hideCenterPoint ? (
@@ -592,16 +649,18 @@ export default function LocationSelector({
                 <TabsTrigger value="city">City, State, Country</TabsTrigger>
                 <TabsTrigger value="center">Center Point & Radius</TabsTrigger>
               </TabsList>
-              <TabsContent value="city" className="p-4">
+              <TabsContent value="city" className="p-4 mt-0">
                 {renderCityInput()}
               </TabsContent>
-              <TabsContent value="center" className="p-4 space-y-4">
+
+              <TabsContent value="center" className="p-4 space-y-4 mt-0">
                 {renderCenterPointInput()}
               </TabsContent>
             </Tabs>
           )
         ) : (
           <AutocompleteInput
+            ref={nonEventeliAutocompleteRef}
             defaultOpen
             multiple
             type="LocationId"

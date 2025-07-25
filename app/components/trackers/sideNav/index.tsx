@@ -9,6 +9,7 @@ import Manage from "/public/manageTracker.svg";
 import Image from "next/image";
 import styles from "./sideNav.style.module.css";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 import { GAEvent } from "@/utils/GAEvent";
 import { Settings, Share, Share2, User } from "lucide-react";
 import { useTrackerServices } from "@/services/trackerServices";
@@ -38,10 +39,11 @@ import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
-const Index = () => {
+const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const { refs, setps } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
+  const { toast } = useToast();
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -123,10 +125,24 @@ const Index = () => {
     setView(view);
     if (last === "savedevents") {
       router.push(`/internal/trackers/savedevents?view=${view}`);
-    } else
+    } else if(isPublic){
+        if(view==="map" || view === "calendar"){
+        router.push(
+      `/preset?presetId=${pathName[2]}&type=${type}&view=${view}`
+      );
+        }else
+        router.push(
+      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`
+      );
+      }else{
+      if(pathName.includes("collections")){
+          router.push(
+      `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`)
+        }else
       router.push(
         `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
       );
+    }
   };
   // const fetchData=async()=>{
   //     const result = await getTrackerDetail(secondLast)
@@ -161,7 +177,16 @@ const Index = () => {
       closeShareModal();
     }
   };
-
+  
+   const handleShare = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl);
+    toast({
+      title: "URL Copied",
+      description: "Link copied to clipboard",
+      duration: 2000,
+    });
+  };
   return (
     <>
       <div
@@ -173,11 +198,9 @@ const Index = () => {
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link
             className="flex gap-1 cursor-pointer"
-            href={`/internal/trackers?skip=${skip}${
-              searchValue.length > 0
-                ? `&q=${encodeURIComponent(searchValue)}`
-                : ""
-            }`}
+            href={`${isPublic ? "/collections" : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""
+                }`
+              }`}
           >
             {/* <Button
           variant="link"
@@ -190,11 +213,11 @@ const Index = () => {
               <div className={styles.tooltipContainer}>Saved Events</div>
             ) : (
               <div className={styles.tooltipContainer}>
-                {data?.name?.length > 20
-                  ? data?.name?.substring(0, 20) + "..."
-                  : data?.name}
-                {data?.name?.length > 20 && (
-                  <span className={styles.tooltipText}>{data?.name}</span>
+                {(data?.name||name)?.length > 20
+                  ? (data?.name || name)?.substring(0, 20) + "..."
+                  : (data?.name || name)}
+                {(data?.name || name)?.length > 20 && (
+                  <span className={styles.tooltipText}>{(data?.name || name)}</span>
                 )}
               </div>
             )}
@@ -206,7 +229,7 @@ const Index = () => {
           <div className="flex justify-center items-center">
             <div
               className="flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md"
-              ref={!isMobile?refs.viewsRef:null}
+              ref={(!isMobile && last!=="savedevents")?refs.viewsRef:null}
               // style={{
               //   position: "fixed", // Key change
               //   top: isEventeli ? "68px" : "74px", // Custom top (adjust as needed)
@@ -239,7 +262,7 @@ const Index = () => {
                 </div>
               </div>
               {/* </Link> */}
-              {last !== "savedevents" && (
+              {(last !== "savedevents" && !(!isPublic && pathName.includes("collections")) ) && (
                 <>
                   <div className="cursor-pointer">
                     <div
@@ -330,7 +353,11 @@ const Index = () => {
             {last !== "savedevents" && (
               <>
                 <Link
-                  href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
+                  href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : pathName.includes("collections")?`/internal/trackers/create?type=${type}&collectionId=${secondLast}`:`/internal/trackers/${secondLast}/editTracker?type=${type}`
+                  }
                   onClick={() => {
                     GAEvent(
                       "trackers",
@@ -371,8 +398,13 @@ const Index = () => {
                     <span>Configurations</span>
                   </div>
                 </Link>
+                {!(!isPublic && pathName.includes("collections")) && 
                 <Link
-                  href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
+                  href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/manageAccess?type=${type}`
+                  }
                   onClick={() => {
                     GAEvent(
                       "trackers",
@@ -401,7 +433,7 @@ const Index = () => {
                     />
                     <span>Manage Access</span>
                   </div>
-                </Link>
+                </Link>}
               </>
             )}
           </div>
@@ -418,22 +450,25 @@ const Index = () => {
           >
             <Link
               className="flex items-center gap-2 text-[var(--primary-color)] p-0 h-auto font-medium text-sm hover:bg-transparent"
-              href={`/internal/trackers?skip=${skip}${
-                searchValue.length > 0
-                  ? `&q=${encodeURIComponent(searchValue)}`
-                  : ""
+              href={`${isPublic ? "/collections" : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""
+                }`
               }`}
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </Link>
           </Button>
+          {last !== "savedevents" && 
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
+                    href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : pathName.includes("collections")?`/internal/trackers/create?type=${type}&collectionId=${secondLast}`:`/internal/trackers/${secondLast}/editTracker?type=${type}`
+                  }
                     className="flex items-center"
                     ref={isMobile?refs.configRef:null}
                   >
@@ -447,7 +482,15 @@ const Index = () => {
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger onClick={() => setShare(!share)} >
+                  <TooltipTrigger
+                    onClick={() => {
+                      if (pathName.includes("collections")) {
+                        handleShare(); 
+                      } else {
+                        setShare(!share);
+                      }
+                    }}
+                  >
                   <Share2 className="w-4 h-4 text-[var(--primary-color)]" />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -456,20 +499,26 @@ const Index = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
+        }
         </div>
         {/* Title */}
         <div className="font-medium text-base mb-3 text-[var(--primary-text-color)]">
-          {data?.name}
+          {data?.name || name}
         </div>
         {/* Tab Bar */}
-        <Tabs
+        {(last !== "savedevents" && !pathName.includes("collections")) &&
+          <Tabs
           defaultValue={type ?? undefined}
           value={type ?? undefined}
           className="w-full"
         >
           <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">
             <Link
-              href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=list&eventType=active`}
+              href={
+                    isPublic
+                      ? `/collections/${pathName[2]}/events?view=list&eventType=active&type=${type}`
+                      : `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=list&eventType=active`
+                  }
               className="contents"
             >
               <TabsTrigger
@@ -485,7 +534,11 @@ const Index = () => {
               </TabsTrigger>
             </Link>
             <Link
-              href={`/internal/trackers/${secondLast}/notesDiscussion?type=${type}`}
+              href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/notesDiscussion?type=${type}`
+                  }
               className="contents"
             >
               <TabsTrigger
@@ -502,7 +555,11 @@ const Index = () => {
               </TabsTrigger>
             </Link>
             <Link
-              href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
+              href={
+                    isPublic
+                      ? `/preset?presetId=${pathName[2]}&type=${type}`
+                      : `/internal/trackers/${secondLast}/manageAccess?type=${type}`
+                  }
               className="contents"
             >
               <TabsTrigger
@@ -520,6 +577,7 @@ const Index = () => {
             </Link>
           </TabsList>
         </Tabs>
+        }
       </div>
       {share && (
         <div className={modalstyles.shareModal} onClick={closeModal}>

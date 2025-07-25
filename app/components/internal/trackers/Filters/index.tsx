@@ -84,7 +84,7 @@ import LocationTemplate from '@/components/search/locationTemplate'
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
-import Presets from "./Presets";
+import PrivatePresets from "./privatePreset";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
@@ -471,7 +471,7 @@ const Pages = () => {
   const [allEntries, setAllEntries] = useState<string[][]>([[]]);
   const [showTemplate,setShowTemplate] = useState(false);
   const [profileIds,setProfileIds] = useState<UpdatedProfileData[]>([]);
-  const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
+  const {getTrackerDetail,createTracker,editTracker, error, delTracker, presetData}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const [showFilters, setShowFilters]=useState(false);
@@ -600,7 +600,7 @@ const stepsConfig =[
       const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
-      .map(value => value.replace(/,/g, ''))
+      .map(value => value?.replace(/,/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -747,8 +747,13 @@ const stepsConfig =[
 
     return result;
   }
-   const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+   const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
     let finalResult;
+    const foundTemplate = templates.find(t => t.name === searchParams.get("type"));
+    // console.log("foundedTemplate", foundTemplate);
+    
+    // setTemplate(foundTemplate);
+    
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
@@ -763,7 +768,7 @@ const stepsConfig =[
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
-        template?.inputAreas?.map((field: InputArea, index: number) => (
+        (template || foundTemplate)?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
 
@@ -865,9 +870,17 @@ const stepsConfig =[
     const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
       (acc, [key, mappedKey]) => {
         const value = getLocalFilterValue(key as any);
-       
-        
-        if (Array.isArray(value) && value.length > 0) {
+        if (["includeKeywords", "excludeKeywords"].includes(mappedKey)) {
+  const structuredVal = value
+    .split(",")
+    .map((item) => item.trim().replaceAll(" ", "_"))
+    .filter(Boolean); 
+
+  if (structuredVal.length > 0) {
+    acc[mappedKey] = structuredVal.join(",");
+  }
+}
+        else if (Array.isArray(value) && value.length > 0) {
           acc[mappedKey] = value;
         } else if (typeof value === "string" && value === "true") {
           acc[mappedKey] = value;
@@ -1409,10 +1422,31 @@ const entriesWithEmpty1 = [...currentEntries, []];
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
     }
-    
+    if(searchParams.get("collectionId")){
+    fetchPresetJson();
+    }
   }, [editData, searchParams]);
+  // const [presetTemplateData1,setPresetTemplateData1]=useState();
+const fetchPresetJson = async () => {
+  try {
+    const data = {
+      trackerType: type,
+      presetId: searchParams.get("collectionId"),
+    };
 
-  // console.log(selectedLabels);
+    const result = await presetData(data);
+    
+    if (result?.count > 0) {
+      // setPresetTemplateData(result?.trackers);
+      handlePresetClick(result?.trackers?.[0], `${result?.trackers?.[0]?.id}`, type || "", result?.trackers?.[0]?.name)
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
@@ -1894,7 +1928,7 @@ if(isLoading) return <Loading/>
                                      className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
                                    >
                                      <LayoutGrid height="15px" width="15px" />
-                                     {" "}Pre-sets
+                                     {" "}Collections
                                    </Badge>
                                  </TooltipTrigger>
                                  {!template?.isUploadEnable &&
@@ -2002,7 +2036,7 @@ if(isLoading) return <Loading/>
                             </div>
                           } */}
         {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[index]?.length > 0   && 
-         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type} index={index}/>
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index}/>
         }
                         </div>
 
@@ -2244,7 +2278,7 @@ if(isLoading) return <Loading/>
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
       <div ref={!isMobile?refs.presetRef: null} className="flex items-center justify-between mb-4">
-        <Presets template={template} handlePresetClick={handlePresetClick}/> 
+        <PrivatePresets template={template} handlePresetClick={handlePresetClick}/> 
         </div>
     </div>
       }
@@ -2465,7 +2499,7 @@ if(isLoading) return <Loading/>
     }
     {showTemplate &&
     <div className={`card ${styles.competitor} max-h-[80vh]`}>
-      <Presets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
+      <PrivatePresets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
     </div>
     }
   </div>

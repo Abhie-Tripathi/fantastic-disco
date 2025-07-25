@@ -1,11 +1,9 @@
 import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
 import FilterContent from "@/components/search/FilterContent";
-import Alerts from "@/components/search/alerts";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import EventCount from "@/components/search/eventCount";
 import List from "@/components/search/list";
-import SortDropdown from "@/components/search/sortDropdown";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +12,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { isEventeli } from "@/config";
 import { useFilterContext } from "@/context/filterContext";
 import { useToast } from "@/hooks/use-toast";
+import Alerts from "@/components/search/alerts";
+import SortDropdown from "@/components/search/sortDropdown";
+import { isEventeli } from "@/config";
+import BulkImport from "@/components/bulk-import";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -30,11 +31,14 @@ import {
   Save,
   TableIcon,
 } from "lucide-react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import ExportModal from "./Search/ExportModal";
+import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
   const { getFilterValue, setFilter } = useFilterState();
+  const [showCheckBox, setShowCheckBox] = useState<boolean>(false);
   const [showViewDropdown, setShowViewDropdown] = useState<boolean>(false);
   const { searchParams } = useDefaultFilters();
   const selectedView = getFilterValue("view") || "list";
@@ -43,6 +47,7 @@ const Events = () => {
   const [showFilters, setShowFilter] = useState<boolean>(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
+  const [showExport, setShowExport] = useState<boolean>(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
@@ -70,20 +75,10 @@ const Events = () => {
     }
   }, [isMobile, searchParams, selectedView]);
 
-  const filtersCount = (function () {
-    const excludedFilters = [
-      "view",
-      "sortBy",
-      "offset",
-      "limit",
-      "active_gte",
-      "active_lte",
-      "show",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  })();
+  const filtersCount = useMemo(() => {
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
+  }, [localFilters]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -97,9 +92,11 @@ const Events = () => {
       setTrackerModalOpen(true);
     }
   };
-
+  const exportModalHandler = () => {
+    setShowExport(false);
+  };
   return (
-    <div className="flex-1 relative md:w-[62%]">
+     <div className="flex-1 relative md:w-[62%]">
       <div className={`md:px-6 transition-all duration-300`}>
         <Tabs
           defaultValue="list"
@@ -108,7 +105,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
+            className={`flex justify-between items-center !sticky !top-[120px] md:!top-0  bg-background z-[5] transition-padding duration-200 pt-2 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div
@@ -163,6 +160,15 @@ const Events = () => {
               {(selectedView === "list" ||
                 selectedView === "table" ||
                 selectedView == "") && <SortDropdown />}
+              {(selectedView === "list" ||
+                selectedView === "table" ||
+                selectedView === "") && (
+                <BulkImport
+                  bulkActions={["Bulk Action", "Export"]}
+                  setShowCheckBox={setShowCheckBox}
+                  setShowExport={setShowExport}
+                />
+              )}
             </div>
 
             <div className="flex md:hidden items-center justify-end gap-2">
@@ -300,11 +306,11 @@ const Events = () => {
                 className="flex-grow overflow-hidden mt-0"
               >
                 {isEventeli && <Alerts />}
-                <List />
+                <List showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
               </TabsContent>
               <TabsContent value="table" className="flex-grow overflow-hidden">
                 {isEventeli && <Alerts />}
-                <Table />
+                <Table showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
               </TabsContent>
               <TabsContent value="map">
                 <Map />
@@ -322,6 +328,9 @@ const Events = () => {
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
       />
+      {showExport &&
+      <ExportModal onClose={exportModalHandler} source={"research"}/>
+      }
     </div>
   );
 };

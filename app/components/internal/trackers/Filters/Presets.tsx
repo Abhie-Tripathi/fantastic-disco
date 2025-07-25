@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import styles from "./filters.style.module.css";
@@ -5,6 +6,12 @@ import Competitor from "/public/competitor.svg";
 import Keywords from "/public/keywords.svg";
 import Speaking from "/public/speaking.svg";
 import Template from "/public/template.svg";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTrackerServices } from '@/services/trackerServices';
 import { MagnifyingGlass } from "geist-icons";
 import Loading from "@/app/components/UI/Loading";
@@ -13,23 +20,30 @@ import { PresetData } from '@/types/trackers';
 import CategorySelector from "@/components/search/categorySelector";
 import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
-import { useFilterContext } from "@/context/filterContext";
+import { useRouter, useSearchParams } from "next/navigation";
+// import { useFilterContext } from "@/context/filterContext";
+import Link from "next/link";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Props {
-  template: any;
-  handlePresetClick: any;
+  isPublic?: boolean;
+  selectedLocation?: string[];
+  selectedCategory?: string[];
+  template?: any;
+  handlePresetClick?: (item: any, id: string, trackerType: string, name: string) => void;
   setShowTemplate?:(val:boolean)=>void;
+  isFull?:boolean;
+  containerRef?:any;
 }
 
-const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-  console.log(template.name);
-  
-  const {getLocalFilterValue, localFilters}=useFilterContext();
+//   const filterContext = useFilterContext();
+//   const getLocalFilterValue = !isPublic ? filterContext.getLocalFilterValue : () => "";
+// const localFilters = !isPublic ? filterContext.localFilters : {};
   const { presetData } = useTrackerServices();
+  const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState<string>("");
-  // const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
-  // const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
   const [sortBy, setSortBy] = useState({ value: "eventCount", label: "desc" });
   const [page, setPage] = useState(0);
@@ -38,23 +52,17 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [filterChanged, setFilterChanged] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  // const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const [totalCount,setTotalCount]=useState(0);
   const debounceTimer = useRef<NodeJS.Timeout>();
+  const router = useRouter();
   const sortOptions = [
     { value: "eventCount", label: "Event Count" },
     // { value: "newEventCount", label: "New Event Count" },
     // { value: "start", label: "Rank" },
   ];
-  const selectedLocation = useMemo(() =>
-    getLocalFilterValue("presetCountry")?.split(',').filter(Boolean) || [],
-    [localFilters.presetCountry]
-  );
-  const selectedCategory = useMemo(() =>
-    getLocalFilterValue("presetCategory")?.split(',').filter(Boolean) || [],
-    [localFilters.presetCategory]
-  );
+  
   
   // Fetch data function with pagination
   const fetchPresetJson = useCallback(async () => {
@@ -70,8 +78,8 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
         ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
         ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
         ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
-        ...(selectedLocation.length ? { countryIds: selectedLocation.join(",") } : {}),
-        ...(selectedCategory.length ? { categorySlugs: selectedCategory.join(",") } : {}),
+        ...(selectedLocation?.length ? { countryIds: selectedLocation.join(",") } : {}),
+        ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
       };
   
       const result = await presetData(data);
@@ -164,32 +172,93 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
     }
     return count;
   };
+  
+const handlePresetClicked = (item:PresetData, id:string, trackerType:string, name:string) => {
+  if (!isPublic) {
+    handlePresetClick?.(item, id, trackerType, name);
+  }
+};
+const redirectUrl=(item:PresetData, id:string, trackerType:string, name:string, index:number)=>{
+  sessionStorage.setItem("redirect", `/preset?presetId=${item?.id}&type=${trackerType}`)
+ return encodeURIComponent(`/preset?presetId=${item?.id}&type=${trackerType}`);
+}
+const getCompFilterdData = (data: string[]) => {
+  const res: string[] = [];
+  const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  data?.forEach((item: string) => {
+    const value = item?.trim();
+    if (!value) return;
+    if (regex.test(value)) {
+    try {
+      const url = new URL(value.startsWith("http") ? value : `https://${value}`);
+      const domain = url.hostname.replace(/^www\./, ""); // remove www.
+      res.push(domain);
+    } catch {
+      res.push(value);
+    }
+  }else{
+    res.push(value)
+  }
+  });
+
+  return res;
+};
+
+const structured=(obj:any, type:string[])=>{
+
+
+const limit=3;
+ if(type.includes("T_PRODUCT_KEYWORDS")){
+  const resArray= [...obj.includeKeywords, ...obj.excludeKeywords]
+  return resArray.slice(0,limit).join(", ")
+ }else if(type.includes("T_COMPETITOR")){
+   const resArray = [...obj.organizations.slice(0,limit)]
+   return getCompFilterdData(resArray).join(", ");
+ }else if (type.includes("T_PEOPLE_FINDER") || type.includes("T_SPEAKING_OPPORTUNITY")) {
+  const keys = Object.keys(obj);
+  const maxLength = limit;
+
+  const result = Array.from({ length: maxLength }).map((_, i) => {
+    const values = keys.map(key => obj[key]?.[i]).filter(Boolean); // safely access
+
+    return values
+      .map((val, index) => (index === 0 ? val : `(${val})`))
+      .join(" ");
+  });
+  return result.join(", ");
+}
+
+
+}
+
+
   return (
     <div className="w-full">
+      {!isFull &&
       <div className="flex justify-between md:justify-center gap-2 items-center font-semibold">
         <div className="flex items-center gap-1">
-        <span className="text-lg">Get Started with Pre-sets</span>
+        <span className="text-lg">Get Started with Collections</span>
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">
           {totalCount}
         </span>
         </div>
         <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
-      </div>
+      </div>}
       
-      <div className="flex gap-2 mt-4 mx-auto w-full md:w-[95%]">
-        <div className="w-full md:w-1/2 bg-background">
-          <div className="border border-input rounded px-3 py-2 flex items-center gap-2">
+      <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
+        <div className="w-full bg-background">
+          <div className="border border-input rounded px-3 py-2 flex items-center gap-2 mx-2.5 md:mx-0">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none w-full bg-transparent"
-              placeholder="Search by Pre-sets name, Country or Category"
+              placeholder="Search by Collection name, Country or Category"
             />
           </div>
         </div>
-        {template.name === "T_COMPETITOR" &&
-        <div className="hidden md:w-[20%] md:block">
+        {template?.name === "T_COMPETITOR" &&
+        <div className="hidden md:w-[100%] md:block">
         <AudienceSpreadSelector source="preset"/>
         </div>
         }
@@ -204,25 +273,38 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
           />
         </div> */}
       </div>
-
+      <div className="block">
       <div
-      className="h-[calc(100vh-313px)] pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-6"
-      ref={containerRef}
+      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-4`}
+      // ref={containerRef}
+       style={{
+    height: (isPublic || isFull)
+      ? "auto"
+      : "calc(100vh - 313px)", // Default for mobile
+      // scrollbarWidth:"none",
+    // Override on medium screens and up (optional - can't do media queries in inline styles, so use JS breakpoint logic if needed)
+  }}
           >
         <div className={styles.presetContainer}>
           {presetTemplateData.map((item, index) => (
+            <Link 
+                  href={isFull 
+      ? `/collections/${item.id}/events?view=${isMobile ? "list" : "table"}&eventType=active&type=${item.trackerType[0]}`
+      : `/internal/trackers/create?type=${item.trackerType[0]}&collectionId=${item.id}`}
+                  key={index}>
             <div
               key={`${item.id}-${index}`}
-              className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
+              className="w-full p-2 gap-3 flex items-center flex-col h-[350px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto hide-scrollbar"
               // onClick={
               //   item.enabled
               //     ? () => handlePresetClick(item, item.id, item.url, item.trackerName)
               //     : undefined
               // }
-              onClick={() => handlePresetClick(item, item.id, item.trackerType[0], item.name)}
+              onClick={() => handlePresetClicked(item, item.id, item.trackerType[0], item.name)}
               style={{cursor: "pointer"}}
             >
-              <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">
+              
+              <div className="w-full flex items-center min-h-[110px] rounded-md bg-[var(--tabs-background-color)] relative">
                 <div className={styles.account}>
                   <Image
                     src={
@@ -247,12 +329,60 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
                 )}
               </div>
               <div className="w-full h-[60%] flex flex-col gap-3">
-                <div className={styles.bottomViewTwo}>
-                  {item?.name}
+                <div className="h-[80%]">
+  <div className={styles.bottomViewTwo}>
+    {item?.name}
+  </div>
+
+  <div className={styles.text}>
+    {item?.description}
+  </div>
+  </div>
+  {/* <div className="border-t border-gray-200 -m-1" /> */}
+
+  <div className="text-[var(--secondary-text-color)] h-auto">
+  <div className="flex flex-wrap items-center">
+    {structured(item?.data, item?.trackerType)
+      ?.split(",")
+      ?.map((entry, i) => {
+        const isLong = entry.length > 35;
+        const truncated = isLong ? `${entry.substring(0, 35)}...` : entry;
+
+        return (
+          <TooltipProvider key={i}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-1 mb-1 cursor-default"
+                >
+                  {truncated}
                 </div>
-                <div className={styles.text}>{item?.description}</div>
-              </div>
+              </TooltipTrigger>
+              {isLong && (
+                <TooltipContent>
+                  <p>{entry}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      })}
+
+    {/* 👇 Make this inline with the tags */}
+    <span
+      className="text-[var(--secondary-text-color)] hover:underline cursor-pointer text-[12px] inline-block mb-1"
+    >
+      +Show More
+    </span>
+  </div>
+</div>
+
+</div>
+
+                
+                
             </div>
+            </Link>
           ))}
         </div>
         {/* Loading indicator that triggers infinite scroll */}
@@ -268,6 +398,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate}: Props) => {
               We couldn&rsquo;t find any preset matching your filter criteria at the moment.
             </div>
           )}
+      </div>
       </div>
     </div>
   );

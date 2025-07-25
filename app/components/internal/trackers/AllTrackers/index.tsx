@@ -133,8 +133,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0
+        totalCount :  item?.groupedEventsCount?.[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0
       }
     })
     
@@ -272,7 +272,7 @@ const clickHandler=(id:string)=>{
     hover:border-[var(--primary-color)] transition-all duration-200`}
 >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
-          <div className="flex gap-2 justify-between w-[100%] flex-row items-center">
+          <div className="flex gap-2 justify-between w-[100%] flex-row items-start">
             <div className="flex flex-col gap-2 h-full justify-between">
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
@@ -291,15 +291,12 @@ const clickHandler=(id:string)=>{
         </div>
         <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
         <div className="overflow-hidden flex gap-1">
-  {locations.slice(0, isMobile?2:3).map((loc:string, i:number) => (
-    // <div key={i} className="px-2 py-0.5 rounded bg-gray-100 text-xs inline-block whitespace-nowrap">
-    //   {loc}
-    // </div>
-    <div key={i}>
-      {loc} 
-      {locations.length>1 && " | "} 
-    </div>
-  ))}
+  {locations.slice(0, isMobile ? 2 : 3).map((loc: string, ind: number, arr:[]) => (
+  <div key={ind}>
+    {ind === arr.length - 1 ? loc : `${loc} | `}
+  </div>
+))}
+
   </div>
 
   {locations.length > (isMobile ? 2 : 3) && (
@@ -382,11 +379,13 @@ const clickHandler=(id:string)=>{
             </div>
             <div className="flex gap-2 sm:w-[100%] h-full" style={{width:"auto"}}>
             <div className="flex w-full h-full flex-col justify-between">
-            <div className="flex gap-2 w-[100%] text-sm font-medium">
+            <div className="flex gap-2 w-[100%] text-sm font-medium" style={{paddingBottom: "2px",
+scrollbarWidth: "none",
+overflowY: "scroll"}}>
             {eventsCount?.map((item,index)=>(
-              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
+              <div className={`flex w-20 flex-col gap-1 items-center justify-center card `} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-              {isEventeli && (
+              {/* {(isEventeli && item.type !== "Bookmark") && (
           item.type === "Business" ? (
             <Buildings height="12px" width="12px" color="var(--primary-color)" />
           ) : item.type === "Social" ? (
@@ -396,17 +395,17 @@ const clickHandler=(id:string)=>{
             <CloudAlert height={12} width={12} color="var(--primary-color)" />
           )
           )}
-                  {!isEventeli &&
-                    (item.type === "Bookmark" ? (
-                      <Bookmark width="12px" height="12px" color="var(--primary-color)" />
-                    ) : (
-                      <Image src={item.logo} alt={item.type} width={12} height={12} />
-                    ))
-                  }
+                  {item.type === "Bookmark" ? (
+                    <Bookmark width="12px" height="12px" color="var(--primary-color)" />
+                  ) : !isEventeli ? (
+                    <Image src={item.logo} alt={item.type} width={12} height={12} />
+                  ) : null} */}
 
+                <span className="text-xs">
                 {item.type}
-                
+                </span>
               </div>
+              {/* <div className="w-[80%]" style={{ border: "0.2px solid var(--border-color)" }}></div> */}
               <div className={styles.numberOfEvents}>
                 {formatCount(item?.totalCount)}
                 {/* <div className="badge_success">
@@ -416,7 +415,7 @@ const clickHandler=(id:string)=>{
                 </span>
                 </div> */}
               </div>
-              <div className={styles.events}>Events</div>
+              <div className={`${styles.events} font-normal text-xs`}>Events</div>
             </div>
             ))}
           </div>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { format, fromUnixTime, addDays, addYears } from "date-fns";
+import { format, fromUnixTime } from "date-fns";
 import { BASE_URL } from "@/config";
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY!);
@@ -24,7 +24,7 @@ export async function GET(
     }
 
     const session = await stripe.checkout.sessions.retrieve(params.session_id, {
-      expand: ["subscription", "customer", "invoice.payment_intent"],
+      expand: ["invoice"],
     });
 
     const email_id = userDetail.data?.email;
@@ -35,18 +35,26 @@ export async function GET(
     const currency = session.currency;
     const totalAmountPaid = session.amount_total;
     const paymentStatus = session.payment_status;
+    const subscriptionId =
+      typeof session.subscription === "string"
+        ? session.subscription
+        : session.subscription?.id;
 
-    const startDate = fromUnixTime(session.created);
+    const startDate =
+      typeof session.invoice !== "string"
+        ? session.invoice?.lines.data[0].period.start
+        : null;
+    const endDate =
+      typeof session.invoice !== "string"
+        ? session.invoice?.lines.data[0].period.end
+        : null;
 
-    let endDate = startDate;
-    if (frequency === "yearly") {
-      endDate = addYears(startDate, 1);
-    } else if (frequency === "monthly") {
-      endDate = addDays(startDate, 30);
-    }
-
-    const formattedStartDate = format(startDate, "yyyy-MM-dd");
-    const formattedEndDate = format(endDate, "yyyy-MM-dd");
+    const formattedStartDate = startDate
+      ? format(fromUnixTime(startDate), "yyyy-MM-dd")
+      : null;
+    const formattedEndDate = endDate
+      ? format(fromUnixTime(endDate), "yyyy-MM-dd")
+      : null;
 
     let updatePlanResponse = {};
     if (
@@ -54,43 +62,59 @@ export async function GET(
       sub_expires_at &&
       Date.now() < sub_expires_at * 1000 &&
       plan &&
+      totalAmountPaid &&
+      currency &&
       formattedStartDate &&
       formattedEndDate &&
-      email_id === customerEmail
+      email_id === customerEmail &&
+      subscriptionId !== undefined
     ) {
-      // const updatedPayload = {
-      //   "planStartDate": startDate,
-      //   "planEndDate": endDate, // -- or change interval as per plan duration
-      //   "purchaseValue": totalAmountPaid, // -- replace with actual value if needed
-      //   "currency": currency, // -- replace with actual currency
-      //   "updatedAt": new Date().toISOString(), // CURRENT_TIMESTAMP
-      //   "pendingRequests": '200', // essential or scale - 200, advacne - 1000
-      //   "pendingCompanySearchRequests": '200' // essential or scale - 200, advanced-1000
-      // }
+      const payload = {
+        plan: Number(plan),
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        planRenewalDate: formattedEndDate,
+        subscriptionId: subscriptionId,
+        planFrequency:
+          frequency === "monthly"
+            ? "MONTHLY"
+            : frequency === "yearly"
+            ? "ANNUALLY"
+            : "",
+        planPurchaseValue: totalAmountPaid / 100,
+        planPurchaseCurrency: currency?.toUpperCase(),
+      };
 
-      updatePlanResponse = await upgradePlan(
-        plan,
-        formattedStartDate,
-        formattedEndDate
-      );
+      updatePlanResponse = await upgradePlan(payload);
+
+      const res = NextResponse.json({
+        status: paymentStatus,
+        updatePlan: updatePlanResponse,
+      });
+      return res;
     }
 
-    const res = NextResponse.json({
-      stripe: session,
-      updatePlan: updatePlanResponse,
-    });
-
-    return res;
+    return NextResponse.json(
+      { error: "Subscription Validation Failed" },
+      { status: 500 }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-const upgradePlan = async (
-  plan: number | string,
-  startDate: string,
-  endDate: string
-) => {
+interface updatePlanType {
+  plan: number;
+  startDate: string;
+  endDate: string;
+  planRenewalDate: string;
+  subscriptionId: string;
+  planFrequency: string;
+  planPurchaseValue: number;
+  planPurchaseCurrency: string;
+}
+
+const upgradePlan = async (data: updatePlanType) => {
   try {
     const fetchToken = await fetch(`${BASE_URL}/me/account/membership`, {
       method: "POST",
@@ -104,10 +128,8 @@ const upgradePlan = async (
     const token = resp.data.user.token;
 
     const payload = {
-      plan: Number(plan),
+      ...data,
       token: token,
-      startDate: startDate,
-      endDate: endDate,
     };
 
     const updatePlan = await fetch(`${BASE_URL}/me/account/membership`, {

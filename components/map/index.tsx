@@ -53,8 +53,8 @@ const MapStyle = {
 };
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/map/arts.png",
-  community: "/eventType/map/community.png",
+  "stage-performance": "/eventType/map/arts.png",
+  "community-group": "/eventType/map/community.png",
   concert: "/eventType/map/concerts.png",
   conferences: "/eventType/map/conferences.png",
   festival: "/eventType/map/festivals.png",
@@ -333,6 +333,7 @@ export default function MapComponent({
   const sourceRef = useRef(source);
   const trackerIdRef = useRef(trackerId);
   const trackerTypeRef = useRef(trackerType);
+  const hasInitiallyFetchedForGeoCoordinates = useRef(false);
 
   useEffect(() => {
     currentZoomGroupRef.current = currentZoomGroup;
@@ -349,10 +350,14 @@ export default function MapComponent({
   }, [source, trackerId, trackerType]);
 
   const fetchEventsOnMove = useCallback(async () => {
+    const isGeoCoordinates = location?.type === "geoCoordinates";
+    const shouldSkipForGeoCoordinates = isGeoCoordinates && hasInitiallyFetchedForGeoCoordinates.current;
+
     if (
       currentZoomGroupRef.current !== "event" ||
       !mapRef.current ||
-      isCurrentlyFetching.current
+      isCurrentlyFetching.current ||
+      shouldSkipForGeoCoordinates
     ) {
       return;
     }
@@ -364,7 +369,7 @@ export default function MapComponent({
     const bounds = map.getBounds();
     if (!bounds) return;
 
-    if (lastFetchCenter.current) {
+    if (!isGeoCoordinates && lastFetchCenter.current) {
       const distance = Math.sqrt(
         Math.pow(center.lat - lastFetchCenter.current.lat, 2) +
           Math.pow(center.lng - lastFetchCenter.current.lng, 2)
@@ -377,24 +382,37 @@ export default function MapComponent({
     isCurrentlyFetching.current = true;
     lastFetchCenter.current = { lat: center.lat, lng: center.lng };
 
-    const ne = bounds.getNorthEast();
-    const sw = bounds.getSouthWest();
-    const radius =
-      (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) * 111) /
-      2;
+    let viewBound;
 
-    const viewBound = {
-      boundType: "point",
-      coordinates: {
-        latitude: center.lat,
-        longitude: center.lng,
-        radius: radius,
-      },
-    };
+    if (location?.type === "geoCoordinates") {
+      const { coordinates } = source === "tracker" ? location.trackerGeoCordinates : location;
+      viewBound = {
+        boundType: "point",
+        coordinates: {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          radius: coordinates.radius,
+        },
+      };
+    } else {
+      const ne = bounds.getNorthEast();
+      const sw = bounds.getSouthWest();
+      const radius =
+        (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) * 111) /
+        2;
+
+      viewBound = {
+        boundType: "point",
+        coordinates: {
+          latitude: center.lat,
+          longitude: center.lng,
+          radius: radius,
+        },
+      };
+    }
 
     try {
       let eventsData: any = {};
-
       if (sourceRef.current === "tracker") {
         eventsData = await getEventsLatLongData(
           trackerIdRef.current,
@@ -407,22 +425,24 @@ export default function MapComponent({
           ?.toString()
           .replace(/locationIds=[^&]*&?/, "")
           .replace(/viewBound=[^&]*&?/, "");
-
         const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
         const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
-
         eventsData = await getEventsWithSearchParams(finalSearchParams);
       }
 
       console.log("Events fetched on move:", eventsData?.events?.length);
       setEvents((eventsData?.events as MapEvents[]) || []);
+
+      if (isGeoCoordinates) {
+        hasInitiallyFetchedForGeoCoordinates.current = true;
+      }
     } catch (error) {
       console.error("Error fetching events on map move:", error);
     } finally {
       isCurrentlyFetching.current = false;
       setIsMapMoving(false);
     }
-  }, []);
+  }, [location]);
 
   const debouncedFetchEventsOnMove = useMemo(() => {
     return debounce(fetchEventsOnMove, 500);
@@ -435,7 +455,10 @@ export default function MapComponent({
     ({ viewState }: { viewState: ViewState }) => {
       setViewport(viewState);
 
-      if (currentZoomGroup === "event" && !isCurrentlyFetching.current) {
+      const isGeoCoordinates = location?.type === "geoCoordinates";
+      const shouldSkipForGeoCoordinates = isGeoCoordinates && hasInitiallyFetchedForGeoCoordinates.current;
+
+      if (currentZoomGroup === "event" && !isCurrentlyFetching.current && !shouldSkipForGeoCoordinates) {
         const now = Date.now();
         if (now - lastCallTime.current > COOLDOWN_PERIOD) {
           console.log("Map moved in event zoom group - triggering fetch");
@@ -445,9 +468,8 @@ export default function MapComponent({
         }
       }
     },
-    [currentZoomGroup, debouncedFetchEventsOnMove]
+    [currentZoomGroup, debouncedFetchEventsOnMove, location]
   );
-
   useEffect(() => {
     if (
       currentZoomGroup === "event" &&
@@ -466,13 +488,17 @@ export default function MapComponent({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [currentZoomGroup, fetchEventsOnMove]);
+  }, [currentZoomGroup, fetchEventsOnMove, location]);
 
   useEffect(() => {
     return () => {
       debouncedFetchEventsOnMove.cancel();
     };
   }, [debouncedFetchEventsOnMove]);
+
+  useEffect(() => {
+    hasInitiallyFetchedForGeoCoordinates.current = false;
+  }, [location]);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
