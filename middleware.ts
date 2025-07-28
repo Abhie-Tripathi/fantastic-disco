@@ -12,9 +12,16 @@ export function middleware(request: NextRequest) {
   const cookie = request.cookies.get(key)?.value;
 
   const pathName = request.nextUrl.pathname + request.nextUrl.search || "";
-
+  
   if (!cookie) {
     if (pathName && pathName != "/") {
+      const presetRegex = /^\/preset\?presetId=[a-zA-Z0-9-]+&type=[a-zA-Z0-9_]+$/;
+
+  if (presetRegex.test(pathName) || pathName.includes("/trackers?showTemplates=true")) {
+    return NextResponse.redirect(
+      new URL(`/signup?redirect=${encodeURIComponent(pathName)}`, request.url)
+    );
+  }else 
       return NextResponse.redirect(
         new URL(`/signin?redirect=${encodeURIComponent(pathName)}`, request.url)
       );
@@ -40,6 +47,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|login|location|category|verify-otp|.well-known).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|login|location|category|verify-otp|.well-known|collection).*)",
   ],
 };

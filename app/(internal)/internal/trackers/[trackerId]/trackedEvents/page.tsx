@@ -84,7 +84,6 @@ interface LocationObject {
 const Page = ({ params }: { params: any }) => {
   const isMobile = useIsMobile();
   const { data, savedEventCount, setIsNewCall, editTrue } = useTrackerContext();
-  // console.log(data);
   const [share, setShare] = useState(false);
   const pathname = usePathname();
   const { getCalendarViewEvents, getTrackerEvents, getSavedEvents } =
@@ -281,8 +280,8 @@ const Page = ({ params }: { params: any }) => {
       const transformedData = CountValues.gtm.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: data?.groupedEventsCount[key] || 0,
-          newCount: data?.groupedEventsCount[key]?.new || 0,
+          totalCount: data?.groupedEventsCount?.[key] || 0,
+          newCount: data?.groupedEventsCount?.[key]?.new || 0,
         };
       });
 

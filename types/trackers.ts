@@ -155,7 +155,22 @@ export interface PresetData{
         entityId: string | null;
       accessLevel: string;
     }
-
+    export interface PublicEvents {
+  searchByEntity?: string;
+  view?: string;
+  includeKeywords?: string;
+  excludeKeywords?: string;
+  userName?: string;
+  userOrgWebsite?: string;
+  active_lte?: string;
+  active_gte?: string;
+  createdAt?: string;
+  orgName?: string;
+  orgWebsite?: string;
+  limit?: string;
+  offset?: string;
+  trackerEventStatus?: string; 
+}
     export interface AllTrackerTypes{
       filterValues: FilterValue;
       id: string;

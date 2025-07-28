@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import { heatmapColors } from "./constants";
+import { heatmapColors, darkModeHeatmapColors } from "./constants";
 import { CalendarMonthEventWithHeatmap } from ".";
 import { Alert, Event } from "@/types/events";
 import { useTheme } from "@/context/theme";
@@ -24,6 +24,7 @@ const YearView = ({
   const searchParams = useSearchParams();
   const months = moment.months();
   const { theme } = useTheme();
+  const currentHeatmapColor = theme == "dark" ? darkModeHeatmapColors : heatmapColors
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 0
   );
@@ -90,7 +91,7 @@ const YearView = ({
   };
 
   const getHeatmapColor = (category: string) => {
-    const colorObj = heatmapColors.find((color) => color.name === category);
+    const colorObj = currentHeatmapColor.find((color) => color.name === category);
     return colorObj ? colorObj.color : "white";
   };
 

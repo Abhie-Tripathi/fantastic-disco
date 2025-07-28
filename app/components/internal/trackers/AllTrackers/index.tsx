@@ -143,8 +143,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.gtm.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key] || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0,
+        totalCount :  item?.groupedEventsCount?.[key] || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
       }
     })
@@ -263,6 +263,22 @@ const clickHandler=(id:string)=>{
     setIsNewCall(true); 
     setTrackerId(id);
   }
+const formatLocationParts = (locations: string[], isMobile?: boolean): JSX.Element => {
+  if (!Array.isArray(locations) || locations.length === 0) return <></>;
+
+  const visible = locations.slice(0, isMobile?2:3).join(" | "); 
+  const remaining = locations.length - (isMobile?2:3);
+
+  return (
+    <span>
+      {visible}
+      {remaining > 0 && (
+        <span className="text-primary font-medium ml-1"> +{remaining}</span>
+      )}
+    </span>
+  );
+};
+
   return (
     
    <div
@@ -272,7 +288,7 @@ const clickHandler=(id:string)=>{
     hover:border-[var(--primary-color)] transition-all duration-200`}
 >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
-          <div className="flex gap-2 justify-between w-[100%] flex-row items-start">
+          <div className="flex gap-2 justify-between flex-row items-start w-auto">
             <div className="flex flex-col gap-2 h-full justify-between">
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
@@ -289,21 +305,22 @@ const clickHandler=(id:string)=>{
         <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
-        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px]">
         <div className="overflow-hidden flex gap-1">
-  {locations.slice(0, isMobile ? 2 : 3).map((loc: string, ind: number, arr:[]) => (
+  {/* {locations.slice(0, isMobile ? 2 : 3).map((loc: string, ind: number, arr:[]) => (
   <div key={ind}>
     {ind === arr.length - 1 ? loc : `${loc} | `}
   </div>
-))}
+))} */}
+      {formatLocationParts(locations, isMobile)}
 
   </div>
 
-  {locations.length > (isMobile ? 2 : 3) && (
+  {/* {locations.length > (isMobile ? 2 : 3) && (
   <div className="flex items-center text-xs text-primary font-medium ml-1">
     {`+${locations.length - (isMobile ? 2 : 3)}`}
   </div>
-)}
+)} */}
 
 </div>
 

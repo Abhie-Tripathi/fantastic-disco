@@ -31,8 +31,9 @@ import {
   Save,
   TableIcon,
 } from "lucide-react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import ExportModal from "./Search/ExportModal";
+import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -74,20 +75,10 @@ const Events = () => {
     }
   }, [isMobile, searchParams, selectedView]);
 
-  const filtersCount = (function () {
-    const excludedFilters = [
-      "view",
-      "sortBy",
-      "offset",
-      "limit",
-      "active_gte",
-      "active_lte",
-      "show",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
-  })();
+  const filtersCount = useMemo(() => {
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
+  }, [localFilters]);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -114,7 +105,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center !sticky !top-[128px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
+            className={`flex justify-between items-center !sticky !top-[120px] md:!top-0  bg-background z-[5] transition-padding duration-200 pt-2 md:py-3 md:pt-4 px-4 pb-4 md:px-0`}
           >
             <EventCount view="events" />
             <div

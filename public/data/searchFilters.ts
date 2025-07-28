@@ -469,7 +469,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     eventFormats: {
-      isEnabled: data?.eventFormats?.isEventFormatEnabled ?? true,
+      isEnabled: data?.eventFormats?.isAllowed ?? true,
       options: searchFilters?.eventFormats?.options?.map((format) => ({
         ...format,
         isEnabled:
@@ -478,7 +478,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     categories: {
-      isEnabled: data?.categories?.isCategoryEnabled ?? true,
+      isEnabled: data?.categories?.isAllowed ?? true,
       options: searchFilters?.categories?.options?.map((category) => ({
         ...category,
         isEnabled:
@@ -489,7 +489,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     eventStatus: {
-      isEnabled: data?.status?.isEventStatusEnabled ?? true,
+      isEnabled: data?.status?.isAllowed ?? true,
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled: data?.status?.enabledValue?.includes(status.id) ?? true,
@@ -497,7 +497,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     userRatings: {
-      isEnabled: data?.ratings?.isRatingEnabled ?? true,
+      isEnabled: data?.ratings?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.ratings?.enabledValue?.length),
       options: searchFilters?.userRatings?.options?.map((rating) => ({
         ...rating,
@@ -506,7 +506,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     eventEntries: {
-      isEnabled: data?.entryType?.isEntryTypeEnabled ?? true,
+      isEnabled: data?.entryType?.isAllowed ?? true,
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled: data?.entryType?.enabledValue?.includes(entry.id) ?? true,
@@ -514,7 +514,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     maturityLevels: {
-      isEnabled: data?.maturity?.isMaturityEnabled ?? true,
+      isEnabled: data?.maturity?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.maturity?.enabledValue?.length),
       options: searchFilters?.maturityLevels?.options?.map((level) => ({
         ...level,
@@ -522,8 +522,13 @@ export const generateSearchFilters = (apiResponse: any) => {
       })),
     },
 
+
+    keywords:{
+      isEnabled: data?.keywords?.isAllowed ?? true,
+    },
+
     globalAndTourings: {
-      isEnabled: data?.branded?.isBrandedEnabled ?? true,
+      isEnabled: data?.branded?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.branded?.enabledValue),
       options: [
         {
@@ -540,7 +545,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     frequencies: {
-      isEnabled: data?.frequencies?.isFreqEnabled ?? true,
+      isEnabled: data?.frequencies?.isAllowed ?? true,
       isToggleEnabled: true,
       options: searchFilters?.frequencies?.options?.map((format) => ({
         ...format,
@@ -549,18 +554,18 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     eventRanking: {
-      isEnabled: data?.eventRanking?.isRanking ?? true,
+      isEnabled: data?.eventRanking?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.eventRanking?.isRanking),
       options: searchFilters.eventRanking.options,
     },
 
     audienceZone: {
-      isEnabled: data?.audienceZone?.isZoneEnabled ?? true,
+      isEnabled: data?.audienceZone?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.audienceZone?.isZoneEnabled),
     },
 
     estimatedExhibitor: {
-      isEnabled: data?.estimatedExhibitors?.isExhibitorsEnabled ?? true,
+      isEnabled: data?.estimatedExhibitors?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.estimatedExhibitors?.enabledValue?.length),
       options: searchFilters.estimatedExhibitor.options.map((exhibitor) => ({
         ...exhibitor,
@@ -572,7 +577,7 @@ export const generateSearchFilters = (apiResponse: any) => {
 
     estimatedVisitors: {
       isEnabled:
-        data?.estimatedVisitorRangeTag?.isEstimatedVisitorRangeTag ?? true,
+        data?.estimatedVisitorRangeTag?.isAllowed ?? true,
       options: searchFilters.estimatedVisitors.options.map((visitor) => {
         return {
           ...visitor,
@@ -585,25 +590,25 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     eventAnalytics: {
-      isEnabled: data?.analytics?.isAnalyticsEnabled ?? true,
+      isEnabled: data?.analytics?.isAllowed ?? true,
       isToggleEnabled: Boolean(data?.analytics?.isAnalyticsEnabled),
     },
 
     forcastedStatus: {
-      isEnabled: data?.isForecasted?.isForecastedEnabled ?? true,
+      isEnabled: data?.isForecasted?.isAllowed ?? true,
       isToggleEnabled: true,
     },
 
     audienceSpread: {
-      isEnabled: data?.audienceSpread?.isAudienceEnabled ?? true,
+      isEnabled: data?.audienceSpread?.isAllowed ?? true,
     },
 
     audienceProfile: {
-      isEnabled: data?.designation?.isProfileEnabled ?? true,
+      isEnabled: data?.designation?.isAllowed ?? true,
     },
 
     economicImpact: {
-      isEnabled: data?.economicImpact?.isEconomicImpactEnabled ?? true,
+      isEnabled: data?.economicImpact?.isAllowed ?? true,
       isToggleEnabled: true,
     },
   };

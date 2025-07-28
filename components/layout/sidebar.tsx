@@ -83,11 +83,9 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { user, signOut } = useAuthContext();
+  const { user, signOut, membershipData, isTentimesUser } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
-  const [membershipData, setMembershipData] = useState<any>(null);
-  const { getMembershipData } = useProfileServices();
 
   useEffect(() => {
     if (user) setStoredUser(user);
@@ -107,18 +105,6 @@ const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
-  }, []);
-
-  useEffect(() => {
-    const fetchMembership = async () => {
-      try {
-        const data = await getMembershipData();
-        setMembershipData(data);
-      } catch (e) {
-        setMembershipData(null);
-      }
-    };
-    fetchMembership();
   }, []);
 
   const generateProfileName = () => {
@@ -317,7 +303,7 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal")
+          {(pathname.startsWith("/internal") || pathname.startsWith("/collections"))
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
@@ -472,7 +458,7 @@ const Sidebar = () => {
               )}
             </AccordionItem>
           </Accordion>
-          {!isEventeli && (
+          {((isEventeli && isTentimesUser) || !isEventeli) && (
             <Button
               variant="ghost"
               size="icon"

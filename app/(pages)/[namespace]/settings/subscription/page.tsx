@@ -168,7 +168,7 @@ const Subscription = () => {
           open={showSuccessModal}
           onOpenChange={setShowSuccessModal}
           isSuccess={
-            paymentStatus?.stripe?.payment_status === "paid" ? true : false
+            paymentStatus?.status === "paid" && paymentStatus?.updatePlan?.data?.id ? true : false
           }
           membership={membership || 0}
         />

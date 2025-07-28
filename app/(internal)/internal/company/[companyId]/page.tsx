@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Buildings,
@@ -71,6 +71,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   // const referrer = document.referrer;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const tabs = [
     { tabName: "Overview", path: "overview" },
     { tabName: "Events", path: "insights" },
@@ -151,6 +152,16 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     },
   });
 
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (window.history.length > 1) {
+        setShowBackToSearch(true);
+      } else {
+        setShowBackToSearch(false);
+      }
+    }
+  }, []);
+
   if (isFetching) {
     return (
       <div className="p-8">
@@ -223,15 +234,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button
-          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span className="text-[var(--primary-color)] font-medium">
-            Back to Search
-          </span>
-        </button>
+        {showBackToSearch && (
+          <button
+            className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft width="14px" height="14px" color="#6750A4" />
+            <span className="text-[var(--primary-color)] font-medium">
+              Back to Search
+            </span>
+          </button>
+        )}
 
         {compLogo !== null && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">

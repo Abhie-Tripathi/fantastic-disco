@@ -77,8 +77,10 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
     poc.user_profilePicture
   );
   const isMobile = useIsMobile();
+  const [imageError, setImageError] = useState(false);
   const handleImageError = useCallback(() => {
-    setImageSrc(DEFAULT_USER_ICON);
+    setImageError(true);
+    setImageSrc(null);
   }, []);
 
   const locationDisplay = useMemo(() => {
@@ -150,17 +152,35 @@ const PeopleCard: React.FC<PeopleCardProps> = ({
     <div className="bg-background rounded-xl border shadow-sm relative w-full">
       <Link href={`/internal/user/${poc.user_id}`} className="block">
         <div className="p-4 flex gap-6">
-          {imageSrc && (
-            <Image
-              src={imageSrc}
-              alt={`${poc.user_name}'s profile picture`}
-              className="flex h-16 w-16 rounded-lg shadow-lg border"
-              width={200}
-              height={200}
-              onError={handleImageError}
-              priority={false}
-            />
-          )}
+          <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+            {imageSrc && !imageError ? (
+              <img
+                src={imageSrc}
+                alt={`${poc.user_name}'s profile picture`}
+                className="flex h-16 w-16 rounded-lg shadow-lg border object-cover bg-white"
+                width={64}
+                height={64}
+                onError={handleImageError}
+                loading="lazy"
+              />
+            ) : !imageError ? (
+              <img
+                src={DEFAULT_USER_ICON}
+                alt="Default user icon"
+                className="flex h-16 w-16 rounded-lg shadow-lg border object-cover bg-white"
+                width={64}
+                height={64}
+                onError={handleImageError}
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                <span className="text-[#5055A3] text-lg font-semibold">
+                  {poc.user_name?.charAt(0) || "?"}
+                </span>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2 flex-col w-full">
             <div className="flex justify-between">
               <div className="text-xl font-semibold">{poc.user_name}</div>
@@ -427,32 +447,6 @@ export const PeopleList: React.FC = () => {
     );
   }, [filteredUsers, selectedData]);
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 items-center justify-center min-h-svh">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <NullState
-        image={coordinateNullState}
-        title={(error as ApiError).message}
-      />
-    );
-  }
-
-  if (count === 0) {
-    return (
-      <NullState
-        image={coordinateNullState}
-        title="No Results Found"
-        text="Try adjusting the filter criteria to refine your search"
-      />
-    );
-  }
 
   return (
     <div className="flex flex-col w-full">

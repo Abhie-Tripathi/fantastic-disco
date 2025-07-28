@@ -21,7 +21,9 @@ export const SignUpFormSchema = z.object({
     .string({ message: "Email is required" })
     .min(1, "Email is required")
     .email("Invalid email address"),
-  industry: z.string().optional(),
+  industry: z
+    .string({ message: "Industry is required" })
+    .min(1, "Industry is required"),
   categories: z.string().optional(),
 });
 

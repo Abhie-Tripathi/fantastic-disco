@@ -4,8 +4,14 @@ import ZeroStateIcon from "@/public/zero_state.svg";
 import Link from "next/link";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
+import { useAuthContext } from "@/context";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string, text?: string, errorStatusCode?: number; isGlobal?:boolean }) => {
+  const { membershipData } = useAuthContext();
+  const isPremium =
+    !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
+    
   const handleUpgradeClick = () => {
     GAEvent("", "Plan Upgrade", "Research", `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`);
   }
@@ -17,24 +23,44 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
         </div>
       )}
       {text && (
-        <div className="w-full max-w-[400px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]">
+        <div className={`w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]`}>
           {errorStatusCode && errorStatusCode === 429 ? (
+          isPremium ? (
             <div>
-              You have reached the maximum limit to view data.{" "}
+              You’ve exhausted your Advanced Searches and daily basic search limit.<br/> Basic limit will reset tomorrow at 10:00 AM IST or{" "}
               <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${
                   isEventeli ? "geo" : "gtm"
                 }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
-                className="text-primary cursor-pointer font-medium"
+                className="text-primary cursor-pointer font-semibold underline"
                 onClick={handleUpgradeClick}
               >
-                Please Upgrade.
-              </Link>
+                upgrade
+              </Link>{" "}
+              to increase the advance searches.
             </div>
           ) : (
-            text
-          )}
+            <div>
+              Your search limit has been reached.<br/>
+              <Link
+                target="_blank"
+                href={`https://whr.ai/pricing?utm_source=${
+                  isEventeli ? "geo" : "gtm"
+                }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                className="text-primary cursor-pointer font-medium underline"
+                onClick={handleUpgradeClick}
+              >
+              Upgrade 
+              </Link>{" "}
+              to a higher‑tier plan to access the features you need.
+            </div>
+          )
+        ) : (
+          <div className="max-w-[400px]">
+          {text}
+          </div>
+        )}
         </div>
       )}
       {!isGlobal &&

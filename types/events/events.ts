@@ -147,6 +147,7 @@ const BasicEventSchema = z.object({
     .object({
       id: z.string(),
       name: z.string(),
+      prospectId: z.string(),
       website: z.string(),
       logoUrl: z.string().nullable(),
       location: z.object({
