@@ -96,7 +96,47 @@
       {
         "id": "da31b1b8-3eef-56ed-a4eb-6384534533c4",
         "name": "Advisor"
-      }
+      },
+      {
+    "id": "82863c3c-d4fc-5194-8160-22b05b965e82",
+    "name": "Accountants"
+  },
+  {
+    "id": "b3d6725b-dae3-52ef-8dda-ef5adbe9d234",
+    "name": "Advertising Managers"
+  },
+  {
+    "id": "2626cb86-ceb9-50be-8694-060a096e6061",
+    "name": "Aerospace Engineers"
+  },
+  {
+    "id": "ef55946e-8d41-5a80-8359-813ecb7276c4",
+    "name": "Architects"
+  },
+  {
+    "id": "0152cfce-e9bb-531e-9a6a-09492ca64c9e",
+    "name": "Art Teachers"
+  },
+  {
+    "id": "3efed912-82c2-5393-b16b-a3d2a373625b",
+    "name": "Bakers"
+  },
+  {
+    "id": "47ff377d-af8e-50c7-b6b1-a1ed21ce2d9b",
+    "name": "Bartenders"
+  },
+  {
+    "id": "3599a788-2474-52d3-bdc7-4c96a2c225e9",
+    "name": "Butchers and Meat Cutters"
+  },
+  {
+    "id": "06fa7178-ed9b-5fa9-a5a0-a1306d878a70",
+    "name": "Buyers and Purchasing Agents"
+  },
+  {
+    "id": "09ffd7f4-12af-591d-86d3-924c8dd33ef4",
+    "name": "Cabinetmakers"
+  }
     ]
 }
 }

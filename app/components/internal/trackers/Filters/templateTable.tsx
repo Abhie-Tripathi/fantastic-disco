@@ -366,13 +366,13 @@ const  TableView=({selectAllData, selectedIdArray, customData, allEntries, delet
                   checked={selectedIdArray.length === (customData.length || allEntries?.length)}
                 />
               </th>
-              <th>Role</th>
+              <th>Profile/Seniority/Department</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {allEntries?.map((entryGroup:string[], groupIndex:number) => (
-              entryGroup.length>0 &&
+              // entryGroup.length>0 &&
                   <tr>
                     <td>
                       {/* <div className={styles.square} onClick={() => deleteEntry(entryGroup, groupIndex)}>-</div>  */}

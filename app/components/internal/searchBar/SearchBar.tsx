@@ -105,7 +105,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       };
       
       useEffect(() => {
-       if(searchInput.length>0){
+       if(searchInput?.length>0){
         if(searchInput!==previousInput)
         setEventSearchLoader(true);
         const debounceTimeout = setTimeout(() => {
@@ -203,7 +203,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       
   return (
         <>
-         {searchInput.length > 0 && isOpen && (
+         {searchInput?.length > 0 && isOpen && (
   <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
   <Command>

@@ -2010,15 +2010,15 @@ if(isLoading) return <Loading/>
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -2354,10 +2354,10 @@ if(isLoading) return <Loading/>
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -2374,8 +2374,8 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[index]?.length > 0  &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index}/>
         }
                         </div>
 
