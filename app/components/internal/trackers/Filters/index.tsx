@@ -512,6 +512,8 @@ const Pages = () => {
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
   const [filterCount, setFilterCount] = useState(0);
+  const [inputFocus, setInputFocus] = useState<boolean[]>([]);
+ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 useEffect(() => {
   const keysToIgnore = ['type', 'show', 'trust_score_lte', 'eventType', 'view'];
@@ -1222,6 +1224,7 @@ const jobComposite = {
   }
 
   }, [type])
+  
    const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
@@ -1729,11 +1732,20 @@ const handleShowTemplate=()=>{
   }
 }
 console.log("profileIds", allEntries.length);
-const [inputFocus, setInputFocus] = useState<boolean[]>([]);
-
-useEffect(() => {
-  setInputFocus(new Array(template?.inputAreas?.length || 0).fill(false));
-}, [template?.inputAreas]);
+  useEffect(() => {
+    const count = template?.inputAreas?.length || 0;
+    inputRefs.current = new Array(count).fill(null);
+    setInputFocus(new Array(count).fill(false));
+  }, [template?.inputAreas]);
+const handleOptionSelected = (index: number) => {
+    inputRefs.current[index]?.blur();
+    setInputFocus(prev => prev.map((_, i) => i === index ? false : false));
+    setTimeout(() => {
+      if (document.activeElement === inputRefs.current[index]) {
+        inputRefs.current[index]?.blur();
+      }
+    }, 10);
+  };
 if(isLoading) return <Loading/>
 
 
@@ -2019,15 +2031,20 @@ if(isLoading) return <Loading/>
                             onFocus={() => {
             const newFocus = [...inputFocus];
             newFocus[index] = true;
+            console.log("newFocus",newFocus);
+            
             setInputFocus(newFocus);
           }}
           onBlur={() => {
-            setTimeout(() => {
+            // setTimeout(() => {
               const newFocus = [...inputFocus];
               newFocus[index] = false;
               setInputFocus(newFocus);
-            }, 200);
+            // }, 200);
           }}
+          ref={el => {
+              inputRefs.current[index] = el;
+            }}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
                           />
@@ -2052,7 +2069,7 @@ if(isLoading) return <Loading/>
                             </div>
                           } */}
         {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") &&
-         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}/>
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
 

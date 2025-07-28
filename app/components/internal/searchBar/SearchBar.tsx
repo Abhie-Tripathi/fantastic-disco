@@ -36,13 +36,20 @@ interface EventSuggestionItem {
     type?: string;
      index?: number;
      isFocused?: boolean;
+      onOptionSelected?: () => void;
   }
-const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index, isFocused}:SearchBarProps) => {
+const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index, isFocused, onOptionSelected}:SearchBarProps) => {
+  const [focusedIndex,setFocusedIndex] = useState<number | null>(null);
+  const [selectionMade, setSelectionMade] = useState(false);
   useEffect(() => {
-  if (isFocused) {
-    console.log(`🔍 Input ${index} is focused`);
-  }
-}, [isFocused]);
+    if (isFocused && !selectionMade) {
+      setIsOpen(true);
+    } else if (!isFocused) {
+      const timer = setTimeout(() => setIsOpen(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocused, selectionMade]);
+    console.log(index);
     
     const { theme } = useTheme();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
@@ -53,26 +60,37 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       // if(searchInput!==previousInput){
-        if(type==="T_AUDIENCE_DEPT_PROFILE"){
-          // console.log("searchInput", searchInput, index);
-          let filterDesValue;
-          if(index===0)
-          {
-            console.log("index", index);
-            
-          filterDesValue = DesDep.data.designation;
-          console.log("filterDesValue", filterDesValue);
-          
-          }
-          else if(index===1)
-          filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
-          else if(index===2)
-          filterDesValue = DesDep.data.department.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
-          console.log("filterDesValue", filterDesValue);
-          
-          setEventSuggestion(filterDesValue);
-          
-        }
+        if (type === "T_AUDIENCE_DEPT_PROFILE") {
+  let filterDesValue;
+  
+  if (index === 0) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.designation.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.designation;
+  }
+  else if (index === 1) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.role.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.role;
+  }
+  else if (index === 2) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.department.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.department;
+  }
+
+  console.log("filterDesValue", filterDesValue);
+  setEventSuggestion(filterDesValue);
+  setEventSearchLoader(false);
+  return;
+}
+if (searchInput?.length > 0) {
         let url; 
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
@@ -115,6 +133,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         }finally {
             setEventSearchLoader(false);
           }
+        }
       // }
       };
       
@@ -129,7 +148,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         }, 500);
         return () => clearTimeout(debounceTimeout);
           // }else setEventSuggestion([]);
-      }, [searchInput, isFocused]);
+      }, [searchInput, index, isFocused]);
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
         try {
@@ -209,17 +228,35 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
-      const selectedEventId=(id:any, name:string)=>{
-        handleSelect(id,name, index || 0);
-        setIsOpen(false);
-        setPreviousInput(name); 
-        setEventSearchLoader(false);
-      }
+      const selectedEventId = (id: any, name: string) => {
+  // 1. Immediately mark selection and close dropdown
+  setSelectionMade(true);
+  setIsOpen(false);
+  
+  // 2. Process selection
+  handleSelect(id, name, index || 0);
+  setPreviousInput(name);
+  setEventSearchLoader(false);
+  
+  // 3. Trigger blur in parent (should update inputFocus state)
+  onOptionSelected?.();
+  
+  // 4. Reset selection flag after everything settles
+  setTimeout(() => {
+    setSelectionMade(false);
+  }, 100);
+};
       console.log("restructureData",restructureData);
+      console.log("focusedIndex", focusedIndex);
       
   return (
         <>
          {/* {(searchInput?.length > 0 && type!=="T_AUDIENCE_DEPT_PROFILE") && (isOpen || isFocused) && ( */}
+  {(isOpen && 
+  (type === "T_AUDIENCE_DEPT_PROFILE" ? isFocused : (searchInput?.length > 0 && isFocused)) && 
+  !selectionMade && restructureData?.length>0) &&(
+
+
   <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
   <Command>
@@ -229,6 +266,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     <CommandItem
       key={item.key ?? index}
       onSelect={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      onClick={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      onMouseDown={(e) => e.preventDefault()} 
       className="flex flex-col items-start cursor-pointer"
     >
       <div className="font-medium">
@@ -252,7 +291,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
 
                 </CommandGroup>
     </Command>
-  </div>
+  </div>)}
 {/* )} */}
          </> 
          

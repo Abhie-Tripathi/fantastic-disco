@@ -193,7 +193,7 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
             percentage[0] = 30;
           } else if (
             item.type === "T_SPEAKING_OPPORTUNITY" ||
-            item.type === "T_PEOPLE_FINDER"
+            item.type === "T_PEOPLE_FINDER" || item.type === "T_AUDIENCE_DEPT_PROFILE"
           ) {
             counts[1]++;
             percentage[1] = 30;
