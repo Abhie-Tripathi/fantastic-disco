@@ -205,6 +205,7 @@ export default function EventAccordion({
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
+  query.view = "list";
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   const [interest, setInterest] = useState();
