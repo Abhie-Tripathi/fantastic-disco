@@ -54,7 +54,48 @@
       {
         "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
         "name": "Operations"
+      },
+      {
+        "id": "7a308a17-e94a-5d89-ac51-97ca19e28c21",
+        "name": "Administrative"
+      },
+      {
+        "id": "dfab4b42-8cb8-59d0-813c-bf01864dedde",
+        "name": "Arts and Design"
+      },
+      {
+        "id": "a7b4e57e-5925-55fb-9531-df33c2a26854",
+        "name": "Engineering"
+      },
+      {
+        "id": "f5f78dd1-9aba-53b5-96ff-d81519f663d5",
+        "name": "Entrepreneurship"
+      },
+      {
+        "id": "b9ba2ca0-f275-55c4-8c3e-04e9b43951fb",
+        "name": "Healthcare Services"
+      },
+      {
+        "id": "0488b1a5-fedb-5751-a5fb-33349b00e16e",
+        "name": "Human Resources"
+      },
+      {
+        "id": "1d6cd5ac-aebb-508c-8e22-67081d86ff81",
+        "name": "Product Management"
+      },
+      {
+        "id": "60931ead-2cf3-5ddd-a2be-a397ce6ec268",
+        "name": "Purchasing"
+      },
+      {
+        "id": "242d1aa7-62f4-5b60-b3e0-b480627437bb",
+        "name": "Quality Assurance"
+      },
+      {
+        "id": "bd14e4f0-d93c-533c-b268-ad01f2123c3f",
+        "name": "Real Estate"
       }
+
     ],
     "designation": [
       {

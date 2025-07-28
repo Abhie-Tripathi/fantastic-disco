@@ -179,7 +179,6 @@ if (searchInput?.length > 0) {
                     // country: item?.location?.countryName || '',
                     tableEntry: `${item.name}_${item.id}` || ''
                   }));
-                  console.log("updatedData", updatedData);
                   setRestructureData(updatedData);
                 }
                 else if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {

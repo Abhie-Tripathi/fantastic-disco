@@ -83,7 +83,6 @@ useEffect(() => {
     newEntries.push(`${firstItem.Seniority}_Seniority`);
     setSen(prev => [...prev, firstItem.Seniority]);
   }
-  console.log("newEntries", newEntries);
   
   setCurrentEntries(newEntries);
   if (newEntries.length === 0) return;
@@ -148,7 +147,6 @@ useEffect(() => {
     setSelectedIdArray([]);
     }
   };
-  console.log("selectedIdArray", eventSuggestion);
   const handleRemove =(id:number, groupIndex:number, itemIndex:number)=>{
     
        setAllEntries?.(prev => {

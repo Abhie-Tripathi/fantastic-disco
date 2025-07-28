@@ -2029,22 +2029,22 @@ if(isLoading) return <Loading/>
                             placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onFocus={() => {
-            const newFocus = [...inputFocus];
-            newFocus[index] = true;
-            console.log("newFocus",newFocus);
-            
-            setInputFocus(newFocus);
-          }}
-          onBlur={() => {
-            // setTimeout(() => {
-              const newFocus = [...inputFocus];
-              newFocus[index] = false;
-              setInputFocus(newFocus);
-            // }, 200);
-          }}
-          ref={el => {
-              inputRefs.current[index] = el;
-            }}
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+                              console.log("newFocus", newFocus);
+
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
                           />
@@ -2386,6 +2386,23 @@ if(isLoading) return <Loading/>
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
+                            onFocus={() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+                              console.log("newFocus", newFocus);
+
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                           />
                            {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
@@ -2407,8 +2424,8 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[index]?.length > 0  &&
-         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE")  &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
 
