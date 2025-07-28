@@ -1729,7 +1729,11 @@ const handleShowTemplate=()=>{
   }
 }
 console.log("profileIds", allEntries.length);
+const [inputFocus, setInputFocus] = useState<boolean[]>([]);
 
+useEffect(() => {
+  setInputFocus(new Array(template?.inputAreas?.length || 0).fill(false));
+}, [template?.inputAreas]);
 if(isLoading) return <Loading/>
 
 
@@ -2012,6 +2016,18 @@ if(isLoading) return <Loading/>
                             type="text"
                             placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
+                            onFocus={() => {
+            const newFocus = [...inputFocus];
+            newFocus[index] = true;
+            setInputFocus(newFocus);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              const newFocus = [...inputFocus];
+              newFocus[index] = false;
+              setInputFocus(newFocus);
+            }, 200);
+          }}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
                           />
@@ -2035,8 +2051,8 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && inputValues[index]?.length > 0   && 
-         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}/>
         }
                         </div>
 

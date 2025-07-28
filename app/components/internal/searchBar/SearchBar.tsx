@@ -35,9 +35,15 @@ interface EventSuggestionItem {
     endpoint: string; 
     type?: string;
      index?: number;
+     isFocused?: boolean;
   }
-const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index}:SearchBarProps) => {
-  
+const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index, isFocused}:SearchBarProps) => {
+  useEffect(() => {
+  if (isFocused) {
+    console.log(`🔍 Input ${index} is focused`);
+  }
+}, [isFocused]);
+    
     const { theme } = useTheme();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -46,16 +52,24 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
       
-      if(searchInput!==previousInput){
+      // if(searchInput!==previousInput){
         if(type==="T_AUDIENCE_DEPT_PROFILE"){
-          console.log("searchInput", searchInput);
+          // console.log("searchInput", searchInput, index);
           let filterDesValue;
           if(index===0)
-          filterDesValue = DesDep.data.designation.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()))
+          {
+            console.log("index", index);
+            
+          filterDesValue = DesDep.data.designation;
+          console.log("filterDesValue", filterDesValue);
+          
+          }
           else if(index===1)
           filterDesValue = DesDep.data.role.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
           else if(index===2)
           filterDesValue = DesDep.data.department.filter((item: any) => item.name.toLowerCase().includes(searchInput.toLowerCase()));
+          console.log("filterDesValue", filterDesValue);
+          
           setEventSuggestion(filterDesValue);
           
         }
@@ -101,19 +115,21 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         }finally {
             setEventSearchLoader(false);
           }
-      }
+      // }
       };
       
       useEffect(() => {
-       if(searchInput?.length>0){
+        
+        
+      //  if(searchInput?.length>0){
         if(searchInput!==previousInput)
         setEventSearchLoader(true);
         const debounceTimeout = setTimeout(() => {
           fetchSearchSuggestion();
         }, 500);
         return () => clearTimeout(debounceTimeout);
-          }else setEventSuggestion([]);
-      }, [searchInput]);
+          // }else setEventSuggestion([]);
+      }, [searchInput, isFocused]);
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
         try {
@@ -203,7 +219,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       
   return (
         <>
-         {searchInput?.length > 0 && isOpen && (
+         {/* {(searchInput?.length > 0 && type!=="T_AUDIENCE_DEPT_PROFILE") && (isOpen || isFocused) && ( */}
   <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
   <Command>
@@ -237,7 +253,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 </CommandGroup>
     </Command>
   </div>
-)}
+{/* )} */}
          </> 
          
   )
