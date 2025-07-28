@@ -23,40 +23,43 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
         </div>
       )}
       {text && (
-        <div className="w-full max-w-[400px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]">
+        <div className={`w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]`}>
           {errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
-              You can continue with basic search or{" "}
+              You’ve exhausted your Advanced Searches and daily basic search limit.<br/> Basic limit will reset tomorrow at 10:00 AM IST or{" "}
               <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${
                   isEventeli ? "geo" : "gtm"
                 }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
-                className="text-primary cursor-pointer font-semibold"
+                className="text-primary cursor-pointer font-semibold underline"
                 onClick={handleUpgradeClick}
               >
-                Upgrade the plan
+                upgrade
               </Link>{" "}
-              to increase the advance searches
+              to increase the advance searches.
             </div>
           ) : (
             <div>
-              You have reached the maximum limit to view data.{" "}
+              Your search limit has been reached.<br/>
               <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${
                   isEventeli ? "geo" : "gtm"
                 }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
-                className="text-primary cursor-pointer font-medium"
+                className="text-primary cursor-pointer font-medium underline"
                 onClick={handleUpgradeClick}
               >
-                Please Upgrade.
-              </Link>
+              Upgrade 
+              </Link>{" "}
+              to a higher‑tier plan to access the features you need.
             </div>
           )
         ) : (
-          text
+          <div className="max-w-[400px]">
+          {text}
+          </div>
         )}
         </div>
       )}

@@ -484,7 +484,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
               <Tooltip>
                   <TooltipTrigger
                     onClick={() => {
-                      if (isPublic) {
+                      if (pathName.includes("collections")) {
                         handleShare(); 
                       } else {
                         setShare(!share);
