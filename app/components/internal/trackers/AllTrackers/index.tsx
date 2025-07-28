@@ -263,7 +263,7 @@ const clickHandler=(id:string)=>{
     setIsNewCall(true); 
     setTrackerId(id);
   }
-const formatLocationParts = (locations: any[], isMobile?: boolean): JSX.Element => {
+const formatLocationParts = (locations: string[], isMobile?: boolean): JSX.Element => {
   if (!Array.isArray(locations) || locations.length === 0) return <></>;
 
   const visible = locations.slice(0, isMobile?2:3).join(" | "); 
