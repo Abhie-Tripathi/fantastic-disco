@@ -49,7 +49,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
       return () => clearTimeout(timer);
     }
   }, [isFocused, selectionMade]);
-    console.log(index);
     
     const { theme } = useTheme();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
@@ -84,8 +83,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         )
       : DesDep.data.department;
   }
-
-  console.log("filterDesValue", filterDesValue);
   setEventSuggestion(filterDesValue);
   setEventSearchLoader(false);
   return;
@@ -246,8 +243,6 @@ if (searchInput?.length > 0) {
     setSelectionMade(false);
   }, 100);
 };
-      console.log("restructureData",restructureData);
-      console.log("focusedIndex", focusedIndex);
       
   return (
         <>

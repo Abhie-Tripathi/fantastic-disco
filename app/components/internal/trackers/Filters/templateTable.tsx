@@ -39,7 +39,6 @@ interface TableViewProps {
   deleteSingleEntry: (index: number) => void;
 }
 const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew, profileIds, setProfileIds, allEntries, setAllEntries }: Props) => { 
-  console.log("allEntries", allEntries);
   
   const [des, setDes]= useState<string[]>([]);
   const [dep, setDep] = useState<string[]>([]);
@@ -70,7 +69,6 @@ useEffect(() => {
   
   const firstItem = customData[0];
   const newEntries: string[] = [];
-  console.log("firstItem", firstItem);
   
   // Process fields only if they have values
   if (firstItem?.Designation?.trim()) {
@@ -115,10 +113,8 @@ useEffect(() => {
   setIsNew?.(false);
 
 }, [isNew, currentEntries]);
-console.log("des",allEntries);
 
    const removeCustomData = () => {
-    console.log("selectedIdArray", selectedIdArray);
     const updatedEntries = allEntries?.filter((_, index) => !selectedIdArray.includes(index));
     const updatedProfileIds = profileIds?.filter((_, index) => !selectedIdArray.includes(index));
     setProfileIds?.(updatedProfileIds || []);
@@ -154,7 +150,6 @@ console.log("des",allEntries);
   };
   console.log("selectedIdArray", eventSuggestion);
   const handleRemove =(id:number, groupIndex:number, itemIndex:number)=>{
-    console.log("id",id);
     
        setAllEntries?.(prev => {
     const updatedEntries = prev.map(group => [...group]);
@@ -173,7 +168,6 @@ console.log("des",allEntries);
       "departmentIds": updatedDepartmentIds,
       "seniorityIds": updatedSeniorityIds
     }
-    console.log("updstedProfile", updatedProfile);
     
    if (setProfileIds) {
  setProfileIds((prev = []) => {
@@ -185,7 +179,6 @@ console.log("des",allEntries);
 });
 }
   }
-  console.log("selectedIdArray", selectedIdArray);  
   
   return (
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
