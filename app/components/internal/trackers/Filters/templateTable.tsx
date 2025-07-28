@@ -9,6 +9,7 @@ import { Event } from "@/types/events";
 import React from "react";
 import { Table, X } from "lucide-react";
 import { set } from "date-fns";
+import { group } from "console";
 interface UpdatedProfileData{
   designationIds?: string[];
   departmentIds?: string[];
@@ -364,7 +365,7 @@ const  TableView=({selectAllData, selectedIdArray, customData, allEntries, delet
           <tbody>
             {allEntries?.map((entryGroup:string[], groupIndex:number) => (
               // entryGroup.length>0 &&
-                  <tr>
+                  <tr key={groupIndex}>
                     <td>
                       {/* <div className={styles.square} onClick={() => deleteEntry(entryGroup, groupIndex)}>-</div>  */}
                       <CheckboxInput
