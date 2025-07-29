@@ -2382,7 +2382,7 @@ if(isLoading) return <Loading/>
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
