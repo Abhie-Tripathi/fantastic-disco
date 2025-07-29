@@ -390,7 +390,7 @@ const MobileEventCard = ({
     ""
   )
 
-  // Audience spread
+  // Audience Country
   const audienceSpreadBadge = showaudienceSpread &&
     event.audience?.audienceSpread && (
       <Badge

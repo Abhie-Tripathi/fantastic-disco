@@ -83,7 +83,11 @@ import { useBulkAction } from "@/context/bulkAction";
 import FilterContent from "./FilterContent";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
-import { basicFilters, advancedFilter as advancedFilterValues, countFilters } from "@/constants/filters";
+import {
+  basicFilters,
+  advancedFilter as advancedFilterValues,
+  countFilters,
+} from "@/constants/filters";
 
 interface FilterSection {
   id: string;
@@ -740,6 +744,12 @@ const Filters = ({
 
   const searchHandler = () => {
     if (pathName.split("/").includes("search")) {
+      if (isEventeli && !(localFilters.locationIds || localFilters.viewBound)) {
+        toast({
+          title: "Please select location",
+          variant: "destructive",
+        });
+      }
       Object.keys(localFilters).map((filter) =>
         GAEvent("", "Research", "Filter Applied", filter)
       );
@@ -1007,7 +1017,9 @@ const Filters = ({
                 </span>
               </div>
               <div className="flex gap-2">
-                {((type === "events" && filterCount > 0) ||((type === "companies" || type === "people")&& !isEventeli)) && (
+                {((type === "events" && filterCount > 0) ||
+                  ((type === "companies" || type === "people") &&
+                    !isEventeli)) && (
                   <Button
                     id="save-search-btn"
                     onClick={() => {
