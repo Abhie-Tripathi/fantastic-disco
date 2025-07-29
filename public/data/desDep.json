@@ -44,24 +44,28 @@
         "name": "Accounting"
       },
       {
-        "id": "71a45302-0e35-552d-9bfe-de3c340f1332",
-        "name": "Finance"
-      },
-      {
-        "id": "a59c73f8-a72d-57c7-bd79-8387cf21ac60",
-        "name": "Marketing"
-      },
-      {
-        "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
-        "name": "Operations"
-      },
-      {
         "id": "7a308a17-e94a-5d89-ac51-97ca19e28c21",
         "name": "Administrative"
       },
       {
         "id": "dfab4b42-8cb8-59d0-813c-bf01864dedde",
         "name": "Arts and Design"
+      },
+      {
+        "id": "d2888668-2959-52c6-a8ab-cbaec64e70f4",
+        "name": "Business Development"
+      },
+      {
+        "id": "dc649815-783a-534f-b46e-a57c72c3aedc",
+        "name": "Community and Social Services"
+      },
+      {
+        "id": "0093354c-8d15-54af-8fcf-665053648ada",
+        "name": "Consulting"
+      },
+      {
+        "id": "0a10d30f-2b01-56a3-9ac9-5e84b960fa12",
+        "name": "Education"
       },
       {
         "id": "a7b4e57e-5925-55fb-9531-df33c2a26854",
@@ -72,6 +76,10 @@
         "name": "Entrepreneurship"
       },
       {
+        "id": "71a45302-0e35-552d-9bfe-de3c340f1332",
+        "name": "Finance"
+      },
+      {
         "id": "b9ba2ca0-f275-55c4-8c3e-04e9b43951fb",
         "name": "Healthcare Services"
       },
@@ -80,8 +88,36 @@
         "name": "Human Resources"
       },
       {
+        "id": "18b056fb-3da5-5f92-b5a6-42175136e27a",
+        "name": "Information Technology"
+      },
+      {
+        "id": "b38ca879-0319-5724-9cff-9ccafdab6371",
+        "name": "Legal"
+      },
+      {
+        "id": "a59c73f8-a72d-57c7-bd79-8387cf21ac60",
+        "name": "Marketing"
+      },
+      {
+        "id": "3bcffbff-3472-537e-b664-bea589d545c5",
+        "name": "Media and Communication"
+      },
+      {
+        "id": "a0cb98e5-09a5-5e58-aa2b-b63182d43efa",
+        "name": "Military and Protective Servic"
+      },
+      {
+        "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
+        "name": "Operations"
+      },
+      {
         "id": "1d6cd5ac-aebb-508c-8e22-67081d86ff81",
         "name": "Product Management"
+      },
+      {
+        "id": "13fea254-5fc6-527b-8f8c-5824057d1749",
+        "name": "Program and Project Management"
       },
       {
         "id": "60931ead-2cf3-5ddd-a2be-a397ce6ec268",
@@ -94,6 +130,18 @@
       {
         "id": "bd14e4f0-d93c-533c-b268-ad01f2123c3f",
         "name": "Real Estate"
+      },
+      {
+        "id": "8c75e633-893e-5ffe-82dd-56b386217876",
+        "name": "Research"
+      },
+      {
+        "id": "dec1952b-4c9e-5736-8246-483a42fedb2f",
+        "name": "Sales"
+      },
+      {
+        "id": "022a4644-f32f-5953-8221-2d3b4e0ea995",
+        "name": "Support"
       }
 
     ],
@@ -139,7 +187,7 @@
         "name": "Advisor"
       },
       {
-    "id": "82863c3c-d4fc-5194-8160-22b05b965e82",
+    "id": "88d64a33-a58d-593a-b79b-b8b7ce8298bc",
     "name": "Accountants"
   },
   {
@@ -151,7 +199,7 @@
     "name": "Aerospace Engineers"
   },
   {
-    "id": "ef55946e-8d41-5a80-8359-813ecb7276c4",
+    "id": "dfab4b42-8cb8-59d0-813c-bf01864dedde",
     "name": "Architects"
   },
   {
@@ -159,11 +207,11 @@
     "name": "Art Teachers"
   },
   {
-    "id": "3efed912-82c2-5393-b16b-a3d2a373625b",
+    "id": "c627efa7-f9b9-54eb-8942-febbcc217a31",
     "name": "Bakers"
   },
   {
-    "id": "47ff377d-af8e-50c7-b6b1-a1ed21ce2d9b",
+    "id": "679ec211-28cf-55b1-a617-e2f2994eeb45",
     "name": "Bartenders"
   },
   {
