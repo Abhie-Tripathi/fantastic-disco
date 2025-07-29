@@ -30,7 +30,7 @@
 }
 
 .exportType_modal_header {
-  padding: 20px;
+  padding: 20px 20px 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -75,7 +75,7 @@
 
 .exportType_modal_description {
   /* margin-bottom: 32px; */
-  padding: 0px 20px 20px 20px;
+  padding: 0px 20px 12px 20px;
   font-weight: 300;
   /* color: #222; */
   font-size: 14px;

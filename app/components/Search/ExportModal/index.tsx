@@ -171,8 +171,32 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
             <div className={styles.exportType_modal_header_title}>
               Export
             </div>
-            {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) &&
-            <Button variant="outline" className="p-2 mr-12">
+            {/* <Image
+              src={CloseIcon}
+              alt="closeicon"
+              onClick={() => onClose()}
+              className={styles.closeIcon}
+            /> */}
+            <button onClick={() => onClose()} className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            {/* <div className="absolute right-5"> */}
+            <X className={`${styles.closeIcon}`} width={16}/>
+              {/* </div> */}
+            </button>
+          </div>
+
+          
+          {(isTentimesUser) ?
+          <>
+          <div className={styles.exportType_modal_description}>
+             <div>
+                    Large exports may take some time. Exports will run in the
+                    background after you close this window and we will email you
+                    when they are done.
+              </div>
+          </div>
+          {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) &&
+          <div className="flex justify-end w-full mb-3">
+            <Button variant="outline" className="p-2 mr-6">
             <div className={`${styles.refresh_button} text-xs`} style={{color:"var(--secondary-text-color)"}} onClick={fetchData}>
                 <Image
                   src={Refresh}
@@ -183,30 +207,9 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
                 />
                 <div>refresh</div>
               </div>
-            </Button>}
-            {/* <Image
-              src={CloseIcon}
-              alt="closeicon"
-              onClick={() => onClose()}
-              className={styles.closeIcon}
-            /> */}
-            <Button onClick={() => onClose()} variant="outline" className="px-3 py-2  absolute right-5">
-            {/* <div className="absolute right-5"> */}
-            <X className={`${styles.closeIcon}`} width={16}/>
-              {/* </div> */}
             </Button>
-          </div>
-
-          
-          {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) ?
-          <>
-          <div className={styles.exportType_modal_description}>
-             <div>
-                    Large exports may take some time. Exports will run in the
-                    background after you close this window and we will email you
-                    when they are done.
-              </div>
-          </div>
+            </div>
+            }
           <ExportList  data={exportList} isLoading={isLoading}/>
           <Button 
             variant="outline"
@@ -217,6 +220,13 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
             Export
           </Button>
           </>
+          : isAdvancedPlanOrAbove?
+              <div className={`p-5 pt-0 cursor-pointer ${styles.exportType_modal_description}`}
+               onClick={() => window.open("mailto:help@whr.ai", "_blank")}>
+                Write to us on {" "}
+                <span className="text-primary hover:underline">help@whr.ai</span>
+                {" "}with tracker details
+              </div>
           :
           <div className="w-full pb-4 flex items-center justify-center gap-1">
              {/* <Badge variant="secondary" className="mx-auto">
