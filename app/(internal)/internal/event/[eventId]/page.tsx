@@ -59,6 +59,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
+import { TeamRequest } from "@/components/gtmDetail/teamRequest";
+import { OutreachProgressBar } from "@/components/gtmDetail/outreachProgressBar";
+import FollowersPopup from "@/components/gtmDetail/FollowersPopup";
 
 function CoordinateIcon() {
   return (
@@ -179,6 +182,14 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     },
     refetchOnWindowFocus: false,
   });
+
+  // const { data: followerData } = useQuery<any>({
+  //   queryKey: ["enquiryFollowerData", params.eventId],
+  //   queryFn: () => coordinateService.getEnquiryFollowers(event.eventEnquiry.id),
+  //   refetchOnWindowFocus: false,
+  // });
+  // console.log("Follower Data: ", followerData);
+  
 
   useEffect(() => {
     if (typeof window !== undefined) {
@@ -301,13 +312,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   ];
 
   const coordinateTabs = [
-    { tabName: "Activity", path: "activity", isVisible: true },
-    { tabName: "Team Requests", path: "teamRequest", isVisible: true },
+    // { tabName: "Activity", path: "activity", isVisible: true },
     { tabName: "Notes & Discussions", path: "notes", isVisible: true },
-    { tabName: "Documents", path: "documents", isVisible: true },
+    { tabName: "Team Requests", path: "teamRequest", isVisible: true },
+    // { tabName: "Documents", path: "documents", isVisible: true },
   ];
 
-  const tabs = view === "research" ? eventTabs : view === "coordinate" ? coordinateTabs : [];
+  const tabs = view === "research" ? eventTabs : view === "coordinate" ? coordinateTabs : coordinateTabs;
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -370,6 +381,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     const element = document.querySelector(`.${section}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    if (view === "coordinate" || view === "outreach") {
+      setActiveTab(section as TTabs);
     }
   };
 
@@ -885,7 +900,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   Organization information will appear here
                 </p>
               )}
-              {eventCoOrganizerDetails &&
+              {/* {eventCoOrganizerDetails &&
                 eventCoOrganizerDetails.length > 0 && (
                   <div className="flex items-center gap-2 border-t-[1px] p-2">
                     <p className="text-sm font-medium text-[var(--secondary-text-color)]">
@@ -921,7 +936,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     />
                     <p className="text-sm font-medium">{coOrganizer.name}</p>
                   </div>
-                ))}
+                ))} */}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -1167,46 +1182,55 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
         ) : (
           <>
-            <div className="flex justify-between border-b pb-3">
-              <div>
-                <div className="flex gap-2">
-                  <img
-                    src="/defaultProfilePic.png"
-                    alt="user image"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div className="text-sm">
-                    Assign Owner
-                    <div className="text-xs text-[#7D7D7D]">
-                      30 Followers
+            {eventEnquiry && eventEnquiry.id && (
+              <>
+              <div className="flex justify-between border-b pb-3">
+                <div>
+                  {/* <div className="flex gap-2">
+                    <img
+                      src="/defaultProfilePic.png"
+                      alt="user image"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="text-sm">
+                      {eventEnquiry.owner ? eventEnquiry.owner.name : "Assign Owner"}
+                      <div className="text-xs text-[#7D7D7D]">
+                        30 Followers
+                      </div>
                     </div>
-                  </div>
+                  </div> */}
+                  <FollowersPopup eventId={id} enquiryId={eventEnquiry.id} enquiryOwner={eventEnquiry.owner} />
+                </div>
+                <div className="flex gap-3">
+                  <ButtonUI variant={view === "research" ? "default" : "outline"} size="icon" onClick={()=>setView("research")} >
+                    <Info className="h-4 w-4" />
+                  </ButtonUI>
+
+                  <ButtonUI variant="outline" size="icon" className="bg-muted relative" >
+                    <PencilRuler className="h-4 w-4" color="#8F8F8F" />
+                    <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
+                  </ButtonUI>
+
+                  <ButtonUI variant={view === "coordinate" ? "default" : "outline"} size="icon" className="" onClick={()=>{setView("coordinate"); setActiveTab("notes");}} >
+                    <CoordinateIcon />
+                  </ButtonUI>
+
+                  <ButtonUI variant={view === "outreach" ? "default" : "outline"} size="icon" className="" onClick={()=>{setView("outreach"); setActiveTab("notes");}} >
+                    <Map className="h-4 w-4"  />
+                  </ButtonUI>
+
+                  <ButtonUI variant="outline" size="icon" className="bg-accent relative" >
+                    <Megaphone className="h-4 w-4" color="#8F8F8F" />
+                    <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
+                  </ButtonUI>              
                 </div>
               </div>
-              <div className="flex gap-3">
-                <ButtonUI variant={view === "research" ? "default" : "outline"} size="icon" onClick={()=>setView("research")} >
-                  <Info className="h-4 w-4" />
-                </ButtonUI>
 
-                <ButtonUI variant="outline" size="icon" className="bg-muted relative" >
-                  <PencilRuler className="h-4 w-4" color="#8F8F8F" />
-                  <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
-                </ButtonUI>
-
-                <ButtonUI variant={view === "coordinate" ? "default" : "outline"} size="icon" className="" onClick={()=>setView("coordinate")} >
-                  <CoordinateIcon />
-                </ButtonUI>
-
-                <ButtonUI variant={view === "outreach" ? "default" : "outline"} size="icon" className="" onClick={()=>setView("outreach")} >
-                  <Map className="h-4 w-4"  />
-                </ButtonUI>
-
-                <ButtonUI variant="outline" size="icon" className="bg-accent relative" >
-                  <Megaphone className="h-4 w-4" color="#8F8F8F" />
-                  <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
-                </ButtonUI>              
-              </div>
-            </div>
+              {view === "outreach" && (
+                <OutreachProgressBar />
+              )}
+              </>
+            )}
             <ul
               className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white 
               dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full"
@@ -1296,21 +1320,33 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </>
               ) : view === "coordinate" ? (
                 <>
-                  <div>Coordinate Notes</div>
-                  <Notes
+                  {activeTab === "notes" && 
+                    <Notes
                     eventId={id}
                     enquiryId={eventEnquiry.id}
                     stage={"COORDINATE"}
-                  />
+                  />}
+                  {activeTab === "teamRequest" &&
+                    <TeamRequest
+                      eventId={id}
+                      enquiryId={eventEnquiry.id}
+                    />
+                  }
                 </>
               ) : view === "outreach" ? (
                 <>
-                  <div>Outreach Notes</div>
-                  <Notes
+                  {activeTab === "notes" && 
+                    <Notes
                     eventId={id}
                     enquiryId={eventEnquiry.id}
                     stage={"OUTREACH"}
-                  />
+                  />}
+                  {activeTab === "teamRequest" &&
+                    <TeamRequest
+                      eventId={id}
+                      enquiryId={eventEnquiry.id}
+                    />
+                  }
                 </>
               ) : (
                 <></>
