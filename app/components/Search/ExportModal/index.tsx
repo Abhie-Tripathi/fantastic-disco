@@ -20,8 +20,10 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { useTrackerServices } from "@/services/trackerServices";
 import ExportList from "./exportList";
 import { useToast } from "@/hooks/use-toast";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { InformationFill } from "geist-icons";
+import PremiumModal from "@/components/premium-modal";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -66,6 +68,8 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
   const {membershipData, isTentimesUser} = useAuthContext();
   const [refreshState, setRefreshState] = useState<boolean>(false);
   const {getExportData, postExportReq} = useTrackerServices();
+  const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
+  const isAdvancedPlanOrAbove = !!membershipData && membershipData.membership != null && membershipData.membership >= MembershipPlan.Advance;
   const fetchData = async () => {
   try {
     setIsLoading(true);
@@ -222,19 +226,23 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
           <span className="text-xs flex items-center" style={{color:"var(--primary-color)"}}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--primary-color)" height="12px" />
             Available only in the Advance &amp; above plan</span>
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden md:flex"
-            onClick={handleUpgradeClick}
-          >
-            <span className="hidden sm:inline">Upgrade</span>
-          </Button>
-          </div>
+            {!isAdvancedPlanOrAbove && <RainbowButton
+              size="sm"
+              className="hidden sm:inline ml-2 h-6 rounded-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPremiumModalOpen(true);
+              }}
+            >
+              Premium
+            </RainbowButton>}
+            </div>
           }
         </div>
       )}
+      <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen} />
     </div>
+    
   );
 };
 
