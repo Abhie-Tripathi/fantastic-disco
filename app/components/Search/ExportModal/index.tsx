@@ -223,9 +223,9 @@ const ExportModal = ({ onClose, filterValue, type, source, active }: exportModal
           : isAdvancedPlanOrAbove?
               <div className={`p-5 pt-0 cursor-pointer ${styles.exportType_modal_description}`}
                onClick={() => window.open("mailto:help@whr.ai", "_blank")}>
-                Write to us on {" "}
+                We're working on adding this option directly to the panel. In the meantime, just drop us an email at {" "}
                 <span className="text-primary hover:underline">help@whr.ai</span>
-                {" "}with tracker details
+                {" "}with your tracker details, and we'll send you the export within 24 working hours.
               </div>
           :
           <div className="w-full pb-4 flex items-center justify-center gap-1">
