@@ -40,9 +40,11 @@ interface EventSuggestionItem {
   }
 const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index, isFocused, onOptionSelected}:SearchBarProps) => {
   const [focusedIndex,setFocusedIndex] = useState<number | null>(null);
+  const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
   const [selectionMade, setSelectionMade] = useState(false);
   useEffect(() => {
     if (isFocused && !selectionMade) {
+      console.log("SearchBar is focused", index, isFocused);
       setIsOpen(true);
     } else if (!isFocused) {
       const timer = setTimeout(() => setIsOpen(false), 200);
@@ -51,7 +53,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   }, [isFocused, selectionMade]);
     
     const { theme } = useTheme();
-    const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
+    
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState<any>([]);
@@ -224,8 +226,8 @@ if (searchInput?.length > 0) {
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
-      const selectedEventId = (id: any, name: string) => {
-  // 1. Immediately mark selection and close dropdown
+     const selectedEventId = (id: any, name: string) => {
+  // 1. Immediately mark selection and prevent default behaviors
   setSelectionMade(true);
   setIsOpen(false);
   

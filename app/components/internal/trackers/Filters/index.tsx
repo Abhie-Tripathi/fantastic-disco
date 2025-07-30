@@ -1739,12 +1739,15 @@ console.log("profileIds", allEntries.length);
   }, [template?.inputAreas]);
 const handleOptionSelected = (index: number) => {
     inputRefs.current[index]?.blur();
+    console.log("inputRefs.current[index]",inputRefs.current[index]);
+    
     setInputFocus(prev => prev.map((_, i) => i === index ? false : false));
     setTimeout(() => {
-      if (document.activeElement === inputRefs.current[index]) {
-        inputRefs.current[index]?.blur();
-      }
-    }, 10);
+  const activeElement = document.activeElement as HTMLElement | null;
+  if (activeElement?.blur) {
+    activeElement.blur();
+  }
+}, 10);
   };
 if(isLoading) return <Loading/>
 
@@ -2019,7 +2022,7 @@ if(isLoading) return <Loading/>
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
-                      <>
+                      
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
                           {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
                           {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
@@ -2028,6 +2031,8 @@ if(isLoading) return <Loading/>
                             type="text"
                             placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
+                            onChange={(e) => handleInput(index, e.target.value)}
+                            onKeyPress={handleKeyDown}
                             onFocus={() => {
                               const newFocus = [...inputFocus];
                               newFocus[index] = true;
@@ -2040,13 +2045,12 @@ if(isLoading) return <Loading/>
                               const newFocus = [...inputFocus];
                               newFocus[index] = false;
                               setInputFocus(newFocus);
+                              inputRefs.current[index]?.blur();
                               // }, 200);
                             }}
                             ref={el => {
                               inputRefs.current[index] = el;
                             }}
-                            onChange={(e) => handleInput(index, e.target.value)}
-                            onKeyPress={handleKeyDown}
                           />
                            {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
@@ -2072,8 +2076,6 @@ if(isLoading) return <Loading/>
          <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
-
-                      </>
                     ))}
                     {(type!=="T_EVENT_PARTICIPATION" && type!=="T_AUDIENCE_DEPT_PROFILE") &&
                     <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
