@@ -1,24 +1,54 @@
 "use client";
 import { useConfiguration } from "@/hooks/useConfiguration";
-// import StatusIcon from "@/app/components/internal/eventdetail/icons/status";
-// import StatusIcon2 from "@/app/components/internal/eventdetail/icons/status2";
 import StatusEnd from "@/app/components/internal/eventdetail/icons/statusEnd";
 import StatusMid from "@/app/components/internal/eventdetail/icons/statusMid";
 import StatusStart from "@/app/components/internal/eventdetail/icons/statusStart";
+import { useCoordinateService } from "@/services/coordinateService";
+import { useEffect, useState } from "react";
 
-// interface Props {
-//   eventId: string;
-//   enquiryId: string;
-// }
+interface Props {
+  eventId: string;
+  enquiryId: string;
+  enquiryStatus: string;
+}
 
-export const OutreachProgressBar = () => {
-  const { outreachConfiguration } = useConfiguration.outreach();
-  const currentStatus = "IN_NEGOTIATION";
+export const OutreachProgressBar = ({
+  eventId,
+  enquiryId,
+  enquiryStatus,
+}: Props) => {
+  const { setEnquiryStatus } = useCoordinateService();
+  const { outreachConfiguration, isLoading: isConfigLoading } =
+    useConfiguration.outreach();
+  const [currentStatus, setCurrentStatus] = useState(enquiryStatus);
 
-  const currentIndex =
-    outreachConfiguration?.outreach?.findIndex(
-      (item: any) => item.status === currentStatus
-    ) || 0;
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleStatusChange = async (changeStatusTo: string) => {
+    let payloadData = {
+      enquiryId: enquiryId,
+      enquiryStatus: changeStatusTo,
+    };
+    try {
+      const apiData: any = await setEnquiryStatus(payloadData);
+
+      if (apiData) {
+        // GAEvent("Outreach", "Enquiry Detail", `Outreach | Enquiry Status Change`, `Change | ${initiator} | ${changeStatusTo}`);
+        setCurrentStatus(changeStatusTo);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!isConfigLoading)
+      setCurrentIndex(
+        outreachConfiguration?.outreach?.findIndex(
+          (item: any) => item.status === currentStatus
+        ) || 0
+      );
+  }, [currentStatus, outreachConfiguration]);
 
   return (
     <div className="flex justify-evenly rounded-md my-3 border p-3 px-5 gap-4 bg-accent">
@@ -30,7 +60,7 @@ export const OutreachProgressBar = () => {
             <div
               key={index}
               className="text-white cursor-pointer text-base relative text-center"
-              //   onClick={() => handleStatusChange(item.status)}
+              onClick={() => handleStatusChange(item.status)}
             >
               {item.status === "SHORTLISTED" ? (
                 <StatusStart
@@ -54,7 +84,11 @@ export const OutreachProgressBar = () => {
                 />
               ) : item.status === "CANCELLED" ? (
                 <StatusEnd
-                  fillColor={isActive ? "var(--primary-color)" : "var(--primary-foreground)"}
+                  fillColor={
+                    isActive
+                      ? "var(--primary-color)"
+                      : "var(--primary-foreground)"
+                  }
                   borderColor={isActive ? "var(--primary-color)" : "#C9C9C9"}
                 />
               ) : (

@@ -108,7 +108,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     queryFn: () => getEventDetailById(params.eventId),
     refetchOnWindowFocus: false,
   });
-  const { data: event } = useQuery<any>({
+  const { data: event, isLoading: isDataLoading } = useQuery<any>({
     queryKey: ["eventDetails", params.eventId],
     queryFn: async () => {
       const [
@@ -201,7 +201,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   }, []);
 
-  if (isLoading) {
+  if (isDataLoading) {
     return (
       <Loading className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
     );
@@ -1227,7 +1227,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               </div>
 
               {view === "outreach" && (
-                <OutreachProgressBar />
+                <OutreachProgressBar eventId={id} enquiryId={eventEnquiry.id} enquiryStatus={eventEnquiry?.status} />
               )}
               </>
             )}

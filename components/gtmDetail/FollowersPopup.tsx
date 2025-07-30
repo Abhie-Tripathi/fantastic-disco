@@ -132,7 +132,7 @@ const FollowersPopup = ({
               <div className="flex flex-col gap-2">
                 {userList.map((user: UserType) => (
                   <div
-                    className="max-h-60 overflow-y-auto flex gap-4 items-center"
+                    className="max-h-60 overflow-y-auto flex gap-4 items-center cursor-pointer"
                     key={user.id}
                     onClick={() => handleChangeOwner(user.id)}
                   >
