@@ -205,6 +205,7 @@ export default function EventAccordion({
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
+  query.view = "list";
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   const [interest, setInterest] = useState();
@@ -1350,7 +1351,7 @@ const EventListItem = ({
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Audience Spread</p>
+                            <p>Audience Country</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
