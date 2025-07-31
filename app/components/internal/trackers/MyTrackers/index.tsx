@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./myTrackers.style.module.css";
 import Trackers from ".././AllTrackers";
 import { Button } from "@/components/ui/button";
@@ -103,33 +103,59 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       isMounted.current = false;
     };
   }, []);
-  const fetchData=async(isInetialRender:boolean)=>{
-    setLoadOne(true);
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&type=trackers`);
-    
-    if(result && isMounted.current){
-      console.log(result);
-      setDataPresent(true);
-        setAllTracker(result?.trackers);   
-            
-      setSingleTrackerData(result.trackers[0]);
-      setMultipleFilters({ 
-          skip: skip,
-          q: searchValue,
-          // id: result?.trackers[0]?.id,
-        })
-    setTotalPage(Math.ceil(result.count / trackerPerPage));
-    setTotalCount(result.count)
-    if(result.count===0){
-      console.log(result.count);
-      
-      setSingleTrackerData(undefined);
-       setDataPresent(false);
+const fetchData = useCallback(async (isInitialRender = false) => {
+  const maxRetries = 5;
+  const initialDelay = 1000;
+  let attempt = 0;
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+  let lastResult = null;
+
+  try {
+    while (attempt <= maxRetries) {
+      const result = await getTrackers(`${searchValue ? `name=${searchValue}&` : ''}offset=${skip}&limit=${take}&type=trackers`);
+
+      if (result && isMounted.current) {
+        const trackers = result.trackers || [];
+        const inProgressExists = trackers.some((t: any) => t.userLevelStatus === "in-progress");
+        console.log("trackers", trackers);
+        
+        console.log(`Attempt ${attempt + 1}: ${inProgressExists ? 'In Progress exists' : 'No In Progress'}`);
+
+        setAllTracker(trackers);
+        setSingleTrackerData(trackers[0]);
+        setMultipleFilters({ skip, q: searchValue });
+        setTotalPage(Math.ceil(result.count / trackerPerPage));
+        setTotalCount(result.count);
+        setDataPresent(result.count > 0);
+
+        if (!inProgressExists) {
+          break; // stop retrying if all done or first render
+        }
+
+        lastResult = result;
+      }
+
+      const waitTime = initialDelay * Math.pow(2, attempt);
+      console.log(`Waiting ${waitTime}ms before retry ${attempt + 2}`);
+      await delay(waitTime);
+      attempt++;
     }
+
+    if (attempt > maxRetries && lastResult) {
+      console.warn("Max retries reached. Using last available data.");
+      setAllTracker(lastResult.trackers || []);
+      setSingleTrackerData(lastResult.trackers?.[0]);
+      setDataPresent(lastResult.count > 0);
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
+  } finally {
     setLoading(false);
     setLoadOne(false);
-            }
   }
+}, [searchValue, skip, take, trackerPerPage, isMounted]);
+
+
   useEffect(()=>{
     if(totalPage>0){
     setDataPresent(true);

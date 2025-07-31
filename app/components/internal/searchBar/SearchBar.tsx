@@ -44,7 +44,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   const [selectionMade, setSelectionMade] = useState(false);
   useEffect(() => {
     if (isFocused && !selectionMade) {
-      console.log("SearchBar is focused", index, isFocused);
       setIsOpen(true);
     } else if (!isFocused) {
       const timer = setTimeout(() => setIsOpen(false), 200);
