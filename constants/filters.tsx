@@ -1,3 +1,16 @@
+export const companiesFilters = [
+  "eventCategorySlugs",
+  "companyLocationIds",
+  "eventProductIds",
+  "eventParticipationType",
+  "communitySize",
+  "eventLocationIds",
+  "eventFollowers",
+  "userNames",
+  "userSocialLink",
+  "userJobTitle",
+];
+
 export const basicFilters = [
   "status",
   "locationIds",

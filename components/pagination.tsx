@@ -186,7 +186,7 @@ export function PaginationComponent({
                 let disabled = false;
                 const membership = membershipData?.membership ?? 0;
                 if (membership === 0) {
-                  disabled = item !== "10" && item !== "20";
+                  disabled = item !== "5" && item !== "10" && item !== "20";
                 } else if (item === "50") {
                   disabled = membership < 20;
                 } else if (item === "100") {

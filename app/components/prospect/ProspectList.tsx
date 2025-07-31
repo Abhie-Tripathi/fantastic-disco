@@ -616,7 +616,7 @@ export const ProspectList: React.FC = () => {
   }, []);
 
   const filtersCount = (function () {
-    const excludedFilters = ["view", "sortBy", "offset", "limit"];
+    const excludedFilters = ["view", "sortBy", "offset", "limit","upcomingEvents"];
     return Object.keys(localFilters).filter(
       (key) => !excludedFilters.includes(key)
     ).length;
