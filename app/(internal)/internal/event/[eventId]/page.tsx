@@ -84,9 +84,9 @@ function CoordinateIcon() {
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const eventDetailParams = useSearchParams();
-  const eventDetailView = eventDetailParams.get("view");
-  const [view, setView] = useState<DetailPageView>("research");
-  const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const eventDetailView = eventDetailParams.get("expandedView");
+  const [view, setView] = useState<DetailPageView>(eventDetailParams.get("view") as DetailPageView || "research");
+  const [activeTab, setActiveTab] = useState<TTabs>(view === "research" ? "overview" : "notes");
   const [openItem, setOpenItem] = useState("");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
@@ -1118,7 +1118,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {eventPOCDetails && eventPOCDetails.length > 5 && (
                 <p
                   onClick={() =>
-                    router.push(`/internal/event/${params.eventId}?view=pocs`)
+                    router.push(`/internal/event/${params.eventId}?expandedView=pocs`)
                   }
                   className="p-2 pb-0 w-fit cursor-pointer text-primary 
                   font-medium hover:underline hover:underline-offset-2"
@@ -1161,14 +1161,14 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         {(eventDetailView === "notes" || eventDetailView === "pocs") && (
           <Link
             href={`/internal/event/${params.eventId}`}
-            className="flex items-center gap-2 text-[#666666] text-sm pb-3"
+            className="flex items-center gap-2 text-[#666666] text-sm pb-1"
           >
             <ArrowLeft width="14px" height="14px" color="#6750A4" />
             <span
               className="text-[var(--primary-color)] font-medium"
               onClick={() => router.push}
             >
-              Back to Detail Page
+              Go back
             </span>
           </Link>
         )}
@@ -1206,10 +1206,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     <Info className="h-4 w-4" />
                   </ButtonUI>
 
-                  <ButtonUI variant="outline" size="icon" className="bg-muted relative" >
+                  {/* <ButtonUI variant="outline" size="icon" className="bg-muted relative" >
                     <PencilRuler className="h-4 w-4" color="#8F8F8F" />
                     <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
-                  </ButtonUI>
+                  </ButtonUI> */}
 
                   <ButtonUI variant={view === "coordinate" ? "default" : "outline"} size="icon" className="" onClick={()=>{setView("coordinate"); setActiveTab("notes");}} >
                     <CoordinateIcon />
