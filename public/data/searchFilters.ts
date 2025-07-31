@@ -352,6 +352,11 @@ export const searchFilters = {
     isEnabled: true,
     isToogleEnabled: true,
   },
+
+  economicImpact: {
+    isEnabled: true,
+    isToogleEnabled: true
+  }
 };
 
 // const apiResponse = {

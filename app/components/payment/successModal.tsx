@@ -25,14 +25,17 @@ export const featureList: {
     "Global Company Search",
     "Global People Search",
     "Basic Event Tracker",
+    "Event Pipeline Management",
   ],
   Scale: [
+    "Eveything in Essential +",
     "Advance Event Search",
     "Advance People Search",
     "Advance Company Search",
     "Advance Trackers",
   ],
   Advance: [
+    "Eveything in Scale +",
     "Priority Support",
     "Unlimited User-access",
     "Event Relevance Scoring",
@@ -42,6 +45,7 @@ export const featureList: {
     "Eveything in Advance +",
     "Advance Outreach & Conceirge",
     "API Access",
+    "Dedicated Support",
     "Custom Reports & Intel",
   ],
 };
