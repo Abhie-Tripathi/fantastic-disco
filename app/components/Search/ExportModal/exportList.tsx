@@ -71,7 +71,7 @@ const ExportList: React.FC<ExportListProps> = ({ data, onDownload, onRetry, isLo
 
   // ✅ Main Table View
   return (
-    <div className="border rounded-lg max-h-[240px] mb-5 mx-5 overflow-scroll">
+    <div className="border rounded-lg max-h-[240px] mb-5 mx-5 overflow-y-auto">
       <Table>
         <TableHeader className="p-2">
           <TableRow>
