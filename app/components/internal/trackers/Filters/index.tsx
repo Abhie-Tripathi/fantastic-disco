@@ -2240,7 +2240,7 @@ if(isLoading) return <Loading/>
       </Tabs>
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
-  ((customData && customData.length > 0 || allEntries?.[0].length>0) ? (
+  ((customData && customData?.length > 0 || allEntries?.[0]?.length>0) ? (
     <>
     <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds} allEntries={allEntries}
           setAllEntries={setAllEntries}/>
