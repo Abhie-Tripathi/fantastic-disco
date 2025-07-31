@@ -10,39 +10,26 @@ import { useAuthContext, useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Loading from "../../UI/Loading";
-import backIcon from "/public/internal/back_arrow.svg";
-import Link from "next/link";
+import { ExportContent } from '@/types/trackers';
 import { usePathname } from 'next/navigation';
-import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Crown, X } from "lucide-react";
 import { isEventeli } from "@/config";
-import { InformationFill } from "geist-icons";
-import { RainbowButton } from "@/components/magicui/rainbow-button";
-import PremiumModal from "@/components/premium-modal";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { useTrackerServices } from "@/services/trackerServices";
+import ExportList from "./exportList";
+import { useToast } from "@/hooks/use-toast";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import { InformationFill } from "geist-icons";
+import PremiumModal from "@/components/premium-modal";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
   type?:string|undefined;
   source:string;
-}
-
-interface ExportContent {
-  id: string;
-  created: string;
-  status: string;
-  attachment: {
-    fileType: string;
-    fileName: string;
-    filePath: string;
-  };
-  user: {
-    firstname: string;
-    lastname: string;
-  };
+  active?:string;
 }
 
 function formatDate(dateString: string): string {
@@ -66,115 +53,62 @@ function formatDate(dateString: string): string {
   return formattedDate;
 }
 
-const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) => {
+const ExportModal = ({ onClose, filterValue, type, source, active }: exportModalProps) => {
+  
   const pathName = usePathname().split('/');
-  const {membershipData} = useAuthContext()
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
   const [exportList, setExportList] = useState<ExportContent[]>([]);
   const { theme } = useTheme();
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const [isFetched, setIsFetched] = useState<boolean>(false);
+  const [isLoading,setIsLoading] = useState<boolean>(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
+  const {membershipData, isTentimesUser} = useAuthContext();
   const [refreshState, setRefreshState] = useState<boolean>(false);
+  const {getExportData, postExportReq} = useTrackerServices();
   const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
-
-
   const isAdvancedPlanOrAbove = !!membershipData && membershipData.membership != null && membershipData.membership >= MembershipPlan.Advance;
-
   const fetchData = async () => {
-    setRefreshState(true);
-    if(type){
-      const { data, error } = await myFetch(`${baseUrl}/export/list?tracker=${pathName[pathName.length-2]}`);
-    console.log(data);
-    if (error) {
-      console.log(error);
-      return;
-    }
+  try {
+    setIsLoading(true);
+    // setRefreshState(true);
 
-    if (data) {
-      setExportList(data);
-      setTimeout(() => {
-        setRefreshState(false);;
-      }, 500);
-    }
-    }else{
-    const { data, error } = await myFetch(`${baseUrl}/export/list`);
-    console.log(data);
-    if (error) {
-      console.log(error);
-      return;
-    }
+    const data = await getExportData(`${pathName[pathName.length - 2]}`);
+    // console.log("exportData", data);
 
-    if (data) {
-      setExportList(data);
-      setTimeout(() => {
-        setRefreshState(false);;
-      }, 500);
-    }
+    setExportList(data?.trackerExports || []);
+  } catch (error) {
+    // console.error("Error fetching export data:", error);
+  } finally {
+    setIsLoading(false);
+    // setRefreshState(false);
   }
-  };
+};
   useEffect(() => {
-    if (showExportedFiles) {
+    // if (showExportedFiles) {
       fetchData();
-    }
-  }, [showExportedFiles]);
+    // }
+  }, []);
 
   const exportDataHandler = async () => {
-    if(type){
-      const dataToSend={
-          type:type,
-      }
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (error) {
-        console.log("Unable to send the post request", error);
-        return;
-      }
-  
-      // console.log(data);
-      if (data) {
-        console.log("Export Post Api", data);
-        GAEvent(
-          "trackers",
-          "Tracker Detail",
-          "View",
-          `${type.charAt(0)}${type.substring(1).toLowerCase()}`
-        )
-        showToast('success', "Export request raised", {closeButton: false});
-        setShowExportedFiles(true);
-      }
-    }else{
-    const formData = new URLSearchParams();
-    Object.entries(filterValue).forEach(([key, value]: [string, any]) => {
-      formData.append(key, value);
-    });
-
-    const { data, error } = await myFetch(`${baseUrl}/export`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData,
-    });
-
-    if (error) {
-      console.log("Unable to send the post request", error);
-      return;
-    }
-
-    // console.log(data);
-    if (data) {
-      console.log("Export Post Api", data);
-      showToast('success', "Export request raised", {closeButton: false});
-      setShowExportedFiles(true);
-    }
+    try {
+    setIsLoading(true);
+    // setRefreshState(true);
+    const fullUrl = window.location.href
+    const data = await postExportReq(pathName[pathName.length-2], active || "", fullUrl) as { message: string };
+    setIsFetched(true);
+    toast({ title: "Success", description: data?.message })
+    await fetchData();
+  } catch (error : any) {
+    toast({ title: "Error", description: error?.message })
+    // console.error("Error fetching export data:", error);
+  } finally {
+    setIsLoading(false);
+    // setRefreshState(false);
   }
+      
   };
 
   const deleteFileHandler = async (dataexportId: string) => {
@@ -224,63 +158,75 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
       `${isEventeli ? "geo" : "gtm"} | pricing | web | export`
     );
   };
+  
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container}`}>
       {!showExportedFiles && (
         <div
           className={`${styles.exportType_modal} ${
             theme === "light" && styles.exportType_modal_light
-          } flex flex-col`}
+          } flex flex-col relative ${isMobile? "w-[390px]": "w-[440px]"}`}
         >
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
               Export
-              {/* <span className="text-xs font-norma">
-                Available only in the Advance plan.
-                <Button
-                        variant="outline"
-                        size="sm"
-                        className="hidden md:flex"
-                        // onClick={handleUpgradeClick}
-                      >
-                        <span className="hidden sm:inline">Upgrade</span>
-                      </Button>
-              </span> */}
-              
             </div>
-            
             {/* <Image
               src={CloseIcon}
               alt="closeicon"
               onClick={() => onClose()}
               className={styles.closeIcon}
             /> */}
-            <X onClick={() => onClose()} className={styles.closeIcon} width={16}/>
+            <button onClick={() => onClose()} className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            {/* <div className="absolute right-5"> */}
+            <X className={`${styles.closeIcon}`} width={16}/>
+              {/* </div> */}
+            </button>
           </div>
-          {/* <div className={styles.tabs_container}>
-            <div
-              className={`${styles.tab} ${
-                activeTab == "CSV" ? styles.active : ""
-              }`}
-              onClick={() => setActiveTab("CSV")}
-            >
-              CSV
-            </div>
-            <div
-              className={`${styles.tab} ${
-                activeTab == "JSONL" ? styles.active : ""
-              }`}
-              onClick={() => setActiveTab("JSONL")}
-            >
-              JSONL
-            </div>
-          </div> */}
 
-          {/* <div className={styles.exportType_modal_description}>
-            Exporting a large number of records will take some time to process.
-            You can check the progress of your export in the exported files
-            dialog.
-          </div> */}
+          
+          {(isTentimesUser) ?
+          <>
+          <div className={styles.exportType_modal_description}>
+             <div>
+                    Large exports may take some time. Exports will run in the
+                    background after you close this window and we will email you
+                    when they are done.
+              </div>
+          </div>
+          {((membershipData && ((membershipData.membership === MembershipPlan.Advance)||(membershipData.membership === MembershipPlan.Enterprise))) || (isTentimesUser)) &&
+          <div className="flex justify-end w-full mb-3">
+            <Button variant="outline" className="p-2 mr-6">
+            <div className={`${styles.refresh_button} text-xs`} style={{color:"var(--secondary-text-color)"}} onClick={fetchData}>
+                <Image
+                  src={Refresh}
+                  alt="refresh"
+                  width={16}
+                  height={24}
+                  className={`${iconClass} ${refreshState ?styles.rotating: ''}`}
+                />
+                <div>refresh</div>
+              </div>
+            </Button>
+            </div>
+            }
+          <ExportList  data={exportList} isLoading={isLoading}/>
+          <Button 
+            variant="outline"
+            disabled={isFetched}
+            className={`mx-5 mb-5 bg-[var(--primary-color)] text-white hover:text-white hover:bg-[var(--primary-color)]`}
+            onClick={exportDataHandler}
+          >
+            Export
+          </Button>
+          </>
+          : isAdvancedPlanOrAbove?
+              <div className={`p-5 pt-0 ${styles.exportType_modal_description}`}>
+                We're working on adding this option directly to the panel. In the meantime, just drop us an email at {" "}
+                <span className="text-primary hover:underline cursor-pointer" onClick={() => window.open("mailto:help@whr.ai", "_blank")}>help@whr.ai</span>
+                {" "}with your tracker details, and we'll send you the export within 24 working hours.
+              </div>
+          :
           <div className="w-full pb-4 flex items-center justify-center gap-1">
              {/* <Badge variant="secondary" className="mx-auto">
             <Crown className="w-3 h-3 mr-1" />
@@ -300,164 +246,12 @@ const ExportModal = ({ onClose, filterValue, type, source }: exportModalProps) =
               Premium
             </RainbowButton>}
             </div>
-          {/* <div
-            className={styles.exportType_modal_button}
-            onClick={exportDataHandler}
-          >
-            Export
-          </div>
-          <div
-            className={styles.exportType_modal_button2}
-            onClick={()=>setShowExportedFiles(true)}
-          >
-            See previous exported files
-          </div> */}
+          }
         </div>
       )}
-
-      {showExportedFiles &&
-        (exportList.length < 0 ? (
-          <div className={styles.exportedfiles_modal}>
-            <Loading />
-          </div>
-        ) : (
-          <div
-            className={`${styles.exportedfiles_modal} ${
-              theme === "light" && styles.exportedfiles_modal_light
-            }`}
-          >
-            <div className={styles.exportType_backArrow}>
-              <Image
-                src={backIcon}
-                alt="back"
-                onClick={() => setShowExportedFiles(false)}
-              />
-            </div>
-            <div className={styles.exportedfiles_header}>
-              <div className={styles.exportedfiles_header_title}>
-                Exported Files
-                {exportList.length>0 && 
-                <span className={styles.exportedfiles_stats}>{exportList.length}</span>
-                }
-                
-              </div>
-
-              <div className={styles.refresh_button} onClick={fetchData}>
-                <Image
-                  src={Refresh}
-                  alt="refresh"
-                  width={24}
-                  height={24}
-                  className={`${iconClass} ${refreshState ?styles.rotating: ''}`}
-                />
-                <div>refresh</div>
-              </div>
-
-              <Image
-                src={CloseIcon}
-                alt="closeicon"
-                onClick={() => onClose()}
-                className={styles.closeIcon}
-              />
-            </div>
-
-            <div className={styles.exportedfiles_container}>
-              <div className={styles.alertpanel}>
-                <Image src={HelpIcon} alt="helpicon" width={28} height={28} />
-                <div className={styles.alerttext}>
-                  <div>
-                    Large exports may take some time. Exports will run in the
-                    background after you close this window and we will email you
-                    when they are done.
-                  </div>
-                  <div>
-                    Open Exported Files again to check the progress and download
-                    when completed. Completed exports are automatically deleted
-                    after 30 days.
-                  </div>
-                </div>
-              </div>
-
-              {exportList.map((exportItem) => (
-                <div className={styles.exportedfile} key={exportItem.id}>
-                  <div className={styles.exportedfile_info}>
-                    <div className={styles.exportedfile_name}>
-                      {exportItem.attachment.fileName}
-                    </div>
-                    <div className={styles.exportedfile_description}>
-                      {formatDate(exportItem.created)} by {exportItem.user.firstname}{" "}
-                      {exportItem.user.lastname}
-                    </div>
-                  </div>
-
-                  <div className={styles.exportedfile_controls}>
-                    <div className={styles.exportedfile_status}>
-                      {exportItem.status === "COMPLETED" && (
-                        <>
-                          {/* <Image src={GreenCheck} alt="greencheck" /> */}
-                          {/* <div>0.03MB</div> */}
-                        </>
-                      )}
-                      {exportItem.status}
-                      {exportItem.status === "COMPLETED" && (
-                        <Link href={exportItem.attachment.filePath}>
-                          <span
-                            className={styles.exportedfile_downloadicon}
-                            onClick={() => downloadHandler(exportItem.id)}
-                          >
-                            <Image
-                              src={DownloadIcon}
-                              width={20}
-                              height={20}
-                              alt="download"
-                            />
-                          </span>
-                        </Link>
-                      )}
-                    </div>
-                    <span
-                      className={styles.exportedfile_minusicon}
-                      onClick={() => deleteFileHandler(exportItem.id)}
-                    >
-                      <Image src={MinusIcon} alt="minusicon" />
-                    </span>
-                  </div>
-                </div>
-              ))}
-
-              {/* <div className={styles.exportedfile}>
-                <div className={styles.exportedfile_info}>
-                  <div className={styles.exportedfile_name}>
-                    Real-World-Events-20240328-0645.csv
-                  </div>
-                  <div className={styles.exportedfile_description}>
-                    28 Mar 2024 12:15 PM by Abhinav Tripathi
-                  </div>
-                </div>
-
-                <div className={styles.exportedfile_controls}>
-                  <div className={styles.exportedfile_status}>
-                    <Image src={GreenCheck} alt="greencheck" />
-                    <div>0.03MB</div>
-                  </div>
-                  <span className={styles.exportedfile_downloadicon}>
-                    <Image
-                      src={DownloadIcon}
-                      width={20}
-                      height={20}
-                      alt="download"
-                    />
-                  </span>
-                  <span className={styles.exportedfile_minusicon}>
-                    <Image src={MinusIcon} alt="minusicon" />
-                  </span>
-                </div>
-              </div> */}
-            </div>
-          </div>
-        ))}
       <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen} />
     </div>
+    
   );
 };
 

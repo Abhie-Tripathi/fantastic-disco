@@ -90,6 +90,24 @@ export interface Tracker {
     audienceSpread?: any;
     designation?: any;
 }
+export interface ExportContent {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  progress: number;
+  createdAt: string;
+  createdBy: string;
+  totalRecords: number;
+  processedRecords: number;
+  downloadUrl?: string;
+  user?: {
+    firstname: string;
+    lastname: string;
+  };
+  exportOf?: string;
+}
+
 export interface PresetData{
   id:string;
   name:string;
