@@ -93,7 +93,6 @@ import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { update } from "firebase/database";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -699,29 +698,6 @@ const stepsConfig =[
         setLocalFilter("excludeKeywords", excludeKeywords)
       }
     }
-   else if (type === "T_AUDIENCE_DEPT_PROFILE" && Array.isArray(customData)) {
-  console.log("customData", customData);
-   
-//   const flattened = customData?.flatMap(obj =>
-//   Object?.entries(obj)
-//     ?.filter(([, value]) => value !== undefined && value?.trim() !== "")
-//     ?.map(([key, value]) => `${value}_${key}`)
-// );
-//   console.log("customData", customData);
-  
-// const final = { Role: flattened.join(",") };
-
-//   console.log("flattened", final);
-  // setCustomData([{ 0: { Role: "xyz" } }]);
-  // // Avoid unnecessary state updates to prevent infinite loop
-  // const isAlreadyFlattened =
-  //   flattened.length === customData.length &&
-  //   flattened.every((entry, idx) => entry.Role.split("_")?.[0] === `${customData[idx]?.Role?.split("_")?.[0]}`);
-
-  // if (!isAlreadyFlattened) {
-  //   setCustomData(final);
-  // }
-}
 
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
@@ -796,7 +772,6 @@ const stepsConfig =[
       "seniorityIds": seniorityIds,
       "designationIds": designationIds,
     }
-    console.log("res is", res);
     
     setProfileIds((prev=[])=>[...prev, res]);
     setDepartmentIds([]);
@@ -894,7 +869,6 @@ const stepsConfig =[
       },
       {} as Record<string, any>
     );
-    console.log(profileIds, "profileIdssss");
     
   // For Designation IDs
 const flattendDesignationIds = Array.from(
@@ -987,6 +961,11 @@ const jobComposite = {
         setIsMandatory(true);
         return;
       }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
@@ -1022,17 +1001,17 @@ const jobComposite = {
       }
       
       
-      //  else if (
-      //   type !== defaultType && 
-      //   type !== "T_PRODUCT_KEYWORDS" && 
-      //   type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
-      //   (trackerName.length === 0 || customData.length === 0)
-      // ) {
-      //   console.log("Please, Fill all the details");
-      //   setIsCreating(false);
-      //   setIsMandatory(true);
-      //   return;
-      // }
+       else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
+        console.log("Please, Fill all the details");
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
@@ -1078,14 +1057,16 @@ const jobComposite = {
         setIsMandatory(true);
         return;
       }
-      if(type==="T_AUDIENCE_DEPT_PROFILE"){
-
-      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1121,17 +1102,17 @@ const jobComposite = {
         });
         return;
       }
-      //  else if (
-      //   type !== defaultType && 
-      //   type !== "T_PRODUCT_KEYWORDS" && 
-      //   type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
-      //   (trackerName.length === 0 || customData.length === 0)
-      // ) {
-      //   console.log("Please, Fill all the details");
-      //   setIsCreating(false);
-      //   setIsMandatory(true);
-      //   return;
-      // }
+       else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
+        console.log("Please, Fill all the details");
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
@@ -1325,7 +1306,6 @@ const jobComposite = {
       }
       if(type==="T_AUDIENCE_DEPT_PROFILE"){
         const updatedProfileData = JSON.parse(editData?.filterValues?.jobComposite)
-        console.log("updatedProfileData", updatedProfileData?.properties?.allEntries);
         const updatedProfileIds = updatedProfileData?.designationIds?.map((id: string) => ({ designationIds: [id] })) || [];
         const updatedProfileEntries=processEntryGroups(updatedProfileData?.properties?.allEntries)
         const entriesWithEmpty = [
@@ -1534,7 +1514,6 @@ const fetchPresetJson = async () => {
   return acc;
 }, {});
 
-console.log("newEntry", newEntry);
 
  if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
@@ -1571,7 +1550,6 @@ console.log("newEntry", newEntry);
    const [seniorityIds, setSeniorityIds]=useState<string[]>([]);
    const [suggestionIds,setSuggestionIds]=useState<string[]>([]);
   const addCompany = (id: number, val: any, ind:number) => {
-    console.log("val", id);
     if (type === "T_EVENT_PARTICIPATION") {
       setSuggestionIds((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString())
@@ -1590,22 +1568,17 @@ console.log("newEntry", newEntry);
       });
     }
     else if (type === "T_AUDIENCE_DEPT_PROFILE") {
-      console.log("inputValues", inputValues);
       
       setSuggestionIds((prev: string[]) => {
         const alreadyExists = seniorityIds.find(entry => entry === id.toString()) || departmentIds.find(entry => entry === id.toString()) || designationIds.find(entry => entry === id.toString());
 
         if (alreadyExists) {
-          console.log("entry already exists");
-          
           setInputValues({});
           return prev;
         } else {
           if(ind === 0){
             setDesignationIds((prev: string[])=>[...prev, id.toString()])
-          }else if(ind===1){
-            console.log("ids",id);
-            
+          }else if(ind===1){  
             setSeniorityIds((prev: string[])=>[...prev, id.toString()])
           }else{
             setDepartmentIds((prev: string[])=>[...prev, id.toString()])
@@ -1632,9 +1605,7 @@ console.log("newEntry", newEntry);
     }
     setSelected(true);
   }
-  console.log("eventSuggestion", customData);
   useEffect(() => {
-  console.log("seniorityIds", suggestionIds);
   
     const finalSeniroityIds = seniorityIds.filter(
   (item) => suggestionIds.includes(item)
@@ -1652,11 +1623,9 @@ const finalEventSuggestion = eventSuggestion.filter(
   (item) => suggestionIds.includes(item)
 );
 setEventSuggestion(finalEventSuggestion);
-console.log("finalSeniroityIds",finalSeniroityIds);
 
   },[suggestionIds])
  
-  console.log("profileIds",profileIds);
   
   useEffect(() => {
     if (selected) {
@@ -1731,7 +1700,6 @@ const handleShowTemplate=()=>{
     scrollablePresetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
-console.log("profileIds", allEntries.length);
   useEffect(() => {
     const count = template?.inputAreas?.length || 0;
     inputRefs.current = new Array(count).fill(null);
@@ -1739,7 +1707,6 @@ console.log("profileIds", allEntries.length);
   }, [template?.inputAreas]);
 const handleOptionSelected = (index: number) => {
     inputRefs.current[index]?.blur();
-    console.log("inputRefs.current[index]",inputRefs.current[index]);
     
     setInputFocus(prev => prev.map((_, i) => i === index ? false : false));
     setTimeout(() => {
@@ -2036,7 +2003,6 @@ if(isLoading) return <Loading/>
                             onFocus={() => {
                               const newFocus = [...inputFocus];
                               newFocus[index] = true;
-                              console.log("newFocus", newFocus);
 
                               setInputFocus(newFocus);
                             }}
@@ -2391,8 +2357,6 @@ if(isLoading) return <Loading/>
                             onFocus={() => {
                               const newFocus = [...inputFocus];
                               newFocus[index] = true;
-                              console.log("newFocus", newFocus);
-
                               setInputFocus(newFocus);
                             }}
                             onBlur={() => {

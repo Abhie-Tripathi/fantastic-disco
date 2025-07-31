@@ -225,20 +225,16 @@ if (searchInput?.length > 0) {
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
-     const selectedEventId = (id: any, name: string) => {
-  // 1. Immediately mark selection and prevent default behaviors
+const selectedEventId = (id: any, name: string) => {
   setSelectionMade(true);
   setIsOpen(false);
   
-  // 2. Process selection
   handleSelect(id, name, index || 0);
   setPreviousInput(name);
   setEventSearchLoader(false);
   
-  // 3. Trigger blur in parent (should update inputFocus state)
   onOptionSelected?.();
   
-  // 4. Reset selection flag after everything settles
   setTimeout(() => {
     setSelectionMade(false);
   }, 100);
