@@ -1007,6 +1007,7 @@ const jobComposite = {
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_AUDIENCE_DEPT_PROFILE" &&
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
@@ -1107,7 +1108,8 @@ const jobComposite = {
       }
        else if (
         type !== defaultType && 
-        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_PRODUCT_KEYWORDS" &&
+        type !== "T_AUDIENCE_DEPT_PROFILE" && 
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {

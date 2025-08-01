@@ -84,7 +84,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         )
       : DesDep.data.department;
   }
-  setEventSuggestion(filterDesValue);
+          const sortedData = filterDesValue
+            ? [...filterDesValue].sort((a, b) => a.name.localeCompare(b.name))
+            : []; 
+          setEventSuggestion(sortedData);
   setEventSearchLoader(false);
   return;
 }
