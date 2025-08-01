@@ -894,13 +894,16 @@ const flattendSeniorityIds = Array.from(
   ])
 );
     // const updatedEntries = allEntries.map((entry)=>) 
+const shouldIncludeLogic = 
+  flattendDesignationIds?.length && 
+  (flattendDepartmentIds?.length || flattendSeniorityIds?.length);
 const jobComposite = {
-  "designationIds": flattendDesignationIds,
-  "logic":"OR",
-  "conditions": {
-    "logic": "AND",
-    "departmentIds": flattendDepartmentIds,
-    "seniorityIds": flattendSeniorityIds
+   ...(flattendDesignationIds?.length && { designationIds: flattendDesignationIds }),
+  ...(shouldIncludeLogic && { logic: "OR" }),
+  conditions: {
+    logic: "AND",
+    ...(flattendDepartmentIds?.length && { departmentIds: flattendDepartmentIds }),
+    ...(flattendSeniorityIds?.length && { seniorityIds: flattendSeniorityIds }),
   },
   "properties":{
       "allEntries":allEntries[allEntries.length-1].length===0?allEntries.slice(0, allEntries.length-1):allEntries,
@@ -1305,7 +1308,7 @@ const jobComposite = {
         setCustomData(presentCustomData);
       }
       if(type==="T_AUDIENCE_DEPT_PROFILE"){
-        const updatedProfileData = JSON.parse(editData?.filterValues?.jobComposite)
+        const updatedProfileData = JSON?.parse(editData?.filterValues?.jobComposite)
         const updatedProfileIds = updatedProfileData?.designationIds?.map((id: string) => ({ designationIds: [id] })) || [];
         const updatedProfileEntries=processEntryGroups(updatedProfileData?.properties?.allEntries)
         const entriesWithEmpty = [
