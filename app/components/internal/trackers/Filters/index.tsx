@@ -765,22 +765,44 @@ const stepsConfig =[
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-   useEffect(()=>{
-    if(isNew){
-    const res = {
-      "departmentIds": departmentIds,
-      "seniorityIds": seniorityIds,
-      "designationIds": designationIds,
-    }
-    console.log("profileIds,res",[...profileIds,res]);
+ useEffect(() => {
+  if (isNew && allEntries?.length > 0) {
+    // Get the last group from allEntries (current entries)
+    const lastGroup = allEntries[allEntries.length - 1];
+     console.log(lastGroup, "");
+    // Initialize empty arrays for each type
+    const newDepartmentIds: string[] = [];
+    const newSeniorityIds: string[] = [];
+    const newDesignationIds: string[] = [];
     
-    setProfileIds((prev=[])=>[...prev, res]);
+    // Process each entry in the last group
+    lastGroup.forEach(entry => {
+     
+      
+      const [value, id, type] = entry.split('_');
+      
+      if (type === 'Department') {
+        newDepartmentIds.push(id);
+      } else if (type === 'Seniority') {
+        newSeniorityIds.push(id);
+      } else if (type === 'Designation') {
+        newDesignationIds.push(id);
+      }
+    });
+    
+    // Create the new profile entry
+    const res = {
+      departmentIds: newDepartmentIds,
+      seniorityIds: newSeniorityIds,
+      designationIds: newDesignationIds
+    };
+    
+    setProfileIds(prev => [...(prev || []), res]);
     setDepartmentIds([]);
-    setDesignationIds([]);
     setSeniorityIds([]);
+    setDesignationIds([]);
   }
-  
-  },[isNew, allEntries])
+}, [isNew, allEntries]);
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -825,7 +847,7 @@ const stepsConfig =[
   };
   const [shouldCallApi, setShouldCallApi] = useState(false);
   const saveTrackerHandler = async () => {
-    setIsNew(true);
+    // setIsNew(true);
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -872,26 +894,41 @@ const stepsConfig =[
     );
     
   // For Designation IDs
+// Get the last group from allEntries (current entries)
+const currentEntries = allEntries?.[allEntries.length - 1] || [];
+
+// Extract IDs from current entries
+const currentDesignationIds = currentEntries
+  .filter(item => item.endsWith('_Designation'))
+  .map(item => item.split('_')[1]);
+
+const currentDepartmentIds = currentEntries
+  .filter(item => item.endsWith('_Department'))
+  .map(item => item.split('_')[1]);
+
+const currentSeniorityIds = currentEntries
+  .filter(item => item.endsWith('_Seniority'))
+  .map(item => item.split('_')[1]);
+
+// Combine with profileIds
 const flattendDesignationIds = Array.from(
   new Set([
     ...(profileIds?.flatMap(item => item.designationIds || []).filter(Boolean) || []),
-    ...(designationIds || [])
+    ...currentDesignationIds
   ])
 );
 
-// For Department IDs
 const flattendDepartmentIds = Array.from(
   new Set([
     ...(profileIds?.flatMap(item => item.departmentIds || []).filter(Boolean) || []),
-    ...(departmentIds || [])
+    ...currentDepartmentIds
   ])
 );
 
-// For Seniority IDs
 const flattendSeniorityIds = Array.from(
   new Set([
     ...(profileIds?.flatMap(item => item.seniorityIds || []).filter(Boolean) || []),
-    ...(seniorityIds || [])
+    ...currentSeniorityIds
   ])
 );
     // const updatedEntries = allEntries.map((entry)=>) 
@@ -1574,29 +1611,37 @@ const fetchPresetJson = async () => {
       });
     }
     else if (type === "T_AUDIENCE_DEPT_PROFILE") {
-      
-      setSuggestionIds((prev: string[]) => {
-        const alreadyExists = seniorityIds.find(entry => entry === id.toString()) || departmentIds.find(entry => entry === id.toString()) || designationIds.find(entry => entry === id.toString());
+setSuggestionIds((prev: string[]) => {
+  const sanitizedVal = val.split('_')[0]; // Remove ID if already present
+  const newEntry = `${sanitizedVal}_${id}_${ind === 0 ? 'Designation' : ind === 1 ? 'Seniority' : 'Department'}`;
 
-        if (alreadyExists) {
-          setInputValues({});
-          return prev;
-        } else {
-          if(ind === 0){
-            setDesignationIds((prev: string[])=>[...prev, id.toString()])
-          }else if(ind===1){  
-            setSeniorityIds((prev: string[])=>[...prev, id.toString()])
-          }else{
-            setDepartmentIds((prev: string[])=>[...prev, id.toString()])
-          }
-          setInputValues(prevValues => ({
-            ...prevValues,
-            [ind]: val
-          }));
-          return [...prev, id.toString()];
-        }
-      });
+  setAllEntries(prevEntries => {
+    const updated = [...(prevEntries || [])];
+
+    // Initialize if empty
+    if (updated.length === 0) return [[newEntry]];
+
+    const lastGroupIndex = updated.length - 1;
+    const lastGroup = [...updated[lastGroupIndex]];
+    const hasIdInCurrentGroup = lastGroup.some(item => {
+      const parts = item.split('_');
+      return parts[1] === id.toString();
+    });
+
+    if (hasIdInCurrentGroup) {
+      setInputValues({});
+      return updated;
     }
+    lastGroup.push(newEntry);
+    updated[lastGroupIndex] = lastGroup;
+    return updated;
+  });
+  setInputValues(prev => ({ ...prev, [ind]: sanitizedVal }));
+
+  return [...prev, id.toString()];
+});
+
+}
 
     
     else {
@@ -1722,7 +1767,6 @@ const handleOptionSelected = (index: number) => {
   }
 }, 10);
   };
-  console.log("all",customData);
   
 if(isLoading) return <Loading/>
 

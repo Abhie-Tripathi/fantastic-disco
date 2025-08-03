@@ -39,7 +39,7 @@ interface TableViewProps {
   handleRemove: (id: number, groupIndex: number, itemIndex: number) => void;
   deleteSingleEntry: (index: number) => void;
 }
-const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew, profileIds, setProfileIds, allEntries, setAllEntries }: Props) => { 
+const TemplateTable = ({ customData, handleCustomData, presetName, setEventSuggestion, eventSuggestion, type,isNew, setIsNew, profileIds, setProfileIds, allEntries, setAllEntries}: Props) => { 
   
   const [des, setDes]= useState<string[]>([]);
   const [dep, setDep] = useState<string[]>([]);
@@ -88,7 +88,6 @@ useEffect(() => {
   if (newEntries.length === 0) return;
 
 }, [customData, type]);
-console.log('profileIds',profileIds);
 
 useEffect(() => {
    setAllEntries?.(prev => {
@@ -102,7 +101,7 @@ useEffect(() => {
       if (prev.length === 0) return [currentEntries]; // Handle empty case
       
       const lastArray = prev[prev.length - 1];
-      const updatedLastArray = [...lastArray, ...currentEntries];
+      const updatedLastArray = [...lastArray];
       
       return [
         ...prev.slice(0, -1), // All arrays except last
@@ -115,24 +114,32 @@ useEffect(() => {
 }, [isNew, currentEntries]);
 
    const removeCustomData = () => {
+    if(type==="T_AUDIENCE_DEPT_PROFILE"){
     const updatedEntries = allEntries?.filter((_, index) => !selectedIdArray.includes(index));
     const updatedProfileIds = profileIds?.filter((_, index) => !selectedIdArray.includes(index));
     setProfileIds?.(updatedProfileIds || []);
     setAllEntries?.(updatedEntries || []);
-    // const filteredData = customData.filter(
-    //   (item, index) => !selectedIdArray.includes(index)
-    // );
-    // if(eventSuggestion && setEventSuggestion){
-    // const filteredEventSuggestion = eventSuggestion.filter((item: any, i: number) => !selectedIdArray.includes(eventSuggestion.length-i-1));
-    // setEventSuggestion(filteredEventSuggestion);
-    // }
-    // handleCustomData(filteredData);
-    // setSelectedIdArray([]);
+    }else{
+    const filteredData = customData.filter(
+      (item, index) => !selectedIdArray.includes(index)
+    );
+    if(eventSuggestion && setEventSuggestion){
+    const filteredEventSuggestion = eventSuggestion.filter((item: any, i: number) => !selectedIdArray.includes(eventSuggestion.length-i-1));
+    setEventSuggestion(filteredEventSuggestion);
+    }
+    handleCustomData(filteredData);
+    setSelectedIdArray([]);
+    }
   };
 
   const selectAllData = () => {
+    if(type==="T_AUDIENCE_DEPT_PROFILE"){
+      if (selectedIdArray.length == allEntries?.length) setSelectedIdArray([]);
+    else setSelectedIdArray((allEntries || [])?.map((_, index) => index));
+    }else{
     if (selectedIdArray.length == customData.length) setSelectedIdArray([]);
     else setSelectedIdArray(customData.map((_, index) => index));
+    }
   };
   const deleteSingleEntry = (index: number) => {
     
@@ -148,40 +155,56 @@ useEffect(() => {
     setSelectedIdArray([]);
     }
   };
-  const handleRemove =(id:number, groupIndex:number, itemIndex:number)=>{
-      console.log(des,dep,sen,"profileIds")
-      
-       setAllEntries?.(prev => {
-    const updatedEntries = prev.map(group => [...group]);
-    console.log("updatedEntries",updatedEntries);
+  const handleRemove = (id: number, groupIndex: number, itemIndex: number) => {
+  // First update allEntries
+  setAllEntries?.(prev => {
+    if (!prev) return [];
     
+    const updatedEntries = prev.map(group => [...group]);
     updatedEntries[groupIndex].splice(itemIndex, 1);
+    
     if (updatedEntries[groupIndex].length === 0) {
       updatedEntries.splice(groupIndex, 1);
     }
     
     return updatedEntries;
   });
-    const updatedDesignationIds = profileIds?.[groupIndex]?.designationIds?.filter((item: string) => parseInt(item) !== id);
-    const updatedDepartmentIds  = profileIds?.[groupIndex]?.departmentIds?.filter((item: string) => parseInt(item) !== id);
-    const updatedSeniorityIds = profileIds?.[groupIndex]?.seniorityIds?.filter((item: string) => parseInt(item) !== id);
-    const updatedProfile ={
-      "designationIds": updatedDesignationIds,
-      "departmentIds": updatedDepartmentIds,
-      "seniorityIds": updatedSeniorityIds
+  setProfileIds?.(prev => {
+    if (!prev || !prev[groupIndex]) return prev || [];
+    
+    const updatedProfileIds = [...prev];
+    const groupToUpdate = { ...updatedProfileIds[groupIndex] };
+    const [value, id, type] = allEntries?.[groupIndex]?.[itemIndex]?.split('_') || [];
+    
+    if (type === 'Designation' && groupToUpdate.designationIds) {
+      groupToUpdate.designationIds = groupToUpdate.designationIds.filter(
+        itemId => itemId !== id
+      );
+    } else if (type === 'Department' && groupToUpdate.departmentIds) {
+      groupToUpdate.departmentIds = groupToUpdate.departmentIds.filter(
+        itemId => itemId !== id
+      );
+    } else if (type === 'Seniority' && groupToUpdate.seniorityIds) {
+      groupToUpdate.seniorityIds = groupToUpdate.seniorityIds.filter(
+        itemId => itemId !== id
+      );
     }
     
-   if (setProfileIds) {
- setProfileIds((prev = []) => {
-  const newProfileIds = [...prev];
-  if (newProfileIds[groupIndex] !== undefined) {
-    newProfileIds[groupIndex] = updatedProfile ;
-  }
-  return newProfileIds;
-});
-}
-  }
-  
+    updatedProfileIds[groupIndex] = groupToUpdate;
+    
+    // Remove empty groups
+    if (
+      (!groupToUpdate.designationIds || groupToUpdate.designationIds.length === 0) &&
+      (!groupToUpdate.departmentIds || groupToUpdate.departmentIds.length === 0) &&
+      (!groupToUpdate.seniorityIds || groupToUpdate.seniorityIds.length === 0)
+    ) {
+      updatedProfileIds.splice(groupIndex, 1);
+    }
+    
+    return updatedProfileIds;
+  });
+};
+
   return (
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
       
