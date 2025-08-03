@@ -84,11 +84,11 @@ useEffect(() => {
     newEntries.push(`${firstItem.Seniority}_Seniority`);
     setSen(prev => [...prev, firstItem.Seniority]);
   }
-  
   setCurrentEntries(newEntries);
   if (newEntries.length === 0) return;
 
 }, [customData, type]);
+console.log('profileIds',profileIds);
 
 useEffect(() => {
    setAllEntries?.(prev => {
@@ -149,9 +149,12 @@ useEffect(() => {
     }
   };
   const handleRemove =(id:number, groupIndex:number, itemIndex:number)=>{
-    
+      console.log(des,dep,sen,"profileIds")
+      
        setAllEntries?.(prev => {
     const updatedEntries = prev.map(group => [...group]);
+    console.log("updatedEntries",updatedEntries);
+    
     updatedEntries[groupIndex].splice(itemIndex, 1);
     if (updatedEntries[groupIndex].length === 0) {
       updatedEntries.splice(groupIndex, 1);
@@ -326,7 +329,7 @@ useEffect(() => {
           </tbody>
         </table>}
       </div>
-      {(type === "T_AUDIENCE_DEPT_PROFILE" && allEntries?.[allEntries?.length-1].length===0?allEntries?.length-1>5:(allEntries?.length || 0)>5) && (
+      {(type === "T_AUDIENCE_DEPT_PROFILE" && allEntries?.[allEntries?.length-1]?.length===0?allEntries?.length-1>5:(allEntries?.length || 0)>5) && (
         <div className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer flex gap-1" onClick={() => setExpandTable((prev) => !prev)}>
           {expandTable ? "Show Less" : "Show All"}
           <span className="block md:hidden">({allEntries?.length})</span>

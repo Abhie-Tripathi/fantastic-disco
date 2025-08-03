@@ -772,6 +772,7 @@ const stepsConfig =[
       "seniorityIds": seniorityIds,
       "designationIds": designationIds,
     }
+    console.log("profileIds,res",[...profileIds,res]);
     
     setProfileIds((prev=[])=>[...prev, res]);
     setDepartmentIds([]);
@@ -824,7 +825,7 @@ const stepsConfig =[
   };
   const [shouldCallApi, setShouldCallApi] = useState(false);
   const saveTrackerHandler = async () => {
-    // setIsNew(true);
+    setIsNew(true);
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -1721,6 +1722,8 @@ const handleOptionSelected = (index: number) => {
   }
 }, 10);
   };
+  console.log("all",customData);
+  
 if(isLoading) return <Loading/>
 
 
@@ -2245,7 +2248,7 @@ if(isLoading) return <Loading/>
       </Tabs>
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
-  ((customData && customData?.length > 0 || allEntries?.[0]?.length>0) ? (
+  (((customData && customData?.length > 0) || allEntries?.[0]?.length>0) ? (
     <>
     <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds} allEntries={allEntries}
           setAllEntries={setAllEntries}/>
