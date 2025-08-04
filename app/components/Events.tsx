@@ -164,7 +164,7 @@ const Events = () => {
                 selectedView === "table" ||
                 selectedView === "") && (
                 <BulkImport
-                  bulkActions={["Bulk Action", "Export"]}
+                  bulkActions={[{ id: 0, option: "Bulk Action" }]}
                   setShowCheckBox={setShowCheckBox}
                   setShowExport={setShowExport}
                 />

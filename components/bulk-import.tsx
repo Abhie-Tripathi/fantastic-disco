@@ -5,12 +5,17 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/useMediaQuery";
   interface BulkImportProps {
-  bulkActions: string[];
+  bulkActions: {
+    id: number;
+    option: string;
+  }[];
   setShowCheckBox: Dispatch<SetStateAction<boolean>>;
   setShowExport: Dispatch<SetStateAction<boolean>>;
 }
 export default function BulkImport({ bulkActions, setShowCheckBox, setShowExport }: BulkImportProps){
+    const isMobile = useIsMobile();
     const [open, setOpen] = useState(false);
     const actionTaken=(index:number)=>{
         if(index==0){
@@ -26,7 +31,7 @@ export default function BulkImport({ bulkActions, setShowCheckBox, setShowExport
         // </div>
         <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-           <div className="flex items-center justify-center bg-background hover:bg-accent cursor-pointer border border-input rounded-md">
+           <div className={`flex items-center justify-center bg-background hover:bg-accent cursor-pointer border border-input rounded-md ${isMobile?"h-full":"h-auto"}`}>
            <EllipsisVertical />
            </div>
       </PopoverTrigger>
@@ -34,8 +39,8 @@ export default function BulkImport({ bulkActions, setShowCheckBox, setShowExport
         <div>
             {
                 bulkActions.map((item, index)=>(
-                    <div key={index} className="whitespace-nowrap text-sm font-medium hover:bg-accent cursor-pointer p-2" onClick={()=>actionTaken(index)}>
-                        {item}
+                    <div key={index} className="whitespace-nowrap text-sm font-medium hover:bg-accent cursor-pointer p-2" onClick={()=>actionTaken(item.id)}>
+                        {item.option}
                     </div>
                 ))
             }

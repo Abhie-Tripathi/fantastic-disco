@@ -1,5 +1,4 @@
 "use client";
-import { MembershipData } from "@/types/user";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -13,23 +12,33 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
+import { useAuthContext } from "@/context";
+import FeedbackForm from "@/app/components/payment/feedbackForm";
 
 const Subscription = () => {
+  const { membershipData, setMembershipData } = useAuthContext();
   const { getMembershipData } = useProfileServices();
-  const [membershipData, setMembershipData] = useState<MembershipData>();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-  const { membership, endDate } = membershipData || {};
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const { membership, planRenewalDate, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
 
-  const [isLoading, setIsloading] = useState<boolean>(true);
+  const [isLoading, setIsloading] = useState<boolean>(false);
 
-  const formattedMembershipEndDate =
+  const isPremium =
+    !!membershipData &&
+    membershipData.membership != null &&
+    membershipData.membership > MembershipPlan.Freemium;
+
+  const formattedNextRenewalDate =
     membershipPlan === MembershipPlan[0]
       ? "-"
-      : endDate && endDate !== null
-      ? format(endDate, "dd MMM, yyyy")
+      : planRenewalDate && planRenewalDate !== null
+      ? format(planRenewalDate, "dd MMM, yyyy")
       : "-";
+
+  const planEndDate =
+    endDate && endDate !== null ? format(endDate, "dd MMM, yyyy") : "";
 
   const [paymentStatus, setPaymentStatus] = useState<any>(null);
   const searchParams = useSearchParams();
@@ -50,51 +59,63 @@ const Subscription = () => {
     );
   };
 
-  const fetchMembershipData = async () => {
+  const updateMembershipData = async () => {
     try {
-      setIsloading(true);
       const data = await getMembershipData();
       if (data) setMembershipData(data);
     } catch (error) {
       console.error("Error fetching user membership data:", error);
-    } finally {
-      setIsloading(false);
     }
   };
-
-  // useEffect(() => {
-  //   fetchMembershipData();
-  // }, [paymentStatus]);
 
   useEffect(() => {
     const fetchCheckoutSession = async () => {
       try {
+        setIsloading(true);
         const res = await fetch(`/api/checkout-session/${session_id}`);
         const data = await res.json();
         // console.log("Payment Status:", data);
-        setPaymentStatus(data);
+        if (data) {
+          setPaymentStatus(data);
+          updateMembershipData();
+        }
       } catch (err) {
         console.error("Error fetching payment status:", err);
       } finally {
-        fetchMembershipData();
         setShowSuccessModal(true);
+        setIsloading(false);
       }
     };
 
-    if (!session_id) fetchMembershipData();
-    else fetchCheckoutSession();
+    if (session_id) fetchCheckoutSession();
   }, [session_id]);
 
   return (
     <div className="p-6 pt-0">
       <div className="space-y-4 md:w-4/5">
+        <div className="text-muted-foreground text-sm">
+          Stay on board for uninterrupted access - your subscription auto-renews
+          so you never miss out. Upgrade or{" "}
+          {isPremium && planRenewalDate !== null ? (
+            <span
+              onClick={() => setShowFeedbackModal(true)}
+              className="cursor-pointer underline-offset-2 underline"
+            >
+              cancel
+            </span>
+          ) : (
+            "cancel"
+          )}{" "}
+          anytime.
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div className="text-muted-foreground font-medium col-span-1 md:col-span-1">
             Current Plan
           </div>
 
           <div className="flex col-span-1 gap-3 flex-wrap">
-            {isLoading ? (
+            {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
             ) : (
               <>
@@ -125,16 +146,23 @@ const Subscription = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 items-center">
+        <div className="grid grid-cols-2 gap-3">
           <div className="text-muted-foreground font-medium col-span-1">
             Next renewal
           </div>
-          <div className="flex col-span-1">
-            {isLoading ? (
+          <div className="flex col-span-1 items-center gap-1 sm:gap-4 flex-wrap">
+            {!membershipData || isLoading ? (
               <Skeleton className="h-6 w-36" />
+            ) : isPremium && planRenewalDate === null ? (
+              <span className="text-sm font-medium">
+                Disabled{" "}
+                <span className="text-muted-foreground">
+                  (Subscription will end on {planEndDate})
+                </span>
+              </span>
             ) : (
               <span className="text-sm font-medium">
-                {formattedMembershipEndDate}
+                {formattedNextRenewalDate}
               </span>
             )}
           </div>
@@ -168,9 +196,18 @@ const Subscription = () => {
           open={showSuccessModal}
           onOpenChange={setShowSuccessModal}
           isSuccess={
-            paymentStatus?.status === "paid" && paymentStatus?.updatePlan?.data?.id ? true : false
+            paymentStatus?.status === "paid" &&
+            paymentStatus?.updatePlan?.data?.id
+              ? true
+              : false
           }
           membership={membership || 0}
+        />
+      )}
+      {isPremium && (
+        <FeedbackForm
+          open={showFeedbackModal}
+          onOpenChange={setShowFeedbackModal}
         />
       )}
     </div>
