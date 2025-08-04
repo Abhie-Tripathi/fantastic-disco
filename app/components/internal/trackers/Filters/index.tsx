@@ -1593,6 +1593,7 @@ const fetchPresetJson = async () => {
   const [departmentIds, setDepartmentIds]=useState<string[]>([]);
    const [seniorityIds, setSeniorityIds]=useState<string[]>([]);
    const [suggestionIds,setSuggestionIds]=useState<string[]>([]);
+   
   const addCompany = (id: number, val: any, ind:number) => {
     if (type === "T_EVENT_PARTICIPATION") {
       setSuggestionIds((prev: string[]) => {

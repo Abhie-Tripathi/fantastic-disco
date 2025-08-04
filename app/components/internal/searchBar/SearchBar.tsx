@@ -56,9 +56,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState<any>([]);
-    const [previousInput, setPreviousInput] = useState<string>(""); 
+   const previousInputRef = useRef<string>("");
     const fetchSearchSuggestion = async () => {
-      
       // if(searchInput!==previousInput){
         if (type === "T_AUDIENCE_DEPT_PROFILE") {
   let filterDesValue;
@@ -138,18 +137,29 @@ if (searchInput?.length > 0) {
       // }
       };
       
-      useEffect(() => {
-        
-        
-      //  if(searchInput?.length>0){
-        if(searchInput!==previousInput)
-        setEventSearchLoader(true);
-        const debounceTimeout = setTimeout(() => {
-          fetchSearchSuggestion();
-        }, 500);
-        return () => clearTimeout(debounceTimeout);
-          // }else setEventSuggestion([]);
-      }, [searchInput, index, isFocused]);
+    useEffect(() => {
+  const trimmedInput = searchInput?.trim();
+  if (!trimmedInput || trimmedInput === previousInputRef.current) {
+    setEventSearchLoader(false);
+    return;
+  }
+
+  // Set loader only if we're actually going to make a request
+  const debounceTimeout = setTimeout(() => {
+    setEventSearchLoader(true);
+    fetchSearchSuggestion();
+    previousInputRef.current = trimmedInput;
+  }, 500);
+
+  return () => {
+    clearTimeout(debounceTimeout);
+    abortControllerRef.current?.abort();
+    // Don't set loader to false here as it might race with the new request
+  };
+}, [searchInput]);
+
+
+
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
         try {
@@ -233,7 +243,7 @@ const selectedEventId = (id: any, name: string) => {
   setIsOpen(false);
   
   handleSelect(id, name, index || 0);
-  setPreviousInput(name);
+  previousInputRef.current=name;
   setEventSearchLoader(false);
   
   onOptionSelected?.();
