@@ -22,10 +22,10 @@ const SearchEventsCTAButton = ({
   const generateSearchEventsParams = (): string => {
     const enabledCategories =
       enabledFilters &&
-      enabledFilters.eventCategory &&
-      enabledFilters.eventCategory.enabledValue &&
-      enabledFilters.eventCategory.enabledValue.length > 0
-        ? enabledFilters.eventCategory.enabledValue
+      enabledFilters.filter.eventCategory &&
+      enabledFilters.filter.eventCategory.enabledValue &&
+      enabledFilters.filter.eventCategory.enabledValue.length > 0
+        ? enabledFilters.filter.eventCategory.enabledValue
             .map((category) => category.slug)
             .join(",")
         : categories && categories.length > 0
