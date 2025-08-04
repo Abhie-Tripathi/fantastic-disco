@@ -659,6 +659,7 @@ export default function MapComponent({
         duration: 3000,
         essential: true,
       });
+      return
     }
 
     if (location?.type === "geoCoordinates") {
@@ -672,6 +673,7 @@ export default function MapComponent({
         duration: 3000,
         essential: true,
       });
+      return;
     }
     if (
       Object?.keys(trackerGeoCordinates || {}).length === 0 &&
@@ -687,6 +689,7 @@ export default function MapComponent({
         duration: 2000,
         essential: true,
       });
+      return
     }
   }, [location, mapRef.current, locationBBox, trackerId]);
 
