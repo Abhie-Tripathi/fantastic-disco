@@ -51,7 +51,7 @@ export const OutreachProgressBar = ({
   }, [currentStatus, outreachConfiguration]);
 
   return (
-    <div className="flex justify-evenly rounded-md my-3 border p-3 px-5 gap-4 bg-accent">
+    <div className="flex justify-evenly rounded-md my-3 border p-3 px-5 gap-4 bg-accent overflow-x-auto w-[90vw] sm:w-auto pr-3 sm:pr-0">
       {outreachConfiguration?.outreach.map((item, index: number) => {
         const isActive = index <= currentIndex;
 
@@ -59,7 +59,7 @@ export const OutreachProgressBar = ({
           return (
             <div
               key={index}
-              className="text-white cursor-pointer text-base relative text-center"
+              className="text-white cursor-pointer text-base relative text-center min-w-28 sm:w-fit"
               onClick={() => handleStatusChange(item.status)}
             >
               {item.status === "SHORTLISTED" ? (

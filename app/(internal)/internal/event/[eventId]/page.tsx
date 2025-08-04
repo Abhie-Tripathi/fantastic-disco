@@ -418,6 +418,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 0 } : poc
+        )
+      );
     }
   };
 
@@ -428,11 +433,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       : false;
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-[calc(100vh-70px)]">
+    <div className="grid grid-rows-[30%_70%] sm:grid-rows-1 sm:grid-cols-[30%_70%] h-full" >
       <aside
-        className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] 
-        pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] 
-        max-xl:w-[30%]"
+        className="overflow-auto pb-6 sm:pb-24 bg-[var(--primary-foreground)] 
+        pt-0 pr-3 sm:pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)]"
       >
         {showBackToSearch && (
           <Button className="flex items-center gap-2 text-[#666666] text-sm">
@@ -441,11 +446,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               className="text-[var(--primary-color)] font-medium"
               onClick={() => router.back()}
             >
-              Back to Search
+              Back
             </span>
           </Button>
         )}
-        <div className="flex gap-4 mt-4 items-start flex-col lg:flex-row">
+        <div className="flex gap-4 mt-4 items-start flex-row sm:flex-col lg:flex-row">
           {!website && !eventLogoUrl ? (
             <div
               className="h-24 px-10 rounded-md bg-[#5055A3]/10 border
@@ -459,7 +464,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <img
               src={eventImageSrc}
               alt="eventDetails"
-              className="h-24 w-full lg:w-24 rounded-lg aspect-auto border object-contain"
+              className="w-16 h-16 sm:h-24 sm:w-full lg:w-24 rounded-lg aspect-auto border object-contain"
             />
           )}
           <div className="flex flex-col gap-2">
@@ -1102,7 +1107,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                                 variant={"outline"}
                                 size={"sm"}
                               >
-                                Show details
+                                {state === 1 ? "Loading..." : state === 2 ? "Unlocked" : "Show details"}
                               </ButtonUI>
                             </div>
                           )}
@@ -1150,7 +1155,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </ButtonUI> */}
       </aside>
       <div
-        className={`ml-auto w-[72%] max-xl:w-[62%] ${
+        className={`sm:pl-6 ${
           eventDetailView === "notes"
             ? "h-[calc(100vh-150px)]"
             : eventDetailView === "pocs"
@@ -1182,25 +1187,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
         ) : (
           <>
+          <div className="sticky top-6 bg-background">
             {eventEnquiry && eventEnquiry.id && (
               <>
-              <div className="flex justify-between border-b pb-3">
-                <div>
-                  {/* <div className="flex gap-2">
-                    <img
-                      src="/defaultProfilePic.png"
-                      alt="user image"
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <div className="text-sm">
-                      {eventEnquiry.owner ? eventEnquiry.owner.name : "Assign Owner"}
-                      <div className="text-xs text-[#7D7D7D]">
-                        30 Followers
-                      </div>
-                    </div>
-                  </div> */}
+              <div className="flex flex-wrap gap-2 justify-between border-b pb-3">
+                {/* <div> */}
                   <FollowersPopup eventId={id} enquiryId={eventEnquiry.id} enquiryOwner={eventEnquiry.owner} />
-                </div>
+                {/* </div> */}
                 <div className="flex gap-3">
                   <ButtonUI variant={view === "research" ? "default" : "outline"} size="icon" onClick={()=>setView("research")} >
                     <Info className="h-4 w-4" />
@@ -1221,7 +1214,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
                   <ButtonUI variant="outline" size="icon" className="bg-accent relative" >
                     <Megaphone className="h-4 w-4" color="#8F8F8F" />
-                    <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
+                    <Lock strokeWidth={2} className="h-3 w-3 absolute top-[-5px] right-[-1px]" />
                   </ButtonUI>              
                 </div>
               </div>
@@ -1281,10 +1274,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </button>
               </div> */}
             </ul>
+          </div>
 
             <section
-              className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 
-              w-full pr-4 overflow-y-auto scroll-smooth"
+              className={`flex flex-col gap-6 pb-6 h-screen ${view === "outreach" ? "sm:h-[calc(100vh-305px)]" : "sm:h-[calc(100vh-222px)]"}  mt-5 
+              overflow-y-auto scroll-smooth w-[90vw] sm:w-auto pr-3 sm:pr-0`}
             >
               {view === "research" ? (
                 <>
@@ -1355,6 +1349,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 };

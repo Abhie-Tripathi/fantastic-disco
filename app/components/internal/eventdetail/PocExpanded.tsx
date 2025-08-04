@@ -113,7 +113,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                       variant={"outline"}
                       size={"sm"}
                     >
-                      Show details
+                      {poc.state === 1 ? "Loading..." : poc.state === 2 ? "Unlocked" : "Show details"}
                     </Button>
                   </div>
                 )}

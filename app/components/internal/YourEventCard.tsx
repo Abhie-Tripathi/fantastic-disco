@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { InterestConfiguration } from "@/types/configuration";
+import { useRouter } from "next/navigation";
 
 interface YourEventCardProps {
   eventId: string;
@@ -58,6 +59,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   setSelectedId,
   enquiryStatusUpdate,
 }) => {
+
+  const router = useRouter();
+
   const address = eventData.eventLocation ? (
     eventData.format === "online" ? (
       <span className="flex items-center">
@@ -224,7 +228,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       <div
         className="bg-background rounded-lg border shadow-sm relative my-6 w-[98%] cursor-pointer"
         onClick={() => {
-          handleModalOpen();
+          // handleModalOpen();
+          router.push(`/internal/event/${eventId}?view=coordinate`)
           GAEvent(
             "Coordinate",
             "Coordinate",

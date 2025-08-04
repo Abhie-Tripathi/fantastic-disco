@@ -26,6 +26,7 @@ import NullState from "../trackers/nullState";
 import NotesNullState from "@/public/notesNullState.svg";
 import { GAEvent } from "@/utils/GAEvent";
 import { UserResponse } from "@/types/user";
+import Loading from "@/components/ui/Loading";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -148,6 +149,7 @@ export const Notes = ({
       }
     } else {
       try {
+        setLoading(true);
         const data = await getCoordinateNotes(
           enquiryId,
           `offset=${page}&limit=10`,
@@ -164,10 +166,13 @@ export const Notes = ({
           }
           if (data.comments.length === 0 && page === 0) {
             setZeroState(true);
+            setNotes([]);
           }
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   }
@@ -741,7 +746,9 @@ export const Notes = ({
       <div className="text-[var(--primary-color)] font-bold px-5 py-2">
         Notes & Discusssion
       </div>
-      {notes ? (
+      {loading ?
+        <Loading /> : (
+      notes ? (
         <div
           className="h-[85%] w-full overflow-y-scroll relative"
           ref={containerRef}
@@ -809,7 +816,8 @@ export const Notes = ({
             ))}
           </ul>
         </div>
-      ) : null}
+      ) : null
+      )}
       {replyId && (
         <div
           // className={theme === "light" ? styles.replyDivLight : styles.replyDiv}
