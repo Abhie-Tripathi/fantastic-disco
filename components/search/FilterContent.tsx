@@ -19,6 +19,7 @@ import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { basicFilters, advancedFilter, countFilters } from "@/constants/filters";
 import { Switch } from "@/components/ui/switch";
+import { isEventeli } from "@/config";
 
 interface FilterSection {
   id: string;
@@ -143,16 +144,35 @@ const FilterContent = ({
                             localFilters[key as keyof typeof localFilters] !== "" &&
                             localFilters[key as keyof typeof localFilters] !== "[]"
                           ) ||
-                          (typeof localFilters.show !== "undefined" && localFilters.show !== "" && localFilters.show !== "[]")
+                          (typeof localFilters.show !== "undefined" && localFilters.show !== "" && localFilters.show !== "[]" && localFilters.show !== "rating")
                         }
-                        onCheckedChange={checked => {
-                          if (!checked) {
-                            // Clear all advanced filters
-                            let cleared = Object.fromEntries(advancedFilter.map(key => [key, ""]));
-                            cleared = {...cleared, show : ""}
-                            setMultipleLocalFilters(cleared);
-                          }
-                        }}
+                                                 onCheckedChange={checked => {
+                           if (!checked) {
+                             // Clear all advanced filters
+                             let cleared = Object.fromEntries(advancedFilter.map(key => [key, ""]));
+                             // Preserve rating if it exists in current show
+                             const currentShow = localFilters.show || "";
+                             if (currentShow.includes("rating")) {
+                               cleared = {...cleared, show: "rating"};
+                             } else {
+                               cleared = {...cleared, show: ""};
+                             }
+                             setMultipleLocalFilters(cleared);
+                           } else {
+                             // Set show value based on isEventeli condition
+                             let showValue = isEventeli 
+                               ? "branded,series,forecasted,frequency,estimatedExhibitors,scores,economicImpact,rankings"
+                               : "branded,series,forecasted,frequency,estimatedExhibitors,audienceZone,rankings";
+                             
+                             // Preserve rating if it exists in current show
+                             const currentShow = localFilters.show || "";
+                             if (currentShow.includes("rating")) {
+                               showValue = showValue + ",rating";
+                             }
+                             
+                             setMultipleLocalFilters({ show: showValue });
+                           }
+                         }}
                         disabled={section.filters.every(f => !f.enabled)}
                         aria-label="Enable/Disable all advanced filters"
                         onClick={e => e.stopPropagation()}
