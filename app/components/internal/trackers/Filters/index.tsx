@@ -1062,6 +1062,7 @@ const jobComposite = {
       }
       if (last === "editTracker") {
       try{
+        setIsCreating(true);
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
         
         if (data) {
@@ -1802,7 +1803,9 @@ if(isLoading) return <Loading/>
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>
+        {!isCreating?"Save":"Saving..."}
+      </Button>
   </div>
   <div className="flex md:hidden flex-col gap-2 px-6 py-6 mt-3 bg-[var(--background-secondary-color)]">
     <div>{template?.templateName}</div>
@@ -1884,7 +1887,7 @@ if(isLoading) return <Loading/>
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>{!isCreating?"Save":"Saving..."}</Button>
     </div>
     </div>
   </div>
