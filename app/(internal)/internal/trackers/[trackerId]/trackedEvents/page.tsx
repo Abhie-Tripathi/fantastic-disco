@@ -773,7 +773,7 @@ const Page = ({ params }: { params: any }) => {
               </div>
               {(view === "table" || view === "list")&&
               <BulkImport
-                bulkActions={["Bulk Action", "Export"]}
+                bulkActions={[{ id: 0, option: "Bulk Action" }, { id: 1, option: "Export" }]}
                 setShowCheckBox={setShowCheckBox}
                 setShowExport={setShowExport}
               />}
@@ -878,6 +878,11 @@ const Page = ({ params }: { params: any }) => {
             
             {view==="list" && <SortDropdown compact/>}
           {/* {view==="list" && <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>} */}
+          <BulkImport
+                bulkActions={[{ id: 1, option: "Export" }]}
+                setShowCheckBox={setShowCheckBox}
+                setShowExport={setShowExport}
+              />
           </div>
           {view === "table" && (
             <div className="flex-grow overflow-hidden">
@@ -1034,7 +1039,7 @@ const Page = ({ params }: { params: any }) => {
         </div>
       )}
       {showExport &&
-      <ExportModal onClose={exportModalHandler} source={"tracker"}/>
+      <ExportModal onClose={exportModalHandler} source={"tracker"} active={active || ""}/>
       }
     </div>
   );
