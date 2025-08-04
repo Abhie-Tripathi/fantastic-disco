@@ -58,6 +58,8 @@ const FilterContent = ({
 }: FilterContentProps) => {
   const [isPremiumModalOpen, setPremiumModalOpen] = useState(false)
   const {membershipData} = useAuthContext()
+  const {enabledFilters} = useFilterContext()
+  const isRestriction = Object.keys(enabledFilters?.filter || {}).length > 0
   const { localFilters, setMultipleLocalFilters } = useFilterContext();
   const isPremium = !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
   const isFreemium = !!membershipData && membershipData.membership != null && membershipData.membership === MembershipPlan.Freemium;
@@ -135,7 +137,7 @@ const FilterContent = ({
                       <RainbowButton size="sm"  className="h-6 rounded-sm" onClick={()=>setPremiumModalOpen(true)}>Premium</RainbowButton>
                     )}
                      {/* Advanced Toggle */}
-                     {section.id === "advanced-details" && (
+                     {section.id === "advanced-details" && !isRestriction && (
                       <Switch
                         className="ml-auto mr-[13px]"
                         checked={

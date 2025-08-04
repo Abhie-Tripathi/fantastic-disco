@@ -189,7 +189,7 @@ type FilterContextType = {
     newKey: keyof Filters,
     newValue: string
   ) => void;
-  enabledFilters: EventFilterData | null;
+  enabledFilters: {filter: EventFilterData} | null;
   showFetchedData: any;
   setShowFetchedData: (val: boolean) => void;
   isTentimesUser: boolean;
