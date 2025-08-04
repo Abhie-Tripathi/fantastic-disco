@@ -92,6 +92,9 @@ useEffect(() => {
 useEffect(() => {
    setAllEntries?.(prev => {
     if (isNew) {
+      if (prev.length > 0 && prev[prev.length - 1].length === 0) {
+      return prev;
+    }
       const newState = [...prev, []];
       
       setCurrentEntries([]);

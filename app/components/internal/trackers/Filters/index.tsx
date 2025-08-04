@@ -2342,7 +2342,7 @@ if(isLoading) return <Loading/>
   
   </div>
   {type!=="T_CUSTOM"&&
-  <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
+  <div className={`${isMobile? "block":"hidden"} w-full sticky bottom-0 bg-background z-10`}>
  {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
