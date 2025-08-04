@@ -58,7 +58,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const [eventSuggestion,setEventSuggestion]=useState<any>([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-      
+      console.log();
       // if(searchInput!==previousInput){
         if (type === "T_AUDIENCE_DEPT_PROFILE") {
   let filterDesValue;
@@ -88,6 +88,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             ? [...filterDesValue].sort((a, b) => a.name.localeCompare(b.name))
             : []; 
           setEventSuggestion(sortedData);
+  setEventSearchLoader(false);
+  return;
+}
+if(searchInput?.trim()?.length===0){
   setEventSearchLoader(false);
   return;
 }
@@ -139,16 +143,15 @@ if (searchInput?.length > 0) {
       };
       
       useEffect(() => {
-  const trimmedInput = searchInput?.trim();
 
-  if (trimmedInput === "" || trimmedInput === previousInput){
+  if (searchInput === previousInput){
      return;
      
   }
   setEventSearchLoader(true);
 
   const debounceTimeout = setTimeout(() => {
-    setPreviousInput(trimmedInput);
+    setPreviousInput(searchInput);
     fetchSearchSuggestion();
   }, 500);
 
@@ -156,7 +159,7 @@ if (searchInput?.length > 0) {
     clearTimeout(debounceTimeout);
     abortControllerRef.current?.abort();
   };
-}, [searchInput]);
+}, [searchInput, index]);
 
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
