@@ -56,8 +56,9 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState<any>([]);
-   const previousInputRef = useRef<string>("");
+    const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
+      
       // if(searchInput!==previousInput){
         if (type === "T_AUDIENCE_DEPT_PROFILE") {
   let filterDesValue;
@@ -137,28 +138,25 @@ if (searchInput?.length > 0) {
       // }
       };
       
-    useEffect(() => {
+      useEffect(() => {
   const trimmedInput = searchInput?.trim();
-  if (!trimmedInput || trimmedInput === previousInputRef.current) {
-    setEventSearchLoader(false);
-    return;
-  }
 
-  // Set loader only if we're actually going to make a request
+  if (trimmedInput === "" || trimmedInput === previousInput){
+     return;
+     
+  }
+  setEventSearchLoader(true);
+
   const debounceTimeout = setTimeout(() => {
-    setEventSearchLoader(true);
+    setPreviousInput(trimmedInput);
     fetchSearchSuggestion();
-    previousInputRef.current = trimmedInput;
   }, 500);
 
   return () => {
     clearTimeout(debounceTimeout);
     abortControllerRef.current?.abort();
-    // Don't set loader to false here as it might race with the new request
   };
 }, [searchInput]);
-
-
 
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
@@ -173,8 +171,6 @@ if (searchInput?.length > 0) {
             if(eventSuggestion?.length>0){  
                 setIsOpen(true);
                 let updatedData;
-                console.log(type);
-                
                 if(type==="T_BRAND_BUILDING"){
                   
                   updatedData = eventSuggestion.map((item:EventSuggestionItem)=>({
@@ -243,7 +239,7 @@ const selectedEventId = (id: any, name: string) => {
   setIsOpen(false);
   
   handleSelect(id, name, index || 0);
-  previousInputRef.current=name;
+  setPreviousInput(name);
   setEventSearchLoader(false);
   
   onOptionSelected?.();
