@@ -242,22 +242,21 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-1">
         {membershipData &&
-                  membershipData.membership === MembershipPlan.Freemium && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="hidden md:flex"
-                        onClick={handleUpgradeClick}
-                      >
-                        <span className="hidden sm:inline">Upgrade</span>
-                      </Button>
-                    </>
-                  )}
+          membershipData.membership === MembershipPlan.Freemium && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex"
+                onClick={handleUpgradeClick}
+              >
+                <span className="hidden sm:inline">Upgrade</span>
+              </Button>
+            </>
+          )}
           {!isEventeli && (
             <>
               <div className="flex items-center gap-1 max-[570px]:hidden">
-               
                 <div className="flex flex-col items-center">
                   <Button
                     onClick={() => handleRoute("research")}

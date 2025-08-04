@@ -43,7 +43,7 @@ const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, aud
         </div>
         <div className={commonClasses.toggleContainer}>
           <div className={commonClasses.filterHeading} style={{display:"flex", gap:"4px"}}>
-          Audience Spread
+          Audience Country
             {audienceSpreadCount > 0 &&
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">{audienceSpreadCount}</span>
             }

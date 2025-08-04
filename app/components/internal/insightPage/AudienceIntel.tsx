@@ -43,7 +43,7 @@ const AudienceIntel = ({ eventDetail }: OverviewProps) => {
         </div>
         
         <div className={`${styles.audienceSpreadCard} card`}>
-          <div className={styles.cardHeading}>Audience Spread</div>
+          <div className={styles.cardHeading}>Audience Country</div>
           <div className={`${styles.blurContent} card`} style={{display: 'flex', justifyContent: 'space-between'}}>
             <div>
               Local
@@ -59,7 +59,7 @@ const AudienceIntel = ({ eventDetail }: OverviewProps) => {
         </div>
       </div>
 
-      {/* <div className={styles.mainHeading} style={{marginTop: '24px'}}>Audience Spread</div>
+      {/* <div className={styles.mainHeading} style={{marginTop: '24px'}}>Audience Country</div>
       <div className={`${styles.mapViewCard} ${styles.blurContent} card`} ></div> */}
 
       <div className={`${styles.estimatedVisitorCard} card`}>

@@ -1,6 +1,7 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import { MembershipData } from "@/types/user";
+import { CancelSubscriptionFormData, CancelSubscriptionResponse } from "@/types/subscription";
 export const useProfileServices = () => {
   const api = useApi();
 
@@ -45,10 +46,27 @@ export const useProfileServices = () => {
     }
   };
 
+  const cancelSubscription = async (payload: CancelSubscriptionFormData) => {
+    try {
+      const response = await api.request<CancelSubscriptionResponse>(
+        `${endpoints.membership.cancelMembership}`,
+        {
+          method: "PATCH",
+          data: payload,
+        }
+      );
+      return response || null;
+    } catch (error) {
+      console.log("Error cancelling Subscription:", error);
+      return null;
+    }
+  };
+
   return {
     getMyProfileData,
     updateMyProfileData,
     getMembershipData,
+    cancelSubscription,
     isLoading: api.isLoading,
     error: api.error,
   };
