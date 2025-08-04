@@ -16,19 +16,21 @@ export default function EventCountsLayer({
   const eventCountsGeoJSON = useMemo(() => ({
     type: "FeatureCollection",
     features: eventCounts
-      ? eventCounts.map((count: EventCount) => ({
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [parseFloat(count.longitude), parseFloat(count.latitude)],
-          },
-          properties: {
-            count: count.count,
-            id: count.latitude,
-            name: count.name,
-            type: currentZoomGroup,
-          },
-        }))
+      ? eventCounts
+          .filter((count: EventCount) => count.name.toLowerCase() !== "online")
+          .map((count: EventCount) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [parseFloat(count.longitude), parseFloat(count.latitude)],
+            },
+            properties: {
+              count: count.count,
+              id: count.latitude,
+              name: count.name,
+              type: currentZoomGroup,
+            },
+          }))
       : [],
   }), [eventCounts, currentZoomGroup]);
 

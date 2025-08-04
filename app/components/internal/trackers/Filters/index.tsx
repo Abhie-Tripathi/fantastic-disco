@@ -482,7 +482,7 @@ const Pages = () => {
   const router = useRouter()
   const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-      enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
+      enabledFilters?.filter?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [customData, setCustomData] = useState<any[]>([]);

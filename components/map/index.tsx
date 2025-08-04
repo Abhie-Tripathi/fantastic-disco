@@ -175,6 +175,8 @@ export default function MapComponent({
     return null;
   }, [searchParams, trackerLoc]);
 
+  const shouldFetchEventsDirectly = location?.type === "geoCoordinates";
+
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
@@ -183,6 +185,7 @@ export default function MapComponent({
         ? ["eventCounts", searchParams.toString()]
         : ["eventCounts", currentZoomGroup, searchParams.toString(), location],
     queryFn: async () => {
+      if (shouldFetchEventsDirectly) return [];
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", eventType, isGlobal?trackerType:searchParams.get("type"));
         return response || [];
@@ -195,8 +198,65 @@ export default function MapComponent({
         return response || [];
       }
     },
-    retry:true
+    retry:true,
+    enabled: !shouldFetchEventsDirectly,
   });
+
+  const directEventsQuery = useQuery<MapEvents[], Error>({
+    queryKey: [
+      "directEvents",
+      source === "tracker" ? trackerId : searchParams.toString(),
+      location,
+      eventType,
+      trackerType,
+    ],
+    queryFn: async () => {
+      if (!shouldFetchEventsDirectly) return [];
+  
+      const { coordinates } = source === "tracker" ? location.trackerGeoCordinates : location;
+      const viewBound = {
+        boundType: "point",
+        coordinates: {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          radius: coordinates.radius,
+        },
+      };
+  
+      try {
+        let eventsData: any = {};
+        if (source === "tracker") {
+          eventsData = await getEventsLatLongData(
+            trackerId,
+            `viewBound=${encodeURIComponent(JSON.stringify(viewBound))}`,
+            searchParams,
+            trackerType,
+          );
+        } else {
+          const modifiedSearchParams = searchParams
+            ?.toString()
+            .replace(/locationIds=[^&]*&?/, "")
+            .replace(/viewBound=[^&]*&?/, "");
+          const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+          const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
+          eventsData = await getEventsWithSearchParams(finalSearchParams);
+        }
+  
+        return (eventsData?.events as MapEvents[]) || [];
+      } catch (error) {
+        console.error("Error fetching direct events:", error);
+        return [];
+      }
+    },
+    retry: true,
+    enabled: shouldFetchEventsDirectly,
+  });
+
+  useEffect(() => {
+    if (shouldFetchEventsDirectly && directEventsQuery.data) {
+      setEvents(directEventsQuery.data);
+    }
+  }, [shouldFetchEventsDirectly, directEventsQuery.data]);
 
   const handleMapClick = async (e: any) => {
     setHoverInfo(null);
@@ -500,69 +560,18 @@ export default function MapComponent({
     hasInitiallyFetchedForGeoCoordinates.current = false;
   }, [location]);
 
-  const eventCountsGeoJSON = React.useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: eventCountsQuery.data
-        ? eventCountsQuery?.data?.map((count: EventCount) => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(count.longitude),
-                parseFloat(count.latitude),
-              ],
-            },
-            properties: {
-              count: count.count,
-              id: count.cityId,
-              name: count.name,
-              type: currentZoomGroup, // "country" or "city"
-            },
-          }))
-        : [],
-    };
-  }, [eventCountsQuery.data, currentZoomGroup, location]);
+  // Calculate the total count of 'online' events
+  const onlineEventCount = React.useMemo(() => {
+    if (!eventCountsQuery.data) return 0;
+    console.log(eventCountsQuery.data)
+    return eventCountsQuery.data
+      .filter((count: EventCount) => count.name.toLowerCase() === "online")
+      .reduce((sum: number, count: EventCount) => sum + (count.count || 0), 0);
+  }, [eventCountsQuery.data]);
 
-  const eventsGeoJSON = React.useMemo(() => {
-    const locationInfo: { [key: string]: any } = {};
-    events.forEach((event) => {
-      const coordKey = `${event.longitude},${event.latitude}`;
-      if (!locationInfo[coordKey]) {
-        locationInfo[coordKey] = { count: 0, ids: [] };
-      }
-      locationInfo[coordKey].count += 1;
-      locationInfo[coordKey].ids.push(event.id);
-    });
-
-    return {
-      type: "FeatureCollection",
-      features: events.length
-        ? events.map((event: MapEvents) => {
-            const coordKey = `${event.longitude},${event.latitude}`;
-            return {
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [
-                  parseFloat(event.longitude),
-                  parseFloat(event.latitude),
-                ],
-              },
-              properties: {
-                id: event.id,
-                eventType: event.eventType,
-                eventImpactScore: event.eventImpactScore,
-                eventCount: locationInfo[coordKey].count,
-                eventIds: locationInfo[coordKey].ids,
-              },
-            };
-          })
-        : [],
-    };
-  }, [events]);
 
   const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
+    if (shouldFetchEventsDirectly) return "event";
     if (zoomLevel >= 11.5) {
       return "event";
     } else {
@@ -650,6 +659,7 @@ export default function MapComponent({
         duration: 3000,
         essential: true,
       });
+      return
     }
 
     if (location?.type === "geoCoordinates") {
@@ -663,6 +673,7 @@ export default function MapComponent({
         duration: 3000,
         essential: true,
       });
+      return;
     }
     if (
       Object?.keys(trackerGeoCordinates || {}).length === 0 &&
@@ -678,6 +689,7 @@ export default function MapComponent({
         duration: 2000,
         essential: true,
       });
+      return
     }
   }, [location, mapRef.current, locationBBox, trackerId]);
 
@@ -740,8 +752,11 @@ export default function MapComponent({
     [iconUrls, onMove]
   );
 
-  const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
-  const showEvent = viewport.zoom >= 12;
+const showEventCount = !shouldFetchEventsDirectly && viewport.zoom < 12 && eventCountsQuery.isSuccess;
+const showEvent = shouldFetchEventsDirectly || viewport.zoom >= 12;
+
+
+const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("online")
 
   const handleEventHover = (event: Event) => {
     setHighlightedEvent(event);
@@ -766,13 +781,13 @@ export default function MapComponent({
   }
   return (
     <div className="relative px-4 md:px-0 w-full">
-      {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
-        (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
-      ) : eventCountsQuery.error ? (
-        <ZeroState text={eventCountsQuery.error.message} isGlobal={isGlobal}/>
-      ) : (
+      {(shouldFetchEventsDirectly ? directEventsQuery.isLoading : (eventCountsQuery.isLoading && currentZoomGroup === "city")) ? (
+  (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
+) : (shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error) ? (
+  <ZeroState text={(shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error).message} isGlobal={isGlobal}/>
+) : (
         <>
-          {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
+          {source === "tracker" && (shouldFetchEventsDirectly ? directEventsQuery?.data?.length === 0 : eventCountsQuery?.data?.length === 0) ? (
             <NullState
               image={TrackerNullState}
               global={isGlobal}
@@ -858,14 +873,22 @@ export default function MapComponent({
                   {...viewport}
                 >
                   {!isGlobal && (
-                    <Button
-                      variant="default"
-                      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 md:transform-none md:left-auto md:top-4 md:right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
-                      onClick={() => setShowEventList("all")}
-                    >
-                      <AlignLeft className="w-5 h-5" />
-                      <span>Event List</span>
-                    </Button>
+                    <div className="absolute h-min bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3 md:transform-none md:left-auto md:top-4 md:right-4 z-10">
+                      {onlineEventCount > 0 && (
+                        <div onClick={() => setShowEventList("all")} className="flex items-center bg-white/90 shadow-md rounded-full px-3 py-1 hover:bg-white transition group cursor-pointer" title="Online Events">
+                          <img src="/video.svg" alt="Online Events" className="w-5 h-5 mr-2 opacity-80 group-hover:opacity-100" />
+                          <span className="text-sm font-semibold text-gray-700 group-hover:text-primary transition">{onlineEventCount} Online</span>
+                        </div>
+                      )}
+                      <Button
+                        variant="default"
+                        className="bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2 shadow-md"
+                        onClick={() => setShowEventList("all")}
+                      >
+                        <AlignLeft className="w-5 h-5" />
+                        <span>Event List</span>
+                      </Button>
+                    </div>
                   )}
 
                   {isHolidaySelected && (
@@ -898,6 +921,7 @@ export default function MapComponent({
                       mapRef={mapRef}
                       onEventHover={handleEventHover}
                       onEventLeave={handleEventLeave}
+                      onlineEventCount={onlineEventCount}
                     />
                   )}
 
