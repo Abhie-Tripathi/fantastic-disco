@@ -174,7 +174,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             )}
           </>
         }
-        {type === "T_AUDIENCE_DEPT_PROFILE" &&
+        {(type === "T_AUDIENCE_DEPT_PROFILE" && view!=="bookmarked") &&
              <TableHead
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
