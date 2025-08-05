@@ -73,14 +73,13 @@ const FollowersPopup = ({
   };
 
   const handleChangeOwner = async (userId: string) => {
-    setIsOpen(false);
+    setOwnerListOpen(false);
     const dataToSend = {
       enquiryId: enquiryId,
       ownerId: userId,
     };
     const data: any = await coordinateService.setEnquiryOwner(dataToSend);
     if (data && data?.owner) {
-      console.log("Owner changed successfully", data);
       setOwner(data.owner);
       // getOwnerDetails();
       // GAEvent("Assign Owner", "Enquiry Detail", `${pageSource} | Assign Owner`, "Assign Owner Changed");
