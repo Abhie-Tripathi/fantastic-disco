@@ -38,6 +38,3 @@ next-env.d.ts
 
 # Package Mananger
 .bun.lockb
-
-# Sentry Config File
-.env.sentry-build-plugin
