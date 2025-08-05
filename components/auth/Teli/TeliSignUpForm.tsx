@@ -158,7 +158,7 @@ export default function TeliSignUpForm() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-2">
-      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl mb-6 ">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>
@@ -251,7 +251,7 @@ export default function TeliSignUpForm() {
         )}
 
         {/* Tablist for Industry Insights and Location Insights */}
-        <div className="flex w-full justify-center mb-4">
+        <div className="flex w-full justify-center mb-4 !mt-[6px]">
           <div className="w-fit">
             <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
               <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
@@ -339,7 +339,7 @@ export default function TeliSignUpForm() {
               By signing up, you agree to our
               <Link
                 target="_blank"
-                href={"https://10times.com/terms-of-service"}
+                href={"https://whr.ai/terms-of-service"}
                 className="text-[#6750a4] font-medium ml-1"
               >
                 Terms{" "}
@@ -347,7 +347,7 @@ export default function TeliSignUpForm() {
               and
               <Link
                 target="_blank"
-                href={"https://10times.com/privacy-policy"}
+                href={"https://whr.ai/privacy-policy"}
                 className="text-[#6750a4] font-medium ml-1"
               >
                 Privacy Policy
