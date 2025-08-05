@@ -306,7 +306,7 @@ const GtmSignUpForm = () => {
         </p>
 
         {/* Tablist for Industry Insights and Location Insights */}
-        <div className="flex w-full justify-center mb-4">
+        <div className="flex w-full justify-center mb-4 !mt-[6px]">
           <div className="w-fit">
             <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
               <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">
