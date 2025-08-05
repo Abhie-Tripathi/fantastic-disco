@@ -873,10 +873,9 @@ const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("onl
                   {...viewport}
                 >
                   {!isGlobal && (
-                    <div className="absolute h-min bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3 md:transform-none md:left-auto md:top-4 md:right-4 z-10">
+                    <div className="absolute h-min bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row items-center gap-3 md:transform-none md:left-auto md:top-4 md:right-4 z-10">
                       {onlineEventCount > 0 && (
                         <div onClick={() => setShowEventList("all")} className="flex items-center bg-white/90 shadow-md rounded-full px-3 py-1 hover:bg-white transition group cursor-pointer" title="Online Events">
-                          <img src="/video.svg" alt="Online Events" className="w-5 h-5 mr-2 opacity-80 group-hover:opacity-100" />
                           <span className="text-sm font-semibold text-gray-700 group-hover:text-primary transition">{onlineEventCount} Online</span>
                         </div>
                       )}
