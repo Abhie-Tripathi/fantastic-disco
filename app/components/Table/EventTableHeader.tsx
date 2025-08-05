@@ -174,10 +174,20 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             )}
           </>
         }
+        {(type === "T_AUDIENCE_DEPT_PROFILE" && view!=="bookmarked") &&
+             <TableHead
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
+                style={{ zIndex: 0 }}
+              >
+                <div className="font-medium text-foreground text-center">
+                  Matched
+                </div>
+              </TableHead>}
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
           type !== "T_EVENT_PARTICIPATION" &&
+          type !== "T_AUDIENCE_DEPT_PROFILE" &&
           view !== "bookmarked" && (
             <>
               <TableHead
@@ -188,7 +198,6 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                   Matched
                 </div>
               </TableHead>
-
               <TableHead
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
