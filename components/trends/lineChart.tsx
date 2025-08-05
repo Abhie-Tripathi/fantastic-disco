@@ -45,12 +45,16 @@ import Loading from "../ui/Loading";
 import Disable from "/public/disable.svg";
 import Text from "../new-ui/Text";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Button } from "../ui/button";
 import {
   useRouter,
   useSearchParams,
   ReadonlyURLSearchParams,
 } from "next/navigation";
 import React from "react";
+import { useAuthContext } from "@/context";
+
+type ViewType = "day" | "week" | "month";
 
 interface IProps {
   showLegend: boolean;
@@ -65,7 +69,10 @@ const LineChartComponent = ({
   doInvertTicks = false,
   showThresholdLines = true,
 }: IProps) => {
+  const { isTentimesUser } = useAuthContext();
   const [link, setLink] = useState("");
+  const { setFilter, getFilterValue } = useFilterState();
+  const currentView = (getFilterValue("dateView") as ViewType) || "day";
 
   const eventService = useEventsService();
   const chartRef = useRef<HTMLDivElement | null>(null);
@@ -84,8 +91,8 @@ const LineChartComponent = ({
   const [predictedData, setPredictedData] = useState<any>();
 
   const { getEventsWithSearchParams } = useEventsService();
-  const { getFilterValue } = useFilterState();
   const metrics = (getFilterValue("columns") as string)?.split(",") || [];
+  const metric = metrics[0]; // Use the first metric as primary
 
   // Define which metrics share the right axis
   const rightAxisMetrics = [
@@ -132,18 +139,18 @@ const LineChartComponent = ({
   const primaryLabel = metricLabels[primaryMetric];
   const secondaryLabel = secondaryMetric ? metricLabels[secondaryMetric] : "";
 
-  const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
-
   const apiParams = useMemo(() => {
     const params = new URLSearchParams({
       groupBy: "date",
-      dateView: "day",
+      dateView: currentView,
     });
     searchParams.forEach((value, key) => {
-      params.append(key, value);
+      if (key !== "dateView") {
+        params.append(key, value);
+      }
     });
     return params.toString();
-  }, [stringParams]);
+  }, [currentView, searchParams]);
 
   const previousYearParams = useMemo(() => {
     const currentParams = new URLSearchParams(apiParams);
@@ -231,43 +238,86 @@ const LineChartComponent = ({
         : [];
 
       // Combine current and previous year data with proper date alignment
-      const combinedData = graphData.map((currentItem, index) => {
+      const combinedData = graphData.map((currentItem) => {
         if (!compareFrom || !compareTo) {
           return currentItem;
         }
 
-        // Calculate the relative position (0 to 1) of the current date in the main range
+        // Get the date range for the current item
+        const [startDate, endDate] = currentItem.date.split("_");
+        let currentStartDate;
+
+        // Handle different date formats based on view
+        if (currentView === "month") {
+          const [year, month] = startDate.split("-");
+          currentStartDate = new Date(parseInt(year), parseInt(month) - 1);
+        } else {
+          currentStartDate = new Date(startDate);
+        }
+
+        const currentEndDate = endDate ? new Date(endDate) : currentStartDate;
+
+        // Calculate the relative position in the main range
         const mainStartDate = new Date(searchParams.get("active_gte") || "");
         const mainEndDate = new Date(searchParams.get("active_lte") || "");
-        const currentDate = new Date(currentItem.date);
 
+        const mainRangePosition =
+          (currentStartDate.getTime() - mainStartDate.getTime()) /
+          (mainEndDate.getTime() - mainStartDate.getTime());
+
+        // Calculate the corresponding date in the comparison range
         const compareStartDate = new Date(compareFrom);
         const compareEndDate = new Date(compareTo);
 
-        const mainRangePosition =
-          (currentDate.getTime() - mainStartDate.getTime()) /
-          (mainEndDate.getTime() - mainStartDate.getTime());
-
-        // Find the corresponding date in the comparison range
         const targetCompareDate = new Date(
           compareStartDate.getTime() +
             mainRangePosition *
               (compareEndDate.getTime() - compareStartDate.getTime())
         );
 
-        // Find the closest date in previousYearGraphData
+        // Find the closest week/month in previousYearGraphData
         const comparisonItem = previousYearGraphData.find((item) => {
-          const itemDate = new Date(item.date);
-          // Allow for a small tolerance (same day)
-          return (
-            Math.abs(itemDate.getTime() - targetCompareDate.getTime()) <
-            24 * 60 * 60 * 1000
-          );
+          const [itemStartDate, itemEndDate] = item.date.split("_");
+          let itemDate;
+
+          // Handle different date formats based on view
+          if (currentView === "month") {
+            const [year, month] = itemStartDate.split("-");
+            itemDate = new Date(parseInt(year), parseInt(month) - 1);
+          } else {
+            itemDate = new Date(itemStartDate);
+          }
+
+          const itemEnd = itemEndDate ? new Date(itemEndDate) : itemDate;
+
+          // For month view, compare only month and year
+          if (currentView === "month") {
+            return (
+              targetCompareDate.getMonth() === itemDate.getMonth() &&
+              targetCompareDate.getFullYear() === itemDate.getFullYear()
+            );
+          }
+
+          // For day view, use exact date comparison
+          if (currentView === "day") {
+            return (
+              targetCompareDate.getDate() === itemDate.getDate() &&
+              targetCompareDate.getMonth() === itemDate.getMonth() &&
+              targetCompareDate.getFullYear() === itemDate.getFullYear()
+            );
+          }
+
+          // For week view, check if the target date falls within this period
+          return targetCompareDate >= itemDate && targetCompareDate <= itemEnd;
         });
 
         if (comparisonItem) {
           // Create a new object with all current metrics
           const result = { ...currentItem };
+
+          // Add previous year dates
+          result.previousYearDate = comparisonItem.date;
+
 
           // Add previous year data for all metrics
           metrics.forEach((metric) => {
@@ -311,6 +361,7 @@ const LineChartComponent = ({
     compareTo,
     searchParams.get("active_gte"),
     searchParams.get("active_lte"),
+    currentView,
   ]);
 
   // Remove the separate useEffect for trendsData
@@ -353,9 +404,7 @@ const LineChartComponent = ({
     );
 
     // Check if the payload's date matches any of the interval dates
-    const shouldRenderDot = intervalDates.includes(
-      format(new Date(payload.date), "yyyy-MM-dd")
-    );
+    const shouldRenderDot = intervalDates.includes(payload.date);
 
     const hasMatchingHoliday =
       (isEventeli &&
@@ -505,8 +554,35 @@ const LineChartComponent = ({
     });
 
     if (date) {
-      searchEventParams.set("active_gte", date);
-      searchEventParams.set("active_lte", date);
+      if (currentView === "week" && date.includes("_")) {
+        const [startDate, endDate] = date.split("_");
+        searchEventParams.set("active_gte", startDate);
+        searchEventParams.set("active_lte", endDate);
+      } else if (currentView === "month") {
+        const [year, month] = date.split("-");
+        const monthStartDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+        const monthEndDate = new Date(parseInt(year), parseInt(month), 0);
+
+        // Get the actual start and end dates from the URL params
+        const actualStartDate = searchParams.get("active_gte")
+          ? new Date(searchParams.get("active_gte")!)
+          : monthStartDate;
+        const actualEndDate = searchParams.get("active_lte")
+          ? new Date(searchParams.get("active_lte")!)
+          : monthEndDate;
+
+        // Use the actual dates if they're within the month, otherwise use the full month
+        const startDate =
+          actualStartDate > monthStartDate ? actualStartDate : monthStartDate;
+        const endDate =
+          actualEndDate < monthEndDate ? actualEndDate : monthEndDate;
+
+        searchEventParams.set("active_gte", format(startDate, "yyyy-MM-dd"));
+        searchEventParams.set("active_lte", format(endDate, "yyyy-MM-dd"));
+      } else {
+        searchEventParams.set("active_gte", date);
+        searchEventParams.set("active_lte", date);
+      }
     }
     if (locationIds) {
       searchEventParams.set("locationIds", locationIds);
@@ -527,28 +603,35 @@ const LineChartComponent = ({
     });
 
     if (compareFrom && compareTo) {
-      // Calculate the relative position of the date within the main date range
-      const mainStartDate = new Date(searchParams.get("active_gte") || "");
-      const mainEndDate = new Date(searchParams.get("active_lte") || "");
-      const currentDate = new Date(date);
+      if (currentView === "week" && date.includes("_")) {
+        const [startDate, endDate] = date.split("_");
+        searchEventParams.set("active_gte", startDate);
+        searchEventParams.set("active_lte", endDate);
+      } else if (currentView === "month") {
+        const [year, month] = date.split("-");
+        const monthStartDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+        const monthEndDate = new Date(parseInt(year), parseInt(month), 0);
 
-      const compareStartDate = new Date(compareFrom);
-      const compareEndDate = new Date(compareTo);
+        // Get the actual start and end dates from the URL params
+        const actualStartDate = searchParams.get("compare_from")
+          ? new Date(searchParams.get("compare_from")!)
+          : monthStartDate;
+        const actualEndDate = searchParams.get("compare_to")
+          ? new Date(searchParams.get("compare_to")!)
+          : monthEndDate;
 
-      // Calculate the relative position (0 to 1) of the current date in the main range
-      const mainRangePosition =
-        (currentDate.getTime() - mainStartDate.getTime()) /
-        (mainEndDate.getTime() - mainStartDate.getTime());
+        // Use the actual dates if they're within the month, otherwise use the full month
+        const startDate =
+          actualStartDate > monthStartDate ? actualStartDate : monthStartDate;
+        const endDate =
+          actualEndDate < monthEndDate ? actualEndDate : monthEndDate;
 
-      // Use this position to find the corresponding date in the comparison range
-      const compareDate = new Date(
-        compareStartDate.getTime() +
-          mainRangePosition *
-            (compareEndDate.getTime() - compareStartDate.getTime())
-      );
-
-      searchEventParams.set("active_gte", format(compareDate, "yyyy-MM-dd"));
-      searchEventParams.set("active_lte", format(compareDate, "yyyy-MM-dd"));
+        searchEventParams.set("active_gte", format(startDate, "yyyy-MM-dd"));
+        searchEventParams.set("active_lte", format(endDate, "yyyy-MM-dd"));
+      } else {
+        searchEventParams.set("active_gte", date);
+        searchEventParams.set("active_lte", date);
+      }
     }
 
     const locationIds = searchParams.get("locationIds");
@@ -570,9 +653,10 @@ const LineChartComponent = ({
 
   const handleChartClick = (e: CategoricalChartState) => {
     if (e.activeLabel) {
-      const utcDate = new Date(e.activeLabel).toISOString();
-      const link = setRedirectionLinkOnDate(utcDate);
-      const prevYearLink = generatePreviousYearParams(e.activeLabel);
+      const link = setRedirectionLinkOnDate(e.activeLabel);
+      const prevYearLink = e.activePayload && e.activePayload.length > 0 
+        ? generatePreviousYearParams(e.activePayload[0].payload.previousYearDate)
+        : '';
       setLink(link);
       setPreviousYearLink(prevYearLink);
       if (e.activePayload && e.activePayload.length > 0) {
@@ -580,7 +664,7 @@ const LineChartComponent = ({
         setTooltipData(payload);
         setTooltipVisible(true);
       } else {
-        setTooltipVisible(false);
+      setTooltipVisible(false);
       }
     } else {
       setTooltipVisible(false);
@@ -637,111 +721,66 @@ const LineChartComponent = ({
     threshold * 0.5, // 5% below threshold
   ];
 
-  function generateDateIntervals(startDate: any, endDate: any) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const totalDays = differenceInDays(end, start) + 1;
+  const handleViewChange = (view: ViewType) => {
+    setFilter("dateView", view);
+  };
 
-    // For mobile screens, show exactly 6 ticks
-    if (isMobileView) {
-      const dates = [];
-      dates.push(format(start, "yyyy-MM-dd")); // First date
-
-      // Calculate an even interval for 4 middle points
-      const step = Math.max(1, Math.floor(totalDays / 5));
-
-      // Add 4 evenly spaced points (for a total of 6 with start and end)
-      for (let i = 1; i <= 4; i++) {
-        const nextDate = addDays(start, i * step);
-        if (!isAfter(nextDate, end)) {
-          dates.push(format(nextDate, "yyyy-MM-dd"));
+  const formatDateForWeekView = (dateString: string) => {
+    try {
+      if (currentView === "month") {
+        // For month view, we expect YYYY-MM format
+        const [year, month] = dateString.split("-");
+        if (year && month) {
+          const date = new Date(parseInt(year), parseInt(month) - 1);
+          return format(date, "MMM yyyy");
         }
+        // Fallback for full date format
+        const date = new Date(dateString);
+        return format(date, "MMM yyyy");
       }
+      if (currentView === "week" && dateString.includes("_")) {
+        const [startDate, endDate] = dateString.split("_");
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-      // Add end date if not already included
-      const lastDateStr = format(end, "yyyy-MM-dd");
-      if (dates[dates.length - 1] !== lastDateStr) {
-        dates.push(lastDateStr);
+        // Validate dates
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          console.warn("Invalid date in week view:", dateString);
+          return dateString;
+        }
+
+        return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
       }
-
-      return dates;
-    }
-
-    // Desktop view - improved logic for consistent intervals
-    if (totalDays <= 10) {
-      // For 10 days or less, show all dates
-      const dates = [];
-      for (let i = 0; i < totalDays; i++) {
-        dates.push(format(addDays(start, i), "yyyy-MM-dd"));
+      // For day view
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.warn("Invalid date:", dateString);
+        return dateString;
       }
-      return dates;
+      return format(date, "dd MMM yyyy");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
     }
+  };
 
-    // For longer periods, use a fixed number of ticks based on the duration
-    const getTickCount = (days: number) => {
-      if (days <= 30) return 6; // 6 ticks for up to 1 month
-      if (days <= 90) return 7; // 7 ticks for up to 3 months
-      if (days <= 180) return 8; // 8 ticks for up to 6 months
-      if (days <= 365) return 9; // 9 ticks for up to 1 year
-      return 10; // 10 ticks for more than 1 year
-    };
-
-    const tickCount = getTickCount(totalDays);
-    const dates = [];
-
-    // Always include start date
-    dates.push(format(start, "yyyy-MM-dd"));
-
-    // Calculate the interval between ticks
-    const interval = Math.floor(totalDays / (tickCount - 1));
-
-    // Generate intermediate dates
-    for (let i = 1; i < tickCount - 1; i++) {
-      const nextDate = addDays(start, i * interval);
-      if (!isAfter(nextDate, end)) {
-        dates.push(format(nextDate, "yyyy-MM-dd"));
-      }
-    }
-
-    // Always include end date
-    const lastDateStr = format(end, "yyyy-MM-dd");
-    if (dates[dates.length - 1] !== lastDateStr) {
-      dates.push(lastDateStr);
-    }
-
-    return dates;
-  }
+  // Desktop view - improved logic for consistent intervals
+  const getTickCount = (days: number) => {
+    if (days <= 30) return 6; // 6 ticks for up to 1 month
+    if (days <= 90) return 7; // 7 ticks for up to 3 months
+    if (days <= 180) return 8; // 8 ticks for up to 6 months
+    if (days <= 365) return 9; // 9 ticks for up to 1 year
+    return 10; // 10 ticks for more than 1 year
+  };
 
   const CustomTick = (props: any) => {
     const { x, y, payload } = props;
-    const date = new Date(payload.value);
+    const formattedDate = formatDateForWeekView(payload.value);
 
-    if (isMobileView) {
-      // Simplified format for mobile
-      const mobileDateFormat = format(date, "dd MMM");
-
-      return (
-        <g transform={`translate(${x},${y})`}>
-          <text
-            x={0}
-            y={0}
-            dy={16}
-            textAnchor="middle"
-            fill="#615E83"
-            fontSize="12px"
-            fontWeight="500"
-          >
-            <tspan x={0} dy="1em">
-              {mobileDateFormat}
-            </tspan>
-          </text>
-        </g>
-      );
-    }
-
-    // Desktop format with date and year on separate lines
-    const dayMonth = format(date, "dd MMM");
-    const year = format(date, "yyyy");
+    // Split the date range for week view
+    const dateLines = formattedDate.split(" - ");
+    const isWeekView = currentView === "week" && dateLines.length > 1;
+    const isMonthView = currentView === "month";
 
     return (
       <g transform={`translate(${x},${y})`}>
@@ -755,29 +794,153 @@ const LineChartComponent = ({
           fontWeight="500"
           transform={`${doInvertTicks ? "rotate(-90)" : ""}`}
         >
-          <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
-            {dayMonth}
-          </tspan>
-          <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
-            {year}
-          </tspan>
+          {isWeekView ? (
+            <>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                {dateLines[0]}
+              </tspan>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
+                {dateLines[1]}
+              </tspan>
+            </>
+          ) : isMonthView ? (
+            <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+              {formattedDate}
+            </tspan>
+          ) : (
+            <>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                {formattedDate.split(" ").slice(0, 2).join(" ")}
+              </tspan>
+              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
+                {formattedDate.split(" ")[2]}
+              </tspan>
+            </>
+          )}
         </text>
       </g>
     );
   };
 
+  function generateDateIntervals(startDate: string, endDate: string): string[] {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const totalDays = differenceInDays(end, start) + 1;
+
+    if (currentView === "month") {
+      // For month view, return all month dates from the data
+      return predictedData?.map((data: any) => data.date) || [];
+    }
+
+    if (currentView === "week") {
+      // For week view, limit the number of ticks to avoid overlapping
+      if (!predictedData) return [];
+
+      const weekData = predictedData.map((data: any) => {
+        // Handle both single dates and date ranges
+        if (data.date.includes("_")) {
+          return data.date;
+        }
+        return data.date;
+      });
+
+      const totalWeeks = weekData.length;
+
+      // If 10 or fewer weeks, show all
+      if (totalWeeks <= 10) {
+        return weekData;
+      }
+
+      // For more weeks, show only 10 ticks
+      const interval = Math.ceil(totalWeeks / 10);
+      const selectedWeeks = weekData.filter(
+        (_: string, index: number) => index % interval === 0
+      );
+
+      // Always include the first and last week
+      if (!selectedWeeks.includes(weekData[0])) {
+        selectedWeeks.unshift(weekData[0]);
+      }
+      if (!selectedWeeks.includes(weekData[weekData.length - 1])) {
+        selectedWeeks.push(weekData[weekData.length - 1]);
+      }
+
+      return selectedWeeks;
+    }
+
+    // For day view
+    // If range is 10 days or less, show all dates
+    if (totalDays <= 10) {
+      const dates = [];
+      for (let i = 0; i < totalDays; i++) {
+        const currentDate = addDays(start, i);
+        dates.push(format(currentDate, "yyyy-MM-dd"));
+      }
+      return dates;
+    }
+
+    // For more than 10 days, calculate intervals
+    const interval = Math.floor(totalDays / 10);
+    const remainder = totalDays % 10;
+    const dates = [format(start, "yyyy-MM-dd")];
+
+    let currentDate = start;
+
+    // Generate dates based on interval, adjusting for remainder
+    for (let i = 1; i <= 9; i++) {
+      currentDate = addDays(
+        currentDate,
+        interval + (i === 9 && remainder > 0 ? remainder : 0)
+      );
+      if (!isAfter(currentDate, end)) {
+        dates.push(format(currentDate, "yyyy-MM-dd"));
+      }
+    }
+
+    // Ensure the last date is included
+    if (dates[dates.length - 1] !== format(end, "yyyy-MM-dd")) {
+      dates.push(format(end, "yyyy-MM-dd"));
+    }
+
+    return dates;
+  }
+
   const graphData =
     predictedData && predictedData.length > 0
-      ? predictedData.map((data: any) => ({
-          ...data,
-        }))
+      ? predictedData.map((data: any) => {
+          if (currentView === "week") {
+            return {
+              ...data,
+              date: data.date, // Keep the week format as is
+            };
+          } else if (currentView === "month") {
+            // For month view, convert the date to YYYY-MM format
+            const date = data.date.includes("_")
+              ? data.date.split("_")[0]
+              : data.date;
+            const [year, month] = date.split("-");
+            return {
+              ...data,
+              date: `${year}-${month}`, // Keep only year and month
+            };
+    } else {
+            // For day view, ensure we're using the correct date format
+            const date = data.date.includes("_")
+              ? data.date.split("_")[0]
+              : data.date;
+            return {
+              ...data,
+              date: format(new Date(date), "yyyy-MM-dd"),
+            };
+          }
+        })
       : generateDatesArray(
           searchParams.get("active_gte")?.split("T")[0] ?? "",
           searchParams.get("active_lte")?.split("T")[0] ?? ""
         ).map((date) => ({
           date: format(
             new Date(toMidnightISOString(date).split("T")[0]),
-            "d MMM yyyy"
+            "yyyy-MM-dd"
           ),
         }));
 
@@ -811,38 +974,36 @@ const LineChartComponent = ({
       return null;
     }
 
+    const compareDate = tooltipPayload.previousYearDate
+
+    // Format date based on current view
+    const formatDateForTooltip = (dateStr: string) => {
+      try {
+        if (currentView === "week" && dateStr.includes("_")) {
+          const [startDate, endDate] = dateStr.split("_");
+          return `${format(new Date(startDate), "d MMM")} - ${format(
+            new Date(endDate),
+            "d MMM yyyy"
+          )}`;
+        } else if (currentView === "month") {
+          const [year, month] = dateStr.split("-");
+          const date = new Date(parseInt(year), parseInt(month) - 1);
+          return format(date, "MMM yyyy");
+        } else {
+          return format(new Date(dateStr), "d MMM yyyy");
+        }
+      } catch (error) {
+        console.error("Error formatting date in tooltip:", error);
+        return dateStr;
+      }
+    };
+
     // If there's more than one metric, show simplified tooltip
     if (metrics.length > 1) {
       const { date } = tooltipPayload;
       const matchingHoliday =
         holidayByDates &&
         holidayByDates.find((holiday) => holiday.date === date);
-
-      // Calculate comparison date based on relative position
-      let comparisonDate = new Date(date);
-
-      if (compareFrom && compareTo) {
-        const activeGte = searchParams.get("active_gte");
-        const activeLte = searchParams.get("active_lte");
-        if (!activeGte || !activeLte) return null;
-
-        const mainStartDate = new Date(activeGte);
-        const mainEndDate = new Date(activeLte);
-        const currentDate = new Date(date);
-
-        const mainRangePosition =
-          (currentDate.getTime() - mainStartDate.getTime()) /
-          (mainEndDate.getTime() - mainStartDate.getTime());
-
-        const compareStartDate = new Date(compareFrom);
-        const compareEndDate = new Date(compareTo);
-
-        comparisonDate = new Date(
-          compareStartDate.getTime() +
-            mainRangePosition *
-              (compareEndDate.getTime() - compareStartDate.getTime())
-        );
-      }
 
       const renderMetricValue = (metric: string, isPreviousYear = false) => {
         const key = isPreviousYear ? `previousYear${metric}` : metric;
@@ -879,11 +1040,11 @@ const LineChartComponent = ({
               <div className="flex justify-between items-center">
                 {compareFrom && compareTo ? (
                   <div className="font-medium text-gray-600">
-                    Selected Date ({format(new Date(date), "d MMM yyyy")})
+                    Selected Date ({formatDateForTooltip(date)})
                   </div>
                 ) : (
                   <div className="font-medium text-gray-600">
-                    {format(new Date(date), "d MMM yyyy")}
+                    {formatDateForTooltip(date)}
                   </div>
                 )}
                 <Link
@@ -906,7 +1067,7 @@ const LineChartComponent = ({
               <div className="text-sm pt-2 border-t border-gray-200">
                 <div className="flex justify-between items-center">
                   <div className="font-medium text-gray-600">
-                    Compared Date ({format(comparisonDate, "d MMM yyyy")})
+                    Compared Date ({formatDateForTooltip(compareDate)})
                   </div>
                   <Link
                     href={`/internal/search/events?${generateCompareViewAllEventsParams.toString()}`}
@@ -946,28 +1107,6 @@ const LineChartComponent = ({
     const { date, total, previousYearTotal } = tooltipPayload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
-
-    // Calculate comparison date based on relative position
-    let comparisonDate = new Date(date);
-
-    if (compareFrom && compareTo) {
-      const mainStartDate = new Date(searchParams.get("active_gte") || "");
-      const mainEndDate = new Date(searchParams.get("active_lte") || "");
-      const currentDate = new Date(date);
-
-      const compareStartDate = new Date(compareFrom);
-      const compareEndDate = new Date(compareTo);
-
-      const mainRangePosition =
-        (currentDate.getTime() - mainStartDate.getTime()) /
-        (mainEndDate.getTime() - mainStartDate.getTime());
-
-      comparisonDate = new Date(
-        compareStartDate.getTime() +
-          mainRangePosition *
-            (compareEndDate.getTime() - compareStartDate.getTime())
-      );
-    }
 
     const hasSocial = eventTypes
       ?.split(",")
@@ -1012,8 +1151,6 @@ const LineChartComponent = ({
       }
     }
 
-    console.log(tooltipPayload);
-
     return (
       <div
         className={`border-none shadow-lg bg-background ${
@@ -1025,11 +1162,9 @@ const LineChartComponent = ({
             compareFrom && compareTo ? "justify-between" : "justify-start"
           }`}
         >
-          <span>{format(new Date(date), "d MMM yyyy")}</span>
+          <span>{formatDateForTooltip(date)}</span>
           {compareFrom && compareTo && (
-            <span className="text-[#4B9EF4]">
-              {format(comparisonDate, "d MMM yyyy")}
-            </span>
+            <span className="text-[#4B9EF4]">{formatDateForTooltip(compareDate)}</span>
           )}
         </div>
         {isEventeli &&
@@ -1517,6 +1652,31 @@ const LineChartComponent = ({
 
   return (
     <div ref={chartRef}>
+      {isTentimesUser && (
+        <div className="flex justify-start gap-2 mb-4">
+          <Button
+            variant={currentView === "day" ? "default" : "outline"}
+            onClick={() => handleViewChange("day")}
+            size="sm"
+          >
+            Day
+          </Button>
+          <Button
+            variant={currentView === "week" ? "default" : "outline"}
+            onClick={() => handleViewChange("week")}
+            size="sm"
+          >
+            Week
+          </Button>
+          <Button
+            variant={currentView === "month" ? "default" : "outline"}
+            onClick={() => handleViewChange("month")}
+            size="sm"
+          >
+            Month
+          </Button>
+        </div>
+      )}
       <ResponsiveContainer width="100%" height={420}>
         <LineChart
           data={graphData}
