@@ -104,6 +104,14 @@ const BasicEventSchema = z.object({
       slug: z.string(),
     })
   ),
+  jobComposite: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      role: z.string(),
+      department: z.string(),
+    })
+  ),
   designations: z.array(
     z.object({
       id: z.string(),

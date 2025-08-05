@@ -762,6 +762,44 @@ const { isTentimesUser } = useSafeFilterContext();
         )}
       {!isEventeli && (
         <>
+          {type === "T_AUDIENCE_DEPT_PROFILE" && view !== "bookmarked" && (
+            <TableCell
+              className={`sticky ${source !== "public" ? "right-[68px]" : "right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
+              style={{
+                zIndex: 0,
+                minWidth: "100px",
+                textAlign: "center",
+                background: "var(--heading-background-color)",
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    {/* {
+                        getTrackerAssociation(
+                          event.basic,
+                          "peopleFinderPersonAssociation"
+                        )[0]
+                      } */}
+                    {event.basic.jobComposite[0].name}
+
+                    <span className="text-xs font-bold text-muted-foreground ml-1">
+                      {event.basic.jobComposite.length > 1 && `+${event.basic.jobComposite.length}`}
+                    </span>
+                  </TooltipTrigger>
+                  {event.basic.jobComposite.length > 1 &&
+                    <TooltipContent>
+                      {
+                        Array.isArray(event.basic.jobComposite)
+                          ? event.basic.jobComposite.map(item => item.name).join(" | ")
+                          : null
+                      }
+                      {/* {event.basic.jobComposite.name} */}
+                    </TooltipContent>}
+                </Tooltip>
+              </TooltipProvider>
+            </TableCell>
+          )}
           {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
             <>
               <TableCell

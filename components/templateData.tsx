@@ -112,8 +112,8 @@ const data: TemplateData = isEventeli ?
                     type: "template",
                     domain: "Audience Analysis",
                     img: Competitor,
-                    isEnabled: false,
-                    url: "",
+                    isEnabled: true,
+                    url: "T_AUDIENCE_DEPT_PROFILE",
                     trackerName: "Ideal Audience Designation",
                     content:
                       "Find relevant events based on your target audience profile",

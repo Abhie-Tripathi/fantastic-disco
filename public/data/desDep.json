@@ -1,0 +1,207 @@
+{
+  "data": {
+    "role": [
+     {
+        "id": "f5f78dd1-9aba-53b5-96ff-d81519f663d5",
+        "name": "Owner"
+      },
+      {
+        "id": "9d5464c1-d5c0-560b-830a-361724d4001f",
+        "name": "Partner"
+      },
+      {
+        "id": "81347d20-b479-565f-8da0-f735be692f5f",
+        "name": "CXO"
+      },
+      {
+        "id": "eb597ff6-c38b-53ae-b545-6097fe0b6f7a",
+        "name": "Vice President"
+      },
+      {
+        "id": "d2888668-2959-52c6-a8ab-cbaec64e70f4",
+        "name": "Director"
+      },
+      {
+        "id": "05732b0b-181d-5b20-b4fc-c5b76de6ccbf",
+        "name": "Manager"
+      },
+      {
+        "id": "a7b4e57e-5925-55fb-9531-df33c2a26854",
+        "name": "Senior Individual Contributor"
+      },
+      {
+        "id": "0a10d30f-2b01-56a3-9ac9-5e84b960fa12",
+        "name": "Training"
+      },
+      {
+        "id": "022a4644-f32f-5953-8221-2d3b4e0ea995",
+        "name": "Unpaid"
+      }
+    ],
+     "department": [
+      {
+        "id": "c1569ffb-f10d-5f33-bcec-d22e45d1be3a",
+        "name": "Accounting"
+      },
+      {
+        "id": "7a308a17-e94a-5d89-ac51-97ca19e28c21",
+        "name": "Administrative"
+      },
+      {
+        "id": "dfab4b42-8cb8-59d0-813c-bf01864dedde",
+        "name": "Arts and Design"
+      },
+      {
+        "id": "d2888668-2959-52c6-a8ab-cbaec64e70f4",
+        "name": "Business Development"
+      },
+      {
+        "id": "dc649815-783a-534f-b46e-a57c72c3aedc",
+        "name": "Community and Social Services"
+      },
+      {
+        "id": "0093354c-8d15-54af-8fcf-665053648ada",
+        "name": "Consulting"
+      },
+      {
+        "id": "0a10d30f-2b01-56a3-9ac9-5e84b960fa12",
+        "name": "Education"
+      },
+      {
+        "id": "a7b4e57e-5925-55fb-9531-df33c2a26854",
+        "name": "Engineering"
+      },
+      {
+        "id": "f5f78dd1-9aba-53b5-96ff-d81519f663d5",
+        "name": "Entrepreneurship"
+      },
+      {
+        "id": "71a45302-0e35-552d-9bfe-de3c340f1332",
+        "name": "Finance"
+      },
+      {
+        "id": "b9ba2ca0-f275-55c4-8c3e-04e9b43951fb",
+        "name": "Healthcare Services"
+      },
+      {
+        "id": "0488b1a5-fedb-5751-a5fb-33349b00e16e",
+        "name": "Human Resources"
+      },
+      {
+        "id": "18b056fb-3da5-5f92-b5a6-42175136e27a",
+        "name": "Information Technology"
+      },
+      {
+        "id": "b38ca879-0319-5724-9cff-9ccafdab6371",
+        "name": "Legal"
+      },
+      {
+        "id": "a59c73f8-a72d-57c7-bd79-8387cf21ac60",
+        "name": "Marketing"
+      },
+      {
+        "id": "3bcffbff-3472-537e-b664-bea589d545c5",
+        "name": "Media and Communication"
+      },
+      {
+        "id": "a0cb98e5-09a5-5e58-aa2b-b63182d43efa",
+        "name": "Military and Protective Servic"
+      },
+      {
+        "id": "38c5ccf8-e482-59e3-83a0-dfe5d7928c54",
+        "name": "Operations"
+      },
+      {
+        "id": "1d6cd5ac-aebb-508c-8e22-67081d86ff81",
+        "name": "Product Management"
+      },
+      {
+        "id": "13fea254-5fc6-527b-8f8c-5824057d1749",
+        "name": "Program and Project Management"
+      },
+      {
+        "id": "60931ead-2cf3-5ddd-a2be-a397ce6ec268",
+        "name": "Purchasing"
+      },
+      {
+        "id": "242d1aa7-62f4-5b60-b3e0-b480627437bb",
+        "name": "Quality Assurance"
+      },
+      {
+        "id": "bd14e4f0-d93c-533c-b268-ad01f2123c3f",
+        "name": "Real Estate"
+      },
+      {
+        "id": "8c75e633-893e-5ffe-82dd-56b386217876",
+        "name": "Research"
+      },
+      {
+        "id": "dec1952b-4c9e-5736-8246-483a42fedb2f",
+        "name": "Sales"
+      },
+      {
+        "id": "022a4644-f32f-5953-8221-2d3b4e0ea995",
+        "name": "Support"
+      }
+
+    ],
+    "designation": [
+      {
+        "id": "7192a484-6e2b-5a19-8d38-df07021e5b64",
+        "name": "Intern"
+      },
+      {
+        "id": "0fb85b1f-1bce-5b86-960b-a0dc1e4fcff6",
+        "name": "Lawyer"
+      },
+      {
+        "id": "3e6b44a6-424c-5c6e-b578-4c063a8d0745",
+        "name": "Member"
+      },
+      {
+        "id": "3155d7f8-fa48-5571-b6f9-a8f79b3ac144",
+        "name": "Pastor"
+      },
+      {
+        "id": "1cde5823-2e7f-5201-a680-69c7b37176e6",
+        "name": "Trader"
+      },
+      {
+        "id": "0b8a392f-b3c5-5dfd-9b15-c9c5af442f22",
+        "name": "Welder"
+      },
+      {
+        "id": "4aaeae78-ed16-5f0d-8eb9-2071ea653ff2",
+        "name": "Worker"
+      },
+      {
+        "id": "121b8afa-9b96-5d57-8fd1-3c05834bf69c",
+        "name": "Writer"
+      },
+      {
+        "id": "b1fdf9d1-5b72-5693-817c-04f2e64cf2ab",
+        "name": "Actuary"
+      },
+      {
+        "id": "da31b1b8-3eef-56ed-a4eb-6384534533c4",
+        "name": "Advisor"
+      },
+      {
+    "id": "88d64a33-a58d-593a-b79b-b8b7ce8298bc",
+    "name": "Accountants"
+  },
+  {
+    "id": "f53ef808-861f-5e41-b6af-e91a5c227b20",
+    "name": "Architects & Interior Designers"
+  },
+  {
+    "id": "c1da49a5-c103-5afc-945e-4a058261c41f",
+    "name": "Teachers"
+  },
+  {
+    "id": "679ec211-28cf-55b1-a617-e2f2994eeb45",
+    "name": "Bartenders"
+  }
+    ]
+}
+}
