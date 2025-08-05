@@ -58,7 +58,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const [eventSuggestion,setEventSuggestion]=useState<any>([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-      console.log();
       // if(searchInput!==previousInput){
         if (type === "T_AUDIENCE_DEPT_PROFILE") {
   let filterDesValue;
