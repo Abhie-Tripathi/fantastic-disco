@@ -1,6 +1,6 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Filter, LayoutGrid, Search } from "lucide-react";
 import { showToast } from '@/utils/showToast';
@@ -96,6 +96,7 @@ import { Badge } from "@/components/ui/badge";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
+  required?: boolean;
   placeholder: string;
 }
 export interface LocationItem {
@@ -105,6 +106,11 @@ export interface LocationItem {
 interface Filters {
   shows: string;
   [key: string]: any; 
+}
+interface UpdatedProfileData{
+  designationIds?: string[];
+  departmentIds?: string[];
+  seniorityIds?: string[];
 }
 export type Location =  LocationItem[];
 // interface Toggle{
@@ -249,10 +255,12 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: false,
         placeholder: "Designation",
       },
       {
         type: "text",
+        required: false,
         placeholder: "Department"
       }
     ],
@@ -276,18 +284,25 @@ const templates = [
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
-    type: "disabled",
+    type: "enabled",
     templateName: "Audience Dept. & Profiles",
     description: "Track events for the specific organizational departments or audience profiles",
     inputAreas: [
       {
         type: "text",
-        placeholder: "Department",
+        required:false,
+        placeholder: "Designation",
       },
-      // {
-      //   type: "text",
-      //   placeholder: "Profile",
-      // }
+      {
+        type: "text",
+        required:false,
+        placeholder: "Seniority",
+      },
+      {
+        type: "text",
+        required:false,
+        placeholder: "Department",
+      }
     ],
     isUploadEnable: false,
   },
@@ -324,6 +339,7 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: true,
         placeholder: "Designation",
       },
       // {
@@ -451,8 +467,9 @@ const Pages = () => {
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
+  const [allEntries, setAllEntries] = useState<string[][]>([[]]);
   const [showTemplate,setShowTemplate] = useState(false);
-
+  const [profileIds,setProfileIds] = useState<UpdatedProfileData[]>([]);
   const {getTrackerDetail,createTracker,editTracker, error, delTracker, presetData}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
@@ -487,13 +504,15 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
-
+  const [isNew, setIsNew] = useState(false);
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
   const [filterCount, setFilterCount] = useState(0);
+  const [inputFocus, setInputFocus] = useState<boolean[]>([]);
+ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 useEffect(() => {
   const keysToIgnore = ['type', 'show', 'trust_score_lte', 'eventType', 'view'];
@@ -679,6 +698,7 @@ const stepsConfig =[
         setLocalFilter("excludeKeywords", excludeKeywords)
       }
     }
+
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
     // console.log(val);
@@ -745,7 +765,44 @@ const stepsConfig =[
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-  
+ useEffect(() => {
+  if (isNew && allEntries?.length > 0) {
+    // Get the last group from allEntries (current entries)
+    const lastGroup = allEntries[allEntries.length - 1];
+     console.log(lastGroup, "");
+    // Initialize empty arrays for each type
+    const newDepartmentIds: string[] = [];
+    const newSeniorityIds: string[] = [];
+    const newDesignationIds: string[] = [];
+    
+    // Process each entry in the last group
+    lastGroup.forEach(entry => {
+     
+      
+      const [value, id, type] = entry.split('_');
+      
+      if (type === 'Department') {
+        newDepartmentIds.push(id);
+      } else if (type === 'Seniority') {
+        newSeniorityIds.push(id);
+      } else if (type === 'Designation') {
+        newDesignationIds.push(id);
+      }
+    });
+    
+    // Create the new profile entry
+    const res = {
+      departmentIds: newDepartmentIds,
+      seniorityIds: newSeniorityIds,
+      designationIds: newDesignationIds
+    };
+    
+    setProfileIds(prev => [...(prev || []), res]);
+    setDepartmentIds([]);
+    setSeniorityIds([]);
+    setDesignationIds([]);
+  }
+}, [isNew, allEntries]);
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -788,7 +845,9 @@ const stepsConfig =[
     rankings: "rankings",
     economicImpact: "economicImpact"
   };
+  const [shouldCallApi, setShouldCallApi] = useState(false);
   const saveTrackerHandler = async () => {
+    // setIsNew(true);
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -834,7 +893,64 @@ const stepsConfig =[
       {} as Record<string, any>
     );
     
-    
+  // For Designation IDs
+// Get the last group from allEntries (current entries)
+const currentEntries = allEntries?.[allEntries.length - 1] || [];
+
+// Extract IDs from current entries
+const currentDesignationIds = currentEntries
+  .filter(item => item.endsWith('_Designation'))
+  .map(item => item.split('_')[1]);
+
+const currentDepartmentIds = currentEntries
+  .filter(item => item.endsWith('_Department'))
+  .map(item => item.split('_')[1]);
+
+const currentSeniorityIds = currentEntries
+  .filter(item => item.endsWith('_Seniority'))
+  .map(item => item.split('_')[1]);
+
+// Combine with profileIds
+const flattendDesignationIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.designationIds || []).filter(Boolean) || []),
+    ...currentDesignationIds
+  ])
+);
+
+const flattendDepartmentIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.departmentIds || []).filter(Boolean) || []),
+    ...currentDepartmentIds
+  ])
+);
+
+const flattendSeniorityIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.seniorityIds || []).filter(Boolean) || []),
+    ...currentSeniorityIds
+  ])
+);
+    // const updatedEntries = allEntries.map((entry)=>) 
+const shouldIncludeLogic = 
+  flattendDesignationIds?.length && 
+  (flattendDepartmentIds?.length || flattendSeniorityIds?.length);
+const jobComposite = {
+   ...(flattendDesignationIds?.length && { designationIds: flattendDesignationIds }),
+  ...(shouldIncludeLogic && { logic: "OR" }),
+  conditions: {
+    logic: "AND",
+    ...(flattendDepartmentIds?.length && { departmentIds: flattendDepartmentIds }),
+    ...(flattendSeniorityIds?.length && { seniorityIds: flattendSeniorityIds }),
+  },
+  "properties":{
+      "allEntries":allEntries[allEntries.length-1].length===0?allEntries.slice(0, allEntries.length-1):allEntries,
+  }
+}
+
+    // if(departmentIds?.length > 0 || seniorityIds?.length > 0){
+      filterValues.jobComposite = JSON.stringify(jobComposite);
+    // }
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -886,6 +1002,11 @@ const stepsConfig =[
         setIsMandatory(true);
         return;
       }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
@@ -924,6 +1045,7 @@ const stepsConfig =[
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_AUDIENCE_DEPT_PROFILE" &&
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
@@ -940,6 +1062,7 @@ const stepsConfig =[
       }
       if (last === "editTracker") {
       try{
+        setIsCreating(true);
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
         
         if (data) {
@@ -986,6 +1109,11 @@ const stepsConfig =[
         setIsMandatory(true);
         return;
       }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       else if ((type === "T_LOCATION" || type==="T_VENUE") && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
@@ -1019,7 +1147,8 @@ const stepsConfig =[
       }
        else if (
         type !== defaultType && 
-        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_PRODUCT_KEYWORDS" &&
+        type !== "T_AUDIENCE_DEPT_PROFILE" && 
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
@@ -1120,6 +1249,7 @@ const stepsConfig =[
   }
 
   }, [type])
+  
    const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
@@ -1157,6 +1287,29 @@ const stepsConfig =[
       setLocalFilter("includeKeywords", inc?.join(","));
     }
   },[inc])
+  const processEntryGroups = (entryGroups: string[][]): UpdatedProfileData[] => {
+  return entryGroups.map(group => {
+    const profile: UpdatedProfileData = {
+      designationIds: [],
+      departmentIds: [],
+      seniorityIds: []
+    };
+
+    group.forEach(entry => {
+      const [value, id, type] = entry.split('_'); // Split each entry
+      
+      if (type === 'Designation') {
+        profile?.designationIds?.push(id);
+      } else if (type === 'Department') {
+        profile?.departmentIds?.push(id);
+      } else if (type === 'Seniority') {
+        profile?.seniorityIds?.push(id);
+      }
+    });
+
+    return profile;
+  });
+};
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
@@ -1194,6 +1347,23 @@ const stepsConfig =[
           "Company Name": speakerOrgs?.[index]?.trim()
         }));
         setCustomData(presentCustomData);
+      }
+      if(type==="T_AUDIENCE_DEPT_PROFILE"){
+        const updatedProfileData = JSON?.parse(editData?.filterValues?.jobComposite)
+        const updatedProfileIds = updatedProfileData?.designationIds?.map((id: string) => ({ designationIds: [id] })) || [];
+        const updatedProfileEntries=processEntryGroups(updatedProfileData?.properties?.allEntries)
+        const entriesWithEmpty = [
+  ...updatedProfileEntries,
+  { designationIds: [], departmentIds: [], seniorityIds: [] } // Empty entry
+];
+
+
+setProfileIds(entriesWithEmpty);
+const currentEntries = updatedProfileData?.properties?.allEntries || [];
+
+// Add an empty array at the end
+const entriesWithEmpty1 = [...currentEntries, []];
+        setAllEntries(entriesWithEmpty1);
       }
       if (type === "T_PEOPLE_FINDER") {
         const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
@@ -1250,7 +1420,6 @@ const stepsConfig =[
         return (eventType as { slug: string })?.slug;
       });
     console.log(eventTypes);
-    
     setLocalFilter("eventTypes",eventTypes.join(","))
     if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
       const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
@@ -1330,7 +1499,7 @@ const fetchPresetJson = async () => {
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION") {
+    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION" && type !== "T_AUDIENCE_DEPT_PROFILE") {
       addNew();
     }
   }
@@ -1353,6 +1522,7 @@ const fetchPresetJson = async () => {
     }));
   };
   const [valid,setValid]=useState(true);
+  
   const addNew = () => {
     setHideSuggestion(false);
     if (!template) {
@@ -1363,31 +1533,33 @@ const fetchPresetJson = async () => {
     let isValid = true;
     let isPresent = false;
     if(template.type==="enabled"){
-    if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
+    if (template && template.inputAreas) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
-        const value = inputValues[index];
-        if (inputArea.placeholder === 'Add Competitor Name or Website') {
-          //if (regex.test(value.trim())) {
-            acc[inputArea.placeholder] = value;
-            isPresent=customData.some((item) => {
-              return Object.values(item).includes(value.trim()); 
-            });
-          // } 
-          // else {
-          //   isValid = false;
-          // }
-        } else {
-          if (value !== null && value.trim() !== '') {
-            acc[inputArea.placeholder] = value;
-          } else {   
-            isValid = false;
-            setValid(false);
-          }
-        }
-        return acc;
-      }, {});
+  const value = inputValues[index];
+  
+  if (inputArea.placeholder === 'Add Competitor Name or Website') {
+    acc[inputArea.placeholder] = value;
+    isPresent = customData.some((item) =>
+      Object.values(item).includes(value.trim())
+    );
+  } else {
+    if (inputArea.required) {
+      if (value!==undefined && value !== null && value?.trim() !== '') {
+        acc[inputArea.placeholder] = value;
+      } else {
+        isValid = false;
+        setValid(false);
+      }
+    } else {
+      acc[inputArea.placeholder] = value?.trim() || "";
+    }
+  }
 
-      if (isValid && template?.type === "enabled" && !isPresent) {
+  return acc;
+}, {});
+
+
+ if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
           newEntry,
           ...prevData,
@@ -1417,16 +1589,21 @@ const fetchPresetJson = async () => {
     if (isMandatory) setIsMandatory(false);
   }, [inputValues])
   const [selected, setSelected] = useState(false);
-  const addCompany = (id: number, val: any) => {
-
+  const [designationIds, setDesignationIds] = useState<string[]>([]);
+  const [departmentIds, setDepartmentIds]=useState<string[]>([]);
+   const [seniorityIds, setSeniorityIds]=useState<string[]>([]);
+   const [suggestionIds,setSuggestionIds]=useState<string[]>([]);
+   
+  const addCompany = (id: number, val: any, ind:number) => {
     if (type === "T_EVENT_PARTICIPATION") {
-      setEventSuggestion((prev: string[]) => {
+      setSuggestionIds((prev: string[]) => {
         const alreadyExists = prev.find(entry => entry === id.toString())
 
         if (alreadyExists) {
           setInputValues({});
           return prev;
         } else {
+          setEventSuggestion(prev=>[...prev, id.toString()]);
           setInputValues(prevValues => ({
             ...prevValues,
             [0]: val
@@ -1435,9 +1612,41 @@ const fetchPresetJson = async () => {
         }
       });
     }
+    else if (type === "T_AUDIENCE_DEPT_PROFILE") {
+setSuggestionIds((prev: string[]) => {
+  const sanitizedVal = val.split('_')[0]; // Remove ID if already present
+  const newEntry = `${sanitizedVal}_${id}_${ind === 0 ? 'Designation' : ind === 1 ? 'Seniority' : 'Department'}`;
 
-    setSelected(true);
-    if (type !== "T_EVENT_PARTICIPATION") {
+  setAllEntries(prevEntries => {
+    const updated = [...(prevEntries || [])];
+
+    // Initialize if empty
+    if (updated.length === 0) return [[newEntry]];
+
+    const lastGroupIndex = updated.length - 1;
+    const lastGroup = [...updated[lastGroupIndex]];
+    const hasIdInCurrentGroup = lastGroup.some(item => {
+      const parts = item.split('_');
+      return parts[1] === id.toString();
+    });
+
+    if (hasIdInCurrentGroup) {
+      setInputValues({});
+      return updated;
+    }
+    lastGroup.push(newEntry);
+    updated[lastGroupIndex] = lastGroup;
+    return updated;
+  });
+  setInputValues(prev => ({ ...prev, [ind]: sanitizedVal }));
+
+  return [...prev, id.toString()];
+});
+
+}
+
+    
+    else {
       if (!Array.isArray(val)) {
         setInputValues(prevValues => ({
           ...prevValues,
@@ -1447,8 +1656,30 @@ const fetchPresetJson = async () => {
         setInputValues(val);
       }
     }
+    setSelected(true);
   }
+  useEffect(() => {
+  
+    const finalSeniroityIds = seniorityIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setSeniorityIds(finalSeniroityIds);
+const finalDepartmentIds = departmentIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDepartmentIds(finalDepartmentIds);
+const finalDesignationIds = designationIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDesignationIds(finalDesignationIds);
+const finalEventSuggestion = eventSuggestion.filter(
+  (item) => suggestionIds.includes(item)
+);
+setEventSuggestion(finalEventSuggestion);
 
+  },[suggestionIds])
+ 
+  
   useEffect(() => {
     if (selected) {
       addNew();
@@ -1522,6 +1753,23 @@ const handleShowTemplate=()=>{
     scrollablePresetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
+  useEffect(() => {
+    const count = template?.inputAreas?.length || 0;
+    inputRefs.current = new Array(count).fill(null);
+    setInputFocus(new Array(count).fill(false));
+  }, [template?.inputAreas]);
+const handleOptionSelected = (index: number) => {
+    inputRefs.current[index]?.blur();
+    
+    setInputFocus(prev => prev.map((_, i) => i === index ? false : false));
+    setTimeout(() => {
+  const activeElement = document.activeElement as HTMLElement | null;
+  if (activeElement?.blur) {
+    activeElement.blur();
+  }
+}, 10);
+  };
+  
 if(isLoading) return <Loading/>
 
 
@@ -1556,7 +1804,9 @@ if(isLoading) return <Loading/>
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>
+        {!isCreating?"Save":"Saving..."}
+      </Button>
   </div>
   <div className="flex md:hidden flex-col gap-2 px-6 py-6 mt-3 bg-[var(--background-secondary-color)]">
     <div>{template?.templateName}</div>
@@ -1638,7 +1888,7 @@ if(isLoading) return <Loading/>
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>{!isCreating?"Save":"Saving..."}</Button>
     </div>
     </div>
   </div>
@@ -1795,22 +2045,39 @@ if(isLoading) return <Loading/>
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
-                      <>
+                      
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
                           {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
                           {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
+                            onFocus={() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              inputRefs.current[index]?.blur();
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -1827,20 +2094,20 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
+        {((type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && !isMobile) &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
-
-                      </>
                     ))}
-                    {type!=="T_EVENT_PARTICIPATION" &&
+                    {(type!=="T_EVENT_PARTICIPATION" && type!=="T_AUDIENCE_DEPT_PROFILE") &&
                     <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
                     }
+                    {type==="T_AUDIENCE_DEPT_PROFILE"&&
+                    <div className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-sm" onClick={()=>setIsNew(true)}>OR</div>}
                   </div>
 
                 }
@@ -1867,7 +2134,7 @@ if(isLoading) return <Loading/>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -2029,9 +2296,10 @@ if(isLoading) return <Loading/>
       </Tabs>
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
-  (customData && customData.length > 0 ? (
+  (((customData && customData?.length > 0) || allEntries?.[0]?.length>0) ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setEventSuggestion} eventSuggestion={eventSuggestion} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds} allEntries={allEntries}
+          setAllEntries={setAllEntries}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>
@@ -2075,7 +2343,7 @@ if(isLoading) return <Loading/>
   
   </div>
   {type!=="T_CUSTOM"&&
-  <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
+  <div className={`${isMobile? "block":"hidden"} w-full sticky bottom-0 bg-background z-10`}>
  {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
@@ -2138,15 +2406,30 @@ if(isLoading) return <Loading/>
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
+                            onFocus={() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -2163,18 +2446,25 @@ if(isLoading) return <Loading/>
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : 'suggestions/companies'} type={type}/>
+        {((type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && isMobile ) &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
 
                       </>
                     ))}
+                    {type!=="T_AUDIENCE_DEPT_PROFILE" &&
                     <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >Add
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
-                    </div>
+                    </div>}
+                    {type==="T_AUDIENCE_DEPT_PROFILE" &&
+                    <div onClick={() => template?.type === "enabled" && setIsNew(true)} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    >OR
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
+                    </div>}
                     {/* <div className="flex items-center w-full gap-2">
                     <div className="flex-1 h-px bg-gray-400"></div>
                     <span className="font-semibold">OR</span>
@@ -2206,7 +2496,7 @@ if(isLoading) return <Loading/>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -2321,7 +2611,7 @@ if(isLoading) return <Loading/>
 
             )}
   </div>
-  </>
+ </>
 );
  };
  export default Pages;
