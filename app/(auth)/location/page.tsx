@@ -32,6 +32,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./locationForm.module.css";
 import AddIcon from "/public/plus_radius.svg";
 import RemoveIcon from "/public/remove.svg";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -174,11 +176,15 @@ const LocationForm = () => {
   const saveLocationMutation = useMutation({
     mutationFn: (values: any) => createTracker(values),
     onSuccess: () => {
-      router.push(
-        redirectPath
-          ? `/internal/${redirectPath}`
-          : `internal/search/events?${searchParams}`
-      );
+      if (redirectPath && redirectPath.includes("whr-pricing")) {
+        router.replace("https://whr.ai/pricing");
+      } else {
+        router.push(
+          redirectPath
+            ? `/internal/${redirectPath}`
+            : `internal/search/events?${searchParams}`
+        );
+      }
       queryClient.invalidateQueries({ queryKey: ["locations"] });
     },
     onError: (error: any) => {
@@ -315,7 +321,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"
@@ -417,7 +423,7 @@ const LocationForm = () => {
         },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+      const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community-group%2Cconcert%2Cstage-performance%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
         startDate
       ).toISOString()}&active_lte=${new Date(endDate).toISOString()}${
         locationType === "city"
@@ -449,17 +455,21 @@ const LocationForm = () => {
   }
 
   return (
+    <div>
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+              <Image src={logo} alt="logo" width={45} height={55} />
+              <Image src={whr} alt="whr" />
+            </div>
     <div className={styles.container}>
       <h3>Choose a location to get started !</h3>
-      <section className="w-96">
+      <section className="w-96 space-y-5">
         <div className={styles.tab_container}>
           <button className={locationType == "city" ? styles.active : ""}>
             {locationType === "city"
               ? "City, State, Country"
-              : " Centre Point & Radius"}
+              : " Center Point & Radius"}
           </button>
         </div>
-        <div className={styles.line}></div>
         <AutocompleteInput
           type={locationType === "city" ? "LocationId" : "GeoCoordinate"}
           multiple={locationType === "city"}
@@ -489,7 +499,7 @@ const LocationForm = () => {
           <div className="mt-4">
             <label className={styles.radius_label}>Radius</label>
             <div className="flex items-center justify-between gap-5">
-              <div className="flex items-center border rounded-md border-[#e0e1e4]">
+              <div className="flex items-center border rounded-md bg-background">
                 <button
                   onClick={() => setRadius(radius - 1)}
                   className="flex w-10 h-10 items-center justify-center"
@@ -503,13 +513,13 @@ const LocationForm = () => {
                 />
                 <button
                   onClick={() => setRadius(radius + 1)}
-                  className="flex w-10 h-10 items-center justify-center"
+                  className="flex w-10 h-10 items-center justify-center  "
                 >
                   <Image src={AddIcon} alt="add icon" />
                 </button>
               </div>
               <Select value={radiusUnit} onValueChange={setRadiusUnit}>
-                <SelectTrigger className="w-[180px] h-10">
+                <SelectTrigger className="w-[180px] h-10 bg-background">
                   <SelectValue
                     placeholder={
                       radiusUnit &&
@@ -530,7 +540,7 @@ const LocationForm = () => {
 
         {locationType === "city" && (
           <p
-            className="mt-4 flex items-center gap-2 cursor-pointer text-[#6750a4]"
+            className="mt-4 flex items-center gap-2 cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             <Plus className="w-4 h-4" /> Add Multiple Location
@@ -552,6 +562,7 @@ const LocationForm = () => {
       <p className={styles.skip_button} onClick={handleSkip}>
         Skip for now
       </p>
+    </div>
     </div>
   );
 };

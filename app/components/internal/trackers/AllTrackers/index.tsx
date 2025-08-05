@@ -133,8 +133,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.geo.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key]?.total || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0
+        totalCount :  item?.groupedEventsCount?.[key]?.total || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0
       }
     })
     
@@ -143,8 +143,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
     const transformedData =  CountValues.gtm.map((key)=>{
       return {
         type: key!=="saved"?key.charAt(0).toUpperCase() + key.slice(1):"Bookmark",
-        totalCount :  item?.groupedEventsCount[key] || item?.savedEventsCount || 0,
-        newCount : item?.groupedEventsCount[key]?.new || 0,
+        totalCount :  item?.groupedEventsCount?.[key] || item?.savedEventsCount || 0,
+        newCount : item?.groupedEventsCount?.[key]?.new || 0,
         logo: key === "active" ? Vectore7 : key === "past" ? Vectore8 : Vectore6,
       }
     })
@@ -263,6 +263,22 @@ const clickHandler=(id:string)=>{
     setIsNewCall(true); 
     setTrackerId(id);
   }
+const formatLocationParts = (locations: string[], isMobile?: boolean): JSX.Element => {
+  if (!Array.isArray(locations) || locations.length === 0) return <></>;
+
+  const visible = locations.slice(0, isMobile?2:3).join(" | "); 
+  const remaining = locations.length - (isMobile?2:3);
+
+  return (
+    <span>
+      {visible}
+      {remaining > 0 && (
+        <span className="text-primary font-medium ml-1"> +{remaining}</span>
+      )}
+    </span>
+  );
+};
+
   return (
     
    <div
@@ -272,7 +288,7 @@ const clickHandler=(id:string)=>{
     hover:border-[var(--primary-color)] transition-all duration-200`}
 >
         <div className="flex justify-between gap-2 flex-col sm:flex-row h-full">
-          <div className="flex gap-2 justify-between w-[100%] flex-row items-start">
+          <div className="flex gap-2 justify-between flex-row items-start w-auto">
             <div className="flex flex-col gap-2 h-full justify-between">
             <div className="flex flex-col gap-2 md:gap-3">
             <div className="flex gap-2 flex-col">
@@ -289,21 +305,22 @@ const clickHandler=(id:string)=>{
         <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
         </div>
-        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px] whitespace-nowrap overflow-hidden">
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[90%] gap-1 text-[12px]">
         <div className="overflow-hidden flex gap-1">
-  {locations.slice(0, isMobile ? 2 : 3).map((loc: string, ind: number, arr:[]) => (
+  {/* {locations.slice(0, isMobile ? 2 : 3).map((loc: string, ind: number, arr:[]) => (
   <div key={ind}>
     {ind === arr.length - 1 ? loc : `${loc} | `}
   </div>
-))}
+))} */}
+      {formatLocationParts(locations, isMobile)}
 
   </div>
 
-  {locations.length > (isMobile ? 2 : 3) && (
+  {/* {locations.length > (isMobile ? 2 : 3) && (
   <div className="flex items-center text-xs text-primary font-medium ml-1">
     {`+${locations.length - (isMobile ? 2 : 3)}`}
   </div>
-)}
+)} */}
 
 </div>
 
@@ -383,9 +400,9 @@ const clickHandler=(id:string)=>{
 scrollbarWidth: "none",
 overflowY: "scroll"}}>
             {eventsCount?.map((item,index)=>(
-              <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none", padding:"10px", }} key={index}>
+              <div className={`flex w-20 flex-col gap-1 items-center justify-center card `} style={{boxShadow:"none", padding:"10px", }} key={index}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-              {(isEventeli && item.type !== "Bookmark") && (
+              {/* {(isEventeli && item.type !== "Bookmark") && (
           item.type === "Business" ? (
             <Buildings height="12px" width="12px" color="var(--primary-color)" />
           ) : item.type === "Social" ? (
@@ -399,12 +416,13 @@ overflowY: "scroll"}}>
                     <Bookmark width="12px" height="12px" color="var(--primary-color)" />
                   ) : !isEventeli ? (
                     <Image src={item.logo} alt={item.type} width={12} height={12} />
-                  ) : null}
+                  ) : null} */}
 
-
+                <span className="text-xs">
                 {item.type}
-                
+                </span>
               </div>
+              {/* <div className="w-[80%]" style={{ border: "0.2px solid var(--border-color)" }}></div> */}
               <div className={styles.numberOfEvents}>
                 {formatCount(item?.totalCount)}
                 {/* <div className="badge_success">
@@ -414,7 +432,7 @@ overflowY: "scroll"}}>
                 </span>
                 </div> */}
               </div>
-              <div className={styles.events}>Events</div>
+              <div className={`${styles.events} font-normal text-xs`}>Events</div>
             </div>
             ))}
           </div>

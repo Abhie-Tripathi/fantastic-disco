@@ -46,6 +46,7 @@ export default function EstimatedEconomicSelector() {
       <Switch
         disabled={!enabled}
         id="economic-impact"
+        className="mr-6"
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />

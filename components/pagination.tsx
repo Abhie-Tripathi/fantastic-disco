@@ -18,6 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuthContext } from "@/context";
+import PremiumModal from "./premium-modal";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 
 interface PaginationComponentProps {
   currentPage: number;
@@ -38,9 +41,12 @@ export function PaginationComponent({
   onPageChange,
   onItemsPerPageChange,
   showEntriesCount = true,
-  paginationItems = ["10", "20"],
+  paginationItems = ["10", "50", "100"],
 }: PaginationComponentProps) {
   const pathname = usePathname();
+  const {membershipData} = useAuthContext()
+  const [isPremiumModalOpen, setPremiumModalOpen] = React.useState(false);
+
 
   const hideLastPage =
     pathname === "/internal/search/companies" ||
@@ -176,15 +182,46 @@ export function PaginationComponent({
               <SelectValue>{itemsPerPage}</SelectValue>
             </SelectTrigger>
             <SelectContent align="end">
-              {paginationItems.map((item) => (
-                <SelectItem value={item} key={item}>
-                  {item}
-                </SelectItem>
-              ))}
+              {paginationItems.map((item) => {
+                let disabled = false;
+                const membership = membershipData?.membership ?? 0;
+                if (membership === 0) {
+                  disabled = item !== "5" && item !== "10" && item !== "20";
+                } else if (item === "50") {
+                  disabled = membership < 20;
+                } else if (item === "100") {
+                  disabled = membership < 30;
+                } else {
+                  disabled = false;
+                }
+                return (
+                  <div key={item} className="flex items-center justify-between group relative">
+                    <SelectItem
+                      value={item}
+                      disabled={disabled}
+                    >
+                      {item}
+                    </SelectItem>
+                    {disabled && (
+                      <RainbowButton
+                        size="sm"
+                        className="ml-2 h-6 rounded-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPremiumModalOpen(true);
+                        }}
+                      >
+                        Premium
+                      </RainbowButton>
+                    )}
+                  </div>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
       )}
+      <PremiumModal open={isPremiumModalOpen} onOpenChange={setPremiumModalOpen} />
     </div>
   );
 }

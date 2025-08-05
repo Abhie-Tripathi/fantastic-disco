@@ -12,8 +12,8 @@ export interface SocialEvents {
   festival: number;
   concert: number;
   sport: number;
-  "performing-arts": number;
-  community: number;
+  "stage-performance": number;
+  "community-group": number;
 }
 
 export interface BusinessEvents {

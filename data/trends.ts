@@ -99,14 +99,14 @@ export const subCategories: SubColumn[] = [
     fontWeight: "semibold",
   },
   {
-    slug: "performing-arts",
+    slug: "stage-performance",
     subColumnName: "Performing Arts",
     icon: "/trendsSubCategoryIcons/arts.svg",
     color: "--social-color",
     fontWeight: "semibold",
   },
   {
-    slug: "community",
+    slug: "community-group",
     subColumnName: "Community",
     icon: "/trendsSubCategoryIcons/community.svg",
     color: "--social-color",
@@ -155,7 +155,7 @@ export const trendsNotificationFormDropdown = [
 ];
 
 export const EVENT_TYPE_GROUPS = {
-  Social: ["festival", "concert", "sport", "performing-arts", "community"],
+  Social: ["festival", "concert", "sport", "stage-performance", "community-group"],
   Business: ["tradeshows", "conferences", "workshops"],
   Holiday: ["holiday"],
 };

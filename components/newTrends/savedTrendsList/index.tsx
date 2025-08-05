@@ -102,6 +102,8 @@ const SavedTrendCard = ({
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
     const geoCoordinate = params.get("viewBound");
+    const compare_from = params.get("compare_from") || undefined
+    const compare_to = params.get("compare_to") || undefined
     const viewBound = geoCoordinate ? JSON.parse(geoCoordinate) : undefined;
     const BaseFilterValue: BaseFilterValue = {
       groupBy: "date",
@@ -146,6 +148,8 @@ const SavedTrendCard = ({
       ...(data.filterValues.viewBound && {
         viewBound: data.filterValues.viewBound,
       }),
+      compare_to : data.filterValues.compare_to,
+      compare_from : data.filterValues.compare_from
     };
 
     const fieldsMatch =
@@ -161,7 +165,9 @@ const SavedTrendCard = ({
             normalizedParamsData.viewBound,
             normalizedPropsData.viewBound
           )) &&
-      activeCard === data.id;
+      activeCard === data.id &&
+      compare_from === normalizedPropsData.compare_from &&
+      compare_to === normalizedPropsData.compare_to
     return fieldsMatch;
   }, [queryParams]);
 
@@ -197,6 +203,8 @@ const SavedTrendCard = ({
       categories,
       locationIds,
       viewBound,
+      compare_to,
+      compare_from
     } = filterValues;
 
     if (locationIds) {
@@ -228,6 +236,8 @@ const SavedTrendCard = ({
         ? { viewBound: JSON.stringify(viewBound) }
         : { locationIds: "" }),
       ...(id && { activeCard: id }),
+      compare_to: compare_to,
+      compare_from: compare_from
     });
     applyFilters();
   };

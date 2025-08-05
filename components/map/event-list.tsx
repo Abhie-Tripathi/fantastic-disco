@@ -40,6 +40,10 @@ import { Skeleton } from "../ui/skeleton";
 import { isEventeli } from "@/config";
 import { useAuthContext } from "@/context/auth";
 import { useFilterContext } from "@/context/filterContext";
+import Image from "next/image";
+import { Switch } from "@/components/ui/switch";
+import { Globe } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 const EventCard = memo(
   ({
     event,
@@ -263,7 +267,7 @@ const EventCard = memo(
                         event.basic.endDateTime
                       )}
                     </div>
-                    <Button
+                    {event.basic.format.toLowerCase() !== "online" && <Button
                       variant="ghost"
                       size="sm"
                       className="h-6 px-2 text-xs text-primary"
@@ -271,7 +275,7 @@ const EventCard = memo(
                     >
                       <Focus className="w-3 h-3 mr-1" />
                       Zoom
-                    </Button>
+                    </Button>}
                   </div>
                 </div>
               </div>
@@ -428,6 +432,7 @@ function EventList({
   onEventHover,
   onEventLeave,
   searchParam,
+  onlineEventCount, // new prop
 }: {
   eventType?: string;
   showEventType: string;
@@ -438,6 +443,7 @@ function EventList({
   onEventHover: (event: Event) => void;
   onEventLeave: () => void;
   searchParam?: string | undefined;
+  onlineEventCount?: number;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [mapBounds, setMapBounds] = useState<(number | undefined)[]>();
@@ -446,6 +452,12 @@ function EventList({
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const isOnlyOnlineSelected = searchParams.get("eventFormats") === "online"
+
+  const eventFormats = searchParams.get("eventFormats");
+  const shouldShowOnlineToggle =
+    (!eventFormats || eventFormats.split(",").includes("online")) && !isEventeli
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -513,7 +525,23 @@ function EventList({
     params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
-    if (mapBounds && showEventType != "unAttended") {
+    if (showOnlineOnly || isOnlyOnlineSelected) {
+      params.set("eventFormats", "online");
+      params.delete("viewBound");
+    } else {
+      if (params.get("eventFormats")?.split(",").includes("online")) {
+        const filtered = params.get("eventFormats")!.split(",").filter(v => v !== "online").join(",");
+        if (filtered) {
+          params.set("eventFormats", filtered);
+        } else {
+          params.set("eventFormats", "in_person,hybrid");
+        }
+      } else if (!params.has("eventFormats")) {
+        params.set("eventFormats", "in_person,hybrid");
+      }
+    }
+
+    if (mapBounds && showEventType != "unAttended" && !(showOnlineOnly || isOnlyOnlineSelected)) {
       const viewBound = {
         boundType: "box",
         coordinates: mapBounds,
@@ -560,10 +588,12 @@ function EventList({
         }
       }
       params.set("sortBy", sortBy);
+    } else if (showOnlineOnly || isOnlyOnlineSelected) {
+      params.delete("viewBound");
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapBounds, sortBy]);
+  }, [searchParams, currentPage, showEventType, mapBounds, sortBy, showOnlineOnly, isOnlyOnlineSelected]);
 
   const { data, error, isLoading } = useQuery({
     queryKey: [
@@ -575,7 +605,14 @@ function EventList({
     ],
     queryFn: async () => {
       if (source === "tracker") {
-        if (mapBounds) {
+        if ((showOnlineOnly || isOnlyOnlineSelected)) {
+          // Don't pass viewBound if online only
+          return getTrackerMapEvents(
+            trackerId ?? "",
+            `${eventType}`,
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+          );
+        } else if (mapBounds) {
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
@@ -776,6 +813,50 @@ function EventList({
               </Button>
             </div>
           </div>
+          {/* Online Only toggle in its own row, styled as a card */}
+          {shouldShowOnlineToggle && (
+            <div className="w-full flex justify-center">
+              <div
+                className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
+                ${showOnlineOnly ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className="flex items-center gap-2 cursor-pointer select-none"
+                        tabIndex={0}
+                        aria-label="Show only online events"
+                      >
+                        <Switch
+                          id="online-toggle"
+                          checked={isOnlyOnlineSelected ? true : showOnlineOnly}
+                          onCheckedChange={isOnlyOnlineSelected ? undefined : setShowOnlineOnly}
+                          aria-label="Online Only"
+                          disabled={isOnlyOnlineSelected}
+                        />
+                        <label
+                          htmlFor="online-toggle"
+                          className={`text-sm font-medium transition-colors duration-200 ${
+                            isOnlyOnlineSelected
+                              ? 'text-primary font-semibold opacity-60 cursor-not-allowed'
+                              : showOnlineOnly
+                              ? 'text-primary font-semibold'
+                              : 'text-gray-700'
+                          }`}
+                        >
+                          Online Only
+                        </label>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="center">
+                      Show only online events in the list
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          )}
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => {
@@ -855,7 +936,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full bg-background md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       } ${
         searchParams?.get("type") !== "T_CUSTOM" &&

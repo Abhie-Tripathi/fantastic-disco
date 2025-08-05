@@ -14,12 +14,12 @@ const NullState = ({
   global?:string;
   image: string;
   title?: string;
-  text?: string;
+  text?: React.ReactNode;
   buttonText?: string;
   buttonUrl?: string;
 }) => {
   return (
-    <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4">
+    <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4 w-full">
       <div className="max-w-[90%] md:max-w-[80%] lg:max-w-[70%] flex flex-col items-center gap-3">
         {title && (
           <div className="font-semibold text-center text-xs sm:text-sm md:text-base text-[var(--secondary-text-color)]">
@@ -43,7 +43,7 @@ const NullState = ({
           />
         </div>}
         {buttonText && buttonText.length > 0 && (
-          <div className="text-center">
+          <div className="text-center ml-6">
             <Link href={`${buttonUrl}`}>
               <Button className="text-white w-auto px-4 py-1 text-xs sm:text-sm">
                 {buttonText}

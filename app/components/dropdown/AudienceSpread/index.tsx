@@ -80,7 +80,7 @@ const AudienceSpread = ({
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <div>
-          Audience Spread
+          Audience Country
           {/* <InformationFillSmall color="var(--primary-text-color)" /> */}
         </div>
       </div>

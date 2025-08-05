@@ -12,8 +12,8 @@ import { Star } from "lucide-react";
 import { buttonVariants } from "../ui/button";
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/arts.png",
-  community: "/eventType/community.png",
+  "stage-performance": "/eventType/arts.png",
+  "community-group": "/eventType/community.png",
   concert: "/eventType/concert.png",
   conferences: "/eventType/conference.png",
   festival: "/eventType/festival.png",
@@ -138,7 +138,7 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
                         </Badge>
                       )}
                     </div>
-                    <h3 className="font-semibold text-sm mb-1.5 line-clamp-2">
+                    <h3 className="font-semibold text-sm mb-1.5 line-clamp-2 text-black">
                       {event.basic.name}
                     </h3>
                     <div className="text-xs text-gray-600 mb-1">

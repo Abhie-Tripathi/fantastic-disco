@@ -1,18 +1,21 @@
 "use client";
 
+import NullState from "@/app/components/trackers/nullState";
 import { PaginationComponent } from "@/components/pagination";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Filter, FilterX, MailIcon, PhoneIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCompanyService } from "@/services/companyService";
-import { Location } from "geist-icons";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import Loading from "@/components/ui/Loading";
+import { useBulkAction } from "@/context/bulkAction";
+import { useCompanyService } from "@/services/companyService";
 import { CompanyListResponse, userListData } from "@/types/prospect";
+import { Location } from "geist-icons";
 import { useQuery } from "@/hooks/useQuery";
 import { useSearchParams } from "next/navigation";
-import Loading from "@/components/ui/Loading";
-import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
 import Link from "next/link";
@@ -32,6 +35,16 @@ const DEFAULT_USER_ICON = "/usersIcon.svg";
 interface PeopleCardProps {
   poc: userListData;
   unlockPoc: (pocId: number | string) => Promise<void>;
+  isBulkActionActive: boolean;
+  selectedPeopleIds: Record<
+    string,
+    { userName: string; userOrgWebsite: string }
+  >;
+  toggleSelection: (
+    id: string,
+    userName?: string | null,
+    userOrgWebsite?: string | null
+  ) => void;
 }
 
 interface ContactInfoProps {
@@ -53,14 +66,21 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => (
   </div>
 );
 
-const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
+const PeopleCard: React.FC<PeopleCardProps> = ({
+  poc,
+  unlockPoc,
+  isBulkActionActive,
+  selectedPeopleIds,
+  toggleSelection,
+}) => {
   const [imageSrc, setImageSrc] = useState<string | null>(
     poc.user_profilePicture
   );
   const isMobile = useIsMobile();
-
+  const [imageError, setImageError] = useState(false);
   const handleImageError = useCallback(() => {
-    setImageSrc(DEFAULT_USER_ICON);
+    setImageError(true);
+    setImageSrc(null);
   }, []);
 
   const locationDisplay = useMemo(() => {
@@ -120,20 +140,47 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
   }, [poc.top_event_countryZone, isMobile]);
 
   return (
-    <div className="bg-background rounded-xl border shadow-sm relative">
+    <div className="flex gap-4 w-full items-center">
+      {isBulkActionActive && (
+        <Checkbox
+          checked={poc.user_id in selectedPeopleIds}
+          onCheckedChange={() =>
+            toggleSelection(poc.user_id, poc.user_name, poc.user_companyName)
+          }
+        />
+      )}
+    <div className="bg-background rounded-xl border shadow-sm relative w-full">
       <Link href={`/internal/user/${poc.user_id}`} className="block">
         <div className="p-4 flex gap-6">
-          {imageSrc && (
-            <Image
-              src={imageSrc}
-              alt={`${poc.user_name}'s profile picture`}
-              className="flex h-16 w-16 rounded-lg shadow-lg border"
-              width={200}
-              height={200}
-              onError={handleImageError}
-              priority={false}
-            />
-          )}
+          <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+            {imageSrc && !imageError ? (
+              <img
+                src={imageSrc}
+                alt={`${poc.user_name}'s profile picture`}
+                className="flex h-16 w-16 rounded-lg shadow-lg border object-cover bg-white"
+                width={64}
+                height={64}
+                onError={handleImageError}
+                loading="lazy"
+              />
+            ) : !imageError ? (
+              <img
+                src={DEFAULT_USER_ICON}
+                alt="Default user icon"
+                className="flex h-16 w-16 rounded-lg shadow-lg border object-cover bg-white"
+                width={64}
+                height={64}
+                onError={handleImageError}
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                <span className="text-[#5055A3] text-lg font-semibold">
+                  {poc.user_name?.charAt(0) || "?"}
+                </span>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2 flex-col w-full">
             <div className="flex justify-between">
               <div className="text-xl font-semibold">{poc.user_name}</div>
@@ -152,12 +199,14 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
                 </span>
               </div>
             )}
-
             {poc.about && poc.about.length > 10 && (
               <div className="text-[#707287] text-sm line-clamp-4">
                 {poc.about}
               </div>
-            )}
+            )} 
+            
+            <div className="flex gap-2 flex-col w-full">
+            
 
             <div className="flex flex-wrap gap-2 items-center w-fit">
               {renderEventCategories()}
@@ -200,8 +249,10 @@ const PeopleCard: React.FC<PeopleCardProps> = ({ poc, unlockPoc }) => {
               <ContactInfo email={poc.email} phoneNumber={poc.phoneNumber} />
             )}
           </div>
+          </div>
         </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -210,6 +261,14 @@ export const PeopleList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
+  const {
+    isBulkActionActive,
+    selectedData,
+    setSelectedData,
+    setIsBulkActionActive,
+  } = useBulkAction<{ userName: string; userOrgWebsite: string }>();
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
+  const [filterValues, setFilterValues] = useState<any>();
   const [showFilters, setShowFilter] = useState(false);
   const { localFilters, deleteMultipleLocalFilters, applyFilters } =
     useFilterContext();
@@ -260,6 +319,68 @@ export const PeopleList: React.FC = () => {
     [setMultipleFilters]
   );
 
+  function handleSelectAll(checked: boolean) {
+    setSelectedData((prev) => {
+      const next = { ...prev };
+
+      if (checked) {
+        // ADD all filteredUsers to next
+        filteredUsers.forEach((user) => {
+          next[user.user_id] = {
+            userName: user.user_name || "",
+            userOrgWebsite: user.user_companyName || "",
+          };
+        });
+      } else {
+        // REMOVE all filteredUsers from next
+        filteredUsers.forEach((user) => {
+          if (user.user_id in next) {
+            delete next[user.user_id];
+          }
+        });
+      }
+
+      return next;
+    });
+  }
+
+  function toggleSelection(
+    id: string,
+    userName?: string | null | undefined,
+    userOrgWebsite?: string | null | undefined
+  ) {
+    setSelectedData((prev) => {
+      const next = { ...prev };
+      if (id in next) {
+        delete next[id];
+      } else {
+        next[id] = {
+          userName: userName || "",
+          userOrgWebsite: userOrgWebsite || "",
+        };
+      }
+      return next;
+    });
+  }
+
+  function handleCancel() {
+    setIsBulkActionActive(false);
+    setSelectedData({});
+  }
+
+  function handleCreate() {
+    setTrackerModalOpen(true);
+    const filterValues = {
+      userName: Object.values(selectedData)
+        .map((names) => names.userName)
+        .join(","),
+      userOrgWebsite: Object.values(selectedData)
+        .map((names) => names.userOrgWebsite)
+        .join(","),
+    };
+
+    setFilterValues({ filterValues });
+  }
   const toggleFilterHandler = () => {
     if (showFilters) {
       setShowFilter(false);
@@ -319,6 +440,14 @@ export const PeopleList: React.FC = () => {
     [companyUsers]
   );
 
+  const isAllSelected = useMemo(() => {
+    return (
+      filteredUsers.length > 0 &&
+      filteredUsers.every((user) => user.user_id in selectedData)
+    );
+  }, [filteredUsers, selectedData]);
+
+
   return (
     <div className="flex flex-col w-full">
       <div
@@ -331,9 +460,9 @@ export const PeopleList: React.FC = () => {
               maximumFractionDigits: 1,
             }).format(count)}
           </Badge>
-          <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+          {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
             People
-          </p>
+          </p> */}
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
@@ -352,6 +481,72 @@ export const PeopleList: React.FC = () => {
           </Button>
         </div>
       </div>
+      {isBulkActionActive && (
+        <div className="flex justify-between w-full px-6 py-4">
+          <div className="flex gap-2 items-center">
+            <Checkbox
+              className="rounded-sm"
+              checked={isAllSelected}
+              onCheckedChange={handleSelectAll}
+            />
+            <label className="text-sm">
+              Select people to create people tracker
+              {Object.keys(selectedData).length > 0 && (
+              <span className="pt-[2px] ml-1 text-[var(--secondary-text-color)] text-[12px]">
+                ({Object.keys(selectedData).length} Selected)
+              </span>
+              )}
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              disabled={Object.keys(selectedData).length === 0}
+              variant={"default"}
+              className="h-8"
+              onClick={() => handleCreate()}
+            >
+              Submit
+            </Button>
+            <Button
+              variant={"outline"}
+              className="h-8 text-destructive"
+              onClick={() => handleCancel()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+      {/* <div className="flex gap-3 flex-col px-6">
+        {filteredUsers.map((item) => (
+          <PeopleCard
+            key={item.user_id}
+            poc={item}
+            unlockPoc={unlockPoc}
+            isBulkActionActive={isBulkActionActive}
+            selectedPeopleIds={selectedData}
+            toggleSelection={toggleSelection}
+          />
+        ))}
+      </div>
+      <div className="sticky bg-background py-2 border-t">
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          count={count}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          paginationItems={["5", "10"]}
+        />
+      </div> */}
+
+      <CreateTrackerDialog
+        trackerType="people"
+        trackerPayloadFilterValues={filterValues}
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
 
       {showFilters ? (
         <>
@@ -407,7 +602,14 @@ export const PeopleList: React.FC = () => {
           ) : (
             <>
               {filteredUsers.map((item) => (
-                <PeopleCard key={item.user_id} poc={item} unlockPoc={unlockPoc} />
+                <PeopleCard
+            key={item.user_id}
+            poc={item}
+            unlockPoc={unlockPoc}
+            isBulkActionActive={isBulkActionActive}
+            selectedPeopleIds={selectedData}
+            toggleSelection={toggleSelection}
+          />
               ))}
               <div className="sticky bg-background py-2 border-t">
                 <PaginationComponent

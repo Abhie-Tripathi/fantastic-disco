@@ -786,8 +786,8 @@ const TestPeriodicAnalytics = () => {
               return (
                 <TableCell
                   key={key}
-                  width={isMobileView ? 140 : 340}
-                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 bg-background max-w-[100px] md:max-w-[340px] px-1 py-1 truncate ${
+                  width={isMobileView ? 140 : 250}
+                  className={`text-center font-semibold text-[#6750a4] flex items-center justify-center sticky left-0 z-30 max-w-[100px] md:max-w-[250px] px-1 py-1 truncate bg-[var(--background-secondary-color)] ${
                     !comparisonDate ? "h-[53px]" : ""
                   }`}
                 >
@@ -1178,7 +1178,7 @@ const TestPeriodicAnalytics = () => {
       <div
         className={`flex px-4 md:px-0 ${
           isMobileView ? "flex-col gap-2" : "justify-between items-center"
-        } py-2 md:py-4`}
+        } py-2 md:py-0`}
       >
         <div className="flex flex-col gap-2">
           <div className="font-medium text-base">
@@ -1287,12 +1287,12 @@ const TestPeriodicAnalytics = () => {
                             trends.slug === "date"
                               ? isMobileView
                                 ? "100px"
-                                : "340px"
+                                : "250px"
                               : "1000px",
                         }}
                         className={`text-center bg-[var(--background-secondary-color)] text-[var(--primary-text-color)] border border-[var(--neutral-light-color)] relative ${
                           trends.slug === "date"
-                            ? "sticky left-0 !z-50 max-w-[100px] md:max-w-[340px]"
+                            ? "sticky left-0 !z-50 max-w-[100px] md:max-w-[250px] bg-[var(--background-secondary-color)]"
                             : ""
                         } ${isMobileView ? "text-xs px-1 py-1" : "px-2 py-2"}`}
                       >
@@ -1601,7 +1601,7 @@ const TestPeriodicAnalytics = () => {
         </div>
         {totalPages > 1 && (
           <div
-            className={`mt-2 md:mt-4 sticky bottom-0 bg-background py-2 md:py-4 ${
+            className={`mt-2 md:mt-4 sticky bottom-0 bg-background py-2 md:py-0 ${
               isMobileView ? "overflow-x-auto" : ""
             }`}
           >

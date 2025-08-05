@@ -4,6 +4,7 @@ import { RefObject, useMemo, useState } from "react";
 import { useFilterContext } from "@/context/filterContext";
 import Filters from "@/components/search/Filters";
 import { Filter } from "lucide-react";
+import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
 
 interface SearchLayoutProps {
   children: React.ReactNode;
@@ -14,17 +15,8 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { localFilters } = useFilterContext();
   const filterCount = useMemo(() => {
-    const excludedFilters = [
-      "active_gte",
-      "active_lte",
-      "show",
-      "limit",
-      "offset",
-      "skip",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
   }, [localFilters]);
 
   return (
@@ -46,7 +38,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
       )}
       <div
         className={`transition-all duration-300 sticky top-0 h-[calc(100dvh-84px)] overflow-hidden ${
-          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[368px]"
+          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[364px]"
         } `}
       >
         <div
