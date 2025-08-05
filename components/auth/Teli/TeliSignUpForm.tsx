@@ -158,7 +158,7 @@ export default function TeliSignUpForm() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-2">
-      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+      <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl mb-6 ">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>

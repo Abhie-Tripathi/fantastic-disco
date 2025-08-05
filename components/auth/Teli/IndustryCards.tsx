@@ -66,7 +66,7 @@ const ActiveCard = ({
         onClick={handleBackButton}
       />
       <div
-        className={`relative flex flex-col gap-2 items-center justify-between p-4 mb-6 bg-white w-36 h-24 rounded-lg border border-primary mx-auto`}
+        className={`relative flex flex-col gap-2 items-center justify-between p-4 bg-white w-36 h-24 rounded-lg border border-primary mx-auto`}
       >
         <Image
           className="w-8 h-8 aspect-square"
@@ -110,7 +110,7 @@ const IndustryCards = ({
         />
       )}
       {hasSubIndustries && selectedIndustry && (
-        <p className="text-[var(--secondary-text-color)] text-center font-semibold my-6">
+        <p className="text-[var(--secondary-text-color)] text-center font-semibold my-2">
           Choose a relevant Sub Industry
         </p>
       )}
