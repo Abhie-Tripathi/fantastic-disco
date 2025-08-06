@@ -732,11 +732,21 @@ const LineChartComponent = ({
         const [year, month] = dateString.split("-");
         if (year && month) {
           const date = new Date(parseInt(year), parseInt(month) - 1);
-          return format(date, "MMM yyyy");
+          if (isMobileView) {
+            // Mobile: show only month name
+            return format(date, "MMM");
+          } else {
+            // Desktop: show month and year
+            return format(date, "MMM yyyy");
+          }
         }
         // Fallback for full date format
         const date = new Date(dateString);
-        return format(date, "MMM yyyy");
+        if (isMobileView) {
+          return format(date, "MMM");
+        } else {
+          return format(date, "MMM yyyy");
+        }
       }
       if (currentView === "week" && dateString.includes("_")) {
         const [startDate, endDate] = dateString.split("_");
@@ -749,7 +759,13 @@ const LineChartComponent = ({
           return dateString;
         }
 
-        return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
+        if (isMobileView) {
+          // Mobile: show only date and month
+          return `${format(start, "dd MMM")} - ${format(end, "dd MMM")}`;
+        } else {
+          // Desktop: show full format
+          return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
+        }
       }
       // For day view
       const date = new Date(dateString);
@@ -757,7 +773,14 @@ const LineChartComponent = ({
         console.warn("Invalid date:", dateString);
         return dateString;
       }
-      return format(date, "dd MMM yyyy");
+      
+      if (isMobileView) {
+        // Mobile: show only date and month
+        return format(date, "dd MMM");
+      } else {
+        // Desktop: show full format
+        return format(date, "dd MMM yyyy");
+      }
     } catch (error) {
       console.error("Error formatting date:", error);
       return dateString;
@@ -766,11 +789,21 @@ const LineChartComponent = ({
 
   // Desktop view - improved logic for consistent intervals
   const getTickCount = (days: number) => {
-    if (days <= 30) return 6; // 6 ticks for up to 1 month
-    if (days <= 90) return 7; // 7 ticks for up to 3 months
-    if (days <= 180) return 8; // 8 ticks for up to 6 months
-    if (days <= 365) return 9; // 9 ticks for up to 1 year
-    return 10; // 10 ticks for more than 1 year
+    if (isMobileView) {
+      // Mobile view - minimal ticks for better readability
+      if (days <= 30) return 3; // 3 ticks for up to 1 month
+      if (days <= 90) return 4; // 4 ticks for up to 3 months
+      if (days <= 180) return 5; // 5 ticks for up to 6 months
+      if (days <= 365) return 6; // 6 ticks for up to 1 year
+      return 7; // 7 ticks for more than 1 year
+    } else {
+      // Desktop view - more ticks
+      if (days <= 30) return 6; // 6 ticks for up to 1 month
+      if (days <= 90) return 7; // 7 ticks for up to 3 months
+      if (days <= 180) return 8; // 8 ticks for up to 6 months
+      if (days <= 365) return 9; // 9 ticks for up to 1 year
+      return 10; // 10 ticks for more than 1 year
+    }
   };
 
   const CustomTick = (props: any) => {
@@ -809,12 +842,22 @@ const LineChartComponent = ({
             </tspan>
           ) : (
             <>
-              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
-                {formattedDate.split(" ").slice(0, 2).join(" ")}
-              </tspan>
-              <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
-                {formattedDate.split(" ")[2]}
-              </tspan>
+              {isMobileView ? (
+                // Mobile: show only date and month in one line
+                <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                  {formattedDate}
+                </tspan>
+              ) : (
+                // Desktop: show date, month, and year in two lines
+                <>
+                  <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1em">
+                    {formattedDate.split(" ").slice(0, 2).join(" ")}
+                  </tspan>
+                  <tspan x={`${doInvertTicks ? -30 : 0}`} dy="1.3em">
+                    {formattedDate.split(" ")[2]}
+                  </tspan>
+                </>
+              )}
             </>
           )}
         </text>
@@ -828,8 +871,33 @@ const LineChartComponent = ({
     const totalDays = differenceInDays(end, start) + 1;
 
     if (currentView === "month") {
-      // For month view, return all month dates from the data
-      return predictedData?.map((data: any) => data.date) || [];
+      // For month view, limit the number of ticks for mobile
+      if (!predictedData) return [];
+      
+      const monthData = predictedData.map((data: any) => data.date);
+      const totalMonths = monthData.length;
+      const maxTicks = isMobileView ? 4 : 8; // Fewer ticks for mobile
+      
+      // If maxTicks or fewer months, show all
+      if (totalMonths <= maxTicks) {
+        return monthData;
+      }
+      
+      // For more months, show only maxTicks
+      const interval = Math.ceil(totalMonths / maxTicks);
+      const selectedMonths = monthData.filter(
+        (_: string, index: number) => index % interval === 0
+      );
+      
+      // Always include the first and last month
+      if (!selectedMonths.includes(monthData[0])) {
+        selectedMonths.unshift(monthData[0]);
+      }
+      if (!selectedMonths.includes(monthData[monthData.length - 1])) {
+        selectedMonths.push(monthData[monthData.length - 1]);
+      }
+      
+      return selectedMonths;
     }
 
     if (currentView === "week") {
@@ -845,14 +913,15 @@ const LineChartComponent = ({
       });
 
       const totalWeeks = weekData.length;
+      const maxTicks = isMobileView ? 4 : 10; // Minimal ticks for mobile
 
-      // If 10 or fewer weeks, show all
-      if (totalWeeks <= 10) {
+      // If maxTicks or fewer weeks, show all
+      if (totalWeeks <= maxTicks) {
         return weekData;
       }
 
-      // For more weeks, show only 10 ticks
-      const interval = Math.ceil(totalWeeks / 10);
+      // For more weeks, show only maxTicks
+      const interval = Math.ceil(totalWeeks / maxTicks);
       const selectedWeeks = weekData.filter(
         (_: string, index: number) => index % interval === 0
       );
@@ -869,8 +938,10 @@ const LineChartComponent = ({
     }
 
     // For day view
-    // If range is 10 days or less, show all dates
-    if (totalDays <= 10) {
+    const maxTicks = isMobileView ? 4 : 10; // Minimal ticks for mobile
+    
+    // If range is maxTicks days or less, show all dates
+    if (totalDays <= maxTicks) {
       const dates = [];
       for (let i = 0; i < totalDays; i++) {
         const currentDate = addDays(start, i);
@@ -879,18 +950,18 @@ const LineChartComponent = ({
       return dates;
     }
 
-    // For more than 10 days, calculate intervals
-    const interval = Math.floor(totalDays / 10);
-    const remainder = totalDays % 10;
+    // For more than maxTicks days, calculate intervals
+    const interval = Math.floor(totalDays / maxTicks);
+    const remainder = totalDays % maxTicks;
     const dates = [format(start, "yyyy-MM-dd")];
 
     let currentDate = start;
 
     // Generate dates based on interval, adjusting for remainder
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= maxTicks - 1; i++) {
       currentDate = addDays(
         currentDate,
-        interval + (i === 9 && remainder > 0 ? remainder : 0)
+        interval + (i === maxTicks - 1 && remainder > 0 ? remainder : 0)
       );
       if (!isAfter(currentDate, end)) {
         dates.push(format(currentDate, "yyyy-MM-dd"));
