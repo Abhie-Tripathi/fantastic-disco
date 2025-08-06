@@ -710,15 +710,40 @@ const TestPeriodicAnalytics = () => {
       updatedParams.set(key, value);
     });
 
-    const formattedStartDate = new Date(startDate).toISOString();
-    const formattedEndStartDate = new Date(endDate).toISOString();
+    let formattedStartDate = startDate;
+    let formattedEndDate = endDate;
+
+    if (currentView === "week" && startDate.includes("_")) {
+      const [weekStart, weekEnd] = startDate.split("_");
+      formattedStartDate = new Date(weekStart).toISOString();
+      formattedEndDate = new Date(weekEnd).toISOString();
+    } else if (currentView === "month" && /^\d{4}-\d{2}$/.test(startDate)) {
+      const [year, month] = startDate.split("-");
+      const monthStartDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const monthEndDate = new Date(parseInt(year), parseInt(month), 0);
+
+      const actualStartDate = params.get("active_gte")
+        ? new Date(params.get("active_gte")!)
+        : monthStartDate;
+      const actualEndDate = params.get("active_lte")
+        ? new Date(params.get("active_lte")!)
+        : monthEndDate;
+
+      const boundedStartDate = actualStartDate > monthStartDate ? actualStartDate : monthStartDate;
+      const boundedEndDate = actualEndDate < monthEndDate ? actualEndDate : monthEndDate;
+
+      formattedStartDate = boundedStartDate.toISOString();
+      formattedEndDate = boundedEndDate.toISOString();
+    } else {
+      formattedStartDate = new Date(startDate).toISOString();
+      formattedEndDate = new Date(endDate).toISOString();
+    }
 
     updatedParams.delete("skip");
     updatedParams.set("active_gte", formattedStartDate);
-    updatedParams.set("active_lte", formattedEndStartDate);
+    updatedParams.set("active_lte", formattedEndDate);
 
     const queryString = updatedParams.toString();
-
     router.push(`${url}?${queryString}`);
   };
 
