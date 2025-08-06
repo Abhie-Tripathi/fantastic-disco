@@ -55,7 +55,7 @@ const EventCard = memo(
     intelLoading,
   }: {
     event: Event;
-    mapRef: React.RefObject<MapRef>;
+    mapRef: MapRef;
     onHover: () => void;
     onLeave: () => void;
     trackerId: string | undefined;
@@ -66,10 +66,10 @@ const EventCard = memo(
     const [mapZoom, setMapZoom] = useState(0);
     const { getFilterValue } = useFilterState();
     useEffect(() => {
-      if (mapRef.current) {
-        setMapZoom(mapRef.current.getZoom());
-        mapRef.current.on("zoom", () => {
-          setMapZoom(mapRef.current?.getZoom() || 0);
+      if (mapRef) {
+        setMapZoom(mapRef.getZoom());
+        mapRef?.on("zoom", () => {
+          setMapZoom(mapRef?.getZoom() || 0);
         });
       }
     }, [mapRef]);
@@ -94,9 +94,9 @@ const EventCard = memo(
 
     const handleZoomToLocation = (e: React.MouseEvent) => {
       e.preventDefault();
-      if (mapRef.current && event.basic.eventLocation) {
+      if (mapRef && event.basic.eventLocation) {
         const { lat, lon } = getEventLatLong(event);
-        mapRef.current.flyTo({
+        mapRef.flyTo({
           center: [lon, lat],
           zoom: 18,
           duration: 2000,
@@ -296,7 +296,7 @@ const UnplannedCard = memo(
     onLeave,
   }: {
     event: Event;
-    mapRef: React.RefObject<MapRef>;
+    mapRef: MapRef;
     onHover: () => void;
     onLeave: () => void;
   }) => {
@@ -437,7 +437,7 @@ function EventList({
   eventType?: string;
   showEventType: string;
   onClose: () => void;
-  mapRef: React.RefObject<MapRef>;
+  mapRef: MapRef;
   source?: string;
   trackerId?: string | undefined;
   onEventHover: (event: Event) => void;
@@ -460,9 +460,9 @@ function EventList({
     (!eventFormats || eventFormats.split(",").includes("online")) && !isEventeli
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef) return;
 
-    const map = mapRef.current;
+    const map = mapRef;
     let timeoutId: NodeJS.Timeout;
 
     const updateViewBound = () => {
@@ -610,7 +610,7 @@ function EventList({
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
-            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}&eventFormats=online`
           );
         } else if (mapBounds) {
           return getTrackerMapEvents(
@@ -621,7 +621,11 @@ function EventList({
             }&sortBy=${sortBy}`
           );
         } else {
-          return [];
+          return getTrackerMapEvents(
+            trackerId ?? "",
+            `${eventType}`,
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+          );
         }
       } else {
         return eventService.getEventsWithSearchParams(
