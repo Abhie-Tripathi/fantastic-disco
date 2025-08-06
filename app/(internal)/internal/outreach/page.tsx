@@ -342,11 +342,11 @@ const Page: React.FC = () => {
     handleDrop2(mockEvent, target, 'Status Pipeline');
   };
 
-  if (isEventeli) {
-    return (
-      <NotFound />
-    );
-  }
+  // if (isEventeli) {
+  //   return (
+  //     <NotFound />
+  //   );
+  // }
 
   if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
     return (

@@ -87,8 +87,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const eventDetailParams = useSearchParams();
   const isMobile = useIsMobile();
   const eventDetailView = eventDetailParams.get("expandedView");
+  const isValidView = (view: string): view is DetailPageView => {
+    return ["research", "coordinate", "outreach"].includes(view);
+  };
+  const viewParam = eventDetailParams.get("view");
   const [view, setView] = useState<DetailPageView>(
-    (eventDetailParams.get("view") as DetailPageView) || "research"
+    viewParam && isValidView(viewParam) ? viewParam : "research"
   );
   const [activeTab, setActiveTab] = useState<TTabs>(
     view === "research" ? "overview" : "notes"
@@ -1186,7 +1190,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventDetailView === "notes"
               ? "h-[calc(100vh-150px)]"
               : eventDetailView === "pocs"
-              ? "h-[calc(100vh-150px)]"
+              ? "h-[calc(100vh-150px)] md:mx-6"
               : ""
           }`}
         >
@@ -1214,8 +1218,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             />
           ) : (
             <section
-              className={`flex flex-col gap-4 md:gap-6 pb-6 md:h-full md:overflow-y-auto md:scroll-smooth   
-               w-[90vw] md:w-auto md:px-6`}
+              className={`flex flex-col gap-4 md:gap-6 md:h-full md:overflow-y-auto md:scroll-smooth w-[90vw] md:w-auto md:px-6`}
             >
               {isMobile && (
                 <>
