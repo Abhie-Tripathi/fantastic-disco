@@ -224,7 +224,7 @@ const EventCard = memo(
                       {event.basic.rating > 0 && (
                         <Badge
                           variant="outline"
-                          className="text-gray-600 capitalize rounded-sm"
+                          className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                         >
                           <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
                           <span>{event.basic.rating}</span>
@@ -236,7 +236,7 @@ const EventCard = memo(
                         {event.basic.name}
                       </h3>
                     </div>
-                    <div className="text-xs text-gray-600 mb-1">{address}</div>
+                    <div className="text-xs [color:var(--secondary-text-color)] mb-1">{address}</div>
                   </div>
                   {isTentimesUser && (
                     <>
@@ -388,7 +388,7 @@ const UnplannedCard = memo(
                   {event.basic.rating > 0 && (
                     <Badge
                       variant="outline"
-                      className="text-gray-600 capitalize rounded-sm"
+                      className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                     >
                       <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
                       <span>{event.basic.rating}</span>
@@ -400,7 +400,7 @@ const UnplannedCard = memo(
                     {event.basic.name}
                   </h3>
                 </div>
-                <div className="text-xs text-gray-600 mb-1">
+                <div className="text-xs [color:var(--secondary-text-color)] mb-1">
                   {formatAddress(
                     event.basic
                       .eventLocation as unknown as HolidayEventLocation[]
@@ -822,7 +822,10 @@ function EventList({
             <div className="w-full flex justify-center">
               <div
                 className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
-                ${showOnlineOnly ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}
+                ${showOnlineOnly 
+                  ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/50 dark:border-primary' 
+                  : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700'
+                }`}
               >
                 <TooltipProvider>
                   <Tooltip>
@@ -843,10 +846,10 @@ function EventList({
                           htmlFor="online-toggle"
                           className={`text-sm font-medium transition-colors duration-200 ${
                             isOnlyOnlineSelected
-                              ? 'text-primary font-semibold opacity-60 cursor-not-allowed'
+                              ? 'text-primary font-semibold opacity-60 cursor-not-allowed dark:text-primary/60'
                               : showOnlineOnly
-                              ? 'text-primary font-semibold'
-                              : 'text-gray-700'
+                              ? 'text-primary font-semibold dark:text-primary'
+                              : 'text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           Online Only
