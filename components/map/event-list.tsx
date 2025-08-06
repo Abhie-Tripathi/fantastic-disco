@@ -457,7 +457,7 @@ function EventList({
 
   const eventFormats = searchParams.get("eventFormats");
   const shouldShowOnlineToggle =
-    onlineEventCount && !isEventeli
+    !!onlineEventCount && !isEventeli
 
   useEffect(() => {
     if (!mapRef) return;
