@@ -211,12 +211,12 @@ const GtmSignUpForm = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-[80vh]">
-<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+    <div className="flex justify-center flex-col min-h-[80vh]">
+<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl mb-6">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>
-    <div className="flex-1 flex justify-self-center flex-col justify-center items-center w-full space-y-2">
+    <div className="flex  flex-col justify-center items-center w-full space-y-2">
 
       {signUpFlow === "default" && (
         <>
@@ -306,7 +306,7 @@ const GtmSignUpForm = () => {
         </p>
 
         {/* Tablist for Industry Insights and Location Insights */}
-        <div className="flex w-full justify-center mb-4">
+        <div className="flex w-full justify-center mb-4 !mt-[6px]">
           <div className="w-fit">
             <Tabs defaultValue={isEventeli ? "location" : "industry"} className="w-full">
               <TabsList className="bg-[#F5F5FA] rounded-md h-14 flex flex-row p-2 gap-2">

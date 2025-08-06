@@ -79,14 +79,14 @@ export default function SignInForm() {
   return (
     <div>
 
-<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+<div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl mb-6 ">
               <Image src={logo} alt="logo" width={45} height={55} />
               <Image src={whr} alt="whr" />
             </div>
 
 
 
-    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[72dvh]">
+    <div className="flex flex-col justify-center items-center w-full space-y-4">
 
       <p className="font-semibold  md:text-lg leading-6 text-center mb-3">
         Login to your account
