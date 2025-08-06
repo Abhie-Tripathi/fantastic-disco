@@ -1958,17 +1958,19 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                           <CoordinateIcon />
                         </ButtonUI>
 
-                        <ButtonUI
-                          variant={view === "outreach" ? "default" : "outline"}
-                          size="icon"
-                          className=""
-                          onClick={() => {
-                            setView("outreach");
-                            setActiveTab("notes");
-                          }}
-                        >
-                          <Map className="h-4 w-4" />
-                        </ButtonUI>
+                        {!isEventeli &&
+                          <ButtonUI
+                            variant={view === "outreach" ? "default" : "outline"}
+                            size="icon"
+                            className=""
+                            onClick={() => {
+                              setView("outreach");
+                              setActiveTab("notes");
+                            }}
+                          >
+                            <Map className="h-4 w-4" />
+                          </ButtonUI>
+                        }
 
                         <ButtonUI
                           variant="outline"

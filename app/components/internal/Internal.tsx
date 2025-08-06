@@ -481,6 +481,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                       currentEnquiryStatus={item.status}
                       upvote={item.activityCount} // upvote activity data
                       enquiryActivity={item.myActivity}
+                      isProductEvent={item.isProductEvent}
                       coordinateActions={coordinateActions}
                       pipelineConfig={pipelineConfig}
                       handleModal={handleModal}

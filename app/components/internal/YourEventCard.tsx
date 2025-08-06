@@ -31,6 +31,7 @@ interface YourEventCardProps {
   currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
+  isProductEvent?: boolean;
   coordinateActions: InterestConfiguration[];
   pipelineConfig: any;
   handleModal?: (id: string, enquiryId: string) => void;
@@ -52,6 +53,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   currentEnquiryStatus,
   upvote,
   enquiryActivity,
+  isProductEvent,
   coordinateActions,
   pipelineConfig,
   handleModal,
@@ -226,10 +228,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   return (
     <div className="flex justify-end border-l border-primary border-dashed w-[95%] md:w-[85%]">
       <div
-        className="bg-background rounded-lg border shadow-sm relative my-6 w-[98%] cursor-pointer"
+        className={`bg-background rounded-lg border shadow-sm relative my-6 w-[98%] ${!isProductEvent && "cursor-pointer"}`}
         onClick={() => {
           // handleModalOpen();
-          router.push(`/internal/event/${eventId}?view=coordinate`)
+          !isProductEvent && router.push(`/internal/event/${eventId}?view=coordinate`)
           GAEvent(
             "Coordinate",
             "Coordinate",

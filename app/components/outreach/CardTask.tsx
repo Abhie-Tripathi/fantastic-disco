@@ -49,6 +49,8 @@ const CardTask: React.FC<CardTaskProps> = ({
   task,
 }) => {
   const eventData = task.eventData;
+  const isProductEvent = task?.isProductEvent || false;
+  
   const router = useRouter();
 
   const address = eventData.eventLocation ? (
@@ -78,7 +80,8 @@ const CardTask: React.FC<CardTaskProps> = ({
       draggable={draggable}
       onDragStart={(event) => onDragStart(event, name)}
       // onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}
-      onClick={() => router.push(`/internal/event/${eventId}?view=outreach`)}
+      onClick={() => !isProductEvent && router.push(`/internal/event/${eventId}?view=outreach`)}
+
     >
       <div className="absolute left-0 top-4 h-auto w-[100px] flex items-start justify-center">
         {eventData.logoUrl ? (
