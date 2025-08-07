@@ -949,6 +949,7 @@ const jobComposite = {
 }
 
     // if(departmentIds?.length > 0 || seniorityIds?.length > 0){
+    if(type==="T_AUDIENCE_DEPT_PROFILE")
       filterValues.jobComposite = JSON.stringify(jobComposite);
     // }
     if(websites.length>0){
