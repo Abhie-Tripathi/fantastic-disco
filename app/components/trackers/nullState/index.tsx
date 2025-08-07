@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import AddEventModal from "@/components/coordinate/addEvent/AddEventModal";
+import { usePathname, useRouter } from "next/navigation";
 
 const NullState = ({
   global,
@@ -18,6 +19,9 @@ const NullState = ({
   buttonText?: string;
   buttonUrl?: string;
 }) => {
+  const router = useRouter();
+  const pathName = usePathname();
+  const module = pathName === "/internal/coordinate" ? "coordinate": "";
   return (
     <div className="flex flex-col h-full items-center justify-center overflow-y-auto py-4 w-full">
       <div className="max-w-[90%] md:max-w-[80%] lg:max-w-[70%] flex flex-col items-center gap-3">
@@ -43,12 +47,15 @@ const NullState = ({
           />
         </div>}
         {buttonText && buttonText.length > 0 && (
-          <div className="text-center ml-6">
-            <Link href={`${buttonUrl}`}>
-              <Button className="text-white w-auto px-4 py-1 text-xs sm:text-sm">
-                {buttonText}
-              </Button>
-            </Link>
+          <div className="text-center flex flex-col sm:flex-row gap-5 items-center">
+            <Button variant={module === "coordinate" ? "outline" : "default"} onClick={()=>router.push(buttonUrl as string)} >{buttonText}</Button>
+
+            {module === "coordinate" &&
+              <>
+                <Button variant="outline" onClick={()=>window.open("/internal/trackers/savedevents?view=table", "_blank")} >Bookmarked Events</Button>
+                <AddEventModal />
+              </>
+            }
           </div>
         )}
       </div>
