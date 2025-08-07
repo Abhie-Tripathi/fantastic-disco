@@ -55,7 +55,7 @@ const EventCard = memo(
     intelLoading,
   }: {
     event: Event;
-    mapRef: MapRef;
+    mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
     trackerId: string | undefined;
@@ -66,10 +66,10 @@ const EventCard = memo(
     const [mapZoom, setMapZoom] = useState(0);
     const { getFilterValue } = useFilterState();
     useEffect(() => {
-      if (mapRef) {
-        setMapZoom(mapRef.getZoom());
-        mapRef?.on("zoom", () => {
-          setMapZoom(mapRef?.getZoom() || 0);
+      if (mapRef.current) {
+        setMapZoom(mapRef.current?.getZoom() || 0);
+        mapRef.current?.on("zoom", () => {
+          setMapZoom(mapRef.current?.getZoom() || 0);
         });
       }
     }, [mapRef]);
@@ -94,9 +94,9 @@ const EventCard = memo(
 
     const handleZoomToLocation = (e: React.MouseEvent) => {
       e.preventDefault();
-      if (mapRef && event.basic.eventLocation) {
+      if (mapRef.current && event.basic.eventLocation) {
         const { lat, lon } = getEventLatLong(event);
-        mapRef.flyTo({
+        mapRef.current?.flyTo({
           center: [lon, lat],
           zoom: 18,
           duration: 2000,
@@ -296,7 +296,7 @@ const UnplannedCard = memo(
     onLeave,
   }: {
     event: Event;
-    mapRef: MapRef;
+    mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
   }) => {
@@ -437,7 +437,7 @@ function EventList({
   eventType?: string;
   showEventType: string;
   onClose: () => void;
-  mapRef: MapRef;
+  mapRef: React.RefObject<MapRef>;
   source?: string;
   trackerId?: string | undefined;
   onEventHover: (event: Event) => void;
@@ -460,9 +460,9 @@ function EventList({
     !!onlineEventCount && !isEventeli
 
   useEffect(() => {
-    if (!mapRef) return;
+    if (!mapRef.current) return;
 
-    const map = mapRef;
+    const map = mapRef.current;
     let timeoutId: NodeJS.Timeout;
 
     const updateViewBound = () => {
