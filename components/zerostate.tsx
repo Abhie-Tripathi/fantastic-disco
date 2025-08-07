@@ -6,6 +6,7 @@ import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { usePathname } from "next/navigation";
 
 const ZeroState = ({
   title,
@@ -19,7 +20,7 @@ const ZeroState = ({
   const { membershipData } = useAuthContext();
   const isPremium =
     !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
-
+const pathname = usePathname();
   const handleUpgradeClick = () => {
     GAEvent(
       "",
@@ -35,7 +36,15 @@ const ZeroState = ({
         {title}
       </div>
       <div className="text-center w-[400px] text-[#666666] text-sm">
-        {errorStatusCode && errorStatusCode === 429 ? (
+        {errorStatusCode == 400 ? pathname.split("/").includes("trackers") ? <div>
+          There was an issue with your request.
+          
+        </div>:<div>
+          There was an issue with your request. Click here to <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium">
+            Reset
+          </Link> and try again. 
+          
+        </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
               You can continue with basic search or{" "}
