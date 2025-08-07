@@ -30,9 +30,7 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
           There was an issue with your request.
           
         </div>:<div>
-          There was an issue with your request. Click here to <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium">
-            Reset
-          </Link> and try again. 
+          There was an issue with your request. <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium">Click here</Link> to reset and try again. 
           
         </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
