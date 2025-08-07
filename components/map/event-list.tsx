@@ -821,7 +821,7 @@ function EventList({
           {shouldShowOnlineToggle && (
             <div className="w-full flex justify-center">
               <div
-                className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full max-w-xs
+                className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full
                 ${showOnlineOnly 
                   ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/50 dark:border-primary' 
                   : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700'

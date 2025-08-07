@@ -6,7 +6,7 @@ import type { MapRef } from "react-map-gl";
 
 interface AlertPolygonLayerProps {
   eventId?: string;
-  mapRef?: React.RefObject<MapRef>;
+  mapRef?: MapRef;
 }
 
 type AlertLevel = "Orange" | "Green" | "Red";
@@ -54,9 +54,9 @@ export default function AlertPolygonLayer({
         const data = await getAlertPolygon(eventId);
         setAlertData(data || null);
 
-        if (data?.features?.[0]?.bbox && mapRef?.current) {
+        if (data?.features?.[0]?.bbox && mapRef) {
           const [minLng, minLat, maxLng, maxLat] = data.features[0].bbox;
-          mapRef.current.fitBounds(
+          mapRef.fitBounds(
             [
               [minLng, minLat],
               [maxLng, maxLat],
