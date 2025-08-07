@@ -30,12 +30,12 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
           There was an issue with your request.
           
         </div>:<div>
-          There was an issue with your request. <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium">Click here</Link> to reset and try again. 
+          There was an issue with your request. <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium underline">Click here</Link> to reset and try again. 
           
         </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
-              You’ve exhausted your search limit for today.<br/>Limit will reset tomorrow at 10:00 AM IST.
+              You’ve exhausted your search limit.<br/>Limit will reset tomorrow at 10:00 AM IST.
               {/* <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${

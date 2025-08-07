@@ -40,7 +40,7 @@ const pathname = usePathname();
           There was an issue with your request.
           
         </div>:<div>
-          There was an issue with your request.  <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium">Click here </Link> to reset and try again. 
+          There was an issue with your request.  <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium underline">Click here </Link> to reset and try again. 
           
         </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
