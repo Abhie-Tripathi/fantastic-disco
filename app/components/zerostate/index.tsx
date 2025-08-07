@@ -37,8 +37,8 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
         </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
-              You’ve exhausted your Advanced Searches and daily basic search limit.<br/> Basic limit will reset tomorrow at 10:00 AM IST or{" "}
-              <Link
+              You’ve exhausted your search limit for today.<br/>Limit will reset tomorrow at 10:00 AM IST.
+              {/* <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${
                   isEventeli ? "geo" : "gtm"
@@ -47,8 +47,8 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
                 onClick={handleUpgradeClick}
               >
                 upgrade
-              </Link>{" "}
-              to increase the advance searches.
+              </Link>{" "} */}
+              {/* to increase the advance searches. */}
             </div>
           ) : (
             <div>
