@@ -334,7 +334,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
         <NullState
           image={coordinateNullState}
           title="You haven't shortlisted any events yet."
-          text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
+          text=" Explore millions of listed events, upload your own, or choose from your bookmarked events to get started."
           buttonText="Search Events"
           buttonUrl={`/internal/search/events`}
         />
@@ -399,6 +399,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
               </div>
 
               <div className="flex items-center justify-end gap-3">
+                <Button variant="outline" size="sm" onClick={()=>window.open("/internal/trackers/savedevents?view=table", "_blank")} >Bookmarked Events</Button>
                 <AddEventModal />
 
                 {/* <ViewSelectDropdown /> */}
