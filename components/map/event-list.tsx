@@ -610,7 +610,7 @@ function EventList({
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
-            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}&eventFormats=online`
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&eventFormats=online`
           );
         } else if (mapBounds) {
           return getTrackerMapEvents(
