@@ -982,6 +982,7 @@ const jobComposite = {
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
+      ...(last==="createTracker" && {source:"tracker"}),
       accessLevel: editData?.tracker?.accessLevel,
       filterValues
     };

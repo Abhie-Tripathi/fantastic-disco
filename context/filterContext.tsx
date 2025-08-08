@@ -215,6 +215,7 @@ const isTentimesUser = useMemo(() => {
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
+  const [isBrief, setIsBrief] = useState<Boolean>(false);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
   const [suggestion, setSuggestion] = useState<number>(0);
@@ -533,6 +534,8 @@ const isTentimesUser = useMemo(() => {
       replaceLocalFilter,
       searchParams,
       filterEmptyValues,
+      isBrief,
+      setIsBrief
     ]
   );
 

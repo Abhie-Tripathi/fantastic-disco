@@ -24,6 +24,8 @@ const trackerValues: any = {
   setIsNewCall: () => {},
   editTrue: false,
   setEditTrue: () => {},
+  isBrief: false,
+  setIsBrief: () => {},
   setTrackerId: () => {},
   data: null,
   setData: () => {},
@@ -164,6 +166,8 @@ export const TrackerContextProvider = ({ children }: any) => {
     setSkip,
     searchValue,
     setSearchValue,
+    isBrief,
+    setIsBrief
     // suggestion,
     // setSuggestion,
   };
