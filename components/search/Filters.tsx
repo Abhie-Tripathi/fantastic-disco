@@ -744,7 +744,7 @@ const Filters = ({
 
   const searchHandler = () => {
     if (pathName.split("/").includes("search")) {
-      if (isEventeli && !(localFilters.locationIds || localFilters.viewBound)) {
+      if (type === "events" && isEventeli && !(localFilters.locationIds || localFilters.viewBound)) {
         toast({
           title: "Please select location",
           variant: "destructive",

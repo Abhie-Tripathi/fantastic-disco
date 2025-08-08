@@ -96,7 +96,9 @@ export default function MapComponent({
   eventType,
   trackerGeoCordinates,
 }: MapProps) {
-  const [mapRef, setMapRef] = useState<MapRef>(null);
+
+  const mapRef = useRef<MapRef>(null);
+  const [mapRefState, setMapRefState] = useState<MapRef | null>(null);
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const { getFilterValue } = useFilterState();
@@ -313,7 +315,7 @@ export default function MapComponent({
           if (feature) {
             if (feature.properties.cluster) {
               const clusterId = feature.properties.cluster_id;
-              const mapboxSource = mapRef?.getSource(
+              const mapboxSource = mapRef.current?.getSource(
                 "event-source"
               ) as mapboxgl.GeoJSONSource;
 
@@ -322,7 +324,7 @@ export default function MapComponent({
                 (err: any, zoom: number) => {
                   if (err) return;
 
-                  mapRef?.easeTo({
+                  mapRef.current?.easeTo({
                     center: feature.geometry.coordinates as [number, number],
                     zoom: zoom + 4,
                     duration: 500,
@@ -337,7 +339,7 @@ export default function MapComponent({
         case "unclustered-counts-circle":
           const unclusteredFeature = e.features && e.features[0];
           if (unclusteredFeature) {
-            mapRef?.easeTo({
+            mapRef.current?.easeTo({
               center: unclusteredFeature.geometry.coordinates as [
                 number,
                 number
@@ -354,7 +356,7 @@ export default function MapComponent({
           if (clusteredFeature) {
             if (clusteredFeature.properties.cluster) {
               const clusterId = clusteredFeature.properties.cluster_id;
-              const mapboxSource = mapRef?.getSource(
+              const mapboxSource = mapRef.current?.getSource(
                 "events-source"
               ) as mapboxgl.GeoJSONSource;
 
@@ -363,7 +365,7 @@ export default function MapComponent({
                 (err: any, zoom: number) => {
                   if (err) return;
 
-                  mapRef?.easeTo({
+                  mapRef.current?.easeTo({
                     center: clusteredFeature.geometry.coordinates as [
                       number,
                       number
@@ -415,14 +417,14 @@ export default function MapComponent({
 
     if (
       currentZoomGroupRef.current !== "event" ||
-      !mapRef ||
+      !mapRef.current ||
       isCurrentlyFetching.current ||
       shouldSkipForGeoCoordinates
     ) {
       return;
     }
 
-    const map = mapRef.getMap();
+    const map = mapRef.current.getMap();
     if (!map) return;
 
     const center = map.getCenter();
@@ -648,12 +650,12 @@ export default function MapComponent({
   }, [location, trackerId, trackerLoc]);
 
   useEffect(() => {
-    if (!mapRef) return;
+    if (!mapRef.current) return;
     if (
       Object?.keys(trackerGeoCordinates || {}).length == 0 &&
       location.locationIds == "defaultLoc"
     ) {
-      mapRef.flyTo({
+      mapRef.current?.flyTo({
         center: [35.2433, 38.9637],
         zoom: 0.8,
         duration: 3000,
@@ -666,7 +668,7 @@ export default function MapComponent({
         source === "tracker" ? location.trackerGeoCordinates : location;
       const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
-      mapRef.flyTo({
+      mapRef.current?.flyTo({
         center: [Number(coordinates.longitude), Number(coordinates.latitude)],
         zoom: zoom,
         duration: 3000,
@@ -684,13 +686,13 @@ export default function MapComponent({
         [minLng, minLat],
         [maxLng, maxLat]
       );
-      mapRef.fitBounds(bounds, {
+      mapRef.current?.fitBounds(bounds, {
         duration: 2000,
         essential: true,
       });
       return
     }
-  }, [location, mapRef, locationBBox, trackerId]);
+  }, [location, mapRefState, locationBBox, trackerId]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
@@ -819,7 +821,7 @@ const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("onl
                       const feature = features[0];
                       if (feature.properties.cluster) {
                         const clusterId = feature.properties.cluster_id;
-                        const mapboxSource = mapRef?.getSource(
+                        const mapboxSource = mapRef.current?.getSource(
                           "event-source"
                         ) as mapboxgl.GeoJSONSource;
                         mapboxSource.getClusterLeaves(
@@ -868,7 +870,10 @@ const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("onl
                     "clustered-events-circle",
                     "unclustered-events",
                   ]}
-                  ref={(ref) => setMapRef(ref)}
+                  ref={(ref) => {
+                    mapRef.current = ref;
+                    setMapRefState(ref);
+                  }}
                   {...viewport}
                 >
                   {!isGlobal && (

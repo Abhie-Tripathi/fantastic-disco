@@ -315,7 +315,7 @@ export const useTrackerServices = () => {
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
     const eventTypeParam = eventType !== null ? eventType :"";
-    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam===""?"":`eventType=${eventTypeParam}&`}view=map`, {
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam===""?"":`type=${eventTypeParam}&`}view=map`, {
       method: "GET",
       params: params
     },true);

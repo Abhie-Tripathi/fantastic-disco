@@ -1052,7 +1052,7 @@ const EventTrends = () => {
                           <CustomTrackerNullState />
                         </div>
                       ) : (
-                        <LineChartComponent showLegend />
+                        <TestPeriodicAnalytics />
                       )}
                     </div>
                   </Card>

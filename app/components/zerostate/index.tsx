@@ -6,9 +6,11 @@ import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { usePathname } from "next/navigation";
 
 const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string, text?: string, errorStatusCode?: number; isGlobal?:boolean }) => {
   const { membershipData } = useAuthContext();
+  const pathname = usePathname();
   const isPremium =
     !!membershipData && membershipData.membership != null && membershipData.membership > MembershipPlan.Freemium;
     
@@ -24,11 +26,17 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
       )}
       {text && (
         <div className={`w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]`}>
-          {errorStatusCode && errorStatusCode === 429 ? (
+          {errorStatusCode == 400 ? pathname.split("/").includes("trackers") ? <div>
+          There was an issue with your request.
+          
+        </div>:<div>
+          There was an issue with your request. <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium underline">Click here</Link> to reset and try again. 
+          
+        </div> : errorStatusCode && errorStatusCode === 429 ? (
           isPremium ? (
             <div>
-              You’ve exhausted your Advanced Searches and daily basic search limit.<br/> Basic limit will reset tomorrow at 10:00 AM IST or{" "}
-              <Link
+              You’ve exhausted your search limit.<br/>Limit will reset tomorrow at 10:00 AM IST.
+              {/* <Link
                 target="_blank"
                 href={`https://whr.ai/pricing?utm_source=${
                   isEventeli ? "geo" : "gtm"
@@ -37,8 +45,8 @@ const ZeroState = ({ title, text, errorStatusCode, isGlobal }: { title?: string,
                 onClick={handleUpgradeClick}
               >
                 upgrade
-              </Link>{" "}
-              to increase the advance searches.
+              </Link>{" "} */}
+              {/* to increase the advance searches. */}
             </div>
           ) : (
             <div>
