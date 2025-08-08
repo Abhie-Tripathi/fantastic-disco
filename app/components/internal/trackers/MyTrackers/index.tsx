@@ -141,7 +141,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setSingleTrackerData(item)
     setIsNewCall(true); 
     setTrackerId(item.id);
-    router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`)
+    router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}&showValues=${item.filterValues.showValues}`)
   }
   return (
     <div className={styles.container} ref={endOfListRef}>

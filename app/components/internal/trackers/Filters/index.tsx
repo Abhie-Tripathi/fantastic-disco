@@ -1082,7 +1082,8 @@ const jobComposite = {
             setIsCreating(false);
             return;
           }else{
-          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+            const showValuesParam = (data as any).filterValues?.showValues ? `&showValues=${(data as any).filterValues.showValues}` : '';
+          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
           
          // setIsNewCall(true);
           }
@@ -1177,7 +1178,8 @@ const jobComposite = {
         if (data) { 
           setIsNewCall(true); 
           setTrackerId(data?.id);
-          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+          const showValuesParam = (data as any).filterValues?.showValues ? `&showValues=${(data as any).filterValues.showValues}` : '';
+          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
         }
       }catch(error){
         // console.log(error);

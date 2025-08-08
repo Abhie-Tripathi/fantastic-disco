@@ -93,7 +93,7 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     : useConfiguration.interest();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
-  delete query.show;
+  console.log("heoolo",query)
   let events: Event[] | undefined; 
   let totalEvents:number | undefined; 
   let isLoading, error, isFetching;

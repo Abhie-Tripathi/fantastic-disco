@@ -9,6 +9,7 @@ import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { BASE_URL, isEventeli } from '@/config';
+import { getShowValues } from '@/utils/showValues';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -51,7 +52,11 @@ export const useTrackerServices = () => {
     const url = useSearchParams();
     const {getFilterValue} =useFilterState();
     const createTracker = (formData: Tracker) => {
-        
+      
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+        delete formData.filterValues.show;
+      }
       return api.request(
         `${endpoints.tracker.create}`,
         {
@@ -61,6 +66,10 @@ export const useTrackerServices = () => {
       );
     };
     const editTracker=(trackerId:string, formData: Tracker)=>{
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+        delete formData.filterValues.show;
+      }
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}`,
         {
@@ -214,7 +223,8 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || (query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitor":"score")}`)
+      const showValuesParam = query.showValues ? `&showValues=${query.showValues}` : '';
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || (query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitor":"score")}${showValuesParam}`)
       return response;
     };
     const getTrackerMapEvents = async(

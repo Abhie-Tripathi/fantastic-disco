@@ -40,7 +40,7 @@ import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrack
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
 const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
-  const { refs, setps } = useTrackerContext();
+  const { refs, setps,data, skip, searchValue } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
   const { toast } = useToast();
@@ -78,7 +78,6 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter();
   const sort = searchParams.get("sortBy");
-  const { data, skip, searchValue } = useTrackerContext();
   const { getTrackerDetail, error } = useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   const [share, setShare] = useState(false);
@@ -140,7 +139,7 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
       `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`)
         }else
       router.push(
-        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
+        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}&showValues=${data?.filterValues?.showValues}`
       );
     }
   };

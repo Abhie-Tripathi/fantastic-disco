@@ -3,7 +3,8 @@ import { MembershipPlan } from "@/data/membershipPlans";
 import { useQuery } from "@/hooks/useQuery";
 import { useEventsService } from "@/services/eventsService";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
-
+import { showValues as showValuesConfig } from "@/constants/filters";
+import { getShowValues} from "@/utils/showValues";
 export const eventsKeys = {
   all: ["events"] as const,
   list: (query: EventQuery) => [...eventsKeys.all, query] as const,
@@ -24,6 +25,9 @@ export const useEvents = {
     if (limit && query.limit && Number(query.limit) > limit)
       // Limit Restriction
     query.limit = limit;
+
+    query.showValues = getShowValues(query);
+
     
     const eventsService = useEventsService();
 

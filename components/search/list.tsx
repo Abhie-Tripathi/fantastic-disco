@@ -8,6 +8,7 @@ import ZeroState from "@/app/components/zerostate";
 import { Badge } from "@/components/ui/badge";
 import { isEventeli } from "@/config";
 import { groupedEventTypes } from "@/constants";
+import { showValues as showValuesConfig } from "@/constants/filters";
 import {
   alertIcons,
   eventTypeColors,
@@ -206,7 +207,6 @@ export default function EventAccordion({
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
-  delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   const [interest, setInterest] = useState();
   // const [interest, setInterest] = useState<Record<string, Interest>>({});

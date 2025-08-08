@@ -9,6 +9,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
 import TrackerGlobalModal from "../components/internal/trackers/TrackerGlobalModal";
+import SubscriptionBanner from "@/components/SubscriptionBanner"
 import "./../globals.css";
 
 const sora = Sora({
@@ -42,6 +43,7 @@ export default function RootLayout({
                   <Sidebar />
                   <div className="flex-1 flex flex-col overflow-hidden lg:ml-16">
                     <Navbar />
+                    <SubscriptionBanner />
                     <main
                       id="layout-main"
                       className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"

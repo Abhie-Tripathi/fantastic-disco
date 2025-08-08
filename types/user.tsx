@@ -39,4 +39,5 @@ export interface MembershipData {
   endDate: string | null;
   planRenewalDate: string | null;
   planStartDate: string | null;
+  isTrial: boolean;
 }
