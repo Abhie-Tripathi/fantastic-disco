@@ -285,8 +285,8 @@ const templates = [
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
     type: "enabled",
-    templateName: "Audience Dept. & Profiles",
-    description: "Track events for the specific organizational departments or audience profiles",
+    templateName: "Ideal Audience Designation",
+    description: "Find relevant events based on your target audience profile",
     inputAreas: [
       {
         type: "text",

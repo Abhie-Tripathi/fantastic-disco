@@ -254,7 +254,7 @@ const isTentimesUser = useMemo(() => {
       } as Filters;
       // Set default date range if not present
       if (
-        pathname === "/internal/search/events" &&
+        (pathname === "/internal/search/events"  || (pathname.includes("/internal/trackers") && params.type==="T_CUSTOM")) &&
         !params.active_gte &&
         !params.active_lte &&
         !params.eventIds
