@@ -123,7 +123,7 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
           </Link>
         </div>
         <div className="hidden md:block">
-          <Link href="whr.ai/gtm">
+          <Link href="https://whr.ai/gtm">
           <div className="items-center flex">
             <Image src={HeroLogo} alt="logo" width={34} height={34} />
             <Image
