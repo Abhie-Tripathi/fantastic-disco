@@ -510,8 +510,8 @@ function mapInterestsToInterestIds(
         <div
           className={`${
             view === "global"
-              ? "h-[calc(100vh-165px)]"
-              : "h-[calc(100vh-210px)]"
+              ? "h-[calc(100vh-165px-var(--banner-height))]"
+              : "h-[calc(100vh-210px-var(--banner-height))]"
           } overflow-auto`}
         >
           <Table>

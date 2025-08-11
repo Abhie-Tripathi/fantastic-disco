@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useAuthContext } from "@/context";
 import { format } from "date-fns";
@@ -30,6 +30,11 @@ const getPlanName = (membershipNumber: number | null): string => {
 export default function SubscriptionBanner() {
   const { membershipData } = useAuthContext();
   const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const bannerHeight = isVisible ? 48 : 0;
+    document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
+  }, [isVisible]);
 
   const handleDismiss = () => {
     setIsVisible(false);
