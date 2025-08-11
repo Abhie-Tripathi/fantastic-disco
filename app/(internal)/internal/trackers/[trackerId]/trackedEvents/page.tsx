@@ -8,13 +8,14 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import "chart.js/auto";
+import BulkImport from "@/components/bulk-import";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import List from "@/components/search/list";
 import Table from "@/app/components/Table/EventTable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -83,7 +84,6 @@ interface LocationObject {
 const Page = ({ params }: { params: any }) => {
   const isMobile = useIsMobile();
   const { data, savedEventCount, setIsNewCall, editTrue } = useTrackerContext();
-  // console.log(data);
   const [share, setShare] = useState(false);
   const pathname = usePathname();
   const { getCalendarViewEvents, getTrackerEvents, getSavedEvents } =
@@ -98,6 +98,7 @@ const Page = ({ params }: { params: any }) => {
   const router = useRouter();
   const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
+  const [bulkActions,setBulkActions]=useState(["Bulk Action"])
   // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType = searchParams.get("view");
@@ -112,6 +113,7 @@ const Page = ({ params }: { params: any }) => {
   const [open, setOpen] = useState(false);
   const [showViewDropdown, setShowViewDropdown] = useState(false);
   const [eventType, setEventType] = useState("active");
+  const [showExport, setShowExport] = useState<boolean>(false);
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "")
       ? viewType
@@ -120,8 +122,11 @@ const Page = ({ params }: { params: any }) => {
   const [activeCount,setActiveCount]=useState<number>(0);
   const {refs} = useTrackerContext();
   useEffect(() => {
-    if (editTrue) setIsNewCall(true);
-  }, [editTrue]);
+    if (editTrue)
+      setIsNewCall(true);
+  }, [editTrue])
+  // const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
+  const [showCheckBox,setShowCheckBox]=useState<boolean>(false);
   const [eventCount, setEventCount] = useState<
     { type: string; totalCount: number; newCount: number }[]
   >([]);
@@ -256,8 +261,8 @@ const Page = ({ params }: { params: any }) => {
       const transformedData = CountValues.geo.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: data?.groupedEventsCount[key].total || 0,
-          newCount: data?.groupedEventsCount[key].new || 0,
+          totalCount: data?.groupedEventsCount?.[key].total || 0,
+          newCount: data?.groupedEventsCount?.[key].new || 0,
         };
       });
 
@@ -275,8 +280,8 @@ const Page = ({ params }: { params: any }) => {
       const transformedData = CountValues.gtm.map((key) => {
         return {
           type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: data?.groupedEventsCount[key] || 0,
-          newCount: data?.groupedEventsCount[key]?.new || 0,
+          totalCount: data?.groupedEventsCount?.[key] || 0,
+          newCount: data?.groupedEventsCount?.[key]?.new || 0,
         };
       });
 
@@ -547,12 +552,14 @@ const Page = ({ params }: { params: any }) => {
     }
   };
   // console.log(activeCount);
-
+  const exportModalHandler = () => {
+    setShowExport(false);
+  };
   const onTabsChange = (tab: string) => {
     setView(tab);
     setShowViewDropdown(false);
   };
-
+  
   return (
     <div className="flex">
       {/* <SideNav/> */}
@@ -561,7 +568,7 @@ const Page = ({ params }: { params: any }) => {
         <div className="flex gap-3 md:gap-5 mb-[24px] flex-col w-[100%] px-0 md:px-8">
           <div className="hidden md:flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
             {/* <div className={styles.new}></div> */}
-            <div className="flex gap-2" ref={refs.eventTypeRef}>
+            <div className="flex gap-2" ref={!isMobile?refs.eventTypeRef: null}>
               {/* <button
                className={`${styles.eventStatusBtn} ${
                 active === "Active Events" ? styles.active : ""
@@ -680,8 +687,19 @@ const Page = ({ params }: { params: any }) => {
                     item.type.toLowerCase() === active ? styles.active : ""
                   }`}
                   onClick={() => {
-                    GAEvent("trackers", "Tracker Detail", "View", "New Events");
+                    GAEvent("trackers", "Tracker Detail", "View", `${item.type} Events`);
                     // deleteFilter("skip")
+                    if (item.type.toLowerCase() === "unattended" && view==="map") {
+                      setView("table")
+                      const currentParams = new URLSearchParams(window.location.search);
+                      currentParams.set('view', 'table');
+                      currentParams.set('eventType', "unattended")
+                      const newUrl = `${pathname}?${currentParams.toString()}`;
+
+                      setTimeout(() => {
+                        router.replace(newUrl);
+                      }, 0);
+                    }
                     setActive(item.type.toLowerCase());
                     addQueryString(item.type);
                   }}
@@ -704,7 +722,7 @@ const Page = ({ params }: { params: any }) => {
                 variant="outline"
                 className="flex gap-1"
                 onClick={() => setShare(!share)}
-                ref={refs.shareRef}
+                ref={!isMobile?refs.shareRef:null}
               >
                 <Share2 width={16} height={16} />
                 Share
@@ -721,7 +739,7 @@ const Page = ({ params }: { params: any }) => {
                 }}
                 className="flex items-center"
               >
-                <Button variant="outline" className="flex gap-1" ref={refs.notesRef}>
+                <Button variant="outline" className="flex gap-1" ref={!isMobile?refs.notesRef:null}>
                   <NotebookPen width={16} height={16} />
                   Notes
                   {/* <ListUnordered
@@ -746,11 +764,19 @@ const Page = ({ params }: { params: any }) => {
               }
               onClick={() => setView("calendar")}
             /> */}
+         
+          
                 </Button>
               </Link>
-              <div ref={refs.popularityRef}>
-              <SortDropdown/>
+              <div ref={!isMobile?refs.popularityRef:null}>
+              <SortDropdown />
               </div>
+              {(view === "table" || view === "list")&&
+              <BulkImport
+                bulkActions={[{ id: 0, option: "Bulk Action" }, { id: 1, option: "Export" }]}
+                setShowCheckBox={setShowCheckBox}
+                setShowExport={setShowExport}
+              />}
             </div>
           </div>
 
@@ -777,20 +803,24 @@ const Page = ({ params }: { params: any }) => {
                 addQueryString(val);
               }}
             >
+              <div ref={isMobile?refs.eventTypeRef:null}>
               <SelectTrigger className="w-full max-w-[130px] border-gray-300">
                 <SelectValue placeholder="Select event type" />
               </SelectTrigger>
               <SelectContent>
+                
                 {eventCount?.map((item) => (
                   <SelectItem key={item.type} value={item.type.toLowerCase()}>
                     {item.type}
                   </SelectItem>
                 ))}
               </SelectContent>
+              </div>
             </Select>
 
             <Popover open={showViewDropdown} onOpenChange={setShowViewDropdown}>
               <PopoverTrigger asChild>
+                <div ref={isMobile?refs.viewsRef:null}>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -806,9 +836,10 @@ const Page = ({ params }: { params: any }) => {
                     <CalendarIcon className="w-4 h-4" />
                   )}
                 </Button>
+                </div> 
               </PopoverTrigger>
               <PopoverContent align="end" className="w-48 p-2">
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-1" >
                   <Button
                     variant={view === "list" ? "secondary" : "ghost"}
                     className="justify-start flex items-center gap-2"
@@ -844,8 +875,15 @@ const Page = ({ params }: { params: any }) => {
                 </div>
               </PopoverContent>
             </Popover>
+            
+            {view==="list" && <SortDropdown compact/>}
+          {/* {view==="list" && <BulkImport bulkActions={bulkActions} setShowCheckBox={setShowCheckBox}/>} */}
+          <BulkImport
+                bulkActions={[{ id: 1, option: "Export" }]}
+                setShowCheckBox={setShowCheckBox}
+                setShowExport={setShowExport}
+              />
           </div>
-
           {view === "table" && (
             <div className="flex-grow overflow-hidden">
               <Suspense fallback={<Loading />}>
@@ -857,6 +895,13 @@ const Page = ({ params }: { params: any }) => {
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
+          <Table source="tracker" trackerId={trackerId} eventType={active || ""} showCheckBox={showCheckBox} setShowCheckBox={setShowCheckBox}/>
+          </Suspense>
+          </div>
+        )}
+        {view === "list" && (
+  <div className="flex-grow overflow-hidden">
+    {/* {isLoading ? (
                 <Table
                   source="tracker"
                   trackerId={trackerId}
@@ -892,15 +937,15 @@ const Page = ({ params }: { params: any }) => {
         />
       )
     ) : ( */}
-              <>
-                {/* <Alerts /> */}
-                <List source="tracker" trackerId={params.trackerId} />
-              </>
-              {/* )} */}
-            </div>
-          )}
+      <>
+        {/* <Alerts /> */}
+        <List source="tracker" trackerId={params.trackerId} showCheckBox={showCheckBox} eventType={active || ""}/>
+      </>
+    {/* )} */}
+  </div>
+)}
 
-          {view === "map" && (
+          {view === "map"  && (
             <div>
               <Suspense fallback={<Loading />}>
                 {Number(activeCount) === 0 && active === "bookmarked" ? (
@@ -911,7 +956,16 @@ const Page = ({ params }: { params: any }) => {
                     />
                   </div>
                 ) : (
-                  <Map
+                  active==="unattended" ?(
+                  <div className="px-10 py-5">
+                    <NullState
+                      image={TrackerNullState}
+                      title="Map view is not available for unattended events."
+                        text="Map visualization is not supported for 'Unattended' events—please select a different view to explore the data."
+                    />
+                    </div>
+                  ):
+                  (<Map
                     source="tracker"
                     searchParams={`${
                       active === "Active Events"
@@ -929,7 +983,7 @@ const Page = ({ params }: { params: any }) => {
                     trackerLoc={trackerLoc.join(",")}
                     trackerType={trackerType}
                     eventType={active || ""}
-                  />
+                  />)
                 )}
                 {/* <Map/> */}
               </Suspense>
@@ -984,6 +1038,9 @@ const Page = ({ params }: { params: any }) => {
           )}
         </div>
       )}
+      {showExport &&
+      <ExportModal onClose={exportModalHandler} source={"tracker"} active={active || ""}/>
+      }
     </div>
   );
 };

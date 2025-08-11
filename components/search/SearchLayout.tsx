@@ -1,9 +1,10 @@
 "use client";
 
-import { RefObject, useState } from "react";
+import { RefObject, useMemo, useState } from "react";
 import { useFilterContext } from "@/context/filterContext";
 import Filters from "@/components/search/Filters";
 import { Filter } from "lucide-react";
+import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
 
 interface SearchLayoutProps {
   children: React.ReactNode;
@@ -13,7 +14,10 @@ interface SearchLayoutProps {
 const SearchLayout = ({ children, type }: SearchLayoutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { localFilters } = useFilterContext();
-  const filterCount = Object.keys(localFilters).length;
+  const filterCount = useMemo(() => {
+    const allFilterKeys = [...basicFilters, ...advancedFilter];
+    return countFilters(localFilters, allFilterKeys);
+  }, [localFilters]);
 
   return (
     <div className="flex relative">
@@ -34,7 +38,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
       )}
       <div
         className={`transition-all duration-300 sticky top-0 h-[calc(100dvh-84px)] overflow-hidden ${
-          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[368px]"
+          isCollapsed ? "w-0" : "w-full md:w-[38%] md:max-w-[364px]"
         } `}
       >
         <div

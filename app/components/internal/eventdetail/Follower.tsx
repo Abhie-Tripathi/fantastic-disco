@@ -2,18 +2,23 @@
 import React, { useEffect, useState } from "react";
 import styles from "./eventdesc.style.module.css";
 import Image from "next/image";
-import PeopleIcon from "/public/people.svg";
-import PlaceHolder from "/public/speaker1.jpeg";
-import { useAuthContext, useTheme } from "@/context";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { showToast } from "@/utils/showToast";
+import { useAuthContext } from "@/context";
 import downArrowIcon from "/public/arrow_down.svg";
 import UserProfile from "../../userProfile/UserProfile";
 import { UserPlus } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
 import { useCoordinateService } from "@/services/coordinateService";
 import { Button } from "@/components/ui/button";
+
+interface FollowerData {
+  id: string;
+  name: string;
+  email: string;
+  profileImage: string | null;
+  designation: string | null;
+  department: string | null;
+  followerIntendId: string; // Optional, if not always present
+}
 
 const Follower = ({
   eventId,
@@ -27,11 +32,9 @@ const Follower = ({
   console.log('myActivity', myActivity);
   
   const { user } = useAuthContext();
-  const [followerData, setFollowerData] = useState([]);
+  const [followerData, setFollowerData] = useState<FollowerData[]>([]);
   const [accordianToggle, setAccordianToggle] = useState(false);
-  const { theme } = useTheme();
-  const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [followStatus, setFollowStatus] = useState(false);
+  const [myFollowIntentId, setMyFollowIntentId] = useState<string | null>(null);
 
   const coordinateService = useCoordinateService();
 
@@ -40,10 +43,10 @@ const Follower = ({
 
     if (data) {
       setFollowerData(data.followers);
-      const isFollowing = data.followers.some(
+      const isFollowing = data.followers.filter(
         (followUser: any) => followUser.id === user!.id
       );
-      setFollowStatus(isFollowing);
+      setMyFollowIntentId(isFollowing?.[0]?.followerIntendId || null);
     }
   };
 
@@ -51,10 +54,10 @@ const Follower = ({
     fetchData();
   }, [eventId]);
 
-  const handleFollow = async () => {
+  const handleFollow = async (itentId: string | null) => {    
     try {
-      if(followStatus && myActivity?.[0]?.id) {
-        const deleteIntent: any = await coordinateService.deleteEnquiryActivityIntent(myActivity?.[0]?.id);
+      if(itentId) {
+        const deleteIntent: any = await coordinateService.deleteEnquiryActivityIntent(itentId);
       } else {
         const createIntent: any = await coordinateService.setEnquiryFollowers(enquiryId);
       }
@@ -94,7 +97,7 @@ const Follower = ({
         {accordianToggle && (
           <div className={styles.followerAccordian}>
             {followerData.length > 0 ? (
-              followerData.map((follower: any) => (
+              followerData.map((follower) => (
                 <div className={styles.followerContainer} key={follower.id}>
                   
                   {follower.profileImage === null ?
@@ -106,7 +109,7 @@ const Follower = ({
                   alt="banner"
                   width={60}
                   height={60}
-                  className={styles.followerProfilePhoto}
+                  className="rounded-full h-12 w-12"
                 />
                   }
                   <div className={styles.followerDetails}>
@@ -134,11 +137,11 @@ const Follower = ({
                 {followStatus ? "Unfollow" : "Follow"}
               </span> */}
               <Button
-                onClick={handleFollow}
+                onClick={()=>handleFollow(myFollowIntentId)}
                 variant={"outline"}
                 size={"sm"}
               >
-                {followStatus ? "Unfollow" : "Follow"}
+                {myFollowIntentId ? "Unfollow" : "Follow"}
               </Button>
             </div>
           </div>

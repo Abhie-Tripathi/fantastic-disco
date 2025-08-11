@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+
 interface HoverTooltipProps {
   hoverInfo: {
     x: number;
@@ -8,15 +10,16 @@ interface HoverTooltipProps {
 }
 
 export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
-  const aggregatedPoints = hoverInfo.clusteredPoints?.reduce((acc, point) => {
-    const existing = acc.find(p => p.name === point.name);
-    if (existing) {
-      existing.count += point.count;
-    } else {
-      acc.push({ ...point });
-    }
-    return acc;
-  }, [] as { name: string; count: number }[]) || [];
+  const aggregatedPoints =
+    hoverInfo.clusteredPoints?.reduce((acc, point) => {
+      const existing = acc.find((p) => p.name === point.name);
+      if (existing) {
+        existing.count += point.count;
+      } else {
+        acc.push({ ...point });
+      }
+      return acc;
+    }, [] as { name: string; count: number }[]) || [];
 
   return (
     <div
@@ -35,7 +38,7 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
             .map((point, index) => (
               <div
                 key={`${point.name}-${index}`}
-                className="mb-1 flex justify-between items-center"
+                className="mb-1 flex justify-between items-center text-black"
               >
                 <span className="font-semibold">{point.name}</span>
                 <span className="ml-2">{point.count}</span>
@@ -48,7 +51,7 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
           )}
         </>
       ) : (
-        <div className="mb-1 flex justify-between items-center">
+        <div className="mb-1 flex justify-between  items-center text-black">
           <span className="font-semibold">
             {hoverInfo.feature.properties.name}
           </span>
@@ -57,4 +60,4 @@ export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
       )}
     </div>
   );
-} 
+}

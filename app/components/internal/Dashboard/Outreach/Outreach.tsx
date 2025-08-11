@@ -44,7 +44,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   }
 
   return (
-    <div className={`${outreachData.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px] max-[570px]:flex-col max-[570px]:h-fit`}>
+    <div className={`${outreachData.length === 0 && ""} bg-[#FBF8FF] border-[#E6E6F9] dark:bg-[#2C2831] dark:border-[#292929] border w-full overflow-hidden relative rounded-xl flex h-[273px] max-[570px]:flex-col max-[570px]:h-fit`}>
       <div className={`flex flex-col ${outreachData.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4 max-[570px]:w-full`}>
         <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
           <OutreachIcon />

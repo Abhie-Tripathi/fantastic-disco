@@ -31,7 +31,8 @@ export default function AudienceZoneSatusSelector() {
     <div
       className={cn(
         buttonVariants({ variant: "outline" }),
-        "w-full justify-between px-3 py-5 text-base font-normal"
+        "w-full justify-between px-3 py-5 text-base font-normal",
+        !enabled && "opacity-50"
       )}
     >
       <div className="flex items-center">
@@ -40,6 +41,7 @@ export default function AudienceZoneSatusSelector() {
       </div>
       <Switch
         id="forecasted-status"
+        className="mr-6"
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />

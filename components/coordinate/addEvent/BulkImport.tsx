@@ -17,6 +17,7 @@ import { useLocationService } from "@/services/locationService";
 import { addEventPayloadType } from "@/types/Formstate";
 import { InterestConfiguration } from "@/types/configuration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { parse, isValid } from 'date-fns';
 
 interface Props {
   mappedHeaders: any;
@@ -34,6 +35,11 @@ interface dataRow {
   duplicateFetched: boolean;
   duplicateEvents: any;
   isEventAdded: boolean;
+}
+
+function isValidDateString(dateStr: string, format = 'yyyy-MM-dd') {
+  const parsedDate = parse(dateStr, format, new Date());
+  return isValid(parsedDate);
 }
 
 const BulkImport = ({
@@ -124,7 +130,15 @@ const BulkImport = ({
         (interest) => interest.label.toLowerCase() === row[6].toLowerCase()
       );
 
-      if (missingFields.length > 0 || interestValue === undefined) {
+      if (!isValidDateString(row[1], 'yyyy-MM-dd')) {
+        row[1] = "";
+      }
+
+      if (!isValidDateString(row[2], 'yyyy-MM-dd')) {
+        row[2] = "";
+      }      
+
+      if (missingFields.length > 0 || interestValue === undefined || !isValidDateString(row[1], 'yyyy-MM-dd') || !isValidDateString(row[2], 'yyyy-MM-dd')) {
         updatedCsvData.push(temp);
         continue;
       }
@@ -177,7 +191,7 @@ const BulkImport = ({
           location_state_id: locationData?.state?.id ?? "",
           latitude: Number(locationData.latitude),
           longitude: Number(locationData.longitude),
-          participationType: row[6],
+          participationType: interestValue.status,
           event_type: row[7],
           format: "offline",
         };

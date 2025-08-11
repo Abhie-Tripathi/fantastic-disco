@@ -18,7 +18,7 @@ const Prospect = ({theme} : Props) => {
     }
 
     return (
-        <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] flex flex-col items-center justify-start w-full h-[271px] rounded-xl">
+        <div className="bg-[#FBF8FF] border-[#E6E6F9] dark:bg-[#2C2831] dark:border-[#292929] border flex flex-col items-center justify-start w-full h-[271px] rounded-xl">
             <div className={`flex flex-col items-center justify-center p-4`}>
                 <div className="text-[var(--primary-color)] font-semibold text-xs">
                     Personalized Prospecting

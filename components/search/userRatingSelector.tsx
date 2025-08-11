@@ -21,6 +21,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LockClosedSmall } from "geist-icons";
 
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
@@ -36,13 +37,15 @@ interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
 }
 
-export default function UserRatingSelector({ variant = "popover" }: FlexibleComponentProps) {
+export default function UserRatingSelector({
+  variant = "popover",
+}: FlexibleComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const userRatings = morphedData.userRatings.options;
-  const showUserRatings = morphedData.userRatings.isEnabled;
+  const isEnabled = morphedData.userRatings.isEnabled;
   const selectedRatings = getLocalFilterValue("ratings")
     .split(",")
     .filter(Boolean);
@@ -71,7 +74,11 @@ export default function UserRatingSelector({ variant = "popover" }: FlexibleComp
     setIsOpen(open);
   };
 
-  const renderTriggerContent = (content: React.ReactNode, isOpen?: boolean, variant?: string) => (
+  const renderTriggerContent = (
+    content: React.ReactNode,
+    isOpen?: boolean,
+    variant?: string
+  ) => (
     <div className="flex items-center justify-between w-full">
       {content}
       {variant === "popover" && (
@@ -86,8 +93,9 @@ export default function UserRatingSelector({ variant = "popover" }: FlexibleComp
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      <span className="flex items-center gap-2">
-        User Rating
+      <span className="flex items-center">
+        {!isEnabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="mr-2">User Rating</span>
         {selectedRatings.length > 0 && (
           <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
             {selectedRatings.length}
@@ -130,6 +138,7 @@ export default function UserRatingSelector({ variant = "popover" }: FlexibleComp
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!isEnabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -138,7 +147,10 @@ export default function UserRatingSelector({ variant = "popover" }: FlexibleComp
             {renderTriggerContent(triggerContent, isOpen, variant)}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -148,12 +160,16 @@ export default function UserRatingSelector({ variant = "popover" }: FlexibleComp
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="userRating" className="border rounded-md">
-        <AccordionTrigger className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}>
+        <AccordionTrigger
+          disabled={!isEnabled}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
+        >
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

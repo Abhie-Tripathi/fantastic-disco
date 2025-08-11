@@ -8,10 +8,10 @@ import Image from "next/image";
 import "react-toastify/dist/ReactToastify.css";
 import Providers from "../providers";
 import "./../globals.css";
-import Coordinate_Onboarding_Icon from "/public/coordinate_onboarding.svg";
-import logo from "/public/croppedlogo.png";
-import Outreach_Onboarding_Icon from "/public/outreach-onboarding.svg";
-import whr from "/public/whrai.svg";
+import perspectiveGridTop from "/public/perspective-grid-top.svg";
+import perspectiveGridBottom from "/public/perspective-grid-bottom.svg";
+import waveRight from "/public/wave-right.svg";
+import BackgroundWrapper from "@/components/background-wrapper";
 
 export const metadata: Metadata = {
   title: "Whr.ai",
@@ -29,23 +29,35 @@ export default async function RootLayout({
       <Toaster />
       <ReactQueryProvider>
         <AuthContextProvider>
-          <div className={`relative p-8 bg-[#FAFAFF] min-h-screen`}>
+          <div
+            className={`relative md:p-8  bg-[#FAFAFF] min-h-screen flex items-center justify-center`}
+          >
             <Image
-              className="absolute bottom-0 left-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
-              src={Coordinate_Onboarding_Icon}
+              className="md:block hidden absolute bottom-0 w-full"
+              src={perspectiveGridBottom}
               alt="Icon"
             />
-            <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
-              <Image src={logo} alt="logo" width={45} height={55} />
-              <Image src={whr} alt="whr" />
-            </div>
+
             <Image
-              className="absolute top-0 right-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
-              src={Outreach_Onboarding_Icon}
+              className="md:block hidden absolute top-0 w-full"
+              src={perspectiveGridTop}
               alt="Icon"
             />
-            <main className="flex flex-col justify-center w-full">
-              <Providers session={session}>{children}</Providers>
+
+            <main className="flex justify-center w-full relative z-10">
+              <Image
+                src={waveRight}
+                alt="wave-left"
+                className="md:block hidden absolute z-0 left-0 top-1/2 -translate-y-1/2 rotate-180"
+              />
+              <BackgroundWrapper>
+                <Providers session={session}>{children}</Providers>
+              </BackgroundWrapper>
+              <Image
+                src={waveRight}
+                alt="wave-right"
+                className="md:block hidden absolute z-0  right-0 top-1/2 -translate-y-1/2"
+              />
             </main>
           </div>
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />

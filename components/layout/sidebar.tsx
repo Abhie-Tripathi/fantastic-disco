@@ -21,7 +21,15 @@ import {
   LineChart,
   MagnifyingGlass,
 } from "geist-icons";
-import { LogOut, Moon, Settings, Sun, UserSearch } from "lucide-react";
+import {
+  LogOut,
+  MessageCircleMore,
+  Moon,
+  Settings,
+  Sun,
+  UserSearch,
+  ArrowUpRight,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,6 +37,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
+import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
+import { Badge } from "@/components/ui/badge";
 
 function Coordinate() {
   return (
@@ -71,7 +83,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { user, signOut } = useAuthContext();
+  const { user, signOut, membershipData, isTentimesUser } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
 
@@ -129,14 +141,14 @@ const Sidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search",
-      href: `/internal/search/events`,
-      icon: MagnifyingGlass,
-    },
-    {
       name: "Tracker",
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
+    },
+    {
+      name: "Search",
+      href: `/internal/search/events`,
+      icon: MagnifyingGlass,
     },
     { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
@@ -272,19 +284,26 @@ const Sidebar = () => {
         <div className="flex items-center space-x-2">
           <Image src={HeroLogo} alt="logo" width={40} height={40} />
           {isHovered && (
-            <Image
-              className="mb-[6px]"
-              src={HeroText}
-              alt="logotext"
-              height={24}
-              style={theme === "dark" ? { filter: "invert(100%)" } : {}}
-            />
+            <>
+              <Image
+                className="mb-[6px]"
+                src={HeroText}
+                alt="logotext"
+                height={24}
+                style={theme === "dark" ? { filter: "invert(100%)" } : {}}
+              />
+              {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+                <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+                  {MembershipPlan[membershipData?.membership || 0]}
+                </span>
+              </div>}
+            </>
           )}
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal")
+          {(pathname.startsWith("/internal") || pathname.startsWith("/collections"))
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
@@ -439,7 +458,7 @@ const Sidebar = () => {
               )}
             </AccordionItem>
           </Accordion>
-          {!isEventeli && (
+          {((isEventeli && isTentimesUser) || !isEventeli) && (
             <Button
               variant="ghost"
               size="icon"
@@ -466,6 +485,24 @@ const Sidebar = () => {
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
+          <Button
+            className={`w-full hover:bg-muted ${
+              isHovered ? "justify-start px-3" : "justify-center px-0"
+            }`}
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              window.open("https://whr.canny.io/feature-request", "_blank");
+              GAEvent("", "Feature Request", "Desktop Sidebar", `${isEventeli ? "geo" : "gtm"} | feature_request`);
+            }}
+          >
+            <MessageCircleMore className="h-5 w-5 transition-all" />
+            {isHovered && (
+              <span className="ml-3.5 text-sm">
+                Feature Request
+              </span>
+            )}
+          </Button>
           <span className="text-xs text-muted-foreground px-1">
             {isHovered ? "Version 1.0.0" : "v1.0.0"}
           </span>

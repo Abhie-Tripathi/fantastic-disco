@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/pagination";
 import { Event, HolidayEventLocation } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";
@@ -30,27 +30,45 @@ import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import IntelScore from "@/app/components/Table/IntelScore";
 import { formatLocationParts } from "@/utils/locationFormat";
 import { PaginationComponent } from "../pagination";
-
+import { useFilterState } from "@/hooks/useFilterState";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
+import { Skeleton } from "../ui/skeleton";
+import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context/auth";
+import { useFilterContext } from "@/context/filterContext";
+import Image from "next/image";
+import { Switch } from "@/components/ui/switch";
+import { Globe } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 const EventCard = memo(
   ({
     event,
     mapRef,
     onHover,
     onLeave,
+    trackerId,
+    initialIntelScoreData,
+    intelLoading,
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
+    trackerId: string | undefined;
+    initialIntelScoreData: intelScore;
+    intelLoading?: boolean;
   }) => {
+    const { isTentimesUser } = useFilterContext();
     const [mapZoom, setMapZoom] = useState(0);
-
+    const { getFilterValue } = useFilterState();
     useEffect(() => {
       if (mapRef.current) {
-        setMapZoom(mapRef.current.getZoom());
-        mapRef.current.on("zoom", () => {
+        setMapZoom(mapRef.current?.getZoom() || 0);
+        mapRef.current?.on("zoom", () => {
           setMapZoom(mapRef.current?.getZoom() || 0);
         });
       }
@@ -78,7 +96,7 @@ const EventCard = memo(
       e.preventDefault();
       if (mapRef.current && event.basic.eventLocation) {
         const { lat, lon } = getEventLatLong(event);
-        mapRef.current.flyTo({
+        mapRef.current?.flyTo({
           center: [lon, lat],
           zoom: 18,
           duration: 2000,
@@ -87,7 +105,19 @@ const EventCard = memo(
       }
       onHover();
     };
-
+    const type = getFilterValue("type");
+    const intelScoreData = [
+      {
+        name: "Total",
+        value: initialIntelScoreData?.alltrackers_score || 0,
+        fill:
+          type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY"
+            ? "#646BDC"
+            : type === "T_PRODUCT_KEYWORDS"
+            ? "#E99CD4"
+            : "#9B86D4",
+      },
+    ];
     return (
       <Link href={`/internal/event/${event.basic.id}`}>
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
@@ -165,62 +195,88 @@ const EventCard = memo(
               )}
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge
-                    variant="secondary"
-                    className={
-                      "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
-                    }
-                    style={{
-                      color:
-                        eventTypeColors[event.basic.primaryEventType || ""],
-                      backgroundColor: lightenColor(
-                        eventTypeColors[event.basic.primaryEventType || ""],
-                        0.9
-                      ),
-                    }}
-                  >
-                    <span>
-                      {
-                        eventTypeIcons[
-                          event.basic.primaryEventType || "festivals"
-                        ]
-                      }
-                    </span>
-                    <span>{event.basic.primaryEventType}</span>
-                  </Badge>
-                  {event.basic.rating > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize rounded-sm"
-                    >
-                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                      <span>{event.basic.rating}</span>
-                    </Badge>
+                <div className="flex justify-between mb-1">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge
+                        variant="secondary"
+                        className={
+                          "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
+                        }
+                        style={{
+                          color:
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                          backgroundColor: lightenColor(
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                            0.9
+                          ),
+                        }}
+                      >
+                        <span>
+                          {
+                            eventTypeIcons[
+                              event.basic.primaryEventType || "festivals"
+                            ]
+                          }
+                        </span>
+                        <span>{event.basic.primaryEventType}</span>
+                      </Badge>
+                      {event.basic.rating > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                        >
+                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <span>{event.basic.rating}</span>
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <h3 className="font-semibold text-sm line-clamp-2">
+                        {event.basic.name}
+                      </h3>
+                    </div>
+                    <div className="text-xs [color:var(--secondary-text-color)] mb-1">{address}</div>
+                  </div>
+                  {isTentimesUser && (
+                    <>
+                      {trackerId &&
+                        !isEventeli &&
+                        type !== "T_CUSTOM" &&
+                        (intelLoading ? (
+                          <Skeleton className="h-16 w-16 rounded-md" />
+                        ) : (
+                          intelScoreData[0]?.value > 0 && (
+                            <div>
+                              <IntelScore
+                                width="85px"
+                                height="70px"
+                                intelScore={intelScoreData}
+                              />
+                            </div>
+                          )
+                        ))}
+                    </>
                   )}
                 </div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <h3 className="font-semibold text-sm line-clamp-2">
-                    {event.basic.name}
-                  </h3>
-                </div>
-                <div className="text-xs text-gray-600 mb-1">{address}</div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-primary">
-                    {formattedDateRange(
-                      event.basic.startDateTime,
-                      event.basic.endDateTime
-                    )}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-medium text-primary">
+                      {formattedDateRange(
+                        event.basic.startDateTime,
+                        event.basic.endDateTime
+                      )}
+                    </div>
+                    {event.basic.format.toLowerCase() !== "online" && <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs text-primary"
+                      onClick={handleZoomToLocation}
+                    >
+                      <Focus className="w-3 h-3 mr-1" />
+                      Zoom
+                    </Button>}
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 px-2 text-xs text-primary"
-                    onClick={handleZoomToLocation}
-                  >
-                    <Focus className="w-3 h-3 mr-1" />
-                    Zoom
-                  </Button>
                 </div>
               </div>
             </div>
@@ -332,7 +388,7 @@ const UnplannedCard = memo(
                   {event.basic.rating > 0 && (
                     <Badge
                       variant="outline"
-                      className="text-gray-600 capitalize rounded-sm"
+                      className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                     >
                       <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
                       <span>{event.basic.rating}</span>
@@ -344,7 +400,7 @@ const UnplannedCard = memo(
                     {event.basic.name}
                   </h3>
                 </div>
-                <div className="text-xs text-gray-600 mb-1">
+                <div className="text-xs [color:var(--secondary-text-color)] mb-1">
                   {formatAddress(
                     event.basic
                       .eventLocation as unknown as HolidayEventLocation[]
@@ -376,6 +432,7 @@ function EventList({
   onEventHover,
   onEventLeave,
   searchParam,
+  onlineEventCount, // new prop
 }: {
   eventType?: string;
   showEventType: string;
@@ -386,17 +443,21 @@ function EventList({
   onEventHover: (event: Event) => void;
   onEventLeave: () => void;
   searchParam?: string | undefined;
+  onlineEventCount?: number;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [mapCenter, setMapCenter] = useState<
-    { lat: number; lng: number } | undefined
-  >();
-  const [mapRadius, setMapRadius] = useState<number | undefined>();
+  const [mapBounds, setMapBounds] = useState<(number | undefined)[]>();
   const { getTrackerMapEvents } = useTrackerServices();
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState("-score");
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const isOnlyOnlineSelected = searchParams.get("eventFormats") === "online"
+
+  const eventFormats = searchParams.get("eventFormats");
+  const shouldShowOnlineToggle =
+    !!onlineEventCount && !isEventeli
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -410,22 +471,27 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius =
-        Math.max(
-          turf.distance(
-            turf.point([center.lng, center.lat]),
-            turf.point([ne.lng, center.lat]), // East point
-            { units: "kilometers" }
-          ),
-          turf.distance(
-            turf.point([center.lng, center.lat]),
-            turf.point([center.lng, ne.lat]), // North point
-            { units: "kilometers" }
-          )
-        ) * Math.sqrt(2);
+      const boundingBox = [
+        bounds?.getWest(),
+        bounds?.getSouth(),
+        bounds?.getEast(),
+        bounds?.getNorth(),
+      ];
+      // const radius =
+      //   Math.max(
+      //     turf.distance(
+      //       turf.point([center.lng, center.lat]),
+      //       turf.point([ne.lng, center.lat]), // East point
+      //       { units: "kilometers" }
+      //     ),
+      //     turf.distance(
+      //       turf.point([center.lng, center.lat]),
+      //       turf.point([center.lng, ne.lat]), // North point
+      //       { units: "kilometers" }
+      //     )
+      //   ) * Math.sqrt(2);
 
-      setMapCenter({ lat: center.lat, lng: center.lng });
-      setMapRadius(radius);
+      setMapBounds(boundingBox);
       setCurrentPage(1);
     };
 
@@ -459,29 +525,94 @@ function EventList({
     params.set("limit", "20");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
-    if (mapCenter && mapRadius && showEventType != "unAttended") {
+    if (showOnlineOnly || isOnlyOnlineSelected) {
+      params.set("eventFormats", "online");
+      params.delete("viewBound");
+    } else {
+      if (params.get("eventFormats")?.split(",").includes("online")) {
+        const filtered = params.get("eventFormats")!.split(",").filter(v => v !== "online").join(",");
+        if (filtered) {
+          params.set("eventFormats", filtered);
+        } else {
+          params.set("eventFormats", "in_person,hybrid");
+        }
+      } else if (!params.has("eventFormats")) {
+        params.set("eventFormats", "in_person,hybrid");
+      }
+    }
+
+    if (mapBounds && showEventType != "unAttended" && !(showOnlineOnly || isOnlyOnlineSelected)) {
       const viewBound = {
-        boundType: "point",
-        coordinates: {
-          latitude: mapCenter.lat,
-          longitude: mapCenter.lng,
-          radius: mapRadius,
-        },
+        boundType: "box",
+        coordinates: mapBounds,
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       if (!params.get("viewBound"))
         params.set("viewBound", JSON.stringify(viewBound));
+      else {
+        const existingViewBound = JSON.parse(params.get("viewBound") || "{}");
+        if (
+          existingViewBound.boundType === "point" &&
+          mapBounds &&
+          mapBounds[0] !== undefined &&
+          mapBounds[1] !== undefined &&
+          mapBounds[2] !== undefined &&
+          mapBounds[3] !== undefined
+        ) {
+          const point = existingViewBound.coordinates;
+          const radius = point.radius;
+
+          const corners = [
+            [mapBounds[0], mapBounds[1]], // SW
+            [mapBounds[0], mapBounds[3]], // NW
+            [mapBounds[2], mapBounds[1]], // SE
+            [mapBounds[2], mapBounds[3]], // NE
+          ];
+
+          const allPointsInCircle = corners.every(([lon, lat]) => {
+            const distance = turf.distance(
+              turf.point([lon, lat]),
+              turf.point([point.longitude, point.latitude]),
+              { units: "kilometers" }
+            );
+            return distance <= radius;
+          });
+
+          if (allPointsInCircle) {
+            const viewBound = {
+              boundType: "box",
+              coordinates: mapBounds,
+            };
+            params.set("viewBound", JSON.stringify(viewBound));
+          }
+        }
+      }
       params.set("sortBy", sortBy);
+    } else if (showOnlineOnly || isOnlyOnlineSelected) {
+      params.delete("viewBound");
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
+  }, [searchParams, currentPage, showEventType, mapBounds, sortBy, showOnlineOnly, isOnlyOnlineSelected]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
+    queryKey: [
+      "events",
+      filteredParams.toString(),
+      currentPage,
+      sortBy,
+      eventType,
+    ],
     queryFn: async () => {
       if (source === "tracker") {
-        if (mapCenter && mapRadius) {
+        if ((showOnlineOnly || isOnlyOnlineSelected)) {
+          // Don't pass viewBound if online only
+          return getTrackerMapEvents(
+            trackerId ?? "",
+            `${eventType}`,
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&eventFormats=online`
+          );
+        } else if (mapBounds) {
           return getTrackerMapEvents(
             trackerId ?? "",
             `${eventType}`,
@@ -490,15 +621,20 @@ function EventList({
             }&sortBy=${sortBy}`
           );
         } else {
-          return [];
+          return getTrackerMapEvents(
+            trackerId ?? "",
+            `${eventType}`,
+            `stats=list&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+          );
         }
       } else {
-        return eventService.getEventsWithSearchParams(filteredParams.toString());
+        return eventService.getEventsWithSearchParams(
+          filteredParams.toString()
+        );
       }
     },
   });
-  
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -508,6 +644,16 @@ function EventList({
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
+  const {
+    intelScoreData,
+    loading: intelLoading,
+    error: intelError,
+  } = useIntelData(
+    trackerId || "",
+    events?.length > 0 ? events : [],
+    eventType || "",
+    searchParams.get("type")||""
+  );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
 
@@ -647,14 +793,18 @@ function EventList({
       <>
         <div className="p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <div className="hidden md:flex items-center gap-2 my-2">
+            <div className="flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
               </Badge>
               <span className="text-xs font-semibold text-primary">
-                Events Found
+                <div>Events</div>
+                <div className="text-muted-foreground">
+                  within the selected map area
+                </div>
               </span>
             </div>
+
             <div className="flex items-center gap-2 ml-auto">
               <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
               <Button
@@ -667,6 +817,53 @@ function EventList({
               </Button>
             </div>
           </div>
+          {/* Online Only toggle in its own row, styled as a card */}
+          {shouldShowOnlineToggle && (
+            <div className="w-full flex justify-center">
+              <div
+                className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg border transition-colors duration-200 shadow-sm w-full
+                ${showOnlineOnly 
+                  ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/50 dark:border-primary' 
+                  : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700'
+                }`}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className="flex items-center gap-2 cursor-pointer select-none"
+                        tabIndex={0}
+                        aria-label="Show only online events"
+                      >
+                        <Switch
+                          id="online-toggle"
+                          checked={isOnlyOnlineSelected ? true : showOnlineOnly}
+                          onCheckedChange={isOnlyOnlineSelected ? undefined : setShowOnlineOnly}
+                          aria-label="Online Only"
+                          disabled={isOnlyOnlineSelected}
+                        />
+                        <label
+                          htmlFor="online-toggle"
+                          className={`text-sm font-medium transition-colors duration-200 ${
+                            isOnlyOnlineSelected
+                              ? 'text-primary font-semibold opacity-60 cursor-not-allowed dark:text-primary/60'
+                              : showOnlineOnly
+                              ? 'text-primary font-semibold dark:text-primary'
+                              : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          Online Only
+                        </label>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="center">
+                      Show only online events in the list
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          )}
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => {
@@ -682,11 +879,18 @@ function EventList({
               );
             return (
               <EventCard
+                trackerId={trackerId}
                 key={event.basic.id}
                 event={event}
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
                 onLeave={handleEventLeave}
+                intelLoading={intelLoading}
+                initialIntelScoreData={
+                  intelScoreData?.trackerEventsIntelScore?.find(
+                    (item: intelScore) => item?.event === event?.basic?.id
+                  ) || null
+                }
               />
             );
           })}
@@ -739,8 +943,15 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-full md:w-[345px] bg-white md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full bg-background md:rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
+      } ${
+        searchParams?.get("type") !== "T_CUSTOM" &&
+        !isEventeli &&
+        trackerId &&
+        trackerId.length > 0
+          ? "w-full md:w-[420px]"
+          : "w-full md:w-[345px]"
       }`}
     >
       {renderContent()}

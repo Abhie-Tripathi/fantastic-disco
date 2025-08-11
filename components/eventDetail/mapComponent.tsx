@@ -26,7 +26,8 @@ import Link from "next/link";
 import Alerts from "@/components/map/alerts";
 import { Event, EventCount, MapEvents } from "@/types";
 import { useEventsService } from "@/services/eventsService";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useFilterState } from "@/hooks/useFilterState";
 import { circle, point } from "@turf/turf";
 import { LayerProps } from "react-map-gl";
@@ -36,8 +37,8 @@ const MapStyle = {
 };
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/arts.png",
-  community: "/eventType/community.png",
+  "stage-performance": "/eventType/arts.png",
+  "community-group": "/eventType/community.png",
   concert: "/eventType/concert.png",
   conferences: "/eventType/conference.png",
   festival: "/eventType/festival.png",
@@ -139,7 +140,6 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
       );
       return response || [];
     },
-    staleTime: 60 * 1000,
     enabled: currentZoomGroup !== "event",
   });
 

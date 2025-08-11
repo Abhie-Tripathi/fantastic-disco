@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 interface SliderProps{
     width:number;
     color:string;
+    source?:string;
 }
-export default function Slider({ width, color }: SliderProps) {
+export default function Slider({ width, color, source}: SliderProps) {
   const [temp, setTemp] = useState(0);
   
   useEffect(() => {
@@ -13,7 +14,7 @@ export default function Slider({ width, color }: SliderProps) {
     return () => clearTimeout(timeout);
   }, [width]);
   const calculateTranslation = (value: number) => {
-    const maxValue = 30; 
+    const maxValue = source==="template"?30:100; 
     const percentage = Math.min((value / maxValue) * 100, 100);
     return percentage - 100; 
   };

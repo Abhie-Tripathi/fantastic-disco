@@ -5,7 +5,7 @@ import { useTheme } from "@/context";
 import { useEventsService } from "@/services/eventsService";
 import { MapEvents } from "@/types/events";
 import { Event } from "@/types/events/events";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { Map, Marker } from "react-map-gl";
@@ -41,8 +41,8 @@ const EventsMapView: React.FC<MapProps> = ({
   const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
 
   const iconUrls: Record<string, string> = {
-    "performing-arts": "/eventType/arts.png",
-    community: "/eventType/community.png",
+    "stage-performance": "/eventType/arts.png",
+    "community-group": "/eventType/community.png",
     concert: "/eventType/concert.png",
     conferences: "/eventType/conference.png",
     festival: "/eventType/festival.png",
@@ -75,7 +75,7 @@ const EventsMapView: React.FC<MapProps> = ({
         ...(isEventeli
           ? {
               eventTypes:
-                "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences",
+                "community-group,concert,stage-performance,sport,festival,workshops,tradeshows,conferences",
             }
           : { eventTypes: "workshops,tradeshows,conferences" }),
         view: "map",

@@ -8,7 +8,7 @@ interface Props {
 
 const NumberPill = ({ heading, value, width, bg }: Props) => {
   return (
-    <div style={{width : width}} className={`w-[${width}] h-[46px] ${bg !== "none" ? "bg-[var(--primary-foreground)] border" : "bg-[var(--background-secondary-color)]"} border-[var(--border-color)] flex items-center justify-between rounded-[6px] px-4`}>
+    <div style={{width : width}} className={`w-[${width}] h-[46px] ${bg !== "none" ? "bg-[var(--primary-foreground)] border" : "bg-background"} border-[var(--border-color)] flex items-center justify-between rounded-[6px] px-4`}>
       <div className="text-xs font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] max-w-[80%] overflow-hidden text-ellipsis text-nowrap">
         {heading}
       </div>

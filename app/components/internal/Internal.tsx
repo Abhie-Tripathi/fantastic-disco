@@ -405,7 +405,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
         <NullState
           image={coordinateNullState}
           title="You haven't shortlisted any events yet."
-          text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
+          text=" Explore millions of listed events, upload your own, or choose from your bookmarked events to get started."
           buttonText="Search Events"
           buttonUrl={`/internal/search/events`}
         />
@@ -449,7 +449,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
           </div>
 
           <div
-            className={`flex flex-col gap-4 sticky top-[117px] md:top-0  bg-background z-10 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+            className={`flex flex-col gap-4 sticky top-[117px] md:top-0  bg-background z-10 transition-padding duration-200 py-3 pt-4`}
           >
             <div className="block md:hidden">
               <SearchBar selectedData={eventData1[0]} />
@@ -485,7 +485,6 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
               </div>
 
               <div className="flex items-center justify-end gap-3">
-
                 <AddEventModal />
 
                 {/* <ViewSelectDropdown /> */}
@@ -572,6 +571,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                         showMaturity={false}
                         showMatchKeywords={false}
                         showaudienceSpread={false}
+                        totalChecked={[]}
                       />
                     </div>
                   </div>

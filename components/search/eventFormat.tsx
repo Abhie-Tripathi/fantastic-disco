@@ -17,6 +17,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LockClosedSmall } from "geist-icons";
 
 interface FlexibleComponentProps {
   variant?: "accordion" | "popover";
@@ -43,8 +44,9 @@ export default function EventFormatSelector({
   };
 
   const triggerContent = (
-    <span className="flex items-center gap-2">
-      Event Format
+    <span className="flex items-center">
+      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+      <span className="mr-2">Event Format</span>
       {selectedFormats.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedFormats.length}
@@ -92,6 +94,7 @@ export default function EventFormatSelector({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={!enabled}
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
@@ -114,6 +117,7 @@ export default function EventFormatSelector({
     <Accordion type="single" collapsible>
       <AccordionItem value="eventFormat" className="border rounded-md">
         <AccordionTrigger
+          disabled={!enabled}
           className={cn(
             buttonVariants({ variant: "outline" }),
             "no-underline border-none justify-between px-3 py-5 text-base font-normal"

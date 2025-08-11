@@ -18,9 +18,10 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { convertISOToOriginalFormat } from "@/utils/date";
+import { LockClosedSmall } from "geist-icons";
 
 interface FlexibleComponentProps {
-  source?:string;
+  source?: string;
   variant?: "accordion" | "popover";
   filterName?: string;
   disabled?: boolean;
@@ -37,10 +38,13 @@ export default function CategorySelector({
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const categories = morphedData?.categories?.options || [];
-  const selectedCategories = source==="preset"?getLocalFilterValue("presetCategory").split(",")
-  .filter(Boolean):(getLocalFilterValue(filterName as keyof Filters || "categories")
-    ?.split(",")
-    ?.filter(Boolean)) || [];
+  const isEnabled = morphedData.categories.isEnabled;
+  const selectedCategories =
+    source === "preset"
+      ? getLocalFilterValue("presetCategory").split(",").filter(Boolean)
+      : getLocalFilterValue((filterName as keyof Filters) || "categories")
+          ?.split(",")
+          ?.filter(Boolean) || [];
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -48,30 +52,51 @@ export default function CategorySelector({
     return categories?.some((cat: any) => !cat.isEnabled) || false;
   }, [categories]);
 
+  const sortCategoriesSelectedOnTop = useCallback(
+    (cats: any[]) => {
+      if (!cats) return [];
+      return [
+        ...cats.filter((cat) => selectedCategories.includes(cat.slug)),
+        ...cats.filter((cat) => !selectedCategories.includes(cat.slug)),
+      ];
+    },
+    [selectedCategories]
+  );
+
   const filteredCategories = useMemo(() => {
-    if (!searchQuery || !categories) return categories || [];
-    return categories.filter((cat: any) =>
-      cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    if (!searchQuery || !categories) return sortCategoriesSelectedOnTop(categories || []);
+    return sortCategoriesSelectedOnTop(
+      categories.filter((cat: any) =>
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-  }, [categories, searchQuery]);
+  }, [categories, searchQuery, sortCategoriesSelectedOnTop]);
 
   const handleCategoryToggle = useCallback(
     (categorySlug: string) => {
       if (!categorySlug) return;
-      
+
       const newCategories = selectedCategories.includes(categorySlug)
         ? selectedCategories.filter((slug) => slug !== categorySlug)
         : [...selectedCategories, categorySlug];
-      
-      if (maxCategories && !selectedCategories.includes(categorySlug) && newCategories.length > maxCategories) {
+
+      if (
+        maxCategories &&
+        !selectedCategories.includes(categorySlug) &&
+        newCategories.length > maxCategories
+      ) {
         return;
       }
-      
-      const filterValue = newCategories.length > 0 ? newCategories.join(",") : "";
-      if(source==="preset"){
-        setLocalFilter("presetCategory", newCategories.join(","))
-      }else
-      setLocalFilter(filterName as keyof Filters || "categories", filterValue);
+
+      const filterValue =
+        newCategories.length > 0 ? newCategories.join(",") : "";
+      if (source === "preset") {
+        setLocalFilter("presetCategory", newCategories.join(","));
+      } else
+        setLocalFilter(
+          (filterName as keyof Filters) || "categories",
+          filterValue
+        );
     },
     [selectedCategories, setLocalFilter, filterName, maxCategories]
   );
@@ -79,12 +104,16 @@ export default function CategorySelector({
   const handleSelectAll = useCallback(
     (isSelected: boolean) => {
       const enabledCategories = categories.filter((cat: any) => cat.isEnabled);
-      if (maxCategories && isSelected && enabledCategories.length > maxCategories) {
+      if (
+        maxCategories &&
+        isSelected &&
+        enabledCategories.length > maxCategories
+      ) {
         return;
       }
-      
+
       setLocalFilter(
-        filterName as keyof Filters || "categories",
+        (filterName as keyof Filters) || "categories",
         isSelected
           ? enabledCategories
               .slice(0, maxCategories || enabledCategories.length)
@@ -106,12 +135,17 @@ export default function CategorySelector({
 
   const renderCategories = useCallback(() => {
     if (!categories) return null;
-    
+
     const columnCount = 3;
+    const sortedCategories = sortCategoriesSelectedOnTop(categories);
     const allCategories = [
-      source!=="preset" &&
-      { id: "all", name: "Select All", slug: "all", isEnabled: true },
-      ...categories,
+      source !== "preset" && {
+        id: "all",
+        name: "Select All",
+        slug: "all",
+        isEnabled: true,
+      },
+      ...sortedCategories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
 
@@ -148,7 +182,9 @@ export default function CategorySelector({
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all") ||
                       disabled ||
-                      (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
+                      (maxCategories &&
+                        !selectedCategories.includes(category.slug) &&
+                        selectedCategories.length >= maxCategories)
                     }
                   />
                   <label
@@ -156,7 +192,9 @@ export default function CategorySelector({
                     className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all") ||
-                      (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
+                      (maxCategories &&
+                        !selectedCategories.includes(category.slug) &&
+                        selectedCategories.length >= maxCategories)
                         ? "opacity-50"
                         : ""
                     }`}
@@ -188,6 +226,7 @@ export default function CategorySelector({
 
   const triggerContent = (
     <div className="flex items-center">
+      {!isEnabled && <LockClosedSmall color="var(--secondary-text-color)" />}
       <span className="mr-2">Category</span>
       {selectedCategories.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
@@ -206,16 +245,13 @@ export default function CategorySelector({
             role="combobox"
             aria-expanded={isOpen}
             className="w-full justify-between px-3 py-5 text-base font-normal"
-            disabled={disabled}
+            disabled={!isEnabled}
           >
             <span className="flex items-center gap-2">{triggerContent}</span>
             <ChevronDown className="h-4 w-4 shrink-0" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="p-0 w-full"
-          align="start"
-        >
+        <PopoverContent className="p-0 w-full" align="start">
           <div className="p-4">{renderCategories()}</div>
         </PopoverContent>
       </Popover>
@@ -230,7 +266,7 @@ export default function CategorySelector({
           role="combobox"
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
-          disabled={disabled}
+          disabled={!isEnabled}
         >
           <span className="flex items-center gap-2">{triggerContent}</span>
           <ChevronDown className="h-4 w-4 shrink-0" />
@@ -241,8 +277,8 @@ export default function CategorySelector({
         align="start"
       >
         <Command>
-          <CommandInput 
-            placeholder="Search categories..." 
+          <CommandInput
+            placeholder="Search categories..."
             value={searchQuery}
             onValueChange={setSearchQuery}
             className="border-none focus:ring-0"
@@ -275,9 +311,11 @@ export default function CategorySelector({
                 <Checkbox
                   checked={Boolean(selectedCategories.includes(category.slug))}
                   disabled={Boolean(
-                    !category.isEnabled || 
-                    disabled || 
-                    (maxCategories && !selectedCategories.includes(category.slug) && selectedCategories.length >= maxCategories)
+                    !category.isEnabled ||
+                      disabled ||
+                      (maxCategories &&
+                        !selectedCategories.includes(category.slug) &&
+                        selectedCategories.length >= maxCategories)
                   )}
                   className="rounded-none"
                 />

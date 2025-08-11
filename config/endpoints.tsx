@@ -8,6 +8,9 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
+  public:{
+    events:`${BASE_URL}/public/events`
+  },
 
   auth: {
     me: `${BASE_URL}/me`,
@@ -33,6 +36,7 @@ export const endpoints = {
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
     recentSearch: `${BASE_URL}/me/recent-searches`,
+    getIntelScore: `${BASE_URL}/events`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -98,6 +102,7 @@ export const endpoints = {
   membership: {
     getMembership: `${BASE_URL}/me/account/configuration/membership`,
     updateMembership: `${BASE_URL}/me/account/membership`,
+    cancelMembership: `${BASE_URL}/me/account/membership/cancel`,
   },
   prospect: {
     users: {

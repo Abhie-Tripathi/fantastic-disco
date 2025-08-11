@@ -1,8 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { Badge } from "../ui/badge";
 import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
+import { useEffect } from "react";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
@@ -17,12 +20,24 @@ const EventCount = ({ view }: { view: string }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
+    enabled: (isEventeli && !params.get("eventIds"))
+      ? !!(
+          isEventeli &&
+          (searchParams.get("locationIds") || searchParams.get("viewBound"))
+        )
+      : true,
   });
 
+  useEffect(() => {
+    if ((data as any)?.count == 0) {
+      GAEvent("", "Research", "Filter Applied", "No Event Found");
+    }
+  }, [searchParamsString]);
+
   const label: Record<string, string> = {
-    events: "Events Found",
-    people: "People Found",
-    companies: "Companies Found",
+    events: "Events",
+    people: "People",
+    companies: "Companies",
   };
 
   if (error) {
@@ -46,9 +61,9 @@ const EventCount = ({ view }: { view: string }) => {
           }).format((data as any)?.count || 0)}
         </Badge>
       )}
-      <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
+      {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
         {label[view]}
-      </p>
+      </p> */}
     </div>
   );
 };

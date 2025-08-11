@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
@@ -17,32 +17,36 @@ import {
   LineChart,
   GridMasonry,
   Wrench,
+  ArrowUpRight,
 } from "geist-icons";
 import { Coordinate, Outreach } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SheetClose } from "@/components/ui/sheet";
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { ArrowUpRightIcon, LogOut, MessageCircleMore, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
 import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { signOut } = useAuthContext();
+  const { signOut, membershipData } = useAuthContext();
 
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search",
-      href: "/internal/search/events",
-      icon: MagnifyingGlass,
-    },
-    {
       name: "Tracker",
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
+    },
+    {
+      name: "Search",
+      href: "/internal/search/events",
+      icon: MagnifyingGlass,
     },
     { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
@@ -77,6 +81,19 @@ const MobileSidebar = () => {
     },
   ];
 
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Mobile Sidebar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center p-4 border-b">
@@ -88,6 +105,23 @@ const MobileSidebar = () => {
           height={24}
           style={theme === "dark" ? { filter: "invert(100%)" } : {}}
         />
+        {membershipData && membershipData.membership !== MembershipPlan.Freemium && (
+          <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+            <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+              {MembershipPlan[membershipData?.membership || 0]}
+            </span>
+          </div>
+        )}
+        {membershipData && membershipData.membership === MembershipPlan.Freemium && (
+          <Button
+          variant="outline"
+          size="sm"
+          className="ml-2"
+          onClick={handleUpgradeClick}
+        >
+          Upgrade
+        </Button>
+        )}
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
@@ -252,6 +286,18 @@ const MobileSidebar = () => {
           <Moon className="h-5 w-5  transition-all" />
         )}
         <span className="sr-only">Toggle theme</span>
+      </Button>
+      <Button
+        className="ml-3 mb-3"
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          window.open("https://whr.canny.io/feature-request", "_blank");
+          GAEvent("", "Feature Request", "Mobile Sidebar", `${isEventeli ? "geo" : "gtm"} | feature_request`);
+        }}
+      >
+        <MessageCircleMore className="h-5 w-5  transition-all" />
+        <span className="sr-only">Feature Request</span>
       </Button>
       <span className="text-xs text-muted-foreground px-4 mb-3">
         Version 1.0.0

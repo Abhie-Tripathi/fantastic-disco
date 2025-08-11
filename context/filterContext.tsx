@@ -16,11 +16,13 @@ import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { endOfMonth } from "date-fns";
+import { endOfMonth, format } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
 import { useConfigurationService } from "@/services/configurationService";
 import { TrackerAIResponse } from "@/types/trackers";
+import recentSearchService from "@/services/recentSearchService";
+
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -110,9 +112,9 @@ export interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
   eventType?: string;
-   //Preset Filters
-   presetCountry?: string;
-   presetCategory?: string;
+  //Preset Filters
+  presetCountry?: string;
+  presetCategory?: string;
   // Coordinate Filters
   eventId?: string;
   type?: string;
@@ -137,6 +139,7 @@ export interface Filters {
   filter?: string;
   compare_from?: string;
   compare_to?: string;
+  upcomingEvents?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -186,32 +189,44 @@ type FilterContextType = {
     newKey: keyof Filters,
     newValue: string
   ) => void;
-  enabledFilters: EventFilterData | null;
-  showFetchedData:any;
-  setShowFetchedData:(val:boolean) => void;
+  enabledFilters: {filter: EventFilterData} | null;
+  showFetchedData: any;
+  setShowFetchedData: (val: boolean) => void;
+  isTentimesUser: boolean;
+  filterEmptyValues: (filters: Filters) => Filters;
 };
-
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+useEffect(() => {
+      const userData = window?.localStorage?.getItem("user");
+      if (userData)
+      setUser(JSON.parse(userData))
+  }, []);
+const showIntel=["8ff71105-9920-4939-954f-d1ffdedc2353","dc406cc7-0798-4765-aa82-d0bfe90b4d1f", "0dfa64aa-20d2-414c-a1cb-c6466516a862","af8d2900-5ab2-47dd-abea-e3046786b47b","e45e37da-1b05-421e-9147-ead4826c4dae","ab1d45c5-061f-495c-bdb2-053ae35aaab7","f534d5da-b12a-452a-bed3-d1279deada1c","1a3302dc-6fe6-47bb-8a98-0e5f479bc7b0","e29e0189-cd80-4461-a1ec-ddaf599d4eea","06e760f7-ebd3-499b-8d32-716ca0e6619d","a6995a90-d54e-4fcf-bad2-1ed910fbcb9e","18ae0837-2661-40b0-853b-58644a497a57","790bd639-0cfc-49b8-bad4-6a3a3185b8f4"];
+const isTentimesUser = useMemo(() => {
+    
+    return showIntel.includes(user?.id);
+  }, [user]);
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
-  const [suggestion , setSuggestion] = useState<number>(0);
+  const [suggestion, setSuggestion] = useState<number>(0);
   const [localFilters, setLocalFilters] = useState<Filters>({});
   const eventService = useEventsService();
   const [enabledFilters, setEnabledFilters] = useState<any>(null);
   const pathname = usePathname();
   const getCompanySuggestion = () => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {};
     }
-  
+
     try {
       const item = localStorage.getItem("companySuggestion");
       return item ? JSON.parse(item) : {};
@@ -226,12 +241,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       Object.entries(filters).filter(([_, value]) => value !== "")
     ) as Filters;
   }, []);
-    const [loadingState, setLoadingState] = useState({
-      isKeywordsLoading:  aiStatus?.keywordData?.status === 1 || false,
-      isCompetitorsLoading: aiStatus?.competitorData?.status===1 || false,
-      isPeopleLoading: aiStatus?.companyData?.status===1 || false,
-    });
-    const [templateView, setTemplateView] = useState(false);
+  const [loadingState, setLoadingState] = useState({
+    isKeywordsLoading: aiStatus?.keywordData?.status === 1 || false,
+    isCompetitorsLoading: aiStatus?.competitorData?.status === 1 || false,
+    isPeopleLoading: aiStatus?.companyData?.status === 1 || false,
+  });
+  const [templateView, setTemplateView] = useState(false);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
       const params = {
@@ -244,12 +259,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         !params.active_lte &&
         !params.eventIds
       ) {
-        params.active_gte = startOfMonth(new Date())
-          .toISOString()
-          .split("T")[0];
-        params.active_lte = endOfMonth(addMonths(new Date(), 3))
-          .toISOString()
-          .split("T")[0];
+        params.active_gte = format(startOfMonth(new Date()), "yyyy-MM-dd");
+        params.active_lte = format(
+          endOfMonth(addMonths(new Date(), 2)),
+          "yyyy-MM-dd"
+        );
       }
 
       setLocalFilters(filterEmptyValues(params));
@@ -306,8 +320,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
-          console.log(value);
-
           toast({
             title: "Error",
             description: "At least one filter must be selected",
@@ -384,7 +396,33 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         const currentPathname = window.location.pathname;
-        router.push(`${currentPathname}?${params.toString()}`, {
+        const searchString = params.toString();
+
+        // Save to recent searches
+        const searchEvent = {
+          date: new Date().toISOString(),
+          fullPath: `${currentPathname}?${searchString}`,
+          path: currentPathname,
+          params: Object.fromEntries(params.entries()),
+        };
+
+        const isTrends = currentPathname.includes("/internal/trends");
+
+        if (isTrends) {
+          recentSearchService.addToTrendsHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        } else {
+          recentSearchService.addToSearchHistory(
+            searchString,
+            searchEvent,
+            filteredFilters
+          );
+        }
+
+        router.push(`${currentPathname}?${searchString}`, {
           scroll: false,
         });
         return filteredFilters;
@@ -396,13 +434,31 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {
       setLocalFilters((prev) => {
+        if (
+          enabledFilters?.filter?.branded &&
+          ((filters.onlyBranded === "" &&
+            !filters.onlySeries &&
+            !prev.onlySeries) ||
+          (filters.onlySeries === "" &&
+            !filters.onlyBranded &&
+            !prev.onlyBranded) ||
+          (filters.onlyBranded === "" && filters.onlySeries === ""))
+        ) {
+          toast({
+            title: "Error",
+            description: "At least one of Branded or Series must be selected",
+            variant: "destructive",
+          });
+          return prev;
+        }
+
         return filterEmptyValues({
           ...prev,
           ...filters,
         });
       });
     },
-    [filterEmptyValues]
+    [filterEmptyValues, enabledFilters]
   );
 
   const deleteMultipleLocalFilters = useCallback(
@@ -438,7 +494,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
-      suggestion, 
+      suggestion,
       setSuggestion,
       showFetchedData,
       setShowFetchedData,
@@ -457,8 +513,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
+      isTentimesUser,
+      filterEmptyValues,
     }),
     [
+      isTentimesUser,
       suggestion,
       showFetchedData,
       templateView,
@@ -473,6 +532,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteMultipleLocalFilters,
       replaceLocalFilter,
       searchParams,
+      filterEmptyValues,
     ]
   );
 

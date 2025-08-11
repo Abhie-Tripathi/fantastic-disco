@@ -8,14 +8,20 @@ interface EventTableHeaderProps {
   show: Show[];
   type?: string;
   view?: string;
-  localFilters: Filters;
+  localFilters?: Filters;
+  locationIds?: string[]
+  trackerMaturity?: string[];
+  source?:string;
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   show,
   type,
   view,
+  locationIds,
   localFilters,
+  trackerMaturity,
+  source
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -32,6 +38,10 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+
+  const showHolidayScore =
+    (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
+    (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds?.length == 1);
 
   return (
     <TableHeader>
@@ -50,6 +60,12 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Venue</div>
         </TableHead>
+       {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Business Score</div>
+        </TableHead>}
+        {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Social Score</div>
+        </TableHead>}
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">City</div>
         </TableHead>
@@ -66,7 +82,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
-        {view !== "bookmarked" && (
+        {
           <>
             {show.includes(Show.estimatedExhibitors) && (
               <TableHead className="min-w-[132px] h-10">
@@ -113,7 +129,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
 
-            {maturity && (
+            {(maturity || trackerMaturity) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Maturity</div>
               </TableHead>
@@ -152,28 +168,38 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             {audienceSpread.length > 0 && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
-                  Audience Spread
+                  Audience Country
                 </div>
               </TableHead>
             )}
           </>
-        )}
+        }
+        {(type === "T_AUDIENCE_DEPT_PROFILE" && view!=="bookmarked") &&
+             <TableHead
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
+                style={{ zIndex: 0 }}
+              >
+                <div className="font-medium text-foreground text-center">
+                  Matched
+                </div>
+              </TableHead>}
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
+          type !== "T_EVENT_PARTICIPATION" &&
+          type !== "T_AUDIENCE_DEPT_PROFILE" &&
           view !== "bookmarked" && (
             <>
               <TableHead
-                className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} z-40 h-12 bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">
                   Matched
                 </div>
               </TableHead>
-
               <TableHead
-                className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">

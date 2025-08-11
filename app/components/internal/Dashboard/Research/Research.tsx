@@ -17,6 +17,7 @@ import { useLocationService } from '@/services/locationService';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { isEventeli } from '@/config';
+import recentSearchService from '@/services/recentSearchService';
 
 interface Props {
     theme: string | null
@@ -26,7 +27,7 @@ const Research = ({ theme }: Props) => {
     const MapContainer = React.lazy(() => import('./MapContainer'));
 
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-    const { getLocalFilterValue, localFilters } = useFilterContext();
+    const { getLocalFilterValue, localFilters, filterEmptyValues } = useFilterContext();
     const { getLocationDetails } = useLocationService()
     const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610 })
     const [locationName, setLocationName] = useState<string>("")
@@ -67,12 +68,26 @@ const Research = ({ theme }: Props) => {
                 params.set(key, value);
             }
         });
-        console.log('params', params);
+
+        const searchEvent = {
+            date: new Date().toISOString(),
+            fullPath: `/internal/search/events?${params.toString()}`,
+            path: "/internal/search/events",
+            params: Object.fromEntries(params.entries()),
+          };
+
+        const filteredFilters = filterEmptyValues(localFilters);
+
+        recentSearchService.addToSearchHistory(
+            params.toString(),
+            searchEvent,
+            filteredFilters
+          );
         router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
     };
 
     return (
-        <div className={`w-full h-auto bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden gap-[40px]`}
+        <div className={`w-full h-auto bg-cover bg-center border border-[#E6E6F9] dark:border-[#292929] rounded-xl flex items-end overflow-hidden gap-[40px]`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
             <div className={`m-5 gap-5 w-[60%] max-[1100px]:w-full flex flex-col`}>
                 <div className={`flex flex-col`}>
@@ -112,11 +127,13 @@ const Research = ({ theme }: Props) => {
 
                 </div>
             </div>
-            <div className="w-[260px] mb-[-40px] max-[1100px]:hidden">
+            {localFilters.locationIds !== undefined ? <div className="w-[260px] mb-[-40px] max-[1100px]:hidden">
                 <Suspense fallback={<div>Loading...</div>}>
                     <MapContainer searchHandler={searchHandler} location={locationName} theme={theme} latLang={latLang} />
                 </Suspense>
-            </div>
+            </div>    
+        : <Button onClick={searchHandler} className='mb-6 flex gap-1 items-center' size="sm">Explore Events <MoveRight width={12} /></Button>     
+        }
         </div>
     )
 }

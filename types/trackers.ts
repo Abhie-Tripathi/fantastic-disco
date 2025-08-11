@@ -90,6 +90,24 @@ export interface Tracker {
     audienceSpread?: any;
     designation?: any;
 }
+export interface ExportContent {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  progress: number;
+  createdAt: string;
+  createdBy: string;
+  totalRecords: number;
+  processedRecords: number;
+  downloadUrl?: string;
+  user?: {
+    firstname: string;
+    lastname: string;
+  };
+  exportOf?: string;
+}
+
 export interface PresetData{
   id:string;
   name:string;
@@ -137,9 +155,24 @@ export interface PresetData{
         entityId: string | null;
       accessLevel: string;
     }
-
+    export interface PublicEvents {
+  searchByEntity?: string;
+  view?: string;
+  includeKeywords?: string;
+  excludeKeywords?: string;
+  userName?: string;
+  userOrgWebsite?: string;
+  active_lte?: string;
+  active_gte?: string;
+  createdAt?: string;
+  orgName?: string;
+  orgWebsite?: string;
+  limit?: string;
+  offset?: string;
+  trackerEventStatus?: string; 
+}
     export interface AllTrackerTypes{
-      filterValue: FilterValue;
+      filterValues: FilterValue;
       id: string;
       name:string;
       type:string
@@ -187,3 +220,21 @@ export interface PresetData{
         name: string;
         data: string[][];
     }
+
+    export interface intelScore {
+      alltrackers: number;
+      alltrackers_score: number;
+      event: string;
+      people?: number;
+      people_score?: number;
+      prospect?: number;
+      prospect_score?: number;
+      purpose_score?: number;
+      purpose?: number;
+    }
+
+    export interface IntelScoreResponse {
+  intelScore: {
+    [eventId: string]: intelScore;
+  };
+}

@@ -1,59 +1,96 @@
-"use client"
+"use client";
 
-import { ActionPopover } from "@/app/components/Table/ActionPopover"
-import NullState from "@/app/components/trackers/nullState"
-import Loading from "@/app/components/UI/Loading"
-import ZeroState from "@/app/components/zerostate"
-import { Badge } from "@/components/ui/badge"
-import { isEventeli } from "@/config"
-import { groupedEventTypes } from "@/constants"
-import { alertIcons, eventTypeColors, eventTypeIcons, getAlertLevelBorderColor } from "@/constants/eventTypes"
-import { useTrackerContext } from "@/context/tracker"
-import { useEvents } from "@/hooks/useEvents"
-import { useFilterState } from "@/hooks/useFilterState"
-import { useTrackerEvents } from "@/hooks/useTrackerEvents"
-import { cn, lightenColor } from "@/lib/utils"
-import TrackerNullState from "@/public/trackerNullState.svg"
-import type { ApiError } from "@/types/api"
-import { Show } from "@/types/events/dto/event-query.dto"
-import type { Event, HolidayEventLocation } from "@/types/events/events"
-import { formattedDateRange } from "@/utils/date"
-import { formatEstimatedSpend } from "@/utils/formater"
-import { formatLocationParts } from "@/utils/locationFormat"
-import * as Flags from "country-flag-icons/react/3x2"
-import { format } from "date-fns"
-import { Radio, Star, TicketPercent } from "lucide-react"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { PaginationComponent } from "../pagination"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
-import { useIsMobile } from "@/hooks/useMediaQuery"
-
+import { ActionPopover } from "@/app/components/Table/ActionPopover";
+import BulkActionPopover from "@/app/components/Table/BulkActionPopover";
+import NullState from "@/app/components/trackers/nullState";
+import Loading from "@/app/components/UI/Loading";
+import ZeroState from "@/app/components/zerostate";
+import { Badge } from "@/components/ui/badge";
+import { isEventeli } from "@/config";
+import { groupedEventTypes } from "@/constants";
+import {
+  alertIcons,
+  eventTypeColors,
+  eventTypeIcons,
+  getAlertLevelBorderColor,
+} from "@/constants/eventTypes";
+import { useTrackerContext } from "@/context/tracker";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { useEvents } from "@/hooks/useEvents";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useIntent } from "@/hooks/useIntent";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
+import { cn, lightenColor } from "@/lib/utils";
+import TrackerNullState from "@/public/trackerNullState.svg";
+import { useTrackerServices } from "@/services/trackerServices";
+import trackerNullState from "@/public/trackerNullState.svg";
+import type { ApiError } from "@/types/api";
+import { Show } from "@/types/events/dto/event-query.dto";
+import type { Event, HolidayEventLocation } from "@/types/events/events";
+import { formattedDateRange } from "@/utils/date";
+import { formatEstimatedSpend } from "@/utils/formater";
+import { formatLocationParts } from "@/utils/locationFormat";
+import { CheckedState } from "@radix-ui/react-checkbox";
+import * as Flags from "country-flag-icons/react/3x2";
+import { format } from "date-fns";
+import { Radio, Star, TicketPercent } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { PaginationComponent } from "../pagination";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import IntelScore from "@/app/components/Table/IntelScore";
+import { useIntelData } from "@/hooks/useIntelData";
+import { intelScore } from "@/types/trackers";
+import { Skeleton } from "../ui/skeleton";
+import { useAuthContext } from "@/context/auth";
+import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { useTransition } from "@/context/transition";
+import { useBulkActions } from "@/hooks/useBulkAction";
+import { useFilterContext } from "@/context/filterContext";
+import MobileEventCard from "./mobile-card";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 interface CircularProgressProps {
-  value: number | null
-  label: string
+  value: number | null;
+  label: string;
 }
 interface rankTag {
-  rank: number
-  type: string
-  name: string
+  rank: number;
+  type: string;
+  name: string;
 }
 
-const CircularProgress: React.FC<CircularProgressProps> = ({ value = 0, label }) => {
-  const radius = 22
-  const circumference = 2 * Math.PI * radius
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  value = 0,
+  label,
+}) => {
+  const radius = 22;
+  const circumference = 2 * Math.PI * radius;
 
   const getColorByValue = (value: number | null): string => {
-    if (value == null) return "text-[#398e4a]"
-    if (value <= 25) return "text-[#398e4a]"
-    if (value <= 50) return "text-[#FFD70A]"
-    if (value <= 75) return "text-[#FF990A]"
-    return "text-[#DA2F35]"
-  }
+    if (value == null) return "text-[#398e4a]";
+    if (value <= 25) return "text-[#398e4a]";
+    if (value <= 50) return "text-[#FFD70A]";
+    if (value <= 75) return "text-[#FF990A]";
+    return "text-[#DA2F35]";
+  };
 
-  const className = getColorByValue(value)
+  const className = getColorByValue(value);
 
   return (
     <div className="text-center">
@@ -72,7 +109,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value = 0, label })
             className={className}
             strokeWidth="4"
             strokeDasharray={circumference}
-            strokeDashoffset={circumference - (value ? (value / 100) * circumference : 0)}
+            strokeDashoffset={
+              circumference - (value ? (value / 100) * circumference : 0)
+            }
             strokeLinecap="round"
             stroke="currentColor"
             fill="transparent"
@@ -81,43 +120,141 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value = 0, label })
             cy="26"
           />
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold" aria-hidden="true">
+        <span
+          className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
+          aria-hidden="true"
+        >
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">{label}</p>
+      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
+        {label}
+      </p>
     </div>
-  )
-}
+  );
+};
 
 interface EventListProps {
-  trackerId?: string
-  source?: string
-  view?: string
+  eventType?: string;
+  trackerId?: string;
+  source?: string;
+  view?: string;
+  showCheckBox?: boolean;
+  eventsData?:{
+    count: number,
+    events: Event[]
+  }
+  setShowCheckBox?: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function EventAccordion({ source, trackerId, view }: EventListProps) {
-  const isMobile = useIsMobile()
-  const searchParams = useSearchParams()
-  const { data: trackerData, setIsNewCall } = useTrackerContext()
-  const { getFilterValue, setMultipleFilters } = useFilterState()
-  const showMaturity = !!getFilterValue("maturity")
-  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean)
-  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean)
-  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean)
-  const showMatchKeywords = includeKeywords.length + excludeKeywords.length >= 5
-  const query = Object.fromEntries(searchParams.entries())
-  delete query.show
-  const [updatedEvents, setUpdatedEvents] = useState<Event[]>()
-  const [interest, setInterest] = useState()
-  const [eventId, setEventId] = useState()
-  let events, totalEvents, isLoading, error
-  const { data } = useTrackerContext()
-  if (source === "tracker") {
-    ;({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view))
-  } else {
-    ;({ events, totalEvents, isLoading, error } = useEvents.list(query))
+export default function EventAccordion({
+  source,
+  eventType,
+  trackerId,
+  view,
+  showCheckBox,
+  setShowCheckBox,
+  eventsData
+}: EventListProps) {
+  const pathName = usePathname();
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [totalChecked, setTotalChecked] = useState<string[]>([]);
+  const [action, setAction] = useState<
+    { label: string; status: string } | undefined
+  >({ status: "", label: "None" });
+  const { toast } = useToast();
+  const { inTransition } = useTransition();
+  type InterestKey = string;
+
+  type InterestState = {
+    [key in InterestKey]?: string;
+  };
+
+  const [selectedInterestMap, setSelectedInterestMap] = useState<
+    Map<string, InterestState>
+  >(new Map());
+
+  const {
+  interestConfiguration,
+  isLoading: isConfigLoading,
+  error: isConfigError,
+} = source === "public"
+  ? { interestConfiguration: null, isLoading: false, error: null }
+  : useConfiguration.interest();
+  const { createUserEventInterest, isLoading: isSubmitting } = 
+  source === "public"
+    ? { createUserEventInterest: () => Promise.resolve(), isLoading: false }
+    : useIntent.createUserEventInterest();
+  const { removeBookmark } = useTrackerServices();
+  const isMobile = useIsMobile();
+  const searchParams = useSearchParams();
+  const { data: trackerData, setIsNewCall } = useTrackerContext();
+  const { getFilterValue, setMultipleFilters } = useFilterState();
+  const showMaturity = !!getFilterValue("maturity");
+  const includeKeywords = getFilterValue("includeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread")
+    .split(",")
+    .filter(Boolean);
+  const showMatchKeywords =
+    includeKeywords.length + excludeKeywords.length >= 5;
+  const query = Object.fromEntries(searchParams.entries());
+  query.view = "list";
+  delete query.show;
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
+  const [interest, setInterest] = useState();
+  // const [interest, setInterest] = useState<Record<string, Interest>>({});
+  const [eventId, setEventId] = useState();
+  let events: Event[] | undefined; 
+    let totalEvents:number | undefined; 
+    let isLoading, error, isFetching;
+  if(source==="public"){
+    totalEvents = eventsData?.count
+    events=eventsData?.events;
   }
+  const { data } = useTrackerContext();
+  const bulkActions = useBulkActions({
+    removeBookmark,
+    createUserEventInterest,
+  });
+  const { executeBulkAction, isLoading: isBulkActionLoading } =
+    source === "public"
+      ? { executeBulkAction: () => Promise.resolve(), isLoading: false }
+      : bulkActions;
+  const sourceModule = pathName.includes("trackers")
+    ? "TRACKER"
+    : pathName === "/internal/search/events"
+    ? "RESEARCH"
+    : "";
+
+  if (source === "tracker") {
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+      query,
+      trackerId,
+      view
+    ));
+  } else if(source !== "tracker" && source !=="public") {
+    ({ events, totalEvents, isLoading, error } = useEvents.list(
+      query,
+      inTransition
+    ));
+  }
+  const {
+  intelScoreData,
+  loading: intelLoading,
+  error: intelError,
+} = useIntelData(
+      trackerId || "",
+      (events && events?.length > 0) ? events : [],
+      query.eventType,
+      query.type
+    );
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -129,134 +266,430 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-  }
-  const showsData: string[] = []
+    economicImpact: "economicImpact",
+  };
+  const showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
     if ((data?.filterValues as any)?.show?.includes(key)) {
-      showsData.push(value)
+      showsData.push(value);
     }
-  })
-  const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10")
-  const currentPage = Math.floor(Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1
-  const totalPages = Math.ceil(totalEvents / itemsPerPage)
+  });
+  const handleBulkSubmit = async () => {
+    // Validate inputs
+    if (!action) {
+      toast({
+        title: "Error",
+        description: "No action selected",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (totalChecked.length === 0) {
+      toast({
+        title: "Error",
+        description: "No events selected",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await executeBulkAction(
+        {
+          action,
+          selectedInterestMap,
+          updatedEvents,
+          totalChecked,
+          sourceModule,
+          trackerId,
+        },
+        {
+          setInterest,
+          setUpdatedEvents: setUpdatedEvents as (
+            value: Event[] | ((prev: Event[]) => Event[])
+          ) => void,
+          setSelectedInterestMap,
+          setShowCheckBox,
+          setTotalChecked,
+          onSuccess: () => {
+            toast({ title: "Success", description: "Bulk action completed" });
+            setSelectedInterestMap(new Map());
+          },
+          onError: (error) =>
+            toast({ title: "Error", description: error.message }),
+        }
+      );
+    } catch (error) {
+      console.error("Bulk action failed:", error);
+      toast({ title: "Error", description: "Failed to complete bulk action" });
+    }
+  };
+  const trackerMaturity = !!data?.filterValues?.maturity;
+  const itemsPerPage = Number.parseInt(getFilterValue("limit") || "10");
+  const currentPage =
+    Math.floor(
+      Number.parseInt(getFilterValue("offset") || "0") / itemsPerPage
+    ) + 1;
+  const totalPages = Math.ceil((totalEvents || 0) / itemsPerPage);
 
   let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
-    .map((show) => Show[show as keyof typeof Show])
+    .map((show) => Show[show as keyof typeof Show]);
   if (source === "tracker") {
-    showValues = showsData.filter(Boolean).map((show) => Show[show as keyof typeof Show])
+    showValues = showsData
+      .filter(Boolean)
+      .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events?.length > 0) {
-      setUpdatedEvents(events)
+    if (events && events?.length > 0) {
+      setUpdatedEvents(events);
     }
-  }, [events])
+  }, [events]);
+  const handleCheckboxChange = (checked: boolean) => {
+    if (checked) {
+      const resultId = events?.map((event) => event.basic.id);
+      if(resultId)
+      setTotalChecked(resultId);
+    } else {
+      setTotalChecked([]);
+    }
+    setIsChecked(checked);
+  };
+  function mapInterestsToInterestIds(
+    interests?: Record<string, { interestId?: string }>
+  ): Record<string, string | undefined> {
+    // Create initial result object with all possible interest keys from actions
+    const result = actions.reduce((acc, action) => {
+      const key = action.status.toLowerCase();
+      acc[key] = undefined;
+      return acc;
+    }, {} as Record<string, string | undefined>);
 
+    if (!interests) return result;
+
+    // Map existing interests to the result
+    Object.keys(interests).forEach((key) => {
+      const normalizedKey = key.toLowerCase();
+      if (normalizedKey in result) {
+        result[normalizedKey] = interests[key]?.interestId;
+      }
+    });
+
+    return result;
+  }
+  function toggleSelection(id: string, event: any) {
+    setTotalChecked((prev) => {
+      if (prev.includes(id)) {
+        // Remove the id
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        // Add the id
+        return [...prev, id];
+      }
+    });
+    setSelectedInterestMap((prev) => {
+      const newMap = new Map(prev);
+
+      if (newMap.has(id)) {
+        newMap.delete(id); // unchecking
+      } else {
+        const interestBooleans = mapInterestsToInterestIds(event.interests);
+        newMap.set(id, interestBooleans); // checking
+      }
+
+      return newMap;
+    });
+  }
+
+  function handleSelectAll(checked: boolean) {
+    const newIds = updatedEvents?.map((event) => event.basic.id) || [];
+
+    if (checked) {
+      setTotalChecked((prev) => [...prev, ...newIds]);
+
+      setSelectedInterestMap((prev) => {
+        const newMap = new Map(prev);
+
+        updatedEvents?.forEach((event) => {
+          const id = event.basic.id;
+          const interestState = mapInterestsToInterestIds(event.interests);
+          newMap.set(id, interestState);
+        });
+
+        return newMap;
+      });
+    } else {
+      setTotalChecked((prev) =>
+        prev.filter((eventId) => !newIds.includes(eventId))
+      );
+
+      setSelectedInterestMap((prev) => {
+        const newMap = new Map(prev);
+        newIds.forEach((id) => newMap.delete(id));
+        return newMap;
+      });
+    }
+  }
+
+  const isAllChecked = useMemo(() => {
+    return (
+      updatedEvents &&
+      updatedEvents.length > 0 &&
+      updatedEvents.every((event) => totalChecked.includes(event.basic.id))
+    );
+  }, [totalChecked, updatedEvents]);
+
+  const actions = [
+    ...(interestConfiguration?.interest || []),
+    ...[{ label: "Bookmark", status: "BOOKMARK" }],
+    ...[{ label: "Un Bookmark", status: "UN BOOKMARK" }],
+    // ...(eventType!=="bookmarked" ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
   useEffect(() => {
-    if (!events) return
+    if (actions.length > 0 && !action) {
+      setAction({ status: "", label: "None" });
+    }
+  }, [actions]);
+  useEffect(() => {
+    if(source!=="public"){
+    if (!events) return;
 
     setUpdatedEvents((prevEvents) => {
-      let newEvents = prevEvents ? [...prevEvents] : [...events]
+      let newEvents = prevEvents ? [...prevEvents] : [...events];
 
-      if (query.eventType === "bookmarked" && interest && "bookmark" in interest) {
-              newEvents = newEvents.filter(
-                (event: Event) => event.basic.id !== eventId
-              );
+      if (
+        query.eventType === "bookmarked" &&
+        interest &&
+        "bookmark" in interest
+      ) {
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
               interests: interest
-                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                ? (
+                    Object.keys(interest) as Array<keyof typeof event.interests>
+                  ).reduce(
                     (acc, key) => {
                       if (event.interests?.[key]) {
-                        delete acc[key]
+                        delete acc[key];
                       } else {
-                        acc[key] = interest[key]
+                        acc[key] = interest[key];
                       }
-                      return acc
+                      return acc;
                     },
-                    { ...event.interests },
+                    { ...event.interests }
                   )
                 : {},
-            }
+            };
           }
-          return event
-        })
+          return event;
+        });
       }
-
-      return newEvents
-    })
-  }, [eventId, interest])
+      return newEvents;
+    });
+  }
+  }, [eventId, interest]);
   const handlePageChange = (page: number) => {
     setMultipleFilters({
       offset: ((page - 1) * itemsPerPage).toString(),
       limit: itemsPerPage.toString(),
-    })
+    });
+  };
+
+  function handleCancel() {
+    setIsChecked(false);
+    setShowCheckBox?.(false);
+    setTotalChecked([]);
   }
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
       limit: newItemsPerPage,
-    })
-  }
+    });
+  };
 
-  if (isLoading) {
-    return <Loading className="h-24 text-primary" />
+  if (isLoading || inTransition) {
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
     if (source === "tracker") {
-      return <NullState image={TrackerNullState} title={(error as ApiError).message} />
-    } else return <ZeroState text={(error as ApiError).message} />
+      return (
+        <ZeroState
+        text={(error as ApiError).message}
+        errorStatusCode={(error as ApiError)?.statusCode}
+      />
+      );
+    } else
+      return error.message == "Location is required" ? (
+        <div className="p-6">
+          <CustomTrackerNullState />
+        </div>
+      ) : (
+        <ZeroState
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
+      );
   }
 
-  if (events.length === 0) {
+  if (
+    searchParams.size === 0 ||
+    (searchParams.size == 1 && searchParams.has("view") && source !== "tracker")
+  ) {
+    return (
+      <div className="p-6">
+        <CustomTrackerNullState />
+      </div>
+    );
+  }
+
+  if (events?.length === 0) {
     if (source === "tracker") {
       if (query.eventType === "bookmarked") {
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
           />
-        )
+        );
       } else
         return (
           <NullState
-            image={TrackerNullState}
+            image={trackerNullState}
             title="We couldn't find any events matching your tracker criteria at the moment."
             text="Try adjusting your filters or checking back later, as new events are added frequently."
             buttonText="Manage Configurations"
             buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
           />
-        )
+        );
     } else
       return (
         <ZeroState text="No events found. Try expanding your preferences by selecting more categories, products, or topics." />
-      )
+      );
   }
+
   return (
-    <div className="flex flex-col h-full px-4 md:px-0">
+    <div className="flex flex-col h-full">
+      <div
+        className="flex items-center justify-between gap-4 pl-4 pb-2"
+        style={{ height: showCheckBox ? "50px" : "auto" }}
+      >
+        <div className="flex items-center gap-2">
+          {showCheckBox && (
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                checked={isAllChecked}
+                onCheckedChange={handleSelectAll}
+              />
+              <div>
+                Select events to perform action
+                <span className="pt-[2px] text-[var(--secondary-text-color)] text-[12px]">
+                  {selectedInterestMap.size > 0 &&
+                    `(${selectedInterestMap.size} Selected)`}
+                </span>
+              </div>
+            </div>
+          )}
+          {showCheckBox && (
+            <div className="flex min-w-[130px]">
+              <BulkActionPopover
+                options={actions}
+                action={action}
+                setAction={setAction}
+              />
+            </div>
+          )}
+        </div>
+        {showCheckBox && (
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              className="w-30 self-center"
+              disabled={isBulkActionLoading || totalChecked.length === 0}
+              onClick={handleBulkSubmit}
+            >
+              {isBulkActionLoading ? <>Processing...</> : "Submit"}
+            </Button>
+            <Button
+              variant={"outline"}
+              type="button"
+              className="w-30 self-center text-destructive"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+      </div>
       <div className="flex-grow overflow-y-auto">
-        <ul className="w-full space-y-6 list-none">
-          {updatedEvents?.map((event: Event) => (
-            <EventListItem
-              isMobile={isMobile}
-              global={view}
-              trackerId={trackerId}
-              view={query.eventType}
-              setEventId={setEventId}
-              setInterest={setInterest}
-              key={event.basic.id}
-              event={event}
-              showValues={showValues}
-              showMaturity={showMaturity}
-              showMatchKeywords={showMatchKeywords}
-              showaudienceSpread={audienceSpread.length > 0 ? true : false}
-            />
-          ))}
+        <ul className="w-full space-y-6 list-none px-4 md:px-0">
+          {updatedEvents?.map((event: Event) => {
+            if (isMobile) {
+              return (
+                <MobileEventCard
+                  isMobile={isMobile}
+                  global={view}
+                  trackerId={trackerId}
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
+                  key={event.basic.id}
+                  event={event}
+                  showValues={showValues}
+                  showMaturity={showMaturity || trackerMaturity}
+                  showMatchKeywords={showMatchKeywords}
+                  showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                  intelLoading={intelLoading}
+                  initialIntelScoreData={
+                    intelScoreData?.trackerEventsIntelScore?.find(
+                      (item: intelScore) => item?.event === event.basic.id
+                    ) || null
+                  }
+                  source={source}
+                />
+              );
+            }
+
+            return (
+              <EventListItem
+                interest={interest}
+                toggleSelection={toggleSelection}
+                totalChecked={totalChecked}
+                isChecked={isChecked}
+                setIsChecked={setIsChecked}
+                setTotalChecked={setTotalChecked}
+                showCheckBox={showCheckBox}
+                itemsPerPage={itemsPerPage}
+                isMobile={isMobile}
+                global={view}
+                trackerId={trackerId}
+                view={query.eventType}
+                setEventId={setEventId}
+                setInterest={setInterest}
+                key={event.basic.id}
+                event={event}
+                showValues={showValues}
+                showMaturity={showMaturity || trackerMaturity}
+                showMatchKeywords={showMatchKeywords}
+                showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                intelLoading={intelLoading}
+                initialIntelScoreData={
+                  intelScoreData?.trackerEventsIntelScore?.find(
+                    (item: intelScore) => item?.event === event.basic.id
+                  ) || null
+                }
+                source={source}
+              />
+            );
+          })}
         </ul>
       </div>
       <div className="sticky bottom-0 bg-background py-3">
@@ -264,16 +697,18 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
           currentPage={currentPage}
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
-          count={totalEvents}
+          count={totalEvents || 0}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
         />
       </div>
     </div>
-  )
+  );
 }
 
 export const EventListItem = ({
+  interest,
+  toggleSelection,
   isMobile,
   global,
   view,
@@ -284,20 +719,42 @@ export const EventListItem = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  showCheckBox,
+  totalChecked,
+  isChecked,
+  setIsChecked,
+  setTotalChecked,
+  itemsPerPage,
   showMaturity,
+  initialIntelScoreData,
+  intelLoading,
+  source
 }: {
-  isMobile: boolean
-  trackerId?: string
-  view?: string
-  setEventId: any
-  setInterest: any
-  event: Event
-  showValues: Show[]
-  showMatchKeywords: boolean
-  showaudienceSpread: boolean
-  showMaturity: boolean
-  global?: string
+  interest?: any;
+  toggleSelection?: (id: string, event: Event) => void;
+  isMobile: boolean;
+  trackerId?: string;
+  view?: string;
+  setEventId: any;
+  setInterest: any;
+  event: Event;
+  showValues: Show[];
+  showMatchKeywords: boolean;
+  showaudienceSpread: boolean;
+  showMaturity: boolean;
+  global?: string;
+  showCheckBox?: boolean;
+  totalChecked: string[];
+  setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
+  isChecked?: boolean;
+  setIsChecked?: React.Dispatch<React.SetStateAction<boolean>>;
+  itemsPerPage?: number;
+  initialIntelScoreData?: intelScore;
+  intelLoading?: boolean;
+  source?:string;
 }) => {
+  const { getFilterValue } = useFilterState();
+ const { isTentimesUser } = useSafeFilterContext();
   const address = event.basic.eventLocation ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
@@ -307,209 +764,317 @@ export const EventListItem = ({
       <span>
         <Radio className="w-4 h-4 mr-1 inline-block" />
         Hybrid&nbsp;-&nbsp;
-        {formatLocationParts(event.basic.eventLocation)}
+        {formatLocationParts(event.basic.eventLocation, true)}
       </span>
     ) : (
-      formatLocationParts(event.basic.eventLocation)
+      formatLocationParts(event.basic.eventLocation, true)
     )
   ) : (
     "Venue to be announced"
-  )
+  );
 
-  const isCancelled = event.basic.status === "cancelled"
-  const isPostponed = event.basic.status === "postponed"
+  const isCancelled = event.basic.status === "cancelled";
+  const isPostponed = event.basic.status === "postponed";
 
   function getOrdinalSuffix(number: number): string {
-    const j = number % 10
-    const k = number % 100
-    if (j === 1 && k !== 11) return "st"
-    if (j === 2 && k !== 12) return "nd"
-    if (j === 3 && k !== 13) return "rd"
-    return "th"
+    const j = number % 10;
+    const k = number % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
   }
 
   function formatExhibitorCount(value: string | number | null): string {
-    if (value === null || value === undefined) return "--"
+    if (value === null || value === undefined) return "--";
 
-    const stringValue = String(value)
-    const values = stringValue.split("-")
+    const stringValue = String(value);
+    const values = stringValue.split("-");
 
     if (values.length === 2 && values[0] === values[1]) {
-      return Number(values[0]).toLocaleString()
+      return Number(values[0]).toLocaleString();
     }
 
-    return stringValue.toLocaleString()
+    return stringValue.toLocaleString();
   }
 
   const getMatchKeywordsColor = (percentage: number | null) => {
-    if (percentage === null) return "text-gray-500"
-    if (percentage > 20) return "text-green-500 bg-[var(--success-background-color)] "
-    if (percentage >= 10 && percentage <= 20) return "text-blue-500 bg-[#eeeaf9]"
-    if (percentage > 0 && percentage < 10) return "text-red-500 bg-[var(--danger-background-color)]"
-    return "text-gray-500"
-  }
+    if (percentage === null) return "text-gray-500";
+    if (percentage > 20)
+      return "text-green-500 bg-[var(--success-background-color)] ";
+    if (percentage >= 10 && percentage <= 20)
+      return "text-blue-500 bg-[#eeeaf9]";
+    if (percentage > 0 && percentage < 10)
+      return "text-red-500 bg-[var(--danger-background-color)]";
+    return "text-gray-500";
+  };
 
   if (event.basic.primaryEventType == "holiday") {
-    return <UnplannedCard event={event} />
+    return <UnplannedCard event={event} />;
   }
+  // const handleCheckboxChange = (checked: CheckedState, id: string) => {
+  //   if (checked) {
+  //     if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+  //     setTotalChecked?.((prev) => [...prev, id]);
+  //   } else {
+  //     if (isChecked) setIsChecked(!isChecked);
+  //     setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+  //   }
+  // };
+  const type = getFilterValue("type");
+  const intelScoreData = [
+    {
+      name: "Total",
+      value: initialIntelScoreData?.alltrackers_score || 0,
+      fill:
+        type === "T_PEOPLE_FINDER" || type === "T_SPEAKER_OPPORTUINTY"
+          ? "#646BDC"
+          : type === "T_PRODUCT_KEYWORDS"
+          ? "#E99CD4"
+          : "#9B86D4",
+    },
+  ];
 
   return (
-    <div className={`bg-background rounded-lg border shadow-sm relative ${global === "global" && "w-[98%]"}`}>
-      <Link href={`/internal/event/${event.basic.id}`} className="block">
-        <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
-          {event.basic.logoUrl ? (
-            <img
-              src={event.basic.logoUrl || "/placeholder.svg"}
-              alt={`${event.basic.name} logo`}
-              className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
-            />
-          ) : event.basic.website ? (
-            <div className="w-16 h-16 md:w-24 md:h-24 relative">
-              <img
-                src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
-                alt={`${event.basic.name} website favicon`}
-                className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none"
-                  e.currentTarget.dataset.error = "true"
-                }}
-              />
-              {/* Fallback that shows when image errors */}
-              <div
-                className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
-                style={{ display: "none" }}
-                ref={(el) => {
-                  if (el) {
-                    const img = el.previousSibling as HTMLImageElement
-                    if (img && img.dataset.error === "true") {
-                      el.style.display = "flex"
-                    }
-                  }
-                }}
-              >
-                <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">{event.basic.name.charAt(0)}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
-              <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">{event.basic.name.charAt(0)}</span>
-            </div>
-          )}
+    <div className="flex gap-4 items-center w-full">
+      {showCheckBox && toggleSelection && (
+        <div className="flex pl-4">
+          <Checkbox
+            checked={totalChecked.includes(event.basic.id)}
+            onCheckedChange={() => toggleSelection(event.basic.id, event)}
+          />
         </div>
-        <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div className="col-span-1 md:col-span-7 flex flex-col justify-between gap-3">
-              <div className="flex justify-between items-start">
-                <h2 className="text-xl md:text-2xl font-semibold ">{event.basic.name}</h2>
-                {isMobile && global !== "global" && (
-                  <div onClick={(e) => e.preventDefault()}>
-                    <ActionPopover
-                      eventId={event.basic.id}
-                      interests={event.interests}
-                      trackerId={trackerId}
-                      setInterest={setInterest}
-                      setEventId={setEventId}
-                      view={view}
-                    />
-                  </div>
-                )}
-              </div>
-              <div>
-                <p className="text-sm capitalize">{address}</p>
-                <div className="flex items-center gap-2">
-                  <p className={cn("text-sm text-gray-600 mt-2", isCancelled || isPostponed ? "line-through" : "")}>
-                    {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
-                  </p>
-                  {isCancelled && (
-                    <Badge variant="outline" className="border-destructive text-destructive mt-2">
-                      Cancelled
-                    </Badge>
-                  )}
-                  {isPostponed && (
-                    <Badge variant="outline" className="border-[#FF990A] text-[#FF990A] mt-2">
-                      Postponed
-                    </Badge>
-                  )}
+      )}
+      <div className={`bg-background rounded-lg border shadow-sm relative w-full ${global === "global" && "ml-5"}`}>
+        <Link href={`/internal/event/${event.basic.id}`} className="block">
+          <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
+            {event.basic.logoUrl ? (
+              <img
+                src={event.basic.logoUrl || "/placeholder.svg"}
+                alt={`${event.basic.name} logo`}
+                className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+              />
+            ) : event.basic.website ? (
+              <div className="w-16 h-16 md:w-24 md:h-24 relative">
+                <img
+                  src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                  alt={`${event.basic.name} website favicon`}
+                  className="w-16 h-16 md:w-24 md:h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.dataset.error = "true";
+                  }}
+                />
+                {/* Fallback that shows when image errors */}
+                <div
+                  className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                  style={{ display: "none" }}
+                  ref={(el) => {
+                    if (el) {
+                      const img = el.previousSibling as HTMLImageElement;
+                      if (img && img.dataset.error === "true") {
+                        el.style.display = "flex";
+                      }
+                    }
+                  }}
+                >
+                  <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
                 </div>
               </div>
-              <div>
-                <div className="flex flex-wrap gap-2">
-                  {event.basic.primaryEventType && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="secondary"
-                            className={
-                              "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
-                            }
-                            style={{
-                              color: eventTypeColors[event.basic.primaryEventType || ""],
-                              backgroundColor: lightenColor(eventTypeColors[event.basic.primaryEventType || ""], 0.9),
-                            }}
-                          >
-                            <span>{eventTypeIcons[event.basic.primaryEventType || "festivals"]}</span>
-                            <span className="capitalize">{event.basic.primaryEventType.toLowerCase()}</span>
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Event Type</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+            ) : (
+              <div className="w-16 h-16 md:w-24 md:h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                <span className="text-[#5055A3] text-lg md:text-2xl font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="pl-[104px] md:pl-[136px] p-4 md:p-6 pr-2 md:pr-3">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="col-span-1 md:col-span-7 flex flex-col gap-4">
+                <div className="flex justify-between items-start">
+                  <h2 className="text-xl md:text-2xl font-semibold ">
+                    {event.basic.name}
+                  </h2>
+                  {(isMobile && global !== "global" && source!=="public") && (
+                    <div onClick={(e) => e.preventDefault()}>
+                      <ActionPopover
+                        eventId={event.basic.id}
+                        interests={event.interests}
+                        trackerId={trackerId}
+                        setInterest={setInterest}
+                        setEventId={setEventId}
+                        view={view}
+                      />
+                    </div>
                   )}
-                  {!(isEventeli && groupedEventTypes.social.includes(event.basic.primaryEventType)) &&
-                    event.basic.categories?.map((tag, index) => (
-                      <TooltipProvider key={index}>
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger>
-                            <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                              {tag.name}
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Category</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  {showValues.includes(Show.rating) && event.basic.rating && event.basic.rating > 0 ? (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                            <span>{event.basic.rating}</span>
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Rating</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ) : (
-                    ""
-                  )}
-                  {showValues.includes(Show.entryType) && event.basic.entryType == "free_and_paid" ? (
-                    <div className="flex items-center gap-2">
+                </div>
+                <div>
+                  <p className="text-sm capitalize">{address}</p>
+                  <div className="flex items-center gap-2">
+                    <p
+                      className={cn(
+                        "text-sm [color:var(--secondary-text-color)] mt-4",
+                        isCancelled || isPostponed ? "line-through" : ""
+                      )}
+                    >
+                      {formattedDateRange(
+                        event.basic.startDateTime,
+                        event.basic.endDateTime
+                      )}
+                    </p>
+                    {isCancelled && (
+                      <Badge
+                        variant="outline"
+                        className="border-destructive text-destructive mt-2"
+                      >
+                        Cancelled
+                      </Badge>
+                    )}
+                    {isPostponed && (
+                      <Badge
+                        variant="outline"
+                        className="border-[#FF990A] text-[#FF990A] mt-2"
+                      >
+                        Postponed
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <div className="flex flex-wrap gap-2">
+                    {event.basic.primaryEventType && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
-                            <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                              <TicketPercent className="w-3 h-3 mr-1" />
-                              <span>Free</span>
+                            <Badge
+                              variant="secondary"
+                              className={
+                                "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                              }
+                              style={{
+                                color:
+                                  eventTypeColors[
+                                    event.basic.primaryEventType || ""
+                                  ],
+                                backgroundColor: lightenColor(
+                                  eventTypeColors[
+                                    event.basic.primaryEventType || ""
+                                  ],
+                                  0.9
+                                ),
+                              }}
+                            >
+                              <span>
+                                {
+                                  eventTypeIcons[
+                                    event.basic.primaryEventType || "festivals"
+                                  ]
+                                }
+                              </span>
+                              <span className="capitalize">
+                                {event.basic.primaryEventType.toLowerCase()}
+                              </span>
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Entry Type</p>
+                            <p>Event Type</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                    )}
+                    {!(
+                      isEventeli &&
+                      groupedEventTypes.social.includes(
+                        event.basic.primaryEventType
+                      )
+                    ) &&
+                      event.basic.categories?.map((tag, index) => (
+                        <TooltipProvider key={index}>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                {tag.name}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Category</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                    {showValues.includes(Show.rating) &&
+                    event.basic.rating &&
+                    event.basic.rating > 0 ? (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                            >
+                              <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                              <span>{event.basic.rating}</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Rating</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      ""
+                    )}
+                    {showValues.includes(Show.entryType) &&
+                    event.basic.entryType == "free_and_paid" ? (
+                      <div className="flex items-center gap-2">
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                <TicketPercent className="w-3 h-3 mr-1" />
+                                <span>Free</span>
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Entry Type</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                <TicketPercent className="w-3 h-3 mr-1" />
+                                <span>Paid</span>
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Entry Type</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    ) : event.basic.entryType == "paid" ? (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
-                            <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
+                            <Badge
+                              variant="outline"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                            >
                               <TicketPercent className="w-3 h-3 mr-1" />
                               <span>Paid</span>
                             </Badge>
@@ -519,436 +1084,549 @@ export const EventListItem = ({
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                    </div>
-                  ) : event.basic.entryType == "paid" ? (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            <TicketPercent className="w-3 h-3 mr-1" />
-                            <span>Paid</span>
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Entry Type</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ) : (
-                    ""
-                  )}
-                </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
 
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {showMaturity && event.advance?.maturity && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            {event.advance?.maturity}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Maturity</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {showValues.includes(Show.frequency) && event.advance?.frequency && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            {event.advance?.frequency}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Frequency</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {showValues.includes(Show.branded) && event.advance?.isBranded && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
-                          >
-                            Branded
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Brand</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {showValues.includes(Show.series) && event.advance?.isSeries && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
-                          >
-                            Series
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Brand</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {!isMobile && showValues.includes(Show.forecasted) && event.advance?.rehostDate && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            Forecasted Next Edition : {format(event.advance?.rehostDate, "MMM yyyy")}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Forecasted Status</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {showValues.includes(Show.rankings) && event.insights?.rankings && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
-                            {(event.insights?.rankings as any).rank}
-                            <sup className="mr-1">{getOrdinalSuffix((event.insights?.rankings as any).rank)}</sup>
-                            {(event.insights?.rankings as any).rankType} Rank
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Event Ranking</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-
-                  {!isMobile && showValues.includes(Show.audienceZone) && event.audience?.audienceZone && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize">
-                            {event.audience.audienceZone} Audience
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Audience Zone</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-
-                  {showValues.includes(Show.rankings) &&
-                  event.insights?.trustScore &&
-                  event.insights?.trustScore > 0 ? (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize">
-                            Trust Score: {event.insights?.trustScore}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Trust Score</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ) : (
-                    ""
-                  )}
-
-                  {showValues.includes(Show.rating) &&
-                    event.insights?.reputationScore && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {showMaturity && event.advance?.maturity && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
                             <Badge
                               variant="outline"
-                              className="text-gray-600 capitalize"
+                              className="[color:var(--secondary-text-color)] capitalize rounded-sm"
                             >
-                              Reputation Score :{" "}
-                              {event.insights?.reputationScore}
+                              {event.advance?.maturity}
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Reputation Score</p>
+                            <p>Maturity</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                    {showValues.includes(Show.frequency) &&
+                      event.advance?.frequency && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                {event.advance?.frequency}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Frequency</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    {showValues.includes(Show.branded) &&
+                      event.advance?.isBranded && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
+                              >
+                                Branded
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Brand</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    {showValues.includes(Show.series) &&
+                      event.advance?.isSeries && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
+                              >
+                                Series
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Brand</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    {!isMobile &&
+                      showValues.includes(Show.forecasted) &&
+                      event.advance?.rehostDate && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                Forecasted Next Edition :{" "}
+                                {format(event.advance?.rehostDate, "MMM yyyy")}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Forecasted Status</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    {showValues.includes(Show.rankings) &&
+                      event.insights?.rankings && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                              >
+                                {(event.insights?.rankings as any).rank}
+                                <sup className="mr-1">
+                                  {getOrdinalSuffix(
+                                    (event.insights?.rankings as any).rank
+                                  )}
+                                </sup>
+                                {(event.insights?.rankings as any).rankType}{" "}
+                                Rank
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Event Ranking</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+
+                    {!isMobile &&
+                      showValues.includes(Show.audienceZone) &&
+                      event.audience?.audienceZone && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize"
+                              >
+                                {event.audience.audienceZone} Audience
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Audience Zone</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+
+                    {showValues.includes(Show.rankings) &&
+                    event.insights?.trustScore &&
+                    event.insights?.trustScore > 0 ? (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="[color:var(--secondary-text-color)] capitalize"
+                            >
+                              Trust Score: {event.insights?.trustScore}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Trust Score</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      ""
+                    )}
+
+                    {showValues.includes(Show.rating) &&
+                      event.insights?.reputationScore && (
+                        <TooltipProvider>
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <Badge
+                                variant="outline"
+                                className="[color:var(--secondary-text-color)] capitalize"
+                              >
+                                Reputation Score :{" "}
+                                {event.insights?.reputationScore}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                              <p>Reputation Score</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+
+                    {showMatchKeywords && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm"
+                            >
+                              Match Keyword :{" "}
+                              {event.basic.matchedKeywords?.join(" | ")}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Matched Keywords</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     )}
 
-                  {showMatchKeywords && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
-                          >
-                            Match Keyword : {event.basic.matchedKeywords?.join(" | ")}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Matched Keywords</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+                    {showMatchKeywords && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm",
+                                getMatchKeywordsColor(
+                                  event.basic.matchedKeywordsPercentage
+                                )
+                              )}
+                            >
+                              {(() => {
+                                const percentage =
+                                  event.basic.matchedKeywordsPercentage ?? null;
+                                if (percentage === null) return "-";
+                                if (percentage > 20) return <span>High</span>;
+                                if (percentage >= 10 && percentage <= 20)
+                                  return <span>Medium</span>;
+                                if (percentage > 0 && percentage < 10)
+                                  return <span>Low</span>;
+                                return "-";
+                              })()}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Score</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
 
-                  {showMatchKeywords && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              "flex items-center gap-2 text-gray-600 capitalize rounded-sm",
-                              getMatchKeywordsColor(event.basic.matchedKeywordsPercentage),
-                            )}
-                          >
-                            {(() => {
-                              const percentage = event.basic.matchedKeywordsPercentage ?? null
-                              if (percentage === null) return "-"
-                              if (percentage > 20) return <span>High</span>
-                              if (percentage >= 10 && percentage <= 20) return <span>Medium</span>
-                              if (percentage > 0 && percentage < 10) return <span>Low</span>
-                              return "-"
-                            })()}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Score</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-
-                  {showaudienceSpread && event.audience?.audienceSpread && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
-                          >
-                            <div className="flex gap-1">
-                              {Object.entries(event.audience.audienceSpread)
-                                .slice(0, 5)
-                                .map(([key, { iso, name }]) => {
-                                  const countryIso = iso === "UK" ? "GB" : iso
-                                  const Flag = Flags[countryIso as keyof typeof Flags]
-                                  return Flag ? (
-                                    <span key={key} className="inline-block rounded overflow-hidden" title={name}>
-                                      <Flag className="w-4 h-3 border" />
-                                    </span>
-                                  ) : null
-                                })}
-                            </div>
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Audience Spread</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+                    {showaudienceSpread && event.audience?.audienceSpread && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-2 [color:var(--secondary-text-color)] capitalize rounded-sm"
+                            >
+                              <div className="flex gap-1">
+                                {Object.entries(event.audience.audienceSpread)
+                                  .slice(0, 5)
+                                  .map(([key, { iso, name }]) => {
+                                    const countryIso =
+                                      iso === "UK" ? "GB" : iso;
+                                    const Flag =
+                                      Flags[countryIso as keyof typeof Flags];
+                                    return Flag ? (
+                                      <span
+                                        key={key}
+                                        className="inline-block rounded overflow-hidden"
+                                        title={name}
+                                      >
+                                        <Flag className="w-4 h-3 border" />
+                                      </span>
+                                    ) : null;
+                                  })}
+                              </div>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Audience Country</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-span-1 md:col-span-5 flex flex-col gap-2 justify-between">
-              {isEventeli && event.alerts && event.alerts?.length > 0 && (
-                <div className="flex items-center justify-end gap-2">
-                  {event.alerts?.map((alert) => (
-                    <Badge
-                      key={alert.id}
-                      variant="outline"
-                      className={cn("capitalize text-sm border-2", getAlertLevelBorderColor(alert.level))}
-                    >
-                      <span>{alertIcons[alert.type]}</span>
-                      <span className="ml-1 font-medium">{alert.name.toLowerCase()}</span>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-
-              <div className="flex items-start justify-end h-full">
-                {showValues.includes(Show.scores) &&
-                event.insights?.scores &&
-                (event.insights?.scores.inboundScore !== null || event.insights?.scores.internationalScore !== null) ? (
-                  <div className="flex justify-end gap-6 w-full">
-                    <div className="hidden md:flex flex-col gap-4">
-                      {showValues.includes(Show.estimatedExhibitors) &&
-                        event.insights?.estimatedExhibitors !== undefined && (
-                          <div>
-                            <p className="text-xs md:text-sm text-gray-600 font-medium">Estimated Exhibitors</p>
-                            <p className="text-base md:text-lg font-semibold text-primary">
-                              {formatExhibitorCount(event.insights?.estimatedExhibitors)}
-                            </p>
-                          </div>
+              <div className="col-span-1 md:col-span-5 flex flex-col gap-2 justify-between">
+                {isEventeli && event.alerts && event.alerts?.length > 0 && (
+                  <div className="flex items-center justify-end gap-2">
+                    {event.alerts?.map((alert) => (
+                      <Badge
+                        key={alert.id}
+                        variant="outline"
+                        className={cn(
+                          "capitalize text-sm border-2",
+                          getAlertLevelBorderColor(alert.level)
                         )}
-                      {event.insights?.estimatedAttendance !== undefined && (
-                        <div>
-                          <p className="text-xs md:text-sm text-gray-600 font-medium">Estimated Visitors</p>
-                          <p className="text-base md:text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance == "0" ? "--" : event.insights?.estimatedAttendance}
-                          </p>
-                        </div>
-                      )}
-                      {isEventeli && event.insights?.economicImpact !== undefined && (
-                        <div>
-                          <p className="text-xs md:text-sm text-gray-600 font-medium">Economic Impact</p>
-                          <p className="text-base md:text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(event.insights?.economicImpact)}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="hidden md:block space-y-4">
-                      {isEventeli && showValues.includes(Show.scores) && event.insights?.scores && (
-                        <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                          <CircularProgress value={event.insights?.scores.inboundScore} label="Inbound" />
-                          <CircularProgress value={event.insights?.scores.internationalScore} label="International" />
-                        </div>
-                      )}
-                    </div>
-                    {global !== "global" && !isMobile && (
-                      <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
-                        <ActionPopover
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                          trackerId={trackerId}
-                          setInterest={setInterest}
-                          setEventId={setEventId}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex justify-end w-full gap-6">
-                    <div className="hidden md:grid grid-row-2 items-end gap-4">
-                      {showValues.includes(Show.estimatedExhibitors) &&
-                        event.insights?.estimatedExhibitors !== undefined && (
-                          <div>
-                            <p className="text-xs md:text-sm text-gray-600 font-medium">Estimated Exhibitors</p>
-                            <p className="text-base md:text-lg font-semibold text-primary">
-                              {event.insights?.estimatedExhibitors == "" || event.insights?.estimatedExhibitors == null
-                                ? "--"
-                                : formatExhibitorCount(event.insights?.estimatedExhibitors)}
-                            </p>
-                          </div>
-                        )}
-                      {event.insights?.estimatedAttendance !== undefined && (
-                        <div>
-                          <p className="text-xs md:text-sm text-gray-600 font-medium">Estimated Visitors</p>
-                          <p className="text-base md:text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance == "0" || event.insights?.estimatedAttendance == null
-                              ? "--"
-                              : event.insights?.estimatedAttendance}
-                          </p>
-                        </div>
-                      )}
-                      {isEventeli &&
-                        showValues.includes(Show.economicImpact) &&
-                        event.insights?.economicImpact !== undefined && (
-                          <div>
-                            <p className="text-xs md:text-sm text-gray-600 font-medium">Economic Impact</p>
-                            <p className="text-base md:text-lg font-semibold text-primary">
-                              {formatEstimatedSpend(event.insights?.economicImpact)}
-                            </p>
-                          </div>
-                        )}
-                    </div>
-                    {global !== "global" && !isMobile && (
-                      <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
-                        <ActionPopover
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                          trackerId={trackerId}
-                          setInterest={setInterest}
-                          setEventId={setEventId}
-                          view={view}
-                        />
-                      </div>
-                    )}
+                      >
+                        <span>{alertIcons[alert.type]}</span>
+                        <span className="ml-1 font-medium">
+                          {alert.name.toLowerCase()}
+                        </span>
+                      </Badge>
+                    ))}
                   </div>
                 )}
+
+                <div className="flex items-start justify-start md:justify-end h-full">
+                  {showValues.includes(Show.scores) &&
+                  event.insights?.scores &&
+                  (event.insights?.scores.inboundScore !== null ||
+                    event.insights?.scores.internationalScore !== null) ? (
+                    <div className="flex justify-end gap-6 w-full">
+                      <div className="hidden md:flex flex-col gap-4">
+                        {showValues.includes(Show.estimatedExhibitors) &&
+                          event.insights?.estimatedExhibitors !== undefined && (
+                            <div>
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                                Estimated Exhibitors
+                              </p>
+                              <p className="text-base md:text-lg font-semibold text-primary">
+                                {formatExhibitorCount(
+                                  event.insights?.estimatedExhibitors
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        {event.insights?.estimatedAttendance !== undefined && (
+                          <div>
+                            <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                              Estimated Visitors
+                            </p>
+                            <p className="text-base md:text-lg font-semibold text-primary">
+                              {event.insights?.estimatedAttendance == "0"
+                                ? "--"
+                                : event.insights?.estimatedAttendance}
+                            </p>
+                          </div>
+                        )}
+                        {isEventeli &&
+                          showValues.includes(Show.economicImpact) &&
+                          event.insights?.economicImpact !== undefined && (
+                            <div>
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                                Economic Impact
+                              </p>
+                              <p className="text-base md:text-lg font-semibold text-primary">
+                                {formatEstimatedSpend(
+                                  event.insights?.economicImpact
+                                )}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+
+                      <div className="hidden md:block space-y-4">
+                        {isEventeli &&
+                          showValues.includes(Show.scores) &&
+                          event.insights?.scores && (
+                            <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                              <CircularProgress
+                                value={event.insights?.scores.inboundScore}
+                                label="Inbound"
+                              />
+                              <CircularProgress
+                                value={
+                                  event.insights?.scores.internationalScore
+                                }
+                                label="International"
+                              />
+                            </div>
+                          )}
+                      </div>
+
+                      {(global !== "global" && !isMobile && source!=="public")&& (
+                        <div
+                          className="flex items-start justify-end"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <ActionPopover
+                            eventId={event.basic.id}
+                            interests={event.interests}
+                            trackerId={trackerId}
+                            setInterest={setInterest}
+                            setEventId={setEventId}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex justify-start md:justify-end w-full gap-6">
+                      <div className="hidden md:grid grid-row-2 items-end gap-4">
+                        {showValues.includes(Show.estimatedExhibitors) &&
+                          event.insights?.estimatedExhibitors !== undefined && (
+                            <div>
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                                Estimated Exhibitors
+                              </p>
+                              <p className="text-base md:text-lg font-semibold text-primary">
+                                {event.insights?.estimatedExhibitors == "" ||
+                                event.insights?.estimatedExhibitors == null
+                                  ? "--"
+                                  : formatExhibitorCount(
+                                      event.insights?.estimatedExhibitors
+                                    )}
+                              </p>
+                            </div>
+                          )}
+                        {event.insights?.estimatedAttendance !== undefined && (
+                          <div>
+                            <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                              Estimated Visitors
+                            </p>
+                            <p className="text-base md:text-lg font-semibold text-primary">
+                              {event.insights?.estimatedAttendance == "0" ||
+                              event.insights?.estimatedAttendance == null
+                                ? "--"
+                                : event.insights?.estimatedAttendance}
+                            </p>
+                          </div>
+                        )}
+                        {isEventeli &&
+                          showValues.includes(Show.economicImpact) &&
+                          event.insights?.economicImpact !== undefined && (
+                            <div>
+                              <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
+                                Economic Impact
+                              </p>
+                              <p className="text-base md:text-lg font-semibold text-primary">
+                                {formatEstimatedSpend(
+                                  event.insights?.economicImpact
+                                )}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+                      {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+                      {trackerId &&
+                        trackerId.length > 0 &&
+                        isTentimesUser &&
+                        !isMobile && (
+                          <>
+                            {!isEventeli && !intelLoading ? (
+                              intelScoreData?.[0]?.value > 0 && (
+                                <div className="space-y-4">
+                                  <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center">
+                                    <IntelScore
+                                      width="80px"
+                                      height="70px"
+                                      intelScore={intelScoreData}
+                                    />
+                                    <div
+                                      className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                                      style={{ fontSize: "10px" }}
+                                    >
+                                      Relevance Score
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            ) : (
+                              <Skeleton className="h-[132px] w-[98px] rounded-md" />
+                            )}
+                          </>
+                        )}
+
+                      {(global !== "global" && !isMobile && source!=="public") && (
+                        <div
+                          className="flex items-start justify-end"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <ActionPopover
+                            eventId={event.basic.id}
+                            interests={event.interests}
+                            trackerId={trackerId}
+                            setInterest={setInterest}
+                            setEventId={setEventId}
+                            view={view}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Link>
+          {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
+          {trackerId && trackerId.length > 0 && isTentimesUser && isMobile && (
+            <>
+              {!isEventeli && !intelLoading ? (
+                intelScoreData?.[0]?.value > 0 && (
+                  <div className="space-y-4">
+                    <div className="grid grid-rows-1 gap-2 md:border md:border-[#EBEBEB] bg:transparent md:bg-[var(--background-secondary-color)] rounded-[4px] p-2 place-items-center mt-[-38px]">
+                      <IntelScore
+                        width="80px"
+                        height="70px"
+                        intelScore={intelScoreData}
+                      />
+                      <div
+                        className="text-primary border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary hover:bg-secondary/80 flex items-center gap-2 rounded-sm"
+                        style={{ fontSize: "10px" }}
+                      >
+                        Relevance Score
+                      </div>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <Skeleton className="h-[132px] w-[98px] rounded-md" />
+              )}
+            </>
+          )}
+        </Link>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  // const [currentSlide, setCurrentSlide] = useState(0);
-  // const slides = [
-  //   {
-  //     label: "India",
-  //     businessScore: 20,
-  //     socialScore: 20,
-  //   },
-  //   {
-  //     label: "Global",
-  //     businessScore: 30,
-  //     socialScore: 25,
-  //   },
-  //   {
-  //     label: "Regional",
-  //     businessScore: 15,
-  //     socialScore: 18,
-  //   },
-  // ];
+  const { getFilterValue } = useFilterState();
+  const { data, setIsNewCall } = useTrackerContext();
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  //   }, 3000);
-
-  //   return () => clearInterval(interval);
-  // }, [slides.length]);
-
-  // const nextSlide = () => {
-  //   setCurrentSlide((prev) => (prev + 1) % slides.length);
-  // };
-
-  // const prevSlide = () => {
-  //   setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  // };
+  const trackerLocationIds = Object?.keys(
+    data?.filterValues?.locationIds || {}
+  );
 
   function formatAddress(eventLocation: HolidayEventLocation[]): string {
-    const addressParts: string[] = []
+    const addressParts: string[] = [];
 
     if (Array.isArray(eventLocation)) {
       const locations = eventLocation.map((loc) => {
-        const parts: string[] = []
-        if (loc.displayName) parts.push(loc.displayName)
+        const parts: string[] = [];
+        if (loc.displayName) parts.push(loc.displayName);
 
-        return parts.join(", ")
-      })
-      return locations.join("; ")
+        return parts.join(", ");
+      });
+      return locations.join("; ");
     }
-    return addressParts.join(", ")
+    return addressParts.join(", ");
   }
 
   const eventTypes = event.basic.eventTypes
     .filter((eventType) => {
-      return eventType.slug !== "general-holiday" && eventType.slug !== "holiday"
+      return (
+        eventType.slug !== "general-holiday" && eventType.slug !== "holiday"
+      );
     })
-    .map((eventType) => eventType.name)
+    .map((eventType) => eventType.name);
+
+  const showHolidayScore =
+    getFilterValue("locationIds").split(",").filter(Boolean).length == 1 ||
+    trackerLocationIds.length == 1;
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -967,8 +1645,8 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                 alt={`${event.basic.name} website favicon`}
                 className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
                 onError={(e) => {
-                  e.currentTarget.style.display = "none"
-                  e.currentTarget.dataset.error = "true"
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.dataset.error = "true";
                 }}
               />
               <div
@@ -976,32 +1654,42 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                 style={{ display: "none" }}
                 ref={(el) => {
                   if (el) {
-                    const img = el.previousSibling as HTMLImageElement
+                    const img = el.previousSibling as HTMLImageElement;
                     if (img && img.dataset.error === "true") {
-                      el.style.display = "flex"
+                      el.style.display = "flex";
                     }
                   }
                 }}
               >
-                <span className="text-[#5055A3] text-2xl font-semibold">{event.basic.name.charAt(0)}</span>
+                <span className="text-[#5055A3] text-2xl font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
               </div>
             </div>
           ) : (
             <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
-              <span className="text-[#5055A3] text-2xl font-semibold">{event.basic.name.charAt(0)}</span>
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
             </div>
           )}
         </div>
         <div className="pl-[136px] p-6 pr-3">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div className="col-span-7 flex flex-col justify-between gap-3">
+            <div className="col-span-7 flex flex-col gap-4">
               <h2 className="text-2xl font-semibold">{event.basic.name}</h2>
               <div>
                 <p className="text-sm capitalize">
-                  {formatAddress(event.basic.eventLocation as unknown as HolidayEventLocation[])}
+                  {formatAddress(
+                    event.basic
+                      .eventLocation as unknown as HolidayEventLocation[]
+                  )}
                 </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
+                <p className="text-sm [color:var(--secondary-text-color)] mt-4">
+                  {formattedDateRange(
+                    event.basic.startDateTime,
+                    event.basic.endDateTime
+                  )}
                 </p>
               </div>
               <div>
@@ -1013,12 +1701,28 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                           variant="secondary"
                           className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
                           style={{
-                            color: eventTypeColors[event.basic.primaryEventType || ""],
-                            backgroundColor: lightenColor(eventTypeColors[event.basic.primaryEventType || ""], 0.9),
+                            color:
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
+                            backgroundColor: lightenColor(
+                              eventTypeColors[
+                                event.basic.primaryEventType || ""
+                              ],
+                              0.9
+                            ),
                           }}
                         >
-                          <span>{eventTypeIcons[event.basic.primaryEventType || "festivals"]}</span>
-                          <span>{event.basic.primaryEventType}</span>
+                          <span>
+                            {
+                              eventTypeIcons[
+                                event.basic.primaryEventType || "festivals"
+                              ]
+                            }
+                          </span>
+                          <span className="capitalize">
+                            {event.basic.primaryEventType.toLowerCase()}
+                          </span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -1030,7 +1734,10 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                     <TooltipProvider key={eventType}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
-                          <Badge variant="outline" className="text-gray-600 capitalize rounded-sm">
+                          <Badge
+                            variant="outline"
+                            className="[color:var(--secondary-text-color)] capitalize rounded-sm"
+                          >
                             {eventType}
                           </Badge>
                         </TooltipTrigger>
@@ -1044,57 +1751,38 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               </div>
             </div>
 
-            {/* <div className="col-span-5 flex flex-col gap-2 items-end pr-[59px]">
-              <div className="max-w-[94px] h-full">
-                <div className="relative">
-                  <div className="overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-300 ease-in-out"
-                      style={{
-                        transform: `translateX(-${currentSlide * 100}%)`,
-                      }}
-                    >
-                      {slides.map((slide, index) => (
-                        <div
-                          key={index}
-                          className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded"
-                        >
-                          <p className="text-xs text-gray-600 font-medium text-center mb-1">
-                            {slide.label}
-                          </p>
-                          <div className="grid grid-rows-2 gap-2">
-                            <CircularProgress
-                              value={slide.businessScore}
-                              label="Business"
-                            />
-                            <CircularProgress
-                              value={slide.socialScore}
-                              label="Social"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-1 mt-2">
-                    {slides.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          currentSlide === index
-                            ? "bg-primary w-4"
-                            : "bg-gray-300"
-                        }`}
+            {showHolidayScore && (
+              <div className="col-span-5 hidden md:flex flex-col gap-2 items-end pr-[59px]">
+                <div className="max-w-[94px] h-full">
+                  <div className="flex-[0_0_100%] min-w-0 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                    <p className="text-xs [color:var(--secondary-text-color)] font-medium text-center mb-1">
+                      {
+                        (
+                          event.basic?.eventLocation as any
+                        )[0]?.displayName.split(",")[0]
+                      }
+                    </p>
+                    <div className="grid grid-rows-2 gap-2">
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.businessScore
+                        }
+                        label="Business"
                       />
-                    ))}
+                      <CircularProgress
+                        value={
+                          (event.basic?.eventLocation as any)[0]?.socialScore
+                        }
+                        label="Social"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> */}
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

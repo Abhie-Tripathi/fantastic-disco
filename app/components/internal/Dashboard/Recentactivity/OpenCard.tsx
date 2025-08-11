@@ -18,7 +18,7 @@ const OpenCard = ({ notification }: Props) => {
 
     return (
         <div className='flex gap-2 items-start w-full h-[70px] rounded-md bg-[var(--neutral-light-color)] p-3 cursor-pointer' onClick={handleRouting}>
-            {notification.profile ? <Image src={notification.profile} width={29} height={29} alt='profile' className='rounded-[30px]' /> :
+            {notification.profile ? <Image src={notification.profile} width={28} height={28} alt='profile' className='rounded-full w-7 h-7 ' /> :
             <div className='w-[29px] h-[29px] flex items-center justify-center rounded-[30px] bg-primary text-white'>{notification.name.substring(0,1).toUpperCase()}</div>
             }
 

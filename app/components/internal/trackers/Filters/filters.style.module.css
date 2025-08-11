@@ -592,6 +592,7 @@ width: calc(100vw - 134px);
 .emptyTableData {
   height: 100%;
   display: flex;
+  gap:20px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -601,7 +602,6 @@ width: calc(100vw - 134px);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
   color: var(--secondary-text-color);
-  padding: 20px;
 }
 
 .suggestion_items {

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useConfigurationService } from "@/services/configurationService";
 
 export const configurationKeys = {
@@ -14,7 +14,6 @@ export const useConfiguration = {
     const filterQuery = useQuery({
       queryKey: configurationKeys.filter(),
       queryFn: () => configurationService.getFilterConfiguration(),
-      staleTime: 5 * 60 * 1000,
     });
 
     return {
@@ -29,7 +28,6 @@ export const useConfiguration = {
     const interestQuery = useQuery({
       queryKey: configurationKeys.interest(),
       queryFn: () => configurationService.getInterestConfiguration(),
-      staleTime: 5 * 60 * 1000,
     });
 
     return {
@@ -44,7 +42,6 @@ export const useConfiguration = {
     const outreachQuery = useQuery({
       queryKey: configurationKeys.outreach(),
       queryFn: () => configurationService.getOutreachConfiguration(),
-      staleTime: 5 * 60 * 1000,
     });
 
     return {

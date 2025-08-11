@@ -45,8 +45,7 @@
     color: #8B949E;
     border: 1px solid grey;
     border-radius: 12px;
-    border-image: linear-gradient(left, rgb(255, 255, 255) 50%, rgb(209, 209, 209) 50%, rgb(255, 255, 255) 50.5%);
-    border-style: solid;
+    border-image: linear-gradient(to left, rgb(255, 255, 255) 50%, rgb(209, 209, 209) 50%, rgb(255, 255, 255) 50.5%);
 }
 
 

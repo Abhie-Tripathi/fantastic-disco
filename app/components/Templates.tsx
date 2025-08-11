@@ -193,11 +193,11 @@ const Templates = React.memo(({ isData, hideTemplates }: TemplateProps) => {
             percentage[0] = 30;
           } else if (
             item.type === "T_SPEAKING_OPPORTUNITY" ||
-            item.type === "T_PEOPLE_FINDER"
+            item.type === "T_PEOPLE_FINDER" || item.type === "T_AUDIENCE_DEPT_PROFILE"
           ) {
             counts[1]++;
             percentage[1] = 30;
-          } else if (item.type === "T_PRODUCT_KEYWORDS") {
+          } else if (item.type === "T_PRODUCT_KEYWORDS" || item.type === "T_EVENT_PARTICIPATION") {
             counts[2]++;
             percentage[2] = 30;
           }
@@ -662,7 +662,7 @@ Do not include the competitor platform names in the output. Only return publicly
                   >
                     {item.name}
                   </div>
-                  <Slider key={index} width={item.value} color={item.fill} />
+                  <Slider key={index} width={item.value} color={item.fill} source="template"/>
                 </div>
               ))}
             </div>
@@ -868,9 +868,12 @@ Do not include the competitor platform names in the output. Only return publicly
               id="customTracker"
               className="flex justify-center items-center gap-2 flex-col md:flex-row"
             >
-              <div>Or start from scratch</div>
+              <Link href={`/collections`}>
+              <div className="text-[var(--primary-color)] hover:underline cursor-pointer block">Explore Curated Collections</div>
+              </Link>
+              or
               <Link href={`/internal/trackers/create?type=T_CUSTOM`}>
-                <Button>Create Custom Tracker</Button>
+                <div className="text-[var(--primary-color)] hover:underline cursor-pointer block">Create Custom Tracker</div>
               </Link>
             </div>
           </div>

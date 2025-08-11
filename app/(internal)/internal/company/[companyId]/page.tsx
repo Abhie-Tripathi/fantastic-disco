@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Buildings,
@@ -12,7 +12,8 @@ import Image from "next/image";
 import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
 import "react-circular-progressbar/dist/styles.css";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
+
 import Link from "next/link";
 import { TTabs } from "@/types/events";
 import {
@@ -32,7 +33,20 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/ui/Loading";
 import { CompanyDetailResponse } from "@/types/prospect";
 
-const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
+const excludedTags = [
+  "Core CRM",
+  "All Paid",
+  "Billing Company",
+  "FLOOR Clients",
+  "Complimentary Services",
+  "Dead Account",
+  "core-crm",
+  "all-paid",
+  "billing-company",
+  "floor-clients",
+  "complimentary-services",
+  "dead-account",
+];
 
 const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
   if (asOrganizer && asOrganizer.length > 0) {
@@ -57,6 +71,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   // const referrer = document.referrer;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const tabs = [
     { tabName: "Overview", path: "overview" },
     { tabName: "Events", path: "insights" },
@@ -135,10 +150,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         pastEventsData: pastEventRes.events || [],
       };
     },
-    refetchOnWindowFocus: false,
-    gcTime: 300000,
-    staleTime: 300000,
   });
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (window.history.length > 1) {
+        setShowBackToSearch(true);
+      } else {
+        setShowBackToSearch(false);
+      }
+    }
+  }, []);
 
   if (isFetching) {
     return (
@@ -149,7 +171,13 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   }
 
   if (!company) return null;
-  const { companyDetails, upcomingEventsCount, pastEventsCount, pastEventsData, upcomingEventsData } = company;
+  const {
+    companyDetails,
+    upcomingEventsCount,
+    pastEventsCount,
+    pastEventsData,
+    upcomingEventsData,
+  } = company;
 
   const handleScrollTo = (section: string) => {
     const element = document.querySelector(`.${section}`);
@@ -206,15 +234,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button
-          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span className="text-[var(--primary-color)] font-medium">
-            Back to Search
-          </span>
-        </button>
+        {showBackToSearch && (
+          <button
+            className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft width="14px" height="14px" color="#6750A4" />
+            <span className="text-[var(--primary-color)] font-medium">
+              Back to Search
+            </span>
+          </button>
+        )}
 
         {compLogo !== null && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
@@ -284,18 +314,18 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         {companyDetails?.companyTag.length > 0 && (
           <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
             <Factory color="#666666" width="14px" height="14px" />
-            { companyDetails?.companyTag
+            {companyDetails?.companyTag
               ?.filter((item: any) => !excludedTags.includes(item))
               ?.filter(Boolean)
               .slice(0, 2)
               ?.map((item: any, index: number) => (
-              <span
-                key={item}
-                className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
-              >
-                #{item}
-              </span>
-            ))}
+                <span
+                  key={item}
+                  className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
+                >
+                  #{item}
+                </span>
+              ))}
           </div>
         )}
 

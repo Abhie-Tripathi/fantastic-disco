@@ -26,6 +26,7 @@ import {
   Search,
   Menu,
   Bell,
+  ArrowUpRight,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -41,6 +42,9 @@ import MobileSidebar from "./mobile-sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
 import VideoModal from "@/components/layout/videoModal";
+import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -67,7 +71,7 @@ const geniroutes: Record<string, string> = {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuthContext();
+  const { membershipData } = useAuthContext();
   const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const { theme, toggleTheme } = useTheme();
@@ -160,6 +164,20 @@ export default function Navbar() {
       router.push("/widget/settings/profile");
     }
   };
+
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Navbar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -188,18 +206,25 @@ export default function Navbar() {
           <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
               ? (
-                <div className="flex items-center">
+              <div className="flex items-center">
+                <span className="relative inline-flex items-center">
                   {getRoute(pathname.split("/")[2])}
-                  <div className="ml-2 " >
-                    <VideoModal source={pathname.split("/")[2]} />
-                  </div>
                   {pathname.split("/")[2] === "trends" && (
-                    <Badge variant="default" className="text-xs font-medium px-2 py-0.5 ml-2 h-5">Beta</Badge>
+                    <Badge
+                      variant="default"
+                      className="text-[10px] font-medium px-2 py-1 ml-1 h-4 align-super leading-none relative -top-2"
+                    >
+                      Beta
+                    </Badge>
                   )}
+                </span>
+                <div className="ml-2" >
+                  <VideoModal source={pathname.split("/")[2]} />
                 </div>
+              </div>
               )
               : pathname.split("/").slice(-2)[0] === "edit"
-              ? "Edit Widget"
+              ? "Edit Widget": pathname.split('/')[1] === "collections"? " Collections"
               : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
@@ -216,6 +241,19 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-1">
+        {membershipData &&
+          membershipData.membership === MembershipPlan.Freemium && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex"
+                onClick={handleUpgradeClick}
+              >
+                <span className="hidden sm:inline">Upgrade</span>
+              </Button>
+            </>
+          )}
           {!isEventeli && (
             <>
               <div className="flex items-center gap-1 max-[570px]:hidden">
@@ -294,6 +332,9 @@ export default function Navbar() {
               </div>
             </>
           )}
+          <div className="lg:hidden">
+            <VideoModal source={pathname.split("/")[2]} />
+          </div>
           {/* {!isEventeli && (
             <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
               {theme === "dark" ? (

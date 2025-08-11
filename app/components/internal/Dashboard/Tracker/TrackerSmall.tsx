@@ -39,7 +39,7 @@ const TrackerSmall = ({ templates,trackers }: Props) => {
         }
     }
     return (
-        <div className={`flex ${trackers.length > 0 ? "flex-col" : "justify-between"} w-full h-[240px] items-start border border-[var(--border-color)] rounded-xl p-4`}>
+        <div className={`flex ${trackers.length > 0 ? "flex-col" : "justify-between"} w-full h-[240px] items-start border rounded-xl p-4 bg-[#F6FAFF] dark:bg-[#12233C] border-[#E0F0FF] dark:border-[#292929]`}>
             <div className={`flex flex-col ${trackers.length === 0 ? "gap-7" : "gap-2"} w-[35%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
@@ -55,7 +55,7 @@ const TrackerSmall = ({ templates,trackers }: Props) => {
                 {trackers.length === 0 && <Button onClick={() => handleRouting("button")} className="w-[130px] z-10 mt-5 btn-default flex items-center gap-1" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             </div>
             {trackers.length > 0 &&
-                <div className='mt-7 w-full bg-[var(--background-secondary-color)] rounded-xl p-5'>
+                <div className='mt-7 w-full bg-background rounded-xl p-5'>
                     {/* {trackers.map((tracker, key) => ( */}
                     <TrackerCard small={false} tracker={trackers[0]} />
                     {/* ))} */}

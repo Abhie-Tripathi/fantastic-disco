@@ -23,7 +23,7 @@ const ModuleCardBig = ({ imgHeight, imgWidth, heading, subHeading, image, button
   const handleRouting = () => {
     if (button === "Promote") {
       router.push("/widget/dashboard")
-    } else router.push("/internal/prospect")
+    } else router.push("/internal/search/companies")
   }
 
   const searchHandler = () => {

@@ -152,13 +152,16 @@ export default function EventAnalyticsSelector({
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      <span className="mr-2">Event Analytics</span>
-      {showScores && getAppliedFiltersCount() > 0 && (
-        <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
-          {getAppliedFiltersCount()}
-        </span>
-      )}
+      <div className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="mr-2">Event Analytics</span>
+        {showScores && getAppliedFiltersCount() > 0 && (
+          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
+            {getAppliedFiltersCount()}
+          </span>
+        )}
+      </div>
+
       <DynamicSwitch
         checked={showScores}
         onCheckedChange={handleShowScoresToggle}

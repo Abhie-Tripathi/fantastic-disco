@@ -25,13 +25,16 @@ interface FrequencySelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function FrequencySelector({ variant = "popover" }: FrequencySelectorProps) {
+export default function FrequencySelector({
+  variant = "popover",
+}: FrequencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, morphedData } =
+    useFilterContext();
   const frequencies = morphedData.frequencies.options;
   const showToogle = morphedData.frequencies.isToogleEnabled;
   const enabled = morphedData.frequencies.isEnabled;
-  
+
   const selectedFrequencies = useMemo(
     () => getLocalFilterValue("frequencies").split(",").filter(Boolean),
     [getLocalFilterValue]
@@ -46,7 +49,7 @@ export default function FrequencySelector({ variant = "popover" }: FrequencySele
     const newFrequencies = selectedFrequencies.includes(frequencyId)
       ? selectedFrequencies.filter((id) => id !== frequencyId)
       : [...selectedFrequencies, frequencyId];
-    
+
     setLocalFilter("frequencies", newFrequencies.join(","));
   };
 
@@ -65,15 +68,17 @@ export default function FrequencySelector({ variant = "popover" }: FrequencySele
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      <span className="flex items-center gap-2">
-        Frequency
-        {selectedFrequencies.length > 0 && (
-          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-            {selectedFrequencies.length}
-          </span>
-        )}
-      </span>
+      <div className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="flex items-center gap-2">
+          Frequency
+          {selectedFrequencies.length > 0 && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+              {selectedFrequencies.length}
+            </span>
+          )}
+        </span>
+      </div>
       <Switch
         checked={showInFilter}
         onCheckedChange={handleShowToggle}
@@ -120,7 +125,10 @@ export default function FrequencySelector({ variant = "popover" }: FrequencySele
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -130,15 +138,16 @@ export default function FrequencySelector({ variant = "popover" }: FrequencySele
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="frequency" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
           disabled={!enabled}
         >
           {triggerContent}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );

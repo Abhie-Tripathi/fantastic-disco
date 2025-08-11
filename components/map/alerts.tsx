@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { AlertTriangle } from "lucide-react";
 import React, { memo, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useEventsService } from "@/services/eventsService";
 import {
   Popover,

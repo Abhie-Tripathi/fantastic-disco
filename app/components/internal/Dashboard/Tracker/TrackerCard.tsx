@@ -61,7 +61,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                     <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{formatType(tracker.type)}</div>
                 </div>}
             {small &&
-                <div className='bg-[var(--background-secondary-color)] rounded-sm flex p-2 justify-between items-center mb-3 relative'>
+                <div className='bg-background rounded-sm flex p-2 justify-between items-center mb-3 relative'>
                     <div onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}>
                         <div className="font-semibold text-xs leading-none whitespace-nowrap">

@@ -9,7 +9,7 @@ interface Props {
 const PhaseCard = ({ heading, value, color }: Props) => {
     const [isHovered, setIsHovered] = useState(false);
     return (
-        <div className={`h-[46px] bg-[var(--background-secondary-color)] flex items-center justify-between rounded-[10px] px-2 w-full`}>
+        <div className={`h-[46px] bg-background flex items-center justify-between rounded-[10px] px-2 w-full`}>
             <div className='flex items-center gap-2 max-w-[70%]'>
                 {/* <div className={`h-[35px] min-w-[4px] rounded-md`} style={{ backgroundColor: color }}></div>
                 <div className="text-xs font-[var(--font-weight-medium)] overflow-hidden max-w-[80%] text-ellipsis text-[var(--secondary-text-color)] whitespace-nowrap" >

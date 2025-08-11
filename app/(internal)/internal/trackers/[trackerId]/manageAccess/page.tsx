@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/hooks/useQuery";
 import { useTrackerServices } from "@/services/trackerServices";
 // import SideNav from '@/app/components/trackers/sideNav';
 interface UserAccess {

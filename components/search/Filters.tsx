@@ -3,6 +3,7 @@
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
 import CompanyType from "@/app/components/prospect/Filters/companyType";
+// import UpcomingEvents from "@/app/components/prospect/Filters/upcomingEvents";
 import Department from "@/app/components/prospect/Filters/department";
 import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
 import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
@@ -48,18 +49,19 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isEventeli } from "@/config";
 import { useFilterContext } from "@/context/filterContext";
-import { useTheme } from "@/context/theme";
-import { toast } from "@/hooks/use-toast";
 import { useFilterState } from "@/hooks/useFilterState";
 import whrbotlogo from "@/public/whrbotlogo.svg";
-import { GAEvent } from "@/utils/GAEvent";
 import {
+  Building,
+  Building2,
+  Building2Icon,
   Calendar1,
   ChevronLeft,
   ChevronRight,
   Filter,
   FilterX,
   Lock,
+  Save,
   UserSearch,
 } from "lucide-react";
 import Image from "next/image";
@@ -74,9 +76,18 @@ import {
 } from "react";
 import { Step } from "react-joyride";
 import CreateTrackerDialog from "./createTrackerDialog";
+import { GAEvent } from "@/utils/GAEvent";
+import { toast } from "@/hooks/use-toast";
+import { useTheme } from "@/context/theme";
+import { useBulkAction } from "@/context/bulkAction";
 import FilterContent from "./FilterContent";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
+import {
+  basicFilters,
+  advancedFilter as advancedFilterValues,
+  countFilters,
+} from "@/constants/filters";
 
 interface FilterSection {
   id: string;
@@ -249,6 +260,18 @@ const gtmFilters: {
           filterName: "eventParticipationType",
           enabled: true,
         },
+        // {
+        //   id: "total-event",
+        //   component: "TotalEvent",
+        //   filterName: "totalEvent",
+        //   enabled: true,
+        // },
+        // {
+        //   id: "upcoming-event",
+        //   component: "UpcomingEvents",
+        //   filterName: "upcomingEvent",
+        //   enabled: true,
+        // },
         {
           id: "company-followers",
           component: "EventFollowers",
@@ -515,6 +538,12 @@ const geoFilters: {
           filterName: "eventParticipationType",
           enabled: true,
         },
+        // {
+        //   id: "upcoming-event",
+        //   component: "UpcomingEvents",
+        //   filterName: "upcomingEvent",
+        //   enabled: true,
+        // },
         {
           id: "company-followers",
           component: "EventFollowers",
@@ -697,29 +726,36 @@ const Filters = ({
 }: FiltersProps) => {
   const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
+
+  const { setIsBulkActionActive } = useBulkAction();
+
   const { getFilterValue } = useFilterState();
   const isMobile = useIsMobile();
   const { theme } = useTheme();
   const path = useSearchParams();
+  const pathName = usePathname();
+
   const filterCount = useMemo(() => {
-    const excludedFilters = [
-      "active_gte",
-      "active_lte",
-      "show",
-      "limit",
-      "offset",
-      "skip",
-    ];
-    return Object.keys(localFilters).filter(
-      (key) => !excludedFilters.includes(key)
-    ).length;
+    const allFilterKeys = [...basicFilters, ...advancedFilterValues];
+    return countFilters(localFilters, allFilterKeys);
   }, [localFilters]);
 
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
-  const searchHandler = useCallback(() => {
+  const searchHandler = () => {
+    if (pathName.split("/").includes("search")) {
+      if (type === "events" && isEventeli && !(localFilters.locationIds || localFilters.viewBound)) {
+        toast({
+          title: "Please select location",
+          variant: "destructive",
+        });
+      }
+      Object.keys(localFilters).map((filter) =>
+        GAEvent("", "Research", "Filter Applied", filter)
+      );
+    }
     applyFilters({ resetPage: true });
-  }, [applyFilters]);
+  };
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -900,11 +936,13 @@ const Filters = ({
       )}
       <div
         className={`overflow-y-auto flex flex-col ${
-          source !== "tracker" ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]" : "h-full"
+          source !== "tracker"
+            ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]"
+            : "h-full"
         }`}
       >
         {source !== "tracker" && (
-          <div className="sticky top-0 bg-background z-10 p-4 md:p-0 md:pb-3">
+          <div className="sticky top-0 bg-background z-10 p-4 pb-2 md:p-0 md:pb-2">
             <Tabs defaultValue={type} value={type}>
               <TabsList
                 className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg"
@@ -913,7 +951,7 @@ const Filters = ({
                 <Link href="/internal/search/events" className="contents">
                   <TabsTrigger
                     value="events"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
                     <Calendar1 className="w-4 h-4" />
                     Events
@@ -922,15 +960,16 @@ const Filters = ({
                 <Link href="/internal/search/companies" className="contents">
                   <TabsTrigger
                     value="companies"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
+                    <Building2 className="w-4 h-4" />
                     Companies
                   </TabsTrigger>
                 </Link>
                 <Link href="/internal/search/people" className="contents">
                   <TabsTrigger
                     value="people"
-                    className="text-sm flex gap-2 items-center px-4 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="text-sm flex gap-2 items-center px-2 py-2 w-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
                     <UserSearch className="w-4 h-4" />
                     People
@@ -949,6 +988,7 @@ const Filters = ({
           <FilterContent
             source={source}
             type={type}
+            trackerType={path?.get("type") || ""}
             filterCount={filterCount}
             createTrackerHandler={createTrackerHandler}
             searchHandler={searchHandler}
@@ -957,8 +997,8 @@ const Filters = ({
         </div>
         {source !== "tracker" && (
           <div className="hidden md:block w-full sticky bottom-0 bg-background z-10">
-            <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
-              <div className="flex items-center justify-between mb-2">
+            <div className="p-4 pt-3 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+              <div className="flex items-center justify-between">
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -976,9 +1016,31 @@ const Filters = ({
                   {filterCount} filters applied
                 </span>
               </div>
-              <Button onClick={searchHandler} className="w-full h-10">
-                Apply Filters
-              </Button>
+              <div className="flex gap-2">
+                {((type === "events" && filterCount > 0) ||
+                  ((type === "companies" || type === "people") &&
+                    !isEventeli)) && (
+                  <Button
+                    id="save-search-btn"
+                    onClick={() => {
+                      if (type === "companies" || type === "people") {
+                        setIsBulkActionActive(true);
+                      } else {
+                        createTrackerHandler();
+                      }
+                    }}
+                    variant="outline"
+                    className="w-full h-10"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                )}
+
+                <Button onClick={searchHandler} className="w-full h-10">
+                  Apply Filters
+                </Button>
+              </div>
             </div>
           </div>
         )}

@@ -70,15 +70,27 @@ export function aggregateAttendanceData(
  */
 export function morphToGraphData(
   groupedData: GroupedDataByDate,
-  selectedEventType?: TEventColumnType
+  metrics: string[]
 ) {
-  if (!selectedEventType) return [];
-  return Object.entries(groupedData).map(([date, groupData]) => ({
-    date,
-    total: groupData[selectedEventType]?.total,
-    social: groupData[selectedEventType]?.byEventTypeGroup?.social ?? 0,
-    business: groupData[selectedEventType]?.byEventTypeGroup?.business ?? 0,
-  }));
+  if (!metrics || metrics.length === 0) return [];
+
+  return Object.entries(groupedData).map(([date, groupData]) => {
+    const result: any = { date };
+    metrics.forEach(metric => {
+      const metricData = groupData[metric as keyof typeof groupData];
+      if (metricData) {
+        result[metric] = metricData.total ?? 0;
+        // Add social/business counts from byEventTypeGroup if they exist
+        if (metricData.byEventTypeGroup) {
+          result.social = metricData.byEventTypeGroup.social ?? 0;
+          result.business = metricData.byEventTypeGroup.business ?? 0;
+        }
+      } else {
+        result[metric] = 0;
+      }
+    });
+    return result;
+  });
 }
 
 /**
@@ -199,14 +211,13 @@ export function morphToSmartInsightsData(tableData: TableData[]) {
   tableData.forEach((row) => {
     const columnKeys = Object.keys(row).filter((key) => key !== "date");
     columnKeys.forEach((field) => {
-      const fieldData = row[field as keyof TableData] as EventTypeData;
+      const fieldData = row[field as keyof TableData] as EventTypeData | undefined;
+      if (!fieldData) return; // Skip if fieldData is undefined
       const value = fieldData.value;
       // If we haven't stored the max value for this field yet, store it
       if (!maxColumnValues[field]) {
         maxColumnValues[field] = value;
-      }
-      // If the current value is greater than the stored max value, update it
-      if (value > maxColumnValues[field]) {
+      } else if (value > maxColumnValues[field]) {
         maxColumnValues[field] = value;
       }
     });
@@ -215,9 +226,11 @@ export function morphToSmartInsightsData(tableData: TableData[]) {
     const newRow = { ...row };
     const columnKeys = Object.keys(newRow).filter((key) => key !== "date");
     columnKeys.forEach((field) => {
-      const fieldData = newRow[field as keyof TableData] as EventTypeData;
-      const avg = newRow[field as keyof TableData].avg;
-      const value = newRow[field as keyof TableData].value;
+      const fieldData = newRow[field as keyof TableData] as EventTypeData | undefined;
+      if (!fieldData) return; // Skip if fieldData is undefined
+      
+      const avg = fieldData.avg;
+      const value = fieldData.value;
       const maxColumn = maxColumnValues[field];
       const thresholdHighlightCol =
         value >= avg && value <= avg * 1.5

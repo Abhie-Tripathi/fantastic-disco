@@ -25,9 +25,12 @@ interface GlobalAndTouringSelectorProps {
   variant?: "accordion" | "popover";
 }
 
-export default function GlobalAndTouringSelector({ variant = "popover" }: GlobalAndTouringSelectorProps) {
+export default function GlobalAndTouringSelector({
+  variant = "popover",
+}: GlobalAndTouringSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
+  const { setMultipleLocalFilters, getLocalFilterValue, morphedData } =
+    useFilterContext();
   const globalAndTourings = morphedData.globalAndTourings.options;
   const enabled = morphedData.globalAndTourings.isEnabled;
   const showToogle = morphedData.globalAndTourings.isToogleEnabled;
@@ -77,15 +80,17 @@ export default function GlobalAndTouringSelector({ variant = "popover" }: Global
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
-      {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      <span className="flex items-center gap-2">
-        Brand
-        {selectedStatuses.length > 0 && (
-          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-            {selectedStatuses.length}
-          </span>
-        )}
-      </span>
+      <div className="flex items-center">
+        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
+        <span className="flex items-center gap-2">
+          Brand
+          {selectedStatuses.length > 0 && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+              {selectedStatuses.length}
+            </span>
+          )}
+        </span>
+      </div>
       <Switch
         checked={showInFilter}
         onCheckedChange={handleShowToggle}
@@ -132,7 +137,10 @@ export default function GlobalAndTouringSelector({ variant = "popover" }: Global
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           {content}
         </PopoverContent>
       </Popover>
@@ -142,15 +150,16 @@ export default function GlobalAndTouringSelector({ variant = "popover" }: Global
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="brand" className="border rounded-md">
-        <AccordionTrigger 
-          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        <AccordionTrigger
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
           disabled={!enabled}
         >
-            {triggerContent}
+          {triggerContent}
         </AccordionTrigger>
-        <AccordionContent>
-          {content}
-        </AccordionContent>
+        <AccordionContent>{content}</AccordionContent>
       </AccordionItem>
     </Accordion>
   );
