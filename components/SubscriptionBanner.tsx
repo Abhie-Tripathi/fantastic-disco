@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { GAEvent } from "@/utils/GAEvent";
 import { isEventeli } from "@/config";
 import { MembershipPlan } from "@/data/membershipPlans";
+import { Button } from "@/components/ui/button";
 
 const getPlanName = (membershipNumber: number | null): string => {
   if (membershipNumber === null) return "Freemium";
@@ -102,6 +103,27 @@ export default function SubscriptionBanner() {
 
   return (
     <div className="bg-gray-900 text-white px-4 py-3 flex items-center">
+        <div className="w-4"></div>
+
+      <div className="flex-1 flex items-center justify-center gap-2">
+        <div className="text-sm">{getBannerMessage()}</div>
+        <Button
+        size="sm"
+        variant="outline"
+          onClick={handleExploreFeatures}
+          className="text-sm font-medium transition-colors text-black hover:text-black"
+        >
+          Explore Features
+        </Button>
+        <Button
+         size="sm"
+        variant="outline"
+          onClick={handleUpgrade}
+          className="text-sm font-medium transition-colors text-black hover:text-black"
+        >
+          Upgrade Now →
+        </Button>
+      </div>
       <button
         onClick={handleDismiss}
         className="text-gray-400 hover:text-white transition-colors"
@@ -110,23 +132,6 @@ export default function SubscriptionBanner() {
         <X size={16} />
       </button>
 
-      <div className="flex-1 flex items-center justify-center gap-2">
-        <div className="text-sm">{getBannerMessage()}</div>
-        <button
-          onClick={handleExploreFeatures}
-          className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
-        >
-          Explore Features
-        </button>
-        <button
-          onClick={handleUpgrade}
-          className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
-        >
-          Upgrade Now →
-        </button>
-      </div>
-
-      <div className="w-4"></div>
     </div>
   );
 }

@@ -127,6 +127,26 @@ const Subscription = () => {
                   >
                     Active
                   </Badge>
+
+                  {membershipData.isTrial && <Badge
+                    className="text-[var(--info-text-color)] bg-[var(--info-background-color)] border-[var(--info-text-color)] ml-2"
+                    variant="outline"
+                  >
+                    Trial
+                  </Badge>}
+
+
+                  {
+                    membershipData.isTrial && <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2"
+                    onClick={handleUpgradeClick}
+                  >
+                    Upgrade
+                  </Button>
+                  }
+
                   {/* <Badge
                 className="text-[var(--danger-text-color)] bg-[var(--danger-background-color)] border-[var(--danger-text-color)] ml-2"
                 variant="outline"
@@ -157,7 +177,8 @@ const Subscription = () => {
               <span className="text-sm font-medium">
                 Disabled{" "}
                 <span className="text-muted-foreground">
-                  (Subscription will end on {planEndDate})
+                  {membershipData.isTrial ? `(Trial Subscription will end on ${planEndDate})` :
+                  `(Subscription will end on ${planEndDate})`}
                 </span>
               </span>
             ) : (
