@@ -285,12 +285,12 @@ const templates = [
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
     type: "enabled",
-    templateName: "Audience Dept. & Profiles",
-    description: "Track events for the specific organizational departments or audience profiles",
+    templateName: "Ideal Audience Designation",
+    description: "Find relevant events based on your target audience profile",
     inputAreas: [
       {
         type: "text",
-        required:false,
+        required:true,
         placeholder: "Designation",
       },
       {
@@ -948,7 +948,7 @@ const jobComposite = {
     ...(flattendSeniorityIds?.length && { seniorityIds: flattendSeniorityIds }),
   },
   "properties":{
-      "allEntries":allEntries[allEntries.length-1].length===0?allEntries.slice(0, allEntries.length-1):allEntries,
+      "allEntries":allEntries[allEntries.length-1]?.length===0?allEntries.slice(0, allEntries.length-1):allEntries,
   }
 }
 
@@ -1008,7 +1008,7 @@ const jobComposite = {
         setIsMandatory(true);
         return;
       }
-      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || (allEntries && allEntries[0]?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1115,7 +1115,7 @@ const jobComposite = {
         setIsMandatory(true);
         return;
       }
-      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || allEntries.length===0)){
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || (allEntries && allEntries[0]?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;

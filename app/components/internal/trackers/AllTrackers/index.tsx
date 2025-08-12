@@ -164,6 +164,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData, share, set
   }, [item]);
   const formatType=(type:string)=>{
     if(type==="CUSTOM") return "Custom"
+    else if(type==="T_AUDIENCE_DEPT_PROFILE") return "Ideal Audience Designation"
     return type.split("_").slice(1).map((ele)=>`${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
   }
  
