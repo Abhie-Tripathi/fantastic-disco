@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 import { useEffect } from "react";
+import { Button } from "../ui/button";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
@@ -51,7 +52,7 @@ const EventCount = ({ view }: { view: string }) => {
 
   return (
     <div className="flex items-center gap-2 min-w-fit">
-      {isLoading ? (
+      {!isEventeli ? isLoading ? (
         <Loader2 className="animate-spin text-primary w-4 h-4" />
       ) : (
         <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
@@ -60,7 +61,10 @@ const EventCount = ({ view }: { view: string }) => {
             maximumFractionDigits: 2,
           }).format((data as any)?.count || 0)}
         </Badge>
-      )}
+      ):
+      <Button size="sm">
+Collections
+      </Button>}
       {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
         {label[view]}
       </p> */}
