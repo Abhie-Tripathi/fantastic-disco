@@ -7,11 +7,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useFilterContext } from "@/context/filterContext";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import whrbotlogo from "@/public/whrbotlogo.svg";
-import { Filter, Lock, Unlock } from "lucide-react";
-import Image from "next/image";
+import { Filter, Lock, Unlock, FolderOpen } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import PremiumModal from "../premium-modal";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
@@ -84,7 +83,24 @@ const FilterContent = ({
             <div onClick={() => closeHandler?.(false)}>X</div>
           </div>
         )}
-        <div className="p-3 bg-[var(--background-secondary-color)] ">
+        <div className="p-3 pt-0 bg-[var(--background-secondary-color)] ">
+          {!isEventeli && !isMobile && (
+            <div className="mb-4">
+              <Button 
+                asChild
+                variant="default" 
+                size="sm" 
+                className="w-full bg-primary"
+              >
+                <Link href="/collections" className="flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Browse Collections
+                </Link>
+              </Button>
+            </div>
+          )}
           <Accordion
             type="multiple"
             className="space-y-4"

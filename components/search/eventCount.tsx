@@ -6,14 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 import { useEffect } from "react";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 
 const EventCount = ({ view }: { view: string }) => {
   const { getEventsCount } = useEventsService();
   const searchParams = useSearchParams();
-  const isMobile = useIsMobile();
   const params = new URLSearchParams(searchParams.toString());
   params.set("view", "list");
 
@@ -24,13 +20,12 @@ const EventCount = ({ view }: { view: string }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["eventsCount", searchParamsString],
     queryFn: () => getEventsCount(paramsObject),
-    enabled:
-      isEventeli && !params.get("eventIds")
-        ? !!(
-            isEventeli &&
-            (searchParams.get("locationIds") || searchParams.get("viewBound"))
-          )
-        : true,
+    enabled: (isEventeli && !params.get("eventIds"))
+      ? !!(
+          isEventeli &&
+          (searchParams.get("locationIds") || searchParams.get("viewBound"))
+        )
+      : true,
   });
 
   useEffect(() => {
@@ -56,38 +51,15 @@ const EventCount = ({ view }: { view: string }) => {
 
   return (
     <div className="flex items-center gap-2 min-w-fit">
-      {!isMobile ? (
-        isEventeli ? (
-          isLoading ? (
-            <Loader2 className="animate-spin text-primary w-4 h-4" />
-          ) : (
-            <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
-              {new Intl.NumberFormat("en", {
-                notation: "compact",
-                maximumFractionDigits: 2,
-              }).format((data as any)?.count || 0)}
-            </Badge>
-          )
-        ) : (
-          <Link href="/collections">
-            <Button variant="outline" size="sm">
-              Collections
-            </Button>
-          </Link>
-        )
+      {isLoading ? (
+        <Loader2 className="animate-spin text-primary w-4 h-4" />
       ) : (
-        <div className="flex items-center gap-2">
-          {isLoading ? (
-            <Loader2 className="animate-spin text-primary w-4 h-4" />
-          ) : (
-            <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
-              {new Intl.NumberFormat("en", {
-                notation: "compact",
-                maximumFractionDigits: 2,
-              }).format((data as any)?.count || 0)}
-            </Badge>
-          )}
-        </div>
+        <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
+          {new Intl.NumberFormat("en", {
+            notation: "compact",
+            maximumFractionDigits: 2,
+          }).format((data as any)?.count || 0)}
+        </Badge>
       )}
       {/* <p className="text-primary font-medium md:font-semibold text-sm md:text-base whitespace-nowrap">
         {label[view]}

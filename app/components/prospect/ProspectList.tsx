@@ -748,6 +748,11 @@ export const ProspectList: React.FC = () => {
           </Badge>
         </div>
         <div className="flex items-center gap-2">
+        <Link href="/collections">
+            <Button variant="outline" size="sm">
+              Collections
+            </Button>
+          </Link>
           {/* Tabs for All, Upcoming, Newly Listed (disabled) */}
           <Select value={selectedView} onValueChange={onTabsChange}>
             <SelectTrigger className="w-[110px] border-gray-300">
