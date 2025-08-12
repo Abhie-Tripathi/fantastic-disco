@@ -464,7 +464,7 @@ const Pages = () => {
   const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall, setTrackerId} = useTrackerContext();
   const isMobile = useIsMobile();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion, isBrief, setIsBrief} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const [allEntries, setAllEntries] = useState<string[][]>([[]]);
@@ -512,6 +512,10 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
   const [filterCount, setFilterCount] = useState(0);
   const [inputFocus, setInputFocus] = useState<boolean[]>([]);
+  const [collectionId,setCollectionId] = useState("");
+  useEffect(()=>{
+    setCollectionId(searchParams.get("collectionId") || "")
+  },[searchParams])
  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 useEffect(() => {
@@ -982,7 +986,7 @@ const jobComposite = {
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
-      ...(last==="createTracker" && {source:"tracker"}),
+      ...(last==="create" && {source:isBrief?"brandBrief":collectionId?.length>0?"preset":"tracker"}),
       accessLevel: editData?.tracker?.accessLevel,
       filterValues
     };
@@ -1798,7 +1802,7 @@ if(isLoading) return <Loading/>
       }
       style={{ display: "flex" }}
     >
-      <div className="flex gap-0.5 items-center text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">
+      <div className="flex gap-0.5 items-center text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={()=>setIsBrief(false)}>
       <ArrowLeft width={14} height={18}/>
         Back</div>
       </Link>:
@@ -1884,7 +1888,7 @@ if(isLoading) return <Loading/>
       }
       style={{ display: "flex" }}
     >
-      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={()=>setIsBrief(false)}>Cancel</Button>
       </Link>:
       <div className={styles.containerTopRightTwo} >
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>

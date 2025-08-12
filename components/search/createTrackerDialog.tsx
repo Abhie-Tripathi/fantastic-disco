@@ -45,9 +45,8 @@ export default function CreateTrackerDialog({
   const [trackerUrl, setTrackerUrl] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { localFilters, getLocalFilterValue } = useFilterContext();
+  const { localFilters, getLocalFilterValue} = useFilterContext();
   const { getFilterValue } = useFilterState();
-  const {isBrief} = useTra
   const { createTracker } = useTrackerServices();
   const { setIsBulkActionActive, setSelectedData } = useBulkAction();
 

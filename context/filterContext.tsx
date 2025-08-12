@@ -194,6 +194,8 @@ type FilterContextType = {
   setShowFetchedData: (val: boolean) => void;
   isTentimesUser: boolean;
   filterEmptyValues: (filters: Filters) => Filters;
+  isBrief: boolean;
+  setIsBrief: (val: boolean) => void;
 };
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
@@ -215,7 +217,7 @@ const isTentimesUser = useMemo(() => {
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
-  const [isBrief, setIsBrief] = useState<Boolean>(false);
+  const [isBrief, setIsBrief] = useState<boolean>(false);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
   const [suggestion, setSuggestion] = useState<number>(0);
@@ -516,6 +518,8 @@ const isTentimesUser = useMemo(() => {
       replaceLocalFilter,
       isTentimesUser,
       filterEmptyValues,
+      isBrief,
+      setIsBrief
     }),
     [
       isTentimesUser,
