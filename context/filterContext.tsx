@@ -261,7 +261,7 @@ const isTentimesUser = useMemo(() => {
       ) {
         params.active_gte = format(startOfMonth(new Date()), "yyyy-MM-dd");
         params.active_lte = format(
-          endOfMonth(addMonths(new Date(), 2)),
+          endOfMonth(addMonths(new Date(), 1)),
           "yyyy-MM-dd"
         );
       }
