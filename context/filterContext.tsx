@@ -254,14 +254,14 @@ const isTentimesUser = useMemo(() => {
       } as Filters;
       // Set default date range if not present
       if (
-        (pathname === "/internal/search/events") &&
+        pathname === "/internal/search/events" &&
         !params.active_gte &&
         !params.active_lte &&
         !params.eventIds
       ) {
         params.active_gte = format(startOfMonth(new Date()), "yyyy-MM-dd");
         params.active_lte = format(
-          endOfMonth(addMonths(new Date(), 1)),
+          endOfMonth(addMonths(new Date(), 2)),
           "yyyy-MM-dd"
         );
       }
