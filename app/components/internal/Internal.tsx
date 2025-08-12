@@ -302,7 +302,10 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
   const toggleBookmarkView = (view: string) => {
     setCoordinateView(view);
-    setShowFilter(false);
+    if (view === "savedEvents")
+      setShowFilter(false);
+    else if (view === "enquiryEvents" && !isMobile)
+      setShowFilter(true);
   };
 
   const searchHandler = useCallback(() => {
@@ -489,19 +492,21 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
                 {/* <ViewSelectDropdown /> */}
 
-                <Button
-                  onClick={toggleFilterHandler}
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 border relative"
-                >
-                  <Filter className="w-4 h-4" />
-                  {filterCount > 0 && (
-                    <span className="absolute top-[-12px] right-[-12px] bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
-                      {filterCount}
-                    </span>
-                  )}
-                </Button>
+                {coordinateView === "enquiryEvents" && (
+                  <Button
+                    onClick={toggleFilterHandler}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 border relative"
+                  >
+                    <Filter className="w-4 h-4" />
+                    {filterCount > 0 && (
+                      <span className="absolute top-[-12px] right-[-12px] bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
+                        {filterCount}
+                      </span>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
 
