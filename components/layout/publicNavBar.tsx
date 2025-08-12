@@ -86,12 +86,12 @@ export default function Navbar({isPublic}:{isPublic:boolean}) {
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex md:hidden items-center gap-2">
-            <Link href="https://whr.ai/gtm">
+            {/* <Link href="https://whr.ai/gtm">
             <Image src={HeroLogo} alt="logo" width={40} height={40} />
-            </Link>
+            </Link> */}
             
           <Link href="https://whr.ai/gtm">
-          <div className="flex items-center lg:hidden mr-2 max-[570px]:hidden">
+          <div className="flex items-center mr-2 md:hidden">
             <Image src={HeroLogo} alt="logo" width={34} height={34} />
             <Image
               className="ml-2 mb-[6px]"
