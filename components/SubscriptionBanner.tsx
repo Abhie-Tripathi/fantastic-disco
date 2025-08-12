@@ -33,7 +33,7 @@ export default function SubscriptionBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const bannerHeight = isVisible ? 48 : 0;
+    const bannerHeight = isVisible ? 80 : 0;
     document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
   }, [isVisible]);
 

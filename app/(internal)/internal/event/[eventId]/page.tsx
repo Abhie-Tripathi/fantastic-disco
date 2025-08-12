@@ -77,7 +77,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const coordinateService = useCoordinateService();
   const { data: eventData, isLoading } = useQuery<any>({
     queryKey: ["eventDetailData", params.eventId],
-    queryFn: () => getEventDetailById(params.eventId),
+    queryFn: () => getEventDetailById(params.eventId, true),
     refetchOnWindowFocus: false,
   });
   const { data: event } = useQuery<any>({
