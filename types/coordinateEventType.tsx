@@ -66,6 +66,7 @@ export interface enquiryType {
         name: string,
         imageUrl: string,
     } | null;
+    isProductEvent: boolean,
 }
 
 export interface CoordinateListResponse {
