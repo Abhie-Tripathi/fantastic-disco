@@ -451,15 +451,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       <div className="grid grid-rows-[30%_70%] md:grid-rows-1 md:grid-cols-[30%_70%] h-full">
         {!isMobile && (
           <aside
-            className="overflow-auto pb-6 md:pb-24 bg-[var(--primary-foreground)] 
-          pt-0 pr-3 sm:pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)]"
+            className="overflow-auto pb-2 bg-[var(--primary-foreground)] pt-0 pr-3 sm:pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)]"
           >
             {showBackToSearch && (
-              <Button className="flex items-center gap-2 text-[#666666] text-sm">
+              <Button onPress={() => router.back()} className="flex items-center gap-2 text-[#666666] text-sm">
                 <ArrowLeft width="14px" height="14px" color="#6750A4" />
                 <span
                   className="text-[var(--primary-color)] font-medium"
-                  onClick={() => router.back()}
                 >
                   Back
                 </span>
@@ -1212,7 +1210,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <ArrowLeft width="14px" height="14px" color="#6750A4" />
               <span
                 className="text-[var(--primary-color)] font-medium"
-                onClick={() => router.push}
+                // onClick={() => router.push}
               >
                 Go back
               </span>
@@ -1234,11 +1232,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <>
                   <div className="sticky pt-5 top-6 bg-background">
                     {showBackToSearch && (
-                      <Button className="flex items-center gap-2 text-[#666666] text-sm">
+                      <Button onPress={() => router.back()} className="flex items-center gap-2 text-[#666666] text-sm">
                         <ArrowLeft width="14px" height="14px" color="#6750A4" />
                         <span
                           className="text-[var(--primary-color)] font-medium"
-                          onClick={() => router.back()}
                         >
                           Back
                         </span>
@@ -1931,7 +1928,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </>
               )}
 
-              <div className="sticky !top-[120px] md:!top-0 bg-background pt-5 md:pt-0">
+              <div className="sticky !top-[120px] md:!top-0 bg-background pt-2 md:pt-0">
                 {eventEnquiry && eventEnquiry.id && (
                   <>
                     <div className="flex flex-col sm:flex-row gap-3 justify-between border-b pb-3">
