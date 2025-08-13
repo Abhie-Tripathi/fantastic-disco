@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useFilterContext } from "@/context/filterContext";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
+import { isEventeli } from "@/config";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -451,7 +452,7 @@ export const PeopleList: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       <div
-        className={`flex justify-between items-center !sticky !top-[76px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 md:pt-4 px-4 pb-4`}
+        className={`flex justify-between items-center !sticky !top-[68px] md:!top-0  bg-background z-50 transition-padding duration-200 md:py-3 pt-4 px-4 pb-4`}
       >
         <div className="flex items-center gap-2">
           <Badge className="bg-primary text-white text-xs whitespace-nowrap font-medium md:font-semibold">
@@ -466,6 +467,11 @@ export const PeopleList: React.FC = () => {
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
+                 {!isEventeli && <Link href="/collections" className="md:hidden">
+            <Button variant="outline" size="sm">
+              Collections
+            </Button>
+          </Link>}
           <Button
             onClick={toggleFilterHandler}
             variant={filtersCount > 0 ? "secondary" : "ghost"}

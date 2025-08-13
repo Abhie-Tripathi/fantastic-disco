@@ -64,6 +64,17 @@ const gtmFilters: {
           enabled: true,
         },
         {
+          id: "locationIds",
+          component: "LocationSelector",
+          enabled: true,
+        },
+        {
+          id: "dateRange",
+          component: "DateRangeSelector",
+          enabled: true,
+        },
+       
+        {
           id: "eventTypes",
           component: "EventTypeSelector",
           enabled: true,
@@ -78,16 +89,7 @@ const gtmFilters: {
           component: "EventFormatSelector",
           enabled: true,
         },
-        {
-          id: "locationIds",
-          component: "LocationSelector",
-          enabled: true,
-        },
-        {
-          id: "dateRange",
-          component: "DateRangeSelector",
-          enabled: true,
-        },
+
         {
           id: "status",
           component: "StatusSelector",
@@ -350,6 +352,16 @@ const geoFilters: {
           enabled: true,
         },
         {
+          id: "locationIds",
+          component: "LocationSelector",
+          enabled: true,
+        },
+        {
+          id: "dateRange",
+          component: "DateRangeSelector",
+          enabled: true,
+        },
+        {
           id: "eventTypes",
           component: "EventTypeSelector",
           enabled: true,
@@ -362,16 +374,6 @@ const geoFilters: {
         {
           id: "eventFormats",
           component: "EventFormatSelector",
-          enabled: true,
-        },
-        {
-          id: "locationIds",
-          component: "LocationSelector",
-          enabled: true,
-        },
-        {
-          id: "dateRange",
-          component: "DateRangeSelector",
           enabled: true,
         },
         {
