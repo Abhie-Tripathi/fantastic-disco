@@ -347,6 +347,11 @@ const geoFilters: {
       label: "Basic",
       filters: [
         {
+          id: "eventIds",
+          component: "MultiSelectSearchBar",
+          enabled: true,
+        },
+        {
           id: "locationIds",
           component: "LocationSelector",
           enabled: true,
@@ -354,11 +359,6 @@ const geoFilters: {
         {
           id: "dateRange",
           component: "DateRangeSelector",
-          enabled: true,
-        },
-        {
-          id: "eventIds",
-          component: "MultiSelectSearchBar",
           enabled: true,
         },
         {

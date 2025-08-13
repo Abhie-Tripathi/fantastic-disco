@@ -173,11 +173,11 @@ const Events = () => {
             </div>
 
             <div className="flex md:hidden items-center justify-end gap-2">
-            <Link href="/collections">
+            {!isEventeli && <Link href="/collections">
             <Button variant="outline" size="sm">
               Collections
             </Button>
-          </Link>
+          </Link>}
               <Popover
                 open={showViewDropdown}
                 onOpenChange={setShowViewDropdown}

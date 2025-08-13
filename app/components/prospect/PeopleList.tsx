@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useFilterContext } from "@/context/filterContext";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
+import { isEventeli } from "@/config";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -466,11 +467,11 @@ export const PeopleList: React.FC = () => {
         </div>
         <div className="flex justify-center"></div>
         <div className="flex justify-end gap-2">
-                  <Link href="/collections" className="md:hidden">
+                 {!isEventeli && <Link href="/collections" className="md:hidden">
             <Button variant="outline" size="sm">
               Collections
             </Button>
-          </Link>
+          </Link>}
           <Button
             onClick={toggleFilterHandler}
             variant={filtersCount > 0 ? "secondary" : "ghost"}
