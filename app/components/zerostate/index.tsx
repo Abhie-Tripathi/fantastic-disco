@@ -8,20 +8,18 @@ import { useAuthContext } from "@/context";
 import { MembershipPlan } from "@/data/membershipPlans";
 import { usePathname } from "next/navigation";
 
-const MSG_DAILY_LIMIT = "You have reached your daily limit. It will reset tomorrow.";
-const MSG_ADVANCED_TOKENS =
-  "You’ve exhausted your Advanced Search tokens. You can continue with basic searches or upgrade to a higher plan.";
-
 const ZeroState = ({
   title,
   text,
   errorStatusCode,
   isGlobal,
+  issues,
 }: {
   title?: string;
   text?: string;
   errorStatusCode?: number;
   isGlobal?: boolean;
+  issues?: any[];
 }) => {
   const { membershipData } = useAuthContext();
   const pathname = usePathname();
@@ -29,6 +27,30 @@ const ZeroState = ({
     !!membershipData &&
     membershipData.membership != null &&
     membershipData.membership > MembershipPlan.Freemium;
+
+  const getTokenBasedMessage = () => {
+    if (!issues || issues.length === 0) return null;
+    
+    const tokenInfo = issues[0];
+    const { advanceToken, basicToken } = tokenInfo;
+    
+    if (!advanceToken && !basicToken) {
+      if (!isPremium) {
+        return "Your search limit has been reached. Upgrade to a higher‑tier plan to access the features you need.";
+      }
+      return "You've exhausted your Advanced Searches and daily basic search limit. Basic limit will reset tomorrow at 10:00 AM IST or upgrade to increase the advance searches.";
+    }
+    
+    if (!advanceToken && basicToken) {
+      return "You've exhausted your Advanced Search tokens. You can continue with basic searches or upgrade to a higher plan.";
+    }
+    
+    if (advanceToken && !basicToken) {
+      return "You've exhausted basic daily limit. Basic limit will reset tomorrow or continue with the the advance searches.";
+    }
+    
+    return null;
+  };
 
   const handleUpgradeClick = () => {
     GAEvent(
@@ -38,63 +60,6 @@ const ZeroState = ({
       `${isEventeli ? "geo" : "gtm"} | pricing | web | research_upgrade_le`
     );
   };
-
-  const UpgradeLink = ({ children }: { children: React.ReactNode }) => (
-    <Link
-      target="_blank"
-      href={`https://whr.ai/pricing?utm_source=${
-        isEventeli ? "geo" : "gtm"
-      }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
-      className="text-primary cursor-pointer font-medium underline"
-      onClick={handleUpgradeClick}
-    >
-      {children}
-    </Link>
-  );
-
-  const render429Message = () => {
-    const normalized = text?.trim();
-
-    switch (true) {
-      case normalized === MSG_DAILY_LIMIT:
-        return isPremium ? (
-          <div>
-            You’ve exhausted your Advanced Searches and daily basic search limit.
-            <br />
-            Basic limit will reset tomorrow at 10:00 AM IST or{" "}
-            <UpgradeLink>upgrade</UpgradeLink> to increase the advance searches.
-          </div>
-        ) : (
-          <div>
-            Your search limit has been reached. <UpgradeLink>Upgrade</UpgradeLink> to a higher-tier plan to access the features you need.
-          </div>
-        );
-
-      case normalized === MSG_ADVANCED_TOKENS:
-        return (
-          <div>
-            You’ve exhausted your Advanced Search tokens. You can continue with basic searches or{" "}
-            <UpgradeLink>upgrade</UpgradeLink> to a higher plan.
-          </div>
-        );
-
-      default:
-        return isPremium ? (
-          <div>
-            You’ve exhausted your search limit.
-            <br />
-            Limit will reset tomorrow at 10:00 AM IST.
-          </div>
-        ) : (
-          <div>
-            Your search limit has been reached.
-            <br />
-            <UpgradeLink>Upgrade</UpgradeLink> to a higher-tier plan to access the features you need.
-          </div>
-        );
-    }
-  };
-
   return (
     <div
       className={`flex flex-col items-center justify-center gap-4 [color:var(--primary-color)] font-medium p-6 ${
@@ -106,29 +71,82 @@ const ZeroState = ({
           {title}
         </div>
       )}
-
       {text && (
-        <div className="w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]">
-          {errorStatusCode === 400 ? (
+        <div
+          className={`w-full flex justify-center max-w-[600px] text-center [color:var(--secondary-text-color)] [font-size:var(--font-size-default)] transition-all duration-200 hover:scale-[1.02]`}
+        >
+          {errorStatusCode == 400 ? (
             pathname.split("/").includes("trackers") ? (
               <div>There was an issue with your request.</div>
             ) : (
               <div>
                 There was an issue with your request.{" "}
-                <Link href="/internal/search/events" className="text-primary cursor-pointer font-medium underline">
+                <Link
+                  href="/internal/search/events"
+                  className="text-primary cursor-pointer font-medium underline"
+                >
                   Click here
                 </Link>{" "}
                 to reset and try again.
               </div>
             )
-          ) : errorStatusCode === 429 ? (
-            render429Message()
+          ) : errorStatusCode && errorStatusCode === 429 ? (
+            (() => {
+              const tokenMessage = getTokenBasedMessage();
+              if (tokenMessage) {
+                return (
+                  <div>
+                    {tokenMessage.includes("upgrade") ? (
+                      <>
+                        {tokenMessage.split("upgrade")[0]}
+                        <Link
+                          target="_blank"
+                          href={`https://whr.ai/pricing?utm_source=${
+                            isEventeli ? "geo" : "gtm"
+                          }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                          className="text-primary cursor-pointer font-medium underline"
+                          onClick={handleUpgradeClick}
+                        >
+                          upgrade
+                        </Link>
+                        {tokenMessage.split("upgrade")[1]}
+                      </>
+                    ) : (
+                      tokenMessage
+                    )}
+                  </div>
+                );
+              }
+              
+              return isPremium ? (
+                <div>
+                  You've exhausted your search limit.
+                  <br />
+                  Limit will reset tomorrow at 10:00 AM IST.
+                </div>
+              ) : (
+                <div>
+                  Your search limit has been reached.
+                  <br />
+                  <Link
+                    target="_blank"
+                    href={`https://whr.ai/pricing?utm_source=${
+                      isEventeli ? "geo" : "gtm"
+                    }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                    className="text-primary cursor-pointer font-medium underline"
+                    onClick={handleUpgradeClick}
+                  >
+                    Upgrade
+                  </Link>{" "}
+                  to a higher‑tier plan to access the features you need.
+                </div>
+              );
+            })()
           ) : (
             <div className="max-w-[400px]">{text}</div>
           )}
         </div>
       )}
-
       {!isGlobal && (
         <Image
           src={ZeroStateIcon}

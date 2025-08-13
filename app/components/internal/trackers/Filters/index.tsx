@@ -1413,7 +1413,7 @@ const entriesWithEmpty1 = [...currentEntries, []];
         return acc;
       }, {});      
       Object?.entries(mapping)?.forEach(([key, value]) => {
-        if (editData?.filterValues?.show?.includes(key)) {
+        if (editData?.filterValues?.showValues?.includes(key)) {
           showsData.push(value);
         }
         // console.log(editData?.filterValues?.shows);

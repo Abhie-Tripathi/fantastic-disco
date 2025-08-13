@@ -397,6 +397,7 @@ function mapInterestsToInterestIds(
     if (source === "tracker") {
       return (
         <ZeroState
+        issues={(error as ApiError).issues}
         text={(error as ApiError).message}
         errorStatusCode={(error as ApiError)?.statusCode}
       />
@@ -408,6 +409,7 @@ function mapInterestsToInterestIds(
         </div>
       ) : (
         <ZeroState
+          issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />

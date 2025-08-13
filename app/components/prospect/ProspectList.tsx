@@ -960,6 +960,7 @@ export const ProspectList: React.FC = () => {
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
               <ZeroState
+                issues={(error as ApiError).issues}
                 text={(error as ApiError).message}
                 errorStatusCode={(error as ApiError)?.statusCode}
               />

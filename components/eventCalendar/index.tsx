@@ -454,12 +454,14 @@ export default function EventCalendar({
           {source === "tracker" ? (
             <div className="px-10 py-5">
               <ZeroState
+          issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />
             </div>
           ) : (
             <ZeroState
+          issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />

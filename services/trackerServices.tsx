@@ -55,7 +55,6 @@ export const useTrackerServices = () => {
       
       if(formData.filterValues){
         formData.filterValues.showValues = getShowValues(formData.filterValues);
-        delete formData.filterValues.show;
       }
       return api.request(
         `${endpoints.tracker.create}`,
@@ -68,7 +67,6 @@ export const useTrackerServices = () => {
     const editTracker=(trackerId:string, formData: Tracker)=>{
       if(formData.filterValues){
         formData.filterValues.showValues = getShowValues(formData.filterValues);
-        delete formData.filterValues.show;
       }
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}`,

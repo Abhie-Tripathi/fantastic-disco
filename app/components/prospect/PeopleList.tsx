@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useFilterContext } from "@/context/filterContext";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
+import { useToast } from "@/hooks/use-toast";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -261,6 +262,7 @@ export const PeopleList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
+  const { toast } = useToast();
   const {
     isBulkActionActive,
     selectedData,
@@ -424,9 +426,25 @@ export const PeopleList: React.FC = () => {
                 : poc
             )
           );
+          
+          toast({
+            title: "Success",
+            description: "Contact details unlocked successfully",
+            variant: "default",
+          });
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        setCompanyUsers((prevPocData) =>
+          prevPocData.map((poc) =>
+            poc.user_id === pocId ? { ...poc, state: 0 } : poc
+          )
+        );
+        
+        toast({
+          title: "Error",
+          description: (error as ApiError).message,
+          variant: "destructive",
+        });
       }
     },
     [companyService]
@@ -589,7 +607,7 @@ export const PeopleList: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
+              <ZeroState issues={(error as ApiError).issues} text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">

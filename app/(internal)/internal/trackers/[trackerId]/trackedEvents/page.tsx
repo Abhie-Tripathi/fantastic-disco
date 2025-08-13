@@ -997,7 +997,7 @@ const Page = ({ params }: { params: any }) => {
           ) : eventData?.count == 0 ? (
             <NullState image={TrackerNullState} title="We couldn't find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
           ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
+            <ZeroState issues={(error as ApiError).issues} text={(error as ApiError).message} />
           ) : (
             <EventCalendar
               type={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}

@@ -269,8 +269,9 @@ export default function EventAccordion({
     economicImpact: "economicImpact",
   };
   const showsData: string[] = [];
+  showsData.push("ratings");
   Object.entries(mapping).forEach(([key, value]) => {
-    if ((data?.filterValues as any)?.show?.includes(key)) {
+    if ((data?.filterValues as any)?.showValues?.includes(key)) {
       showsData.push(value);
     }
   });
@@ -337,11 +338,11 @@ export default function EventAccordion({
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-  if (source === "tracker") {
-    showValues = showsData
-      .filter(Boolean)
-      .map((show) => Show[show as keyof typeof Show]);
-  }
+  // if (source === "tracker") {
+  //   showValues = showsData
+  //     .filter(Boolean)
+  //     .map((show) => Show[show as keyof typeof Show]);
+  // }
   useEffect(() => {
     if (events && events?.length > 0) {
       setUpdatedEvents(events);
@@ -519,10 +520,12 @@ export default function EventAccordion({
     return <Loading className="h-24 text-primary" />;
   }
 
+  console.log(error)
   if (error) {
     if (source === "tracker") {
       return (
         <ZeroState
+        issues={(error as ApiError).issues}
         text={(error as ApiError).message}
         errorStatusCode={(error as ApiError)?.statusCode}
       />
@@ -534,6 +537,7 @@ export default function EventAccordion({
         </div>
       ) : (
         <ZeroState
+        issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />

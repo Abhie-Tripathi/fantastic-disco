@@ -36,6 +36,8 @@ import {
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { ApiError } from "@/types/api";
 import { ArrowLeft, Location } from "geist-icons";
 import {
   CalendarDays,
@@ -58,6 +60,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const eventDetailParams = useSearchParams();
   const eventDetailView = eventDetailParams.get("view");
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [openItem, setOpenItem] = useState("");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
@@ -358,9 +361,25 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               : poc
           )
         );
+        
+        toast({
+          title: "Success",
+          description: "Contact details unlocked successfully",
+          variant: "default",
+        });
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 0 } : poc
+        )
+      );
+      
+      toast({
+        title: "Error",
+        description: (error as ApiError).message,
+        variant: "destructive",
+      });
     }
   };
 

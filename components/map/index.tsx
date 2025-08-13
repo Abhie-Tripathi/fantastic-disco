@@ -785,7 +785,7 @@ const isOnlineSelected = getFilterValue("eventFormats").split(",").includes("onl
       {(shouldFetchEventsDirectly ? directEventsQuery.isLoading : (eventCountsQuery.isLoading && currentZoomGroup === "city")) ? (
   (isGlobal?<Skeleton className="w-full h-full"/>:<Loading />)
 ) : (shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error) ? (
-  <ZeroState text={(shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error).message} isGlobal={isGlobal}/>
+  <ZeroState issues={(shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error).issues} text={(shouldFetchEventsDirectly ? directEventsQuery.error : eventCountsQuery.error).message} isGlobal={isGlobal}/>
 ) : (
         <>
           {source === "tracker" && (shouldFetchEventsDirectly ? directEventsQuery?.data?.length === 0 : eventCountsQuery?.data?.length === 0) ? (
