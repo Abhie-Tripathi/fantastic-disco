@@ -520,7 +520,6 @@ export default function EventAccordion({
     return <Loading className="h-24 text-primary" />;
   }
 
-  console.log(error)
   if (error) {
     if (source === "tracker") {
       return (
