@@ -20,26 +20,29 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
 
 interface AudienceSpreadSelectorProps {
   source?: string;
   variant?: "accordion" | "popover";
+  presetCountries?: string[];
+  setPresetCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export default function AudienceSpreadSelector({ variant = "popover", source }:AudienceSpreadSelectorProps) {
+export default function AudienceSpreadSelector({ variant = "popover", source, presetCountries = [], setPresetCountries }:AudienceSpreadSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
-  const enabled = morphedData?.audienceSpread?.isEnabled
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useSafeFilterContext();
+  const enabled = source==="preset"?true:morphedData?.audienceSpread?.isEnabled
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-  const selectedCountries = useMemo(() => 
-    (source === "preset"
-      ? getLocalFilterValue("presetCountry")?.split(',').filter(Boolean)
-      : getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean)) || [],
-    [localFilters.audienceSpread, source, localFilters?.presetCountry]
-  );
+  const selectedCountries = useMemo(() => {
+  if (source === "preset") {
+    return presetCountries;
+  }
+  return getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || [];
+}, [source, presetCountries, localFilters.audienceSpread]);
   
 
   const selectedRegions = useMemo(() => 
@@ -73,9 +76,9 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
       : [...selectedCountries, code];
     
     if(source==="preset"){
-      setMultipleLocalFilters({
-        presetCountry: newCountries.join(',')
-      });
+      setPresetCountries?.(prev =>
+      prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]
+    );
     }else
     setMultipleLocalFilters({
       audienceSpread: newCountries.join(',')
@@ -85,9 +88,8 @@ export default function AudienceSpreadSelector({ variant = "popover", source }:A
   const removeFilter = (code: string) => {
     if (selectedCountries.includes(code)) {
       if(source==="preset"){
-        setMultipleLocalFilters({
-          presetCountry: selectedCountries.filter(c => c !== code).join(',')
-        });
+        setPresetCountries?.(prev => prev.filter(c => c !== code));
+        return;
       }else
       setMultipleLocalFilters({
         audienceSpread: selectedCountries.filter(c => c !== code).join(',')

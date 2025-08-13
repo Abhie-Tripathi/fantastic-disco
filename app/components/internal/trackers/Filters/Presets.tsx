@@ -24,6 +24,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 // import { useFilterContext } from "@/context/filterContext";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import CollectionTypeSelector from "./collectionTypeSelector";
 
 interface Props {
   isPublic?: boolean;
@@ -52,6 +53,8 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
   const [isLoading, setIsLoading] = useState(false);
   const [filterChanged, setFilterChanged] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
+    const [presetCountries, setPresetCountries] = useState<string[]>([]);
+    const [presetType, setPresetType] = useState<string[]>([]);
   // const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const [totalCount,setTotalCount]=useState(0);
@@ -78,7 +81,7 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
         ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
         ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
         ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
-        ...(selectedLocation?.length ? { countryIds: selectedLocation.join(",") } : {}),
+        ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
         ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
       };
   
@@ -102,14 +105,13 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
     }
   }, [page, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, isLoading, presetData]);
   
-
   // Reset pagination when filters change
   useEffect(() => {
     setPresetTemplateData([]);
     setPage(0);
     setFilterChanged(true);
     setHasMore(true);
-  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy]);
+  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries]);
   
 
   // Setup intersection observer for infinite scroll
@@ -231,6 +233,7 @@ const limit=3;
 
 }
 
+console.log("template", presetType);
 
   return (
     <div className="w-full">
@@ -257,11 +260,24 @@ const limit=3;
             />
           </div>
         </div>
-        {template?.name === "T_COMPETITOR" &&
-        <div className="hidden md:w-[100%] md:block">
-        <AudienceSpreadSelector source="preset"/>
+        {(template?.name === "T_COMPETITOR" || template===undefined) &&
+        <div className="hidden md:w-[30%] md:block">
+        <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
+  setPresetCountries={setPresetCountries}/>
         </div>
         }
+        <div className="hidden md:w-[30%] md:block">
+        <CollectionTypeSelector
+        variant="popover"
+        disabled={false}
+        presetType={presetType}
+        setPresetType={setPresetType}
+      />
+      </div>
+        {/* {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined) &&
+        <div className="w-[30%]">
+          <CategorySelector source="preset"/>
+        </div>} */}
         {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
