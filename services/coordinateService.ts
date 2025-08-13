@@ -309,7 +309,7 @@ export const useCoordinateService = () => {
   };
 
   const getEnquiryFollowers = (enquiryId: string) => {
-    return api.request(
+    return api.request<any>(
       `${endpoints.coordinate.enquiryDetail}/${enquiryId}/followers`,
       {
         method: "GET",

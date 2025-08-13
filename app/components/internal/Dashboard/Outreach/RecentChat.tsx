@@ -21,7 +21,7 @@ const RecentChat = ({ outreachChat }: Props) => {
 
     const router = useRouter()
     const handleRouting = ()=>{
-        router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}&status=${outreachChat?.enquiryStatus}`)
+        router.push(`/internal/event/${outreachChat?.eventId}?view=outreach`)
     }
     return (
         <div className='bg-[var(--background-secondary-color)] rounded-[10px] p-3 w-full h-full relative border border-[var(--border-color)]'>
