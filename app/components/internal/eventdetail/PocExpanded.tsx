@@ -44,7 +44,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
       <div className="text-[var(--primary-color)] font-bold px-5 py-2">
         Poc Detail
       </div>
-      <div className="h-full overflow-y-auto w-full grid justify-center grid-cols-[repeat(auto-fill,_220px)] gap-4" >
+      <div className="h-full overflow-y-auto w-full grid justify-evenly grid-cols-[repeat(auto-fill,_220px)] gap-4 px-5" >
         {pocData?.length > 0 &&
           pocData.map((poc) => (
             <div
@@ -113,7 +113,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                       variant={"outline"}
                       size={"sm"}
                     >
-                      Show details
+                      {poc.state === 1 ? "Loading..." : poc.state === 2 ? "Unlocked" : "Show details"}
                     </Button>
                   </div>
                 )}

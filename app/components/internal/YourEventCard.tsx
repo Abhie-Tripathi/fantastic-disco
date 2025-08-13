@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { InterestConfiguration } from "@/types/configuration";
+import { useRouter } from "next/navigation";
 
 interface YourEventCardProps {
   eventId: string;
@@ -30,6 +31,7 @@ interface YourEventCardProps {
   currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
+  isProductEvent?: boolean;
   coordinateActions: InterestConfiguration[];
   pipelineConfig: any;
   handleModal?: (id: string, enquiryId: string) => void;
@@ -51,6 +53,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   currentEnquiryStatus,
   upvote,
   enquiryActivity,
+  isProductEvent,
   coordinateActions,
   pipelineConfig,
   handleModal,
@@ -58,6 +61,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   setSelectedId,
   enquiryStatusUpdate,
 }) => {
+
+  const router = useRouter();
+
   const address = eventData.eventLocation ? (
     eventData.format === "online" ? (
       <span className="flex items-center">
@@ -222,9 +228,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   return (
     <div className="flex justify-end border-l border-primary border-dashed w-[95%] md:w-[85%]">
       <div
-        className="bg-background rounded-lg border shadow-sm relative my-6 w-[98%] cursor-pointer"
+        className={`bg-background rounded-lg border shadow-sm relative my-6 w-[98%] ${!isProductEvent && "cursor-pointer"}`}
         onClick={() => {
-          handleModalOpen();
+          // handleModalOpen();
+          !isProductEvent && router.push(`/internal/event/${eventId}?view=coordinate`)
           GAEvent(
             "Coordinate",
             "Coordinate",

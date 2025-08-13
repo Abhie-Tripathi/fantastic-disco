@@ -28,6 +28,7 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useEventsService } from "@/services/eventsService";
 import { pocDetail } from "@/types/coordinateEventType";
 import {
+  DetailPageView,
   Event,
   EventCoOrganizerDetail,
   EventPOCDetails,
@@ -41,8 +42,13 @@ import {
   CalendarDays,
   ClipboardList,
   Globe,
+  Info,
+  Lock,
   MailIcon,
+  Map,
   MapPin,
+  Megaphone,
+  PencilRuler,
   PhoneIcon,
   Radio,
   Share2,
@@ -53,12 +59,44 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
+import { TeamRequest } from "@/components/gtmDetail/teamRequest";
+import { OutreachProgressBar } from "@/components/gtmDetail/outreachProgressBar";
+import FollowersPopup from "@/components/gtmDetail/FollowersPopup";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+
+function CoordinateIcon() {
+  return (
+    <svg
+      className="flex-shrink-0 h-4 w-4"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.5 14.75V14H2V14.75C2 16.1424 2.55312 17.4777 3.53769 18.4623C4.52226 19.4469 5.85761 20 7.25 20H9.5V18.5H7.25C6.25544 18.5 5.30161 18.1049 4.59835 17.4017C3.89509 16.6984 3.5 15.7446 3.5 14.75ZM17 7.25V8H18.5V7.25C18.5 5.85761 17.9469 4.52226 16.9623 3.53769C15.9777 2.55312 14.6424 2 13.25 2H11V3.5H13.25C13.7425 3.5 14.2301 3.597 14.6851 3.78545C15.14 3.97391 15.5534 4.25013 15.9017 4.59835C16.2499 4.94657 16.5261 5.35997 16.7145 5.81494C16.903 6.26991 17 6.75754 17 7.25ZM7.25 7.25H2.75C2.15326 7.25 1.58097 7.48705 1.15901 7.90901C0.737053 8.33097 0.5 8.90326 0.5 9.5V11H2V9.5C2 9.30109 2.07902 9.11032 2.21967 8.96967C2.36032 8.82902 2.55109 8.75 2.75 8.75H7.25C7.44891 8.75 7.63968 8.82902 7.78033 8.96967C7.92098 9.11032 8 9.30109 8 9.5V11H9.5V9.5C9.5 8.90326 9.26295 8.33097 8.84099 7.90901C8.41903 7.48705 7.84674 7.25 7.25 7.25ZM5 6.5C5.59334 6.5 6.17336 6.32405 6.66671 5.99441C7.16006 5.66477 7.54458 5.19623 7.77164 4.64805C7.9987 4.09987 8.05811 3.49667 7.94236 2.91473C7.8266 2.33279 7.54088 1.79824 7.12132 1.37868C6.70176 0.959123 6.16721 0.673401 5.58527 0.557646C5.00333 0.44189 4.40013 0.5013 3.85195 0.728363C3.30377 0.955426 2.83524 1.33994 2.50559 1.83329C2.17595 2.32664 2 2.90666 2 3.5C2 4.29565 2.31607 5.05871 2.87868 5.62132C3.44129 6.18393 4.20435 6.5 5 6.5ZM5 2C5.29667 2 5.58668 2.08797 5.83335 2.2528C6.08003 2.41762 6.27229 2.65189 6.38582 2.92598C6.49935 3.20007 6.52906 3.50167 6.47118 3.79264C6.4133 4.08361 6.27044 4.35088 6.06066 4.56066C5.85088 4.77044 5.58361 4.9133 5.29264 4.97118C5.00166 5.02906 4.70006 4.99935 4.42597 4.88582C4.15189 4.77229 3.91762 4.58003 3.7528 4.33336C3.58797 4.08668 3.5 3.79667 3.5 3.5C3.5 3.10218 3.65804 2.72065 3.93934 2.43934C4.22064 2.15804 4.60218 2 5 2ZM19.25 17.75H14.75C14.1533 17.75 13.581 17.9871 13.159 18.409C12.7371 18.831 12.5 19.4033 12.5 20V21.5H14V20C14 19.8011 14.079 19.6103 14.2197 19.4697C14.3603 19.329 14.5511 19.25 14.75 19.25H19.25C19.4489 19.25 19.6397 19.329 19.7803 19.4697C19.921 19.6103 20 19.8011 20 20V21.5H21.5V20C21.5 19.4033 21.2629 18.831 20.841 18.409C20.419 17.9871 19.8467 17.75 19.25 17.75ZM14 14C14 14.5933 14.1759 15.1734 14.5056 15.6667C14.8352 16.1601 15.3038 16.5446 15.8519 16.7716C16.4001 16.9987 17.0033 17.0581 17.5853 16.9424C18.1672 16.8266 18.7018 16.5409 19.1213 16.1213C19.5409 15.7018 19.8266 15.1672 19.9424 14.5853C20.0581 14.0033 19.9987 13.4001 19.7716 12.852C19.5446 12.3038 19.1601 11.8352 18.6667 11.5056C18.1734 11.1759 17.5933 11 17 11C16.2044 11 15.4413 11.3161 14.8787 11.8787C14.3161 12.4413 14 13.2044 14 14ZM18.5 14C18.5 14.2967 18.412 14.5867 18.2472 14.8334C18.0824 15.08 17.8481 15.2723 17.574 15.3858C17.2999 15.4994 16.9983 15.5291 16.7074 15.4712C16.4164 15.4133 16.1491 15.2704 15.9393 15.0607C15.7296 14.8509 15.5867 14.5836 15.5288 14.2926C15.4709 14.0017 15.5006 13.7001 15.6142 13.426C15.7277 13.1519 15.92 12.9176 16.1666 12.7528C16.4133 12.588 16.7033 12.5 17 12.5C17.3978 12.5 17.7794 12.658 18.0607 12.9393C18.342 13.2206 18.5 13.6022 18.5 14Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const eventDetailParams = useSearchParams();
-  const eventDetailView = eventDetailParams.get("view");
-  const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const isMobile = useIsMobile();
+  const eventDetailView = eventDetailParams.get("expandedView");
+  const isValidView = (view: string): view is DetailPageView => {
+    return ["research", "coordinate", "outreach"].includes(view);
+  };
+  const viewParam = eventDetailParams.get("view");
+  const [view, setView] = useState<DetailPageView>(
+    viewParam && isValidView(viewParam) ? viewParam : "research"
+  );
+  const [activeTab, setActiveTab] = useState<TTabs>(
+    view === "research" ? "overview" : "notes"
+  );
   const [openItem, setOpenItem] = useState("");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
@@ -80,7 +118,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     queryFn: () => getEventDetailById(params.eventId),
     refetchOnWindowFocus: false,
   });
-  const { data: event } = useQuery<any>({
+  const { data: event, isLoading: isDataLoading } = useQuery<any>({
     queryKey: ["eventDetails", params.eventId],
     queryFn: async () => {
       const [
@@ -92,6 +130,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventSpeakerDataResult,
         // eventSponsorDataResult,
         eventCoOrganizerDataResult,
+        eventEnquiryDataResult,
       ] = await Promise.allSettled([
         // getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
@@ -101,6 +140,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventSpeakerDetails(params.eventId, 3, 0),
         // getEventSponsorDetails(params.eventId, 3, 0),
         getEventCoOrganizerDetails(params.eventId),
+        coordinateService.getEnquiryDetailByEventId(params.eventId),
       ]);
       // const eventData =
       //   eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
@@ -134,6 +174,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       //   eventSponsorDataResult.status === "fulfilled"
       //     ? eventSponsorDataResult.value
       //     : null;
+      const eventEnquiry =
+        eventEnquiryDataResult.status === "fulfilled"
+          ? eventEnquiryDataResult.value?.enquiries[0]
+          : null;
       return {
         // eventData: eventData,
         eventPOCData: eventPOCData,
@@ -143,10 +187,18 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
         // eventSponsorData: eventSponsorData,
+        eventEnquiry: eventEnquiry,
       };
     },
     refetchOnWindowFocus: false,
   });
+
+  // const { data: followerData } = useQuery<any>({
+  //   queryKey: ["enquiryFollowerData", params.eventId],
+  //   queryFn: () => coordinateService.getEnquiryFollowers(event.eventEnquiry.id),
+  //   refetchOnWindowFocus: false,
+  // });
+  // console.log("Follower Data: ", followerData);
 
   useEffect(() => {
     if (typeof window !== undefined) {
@@ -158,7 +210,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   }, []);
 
-  if (isLoading) {
+  if (isDataLoading) {
     return (
       <Loading className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
     );
@@ -176,6 +228,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventExhibitorData,
     eventSpeakerData,
     // eventSponsorData,
+    eventEnquiry,
   } = event;
   const { basic, advance, insights, audience, interests }: Event =
     eventData || {};
@@ -261,11 +314,25 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isOverviewVisible = true;
   const typeOfEvent = rawFormat.toLowerCase();
 
-  const tabs = [
+  const eventTabs = [
     { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
     { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
     { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
   ];
+
+  const coordinateTabs = [
+    // { tabName: "Activity", path: "activity", isVisible: true },
+    { tabName: "Notes & Discussions", path: "notes", isVisible: true },
+    { tabName: "Team Requests", path: "teamRequest", isVisible: true },
+    // { tabName: "Documents", path: "documents", isVisible: true },
+  ];
+
+  const tabs =
+    view === "research"
+      ? eventTabs
+      : view === "coordinate"
+      ? coordinateTabs
+      : coordinateTabs;
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -329,6 +396,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+
+    if (view === "coordinate" || view === "outreach") {
+      setActiveTab(section as TTabs);
+    }
   };
 
   const unlockPoc = async (pocId: number) => {
@@ -361,6 +432,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 0 } : poc
+        )
+      );
     }
   };
 
@@ -371,847 +447,1669 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       : false;
 
   return (
-    <div className="p-6">
-      <aside
-        className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] 
-        pt-0 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] 
-        max-xl:w-[30%]"
-      >
-        {showBackToSearch && (
-          <Button className="flex items-center gap-2 text-[#666666] text-sm">
-            <ArrowLeft width="14px" height="14px" color="#6750A4" />
-            <span
-              className="text-[var(--primary-color)] font-medium"
-              onClick={() => router.back()}
-            >
-              Back to Search
-            </span>
-          </Button>
-        )}
-        <div className="flex gap-4 mt-4 items-start flex-col lg:flex-row">
-          {!website && !eventLogoUrl ? (
-            <div
-              className="h-24 px-10 rounded-md bg-[#5055A3]/10 border
-             border-[#5055A3]/20 flex items-center justify-center"
-            >
-              <span className="text-[#5055A3] text-2xl font-semibold">
-                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
-              </span>
-            </div>
-          ) : (
-            <img
-              src={eventImageSrc}
-              alt="eventDetails"
-              className="h-24 w-full lg:w-24 rounded-lg aspect-auto border object-contain"
-            />
-          )}
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 flex-wrap">
-              <div className="flex flex-row gap-3 flex-wrap">
-                {/* {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
-                  <ul className="flex flex-row flex-wrap gap-3">
-                    {basic.eventTypes.map((type: any) => (
-                      <TooltipProvider key={type.id}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              variant={"outline"}
-                              className="text-xs font-semibold py-1 px-3 border
-                              border-[#CCE6FF] rounded-sm w-fit
-                              text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D]
-                              dark:border-[#0D3868] cursor-pointer"
-                            >
-                              {type.name}
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent
-                            align="center"
-                            className="tooltip-content-styles"
-                          >
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              Event Type
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </ul>
-                )} */}
-                {primaryEventType && (
-                  <Badge
-                    variant={"outline"}
-                    className="flex items-center gap-2 text-xs font-semibold py-1 px-3 border
-                   rounded-sm w-fit cursor-pointer"
-                    style={{
-                      color: eventTypeColors[primaryEventType || ""],
-                      backgroundColor: lightenColor(
-                        eventTypeColors[primaryEventType || ""],
-                        0.9
-                      ),
-                      borderColor: lightenColor(
-                        eventTypeColors[primaryEventType || ""],
-                        0.9
-                      ),
-                    }}
-                  >
-                    <span>
-                      {eventTypeIcons[primaryEventType || "festivals"]}
-                    </span>
-                    <span>
-                      {primaryEventType.charAt(0).toUpperCase() +
-                        primaryEventType.slice(1)}
-                    </span>
-                  </Badge>
-                )}
-                {/* {isBranded && (
-                  <span
-                    className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2]
-                   border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]"
-                  >
-                    Branded Event
-                  </span>
-                )}
-                {isSeries && (
-                  <span
-                    className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] 
-                  border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]"
-                  >
-                    Series Event
-                  </span>
-                )} */}
-              </div>
-            </div>
-            {name && <p className="text-lg font-medium">{name}</p>}
-          </div>
-        </div>
-
-        <div className="flex justify-between mt-1">
-          <div className="flex items-center gap-1">
-            {rating !== null && rating > 0 && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Badge
-                      variant="outline"
-                      className="capitalize py-1 rounded-sm border-none px-0"
-                    >
-                      <Star
-                        className="w-4 h-4 mr-1 mt-[2px]"
-                        fill="#6F48AD"
-                        stroke="#6F48AD"
-                      />
-                      <span className="mt-[2px] text-base">{rating}</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align="center"
-                    alignOffset={-50}
-                    className="tooltip-content-styles"
-                  >
-                    <p className="text-[var(--secondary-text-color)] font-medium">
-                      User Ratings
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-          <div className="flex items-center">
-            <div className="flex gap-4 items-center">
-              {website && (
-                <Link
-                  href={website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-black dark:hover:text-primary text-[#666666]"
-                >
-                  <Globe className="w-4 h-4" stroke="currentColor" />
-                </Link>
-              )}
-              {/* <ButtonUI
-                variant={"link"}
-                onClick={handleShare}
-                className="hover:text-black dark:hover:text-primary text-[#666666] px-0"
-              >
-                <Share2 className="w-4 h-4" stroke="currentColor" />
-              </ButtonUI> */}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-2 items-center mt-1">
-          {startDateTime && (
-            <div
-              className="border border-[#ebebeb] dark:border-[var(--border-color)] 
-            rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
-            >
-              <span className="text-[#666666] text-md font-bold">
-                <CalendarDays width={20} height={20} />
-              </span>
-            </div>
-          )}
-          <p
-            className={`${
-              isCancelled || isPostponed ? "line-through" : ""
-            } font-semibold text-sm`}
+    <div className="px-6 md:p-6 md:pr-0 h-[calc(100vh-70px)]">
+      <div className="grid grid-rows-[30%_70%] md:grid-rows-1 md:grid-cols-[30%_70%] h-full">
+        {!isMobile && (
+          <aside
+            className="overflow-auto pb-6 md:pb-24 bg-[var(--primary-foreground)] 
+          pt-0 pr-3 sm:pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)]"
           >
-            {eventStartDate &&
-              eventEndDate &&
-              renderFormattedDates(eventStartDate, eventEndDate)}
-          </p>
-          {isCancelled && (
-            <Badge
-              variant="outline"
-              className="border-destructive text-destructive"
-            >
-              Cancelled
-            </Badge>
-          )}
-          {isPostponed && (
-            <Badge
-              variant="outline"
-              className="border-[#FF990A] text-[#FF990A]"
-            >
-              Postponed
-            </Badge>
-          )}
-        </div>
-
-        {(eventLocation || typeOfEvent) && (
-          <div className="flex gap-2 items-center mt-3">
-            <span
-              className="border border-[#ebebeb] dark:border-[var(--border-color)]
-             text-[#666666] rounded-lg flex items-center self-start justify-center 
-             text-md font-bold w-10 h-10 aspect-square"
-            >
-              {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
-                <Radio width={20} height={20} />
+            {showBackToSearch && (
+              <Button className="flex items-center gap-2 text-[#666666] text-sm">
+                <ArrowLeft width="14px" height="14px" color="#6750A4" />
+                <span
+                  className="text-[var(--primary-color)] font-medium"
+                  onClick={() => router.back()}
+                >
+                  Back
+                </span>
+              </Button>
+            )}
+            <div className="flex gap-4 mt-4 items-start flex-row sm:flex-col lg:flex-row">
+              {!website && !eventLogoUrl ? (
+                <div
+                  className="h-24 px-10 rounded-md bg-[#5055A3]/10 border
+                border-[#5055A3]/20 flex items-center justify-center"
+                >
+                  <span className="text-[#5055A3] text-2xl font-semibold">
+                    {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                  </span>
+                </div>
               ) : (
-                <MapPin width={20} height={20} />
+                <img
+                  src={eventImageSrc}
+                  alt="eventDetails"
+                  className="w-16 h-16 sm:h-24 sm:w-full lg:w-24 rounded-lg aspect-auto border object-contain"
+                />
               )}
-            </span>
-            <span>
-              {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
-                <p className="text-[var(--primary-text-color)] font-semibold text-sm ">
-                  {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                </p>
-              ) : venueName ? (
-                <p className="text-[var(--primary-text-color)] font-semibold text-sm">
-                  <span>{venueName}</span>
-
-                  {showAddress && eventLocation && eventLocation?.address && (
-                    <span>
-                      {", "}
-                      {eventLocation?.address || ""}
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-row gap-3 flex-wrap">
+                    {/* {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
+                    <ul className="flex flex-row flex-wrap gap-3">
+                      {basic.eventTypes.map((type: any) => (
+                        <TooltipProvider key={type.id}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge
+                                variant={"outline"}
+                                className="text-xs font-semibold py-1 px-3 border
+                                border-[#CCE6FF] rounded-sm w-fit
+                                text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D]
+                                dark:border-[#0D3868] cursor-pointer"
+                              >
+                                {type.name}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              align="center"
+                              className="tooltip-content-styles"
+                            >
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                Event Type
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                    </ul>
+                  )} */}
+                    {primaryEventType && (
+                      <Badge
+                        variant={"outline"}
+                        className="flex items-center gap-2 text-xs font-semibold py-1 px-3 border
+                      rounded-sm w-fit cursor-pointer"
+                        style={{
+                          color: eventTypeColors[primaryEventType || ""],
+                          backgroundColor: lightenColor(
+                            eventTypeColors[primaryEventType || ""],
+                            0.9
+                          ),
+                          borderColor: lightenColor(
+                            eventTypeColors[primaryEventType || ""],
+                            0.9
+                          ),
+                        }}
+                      >
+                        <span>
+                          {eventTypeIcons[primaryEventType || "festivals"]}
+                        </span>
+                        <span>
+                          {primaryEventType.charAt(0).toUpperCase() +
+                            primaryEventType.slice(1)}
+                        </span>
+                      </Badge>
+                    )}
+                    {/* {isBranded && (
+                    <span
+                      className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2]
+                      border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]"
+                    >
+                      Branded Event
                     </span>
                   )}
-                </p>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <p
-                        className="text-sm text-[var(--primary-text-color)]
-                       w-fit cursor-pointer font-semibold"
-                      >
-                        TBA
-                      </p>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      align="start"
-                      alignOffset={-60}
-                      className="tooltip-content-styles"
+                  {isSeries && (
+                    <span
+                      className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] 
+                    border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]"
                     >
-                      <p className="text-[var(--secondary-text-color)]">
-                        Venue to be announced
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {typeOfEvent !== "online" && (
-                <p className="text-[var(--secondary-text-color)] text-sm">
-                  {venueAddress}
-                </p>
-              )}
-              {typeOfEvent !== "online" &&
-                typeOfEvent !== "hybrid" &&
-                venueName !== "" &&
-                venueName !== null &&
-                venueName !== undefined && (
-                  <p
-                    className="mt-1 w-fit text-xs hover:underline hover:text-primary hover:underline-offset-2 
-                    cursor-pointer"
-                    onClick={() => setShowAddress(!showAddress)}
-                  >
-                    show address
-                  </p>
-                )}
-            </span>
-          </div>
-        )}
+                      Series Event
+                    </span>
+                  )} */}
+                  </div>
+                </div>
+                {name && <p className="text-lg font-medium">{name}</p>}
+              </div>
+            </div>
 
-        <div className="flex gap-2 items-center mt-3">
-          {/** Check the organizer logo present or not */}
-          {organizer ? (
-            organizerLogoUrl ? (
-              <img
-                src={organizerLogoUrl}
-                className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
-                border border-[#ebebeb] dark:border-[var(--border-color)]"
-                alt="Organizer Logo"
-              />
-            ) : (
-              <div
-                className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
-                items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
-              >
-                {organizerName && (
-                  <span className="text-[#5055A3] text-2xl font-semibold">
-                    {organizerName.replace(/[+*-/"'"]/g, "").charAt(0)}
-                  </span>
+            <div className="flex justify-between mt-1">
+              <div className="flex items-center gap-1">
+                {rating !== null && rating > 0 && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge
+                          variant="outline"
+                          className="capitalize py-1 rounded-sm border-none px-0"
+                        >
+                          <Star
+                            className="w-4 h-4 mr-1 mt-[2px]"
+                            fill="#6F48AD"
+                            stroke="#6F48AD"
+                          />
+                          <span className="mt-[2px] text-base">{rating}</span>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        align="center"
+                        alignOffset={-50}
+                        className="tooltip-content-styles"
+                      >
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          User Ratings
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
-            )
-          ) : (
-            <div
-              className="border border-[#ebebeb] dark:border-[var(--border-color)]
-          rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
-            >
-              <span className="text-[#666666] text-md font-bold">
-                <ClipboardList width={20} height={20} />
-              </span>
-            </div>
-          )}
-
-          {/** Check the organizer name is coming or not */}
-          <div className="flex flex-col">
-            {organizer ? (
-              <>
-                <p className="font-medium text-sm">{organizerName}</p>
-                {organizerAddress && (
-                  <span className="text-sm text-[var(--secondary-text-color)]">
-                    {organizerAddress}
-                  </span>
-                )}
-              </>
-            ) : (
-              <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                Organization information will appear here
-              </p>
-            )}
-            {eventCoOrganizerDetails &&
-              eventCoOrganizerDetails.coorganizers &&
-              eventCoOrganizerDetails.coorganizers.length > 0 && (
-                <Button
-                  onPress={() => setShowCoorganizers(true)}
-                  className={`mt-1 w-fit text-xs hover:underline hover:text-primary 
-                  hover:underline-offset-2 cursor-pointer dark:text-[var(--secondary-text-color)] dark:hover:text-white ${
-                    showCoorganizers ? "hidden" : "block"
-                  }`}
+              <div className="flex items-center">
+                <div className="flex gap-4 items-center">
+                  {website && (
+                    <Link
+                      href={website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-black dark:hover:text-primary text-[#666666]"
+                    >
+                      <Globe className="w-4 h-4" stroke="currentColor" />
+                    </Link>
+                  )}
+                  {/* <ButtonUI
+                  variant={"link"}
+                  onClick={handleShare}
+                  className="hover:text-black dark:hover:text-primary text-[#666666] px-0"
                 >
-                  see all
-                </Button>
-              )}
-          </div>
-        </div>
+                  <Share2 className="w-4 h-4" stroke="currentColor" />
+                </ButtonUI> */}
+                </div>
+              </div>
+            </div>
 
-        <div
-          className={`${
-            showCoorganizers ? "flex" : "hidden"
-          } gap-2 items-center mt-3`}
-        >
-          {coorganizers &&
-            coorganizers.length > 0 &&
-            coorganizers.map((coorganizer: EventCoOrganizerDetail) => {
-              const { id, city, country, name, logo } = coorganizer;
-              return (
-                <div className="flex flex-col" key={id}>
-                  <div className="flex gap-2 items-center mt-3">
-                    {/** Check the co-organizer logo present or not */}
-                    {coorganizer ? (
-                      logo ? (
+            <div className="flex gap-2 items-center mt-1">
+              {startDateTime && (
+                <div
+                  className="border border-[#ebebeb] dark:border-[var(--border-color)] 
+              rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                >
+                  <span className="text-[#666666] text-md font-bold">
+                    <CalendarDays width={20} height={20} />
+                  </span>
+                </div>
+              )}
+              <p
+                className={`${
+                  isCancelled || isPostponed ? "line-through" : ""
+                } font-semibold text-sm`}
+              >
+                {eventStartDate &&
+                  eventEndDate &&
+                  renderFormattedDates(eventStartDate, eventEndDate)}
+              </p>
+              {isCancelled && (
+                <Badge
+                  variant="outline"
+                  className="border-destructive text-destructive"
+                >
+                  Cancelled
+                </Badge>
+              )}
+              {isPostponed && (
+                <Badge
+                  variant="outline"
+                  className="border-[#FF990A] text-[#FF990A]"
+                >
+                  Postponed
+                </Badge>
+              )}
+            </div>
+
+            {(eventLocation || typeOfEvent) && (
+              <div className="flex gap-2 items-center mt-3">
+                <span
+                  className="border border-[#ebebeb] dark:border-[var(--border-color)]
+                text-[#666666] rounded-lg flex items-center self-start justify-center 
+                text-md font-bold w-10 h-10 aspect-square"
+                >
+                  {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
+                    <Radio width={20} height={20} />
+                  ) : (
+                    <MapPin width={20} height={20} />
+                  )}
+                </span>
+                <span>
+                  {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
+                    <p className="text-[var(--primary-text-color)] font-semibold text-sm ">
+                      {typeOfEvent.charAt(0).toUpperCase() +
+                        typeOfEvent.slice(1)}{" "}
+                    </p>
+                  ) : venueName ? (
+                    <p className="text-[var(--primary-text-color)] font-semibold text-sm">
+                      <span>{venueName}</span>
+
+                      {showAddress &&
+                        eventLocation &&
+                        eventLocation?.address && (
+                          <span>
+                            {", "}
+                            {eventLocation?.address || ""}
+                          </span>
+                        )}
+                    </p>
+                  ) : (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <p
+                            className="text-sm text-[var(--primary-text-color)]
+                          w-fit cursor-pointer font-semibold"
+                          >
+                            TBA
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          align="start"
+                          alignOffset={-60}
+                          className="tooltip-content-styles"
+                        >
+                          <p className="text-[var(--secondary-text-color)]">
+                            Venue to be announced
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  {typeOfEvent !== "online" && (
+                    <p className="text-[var(--secondary-text-color)] text-sm">
+                      {venueAddress}
+                    </p>
+                  )}
+                  {typeOfEvent !== "online" &&
+                    typeOfEvent !== "hybrid" &&
+                    venueName !== "" &&
+                    venueName !== null &&
+                    venueName !== undefined && (
+                      <p
+                        className="mt-1 w-fit text-xs hover:underline hover:text-primary hover:underline-offset-2 
+                      cursor-pointer"
+                        onClick={() => setShowAddress(!showAddress)}
+                      >
+                        show address
+                      </p>
+                    )}
+                </span>
+              </div>
+            )}
+
+            <div className="flex gap-2 items-center mt-3">
+              {/** Check the organizer logo present or not */}
+              {organizer ? (
+                organizerLogoUrl ? (
+                  <img
+                    src={organizerLogoUrl}
+                    className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
+                  border border-[#ebebeb] dark:border-[var(--border-color)]"
+                    alt="Organizer Logo"
+                  />
+                ) : (
+                  <div
+                    className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
+                  items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
+                  >
+                    {organizerName && (
+                      <span className="text-[#5055A3] text-2xl font-semibold">
+                        {organizerName.replace(/[+*-/"'"]/g, "").charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                )
+              ) : (
+                <div
+                  className="border border-[#ebebeb] dark:border-[var(--border-color)]
+            rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                >
+                  <span className="text-[#666666] text-md font-bold">
+                    <ClipboardList width={20} height={20} />
+                  </span>
+                </div>
+              )}
+
+              {/** Check the organizer name is coming or not */}
+              <div className="flex flex-col">
+                {organizer ? (
+                  <>
+                    <p className="font-medium text-sm">{organizerName}</p>
+                    {organizerAddress && (
+                      <span className="text-sm text-[var(--secondary-text-color)]">
+                        {organizerAddress}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                    Organization information will appear here
+                  </p>
+                )}
+                {eventCoOrganizerDetails &&
+                  eventCoOrganizerDetails.coorganizers &&
+                  eventCoOrganizerDetails.coorganizers.length > 0 && (
+                    <Button
+                      onPress={() => setShowCoorganizers(true)}
+                      className={`mt-1 w-fit text-xs hover:underline hover:text-primary 
+                    hover:underline-offset-2 cursor-pointer dark:text-[var(--secondary-text-color)] dark:hover:text-white ${
+                      showCoorganizers ? "hidden" : "block"
+                    }`}
+                    >
+                      see all
+                    </Button>
+                  )}
+              </div>
+            </div>
+
+            <div
+              className={`${
+                showCoorganizers ? "flex" : "hidden"
+              } gap-2 items-center mt-3`}
+            >
+              {coorganizers &&
+                coorganizers.length > 0 &&
+                coorganizers.map((coorganizer: EventCoOrganizerDetail) => {
+                  const { id, city, country, name, logo } = coorganizer;
+                  return (
+                    <div className="flex flex-col" key={id}>
+                      <div className="flex gap-2 items-center mt-3">
+                        {/** Check the co-organizer logo present or not */}
+                        {coorganizer ? (
+                          logo ? (
+                            <img
+                              src={logo}
+                              className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
+                            border border-[#ebebeb] dark:border-[var(--border-color)]"
+                              alt="Co-Organizer Logo"
+                            />
+                          ) : (
+                            <div
+                              className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
+                            items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
+                            >
+                              {name && (
+                                <span className="text-[#5055A3] text-2xl font-semibold">
+                                  {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                                </span>
+                              )}
+                            </div>
+                          )
+                        ) : (
+                          <div
+                            className="border border-[#ebebeb] dark:border-[var(--border-color)]
+                          rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                          >
+                            <span className="text-[#666666] text-md font-bold">
+                              <ClipboardList width={20} height={20} />
+                            </span>
+                          </div>
+                        )}
+
+                        {/** Check the co-organizer name is coming or not */}
+                        <div className="flex flex-col">
+                          {coorganizer ? (
+                            <>
+                              <p className="font-medium text-sm">{name}</p>
+                              {(city || country) && (
+                                <span className="text-sm text-[var(--secondary-text-color)]">
+                                  {[city, country].filter(Boolean).join(", ")}
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                              Coorganizer information will appear here
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+
+            <Accordion
+              type="single"
+              value={openItem}
+              className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent 
+            border border-[var(--neutral-light-color)] rounded-sm mb-4 hidden"
+              collapsible
+            >
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
+                  <p className="flex gap-3 items-center">
+                    Organizer
+                    {/* {organizer && Object.keys(organizer).length > 0 && (
+                    <span
+                      className="text-[12px] bg-[var(--primary-color)] text-white
+                      dark:text-[#131313] py-[1px] px-2 rounded-full"
+                    >
+                      {Object.keys.length.toString().padStart(2, "0")}
+                    </span>
+                  )} */}
+                  </p>
+                </AccordionTrigger>
+                <AccordionContent className="h-fit">
+                  {organizer ? (
+                    <div className="flex gap-4 p-2 mb-1">
+                      {organizerLogoUrl ? (
                         <img
-                          src={logo}
-                          className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
-                          border border-[#ebebeb] dark:border-[var(--border-color)]"
-                          alt="Co-Organizer Logo"
+                          src={organizerLogoUrl}
+                          className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                          alt="Organizer Logo"
                         />
                       ) : (
                         <div
-                          className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
-                          items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
+                          className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                        border-[#5055A3]/20 flex items-center justify-center"
                         >
-                          {name && (
+                          {organizerName && (
                             <span className="text-[#5055A3] text-2xl font-semibold">
-                              {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                              {organizerName
+                                .replace(/[+*-/"'"]/g, "")
+                                .charAt(0)}
                             </span>
                           )}
                         </div>
-                      )
-                    ) : (
-                      <div
-                        className="border border-[#ebebeb] dark:border-[var(--border-color)]
-                        rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
-                      >
-                        <span className="text-[#666666] text-md font-bold">
-                          <ClipboardList width={20} height={20} />
-                        </span>
+                      )}
+
+                      <div className="flex flex-col">
+                        <p className="font-medium text-sm">{organizerName}</p>
+                        {organizerAddress && (
+                          <div className="flex gap-2 items-center">
+                            <Location
+                              color="#666666"
+                              width="14px"
+                              height="14px"
+                            />
+                            <p className="text-sm text-[var(--secondary-text-color)]">
+                              {organizerAddress}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    )}
-
-                    {/** Check the co-organizer name is coming or not */}
-                    <div className="flex flex-col">
-                      {coorganizer ? (
-                        <>
-                          <p className="font-medium text-sm">{name}</p>
-                          {(city || country) && (
-                            <span className="text-sm text-[var(--secondary-text-color)]">
-                              {[city, country].filter(Boolean).join(", ")}
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                          Coorganizer information will appear here
-                        </p>
-                      )}
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-
-        <Accordion
-          type="single"
-          value={openItem}
-          className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent 
-          border border-[var(--neutral-light-color)] rounded-sm mb-4 hidden"
-          collapsible
-        >
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
-              <p className="flex gap-3 items-center">
-                Organizer
-                {/* {organizer && Object.keys(organizer).length > 0 && (
-                  <span
-                    className="text-[12px] bg-[var(--primary-color)] text-white
-                   dark:text-[#131313] py-[1px] px-2 rounded-full"
-                  >
-                    {Object.keys.length.toString().padStart(2, "0")}
-                  </span>
-                )} */}
-              </p>
-            </AccordionTrigger>
-            <AccordionContent className="h-fit">
-              {organizer ? (
-                <div className="flex gap-4 p-2 mb-1">
-                  {organizerLogoUrl ? (
-                    <img
-                      src={organizerLogoUrl}
-                      className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
-                      alt="Organizer Logo"
-                    />
                   ) : (
-                    <div
-                      className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
-                     border-[#5055A3]/20 flex items-center justify-center"
-                    >
-                      {organizerName && (
-                        <span className="text-[#5055A3] text-2xl font-semibold">
-                          {organizerName.replace(/[+*-/"'"]/g, "").charAt(0)}
-                        </span>
-                      )}
+                    <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                      Organization information will appear here
+                    </p>
+                  )}
+                  {/* {eventCoOrganizerDetails &&
+                  eventCoOrganizerDetails.length > 0 && (
+                    <div className="flex items-center gap-2 border-t-[1px] p-2">
+                      <p className="text-sm font-medium text-[var(--secondary-text-color)]">
+                        Co-organizer
+                      </p>
+                      <span
+                        className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
+                        py-[1px] px-2 rounded-full"
+                      >
+                        {eventCoOrganizerDetails.length > 0 &&
+                        eventCoOrganizerDetails.length < 9
+                          ? `0${eventCoOrganizerDetails.length}`
+                          : eventCoOrganizerDetails.length}
+                      </span>
                     </div>
                   )}
-
-                  <div className="flex flex-col">
-                    <p className="font-medium text-sm">{organizerName}</p>
-                    {organizerAddress && (
-                      <div className="flex gap-2 items-center">
-                        <Location color="#666666" width="14px" height="14px" />
-                        <p className="text-sm text-[var(--secondary-text-color)]">
-                          {organizerAddress}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                  Organization information will appear here
-                </p>
-              )}
-              {eventCoOrganizerDetails &&
-                eventCoOrganizerDetails.length > 0 && (
-                  <div className="flex items-center gap-2 border-t-[1px] p-2">
-                    <p className="text-sm font-medium text-[var(--secondary-text-color)]">
-                      Co-organizer
-                    </p>
-                    <span
-                      className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
-                      py-[1px] px-2 rounded-full"
+                {eventCoOrganizerDetails.length > 0 &&
+                  eventCoOrganizerDetails.map((coOrganizer: any) => (
+                    <div
+                      key={coOrganizer.id}
+                      className="flex gap-4 px-2 pt-1 items-center"
                     >
-                      {eventCoOrganizerDetails.length > 0 &&
-                      eventCoOrganizerDetails.length < 9
-                        ? `0${eventCoOrganizerDetails.length}`
-                        : eventCoOrganizerDetails.length}
-                    </span>
-                  </div>
-                )}
-              {eventCoOrganizerDetails.length > 0 &&
-                eventCoOrganizerDetails.map((coOrganizer: any) => (
-                  <div
-                    key={coOrganizer.id}
-                    className="flex gap-4 px-2 pt-1 items-center"
-                  >
-                    <img
-                      src={
-                        coOrganizer.logo !== null
-                          ? coOrganizer.logo
-                          : `https://img.10times.com/userimages/${coOrganizer.name
-                              .charAt(0)
-                              .toLowerCase()}.jpg`
-                      }
-                      className="rounded-lg bg-[var(--primary-foreground)] w-8 h-8 aspect-square"
-                      alt="Organizer Logo"
-                    />
-                    <p className="text-sm font-medium">{coOrganizer.name}</p>
-                  </div>
-                ))}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+                      <img
+                        src={
+                          coOrganizer.logo !== null
+                            ? coOrganizer.logo
+                            : `https://img.10times.com/userimages/${coOrganizer.name
+                                .charAt(0)
+                                .toLowerCase()}.jpg`
+                        }
+                        className="rounded-lg bg-[var(--primary-foreground)] w-8 h-8 aspect-square"
+                        alt="Organizer Logo"
+                      />
+                      <p className="text-sm font-medium">{coOrganizer.name}</p>
+                    </div>
+                  ))} */}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
-        <BookMarkEvent eventId={basic.id} interests={interests} />
-        {/* <ButtonUI
-          type="button"
-          onClick={() => router.push(`/internal/event/${params.eventId}`)}
-          className={`flex mt-3 items-center cursor-pointer justify-between 
+            <BookMarkEvent eventId={basic.id} interests={interests} />
+            {/* <ButtonUI
+            type="button"
+            onClick={() => router.push(`/internal/event/${params.eventId}`)}
+            className={`flex mt-3 items-center cursor-pointer justify-between 
+              w-full gap-2 p-2 h-10 bg-[#FAFAFA] hover:bg-[#FAFAFA] text-black dark:text-white 
+              font-normal bg dark:bg-transparent border border-[var(--neutral-light-color)]
+              dark:border-[var(--border-color)] rounded-sm ${
+                isOverviewActive
+                  ? "border-l-4 border-l-primary dark:border-l-primary font-medium"
+                  : ""
+              }`}
+          >
+            <span className={`text-sm ${isOverviewActive ? "text-primary" : ""}`}>
+              Overview
+            </span>
+            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
+          </ButtonUI> */}
+            <Accordion
+              type="single"
+              onValueChange={setOpenItem}
+              className={`bg-[#FAFAFA] mt-4 dark:border-[var(--border-color)]
+            dark:bg-[var(--primary-light-color)] border border-[var(--neutral-light-color)] rounded-sm`}
+              collapsible
+            >
+              <AccordionItem value="event-poc">
+                <AccordionTrigger
+                  className={`hover:no-underline p-2 font-normal text-sm 
+              ${
+                openItem === "event-poc"
+                  ? "shadow-md rounded-sm border-l-4 border-l-primary dark:border-l-primary"
+                  : ""
+              }
+                ${
+                  eventDetailView === "pocs"
+                    ? "rounded-sm border-l-4 border-l-primary dark:border-l-primary"
+                    : ""
+                }`}
+                >
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <p
+                          className={`flex gap-3 items-center ${
+                            eventDetailView === "pocs"
+                              ? "text-primary font-medium"
+                              : ""
+                          }`}
+                        >
+                          Event POC
+                          {eventPOCDetails.length > 0 && (
+                            <span
+                              className="text-[12px] bg-[var(--primary-color)]
+                            text-white dark:text-[#131313] py-[1px] px-2 rounded-full"
+                            >
+                              {/* {eventPOCDetails.filter((poc) => poc !== null)
+                              .length > 0 &&
+                            eventPOCDetails.filter((poc) => poc !== null).length <
+                              9
+                              ? `0${
+                                  eventPOCDetails.filter((poc) => poc !== null)
+                                    .length
+                                }`
+                              : eventPOCDetails.filter((poc) => poc !== null)
+                                  .length} */}
+                              {Object.keys(eventPOCDetails)
+                                .length.toString()
+                                .padStart(2, "0")}
+                            </span>
+                          )}
+                        </p>
+                      </TooltipTrigger>
+                      <TooltipContent className="w-40 tooltip-content-styles">
+                        <p className="text-left text-[var(--secondary-text-color)] font-medium">
+                          Point of Contact for this event
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </AccordionTrigger>
+                <AccordionContent
+                  className={`
+                  ${
+                    eventPOCDetails.length > 1
+                      ? "h-36 bg-white dark:bg-background overflow-y-auto border-t pt-1"
+                      : "h-fit"
+                  } pb-1 overflow-x-hidden`}
+                >
+                  {eventPOCDetails && eventPOCDetails.length > 0 ? (
+                    eventPOCDetails
+                      .slice(0, 5)
+                      .map((poc: EventPOCDetails | null) => {
+                        if (!poc) {
+                          return <></>;
+                        }
+                        const {
+                          designation,
+                          email,
+                          id,
+                          phoneNumber,
+                          profilePicture,
+                          name,
+                          state,
+                        } = poc;
+                        return (
+                          <div key={id} className="flex flex-row gap-3 p-2">
+                            {profilePicture ? (
+                              <img
+                                src={profilePicture}
+                                className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                                alt="Organizer Logo"
+                              />
+                            ) : (
+                              <div
+                                className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                        border-[#5055A3]/20 flex items-center justify-center"
+                              >
+                                {name && (
+                                  <span className="text-[#5055A3] text-lg font-semibold">
+                                    {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                              {name && (
+                                <p className="font-medium text-sm">{name}</p>
+                              )}
+                              {designation !== null && (
+                                <p className="text-[#666666] text-[12px]">
+                                  <span>{designation}</span>
+                                </p>
+                              )}
+                              {email && (
+                                <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                                  <MailIcon
+                                    width="12px"
+                                    height="12px"
+                                    className="self-start mt-1"
+                                  />
+                                  <span className="break-all">{email}</span>
+                                </p>
+                              )}
+                              {phoneNumber && (
+                                <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                                  <PhoneIcon width="12px" height="12px" />
+                                  <span>{phoneNumber}</span>
+                                </p>
+                              )}
+                              {(email || phoneNumber) && (
+                                <div>
+                                  <ButtonUI
+                                    disabled={
+                                      state && (state === 1 || state === 2)
+                                        ? true
+                                        : false
+                                    }
+                                    onClick={() => unlockPoc(id)}
+                                    variant={"outline"}
+                                    size={"sm"}
+                                  >
+                                    {state === 1
+                                      ? "Loading..."
+                                      : state === 2
+                                      ? "Unlocked"
+                                      : "Show details"}
+                                  </ButtonUI>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                  ) : (
+                    <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                      POC information will appear here
+                    </p>
+                  )}
+                  {eventPOCDetails && eventPOCDetails.length > 5 && (
+                    <p
+                      onClick={() =>
+                        router.push(
+                          `/internal/event/${params.eventId}?expandedView=pocs`
+                        )
+                      }
+                      className="p-2 pb-0 w-fit cursor-pointer text-primary 
+                    font-medium hover:underline hover:underline-offset-2"
+                    >
+                      View All ({eventPOCDetails.length})
+                    </p>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            {/* <ButtonUI
+            type="button"
+            onClick={() =>
+              router.push(`/internal/event/${params.eventId}?view=notes`)
+            }
+            className={`flex items-center mt-4 cursor-pointer justify-between 
             w-full gap-2 p-2 h-10 bg-[#FAFAFA] hover:bg-[#FAFAFA] text-black dark:text-white 
-            font-normal bg dark:bg-transparent border border-[var(--neutral-light-color)]
-            dark:border-[var(--border-color)] rounded-sm ${
-              isOverviewActive
-                ? "border-l-4 border-l-primary dark:border-l-primary font-medium"
+            font-normal border border-[var(--neutral-light-color)]
+            dark:border-[var(--border-color)] dark:bg-[var(--primary-light-color)]  rounded-sm ${
+              eventDetailView === "notes"
+                ? "font-medium border-l-4 border-l-primary dark:border-l-primary"
                 : ""
             }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Notes & Discussion</span>
+            </div>
+            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
+          </ButtonUI> */}
+          </aside>
+        )}
+        <div
+          className={`${
+            eventDetailView === "notes"
+              ? "h-[calc(100vh-150px)]"
+              : eventDetailView === "pocs"
+              ? "h-[calc(100vh-150px)] md:mx-6"
+              : ""
+          }`}
         >
-          <span className={`text-sm ${isOverviewActive ? "text-primary" : ""}`}>
-            Overview
-          </span>
-          <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
-        </ButtonUI> */}
-        <Accordion
-          type="single"
-          onValueChange={setOpenItem}
-          className={`bg-[#FAFAFA] mt-4 dark:border-[var(--border-color)]
-          dark:bg-[var(--primary-light-color)] border border-[var(--neutral-light-color)] rounded-sm`}
-          collapsible
-        >
-          <AccordionItem value="event-poc">
-            <AccordionTrigger
-              className={`hover:no-underline p-2 font-normal text-sm 
-            ${
-              openItem === "event-poc"
-                ? "shadow-md rounded-sm border-l-4 border-l-primary dark:border-l-primary"
-                : ""
-            }
-             ${
-               eventDetailView === "pocs"
-                 ? "rounded-sm border-l-4 border-l-primary dark:border-l-primary"
-                 : ""
-             }`}
+          {(eventDetailView === "notes" || eventDetailView === "pocs") && (
+            <Link
+              href={`/internal/event/${params.eventId}`}
+              className="flex items-center gap-2 text-[#666666] text-sm pb-1"
             >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p
-                      className={`flex gap-3 items-center ${
-                        eventDetailView === "pocs"
-                          ? "text-primary font-medium"
-                          : ""
-                      }`}
-                    >
-                      Event POC
-                      {eventPOCDetails.length > 0 && (
+              <ArrowLeft width="14px" height="14px" color="#6750A4" />
+              <span
+                className="text-[var(--primary-color)] font-medium"
+                onClick={() => router.push}
+              >
+                Go back
+              </span>
+            </Link>
+          )}
+          {eventDetailView === "notes" ? (
+            <Notes eventId={params.eventId} stage={"COORDINATE"} />
+          ) : eventDetailView === "pocs" ? (
+            <PocExpanded
+              eventId={params.eventId}
+              pocData={eventPOCDetails as pocDetail[]}
+              unlockPoc={unlockPoc}
+            />
+          ) : (
+            <section
+              className={`flex flex-col gap-4 md:gap-6 md:h-full md:overflow-y-auto md:scroll-smooth w-[90vw] md:w-auto md:px-6`}
+            >
+              {isMobile && (
+                <>
+                  <div className="sticky pt-5 top-6 bg-background">
+                    {showBackToSearch && (
+                      <Button className="flex items-center gap-2 text-[#666666] text-sm">
+                        <ArrowLeft width="14px" height="14px" color="#6750A4" />
                         <span
-                          className="text-[12px] bg-[var(--primary-color)]
-                         text-white dark:text-[#131313] py-[1px] px-2 rounded-full"
+                          className="text-[var(--primary-color)] font-medium"
+                          onClick={() => router.back()}
                         >
-                          {/* {eventPOCDetails.filter((poc) => poc !== null)
-                            .length > 0 &&
-                          eventPOCDetails.filter((poc) => poc !== null).length <
-                            9
-                            ? `0${
-                                eventPOCDetails.filter((poc) => poc !== null)
-                                  .length
-                              }`
-                            : eventPOCDetails.filter((poc) => poc !== null)
-                                .length} */}
-                          {Object.keys(eventPOCDetails)
-                            .length.toString()
-                            .padStart(2, "0")}
+                          Back
                         </span>
+                      </Button>
+                    )}
+                    <div className="flex gap-4 pt-4 items-start flex-row md:flex-col lg:flex-row">
+                      {!website && !eventLogoUrl ? (
+                        <div
+                          className="h-24 px-10 rounded-md bg-[#5055A3]/10 border
+                        border-[#5055A3]/20 flex items-center justify-center"
+                        >
+                          <span className="text-[#5055A3] text-2xl font-semibold">
+                            {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                          </span>
+                        </div>
+                      ) : (
+                        <img
+                          src={eventImageSrc}
+                          alt="eventDetails"
+                          className="w-16 h-16 md:h-24 md:w-full lg:w-24 rounded-lg aspect-auto border object-contain"
+                        />
                       )}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent className="w-40 tooltip-content-styles">
-                    <p className="text-left text-[var(--secondary-text-color)] font-medium">
-                      Point of Contact for this event
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </AccordionTrigger>
-            <AccordionContent
-              className={`
-                ${
-                  eventPOCDetails.length > 1
-                    ? "h-36 bg-white dark:bg-background overflow-y-auto border-t pt-1"
-                    : "h-fit"
-                } pb-1 overflow-x-hidden`}
-            >
-              {eventPOCDetails && eventPOCDetails.length > 0 ? (
-                eventPOCDetails
-                  .slice(0, 5)
-                  .map((poc: EventPOCDetails | null) => {
-                    if (!poc) {
-                      return <></>;
-                    }
-                    const {
-                      designation,
-                      email,
-                      id,
-                      phoneNumber,
-                      profilePicture,
-                      name,
-                      state,
-                    } = poc;
-                    return (
-                      <div key={id} className="flex flex-row gap-3 p-2">
-                        {profilePicture ? (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2 flex-wrap">
+                          <div className="flex flex-row gap-3 flex-wrap">
+                            {primaryEventType && (
+                              <Badge
+                                variant={"outline"}
+                                className="flex items-center gap-2 text-xs font-semibold py-1 px-3 border
+                              rounded-sm w-fit cursor-pointer"
+                                style={{
+                                  color:
+                                    eventTypeColors[primaryEventType || ""],
+                                  backgroundColor: lightenColor(
+                                    eventTypeColors[primaryEventType || ""],
+                                    0.9
+                                  ),
+                                  borderColor: lightenColor(
+                                    eventTypeColors[primaryEventType || ""],
+                                    0.9
+                                  ),
+                                }}
+                              >
+                                <span>
+                                  {
+                                    eventTypeIcons[
+                                      primaryEventType || "festivals"
+                                    ]
+                                  }
+                                </span>
+                                <span>
+                                  {primaryEventType.charAt(0).toUpperCase() +
+                                    primaryEventType.slice(1)}
+                                </span>
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        {name && <p className="text-lg font-medium">{name}</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="md:pb-24 bg-[var(--primary-foreground)] 
+                    pt-0 sm:pr-6 overflow-y-auto"
+                  >
+                    <div className="flex justify-between mt-1">
+                      <div className="flex items-center gap-1">
+                        {rating !== null && rating > 0 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Badge
+                                  variant="outline"
+                                  className="capitalize py-1 rounded-sm border-none px-0"
+                                >
+                                  <Star
+                                    className="w-4 h-4 mr-1 mt-[2px]"
+                                    fill="#6F48AD"
+                                    stroke="#6F48AD"
+                                  />
+                                  <span className="mt-[2px] text-base">
+                                    {rating}
+                                  </span>
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                align="center"
+                                alignOffset={-50}
+                                className="tooltip-content-styles"
+                              >
+                                <p className="text-[var(--secondary-text-color)] font-medium">
+                                  User Ratings
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
+                      <div className="flex items-center">
+                        <div className="flex gap-4 items-center">
+                          {website && (
+                            <Link
+                              href={website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:text-black dark:hover:text-primary text-[#666666]"
+                            >
+                              <Globe
+                                className="w-4 h-4"
+                                stroke="currentColor"
+                              />
+                            </Link>
+                          )}
+                          {/* <ButtonUI
+                            variant={"link"}
+                            onClick={handleShare}
+                            className="hover:text-black dark:hover:text-primary text-[#666666] px-0"
+                          >
+                            <Share2 className="w-4 h-4" stroke="currentColor" />
+                          </ButtonUI> */}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 items-center mt-1">
+                      {startDateTime && (
+                        <div
+                          className="border border-[#ebebeb] dark:border-[var(--border-color)] 
+                        rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                        >
+                          <span className="text-[#666666] text-md font-bold">
+                            <CalendarDays width={20} height={20} />
+                          </span>
+                        </div>
+                      )}
+                      <p
+                        className={`${
+                          isCancelled || isPostponed ? "line-through" : ""
+                        } font-semibold text-sm`}
+                      >
+                        {eventStartDate &&
+                          eventEndDate &&
+                          renderFormattedDates(eventStartDate, eventEndDate)}
+                      </p>
+                      {isCancelled && (
+                        <Badge
+                          variant="outline"
+                          className="border-destructive text-destructive"
+                        >
+                          Cancelled
+                        </Badge>
+                      )}
+                      {isPostponed && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#FF990A] text-[#FF990A]"
+                        >
+                          Postponed
+                        </Badge>
+                      )}
+                    </div>
+
+                    {(eventLocation || typeOfEvent) && (
+                      <div className="flex gap-2 items-center mt-3">
+                        <span
+                          className="border border-[#ebebeb] dark:border-[var(--border-color)]
+                        text-[#666666] rounded-lg flex items-center self-start justify-center 
+                        text-md font-bold w-10 h-10 aspect-square"
+                        >
+                          {typeOfEvent === "online" ||
+                          typeOfEvent === "hybrid" ? (
+                            <Radio width={20} height={20} />
+                          ) : (
+                            <MapPin width={20} height={20} />
+                          )}
+                        </span>
+                        <span>
+                          {typeOfEvent === "online" ||
+                          typeOfEvent === "hybrid" ? (
+                            <p className="text-[var(--primary-text-color)] font-semibold text-sm ">
+                              {typeOfEvent.charAt(0).toUpperCase() +
+                                typeOfEvent.slice(1)}{" "}
+                            </p>
+                          ) : venueName ? (
+                            <p className="text-[var(--primary-text-color)] font-semibold text-sm">
+                              <span>{venueName}</span>
+
+                              {showAddress &&
+                                eventLocation &&
+                                eventLocation?.address && (
+                                  <span>
+                                    {", "}
+                                    {eventLocation?.address || ""}
+                                  </span>
+                                )}
+                            </p>
+                          ) : (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <p
+                                    className="text-sm text-[var(--primary-text-color)]
+                                  w-fit cursor-pointer font-semibold"
+                                  >
+                                    TBA
+                                  </p>
+                                </TooltipTrigger>
+                                <TooltipContent
+                                  align="start"
+                                  alignOffset={-60}
+                                  className="tooltip-content-styles"
+                                >
+                                  <p className="text-[var(--secondary-text-color)]">
+                                    Venue to be announced
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                          {typeOfEvent !== "online" && (
+                            <p className="text-[var(--secondary-text-color)] text-sm">
+                              {venueAddress}
+                            </p>
+                          )}
+                          {typeOfEvent !== "online" &&
+                            typeOfEvent !== "hybrid" &&
+                            venueName !== "" &&
+                            venueName !== null &&
+                            venueName !== undefined && (
+                              <p
+                                className="mt-1 w-fit text-xs hover:underline hover:text-primary hover:underline-offset-2 
+                                cursor-pointer"
+                                onClick={() => setShowAddress(!showAddress)}
+                              >
+                                show address
+                              </p>
+                            )}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 items-center mt-3">
+                      {/** Check the organizer logo present or not */}
+                      {organizer ? (
+                        organizerLogoUrl ? (
                           <img
-                            src={profilePicture}
-                            className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                            src={organizerLogoUrl}
+                            className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
+                            border border-[#ebebeb] dark:border-[var(--border-color)]"
                             alt="Organizer Logo"
                           />
                         ) : (
                           <div
-                            className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
-                     border-[#5055A3]/20 flex items-center justify-center"
+                            className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
+                            items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
                           >
-                            {name && (
-                              <span className="text-[#5055A3] text-lg font-semibold">
-                                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+                            {organizerName && (
+                              <span className="text-[#5055A3] text-2xl font-semibold">
+                                {organizerName
+                                  .replace(/[+*-/"'"]/g, "")
+                                  .charAt(0)}
                               </span>
                             )}
                           </div>
-                        )}
-                        <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                          {name && (
-                            <p className="font-medium text-sm">{name}</p>
-                          )}
-                          {designation !== null && (
-                            <p className="text-[#666666] text-[12px]">
-                              <span>{designation}</span>
-                            </p>
-                          )}
-                          {email && (
-                            <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                              <MailIcon
-                                width="12px"
-                                height="12px"
-                                className="self-start mt-1"
-                              />
-                              <span className="break-all">{email}</span>
-                            </p>
-                          )}
-                          {phoneNumber && (
-                            <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                              <PhoneIcon width="12px" height="12px" />
-                              <span>{phoneNumber}</span>
-                            </p>
-                          )}
-                          {(email || phoneNumber) && (
-                            <div>
-                              <ButtonUI
-                                disabled={
-                                  state && (state === 1 || state === 2)
-                                    ? true
-                                    : false
-                                }
-                                onClick={() => unlockPoc(id)}
-                                variant={"outline"}
-                                size={"sm"}
-                              >
-                                Show details
-                              </ButtonUI>
-                            </div>
-                          )}
+                        )
+                      ) : (
+                        <div
+                          className="border border-[#ebebeb] dark:border-[var(--border-color)]
+                      rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                        >
+                          <span className="text-[#666666] text-md font-bold">
+                            <ClipboardList width={20} height={20} />
+                          </span>
                         </div>
-                      </div>
-                    );
-                  })
-              ) : (
-                <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                  POC information will appear here
-                </p>
-              )}
-              {eventPOCDetails && eventPOCDetails.length > 5 && (
-                <p
-                  onClick={() =>
-                    router.push(`/internal/event/${params.eventId}?view=pocs`)
-                  }
-                  className="p-2 pb-0 w-fit cursor-pointer text-primary 
-                  font-medium hover:underline hover:underline-offset-2"
-                >
-                  View All ({eventPOCDetails.length})
-                </p>
-              )}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        {/* <ButtonUI
-          type="button"
-          onClick={() =>
-            router.push(`/internal/event/${params.eventId}?view=notes`)
-          }
-          className={`flex items-center mt-4 cursor-pointer justify-between 
-          w-full gap-2 p-2 h-10 bg-[#FAFAFA] hover:bg-[#FAFAFA] text-black dark:text-white 
-          font-normal border border-[var(--neutral-light-color)]
-          dark:border-[var(--border-color)] dark:bg-[var(--primary-light-color)]  rounded-sm ${
-            eventDetailView === "notes"
-              ? "font-medium border-l-4 border-l-primary dark:border-l-primary"
-              : ""
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-sm">Notes & Discussion</span>
-          </div>
-          <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 ml-2" />
-        </ButtonUI> */}
-      </aside>
-      <div
-        className={`ml-auto w-[72%] max-xl:w-[62%] ${
-          eventDetailView === "notes"
-            ? "h-[calc(100vh-150px)]"
-            : eventDetailView === "pocs"
-            ? "h-[calc(100vh-150px)]"
-            : ""
-        }`}
-      >
-        {(eventDetailView === "notes" || eventDetailView === "pocs") && (
-          <Link
-            href={`/internal/event/${params.eventId}`}
-            className="flex items-center gap-2 text-[#666666] text-sm pb-3"
-          >
-            <ArrowLeft width="14px" height="14px" color="#6750A4" />
-            <span
-              className="text-[var(--primary-color)] font-medium"
-              onClick={() => router.push}
-            >
-              Back to Detail Page
-            </span>
-          </Link>
-        )}
-        {eventDetailView === "notes" ? (
-          <Notes eventId={params.eventId} stage={"COORDINATE"} />
-        ) : eventDetailView === "pocs" ? (
-          <PocExpanded
-            eventId={params.eventId}
-            pocData={eventPOCDetails as pocDetail[]}
-            unlockPoc={unlockPoc}
-          />
-        ) : (
-          <>
-            <ul
-              className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white 
-              dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full"
-            >
-              <div className="flex gap-12">
-                {tabs
-                  .filter((tab) => tab.isVisible)
-                  .map((tab) => (
-                    <li
-                      key={tab.tabName}
-                      onClick={() => {
-                        handleScrollTo(tab.path);
-                      }}
-                      className={`relative pb-2 font-semibold cursor-pointer ${
-                        activeTab === tab.path
-                          ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                          : "text-[var(--tertiary-text-color)]"
-                      }`}
-                    >
-                      {tab.tabName}
-                    </li>
-                  ))}
-              </div>
-              {/* <div className="flex gap-4 pb-2 pr-2">
-                <button
-                  className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 
-                  px-4 text-white w-fit cursor-not-allowed"
-                >
-                  <Image
-                    src={"/dollar.svg"}
-                    alt="Dollar"
-                    width={10}
-                    height={10}
-                  />
-                  Cost Estimate
-                </button>
-                <button
-                  className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4
-                 text-white w-fit cursor-not-allowed"
-                >
-                  <Image
-                    src={"/eventRelevance.svg"}
-                    alt="Speaker"
-                    width={15}
-                    height={15}
-                  />
-                  Event Relevance
-                </button>
-              </div> */}
-            </ul>
+                      )}
 
-            <section
-              className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 
-              w-full pr-4 overflow-y-auto scroll-smooth"
-            >
-              <Overview
-                eventDetails={eventData}
-                scrollSection={tabs[0].path}
-                setActiveTab={setActiveTab}
-              />
-              <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
-              <AdvancedDetails
-                eventDetails={advance}
-                eventEditionData={eventEditionData}
-                eventId={params.eventId}
-              />
-              {isInsightVisible && (
-                <InsightsAndScores
-                  eventDetails={eventData}
-                  eventRankingDetails={eventRankingDetails}
-                  scrollSection={tabs[1].path}
-                  setActiveTab={setActiveTab}
-                />
+                      {/** Check the organizer name is coming or not */}
+                      <div className="flex flex-col">
+                        {organizer ? (
+                          <>
+                            <p className="font-medium text-sm">
+                              {organizerName}
+                            </p>
+                            {organizerAddress && (
+                              <span className="text-sm text-[var(--secondary-text-color)]">
+                                {organizerAddress}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                            Organization information will appear here
+                          </p>
+                        )}
+                        {eventCoOrganizerDetails &&
+                          eventCoOrganizerDetails.coorganizers &&
+                          eventCoOrganizerDetails.coorganizers.length > 0 && (
+                            <Button
+                              onPress={() => setShowCoorganizers(true)}
+                              className={`mt-1 w-fit text-xs hover:underline hover:text-primary 
+                              hover:underline-offset-2 cursor-pointer dark:text-[var(--secondary-text-color)] dark:hover:text-white ${
+                                showCoorganizers ? "hidden" : "block"
+                              }`}
+                            >
+                              see all
+                            </Button>
+                          )}
+                      </div>
+                    </div>
+
+                    <div
+                      className={`${
+                        showCoorganizers ? "flex" : "hidden"
+                      } gap-2 items-center mt-3`}
+                    >
+                      {coorganizers &&
+                        coorganizers.length > 0 &&
+                        coorganizers.map(
+                          (coorganizer: EventCoOrganizerDetail) => {
+                            const { id, city, country, name, logo } =
+                              coorganizer;
+                            return (
+                              <div className="flex flex-col" key={id}>
+                                <div className="flex gap-2 items-center mt-3">
+                                  {/** Check the co-organizer logo present or not */}
+                                  {coorganizer ? (
+                                    logo ? (
+                                      <img
+                                        src={logo}
+                                        className="self-start rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10 
+                                      border border-[#ebebeb] dark:border-[var(--border-color)]"
+                                        alt="Co-Organizer Logo"
+                                      />
+                                    ) : (
+                                      <div
+                                        className="w-10 h-10 self-start aspect-square rounded-md bg-[#5055A3]/10 flex 
+                                      items-center justify-center border border-[#ebebeb] dark:border-[var(--border-color)]"
+                                      >
+                                        {name && (
+                                          <span className="text-[#5055A3] text-2xl font-semibold">
+                                            {name
+                                              .replace(/[+*-/"'"]/g, "")
+                                              .charAt(0)}
+                                          </span>
+                                        )}
+                                      </div>
+                                    )
+                                  ) : (
+                                    <div
+                                      className="border border-[#ebebeb] dark:border-[var(--border-color)]
+                                    rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square"
+                                    >
+                                      <span className="text-[#666666] text-md font-bold">
+                                        <ClipboardList width={20} height={20} />
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {/** Check the co-organizer name is coming or not */}
+                                  <div className="flex flex-col">
+                                    {coorganizer ? (
+                                      <>
+                                        <p className="font-medium text-sm">
+                                          {name}
+                                        </p>
+                                        {(city || country) && (
+                                          <span className="text-sm text-[var(--secondary-text-color)]">
+                                            {[city, country]
+                                              .filter(Boolean)
+                                              .join(", ")}
+                                          </span>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                                        Coorganizer information will appear here
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
+                    </div>
+
+                    <Accordion
+                      type="single"
+                      value={openItem}
+                      className="bg-[#FAFAFA] dark:border-[var(--border-color)] dark:bg-transparent 
+                      border border-[var(--neutral-light-color)] rounded-sm mb-4 hidden"
+                      collapsible
+                    >
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
+                          <p className="flex gap-3 items-center">
+                            Organizer
+                            {/* {organizer && Object.keys(organizer).length > 0 && (
+                              <span
+                                className="text-[12px] bg-[var(--primary-color)] text-white
+                              dark:text-[#131313] py-[1px] px-2 rounded-full"
+                              >
+                                {Object.keys.length.toString().padStart(2, "0")}
+                              </span>
+                            )} */}
+                          </p>
+                        </AccordionTrigger>
+                        <AccordionContent className="h-fit">
+                          {organizer ? (
+                            <div className="flex gap-4 p-2 mb-1">
+                              {organizerLogoUrl ? (
+                                <img
+                                  src={organizerLogoUrl}
+                                  className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                                  alt="Organizer Logo"
+                                />
+                              ) : (
+                                <div
+                                  className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                                border-[#5055A3]/20 flex items-center justify-center"
+                                >
+                                  {organizerName && (
+                                    <span className="text-[#5055A3] text-2xl font-semibold">
+                                      {organizerName
+                                        .replace(/[+*-/"'"]/g, "")
+                                        .charAt(0)}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="flex flex-col">
+                                <p className="font-medium text-sm">
+                                  {organizerName}
+                                </p>
+                                {organizerAddress && (
+                                  <div className="flex gap-2 items-center">
+                                    <Location
+                                      color="#666666"
+                                      width="14px"
+                                      height="14px"
+                                    />
+                                    <p className="text-sm text-[var(--secondary-text-color)]">
+                                      {organizerAddress}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                              Organization information will appear here
+                            </p>
+                          )}
+                          {/* {eventCoOrganizerDetails &&
+                            eventCoOrganizerDetails.length > 0 && (
+                              <div className="flex items-center gap-2 border-t-[1px] p-2">
+                                <p className="text-sm font-medium text-[var(--secondary-text-color)]">
+                                  Co-organizer
+                                </p>
+                                <span
+                                  className="text-[12px] bg-[var(--primary-color)] text-[#ffffff]
+                                  py-[1px] px-2 rounded-full"
+                                >
+                                  {eventCoOrganizerDetails.length > 0 &&
+                                  eventCoOrganizerDetails.length < 9
+                                    ? `0${eventCoOrganizerDetails.length}`
+                                    : eventCoOrganizerDetails.length}
+                                </span>
+                              </div>
+                            )}
+                          {eventCoOrganizerDetails.length > 0 &&
+                            eventCoOrganizerDetails.map((coOrganizer: any) => (
+                              <div
+                                key={coOrganizer.id}
+                                className="flex gap-4 px-2 pt-1 items-center"
+                              >
+                                <img
+                                  src={
+                                    coOrganizer.logo !== null
+                                      ? coOrganizer.logo
+                                      : `https://img.10times.com/userimages/${coOrganizer.name
+                                          .charAt(0)
+                                          .toLowerCase()}.jpg`
+                                  }
+                                  className="rounded-lg bg-[var(--primary-foreground)] w-8 h-8 aspect-square"
+                                  alt="Organizer Logo"
+                                />
+                                <p className="text-sm font-medium">{coOrganizer.name}</p>
+                              </div>
+                            ))} */}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    <BookMarkEvent eventId={basic.id} interests={interests} />
+
+                    <Accordion
+                      type="single"
+                      onValueChange={setOpenItem}
+                      className={`bg-[#FAFAFA] mt-4 dark:border-[var(--border-color)]
+                      dark:bg-[var(--primary-light-color)] border border-[var(--neutral-light-color)] rounded-sm`}
+                      collapsible
+                    >
+                      <AccordionItem value="event-poc">
+                        <AccordionTrigger
+                          className={`hover:no-underline p-2 font-normal text-sm 
+                        ${
+                          openItem === "event-poc"
+                            ? "shadow-md rounded-sm border-l-4 border-l-primary dark:border-l-primary"
+                            : ""
+                        }
+                        ${
+                          eventDetailView === "pocs"
+                            ? "rounded-sm border-l-4 border-l-primary dark:border-l-primary"
+                            : ""
+                        }`}
+                        >
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p
+                                  className={`flex gap-3 items-center ${
+                                    eventDetailView === "pocs"
+                                      ? "text-primary font-medium"
+                                      : ""
+                                  }`}
+                                >
+                                  Event POC
+                                  {eventPOCDetails.length > 0 && (
+                                    <span
+                                      className="text-[12px] bg-[var(--primary-color)]
+                                    text-white dark:text-[#131313] py-[1px] px-2 rounded-full"
+                                    >
+                                      {/* {eventPOCDetails.filter((poc) => poc !== null)
+                                        .length > 0 &&
+                                      eventPOCDetails.filter((poc) => poc !== null).length <
+                                        9
+                                        ? `0${
+                                            eventPOCDetails.filter((poc) => poc !== null)
+                                              .length
+                                          }`
+                                        : eventPOCDetails.filter((poc) => poc !== null)
+                                            .length} */}
+                                      {Object.keys(eventPOCDetails)
+                                        .length.toString()
+                                        .padStart(2, "0")}
+                                    </span>
+                                  )}
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent className="w-40 tooltip-content-styles">
+                                <p className="text-left text-[var(--secondary-text-color)] font-medium">
+                                  Point of Contact for this event
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </AccordionTrigger>
+                        <AccordionContent
+                          className={`
+                            ${
+                              eventPOCDetails.length > 1
+                                ? "h-36 bg-white dark:bg-background overflow-y-auto border-t pt-1"
+                                : "h-fit"
+                            } pb-1 overflow-x-hidden`}
+                        >
+                          {eventPOCDetails && eventPOCDetails.length > 0 ? (
+                            eventPOCDetails
+                              .slice(0, 5)
+                              .map((poc: EventPOCDetails | null) => {
+                                if (!poc) {
+                                  return <></>;
+                                }
+                                const {
+                                  designation,
+                                  email,
+                                  id,
+                                  phoneNumber,
+                                  profilePicture,
+                                  name,
+                                  state,
+                                } = poc;
+                                return (
+                                  <div
+                                    key={id}
+                                    className="flex flex-row gap-3 p-2"
+                                  >
+                                    {profilePicture ? (
+                                      <img
+                                        src={profilePicture}
+                                        className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                                        alt="Organizer Logo"
+                                      />
+                                    ) : (
+                                      <div
+                                        className="w-10 h-10 aspect-square rounded-md bg-[#5055A3]/10 border
+                                border-[#5055A3]/20 flex items-center justify-center"
+                                      >
+                                        {name && (
+                                          <span className="text-[#5055A3] text-lg font-semibold">
+                                            {name
+                                              .replace(/[+*-/"'"]/g, "")
+                                              .charAt(0)}
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                    <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                                      {name && (
+                                        <p className="font-medium text-sm">
+                                          {name}
+                                        </p>
+                                      )}
+                                      {designation !== null && (
+                                        <p className="text-[#666666] text-[12px]">
+                                          <span>{designation}</span>
+                                        </p>
+                                      )}
+                                      {email && (
+                                        <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                                          <MailIcon
+                                            width="12px"
+                                            height="12px"
+                                            className="self-start mt-1"
+                                          />
+                                          <span className="break-all">
+                                            {email}
+                                          </span>
+                                        </p>
+                                      )}
+                                      {phoneNumber && (
+                                        <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                                          <PhoneIcon
+                                            width="12px"
+                                            height="12px"
+                                          />
+                                          <span>{phoneNumber}</span>
+                                        </p>
+                                      )}
+                                      {(email || phoneNumber) && (
+                                        <div>
+                                          <ButtonUI
+                                            disabled={
+                                              state &&
+                                              (state === 1 || state === 2)
+                                                ? true
+                                                : false
+                                            }
+                                            onClick={() => unlockPoc(id)}
+                                            variant={"outline"}
+                                            size={"sm"}
+                                          >
+                                            {state === 1
+                                              ? "Loading..."
+                                              : state === 2
+                                              ? "Unlocked"
+                                              : "Show details"}
+                                          </ButtonUI>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })
+                          ) : (
+                            <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                              POC information will appear here
+                            </p>
+                          )}
+                          {eventPOCDetails && eventPOCDetails.length > 5 && (
+                            <p
+                              onClick={() =>
+                                router.push(
+                                  `/internal/event/${params.eventId}?expandedView=pocs`
+                                )
+                              }
+                              className="p-2 pb-0 w-fit cursor-pointer text-primary 
+                              font-medium hover:underline hover:underline-offset-2"
+                            >
+                              View All ({eventPOCDetails.length})
+                            </p>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                </>
               )}
-              {isAudienceVisible && (
-                <AudienceIntel
-                  eventDetails={eventData}
-                  eventExhibitorData={eventExhibitorData}
-                  eventSpeakerData={eventSpeakerData}
-                  // eventSponsorData={eventSponsorData}
-                  scrollSection={tabs[2].path}
-                  setActiveTab={setActiveTab}
-                />
+
+              <div className="sticky !top-[120px] md:!top-0 bg-background pt-5 md:pt-0">
+                {eventEnquiry && eventEnquiry.id && (
+                  <>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-between border-b pb-3">
+                      <FollowersPopup
+                        eventId={id}
+                        enquiryId={eventEnquiry.id}
+                        enquiryOwner={eventEnquiry.owner}
+                      />
+                      <div className="flex gap-6 md:gap-3">
+                        <ButtonUI
+                          variant={view === "research" ? "default" : "outline"}
+                          size="icon"
+                          onClick={() => setView("research")}
+                        >
+                          <Info className="h-4 w-4" />
+                        </ButtonUI>
+
+                        {/* <ButtonUI variant="outline" size="icon" className="bg-muted relative" >
+                        <PencilRuler className="h-4 w-4" color="#8F8F8F" />
+                        <Lock strokeWidth={3} className="h-3 w-3 absolute top-[-5px] right-[-1px]" color="#DA2F35" />
+                      </ButtonUI> */}
+
+                        <ButtonUI
+                          variant={
+                            view === "coordinate" ? "default" : "outline"
+                          }
+                          size="icon"
+                          className=""
+                          onClick={() => {
+                            setView("coordinate");
+                            setActiveTab("notes");
+                          }}
+                        >
+                          <CoordinateIcon />
+                        </ButtonUI>
+
+                        {!isEventeli &&
+                          <ButtonUI
+                            variant={view === "outreach" ? "default" : "outline"}
+                            size="icon"
+                            className=""
+                            onClick={() => {
+                              setView("outreach");
+                              setActiveTab("notes");
+                            }}
+                          >
+                            <Map className="h-4 w-4" />
+                          </ButtonUI>
+                        }
+
+                        <ButtonUI
+                          variant="outline"
+                          size="icon"
+                          className="bg-accent relative"
+                        >
+                          <Megaphone className="h-4 w-4" color="#8F8F8F" />
+                          <Lock
+                            strokeWidth={2}
+                            className="h-3 w-3 absolute top-[-2px] right-[-1px]"
+                          />
+                        </ButtonUI>
+                      </div>
+                    </div>
+
+                    {view === "outreach" && (
+                      <OutreachProgressBar
+                        eventId={id}
+                        enquiryId={eventEnquiry.id}
+                        enquiryStatus={eventEnquiry?.status}
+                      />
+                    )}
+                  </>
+                )}
+                <ul
+                  className="flex flex-row gap-12 justify-between z-10 bg-white 
+                  dark:bg-[var(--heading-background-color)] shadow-[0_3px_5px_-6px_black] pt-3 items-end w-full"
+                >
+                  <div className="flex gap-12">
+                    {tabs
+                      .filter((tab) => tab.isVisible)
+                      .map((tab) => (
+                        <li
+                          key={tab.tabName}
+                          onClick={() => {
+                            handleScrollTo(tab.path);
+                          }}
+                          className={`relative pb-2 font-semibold cursor-pointer ${
+                            activeTab === tab.path
+                              ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                              : "text-[var(--tertiary-text-color)]"
+                          }`}
+                        >
+                          {tab.tabName}
+                        </li>
+                      ))}
+                  </div>
+                  {/* <div className="flex gap-4 pb-2 pr-2">
+                    <button
+                      className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 
+                      px-4 text-white w-fit cursor-not-allowed"
+                    >
+                      <Image
+                        src={"/dollar.svg"}
+                        alt="Dollar"
+                        width={10}
+                        height={10}
+                      />
+                      Cost Estimate
+                    </button>
+                    <button
+                      className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4
+                    text-white w-fit cursor-not-allowed"
+                    >
+                      <Image
+                        src={"/eventRelevance.svg"}
+                        alt="Speaker"
+                        width={15}
+                        height={15}
+                      />
+                      Event Relevance
+                    </button>
+                  </div> */}
+                </ul>
+              </div>
+              {view === "research" ? (
+                <>
+                  <Overview
+                    eventDetails={eventData}
+                    scrollSection={tabs[0].path}
+                    setActiveTab={setActiveTab}
+                  />
+                  <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
+                  <AdvancedDetails
+                    eventDetails={advance}
+                    eventEditionData={eventEditionData}
+                    eventId={params.eventId}
+                  />
+                  {isInsightVisible && (
+                    <InsightsAndScores
+                      eventDetails={eventData}
+                      eventRankingDetails={eventRankingDetails}
+                      scrollSection={tabs[1].path}
+                      setActiveTab={setActiveTab}
+                    />
+                  )}
+                  {isAudienceVisible && (
+                    <AudienceIntel
+                      eventDetails={eventData}
+                      eventExhibitorData={eventExhibitorData}
+                      eventSpeakerData={eventSpeakerData}
+                      // eventSponsorData={eventSponsorData}
+                      scrollSection={tabs[2].path}
+                      setActiveTab={setActiveTab}
+                    />
+                  )}
+                </>
+              ) : view === "coordinate" ? (
+                <div className="md:h-[calc(100vh-250px)]">
+                  {activeTab === "notes" && (
+                    <Notes
+                      eventId={id}
+                      enquiryId={eventEnquiry.id}
+                      stage={"COORDINATE"}
+                    />
+                  )}
+                  {activeTab === "teamRequest" && (
+                    <TeamRequest eventId={id} enquiryId={eventEnquiry.id} />
+                  )}
+                </div>
+              ) : view === "outreach" ? (
+                <div className="md:h-[calc(100vh-340px)]">
+                  {activeTab === "notes" && (
+                    <Notes
+                      eventId={id}
+                      enquiryId={eventEnquiry.id}
+                      stage={"OUTREACH"}
+                    />
+                  )}
+                  {activeTab === "teamRequest" && (
+                    <TeamRequest eventId={id} enquiryId={eventEnquiry.id} />
+                  )}
+                </div>
+              ) : (
+                <></>
               )}
             </section>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

@@ -45,7 +45,7 @@ export default function CreateTrackerDialog({
   const [trackerUrl, setTrackerUrl] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { localFilters, getLocalFilterValue } = useFilterContext();
+  const { localFilters, getLocalFilterValue} = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { createTracker } = useTrackerServices();
   const { setIsBulkActionActive, setSelectedData } = useBulkAction();
@@ -102,6 +102,7 @@ export default function CreateTrackerDialog({
     const viewBound = getFilterValue("viewBound");
     const formData = {
       name: trackerName,
+      source:"research",
       filterValues: {
         ...(locationIds && { locationIds: locationIds }),
         ...(viewBound && { viewBound: viewBound }),
