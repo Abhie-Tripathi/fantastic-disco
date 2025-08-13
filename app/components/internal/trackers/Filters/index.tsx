@@ -850,7 +850,6 @@ const stepsConfig =[
     economicImpact: "economicImpact"
   };
   const [shouldCallApi, setShouldCallApi] = useState(false);
-  console.log("allEntries",allEntries);
   
   const saveTrackerHandler = async () => {
     // setIsNew(true);
