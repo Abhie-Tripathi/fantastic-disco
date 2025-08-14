@@ -2,14 +2,16 @@ import { useQuery } from "@/hooks/useQuery";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { useTrackerServices } from "@/services/trackerServices";
 
+const STALE_TIME = 300000;
+
 export const eventsKeys = {
-  all: ["events"] as const,
+  all: ["trackerevents"] as const,
   list: (query: EventQuery, trackerId?: string) => [...eventsKeys.all, query, trackerId] as const, 
 };
 
 export const useTrackerEvents = {
   list: (query: EventQuery, trackerId?: string, view?: string) => {
-    if (query.limit && Number(query.limit) > 20)  // Limit Restriction
+    if (query.limit && Number(query.limit) > 20) 
       query.limit = 20
 
     const trackerService = useTrackerServices();
@@ -19,10 +21,8 @@ export const useTrackerEvents = {
         view === "global"
           ? trackerService.globalSavedEvents(query)
           : trackerService.getTrackerEvents(query, trackerId || ""),
-          staleTime: 0,
+      staleTime: STALE_TIME,
       refetchOnWindowFocus: false,
-
-          
     });
     return {
       events: EventQuery?.data?.events || [],

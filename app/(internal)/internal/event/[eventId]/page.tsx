@@ -369,6 +369,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         });
       }
     } catch (error) {
+      // Reset the state back to original on error
       setEventPOCDetails((prevPocData) =>
         prevPocData.map((poc) =>
           poc.id === pocId ? { ...poc, state: 0 } : poc

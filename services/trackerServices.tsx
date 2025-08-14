@@ -10,6 +10,7 @@ import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { BASE_URL, isEventeli } from '@/config';
 import { getShowValues } from '@/utils/showValues';
+import { useQueryClient } from '@tanstack/react-query';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -51,6 +52,7 @@ export const useTrackerServices = () => {
     const api = useApi();
     const url = useSearchParams();
     const {getFilterValue} =useFilterState();
+    const queryClient = useQueryClient();
     const createTracker = (formData: Tracker) => {
       
       if(formData.filterValues){
@@ -64,17 +66,24 @@ export const useTrackerServices = () => {
         }
       );
     };
-    const editTracker=(trackerId:string, formData: Tracker)=>{
+    const editTracker = async (trackerId:string, formData: Tracker) => {
       if(formData.filterValues){
         formData.filterValues.showValues = getShowValues(formData.filterValues);
       }
-      return api.request(
+      
+      const response = await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}`,
         {
             method: "PATCH",
             data: formData,
         }
-      ); 
+      );
+      
+      if (response && !(response as any)?.error) {
+        queryClient.invalidateQueries({ queryKey: ["trackerevents"] });
+      }
+      
+      return response;
     }
   const getTrackerCount =():Promise<{ count: TrackerTypeProp[] } | undefined>=>{
     return api.request(

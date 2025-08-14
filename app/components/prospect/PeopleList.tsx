@@ -54,18 +54,33 @@ interface ContactInfoProps {
 }
 
 // Components
-const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => (
-  <div className="w-full">
-    <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-      <MailIcon width="12px" height="12px" className="self-start mt-1" />
-      <span className="break-all">{email || "-"}</span>
-    </p>
-    <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-      <PhoneIcon width="12px" height="12px" />
-      <span>{phoneNumber || "-"}</span>
-    </p>
-  </div>
-);
+const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => {
+  // Check if both email and phone are null/empty
+  const hasNoDetails = (!email || email.trim() === '') && (!phoneNumber || phoneNumber.trim() === '');
+  
+  if (hasNoDetails) {
+    return (
+      <div className="w-full">
+        <p className="text-[#666666] text-[12px] italic">
+          No contact details found
+        </p>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="w-full">
+      <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+        <MailIcon width="12px" height="12px" className="self-start mt-1" />
+        <span className="break-all">{email || "-"}</span>
+      </p>
+      <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+        <PhoneIcon width="12px" height="12px" />
+        <span>{phoneNumber || "-"}</span>
+      </p>
+    </div>
+  );
+};
 
 const PeopleCard: React.FC<PeopleCardProps> = ({
   poc,
