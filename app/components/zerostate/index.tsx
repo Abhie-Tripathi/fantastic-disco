@@ -120,7 +120,7 @@ const ZeroState = ({
               
               return isPremium ? (
                 <div>
-                  You've exhausted your search limit.
+                  You&apos;ve exhausted your search limit.
                   <br />
                   Limit will reset tomorrow at 10:00 AM IST.
                 </div>
