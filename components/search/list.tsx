@@ -1448,7 +1448,7 @@ export const EventListItem = ({
                           )}
                       </div>
 
-                      {(global !== "global" && !isMobile && source!=="public")&& (
+                      {(!isMobile && source!=="public")&& (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}
@@ -1540,7 +1540,7 @@ export const EventListItem = ({
                           </>
                         )}
 
-                      {(global !== "global" && !isMobile && source!=="public") && (
+                      {(!isMobile && source!=="public") && (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}

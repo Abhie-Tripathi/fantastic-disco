@@ -402,7 +402,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
 
   if (!isLoaded) {
     return <Loading className="p-12" />;
-  } else if (isLoaded && totalCount === 0) {
+  } else if (isLoaded && totalCount === 0 && bookmarkData.totalEvents === 0) {
     return (
       <div className="p-20">
         <NullState
