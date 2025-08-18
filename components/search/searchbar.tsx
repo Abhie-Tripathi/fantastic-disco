@@ -70,6 +70,7 @@ export default function MultiSelectSearchBar({
           const response = await getEvents(
             {
               query: value,
+              view: "suggestion",
             },
             abortControllerRef.current.signal
           );

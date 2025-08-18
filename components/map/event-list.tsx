@@ -43,7 +43,9 @@ import { useFilterContext } from "@/context/filterContext";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Globe } from "lucide-react";
+import ZeroState from "@/app/components/zerostate";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ApiError } from "@/types/api";
 const EventCard = memo(
   ({
     event,
@@ -758,20 +760,10 @@ function EventList({
     if (error) {
       return (
         <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            {error && (
-              <p className="text-sm font-semibold text-destructive px-2">
-                {error.message}
-              </p>
-            )}
-            {/* <p className="text-lg font-semibold text-destructive">
-              Failed to load events
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Please try again later
-            </p> */}
-          </div>
+           <ZeroState
+        issues={(error as ApiError).issues}
+        text={(error as ApiError).message}
+        errorStatusCode={(error as ApiError)?.statusCode}/>
         </div>
       );
     }

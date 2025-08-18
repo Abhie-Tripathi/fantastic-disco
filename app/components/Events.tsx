@@ -34,6 +34,7 @@ import {
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import ExportModal from "./Search/ExportModal";
 import { advancedFilter, basicFilters, countFilters } from "@/constants/filters";
+import Link from "next/link";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -172,6 +173,11 @@ const Events = () => {
             </div>
 
             <div className="flex md:hidden items-center justify-end gap-2">
+            {!isEventeli && <Link href="/collections">
+            <Button variant="outline" size="sm">
+              Collections
+            </Button>
+          </Link>}
               <Popover
                 open={showViewDropdown}
                 onOpenChange={setShowViewDropdown}

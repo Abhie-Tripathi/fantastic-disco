@@ -54,85 +54,85 @@ export function PaginationComponent({
     pathname === "/internal/search/events" ||
     pathname.includes("/internal/trackers");
 
-  const renderPaginationItems = () => {
-    const items = [];
-    const maxVisiblePages = 5;
-    const ellipsis = <PaginationEllipsis />;
+  // const renderPaginationItems = () => {
+  //   const items = [];
+  //   const maxVisiblePages = 5;
+  //   const ellipsis = <PaginationEllipsis />;
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              href="#"
-              onClick={() => onPageChange(i)}
-              isActive={i === currentPage}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    } else {
-      items.push(
-        <PaginationItem key={1}>
-          <PaginationLink
-            href="#"
-            onClick={() => onPageChange(1)}
-            isActive={1 === currentPage}
-          >
-            1
-          </PaginationLink>
-        </PaginationItem>
-      );
+  //   if (totalPages <= maxVisiblePages) {
+  //     for (let i = 1; i <= totalPages; i++) {
+  //       items.push(
+  //         <PaginationItem key={i}>
+  //           <PaginationLink
+  //             href="#"
+  //             onClick={() => onPageChange(i)}
+  //             isActive={i === currentPage}
+  //           >
+  //             {i}
+  //           </PaginationLink>
+  //         </PaginationItem>
+  //       );
+  //     }
+  //   } else {
+  //     items.push(
+  //       <PaginationItem key={1}>
+  //         <PaginationLink
+  //           href="#"
+  //           onClick={() => onPageChange(1)}
+  //           isActive={1 === currentPage}
+  //         >
+  //           1
+  //         </PaginationLink>
+  //       </PaginationItem>
+  //     );
 
-      if (currentPage > 3) {
-        items.push(
-          <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
-        );
-      }
+  //     if (currentPage > 3) {
+  //       items.push(
+  //         <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
+  //       );
+  //     }
 
-      for (
-        let i = Math.max(2, currentPage - 1);
-        i <= Math.min(totalPages - 1, currentPage + 1);
-        i++
-      ) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              href="#"
-              onClick={() => onPageChange(i)}
-              isActive={i === currentPage}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
+  //     for (
+  //       let i = Math.max(2, currentPage - 1);
+  //       i <= Math.min(totalPages - 1, currentPage + 1);
+  //       i++
+  //     ) {
+  //       items.push(
+  //         <PaginationItem key={i}>
+  //           <PaginationLink
+  //             href="#"
+  //             onClick={() => onPageChange(i)}
+  //             isActive={i === currentPage}
+  //           >
+  //             {i}
+  //           </PaginationLink>
+  //         </PaginationItem>
+  //       );
+  //     }
 
-      if (currentPage < totalPages - 2) {
-        items.push(
-          <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
-        );
-      }
+  //     if (currentPage < totalPages - 2) {
+  //       items.push(
+  //         <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
+  //       );
+  //     }
 
-      if (!hideLastPage) {
-        items.push(
-          <PaginationItem key={totalPages}>
-            <PaginationLink
-              href="#"
-              onClick={() => onPageChange(totalPages)}
-              isActive={totalPages === currentPage}
-            >
-              {totalPages}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    }
+  //     if (!hideLastPage) {
+  //       items.push(
+  //         <PaginationItem key={totalPages}>
+  //           <PaginationLink
+  //             href="#"
+  //             onClick={() => onPageChange(totalPages)}
+  //             isActive={totalPages === currentPage}
+  //           >
+  //             {totalPages}
+  //           </PaginationLink>
+  //         </PaginationItem>
+  //       );
+  //     }
+  //   }
 
-    return items;
-  };
+  //   return items;
+  // };
 
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-2">
@@ -154,7 +154,10 @@ export function PaginationComponent({
               } text-xs sm:text-sm`}
             />
           </PaginationItem>
-          {renderPaginationItems()}
+          {
+          // renderPaginationItems()
+          
+          }
           <PaginationItem>
             <PaginationNext
               href="#"

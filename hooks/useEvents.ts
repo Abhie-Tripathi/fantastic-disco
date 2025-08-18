@@ -25,9 +25,11 @@ export const useEvents = {
     if (limit && query.limit && Number(query.limit) > limit)
       // Limit Restriction
     query.limit = limit;
-
-    query.showValues = getShowValues(query);
-
+    const showValues = getShowValues(query);
+    if (showValues) {
+      query.showValues = showValues;
+    }
+    delete query.show
     
     const eventsService = useEventsService();
 

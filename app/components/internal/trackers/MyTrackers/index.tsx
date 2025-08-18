@@ -141,7 +141,17 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setSingleTrackerData(item)
     setIsNewCall(true); 
     setTrackerId(item.id);
-    router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}&showValues=${item.filterValues.showValues}`)
+    const params = new URLSearchParams({
+      type: item.type,
+      view: 'table',
+      eventType: isEventeli ? 'social' : 'active'
+    });
+    
+    if (item.filterValues?.showValues) {
+      params.set('showValues', item.filterValues.showValues);
+    }
+    
+    router.push(`/internal/trackers/${item.id}/trackedEvents?${params.toString()}`);
   }
   return (
     <div className={styles.container} ref={endOfListRef}>

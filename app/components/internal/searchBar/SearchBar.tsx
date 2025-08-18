@@ -99,7 +99,7 @@ if (searchInput?.length > 0) {
         // if(type==="T_EVENT_PARTICIPATIONS"){
         //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         // }else 
-        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATION"?"limit=10":"limit=5"}&offset=0`;
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATION"?"limit=10":"limit=5"}&offset=0${type==="T_EVENT_PARTICIPATION"?"&view=suggestion":""}`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();

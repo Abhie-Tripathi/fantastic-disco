@@ -43,7 +43,7 @@ const ZeroState = ({
     }
     
     if (advanceToken && !basicToken) {
-      return "You've exhausted basic daily limit. Basic limit will reset tomorrow or continue with the the advance searches.";
+      return "You've exhausted basic daily limit. Basic limit will reset tomorrow or continue with the advance searches.";
     }
     
     return null;

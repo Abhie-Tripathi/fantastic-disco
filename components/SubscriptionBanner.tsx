@@ -33,8 +33,18 @@ export default function SubscriptionBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const bannerHeight = isVisible ? 80 : 0;
-    document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
+    const updateBannerHeight = () => {
+      // Use different heights for mobile vs desktop
+      const isMobile = window.innerWidth < 640; // sm breakpoint
+      const bannerHeight = isVisible ? (isMobile ? 120 : 80) : 0;
+      document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
+    };
+
+    updateBannerHeight();
+    
+    // Listen for window resize to update height
+    window.addEventListener('resize', updateBannerHeight);
+    return () => window.removeEventListener('resize', updateBannerHeight);
   }, [isVisible]);
 
   const handleDismiss = () => {
@@ -102,36 +112,40 @@ export default function SubscriptionBanner() {
   };
 
   return (
-    <div className="bg-gray-900 text-white px-4 py-3 flex items-center">
-        <div className="w-4"></div>
+    <div className="bg-gray-900 dark:bg-gray-800 text-white px-2 sm:px-4 py-3 flex items-center">
+      <div className="w-2 sm:w-4"></div>
 
-      <div className="flex-1 flex items-center justify-center gap-2">
-        <div className="text-sm">{getBannerMessage()}</div>
-        <Button
-        size="sm"
-        variant="outline"
-          onClick={handleExploreFeatures}
-          className="text-sm font-medium transition-colors text-black hover:text-black"
-        >
-          Explore Features
-        </Button>
-        <Button
-         size="sm"
-        variant="outline"
-          onClick={handleUpgrade}
-          className="text-sm font-medium transition-colors text-black hover:text-black"
-        >
-          Upgrade Now →
-        </Button>
+      <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+        <div className="text-xs sm:text-sm text-center sm:text-left leading-relaxed">
+          {getBannerMessage()}
+        </div>
+        <div className="flex gap-2 flex-shrink-0">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleExploreFeatures}
+            className="text-xs sm:text-sm font-medium transition-colors text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
+          >
+            Explore Features
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleUpgrade}
+            className="text-xs sm:text-sm font-medium transition-colors text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-gray-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
+          >
+            Upgrade Now →
+          </Button>
+        </div>
       </div>
+      
       <button
         onClick={handleDismiss}
-        className="text-gray-400 hover:text-white transition-colors"
+        className="text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200 transition-colors ml-2 flex-shrink-0"
         aria-label="Dismiss banner"
       >
-        <X size={16} />
+        <X size={16} className="sm:w-4 sm:h-4 w-3.5 h-3.5" />
       </button>
-
     </div>
   );
 }
