@@ -30,7 +30,7 @@ export function AlertItem({
 }) {
   return (
     <div
-      className="w-full rounded-lg p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+      className="w-full rounded-lg p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-[var(--background-color-hover)]"
       onClick={(e) => {
         onClick?.();
       }}
@@ -123,11 +123,11 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           {selectedAlertData ? (
-            <div className="w-full sm:w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-background cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <div className="w-full sm:w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-background cursor-pointer hover:bg-gray-50 dark:hover:bg-[var(--background-color-hover)] transition-colors">
               <AlertItem alert={selectedAlertData} />
             </div>
           ) : (
-            <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-background cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-background cursor-pointer hover:bg-gray-50 dark:hover:bg-[var(--background-color-hover)] transition-colors">
               <AlertTriangle className="w-4 h-4 mr-2" />
               Possibility of
               <span className={cn("mx-1 font-semibold underline text-primary")}>
