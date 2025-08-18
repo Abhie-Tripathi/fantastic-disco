@@ -140,21 +140,44 @@ const [initialized, setInitialized] = useState(false);
 );
 
   
-  // Reset pagination when filters change
-  useEffect(() => {
-    const params = new URLSearchParams();
-    
-    if (debouncedInputValue) params.set('search', debouncedInputValue);
-    if(presetCountries?.length>0) params.set("countryIds", presetCountries.join(","));
-    if (presetType?.length>0) params.set("collectionType",presetType.join(","));
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType]);
-  // useEffect(()=>{
-  //     setPresetTemplateData([]);
-  //   setPage(0);
-  //   setFilterChanged(true);
-  //   setHasMore(true);
-  // }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries]);
+ useEffect(() => {
+  if (!initialized) return; 
+
+  const params = new URLSearchParams(searchParams.toString());
+
+  if (debouncedInputValue) {
+    params.set("search", debouncedInputValue);
+  } else {
+    params.delete("search");
+  }
+
+  if (presetCountries?.length > 0) {
+    params.set("countryIds", presetCountries.join(","));
+  } else {
+    params.delete("countryIds");
+  }
+
+  if (presetType?.length > 0) {
+    params.set("collectionType", presetType.join(","));
+  } else {
+    params.delete("collectionType");
+  }
+
+  const newQuery = params.toString();
+  const currentQuery = searchParams.toString();
+
+  if (newQuery !== currentQuery) {
+    router.replace(`?${newQuery}`, { scroll: false });
+  }
+}, [
+  initialized, 
+  debouncedInputValue,
+  presetCountries,
+  presetType,
+  searchParams,
+  router
+]);
+
   
 
   // Setup intersection observer for infinite scroll
@@ -187,7 +210,6 @@ const [initialized, setInitialized] = useState(false);
   
 
   // Fetch data when page or filters change
- // Reset + fetch first page when filters change
 useEffect(() => {
   if (!initialized) return;
   setPresetTemplateData([]);
@@ -323,12 +345,13 @@ console.log("template", presetType);
   setPresetCountries={setPresetCountries}/>
         </div>
         }
+        {template===undefined &&
         <div className="hidden md:w-[30%] md:block">
         <CollectionTypeSelector
         presetType={presetType}
         setPresetType={setPresetType}
       />
-      </div>
+      </div>}
         {/* {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined) &&
         <div className="w-[30%]">
           <CategorySelector source="preset"/>
