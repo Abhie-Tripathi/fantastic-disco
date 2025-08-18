@@ -39,10 +39,9 @@ interface Props {
 
 const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-//   const filterContext = useFilterContext();
-//   const getLocalFilterValue = !isPublic ? filterContext.getLocalFilterValue : () => "";
-// const localFilters = !isPublic ? filterContext.localFilters : {};
   const { presetData } = useTrackerServices();
+  const searchParams = useSearchParams();
+const [initialized, setInitialized] = useState(false);
   const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState<string>("");
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
@@ -66,33 +65,66 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
     // { value: "start", label: "Rank" },
   ];
   
-  
-  // Fetch data function with pagination
-  const fetchPresetJson = useCallback(async () => {
-    if (!hasMore || isLoading) return;
-  
-    setIsLoading(true);
+    useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
     
+    setInputValue(params.get('search') || '');
+    setDebouncedInputValue(params.get('search') || '');
+    setPresetCountries(params.get('countryIds')?.split(',') || []);
+    setPresetType(params.get('collectionType')?.split(',') || []);
+    // setPage(Number(params.get('page')) || 0);
+    
+    // const sortValue = params.get('sort') || 'eventCount';
+    // const sortOrder = params.get('order') || 'desc';
+    // setSortBy({ value: sortValue, label: sortOrder });
+    setInitialized(true);
+  }, [searchParams]);
+  // Fetch data function with pagination
+ const fetchPresetJson = useCallback(
+  async (pageParam = page, reset = false) => {
+    if (!hasMore || isLoading) return;
+
+    let collectionType: string[] = [];
+    const type = searchParams.get("collectionType")?.split(",") || [];
+
+    if (!(type.includes("people") && type.includes("prospect") && type.includes("purpose"))) {
+      if (presetType.includes("people")) {
+        collectionType.push("T_PEOPLE_FINDER", "T_SPEAKING_OPPORTUNITY");
+      }
+      if (presetType.includes("prospect")) {
+        collectionType.push("T_COMPETITOR");
+      }
+      if (presetType.includes("purpose")) {
+        collectionType.push("T_PRODUCT_KEYWORDS");
+      }
+    }
+
+    const trackerType =
+      collectionType.length > 0
+        ? collectionType.join(",")
+        : (template?.name === "T_PEOPLE_FINDER" ? "T_SPEAKING_OPPORTUNITY" : template?.name) || "";
+
+    const data = {
+      trackerType,
+      offset: reset ? 0 : pageParam * limit,
+      limit,
+      ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
+      ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
+      ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
+      ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
+      ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
+    };
+
+    setIsLoading(true);
     try {
-      const data = {
-        trackerType: template?.name==="T_PEOPLE_FINDER"?"T_SPEAKING_OPPORTUNITY":template?.name || "",
-        offset: filterChanged ? 0 : page * limit,
-        limit: limit,
-        ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
-        ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
-        ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
-        ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
-        ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
-      };
-  
       const result = await presetData(data);
       setTotalCount(result.count);
+
       if (result?.count > 0) {
-        setPresetTemplateData((prev) => [...prev, ...result.trackers]);
-  
-        if (result.trackers.length < limit) {
-          setHasMore(false); // No more results
-        }
+        setPresetTemplateData(prev =>
+          reset ? result.trackers : [...prev, ...result.trackers]
+        );
+        if (result.trackers.length < limit) setHasMore(false);
       } else {
         setHasMore(false);
       }
@@ -103,15 +135,26 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
     } finally {
       setIsLoading(false);
     }
-  }, [page, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, isLoading, presetData]);
+  },
+  [page, searchParams, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData]
+);
+
   
   // Reset pagination when filters change
   useEffect(() => {
-    setPresetTemplateData([]);
-    setPage(0);
-    setFilterChanged(true);
-    setHasMore(true);
-  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries]);
+    const params = new URLSearchParams();
+    
+    if (debouncedInputValue) params.set('search', debouncedInputValue);
+    if(presetCountries?.length>0) params.set("countryIds", presetCountries.join(","));
+    if (presetType?.length>0) params.set("collectionType",presetType.join(","));
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType]);
+  // useEffect(()=>{
+  //     setPresetTemplateData([]);
+  //   setPage(0);
+  //   setFilterChanged(true);
+  //   setHasMore(true);
+  // }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries]);
   
 
   // Setup intersection observer for infinite scroll
@@ -144,9 +187,23 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
   
 
   // Fetch data when page or filters change
-  useEffect(() => {
-    fetchPresetJson();
-  }, [page]);
+ // Reset + fetch first page when filters change
+useEffect(() => {
+  if (!initialized) return;
+  setPresetTemplateData([]);
+  setPage(0);
+  setFilterChanged(true);
+  setHasMore(true);
+
+  fetchPresetJson(0, true); 
+}, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType]);
+
+useEffect(() => {
+  if (page > 0) {
+    fetchPresetJson(page, false);
+  }
+}, [page]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -268,8 +325,6 @@ console.log("template", presetType);
         }
         <div className="hidden md:w-[30%] md:block">
         <CollectionTypeSelector
-        variant="popover"
-        disabled={false}
         presetType={presetType}
         setPresetType={setPresetType}
       />
