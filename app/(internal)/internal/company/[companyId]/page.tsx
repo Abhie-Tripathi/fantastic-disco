@@ -423,15 +423,14 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                   return (
                     <div key={id} className="flex flex-row gap-3 p-2">
                       <img
-                        src={
-                          profilePicture
-                            ? profilePicture
-                            : `https://img.10times.com/userimages/${name
-                                .charAt(0)
-                                .toLowerCase()}.jpg`
-                        }
-                        alt="POC Logo"
-                        className="rounded-lg shadow-md h-10 w-10"
+                        src={profilePicture || (name && `https://img.10times.com/userimages/${name?.charAt(0).toLowerCase()}.jpg`) || "/defaultProfilePic.png"}
+                        alt="poc image"
+                        className="rounded-full shadow-md h-10 w-10"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = "/defaultProfilePic.png";
+                        }}
                       />
                       <div className="flex flex-col gap-2 flex-1 flex-wrap">
                         {name && (
