@@ -25,6 +25,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import CollectionTypeSelector from "./collectionTypeSelector";
+import { Button } from "@/components/ui/button";
+import { Filter, FilterX } from "lucide-react";
 
 interface Props {
   isPublic?: boolean;
@@ -39,6 +41,9 @@ interface Props {
 
 const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
+  const [showFilters,setShowFilter] = useState(false);
+  const [presetCategories,setPresetCategories] = useState<string[]>([]);
+  const [filterCount,setFilterCount] = useState(0);
   const { presetData } = useTrackerServices();
   const searchParams = useSearchParams();
 const [initialized, setInitialized] = useState(false);
@@ -67,13 +72,15 @@ const [initialized, setInitialized] = useState(false);
   
     useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
+    console.log("pages are",page);
     
     setInputValue(params.get('search') || '');
     setDebouncedInputValue(params.get('search') || '');
     setPresetCountries(params.get('countryIds')?.split(',') || []);
     setPresetType(params.get('collectionType')?.split(',') || []);
+    setPresetCategories(params.get("categories")?.split(",") || []);
     // setPage(Number(params.get('page')) || 0);
-    
+    setPage(0)
     // const sortValue = params.get('sort') || 'eventCount';
     // const sortOrder = params.get('order') || 'desc';
     // setSortBy({ value: sortValue, label: sortOrder });
@@ -82,6 +89,8 @@ const [initialized, setInitialized] = useState(false);
   // Fetch data function with pagination
  const fetchPresetJson = useCallback(
   async (pageParam = page, reset = false) => {
+    console.log("pageParam",);
+    
     if (!hasMore || isLoading) return;
 
     let collectionType: string[] = [];
@@ -106,12 +115,13 @@ const [initialized, setInitialized] = useState(false);
 
     const data = {
       trackerType,
-      offset: reset ? 0 : pageParam * limit,
+      offset: filterChanged ? 0 : pageParam * limit,
       limit,
       ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
       ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
       ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
       ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
+      ...(presetCategories?.length ? { categorySlugs: presetCategories.join(",") } : {}),
       ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
     };
 
@@ -136,7 +146,7 @@ const [initialized, setInitialized] = useState(false);
       setIsLoading(false);
     }
   },
-  [page, searchParams, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData]
+  [page, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData, presetCategories]
 );
 
   
@@ -149,6 +159,12 @@ const [initialized, setInitialized] = useState(false);
     params.set("search", debouncedInputValue);
   } else {
     params.delete("search");
+  }
+
+  if (presetCategories?.length > 0) {
+    params.set("categories", presetCategories.join(","));
+  } else {
+    params.delete("categories");
   }
 
   if (presetCountries?.length > 0) {
@@ -169,11 +185,17 @@ const [initialized, setInitialized] = useState(false);
   if (newQuery !== currentQuery) {
     router.replace(`?${newQuery}`, { scroll: false });
   }
+  let count=0;
+  if(presetType.length>0) count++;
+  if(presetCategories.length>0) count++;
+  if(presetCountries.length>0) count++;
+  setFilterCount(count)
 }, [
   initialized, 
   debouncedInputValue,
   presetCountries,
   presetType,
+  presetCategories,
   searchParams,
   router
 ]);
@@ -213,10 +235,11 @@ const [initialized, setInitialized] = useState(false);
 useEffect(() => {
   if (!initialized) return;
   setPresetTemplateData([]);
-  setPage(0);
+  // setPage(0);
   setFilterChanged(true);
   setHasMore(true);
-
+  console.log("this effect is calling twice");
+  
   fetchPresetJson(0, true); 
 }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType]);
 
@@ -311,8 +334,10 @@ const limit=3;
 
 
 }
-
-console.log("template", presetType);
+const toggleFilterHandler=()=>{
+  setShowFilter(!showFilters);
+}
+console.log("template", presetCategories);
 
   return (
     <div className="w-full">
@@ -329,7 +354,7 @@ console.log("template", presetType);
       
       <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
         <div className="w-full bg-background">
-          <div className="border border-input rounded px-3 py-2 flex items-center gap-2 mx-2.5 md:mx-0">
+          <div className="border border-input rounded px-3 py-2 flex items-center gap-2 ml-2.5 mr-0 md:mr-2.5">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               value={inputValue}
@@ -339,6 +364,20 @@ console.log("template", presetType);
             />
           </div>
         </div>
+        <Button
+                    onClick={toggleFilterHandler}
+                    // variant={filtersCount > 0 ? "secondary" : "ghost"}
+                    variant={"secondary"}
+                    size="icon"
+                    className="w-10 border relative  md:hidden h-auto mr-3"
+                  >
+                    <Filter className="w-4 h-4" />
+                    {filterCount > 0 && (
+                      <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                        {filterCount}
+                      </div>
+                    )}
+                  </Button>
         {(template?.name === "T_COMPETITOR" || template===undefined) &&
         <div className="hidden md:w-[30%] md:block">
         <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
@@ -352,10 +391,10 @@ console.log("template", presetType);
         setPresetType={setPresetType}
       />
       </div>}
-        {/* {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined) &&
-        <div className="w-[30%]">
-          <CategorySelector source="preset"/>
-        </div>} */}
+        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined) &&
+        <div className="hidden md:w-[30%] md:block">
+          <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
+        </div>}
         {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
@@ -494,6 +533,23 @@ console.log("template", presetType);
           )}
       </div>
       </div>
+      {showFilters && (
+      <div className="w-full sticky bottom-0 bg-background z-10 block md:hidden">
+                  <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+            {/* <div className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md p-2"> */}
+                  <div className="flex flex-col gap-3">
+                         <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
+  setPresetCountries={setPresetCountries}/>
+  <CollectionTypeSelector
+        presetType={presetType}
+        setPresetType={setPresetType}
+      />
+      <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
+      </div>
+      {/* </div> */}
+                  </div>
+                </div>
+                )}
     </div>
   );
 };

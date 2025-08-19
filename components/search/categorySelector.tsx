@@ -19,13 +19,16 @@ import {
 } from "@/components/ui/command";
 import { convertISOToOriginalFormat } from "@/utils/date";
 import { LockClosedSmall } from "geist-icons";
-
+import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
+import { newCategories } from "@/data/categories";
 interface FlexibleComponentProps {
   source?: string;
   variant?: "accordion" | "popover";
   filterName?: string;
   disabled?: boolean;
   maxCategories?: number;
+  presetCategories?: string[];
+  setPresetCategories?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function CategorySelector({
@@ -34,14 +37,16 @@ export default function CategorySelector({
   disabled,
   maxCategories,
   source,
+  presetCategories = [], 
+  setPresetCategories
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
-    useFilterContext();
-  const categories = morphedData?.categories?.options || [];
-  const isEnabled = morphedData.categories.isEnabled;
+    useSafeFilterContext();
+  const categories = source==="preset"?newCategories:morphedData?.categories?.options || [];
+  const isEnabled = source==="preset"?true:morphedData.categories.isEnabled;
   const selectedCategories =
     source === "preset"
-      ? getLocalFilterValue("presetCategory").split(",").filter(Boolean)
+      ? presetCategories
       : getLocalFilterValue((filterName as keyof Filters) || "categories")
           ?.split(",")
           ?.filter(Boolean) || [];
@@ -91,7 +96,7 @@ export default function CategorySelector({
       const filterValue =
         newCategories.length > 0 ? newCategories.join(",") : "";
       if (source === "preset") {
-        setLocalFilter("presetCategory", newCategories.join(","));
+        setPresetCategories?.(newCategories);
       } else
         setLocalFilter(
           (filterName as keyof Filters) || "categories",
@@ -139,7 +144,7 @@ export default function CategorySelector({
     const columnCount = 3;
     const sortedCategories = sortCategoriesSelectedOnTop(categories);
     const allCategories = [
-      source !== "preset" && {
+       {
         id: "all",
         name: "Select All",
         slug: "all",
@@ -162,7 +167,7 @@ export default function CategorySelector({
                 <div
                   key={category.id}
                   className={`flex items-center space-x-2 ${
-                    !category.isEnabled ? "opacity-50" : ""
+                    (!category.isEnabled && source!=="preset") ? "opacity-50" : ""
                   }`}
                 >
                   <Checkbox
@@ -179,22 +184,25 @@ export default function CategorySelector({
                         : handleCategoryToggle(category.slug)
                     }
                     disabled={
+                      source !== "preset" &&(
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all") ||
                       disabled ||
                       (maxCategories &&
                         !selectedCategories.includes(category.slug) &&
                         selectedCategories.length >= maxCategories)
+                      )
                     }
                   />
                   <label
                     htmlFor={`${category.slug}-${variant}`}
                     className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
+                      source !== "preset" &&(
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all") ||
                       (maxCategories &&
                         !selectedCategories.includes(category.slug) &&
-                        selectedCategories.length >= maxCategories)
+                        selectedCategories.length >= maxCategories))
                         ? "opacity-50"
                         : ""
                     }`}
@@ -245,7 +253,7 @@ export default function CategorySelector({
             role="combobox"
             aria-expanded={isOpen}
             className="w-full justify-between px-3 py-5 text-base font-normal"
-            disabled={!isEnabled}
+            disabled={source!=="preset" && !isEnabled}
           >
             <span className="flex items-center gap-2">{triggerContent}</span>
             <ChevronDown className="h-4 w-4 shrink-0" />
@@ -266,7 +274,7 @@ export default function CategorySelector({
           role="combobox"
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
-          disabled={!isEnabled}
+          disabled={source!=="preset" && !isEnabled}
         >
           <span className="flex items-center gap-2">{triggerContent}</span>
           <ChevronDown className="h-4 w-4 shrink-0" />
@@ -305,18 +313,20 @@ export default function CategorySelector({
                 onSelect={() => handleCategoryToggle(category.slug)}
                 className={cn(
                   "flex items-center gap-2",
-                  !category.isEnabled && "opacity-50"
+                  (source!=="preset" && !category.isEnabled) && "opacity-50"
                 )}
               >
                 <Checkbox
                   checked={Boolean(selectedCategories.includes(category.slug))}
                   disabled={Boolean(
+                    source !== "preset" &&(
                     !category.isEnabled ||
                       disabled ||
                       (maxCategories &&
                         !selectedCategories.includes(category.slug) &&
                         selectedCategories.length >= maxCategories)
-                  )}
+                  ))
+                }
                   className="rounded-none"
                 />
                 <span>{category.name}</span>
