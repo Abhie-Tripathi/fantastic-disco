@@ -234,6 +234,16 @@ const [initialized, setInitialized] = useState(false);
   // Fetch data when page or filters change
 useEffect(() => {
   if (!initialized) return;
+  console.log("Filter useEffect triggered with:", {
+    debouncedInputValue,
+    selectedLocation,
+    selectedCategory,
+    template,
+    sortBy,
+    presetCountries,
+    presetType,
+    presetCategories
+  });
   setPresetTemplateData([]);
   // setPage(0);
   setFilterChanged(true);
@@ -241,7 +251,7 @@ useEffect(() => {
   console.log("this effect is calling twice");
   
   fetchPresetJson(0, true); 
-}, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType]);
+}, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType, presetCategories]);
 
 useEffect(() => {
   if (page > 0) {
