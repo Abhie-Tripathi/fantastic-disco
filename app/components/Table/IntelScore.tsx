@@ -83,7 +83,7 @@ export default function PieChartComponent({
    const path=useSearchParams();
   const type = path.get("type") || "";
   const types={
-    "Prospect":["T_COMPETITOR"],
+    "Prospect":["T_COMPETITOR","T_CUSTOMER_ICP"],
     "People":["T_PEOPLE_FINDER","T_SPEAKING_OPPORTUNITY"],
     "Purpose":["T_PRODUCT_KEYWORDS"]
   }
