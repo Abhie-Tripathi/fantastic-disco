@@ -20,7 +20,7 @@ import {
 import { convertISOToOriginalFormat } from "@/utils/date";
 import { LockClosedSmall } from "geist-icons";
 import { useSafeFilterContext } from "@/hooks/useSafeFilterContext";
-import { newCategories } from "@/data/categories";
+import { collectionCategories } from "@/data/categories";
 interface FlexibleComponentProps {
   source?: string;
   variant?: "accordion" | "popover";
@@ -42,7 +42,7 @@ export default function CategorySelector({
 }: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useSafeFilterContext();
-  const categories = source==="preset"?newCategories:morphedData?.categories?.options || [];
+  const categories = source==="preset"?collectionCategories:morphedData?.categories?.options || [];
   const isEnabled = source==="preset"?true:morphedData.categories.isEnabled;
   const selectedCategories =
     source === "preset"

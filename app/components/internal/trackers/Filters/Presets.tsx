@@ -26,7 +26,7 @@ import Link from "next/link";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import CollectionTypeSelector from "./collectionTypeSelector";
 import { Button } from "@/components/ui/button";
-import { Filter, FilterX } from "lucide-react";
+import { Filter, FilterX, X } from "lucide-react";
 
 interface Props {
   isPublic?: boolean;
@@ -70,22 +70,26 @@ const [initialized, setInitialized] = useState(false);
     // { value: "start", label: "Rank" },
   ];
   
-    useEffect(() => {
+   const parsedSearchParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
-    console.log("pages are",page);
-    
-    setInputValue(params.get('search') || '');
-    setDebouncedInputValue(params.get('search') || '');
-    setPresetCountries(params.get('countryIds')?.split(',') || []);
-    setPresetType(params.get('collectionType')?.split(',') || []);
-    setPresetCategories(params.get("categories")?.split(",") || []);
-    // setPage(Number(params.get('page')) || 0);
-    setPage(0)
-    // const sortValue = params.get('sort') || 'eventCount';
-    // const sortOrder = params.get('order') || 'desc';
-    // setSortBy({ value: sortValue, label: sortOrder });
-    setInitialized(true);
+    return {
+      search: params.get('search') || '',
+      countryIds: params.get('countryIds')?.split(',').filter(Boolean) || [],
+      collectionType: params.get('collectionType')?.split(',').filter(Boolean) || [],
+      categories: params.get('categories')?.split(',').filter(Boolean) || [],
+    };
   }, [searchParams]);
+
+  useEffect(() => {
+    console.log("Initializing from searchParams:", parsedSearchParams);
+    setInputValue(parsedSearchParams.search);
+    setDebouncedInputValue(parsedSearchParams.search);
+    setPresetCountries(parsedSearchParams.countryIds);
+    setPresetType(parsedSearchParams.collectionType);
+    setPresetCategories(parsedSearchParams.categories);
+    setPage(0);
+    setInitialized(true);
+  }, [parsedSearchParams]);
   // Fetch data function with pagination
  const fetchPresetJson = useCallback(
   async (pageParam = page, reset = false) => {
@@ -359,12 +363,14 @@ console.log("template", presetCategories);
           {totalCount}
         </span>
         </div>
-        <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
+        <div className="block md:hidden cursor-pointer" onClick={()=>setShowTemplate?.(false)}>
+          <X width={16}/>
+        </div>
       </div>}
       
-      <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
+      <div className={`flex mx-auto w-full md:w-[95%] gap-2 md:gap-4 sticky pt-2 ${isFull ?"bg-background":"bg-transparent"} ${isPublic?"pt-2 pb-3":"pt-4 mb-3"}`}>
         <div className="w-full bg-background">
-          <div className="border border-input rounded px-3 py-2 flex items-center gap-2 ml-2.5 mr-0 md:mr-2.5">
+          <div className={`border border-input rounded px-3 py-2 flex items-center gap-2  mr-0 ${(isMobile && isFull) ?"ml-2.5":"ml-0"}`}>
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               value={inputValue}
@@ -374,10 +380,10 @@ console.log("template", presetCategories);
             />
           </div>
         </div>
+        {(template===undefined || template?.name === "T_COMPETITOR" || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
         <Button
                     onClick={toggleFilterHandler}
-                    // variant={filtersCount > 0 ? "secondary" : "ghost"}
-                    variant={"secondary"}
+                    variant={filterCount > 0 ? "secondary" : "ghost"}
                     size="icon"
                     className="w-10 border relative  md:hidden h-auto mr-3"
                   >
@@ -387,13 +393,18 @@ console.log("template", presetCategories);
                         {filterCount}
                       </div>
                     )}
-                  </Button>
+                  </Button>}
         {(template?.name === "T_COMPETITOR" || template===undefined) &&
         <div className="hidden md:w-[30%] md:block">
         <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
   setPresetCountries={setPresetCountries}/>
         </div>
         }
+        
+        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
+        <div className="hidden md:w-[30%] md:block">
+          <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
+        </div>}
         {template===undefined &&
         <div className="hidden md:w-[30%] md:block">
         <CollectionTypeSelector
@@ -401,10 +412,6 @@ console.log("template", presetCategories);
         setPresetType={setPresetType}
       />
       </div>}
-        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined) &&
-        <div className="hidden md:w-[30%] md:block">
-          <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
-        </div>}
         {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
@@ -418,7 +425,7 @@ console.log("template", presetCategories);
       </div>
       <div className="block">
       <div
-      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-4`}
+      className={`pb-6 md:pb-0 md:min-h-[calc(100vh-260px)] overflow-y-auto`}
       // ref={containerRef}
        style={{
     height: (isPublic || isFull)
@@ -544,17 +551,20 @@ console.log("template", presetCategories);
       </div>
       </div>
       {showFilters && (
-      <div className="w-full sticky bottom-0 bg-background z-10 block md:hidden">
+      <div className="sticky bottom-0 bg-background z-10 block md:hidden w-[100vw] mr-[-20px]">
                   <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
             {/* <div className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md p-2"> */}
                   <div className="flex flex-col gap-3">
+                    {(template?.name === "T_COMPETITOR" || template===undefined) &&
                          <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
-  setPresetCountries={setPresetCountries}/>
+  setPresetCountries={setPresetCountries}/>}
+    {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
+      <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>}
+      {template===undefined &&
   <CollectionTypeSelector
         presetType={presetType}
         setPresetType={setPresetType}
-      />
-      <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
+      />}
       </div>
       {/* </div> */}
                   </div>

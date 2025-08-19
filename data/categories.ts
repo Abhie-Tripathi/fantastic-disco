@@ -148,6 +148,153 @@ export const newCategories = [
   },
 ];
 
+export const collectionCategories = [
+  {
+    id: "6cf777d1-4a39-58d3-9a7d-2a4d9fd94f59",
+    name: "Agriculture & Forestry",
+    slug: "agriculture-forestry",
+    collectionCount: 4,
+  },
+  {
+    id: "78a6c448-4ea5-55aa-94bf-7f4d52c1207a",
+    name: "Apparel & Clothing",
+    slug: "apparel-fashion",
+    collectionCount: 4,
+  },
+  {
+    id: "1c4d2f34-e5c5-58bc-a751-333c6010744d",
+    name: "Auto & Automotive",
+    slug: "automotive",
+    collectionCount: 5,
+  },
+  {
+    id: "ddb2bdad-a8c4-51aa-b99e-ef52374b7f73",
+    name: "Banking & Finance",
+    slug: "finance",
+    collectionCount: 24,
+  },
+  {
+    id: "bc9570ef-7418-56b6-9664-6fc68f86fbf1",
+    name: "Building & Construction",
+    slug: "building-construction",
+    collectionCount: 16,
+  },
+  {
+    id: "9778e936-2ccf-5c2b-a5ed-6cdefcd2deb2",
+    name: "Business Services",
+    slug: "business-consultancy",
+    collectionCount: 5,
+  },
+  {
+    id: "8003cefd-9faa-5df4-b596-ae371029b710",
+    name: "Education & Training",
+    slug: "education-training",
+    collectionCount: 3,
+  },
+  {
+    id: "350fda6c-6778-500e-ae97-aade11bba0e8",
+    name: "Electric & Electronics",
+    slug: "electronics-electricals",
+    collectionCount: 8,
+  },
+  {
+    id: "abbcbea6-dae3-5ad7-bcd5-7532176f1e4f",
+    name: "Entertainment & Media",
+    slug: "entertainment",
+    collectionCount: 10,
+  },
+  {
+    id: "7cedb4fe-1034-5d7b-b78b-ce626910428c",
+    name: "Environment & Waste",
+    slug: "waste-management",
+    collectionCount: 4,
+  },
+  {
+    id: "9d8d303c-8e46-53bf-8280-c954ca497c36",
+    name: "Food & Beverages",
+    slug: "food-beverage",
+    collectionCount: 5,
+  },
+  {
+    id: "7a23ef89-72c7-52d4-ab63-263ce971ac0c",
+    name: "Home & Office",
+    slug: "home-office",
+    collectionCount: 3,
+  },
+  {
+    id: "8ce0fae8-ae48-528f-bae1-668151f1109a",
+    name: "Hospitality",
+    slug: "hospitality",
+    collectionCount: 4,
+  },
+  {
+    id: "4df15939-8144-5507-ae87-cf491580699e",
+    name: "Industrial Engineering",
+    slug: "engineering",
+    collectionCount: 26,
+  },
+  {
+    id: "53b63b61-dc54-5bea-85fd-93b5ac8da525",
+    name: "IT & Technology",
+    slug: "technology",
+    collectionCount: 10,
+  },
+  {
+    id: "482c81be-c5b1-5ed8-8306-0ec51cfda560",
+    name: "Logistics & Transportation",
+    slug: "logistics-transportation",
+    collectionCount: 5,
+  },
+  {
+    id: "b97d648f-b1c6-513b-b4cf-8d4c749e7fb7",
+    name: "Medical & Pharma",
+    slug: "medical-pharma",
+    collectionCount: 17,
+  },
+  {
+    id: "6194eb56-96c7-5914-acd4-5256353ea082",
+    name: "Miscellaneous",
+    slug: "trade-promotion",
+    collectionCount: 2,
+  },
+  {
+    id: "2a1aabd1-1923-514c-86bc-7556550e14b8",
+    name: "Packing & Packaging",
+    slug: "packaging",
+    collectionCount: 2,
+  },
+  {
+    id: "387d34b6-9b8a-58ab-b841-981a9534c2e6",
+    name: "Power & Energy",
+    slug: "power-energy",
+    collectionCount: 12,
+  },
+  {
+    id: "13bfc587-7c7a-583c-a74f-b447c44edca8",
+    name: "Science & Research",
+    slug: "research",
+    collectionCount: 1,
+  },
+  {
+    id: "3dc4b0f9-bc00-5862-8227-2f19a8569fd4",
+    name: "Security & Defense",
+    slug: "security",
+    collectionCount: 5,
+  },
+  {
+    id: "891d0abb-d06b-5208-b95b-839b7e3f0696",
+    name: "Telecommunication",
+    slug: "telecommunication",
+    collectionCount: 5,
+  },
+  {
+    id: "56482620-c2c7-5df4-bf68-bb91e7a9b6ab",
+    name: "Travel & Tourism",
+    slug: "travel-tourism",
+    collectionCount: 2,
+  },
+];
+
 // import { Categories } from "@/types";
 
 // export const categories: Categories = {

@@ -54,7 +54,7 @@ export default function CollectionTypeSelector({
 
   const triggerContent = (
     <div className="flex items-center">
-      <span className="mr-2">Collection Type</span>
+      <span className="mr-2">Type</span>
       {presetType.length > 0 && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {presetType.length}
