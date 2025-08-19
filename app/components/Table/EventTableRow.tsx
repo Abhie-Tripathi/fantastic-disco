@@ -916,7 +916,7 @@ const { isTentimesUser } = useSafeFilterContext();
               </TableCell>}
             </>
           )}
-          {type === "T_COMPETITOR" && view !== "bookmarked" && (
+          {((type === "T_COMPETITOR" || type ==="T_CUSTOMER_ICP")&& view !== "bookmarked") && (
             <>
               <TableCell
                 className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} bg-background z-0`}

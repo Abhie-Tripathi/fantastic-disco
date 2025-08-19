@@ -52,12 +52,18 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
       if (data?.count) {
         // setHideTemplate(false);
         setIsData(true);
+        return true;
       }
+      return false;
     };
     // if(isTentimesUser) {
-    fetchData();
-  
-    fetchIntelScore();
+     const fetchAllData = async () => {
+    const res = await fetchData();
+    if (res) {
+      await fetchIntelScore();
+    }
+  };
+  fetchAllData();
     // }
     // setInterval(() => {
     //   setIntelData(data);
