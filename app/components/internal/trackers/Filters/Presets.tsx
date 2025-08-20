@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import styles from "./filters.style.module.css";
 import Competitor from "/public/competitor.svg";
@@ -15,18 +15,15 @@ import {
 import { useTrackerServices } from '@/services/trackerServices';
 import { MagnifyingGlass } from "geist-icons";
 import Loading from "@/app/components/UI/Loading";
-import { PresetJsonData } from "@/types/coordinateEventType";
 import { PresetData } from '@/types/trackers';
 import CategorySelector from "@/components/search/categorySelector";
-import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import { useRouter, useSearchParams } from "next/navigation";
-// import { useFilterContext } from "@/context/filterContext";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import CollectionTypeSelector from "./collectionTypeSelector";
 import { Button } from "@/components/ui/button";
-import { Filter, FilterX, X } from "lucide-react";
+import { Filter, X } from "lucide-react";
 
 interface Props {
   isPublic?: boolean;
@@ -39,256 +36,192 @@ interface Props {
   containerRef?:any;
 }
 
-const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false, selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-  const [showFilters,setShowFilter] = useState(false);
-  const [presetCategories,setPresetCategories] = useState<string[]>([]);
-  const [filterCount,setFilterCount] = useState(0);
+  const [showFilters, setShowFilter] = useState(false);
+  const [presetCategories, setPresetCategories] = useState<string[]>([]);
+  const [filterCount, setFilterCount] = useState(0);
   const { presetData } = useTrackerServices();
   const searchParams = useSearchParams();
-const [initialized, setInitialized] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState<string>("");
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
-  const [sortBy, setSortBy] = useState({ value: "eventCount", label: "desc" });
+  const [sortBy] = useState({ value: "eventCount", label: "desc" });
   const [page, setPage] = useState(0);
-  const [limit, setLimit]= useState(10)
+  const [limit] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [filterChanged, setFilterChanged] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
-    const [presetCountries, setPresetCountries] = useState<string[]>([]);
-    const [presetType, setPresetType] = useState<string[]>([]);
-  // const containerRef = useRef<HTMLDivElement>(null);
+  const [presetCountries, setPresetCountries] = useState<string[]>([]);
+  const [presetType, setPresetType] = useState<string[]>([]);
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [totalCount,setTotalCount]=useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const debounceTimer = useRef<NodeJS.Timeout>();
   const router = useRouter();
-  const sortOptions = [
-    { value: "eventCount", label: "Event Count" },
-    // { value: "newEventCount", label: "New Event Count" },
-    // { value: "start", label: "Rank" },
-  ];
-  
-   const parsedSearchParams = useMemo(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    return {
-      search: params.get('search') || '',
-      countryIds: params.get('countryIds')?.split(',').filter(Boolean) || [],
-      collectionType: params.get('collectionType')?.split(',').filter(Boolean) || [],
-      categories: params.get('categories')?.split(',').filter(Boolean) || [],
-    };
-  }, [searchParams]);
 
+  // Initialize from URL params only once
   useEffect(() => {
-    console.log("Initializing from searchParams:", parsedSearchParams);
-    setInputValue(parsedSearchParams.search);
-    setDebouncedInputValue(parsedSearchParams.search);
-    setPresetCountries(parsedSearchParams.countryIds);
-    setPresetType(parsedSearchParams.collectionType);
-    setPresetCategories(parsedSearchParams.categories);
-    setPage(0);
-    setInitialized(true);
-  }, [parsedSearchParams]);
-  // Fetch data function with pagination
- const fetchPresetJson = useCallback(
-  async (pageParam = page, reset = false) => {
-    console.log("pageParam",);
+    if (!initialized) {
+      const params = new URLSearchParams(searchParams.toString());
+      
+      setInputValue(params.get('search') || '');
+      setDebouncedInputValue(params.get('search') || '');
+      setPresetCountries(params.get('countryIds')?.split(',').filter(Boolean) || []);
+      setPresetType(params.get('collectionType')?.split(',').filter(Boolean) || []);
+      setPresetCategories(params.get('categories')?.split(',').filter(Boolean) || []);
+      // setPage(0);
+      setInitialized(true);
+      setFilterChanged(true);
+    }
+  }, [searchParams, initialized]);
+
+  // Update URL when filters change
+  useEffect(() => {
+    if (!initialized) return;
+
+    const params = new URLSearchParams(searchParams.toString());
     
-    if (!hasMore || isLoading) return;
+    debouncedInputValue ? params.set("search", debouncedInputValue) : params.delete("search");
+    presetCategories?.length > 0 ? params.set("categories", presetCategories.join(",")) : params.delete("categories");
+    presetCountries?.length > 0 ? params.set("countryIds", presetCountries.join(",")) : params.delete("countryIds");
+    presetType?.length > 0 ? params.set("collectionType", presetType.join(",")) : params.delete("collectionType");
 
-    let collectionType: string[] = [];
-    const type = searchParams.get("collectionType")?.split(",") || [];
+    const newQuery = params.toString();
+    const currentQuery = searchParams.toString();
 
-    if (!(type.includes("people") && type.includes("prospect") && type.includes("purpose"))) {
-      if (presetType.includes("people")) {
-        collectionType.push("T_PEOPLE_FINDER", "T_SPEAKING_OPPORTUNITY");
-      }
-      if (presetType.includes("prospect")) {
-        collectionType.push("T_COMPETITOR");
-      }
-      if (presetType.includes("purpose")) {
-        collectionType.push("T_PRODUCT_KEYWORDS");
-      }
+    if (newQuery !== currentQuery) {
+      router.replace(`?${newQuery}`, { scroll: false });
     }
 
-    const trackerType =
-      collectionType.length > 0
+    // Update filter count
+    let count = 0;
+    if (presetType.length > 0) count++;
+    if (presetCategories.length > 0) count++;
+    if (presetCountries.length > 0) count++;
+    setFilterCount(count);
+  }, [initialized, debouncedInputValue, presetCountries, presetType, presetCategories, searchParams, router]);
+
+  // Fetch data function
+  const fetchPresetJson = useCallback(
+    async (pageParam = page, reset = false) => {
+      if (!hasMore || isLoading) return;
+
+      let collectionType: string[] = [];
+      
+      if (!(presetType.includes("people") && presetType.includes("prospect") && presetType.includes("purpose"))) {
+        if (presetType.includes("people")) {
+          collectionType.push("T_PEOPLE_FINDER", "T_SPEAKING_OPPORTUNITY");
+        }
+        if (presetType.includes("prospect")) {
+          collectionType.push("T_COMPETITOR");
+        }
+        if (presetType.includes("purpose")) {
+          collectionType.push("T_PRODUCT_KEYWORDS");
+        }
+      }
+
+      const trackerType = collectionType.length > 0
         ? collectionType.join(",")
         : (template?.name === "T_PEOPLE_FINDER" ? "T_SPEAKING_OPPORTUNITY" : template?.name) || "";
 
-    const data = {
-      trackerType,
-      offset: filterChanged ? 0 : pageParam * limit,
-      limit,
-      ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
-      ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
-      ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
-      ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
-      ...(presetCategories?.length ? { categorySlugs: presetCategories.join(",") } : {}),
-      ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
-    };
+      const data = {
+        trackerType,
+        offset: filterChanged? 0 : pageParam * limit,
+        limit,
+        sortAs: sortBy.label,
+        ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
+        ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
+        ...(presetCategories?.length ? { categorySlugs: presetCategories.join(",") } : {}),
+        ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
+      };
 
-    setIsLoading(true);
-    try {
-      const result = await presetData(data);
-      setTotalCount(result.count);
+      setIsLoading(true);
+      try {
+        const result = await presetData(data);
+        setTotalCount(result.count);
 
-      if (result?.count > 0) {
-        setPresetTemplateData(prev =>
-          reset ? result.trackers : [...prev, ...result.trackers]
-        );
-        if (result.trackers.length < limit) setHasMore(false);
-      } else {
+        if (result?.count > 0) {
+          setPresetTemplateData(prev =>
+            reset ? result.trackers : [...prev, ...result.trackers]
+          );
+          if (result.trackers.length < limit) setHasMore(false);
+        } else {
+          setHasMore(false);
+        }
+        setFilterChanged(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
         setHasMore(false);
+      } finally {
+        setIsLoading(false);
       }
-      setFilterChanged(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setHasMore(false);
-    } finally {
-      setIsLoading(false);
-    }
-  },
-  [page, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData, presetCategories]
-);
-
-  
- useEffect(() => {
-  if (!initialized) return; 
-
-  const params = new URLSearchParams(searchParams.toString());
-
-  if (debouncedInputValue) {
-    params.set("search", debouncedInputValue);
-  } else {
-    params.delete("search");
-  }
-
-  if (presetCategories?.length > 0) {
-    params.set("categories", presetCategories.join(","));
-  } else {
-    params.delete("categories");
-  }
-
-  if (presetCountries?.length > 0) {
-    params.set("countryIds", presetCountries.join(","));
-  } else {
-    params.delete("countryIds");
-  }
-
-  if (presetType?.length > 0) {
-    params.set("collectionType", presetType.join(","));
-  } else {
-    params.delete("collectionType");
-  }
-
-  const newQuery = params.toString();
-  const currentQuery = searchParams.toString();
-
-  if (newQuery !== currentQuery) {
-    router.replace(`?${newQuery}`, { scroll: false });
-  }
-  let count=0;
-  if(presetType.length>0) count++;
-  if(presetCategories.length>0) count++;
-  if(presetCountries.length>0) count++;
-  setFilterCount(count)
-}, [
-  initialized, 
-  debouncedInputValue,
-  presetCountries,
-  presetType,
-  presetCategories,
-  searchParams,
-  router
-]);
-
-  
+    },
+    [page, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData, presetCategories]
+  );
 
   // Setup intersection observer for infinite scroll
   useEffect(() => {
-    if (!loadingRef.current || !hasMore) return;
-  
-    const currentRef = loadingRef.current;
-  
+    if (!loadingRef.current || !hasMore || isLoading) return;
+
     const observerInstance = new IntersectionObserver(
       (entries) => {
-        const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && !isLoading) {
+        if (entries[0].isIntersecting && !isLoading) {
+          // setFilterChanged(true);
           setPage((prevPage) => prevPage + 1);
         }
       },
-      {
-        root: containerRef.current,
-        rootMargin: "20px",
-        threshold: 1.0,
-      }
+      { root: containerRef.current, threshold: 0.1 }
     );
-  
+
+    const currentRef = loadingRef.current;
     observerInstance.observe(currentRef);
-  
+
     return () => {
       if (currentRef) observerInstance.unobserve(currentRef);
     };
-  }, [hasMore, isLoading, filterChanged]);
-  
-  
+  }, [hasMore, isLoading]);
 
-  // Fetch data when page or filters change
+  // Fetch data when page changes
+  // useEffect(()=>{
+  //   setP
+  // },[filterChanged])
+  // Replace the filter change effect with this:
 useEffect(() => {
-  if (!initialized) return;
-  console.log("Filter useEffect triggered with:", {
-    debouncedInputValue,
-    selectedLocation,
-    selectedCategory,
-    template,
-    sortBy,
-    presetCountries,
-    presetType,
-    presetCategories
-  });
-  setPresetTemplateData([]);
-  // setPage(0);
-  setFilterChanged(true);
-  setHasMore(true);
-  console.log("this effect is calling twice");
+  console.log("filter changed");
   
-  fetchPresetJson(0, true); 
-}, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, presetCountries, presetType, presetCategories]);
-
-useEffect(() => {
-  if (page > 0) {
-    fetchPresetJson(page, false);
+  if (initialized) {
+    setPresetTemplateData([]);
+    setPage(0);
+    setFilterChanged(true); // Just set the flag, don't call fetch directly
+    setHasMore(true);
   }
-}, [page]);
+}, [debouncedInputValue, presetCountries, presetType, presetCategories, initialized]);
 
+// Then update your fetch effect to handle both page changes AND filter changes:
+useEffect(() => {
+  if (initialized && (page > 0 || filterChanged)) {
+    console.log("Fetching data - page:", page, "filterChanged:", filterChanged);
+    fetchPresetJson(page, filterChanged);
+  }
+}, [page, filterChanged, initialized]);
+
+  // Debounce input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedInputValue(inputValue);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  useEffect(() => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedInputValue(inputValue);
-    }, 500); // 500ms debounce delay
-    
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, [inputValue]);
+
   const formatCount = (count: number) => {
-    if (count >= 1000) {
-      const value = count / 1000;
-      const decimalPart = value - Math.floor(value);
-      return `${Math.floor(value)}k`;
-    }
-    return count;
+    return count >= 1000 ? `${Math.floor(count / 1000)}k` : count;
   };
   
 const handlePresetClicked = (item:PresetData, id:string, trackerType:string, name:string) => {
@@ -319,8 +252,8 @@ const getCompFilterdData = (data: string[]) => {
   }
   });
 
-  return res;
-};
+    return res;
+  };
 
 const structured=(obj:any, type:string[])=>{
 
@@ -423,9 +356,10 @@ console.log("template", presetCategories);
           />
         </div> */}
       </div>
+      
       <div className="block">
       <div
-      className={`pb-6 md:pb-0 md:min-h-[calc(100vh-260px)] overflow-y-auto`}
+      className={`pb-6 md:pb-0 min-h-[calc(100vh-260px)] overflow-y-auto`}
       // ref={containerRef}
        style={{
     height: (isPublic || isFull)
@@ -550,9 +484,10 @@ console.log("template", presetCategories);
           )}
       </div>
       </div>
+      
       {showFilters && (
-      <div className="sticky bottom-0 bg-background z-10 block md:hidden w-[100vw] mr-[-20px]">
-                  <div className="p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3">
+      <div className="sticky bottom-0 bg-background z-10 block md:hidden w-full">
+                  <div className={`p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3 ${!isFull?"pb-2.5 -mr-5 -ml-5":"" }`}>
             {/* <div className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md p-2"> */}
                   <div className="flex flex-col gap-3">
                     {(template?.name === "T_COMPETITOR" || template===undefined) &&
