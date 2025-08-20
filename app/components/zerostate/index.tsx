@@ -100,7 +100,7 @@ const ZeroState = ({
                       <>
                         {tokenMessage === "You've hit today's search limit. Basic search resets at 10:00 AM IST, or upgrade to get advance tokens now" ? (
                           <>
-                            You've hit today's search limit.
+                            You&apos;ve hit today&apos;s search limit.
                             <br />
                             Basic search resets at 10:00 AM IST, or{" "}
                             <Link
