@@ -192,13 +192,14 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
           view !== "bookmarked" && (
             <>
               <TableHead
-                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} z-40 h-12 bg-[var(--heading-background-color)]`}
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} z-40 h-12 bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">
                   Matched
                 </div>
               </TableHead>
+              {source!=="public" &&
               <TableHead
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
@@ -206,7 +207,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                 <div className="font-medium text-foreground text-center">
                   Score
                 </div>
-              </TableHead>
+              </TableHead>}
               <TableHead
                 className="sticky right-0 bg-[var(--heading-background-color)]/50 z-40 h-12"
                 style={{ zIndex: 0 }}

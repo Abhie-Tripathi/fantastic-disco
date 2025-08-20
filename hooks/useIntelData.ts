@@ -37,7 +37,7 @@ export const useIntelData = (trackerId: string | null, events: any[], eventType:
       setLoading(false);
     }
   };
-      if(isTentimesUser && trackerId && trackerId.length > 0 && trackerType!=="T_EVENT_PARTICIPATION")
+      if(trackerId && trackerId.length > 0 && trackerType!=="T_EVENT_PARTICIPATION" && trackerType!=="T_AUDIENCE_DEPT_PROFILE" && trackerType!=="T_CUSTOM")
       fetchIntelData();
     }
   }, [events, trackerId]);

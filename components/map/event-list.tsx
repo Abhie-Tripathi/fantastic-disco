@@ -240,7 +240,6 @@ const EventCard = memo(
                     </div>
                     <div className="text-xs [color:var(--secondary-text-color)] mb-1">{address}</div>
                   </div>
-                  {isTentimesUser && (
                     <>
                       {trackerId &&
                         !isEventeli &&
@@ -259,7 +258,7 @@ const EventCard = memo(
                           )
                         ))}
                     </>
-                  )}
+                  
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
