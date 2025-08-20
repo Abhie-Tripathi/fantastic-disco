@@ -152,7 +152,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 }) => {
 const { isTentimesUser } = useSafeFilterContext();
   // console.log("event table called......");
-  
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
   const includeKeywords = getFilterValue("includeKeywords")
@@ -803,7 +802,7 @@ const { isTentimesUser } = useSafeFilterContext();
           {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
             <>
               <TableCell
-                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -841,7 +840,7 @@ const { isTentimesUser } = useSafeFilterContext();
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-              {isTentimesUser ?
+              {source!=="public" &&
               <TableCell
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
@@ -855,31 +854,6 @@ const { isTentimesUser } = useSafeFilterContext();
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>:
-               <TableCell
-                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
-                style={{
-                  zIndex: 0,
-                  minWidth: "132px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                }}
-              >
-                <span
-                  className={getAssociationColor(
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "peopleFinderPersonAssociationPercentage"
-                    )[0]
-                  )}
-                >
-                  {
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "peopleFinderPersonAssociationPercentage"
-                    )[0]
-                  }
-                </span>
               </TableCell>
               }
             </>
@@ -887,7 +861,7 @@ const { isTentimesUser } = useSafeFilterContext();
           {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
             <>
               <TableCell
-                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -925,7 +899,7 @@ const { isTentimesUser } = useSafeFilterContext();
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-              {isTentimesUser?
+              {source!=="public" &&
              <TableCell
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
@@ -939,36 +913,13 @@ const { isTentimesUser } = useSafeFilterContext();
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>:  
-              <TableCell
-                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
-                style={{
-                  zIndex: 0,
-                  minWidth: "132px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                }}
-              >
-                <span
-                  className={getAssociationColor(
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "speakerPersonAssociationPercentage"
-                    )[0]
-                  )}
-                >
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "speakerPersonAssociationPercentage"
-                  )[0] ?? "-"}
-                </span>
               </TableCell>}
             </>
           )}
-          {type === "T_COMPETITOR" && view !== "bookmarked" && (
+          {((type === "T_COMPETITOR" || type ==="T_CUSTOMER_ICP")&& view !== "bookmarked") && (
             <>
               <TableCell
-                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -1010,7 +961,7 @@ const { isTentimesUser } = useSafeFilterContext();
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-              {isTentimesUser?
+              {source!=="public" && 
               <TableCell
                 className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
                 style={{
@@ -1024,36 +975,14 @@ const { isTentimesUser } = useSafeFilterContext();
                 :
                 (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
                 {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>:    
-              <TableCell
-                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
-                style={{
-                  zIndex: 0,
-                  minWidth: "132px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                }}
-              >
-                <span
-                  className={getAssociationColor(
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "competitorPercentage"
-                    )[0]
-                  )}
-                >
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "competitorPercentage"
-                  )[0] ?? "-"}
-                </span>
               </TableCell>}
+              
             </>
           )}
           {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
             <>
               <TableCell
-                className={`sticky ${source!=="public"?"right-[200px]":"right-[164px]"} bg-background z-0`}
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} bg-background z-0`}
                 style={{
                   zIndex: 0,
                   minWidth: "100px",
@@ -1078,66 +1007,60 @@ const { isTentimesUser } = useSafeFilterContext();
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
-            {(isTentimesUser && event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1)?
-            <TableCell
-                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0 text-[var(--secondary-text-color)]`}
-                style={{
-                  zIndex: 0,
-                  minWidth: "132px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                }}
-              >
-                {intelLoading ? <Skeleton className="h-16 w-full rounded-md" />
-                :
-                (intelScoreData[0]?.value > 0 ?(<IntelScore width="100%" height="70px" intelScore={intelScoreData}/>):"-")}
-                {/* <Skeleton className="h-16 w-full rounded-md" /> */}
-              </TableCell>
-            : ((event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1) ?
-                  <TableCell className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
+              {source !== "public" && (
+                event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length > 1 ? (
+                  <TableCell
+                    className="sticky right-[68px] bg-background z-0 text-[var(--secondary-text-color)]"
                     style={{
                       zIndex: 0,
                       minWidth: "132px",
                       textAlign: "center",
                       background: "var(--heading-background-color)",
-                    }}>
-                    <span className="text-[var(--secondary-text-color)]">
-                      Matched
-                    </span></TableCell>:
-                    <TableCell
-                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} bg-background z-0`}
-                style={{
-                  zIndex: 0,
-                  minWidth: "132px",
-                  textAlign: "center",
-                  background: "var(--heading-background-color)",
-                }}
-              >
-                {(() => {
-                  const percentage =
-                    event.basic.matchedKeywordsPercentage ?? null;
+                    }}
+                  >
+                    {intelLoading ? (
+                      <Skeleton className="h-16 w-full rounded-md" />
+                    ) : (
+                      intelScoreData[0]?.value > 0 ? (
+                        <IntelScore width="100%" height="70px" intelScore={intelScoreData} />
+                      ) : "-"
+                    )}
+                  </TableCell>
+                ) : event?.basic?.matchedKeywords && event?.basic?.matchedKeywords.length === 1 ? (
+                  <TableCell
+                    className="sticky right-[68px] bg-background z-0"
+                    style={{
+                      zIndex: 0,
+                      minWidth: "132px",
+                      textAlign: "center",
+                      background: "var(--heading-background-color)",
+                    }}
+                  >
+                    <span className="text-[var(--secondary-text-color)]">Matched</span>
+                  </TableCell>
+                ) : (
+                  <TableCell
+                    className="sticky right-[68px] bg-background z-0"
+                    style={{
+                      zIndex: 0,
+                      minWidth: "132px",
+                      textAlign: "center",
+                      background: "var(--heading-background-color)",
+                    }}
+                  >
+                    {(() => {
+                      const percentage = event.basic.matchedKeywordsPercentage ?? null;
 
-                  if (percentage === null) return "-";
-                  if (percentage > 20)
-                    return (
-                      <span className={getAssociationColor("high")}>High</span>
-                    );
-                  if (percentage >= 10 && percentage <= 20)
-                    return (
-                      <span className={getAssociationColor("medium")}>
-                        Medium
-                      </span>
-                    );
-                  if (percentage > 0 && percentage < 10)
-                    return (
-                      <span className={getAssociationColor("low")}>Low</span>
-                    );
+                      if (percentage === null) return "-";
+                      if (percentage > 20) return <span className={getAssociationColor("high")}>High</span>;
+                      if (percentage >= 10 && percentage <= 20) return <span className={getAssociationColor("medium")}>Medium</span>;
+                      if (percentage > 0 && percentage < 10) return <span className={getAssociationColor("low")}>Low</span>;
+                      return "-";
+                    })()}
+                  </TableCell>
+                )
+              )}
 
-                  return "-";
-                })()}
-              </TableCell>
-                    )
-                    }
             
             </>
           )}
