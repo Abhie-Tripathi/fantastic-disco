@@ -34,6 +34,7 @@ export default function SubscriptionBanner() {
 
   useEffect(() => {
     const updateBannerHeight = () => {
+      if(!membershipData?.isTrial) return
       // Use different heights for mobile vs desktop
       const isMobile = window.innerWidth < 640; // sm breakpoint
       const bannerHeight = isVisible ? (isMobile ? 120 : 80) : 0;
@@ -45,7 +46,7 @@ export default function SubscriptionBanner() {
     // Listen for window resize to update height
     window.addEventListener('resize', updateBannerHeight);
     return () => window.removeEventListener('resize', updateBannerHeight);
-  }, [isVisible]);
+  }, [isVisible, membershipData?.isTrial]);
 
   const handleDismiss = () => {
     setIsVisible(false);
