@@ -32,6 +32,8 @@ import { useCompanyService } from "@/services/companyService";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/ui/Loading";
 import { CompanyDetailResponse } from "@/types/prospect";
+import { useToast } from "@/hooks/use-toast";
+import { ApiError } from "@/types/api";
 
 const excludedTags = [
   "Core CRM",
@@ -70,6 +72,7 @@ const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   // const referrer = document.referrer;
   const router = useRouter();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const tabs = [
@@ -112,14 +115,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         getCompanyEvents(params.companyId, "past"),
         getCompanyPOC(params.companyId),
       ]);
+      
+      // Log any failed requests for debugging
+      if (upcomingEvents.status === "rejected") {
+        console.warn("Failed to fetch upcoming events:", upcomingEvents.reason);
+      }
+      if (pastEvents.status === "rejected") {
+        console.warn("Failed to fetch past events:", pastEvents.reason);
+      }
+      
       const companyResponse =
         companyDataResult.status === "fulfilled"
           ? companyDataResult.value
           : null;
       const upcomingEventRes =
-        upcomingEvents.status === "fulfilled" ? upcomingEvents.value : null;
+        upcomingEvents.status === "fulfilled" ? upcomingEvents.value : { events: [], count: 0 };
       const pastEventRes =
-        pastEvents.status === "fulfilled" ? pastEvents.value : null;
+        pastEvents.status === "fulfilled" ? pastEvents.value : { events: [], count: 0 };
       const eventPOCData =
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
@@ -144,10 +156,10 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       }
       return {
         companyDetails: companyResponse?.companyData,
-        upcomingEventsCount: upcomingEventRes.count,
-        upcomingEventsData: upcomingEventRes.events || [],
-        pastEventsCount: pastEventRes.count,
-        pastEventsData: pastEventRes.events || [],
+        upcomingEventsCount: upcomingEventRes?.count || 0,
+        upcomingEventsData: upcomingEventRes?.events || [],
+        pastEventsCount: pastEventRes?.count || 0,
+        pastEventsData: pastEventRes?.events || [],
       };
     },
   });
@@ -208,8 +220,25 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           )
         );
       }
+      toast({
+        title: "Success",
+        description: "Contact details unlocked successfully",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+      
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 0 } : poc
+        )
+      );
+
+      toast({
+        title: "Error",
+        description: (error as ApiError).message,
+        variant: "destructive",
+      });
     }
   };
 

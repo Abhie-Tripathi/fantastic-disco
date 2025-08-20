@@ -446,6 +446,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           poc.id === pocId ? { ...poc, state: 0 } : poc
         )
       );
+      toast({
+        title: "Error",
+        description: (error as ApiError).message,
+        variant: "destructive",
+      });
     }
   };
 

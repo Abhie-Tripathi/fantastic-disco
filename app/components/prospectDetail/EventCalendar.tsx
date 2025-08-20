@@ -60,6 +60,7 @@ export const EventCalendar = ({
 
   const { getCompanyEvents } = useCompanyService();
 
+  console.log(pastEventsData, upcomingEventsData);
   const loadMoreEvents = async (type: string) => {
     if (type === "past") {
       const moreEvents = await getCompanyEvents(
