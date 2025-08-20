@@ -38,11 +38,11 @@ const ZeroState = ({
       if (!isPremium) {
         return "Your search limit has been reached. Upgrade to a higher‑tier plan to access the features you need.";
       }
-      return "You've exhausted your Advanced Searches and daily basic search limit. Basic limit will reset tomorrow at 10:00 AM IST or upgrade to increase the advance searches.";
+      return "You've hit today's search limit. Basic search resets at 10:00 AM IST, or upgrade to get advance tokens now";
     }
     
     if (!advanceToken && basicToken) {
-      return "You've exhausted your Advanced Search tokens. You can continue with basic searches or upgrade to a higher plan.";
+      return "Advance tokens are consumed. You're now on a daily basic search. Upgrade for more tokens or keep using basic search.";
     }
     
     if (advanceToken && !basicToken) {
@@ -98,18 +98,39 @@ const ZeroState = ({
                   <div>
                     {tokenMessage.includes("upgrade") ? (
                       <>
-                        {tokenMessage.split("upgrade")[0]}
-                        <Link
-                          target="_blank"
-                          href={`https://whr.ai/pricing?utm_source=${
-                            isEventeli ? "geo" : "gtm"
-                          }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
-                          className="text-primary cursor-pointer font-medium underline"
-                          onClick={handleUpgradeClick}
-                        >
-                          upgrade
-                        </Link>
-                        {tokenMessage.split("upgrade")[1]}
+                        {tokenMessage === "You've hit today's search limit. Basic search resets at 10:00 AM IST, or upgrade to get advance tokens now" ? (
+                          <>
+                            You've hit today's search limit.
+                            <br />
+                            Basic search resets at 10:00 AM IST, or{" "}
+                            <Link
+                              target="_blank"
+                              href={`https://whr.ai/pricing?utm_source=${
+                                isEventeli ? "geo" : "gtm"
+                              }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                              className="text-primary cursor-pointer font-medium underline"
+                              onClick={handleUpgradeClick}
+                            >
+                              upgrade
+                            </Link>{" "}
+                            to get advance tokens now
+                          </>
+                        ) : (
+                          <>
+                            {tokenMessage.split("upgrade")[0]}
+                            <Link
+                              target="_blank"
+                              href={`https://whr.ai/pricing?utm_source=${
+                                isEventeli ? "geo" : "gtm"
+                              }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                              className="text-primary cursor-pointer font-medium underline"
+                              onClick={handleUpgradeClick}
+                            >
+                              upgrade
+                            </Link>
+                            {tokenMessage.split("upgrade")[1]}
+                          </>
+                        )}
                       </>
                     ) : (
                       tokenMessage
