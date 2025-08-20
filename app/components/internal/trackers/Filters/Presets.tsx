@@ -189,7 +189,6 @@ const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,
   // },[filterChanged])
   // Replace the filter change effect with this:
 useEffect(() => {
-  console.log("filter changed");
   
   if (initialized) {
     setPresetTemplateData([]);
@@ -202,7 +201,6 @@ useEffect(() => {
 // Then update your fetch effect to handle both page changes AND filter changes:
 useEffect(() => {
   if (initialized && (page > 0 || filterChanged)) {
-    console.log("Fetching data - page:", page, "filterChanged:", filterChanged);
     fetchPresetJson(page, filterChanged);
   }
 }, [page, filterChanged, initialized]);
@@ -284,7 +282,6 @@ const limit=3;
 const toggleFilterHandler=()=>{
   setShowFilter(!showFilters);
 }
-console.log("template", presetCategories);
 
   return (
     <div className="w-full">

@@ -8,7 +8,6 @@ export const useSafeFilterContext = () => {
       isTentimesUser: false,
       localFilters: {
         audienceSpread: "",
-        presetCountry: "",
         audienceSpreadRegions: ""
       },
       setLocalFilter: () => {},
