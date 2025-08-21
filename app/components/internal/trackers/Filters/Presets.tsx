@@ -215,7 +215,7 @@ useEffect(() => {
   }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    setInputValue(e.target.value.trim());
   };
 
   const formatCount = (count: number) => {
@@ -484,7 +484,7 @@ const toggleFilterHandler=()=>{
       
       {showFilters && (
       <div className="sticky bottom-0 bg-background z-10 block md:hidden w-full">
-                  <div className={`p-4 pb-0 border-t bg-background/80 backdrop-blur-sm space-y-3 ${!isFull?"pb-2.5 -mr-5 -ml-5":"" }`}>
+                  <div className={`p-4 pb-3 border-t bg-background/80 backdrop-blur-sm space-y-3 ${!isFull?"pb-2.5 -mr-5 -ml-5":"" }`}>
             {/* <div className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md p-2"> */}
                   <div className="flex flex-col gap-3">
                     {(template?.name === "T_COMPETITOR" || template===undefined) &&
