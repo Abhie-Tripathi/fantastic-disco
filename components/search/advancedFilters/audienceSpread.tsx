@@ -105,7 +105,7 @@ export default function AudienceSpreadSelector({ variant = "popover", source, pr
   const triggerContent = (
     <div className="flex items-center">
       {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-      <span className="mr-2">{source==="preset"?"Country":"Audience Country"}</span>
+      <span className="mr-2">{source==="preset"?"Country Name":"Audience Country"}</span>
       {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
         <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
           {selectedCountries.length + selectedRegions.length}
@@ -172,7 +172,7 @@ export default function AudienceSpreadSelector({ variant = "popover", source, pr
                       )}
                     </div>
                     {Flag && <Flag className="w-6 h-4 mr-2" />}
-                    <span>{country.displayName}</span>
+                    <span>{source==="preset"?country.name:country.displayName}</span>
                   </div>
                 );
               })

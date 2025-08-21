@@ -306,7 +306,7 @@ const toggleFilterHandler=()=>{
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none w-full bg-transparent"
-              placeholder="Search by Collection name, Country or Category"
+              placeholder="Search by Collection name"
             />
           </div>
         </div>
@@ -325,18 +325,18 @@ const toggleFilterHandler=()=>{
                     )}
                   </Button>}
         {(template?.name === "T_COMPETITOR" || template===undefined) &&
-        <div className="hidden md:w-[30%] md:block">
+        <div className="hidden md:w-[45%] md:block">
         <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
   setPresetCountries={setPresetCountries}/>
         </div>
         }
         
         {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
-        <div className="hidden md:w-[30%] md:block">
+        <div className="hidden md:w-[45%] md:block">
           <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
         </div>}
         {template===undefined &&
-        <div className="hidden md:w-[30%] md:block">
+        <div className="hidden md:w-[25%] md:block">
         <CollectionTypeSelector
         presetType={presetType}
         setPresetType={setPresetType}

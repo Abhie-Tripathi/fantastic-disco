@@ -81,14 +81,14 @@ export default function CollectionTypeSelector({
         align="start"
       >
         <div className="p-2 space-y-2">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Checkbox
               checked={isAllSelected}
               onCheckedChange={() => handleSelectAll(!isAllSelected)}
               className="rounded-none"
             />
             <span>All</span>
-          </div>
+          </div> */}
           {collectionTypes.map((type) => (
             <div key={type.slug} className="flex items-center gap-2">
               <Checkbox
