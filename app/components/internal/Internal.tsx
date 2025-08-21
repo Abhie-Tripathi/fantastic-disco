@@ -48,15 +48,14 @@ import {
 } from "@/components/ui/popover";
 import { useFilterState } from "@/hooks/useFilterState";
 import { EventListItem } from "@/components/search/list";
-import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Event } from "@/types/events";
+import type { Event } from "@/types/events/events";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useQuery } from "@/hooks/useQuery";
 
 interface BookmarkType {
   events: Event[];
   totalEvents: number;
-  isLoading: boolean;
-  error: any | null;
   noMoreData: boolean;
 }
 interface Props {
@@ -115,24 +114,36 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const [bookmarkData, setBookmarkData] = useState<BookmarkType>({
     events: [],
     totalEvents: 0,
-    isLoading: false,
-    error: null,
     noMoreData: false,
   });
 
-  const {
-    events: bookmarkedEvents,
-    totalEvents: totalBookmarkEvents,
-    isLoading,
-    error,
-  } = useTrackerEvents.list(
-    {
-      limit: 10,
-      offset: (bookmarkPage - 1) * 10,
+  const { globalSavedEvents } = useTrackerServices();
+  const { isFetching } = useQuery<any>({
+    queryKey: ["saved-events", bookmarkPage],
+    queryFn: async () => {
+      const savedEventsResult = await globalSavedEvents({
+        limit: 10,
+        offset: (bookmarkPage - 1) * 10,
+      });
+
+      if (savedEventsResult?.events && savedEventsResult?.events.length > 0) {
+        setBookmarkData((prev) => ({
+          ...prev,
+          events: [...prev.events, ...savedEventsResult?.events],
+          totalEvents: savedEventsResult?.count || 0,
+          noMoreData: savedEventsResult?.events.length < 10,
+        }));
+      } else {
+        setBookmarkData((prev) => ({
+          ...prev,
+          noMoreData: true,
+        }));
+      }
     },
-    undefined,
-    "global"
-  );
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
 
   const handleModal = (eventId: string, enquiryId: string) => {
     setModalOpen(!modalOpen);
@@ -337,19 +348,6 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
     }
   }, [page, filtersChanged]);
 
-  useEffect(() => {
-    if (!isLoading && bookmarkedEvents.length) {
-      setBookmarkData((prev) => ({
-        ...prev,
-        events: [...prev.events, ...bookmarkedEvents],
-        totalEvents: totalBookmarkEvents,
-        isLoading,
-        error,
-        noMoreData: bookmarkedEvents.length < 10,
-      }));
-    }
-  }, [bookmarkedEvents]);
-
   const ViewSelectDropdown = () => {
     return (
       <Popover open={showViewDropdown} onOpenChange={setShowViewDropdown}>
@@ -517,7 +515,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                   <CoordinateFilters
                     type={"companies"}
                     filterCount={filterCount}
-                    createTrackerHandler={() => {}}
+                    createTrackerHandler={() => { }}
                     searchHandler={searchHandler}
                     coordinateActions={coordinateActions}
                     pipelineConfig={pipelineConfig}
@@ -582,7 +580,21 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                   </div>
                 );
               })}
-              {!bookmarkData.noMoreData && <Loading />}
+              {bookmarkData.noMoreData ? (
+                bookmarkData?.events.length === 0 ? (
+                  <NullState
+                    image={coordinateNullState}
+                    title="You haven't bookmarked any events yet."
+                    text=" Explore millions of listed events, upload your own, or choose from your bookmarked events to get started."
+                    buttonText="Search Events"
+                    buttonUrl={`/internal/search/events`}
+                  />
+                ) : (
+                  <></>
+                )
+              ) : (
+                <Loading />
+              )}
             </div>
           ) : coordinateView === "enquiryEvents" ? (
             <div className={showFilters && isMobile ? "hidden" : "block"}>
@@ -618,7 +630,15 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                 })}
               </div>
               {noMoreData ? (
-                eventData1?.length === 0 ? (
+                eventData1?.length === 0 && searchParams.size === 0 ? (
+                  <NullState
+                    image={coordinateNullState}
+                    title="You haven't shortlisted any events yet."
+                    text=" Explore millions of listed events, upload your own, or choose from your bookmarked events to get started."
+                    buttonText="Search Events"
+                    buttonUrl={`/internal/search/events`}
+                  />
+                ) : eventData1?.length === 0 ? (
                   <div style={{ textAlign: "center" }}>
                     No results containing all your search terms were found.
                   </div>

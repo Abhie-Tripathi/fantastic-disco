@@ -51,10 +51,7 @@ const NullState = ({
             <Button variant={whrModule === "coordinate" ? "outline" : "default"} onClick={()=>router.push(buttonUrl as string)} >{buttonText}</Button>
 
             {whrModule === "coordinate" &&
-              <>
-                <Button variant="outline" onClick={()=>window.open("/internal/trackers/savedevents?view=table", "_blank")} >Bookmarked Events</Button>
-                <AddEventModal />
-              </>
+              <AddEventModal />
             }
           </div>
         )}
