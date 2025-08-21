@@ -276,7 +276,8 @@ export default function EventAccordion({
   });
   const handleBulkSubmit = async () => {
     // Validate inputs
-    if (!action) {
+
+    if (action?.status === "" && action?.label === "None") {
       toast({
         title: "Error",
         description: "No action selected",
