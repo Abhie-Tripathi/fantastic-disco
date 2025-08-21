@@ -313,17 +313,34 @@ export default function AutocompleteInput({
                     id={`option-${index}`}
                     role="option"
                     aria-selected={isHighlighted}
-                    className={`px-2 py-1.5 cursor-pointer flex flex-col items-start transition-colors text-foreground ${
+                    className={`px-2 py-1.5 cursor-pointer flex items-center justify-between transition-colors text-foreground ${
                       isHighlighted ? "bg-accent dark:bg-[var(--accent-color)]" : "hover:bg-gray-50 dark:hover:bg-[var(--background-color-hover)]"
                     }`}
                     onClick={() => handleSelect(prediction)}
                     onMouseEnter={() => setHighlightedIndex(index)}
                   >
-                    <span className="font-medium text-sm dark:text-[var(--primary-text-color)]">{city}</span>
-                    <span className="text-sm text-gray-500 dark:text-[var(--secondary-text-color)]">
-                      {state && `${state}, `}
-                      {country}
-                    </span>
+                    <div className="flex flex-col items-start flex-1">
+                      <span className="font-medium text-sm dark:text-[var(--primary-text-color)]">{city}</span>
+                      <span className="text-sm text-gray-500 dark:text-[var(--secondary-text-color)]">
+                        {state && `${state}, `}
+                        {country}
+                      </span>
+                    </div>
+                    {prediction.locationType && (
+                      <span className={`px-1.5 py-0.5 text-[8px] font-medium rounded-sm border ml-2 flex-shrink-0 ${
+                        prediction.locationType.toLowerCase() === 'city' 
+                          ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
+                          : prediction.locationType.toLowerCase() === 'state'
+                          ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+                          : prediction.locationType.toLowerCase() === 'country'
+                          ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800'
+                          : prediction.locationType.toLowerCase() === 'venue'
+                          ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800'
+                          : 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/20 dark:text-gray-300 dark:border-gray-800'
+                      }`}>
+                        {prediction.locationType.charAt(0).toUpperCase() + prediction.locationType.slice(1).toLowerCase()}
+                      </span>
+                    )}
                   </li>
                 )
               })}

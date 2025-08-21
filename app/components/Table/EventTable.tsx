@@ -175,6 +175,16 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     }
   }, [actions]);
 const handleBulkSubmit = async () => {
+
+  if (action?.status === "" && action?.label === "None") {
+    toast({
+      title: "Error",
+      description: "No action selected",
+      variant: "destructive",
+    });
+    return;
+  }
+  
   try {
     await executeBulkAction(
       {
