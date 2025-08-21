@@ -261,7 +261,6 @@ export default function EventList({
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
                   </div>
-                  {isTentimesUser && (
                     <>
                     {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
                     (intelLoading ? (
@@ -275,7 +274,6 @@ export default function EventList({
                     ))
                   }
                     </>
-                  )}
                   
                   </div>
                 <div>

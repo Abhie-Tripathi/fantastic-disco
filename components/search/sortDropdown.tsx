@@ -139,7 +139,7 @@ const SortDropdown = ({
         )}
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0" align="end">
-        <div className="bg-white rounded-md shadow-sm">
+        <div className="bg-background rounded-md shadow-sm">
           <div className="flex items-center justify-between p-3 border-b">
             <h3 className="font-medium">Sort by</h3>
             <div className="flex items-center gap-1">
@@ -148,7 +148,7 @@ const SortDropdown = ({
                 size="icon"
                 className={cn(
                   "h-8 w-8 p-0",
-                  sortOrder === "asc" && "bg-gray-100"
+                  sortOrder === "asc" && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortOrderChange("asc")}
               >
@@ -160,7 +160,7 @@ const SortDropdown = ({
                 size="icon"
                 className={cn(
                   "h-8 w-8 p-0",
-                  sortOrder === "desc" && "bg-gray-100"
+                  sortOrder === "desc" && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortOrderChange("desc")}
               >
@@ -174,14 +174,14 @@ const SortDropdown = ({
               <button
                 key={option.value}
                 className={cn(
-                  "w-full flex items-center px-3 py-2 text-left hover:bg-gray-100 transition-colors",
-                  sortField === option.value && "bg-gray-100"
+                  "w-full flex items-center px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-[var(--background-color-hover)] transition-colors",
+                  sortField === option.value && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortFieldChange(option.value)}
               >
                 <div className="w-6 flex-shrink-0">
                   {sortField === option.value && (
-                    <Check className="h-4 w-4 text-blue-600" />
+                    <Check className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   )}
                 </div>
                 <span>{option.label}</span>

@@ -69,9 +69,9 @@ const data = [
     domain: "Audience Analysis",
     img: Audience,
     url:"T_AUDIENCE_DEPT_PROFILE",
-    trackerName: "Audience Dept. & Profiles",
+    trackerName: "Ideal Audience Designation",
     content:
-      "Track events for the specific organizational departments or audience profiles",
+      "Find relevant events based on your target audience profile.",
   },
   {
     type: "template",

@@ -30,7 +30,7 @@ export default function SignInForm() {
   const redirectParams = params.get("redirect");
   const redirectPath = redirectParams ? getValidPath(redirectParams) : null;
   const router = useRouter();
-  const { signin, error, isLoading, setError, signInSSO, isAuthenticating } =
+  const { signin, error, isLoading, setError, signInSSO, isAuthenticating, user } =
   useAuthContext();
   const { data: session, status } = useSession();
 
@@ -56,6 +56,14 @@ export default function SignInForm() {
     if (redirectPath) sessionStorage.setItem("redirect", redirectPath);
   }, [redirectPath]);
 
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (user && !isAuthenticating) {
+      const redirectTo = redirectPath ? `/internal/${redirectPath}` : "/internal";
+      router.replace(redirectTo);
+    }
+  }, [user, isAuthenticating, redirectPath, router]);
+
   useEffect(() => {
     if (
       errors.email?.message &&
@@ -73,6 +81,11 @@ export default function SignInForm() {
   }, [status, session]);
 
   if (isAuthenticating) {
+    return <LoadingPage />;
+  }
+
+  // Don't render the form if user is already authenticated
+  if (user && !isAuthenticating) {
     return <LoadingPage />;
   }
 
