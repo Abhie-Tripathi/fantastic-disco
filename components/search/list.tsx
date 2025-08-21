@@ -1514,7 +1514,7 @@ const EventListItem = ({
                       {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
                       {trackerId &&
                         trackerId.length > 0 &&
-                        isTentimesUser &&
+                        source!=="public" &&
                         !isMobile && (
                           <>
                             {!isEventeli && !intelLoading ? (
@@ -1563,7 +1563,7 @@ const EventListItem = ({
             </div>
           </div>
           {/* <Skeleton className="h-[132px] w-[98px] rounded-md" /> */}
-          {trackerId && trackerId.length > 0 && isTentimesUser && isMobile && (
+          {trackerId && trackerId.length > 0 && source!=="public" && isMobile && (
             <>
               {!isEventeli && !intelLoading ? (
                 intelScoreData?.[0]?.value > 0 && (
