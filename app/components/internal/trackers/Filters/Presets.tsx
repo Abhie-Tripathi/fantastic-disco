@@ -207,15 +207,20 @@ useEffect(() => {
 
   // Debounce input
   useEffect(() => {
+    const trimmedValue = inputValue.replace(/^\s+/, "");;
     const timer = setTimeout(() => {
-      setDebouncedInputValue(inputValue);
+      if (trimmedValue !== "") {
+      setDebouncedInputValue(trimmedValue);
+    } else {
+      setDebouncedInputValue(""); 
+    }
     }, 500);
     
     return () => clearTimeout(timer);
   }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.trim());
+    setInputValue(e.target.value);
   };
 
   const formatCount = (count: number) => {
@@ -331,7 +336,7 @@ const toggleFilterHandler=()=>{
         </div>
         }
         
-        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
+        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER" || template?.name==="T_COMPETITOR") &&
         <div className="hidden md:w-[45%] md:block">
           <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
         </div>}
@@ -490,7 +495,7 @@ const toggleFilterHandler=()=>{
                     {(template?.name === "T_COMPETITOR" || template===undefined) &&
                          <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
   setPresetCountries={setPresetCountries}/>}
-    {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
+    {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER" || template?.name==="T_COMPETITOR") &&
       <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>}
       {template===undefined &&
   <CollectionTypeSelector
