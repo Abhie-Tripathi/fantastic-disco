@@ -148,6 +148,10 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
         router.push(
           `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}&showValues=${showValues}`
         );
+      }else{
+        router.push(
+          `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
+        );
       }
       }
     }
