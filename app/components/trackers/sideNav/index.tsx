@@ -38,6 +38,7 @@ import {
 import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { getShowValues } from "@/utils/showValues";
 
 const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const { refs, setps,data, skip, searchValue } = useTrackerContext();
@@ -138,9 +139,17 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
           router.push(
       `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`)
         }else
-      router.push(
-        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}&showValues=${data?.filterValues?.showValues}`
-      );
+     {
+      const query = {
+        show: (data?.filterValues?.show as unknown as string[])?.join(',')
+      }
+      const showValues = getShowValues(query);
+      if(showValues){
+        router.push(
+          `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}&showValues=${showValues}`
+        );
+      }
+      }
     }
   };
   // const fetchData=async()=>{

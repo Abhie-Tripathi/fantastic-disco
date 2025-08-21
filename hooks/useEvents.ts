@@ -25,12 +25,11 @@ export const useEvents = {
       }[membershipData.membership] : 10;
       
       const queryForProcessing = { ...query };
-      delete queryForProcessing.show; 
-      
       const showValues = getShowValues(queryForProcessing);
       if (showValues) {
         queryForProcessing.showValues = showValues;
       }
+      delete queryForProcessing.show; 
       
       const normalizedQuery = {
         ...queryForProcessing,

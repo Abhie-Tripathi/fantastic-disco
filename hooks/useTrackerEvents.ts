@@ -28,9 +28,6 @@ export const useTrackerEvents = {
 
     const trackerService = useTrackerServices();
     
-    if (finalQuery.offset === 0 || finalQuery.offset === 10) {
-      console.log(`🔄 useTrackerEvents called - offset: ${finalQuery.offset}, limit: ${finalQuery.limit}, trackerId: ${trackerId}`);
-    }
 
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(finalQuery, trackerId),

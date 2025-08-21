@@ -93,6 +93,7 @@ import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { getShowValues } from "@/utils/showValues";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -1088,7 +1089,11 @@ const jobComposite = {
             setIsCreating(false);
             return;
           }else{
-            const showValuesParam = (data as any).filterValues?.showValues ? `&showValues=${(data as any).filterValues.showValues}` : '';
+            const query = {
+              show: (data as any).filterValues?.show?.join(',')
+            }
+            const showValues = getShowValues(query);
+            const showValuesParam = showValues ? `&showValues=${showValues}` : '';
           router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
           
          // setIsNewCall(true);
@@ -1184,7 +1189,11 @@ const jobComposite = {
         if (data) { 
           setIsNewCall(true); 
           setTrackerId(data?.id);
-          const showValuesParam = (data as any).filterValues?.showValues ? `&showValues=${(data as any).filterValues.showValues}` : '';
+          const query = {
+            show: (data as any).filterValues?.show?.join(',')
+          }
+          const showValues = getShowValues(query);
+          const showValuesParam = showValues ? `&showValues=${showValues}` : '';
           router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
         }
       }catch(error){
@@ -1419,7 +1428,7 @@ const entriesWithEmpty1 = [...currentEntries, []];
         return acc;
       }, {});      
       Object?.entries(mapping)?.forEach(([key, value]) => {
-        if (editData?.filterValues?.showValues?.includes(key)) {
+        if (editData?.filterValues?.show?.includes(key)) {
           showsData.push(value);
         }
         // console.log(editData?.filterValues?.shows);

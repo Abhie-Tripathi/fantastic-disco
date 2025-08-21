@@ -27,6 +27,7 @@ import Link from "next/link";
 import { isEventeli } from "@/config";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { getShowValues } from "@/utils/showValues";
 
 interface MyTrackersProps {
   searchValue:string;
@@ -147,8 +148,14 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       eventType: isEventeli ? 'social' : 'active'
     });
     
-    if (item.filterValues?.showValues) {
-      params.set('showValues', item.filterValues.showValues);
+    if (item.filterValues?.show) {
+      const query = {
+        show: (item.filterValues.show as unknown as string[]).join(',')
+      }
+      const showValues = getShowValues(query);
+      if(showValues){
+        params.set('showValues', showValues);
+      }
     }
     
     router.push(`/internal/trackers/${item.id}/trackedEvents?${params.toString()}`);
