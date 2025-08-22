@@ -1801,7 +1801,7 @@ if(isLoading) return <Loading/>
             pathName={`trackers/create?type=${type}`}
           />
           )}
-  <div className="w-full md:flex md:items-center md:justify-center">
+  <div className="w-full md:flex md:items-center md:justify-center h-[calc(100dvh-73px)]">
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
@@ -2362,7 +2362,7 @@ if(isLoading) return <Loading/>
   </div>
   {type!=="T_CUSTOM"&&
   <div className={`${isMobile? "block":"hidden"} w-full sticky bottom-0 bg-background z-10`}>
- {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
+ {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80dvh]`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -2583,7 +2583,7 @@ if(isLoading) return <Loading/>
   </div>} 
     
     {showFilters && 
-    <div className={`card ${styles.competitor} max-h-[80vh] overflow-scroll`}>
+    <div className={`card ${styles.competitor} max-h-[80dvh] overflow-scroll`}>
     <FilterContent
     source="tracker"
     type={"events"}
@@ -2595,7 +2595,7 @@ if(isLoading) return <Loading/>
   </div>
     }
     {showTemplate &&
-    <div className={`card ${styles.competitor} max-h-[80vh]`}>
+    <div className={`card ${styles.competitor} max-h-[80dvh]`}>
       <PrivatePresets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
     </div>
     }

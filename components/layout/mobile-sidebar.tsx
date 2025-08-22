@@ -166,7 +166,7 @@ const MobileSidebar = () => {
                   </li>
                 );
               })
-            : pathname.startsWith("/internal")
+            : (pathname.startsWith("/internal") || pathname.startsWith("/collections"))
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import styles from "./filters.style.module.css";
 import Competitor from "/public/competitor.svg";
@@ -15,15 +15,15 @@ import {
 import { useTrackerServices } from '@/services/trackerServices';
 import { MagnifyingGlass } from "geist-icons";
 import Loading from "@/app/components/UI/Loading";
-import { PresetJsonData } from "@/types/coordinateEventType";
 import { PresetData } from '@/types/trackers';
 import CategorySelector from "@/components/search/categorySelector";
-import SortDropdown from "./presetFilters/sortDropdown";
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import { useRouter, useSearchParams } from "next/navigation";
-// import { useFilterContext } from "@/context/filterContext";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import CollectionTypeSelector from "./collectionTypeSelector";
+import { Button } from "@/components/ui/button";
+import { Filter, X } from "lucide-react";
 
 interface Props {
   isPublic?: boolean;
@@ -36,141 +36,195 @@ interface Props {
   containerRef?:any;
 }
 
-const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false,  selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
+const Presets = ({ template, handlePresetClick, setShowTemplate, isPublic=false, selectedLocation, selectedCategory, isFull, containerRef}: Props) => {
   const [presetTemplateData, setPresetTemplateData] = useState<PresetData[]>([]);
-//   const filterContext = useFilterContext();
-//   const getLocalFilterValue = !isPublic ? filterContext.getLocalFilterValue : () => "";
-// const localFilters = !isPublic ? filterContext.localFilters : {};
+  const [showFilters, setShowFilter] = useState(false);
+  const [presetCategories, setPresetCategories] = useState<string[]>([]);
+  const [filterCount, setFilterCount] = useState(0);
   const { presetData } = useTrackerServices();
+  const searchParams = useSearchParams();
+  const [initialized, setInitialized] = useState(false);
   const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState<string>("");
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
-  const [sortBy, setSortBy] = useState({ value: "eventCount", label: "desc" });
+  const [sortBy] = useState({ value: "eventCount", label: "desc" });
   const [page, setPage] = useState(0);
-  const [limit, setLimit]= useState(10)
+  const [limit] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [filterChanged, setFilterChanged] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
-  // const containerRef = useRef<HTMLDivElement>(null);
+  const [presetCountries, setPresetCountries] = useState<string[]>([]);
+  const [presetType, setPresetType] = useState<string[]>([]);
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [totalCount,setTotalCount]=useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const debounceTimer = useRef<NodeJS.Timeout>();
   const router = useRouter();
-  const sortOptions = [
-    { value: "eventCount", label: "Event Count" },
-    // { value: "newEventCount", label: "New Event Count" },
-    // { value: "start", label: "Rank" },
-  ];
-  
-  
-  // Fetch data function with pagination
-  const fetchPresetJson = useCallback(async () => {
-    if (!hasMore || isLoading) return;
-  
-    setIsLoading(true);
+
+  // Initialize from URL params only once
+  useEffect(() => {
+    if (!initialized) {
+      const params = new URLSearchParams(searchParams.toString());
+      
+      setInputValue(params.get('search') || '');
+      setDebouncedInputValue(params.get('search') || '');
+      setPresetCountries(params.get('countryIds')?.split(',').filter(Boolean) || []);
+      setPresetType(params.get('collectionType')?.split(',').filter(Boolean) || []);
+      setPresetCategories(params.get('categories')?.split(',').filter(Boolean) || []);
+      // setPage(0);
+      setInitialized(true);
+      setFilterChanged(true);
+    }
+  }, [searchParams, initialized]);
+
+  // Update URL when filters change
+  useEffect(() => {
+    if (!initialized) return;
+
+    const params = new URLSearchParams(searchParams.toString());
     
-    try {
+    debouncedInputValue ? params.set("search", debouncedInputValue) : params.delete("search");
+    presetCategories?.length > 0 ? params.set("categories", presetCategories.join(",")) : params.delete("categories");
+    presetCountries?.length > 0 ? params.set("countryIds", presetCountries.join(",")) : params.delete("countryIds");
+    presetType?.length > 0 ? params.set("collectionType", presetType.join(",")) : params.delete("collectionType");
+
+    const newQuery = params.toString();
+    const currentQuery = searchParams.toString();
+
+    if (newQuery !== currentQuery) {
+      router.replace(`?${newQuery}`, { scroll: false });
+    }
+
+    // Update filter count
+    let count = 0;
+    if (presetType.length > 0) count++;
+    if (presetCategories.length > 0) count++;
+    if (presetCountries.length > 0) count++;
+    setFilterCount(count);
+  }, [initialized, debouncedInputValue, presetCountries, presetType, presetCategories, searchParams, router]);
+
+  // Fetch data function
+  const fetchPresetJson = useCallback(
+    async (pageParam = page, reset = false) => {
+      if (!hasMore || isLoading) return;
+
+      let collectionType: string[] = [];
+      
+      if (!(presetType.includes("people") && presetType.includes("prospect") && presetType.includes("purpose"))) {
+        if (presetType.includes("people")) {
+          collectionType.push("T_PEOPLE_FINDER", "T_SPEAKING_OPPORTUNITY");
+        }
+        if (presetType.includes("prospect")) {
+          collectionType.push("T_COMPETITOR");
+        }
+        if (presetType.includes("purpose")) {
+          collectionType.push("T_PRODUCT_KEYWORDS");
+        }
+      }
+
+      const trackerType = collectionType.length > 0
+        ? collectionType.join(",")
+        : (template?.name === "T_PEOPLE_FINDER" ? "T_SPEAKING_OPPORTUNITY" : template?.name) || "";
+
       const data = {
-        trackerType: template?.name==="T_PEOPLE_FINDER"?"T_SPEAKING_OPPORTUNITY":template?.name || "",
-        offset: filterChanged ? 0 : page * limit,
-        limit: limit,
-        ...(sortBy.value === "eventCount" ? { sortAs: sortBy.label } : {}),
-        ...(sortBy.value === "newEventCount" ? { sortBy: sortBy.value } : {}),
+        trackerType,
+        offset: filterChanged? 0 : pageParam * limit,
+        limit,
+        sortAs: sortBy.label,
         ...(debouncedInputValue ? { keywords: debouncedInputValue } : {}),
-        ...(selectedLocation?.length ? { countryIds: selectedLocation.join(",") } : {}),
+        ...(presetCountries?.length ? { countryIds: presetCountries.join(",") } : {}),
+        ...(presetCategories?.length ? { categorySlugs: presetCategories.join(",") } : {}),
         ...(selectedCategory?.length ? { categorySlugs: selectedCategory.join(",") } : {}),
       };
-  
-      const result = await presetData(data);
-      setTotalCount(result.count);
-      if (result?.count > 0) {
-        setPresetTemplateData((prev) => [...prev, ...result.trackers]);
-  
-        if (result.trackers.length < limit) {
-          setHasMore(false); // No more results
-        }
-      } else {
-        setHasMore(false);
-      }
-      setFilterChanged(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setHasMore(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, isLoading, presetData]);
-  
 
-  // Reset pagination when filters change
-  useEffect(() => {
-    setPresetTemplateData([]);
-    setPage(0);
-    setFilterChanged(true);
-    setHasMore(true);
-  }, [debouncedInputValue, selectedLocation, selectedCategory, template, sortBy]);
-  
+      setIsLoading(true);
+      try {
+        const result = await presetData(data);
+        setTotalCount(result.count);
+
+        if (result?.count > 0) {
+          setPresetTemplateData(prev =>
+            reset ? result.trackers : [...prev, ...result.trackers]
+          );
+          if (result.trackers.length < limit) setHasMore(false);
+        } else {
+          setHasMore(false);
+        }
+        setFilterChanged(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setHasMore(false);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [page, presetType, debouncedInputValue, selectedLocation, selectedCategory, template, sortBy, hasMore, presetData, presetCategories]
+  );
 
   // Setup intersection observer for infinite scroll
   useEffect(() => {
-    if (!loadingRef.current || !hasMore) return;
-  
-    const currentRef = loadingRef.current;
-  
+    if (!loadingRef.current || !hasMore || isLoading) return;
+
     const observerInstance = new IntersectionObserver(
       (entries) => {
-        const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && !isLoading) {
+        if (entries[0].isIntersecting && !isLoading) {
+          // setFilterChanged(true);
           setPage((prevPage) => prevPage + 1);
         }
       },
-      {
-        root: containerRef.current,
-        rootMargin: "20px",
-        threshold: 1.0,
-      }
+      { root: containerRef.current, threshold: 0.1 }
     );
-  
+
+    const currentRef = loadingRef.current;
     observerInstance.observe(currentRef);
-  
+
     return () => {
       if (currentRef) observerInstance.unobserve(currentRef);
     };
-  }, [hasMore, isLoading, filterChanged]);
-  
-  
+  }, [hasMore, isLoading]);
 
-  // Fetch data when page or filters change
+  // Fetch data when page changes
+  // useEffect(()=>{
+  //   setP
+  // },[filterChanged])
+  // Replace the filter change effect with this:
+useEffect(() => {
+  
+  if (initialized) {
+    setPresetTemplateData([]);
+    setPage(0);
+    setFilterChanged(true); // Just set the flag, don't call fetch directly
+    setHasMore(true);
+  }
+}, [debouncedInputValue, presetCountries, presetType, presetCategories, initialized]);
+
+// Then update your fetch effect to handle both page changes AND filter changes:
+useEffect(() => {
+  if (initialized && (page > 0 || filterChanged)) {
+    fetchPresetJson(page, filterChanged);
+  }
+}, [page, filterChanged, initialized]);
+
+  // Debounce input
   useEffect(() => {
-    fetchPresetJson();
-  }, [page]);
+    const trimmedValue = inputValue.replace(/^\s+/, "");;
+    const timer = setTimeout(() => {
+      if (trimmedValue !== "") {
+      setDebouncedInputValue(trimmedValue);
+    } else {
+      setDebouncedInputValue(""); 
+    }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  useEffect(() => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedInputValue(inputValue);
-    }, 500); // 500ms debounce delay
-    
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, [inputValue]);
+
   const formatCount = (count: number) => {
-    if (count >= 1000) {
-      const value = count / 1000;
-      const decimalPart = value - Math.floor(value);
-      return `${Math.floor(value)}k`;
-    }
-    return count;
+    return count >= 1000 ? `${Math.floor(count / 1000)}k` : count;
   };
   
 const handlePresetClicked = (item:PresetData, id:string, trackerType:string, name:string) => {
@@ -201,8 +255,8 @@ const getCompFilterdData = (data: string[]) => {
   }
   });
 
-  return res;
-};
+    return res;
+  };
 
 const structured=(obj:any, type:string[])=>{
 
@@ -230,7 +284,9 @@ const limit=3;
 
 
 }
-
+const toggleFilterHandler=()=>{
+  setShowFilter(!showFilters);
+}
 
   return (
     <div className="w-full">
@@ -242,26 +298,55 @@ const limit=3;
           {totalCount}
         </span>
         </div>
-        <div className="block md:hidden" onClick={()=>setShowTemplate?.(false)}>X</div>
+        <div className="block md:hidden cursor-pointer" onClick={()=>setShowTemplate?.(false)}>
+          <X width={16}/>
+        </div>
       </div>}
       
-      <div className={`flex mx-auto w-full md:w-[95%] gap-4 sticky pt-2 bg-background ${isPublic?"pt-2":"pt-4"}`}>
+      <div className={`flex mx-auto w-full md:w-[95%] gap-2 md:gap-4 sticky pt-2 ${isFull ?"bg-background":"bg-transparent"} ${isPublic?"pt-2 pb-3":"pt-4 mb-3"}`}>
         <div className="w-full bg-background">
-          <div className="border border-input rounded px-3 py-2 flex items-center gap-2 mx-2.5 md:mx-0">
+          <div className={`border border-input rounded px-3 py-2 flex items-center gap-2  mr-0 ${(isMobile && isFull) ?"ml-2.5":"ml-0"}`}>
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none w-full bg-transparent"
-              placeholder="Search by Collection name, Country or Category"
+              placeholder="Search by Collection name"
             />
           </div>
         </div>
-        {template?.name === "T_COMPETITOR" &&
-        <div className="hidden md:w-[100%] md:block">
-        <AudienceSpreadSelector source="preset"/>
+        {(template===undefined || template?.name === "T_COMPETITOR" || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER") &&
+        <Button
+                    onClick={toggleFilterHandler}
+                    variant={filterCount > 0 ? "secondary" : "ghost"}
+                    size="icon"
+                    className="w-10 border relative  md:hidden h-auto mr-3"
+                  >
+                    <Filter className="w-4 h-4" />
+                    {filterCount > 0 && (
+                      <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
+                        {filterCount}
+                      </div>
+                    )}
+                  </Button>}
+        {(template?.name === "T_COMPETITOR" || template===undefined) &&
+        <div className="hidden md:w-[45%] md:block">
+        <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
+  setPresetCountries={setPresetCountries}/>
         </div>
         }
+        
+        {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER" || template?.name==="T_COMPETITOR") &&
+        <div className="hidden md:w-[45%] md:block">
+          <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>
+        </div>}
+        {template===undefined &&
+        <div className="hidden md:w-[25%] md:block">
+        <CollectionTypeSelector
+        presetType={presetType}
+        setPresetType={setPresetType}
+      />
+      </div>}
         {/* <div className="w-[20%]">
           <CategorySelector source="preset"/>
         </div>
@@ -273,14 +358,15 @@ const limit=3;
           />
         </div> */}
       </div>
+      
       <div className="block">
       <div
-      className={`pb-6 md:pb-0 md:h-[calc(100vh-260px)] overflow-y-auto mt-4`}
+      className={`pb-6 md:pb-0 overflow-y-auto`}
       // ref={containerRef}
        style={{
     height: (isPublic || isFull)
       ? "auto"
-      : "calc(100vh - 313px)", // Default for mobile
+      : "calc(100dvh - 310px)", // Default for mobile
       // scrollbarWidth:"none",
     // Override on medium screens and up (optional - can't do media queries in inline styles, so use JS breakpoint logic if needed)
   }}
@@ -400,6 +486,27 @@ const limit=3;
           )}
       </div>
       </div>
+      
+      {showFilters && (
+      <div className="sticky bottom-0 bg-background z-10 block md:hidden w-full">
+                  <div className={`p-4 pb-3 border-t bg-background/80 backdrop-blur-sm space-y-3 ${!isFull?"pb-2.5 -mr-5 -ml-5":"" }`}>
+            {/* <div className="border rounded-lg bg-background shadow-sm transition-all duration-200 hover:shadow-md p-2"> */}
+                  <div className="flex flex-col gap-3">
+                    {(template?.name === "T_COMPETITOR" || template===undefined) &&
+                         <AudienceSpreadSelector source="preset" presetCountries={presetCountries}
+  setPresetCountries={setPresetCountries}/>}
+    {(template?.name === "T_PRODUCT_KEYWORDS" || template===undefined || template?.name === "T_SPEAKING_OPPORTUNITY" || template?.name==="T_PEOPLE_FINDER" || template?.name==="T_COMPETITOR") &&
+      <CategorySelector source="preset" presetCategories={presetCategories}setPresetCategories={setPresetCategories}/>}
+      {template===undefined &&
+  <CollectionTypeSelector
+        presetType={presetType}
+        setPresetType={setPresetType}
+      />}
+      </div>
+      {/* </div> */}
+                  </div>
+                </div>
+                )}
     </div>
   );
 };
