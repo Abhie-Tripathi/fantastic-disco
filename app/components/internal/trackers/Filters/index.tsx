@@ -1801,7 +1801,7 @@ if(isLoading) return <Loading/>
             pathName={`trackers/create?type=${type}`}
           />
           )}
-  <div className="w-full md:flex md:items-center md:justify-center h-[calc(100dvh-73px)]">
+  <div className="w-full md:flex md:items-center md:justify-center">
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
