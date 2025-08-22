@@ -44,7 +44,7 @@ export default function RootLayout({
                     <Navbar />
                     <main
                       id="layout-main"
-                      className="flex-1 overflow-x-hidden !overflow-y-auto bg-background h-[calc(100dvh-73px)]"
+                      className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
                     >
                       <TrackerGlobalModal />
                       <Toaster />

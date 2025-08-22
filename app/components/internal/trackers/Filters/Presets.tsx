@@ -361,12 +361,12 @@ const toggleFilterHandler=()=>{
       
       <div className="block">
       <div
-      className={`pb-6 md:pb-0 min-h-[calc(100vh-260px)] overflow-y-auto`}
+      className={`pb-6 md:pb-0 overflow-y-auto`}
       // ref={containerRef}
        style={{
     height: (isPublic || isFull)
       ? "auto"
-      : "calc(100vh - 313px)", // Default for mobile
+      : "calc(100dvh - 310px)", // Default for mobile
       // scrollbarWidth:"none",
     // Override on medium screens and up (optional - can't do media queries in inline styles, so use JS breakpoint logic if needed)
   }}
