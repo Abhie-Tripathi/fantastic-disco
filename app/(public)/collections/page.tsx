@@ -22,7 +22,7 @@ const CollectionsPage = () => {
   }
 
   return (
-    <div className="h-[100dvh-73px]">
+    <div className="h-[calc(100dvh-73px)]">
       {userToken ? (
         <FilterProvider>
           <PrivatePresets isPublic={false} isFull={true}/>
