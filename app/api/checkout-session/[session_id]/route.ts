@@ -66,7 +66,7 @@ export async function GET(
       currency &&
       formattedStartDate &&
       formattedEndDate &&
-      email_id === customerEmail &&
+      email_id.toLowerCase() === customerEmail?.toLowerCase() &&
       subscriptionId !== undefined
     ) {
       const payload = {
