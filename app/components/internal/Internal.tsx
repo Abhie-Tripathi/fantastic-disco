@@ -575,6 +575,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                         showMatchKeywords={false}
                         showaudienceSpread={false}
                         totalChecked={[]}
+                        estimatedVisitorRangeTag={false}
                       />
                     </div>
                   </div>
