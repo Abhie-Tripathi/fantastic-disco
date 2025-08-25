@@ -149,7 +149,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     });
     
     if (item.filterValues) {
-      console.log("item.filterValues", item.filterValues);
       const query = {
         show: (item.filterValues?.show as unknown as string[])?.join(','),
         maturity: (item.filterValues?.maturity as unknown as string[])?.join(','),
