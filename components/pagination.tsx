@@ -154,7 +154,10 @@ export function PaginationComponent({
               } text-xs sm:text-sm`}
             />
           </PaginationItem>
-          {renderPaginationItems()}
+          {
+          renderPaginationItems()
+          
+          }
           <PaginationItem>
             <PaginationNext
               href="#"

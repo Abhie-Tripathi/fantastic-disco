@@ -600,7 +600,7 @@ export const generateSearchFilters = (apiResponse: any) => {
     },
 
     forcastedStatus: {
-      isEnabled: data?.isForecasted?.isAllowed ?? true,
+      isEnabled: data?.isForecasted?.isForecastedEnabled ?? true,
       isToggleEnabled: true,
     },
 

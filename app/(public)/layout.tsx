@@ -5,6 +5,7 @@ import PublicNavBar from "@/components/layout/publicNavBar";
 import { Toaster } from "@/components/ui/toaster";
 import "@/app/globals.css";
 import Sidebar from "@/components/layout/sidebar";
+import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 
 export default function RootLayout({
   children,
@@ -19,6 +20,7 @@ export default function RootLayout({
   );
 
   return (
+    <ReactQueryProvider>
     <AuthContextProvider>
       <ThemeProvider>
       <html lang="en">
@@ -50,5 +52,6 @@ export default function RootLayout({
       </html>
       </ThemeProvider>
     </AuthContextProvider>
+    </ReactQueryProvider>
   );
 }

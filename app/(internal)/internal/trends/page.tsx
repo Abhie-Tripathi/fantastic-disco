@@ -485,9 +485,9 @@ const EventTrends = () => {
 
   return (
     <div
-      className={`${isMobileView ? "relative" : "flex h-[calc(100vh-60px)]"} ${
-        !isMobileView && isFiltersCollapsed ? "pl-6" : "pl-0"
-      }`}
+              className={`${isMobileView ? "relative" : "flex h-[calc(100vh-60px-var(--banner-height))]"} ${
+          !isMobileView && isFiltersCollapsed ? "pl-6" : "pl-0"
+        }`}
     >
       {/* Mobile Filters Overlay */}
       {/* {isMobileView && !isFiltersCollapsed && (
@@ -505,7 +505,7 @@ const EventTrends = () => {
               </Button>
             </div>
 
-            <ScrollArea className="h-[calc(100vh-200px)]">
+            <ScrollArea className="h-[calc(100vh-200px-var(--banner-height))]">
               <div className="space-y-4">
                 <Tabs defaultValue="events" className="w-full">
                   <TabsList className="grid grid-cols-3 w-full h-auto bg-muted p-1 rounded-lg">

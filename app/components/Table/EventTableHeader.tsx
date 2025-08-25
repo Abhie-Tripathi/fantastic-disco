@@ -4,6 +4,7 @@ import { Show } from "@/types/events/dto/event-query.dto";
 import { Filters } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
+import { showValues } from "@/constants/filters";
 interface EventTableHeaderProps {
   show: Show[];
   type?: string;
@@ -78,10 +79,10 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
-
+{showValues.insights.some(value => show.includes(Show[value as keyof typeof Show])) &&
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
-        </TableHead>
+        </TableHead>}
         {
           <>
             {show.includes(Show.estimatedExhibitors) && (

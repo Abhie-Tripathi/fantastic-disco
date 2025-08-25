@@ -693,7 +693,7 @@ const LineChartComponent = ({
 
   const { data: eventData, isLoading: iseventsLoading } = useQuery({
     queryKey: ["events", link],
-    queryFn: () => eventService.getEventsWithSearchParams(link),
+    queryFn: () => eventService.getEventsWithSearchParams(`${link}&limit=4`),
     enabled: !!link,
     refetchOnWindowFocus: false,
     gcTime: 0,

@@ -937,7 +937,7 @@ const Filters = ({
       <div
         className={`overflow-y-auto flex flex-col ${
           source !== "tracker"
-            ? "md:pt-4 md:pl-6 h-[calc(100vh-60px)]"
+            ? "md:pt-4 md:pl-6 h-[calc(100vh-60px-var(--banner-height))]"
             : "h-full"
         }`}
       >

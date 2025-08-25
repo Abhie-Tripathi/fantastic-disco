@@ -93,6 +93,7 @@ import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { getShowValues } from "@/utils/showValues";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -1088,7 +1089,12 @@ const jobComposite = {
             setIsCreating(false);
             return;
           }else{
-          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+            const query = {
+              show: (data as any).filterValues?.show?.join(',')
+            }
+            const showValues = getShowValues(query);
+            const showValuesParam = showValues ? `&showValues=${showValues}` : '';
+          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
           
          // setIsNewCall(true);
           }
@@ -1183,7 +1189,12 @@ const jobComposite = {
         if (data) { 
           setIsNewCall(true); 
           setTrackerId(data?.id);
-          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+          const query = {
+            show: (data as any).filterValues?.show?.join(',')
+          }
+          const showValues = getShowValues(query);
+          const showValuesParam = showValues ? `&showValues=${showValues}` : '';
+          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
         }
       }catch(error){
         // console.log(error);
@@ -2351,7 +2362,7 @@ if(isLoading) return <Loading/>
   </div>
   {type!=="T_CUSTOM"&&
   <div className={`${isMobile? "block":"hidden"} w-full sticky bottom-0 bg-background z-10`}>
- {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
+ {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80dvh]`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -2572,7 +2583,7 @@ if(isLoading) return <Loading/>
   </div>} 
     
     {showFilters && 
-    <div className={`card ${styles.competitor} max-h-[80vh] overflow-scroll`}>
+    <div className={`card ${styles.competitor} max-h-[80dvh] overflow-scroll`}>
     <FilterContent
     source="tracker"
     type={"events"}
@@ -2584,7 +2595,7 @@ if(isLoading) return <Loading/>
   </div>
     }
     {showTemplate &&
-    <div className={`card ${styles.competitor} max-h-[80vh]`}>
+    <div className={`card ${styles.competitor} max-h-[80dvh]`}>
       <PrivatePresets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
     </div>
     }

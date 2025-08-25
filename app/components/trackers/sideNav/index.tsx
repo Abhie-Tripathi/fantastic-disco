@@ -38,9 +38,10 @@ import {
 import ShareModal from "../../internal/trackers/shareModal";
 import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { getShowValues } from "@/utils/showValues";
 
 const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
-  const { refs, setps } = useTrackerContext();
+  const { refs, setps,data, skip, searchValue } = useTrackerContext();
   const isMobile = useIsMobile()
   const pathName = usePathname().split("/");
   const { toast } = useToast();
@@ -78,7 +79,6 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter();
   const sort = searchParams.get("sortBy");
-  const { data, skip, searchValue } = useTrackerContext();
   const { getTrackerDetail, error } = useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   const [share, setShare] = useState(false);
@@ -139,9 +139,21 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
           router.push(
       `/collections/${pathName[2]}/events?view=${view}&eventType=${typeOfEvent}&type=${type}`)
         }else
-      router.push(
-        `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
-      );
+     {
+      const query = {
+        show: (data?.filterValues?.show as unknown as string[])?.join(',')
+      }
+      const showValues = getShowValues(query);
+      if(showValues){
+        router.push(
+          `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}&showValues=${showValues}`
+        );
+      }else{
+        router.push(
+          `/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}${sort ? `&sortBy=${sort}` : ""}`
+        );
+      }
+      }
     }
   };
   // const fetchData=async()=>{

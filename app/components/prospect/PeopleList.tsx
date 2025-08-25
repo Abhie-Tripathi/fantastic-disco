@@ -25,6 +25,7 @@ import { useFilterContext } from "@/context/filterContext";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
 import { isEventeli } from "@/config";
+import { useToast } from "@/hooks/use-toast";
 
 // Constants
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -54,18 +55,33 @@ interface ContactInfoProps {
 }
 
 // Components
-const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => (
-  <div className="w-full">
-    <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-      <MailIcon width="12px" height="12px" className="self-start mt-1" />
-      <span className="break-all">{email || "-"}</span>
-    </p>
-    <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-      <PhoneIcon width="12px" height="12px" />
-      <span>{phoneNumber || "-"}</span>
-    </p>
-  </div>
-);
+const ContactInfo: React.FC<ContactInfoProps> = ({ email, phoneNumber }) => {
+  // Check if both email and phone are null/empty
+  const hasNoDetails = (!email || email.trim() === '') && (!phoneNumber || phoneNumber.trim() === '');
+  
+  if (hasNoDetails) {
+    return (
+      <div className="w-full">
+        <p className="text-[#666666] text-[12px] italic">
+          No contact details found
+        </p>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="w-full">
+      <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+        <MailIcon width="12px" height="12px" className="self-start mt-1" />
+        <span className="break-all">{email || "-"}</span>
+      </p>
+      <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+        <PhoneIcon width="12px" height="12px" />
+        <span>{phoneNumber || "-"}</span>
+      </p>
+    </div>
+  );
+};
 
 const PeopleCard: React.FC<PeopleCardProps> = ({
   poc,
@@ -262,6 +278,7 @@ export const PeopleList: React.FC = () => {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
+  const { toast } = useToast();
   const {
     isBulkActionActive,
     selectedData,
@@ -425,9 +442,25 @@ export const PeopleList: React.FC = () => {
                 : poc
             )
           );
+          
+          toast({
+            title: "Success",
+            description: "Contact details unlocked successfully",
+            variant: "default",
+          });
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        setCompanyUsers((prevPocData) =>
+          prevPocData.map((poc) =>
+            poc.user_id === pocId ? { ...poc, state: 0 } : poc
+          )
+        );
+        
+        toast({
+          title: "Error",
+          description: (error as ApiError).message,
+          variant: "destructive",
+        });
       }
     },
     [companyService]
@@ -595,7 +628,7 @@ export const PeopleList: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">
-              <ZeroState text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
+              <ZeroState issues={(error as ApiError).issues} text={(error as ApiError).message} errorStatusCode={(error as ApiError)?.statusCode} />
             </div>
           ) : count === 0 ? (
             <div className="flex-1 items-center justify-center min-h-[400px]">

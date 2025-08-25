@@ -8,6 +8,7 @@ import ZeroState from "@/app/components/zerostate";
 import { Badge } from "@/components/ui/badge";
 import { isEventeli } from "@/config";
 import { groupedEventTypes } from "@/constants";
+import { showValues as showValuesConfig } from "@/constants/filters";
 import {
   alertIcons,
   eventTypeColors,
@@ -206,7 +207,6 @@ export default function EventAccordion({
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
-  delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   const [interest, setInterest] = useState();
   // const [interest, setInterest] = useState<Record<string, Interest>>({});
@@ -269,8 +269,9 @@ export default function EventAccordion({
     economicImpact: "economicImpact",
   };
   const showsData: string[] = [];
+  showsData.push("ratings");
   Object.entries(mapping).forEach(([key, value]) => {
-    if ((data?.filterValues as any)?.show?.includes(key)) {
+    if ((data?.filterValues as any)?.showValues?.includes(key)) {
       showsData.push(value);
     }
   });
@@ -338,11 +339,11 @@ export default function EventAccordion({
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-  if (source === "tracker") {
-    showValues = showsData
-      .filter(Boolean)
-      .map((show) => Show[show as keyof typeof Show]);
-  }
+  // if (source === "tracker") {
+  //   showValues = showsData
+  //     .filter(Boolean)
+  //     .map((show) => Show[show as keyof typeof Show]);
+  // }
   useEffect(() => {
     if (events && events?.length > 0) {
       setUpdatedEvents(events);
@@ -524,6 +525,7 @@ export default function EventAccordion({
     if (source === "tracker") {
       return (
         <ZeroState
+        issues={(error as ApiError).issues}
         text={(error as ApiError).message}
         errorStatusCode={(error as ApiError)?.statusCode}
       />
@@ -535,6 +537,7 @@ export default function EventAccordion({
         </div>
       ) : (
         <ZeroState
+        issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />

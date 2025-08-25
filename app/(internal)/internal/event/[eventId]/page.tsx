@@ -37,6 +37,8 @@ import {
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@/hooks/useQuery";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { ApiError } from "@/types/api";
 import { ArrowLeft, Location } from "geist-icons";
 import {
   CalendarDays,
@@ -86,6 +88,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const eventDetailParams = useSearchParams();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const eventDetailView = eventDetailParams.get("expandedView");
   const isValidView = (view: string): view is DetailPageView => {
     return ["research", "coordinate", "outreach"].includes(view);
@@ -115,7 +118,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const coordinateService = useCoordinateService();
   const { data: eventData, isLoading } = useQuery<any>({
     queryKey: ["eventDetailData", params.eventId],
-    queryFn: () => getEventDetailById(params.eventId),
+    queryFn: () => getEventDetailById(params.eventId, true),
     refetchOnWindowFocus: false,
   });
   const { data: event, isLoading: isDataLoading } = useQuery<any>({
@@ -429,6 +432,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               : poc
           )
         );
+        
+        toast({
+          title: "Success",
+          description: "Contact details unlocked successfully",
+          variant: "default",
+        });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -437,6 +446,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           poc.id === pocId ? { ...poc, state: 0 } : poc
         )
       );
+      toast({
+        title: "Error",
+        description: (error as ApiError).message,
+        variant: "destructive",
+      });
     }
   };
 

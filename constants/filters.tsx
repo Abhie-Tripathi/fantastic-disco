@@ -41,6 +41,7 @@ export const advancedFilter = [
   "audienceSpread",
 ];
 
+
 export const filterGroups = [
   ["onlyBranded", "onlySeries"],
   ["includeKeywords", "excludeKeywords"],
@@ -52,6 +53,12 @@ export const filterGroups = [
     "inbound_score_gte",
   ],
 ];
+
+export const showValues = {
+  advance: ["frequency","forecasted","branded","series"],
+  insights: ["estimatedExhibitors","rankings", "economicImpact","scores"],
+  audience: ["audienceZone"],
+}
 
 export function countFilters(localFilters: any, filterKeys: string[]) {
   let count = 0;

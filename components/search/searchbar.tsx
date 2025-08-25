@@ -70,6 +70,7 @@ export default function MultiSelectSearchBar({
           const response = await getEvents(
             {
               query: value,
+              view: "suggestion",
             },
             abortControllerRef.current.signal
           );
@@ -99,7 +100,7 @@ export default function MultiSelectSearchBar({
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
       const eventPromises = eventIds.map((id) =>
-        getEvents({ eventIds: id }).then((response) => response?.events[0])
+        getEvents({ eventIds: id, view: "suggestion"}).then((response) => response?.events[0])
       );
       try {
         const events = await Promise.all(eventPromises);
@@ -114,7 +115,7 @@ export default function MultiSelectSearchBar({
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
-  }, [localFilters]);
+  }, [localFilters.eventIds]);
 
   // Reset highlighted index when search results change
   useEffect(() => {

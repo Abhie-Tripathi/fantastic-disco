@@ -89,6 +89,8 @@ export interface Tracker {
     globalRanking?: any;
     audienceSpread?: any;
     designation?: any;
+    showValues?: string;
+    show?: string;
 }
 export interface ExportContent {
   id: string;

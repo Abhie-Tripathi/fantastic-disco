@@ -283,7 +283,7 @@ const Trackers = ({ searchParams }: Search) => {
           )}
           {(!hideTemplate || !isData) && (
             <div
-              className="absolute  lg:left-[63px] left-0 top-[67px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px)]"
+              className="absolute  lg:left-[63px] left-0 top-[calc(67px+var(--banner-height))] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px-var(--banner-height))]"
               style={{ zIndex: "11" }}
             >
               <Templates isData={isData} hideTemplates={hideTemplates} />

@@ -22,7 +22,7 @@ const PublicPresets = (props: Props) => {
   return (
     <div 
       ref={containerRef} 
-      className="h-[calc(100vh-73px)] overflow-y-auto"
+      className="h-[calc(100dvh-73px)] overflow-y-auto"
     >
       {props.isPublic && (
         <div className="mx-[2.5%] flex gap-2 text-xs mt-3">

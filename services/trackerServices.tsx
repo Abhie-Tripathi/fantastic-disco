@@ -9,6 +9,8 @@ import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { BASE_URL, isEventeli } from '@/config';
+import { getShowValues } from '@/utils/showValues';
+import { useQueryClient } from '@tanstack/react-query';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -50,8 +52,12 @@ export const useTrackerServices = () => {
     const api = useApi();
     const url = useSearchParams();
     const {getFilterValue} =useFilterState();
+    const queryClient = useQueryClient();
     const createTracker = (formData: Tracker) => {
-        
+      
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+      }
       return api.request(
         `${endpoints.tracker.create}`,
         {
@@ -60,14 +66,24 @@ export const useTrackerServices = () => {
         }
       );
     };
-    const editTracker=(trackerId:string, formData: Tracker)=>{
-      return api.request(
+    const editTracker = async (trackerId:string, formData: Tracker) => {
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+      }
+      
+      const response = await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}`,
         {
             method: "PATCH",
             data: formData,
         }
-      ); 
+      );
+      
+      if (response && !(response as any)?.error) {
+        queryClient.invalidateQueries({ queryKey: ["trackerevents"] });
+      }
+      
+      return response;
     }
   const getTrackerCount =():Promise<{ count: TrackerTypeProp[] } | undefined>=>{
     return api.request(
@@ -214,7 +230,8 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || (query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitor":"score")}`)
+      const showValuesParam = query.showValues ? `&showValues=${query.showValues}` : '';
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || (query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitor":"score")}${showValuesParam}`)
       return response;
     };
     const getTrackerMapEvents = async(

@@ -537,6 +537,7 @@ width: calc(100vw - 134px);
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(auto-fill, 280px);
+  padding-bottom: 20px;
   /* display: flex;
   overflow-x: auto; */
   flex-direction: column;

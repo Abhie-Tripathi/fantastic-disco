@@ -93,7 +93,6 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     : useConfiguration.interest();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
-  delete query.show;
   let events: Event[] | undefined; 
   let totalEvents:number | undefined; 
   let isLoading, error, isFetching;
@@ -407,6 +406,7 @@ function mapInterestsToInterestIds(
     if (source === "tracker") {
       return (
         <ZeroState
+        issues={(error as ApiError).issues}
         text={(error as ApiError).message}
         errorStatusCode={(error as ApiError)?.statusCode}
       />
@@ -418,6 +418,7 @@ function mapInterestsToInterestIds(
         </div>
       ) : (
         <ZeroState
+          issues={(error as ApiError).issues}
           text={(error as ApiError).message}
           errorStatusCode={(error as ApiError)?.statusCode}
         />
@@ -520,8 +521,8 @@ function mapInterestsToInterestIds(
         <div
           className={`${
             view === "global"
-              ? "h-[calc(100vh-165px)]"
-              : "h-[calc(100vh-210px)]"
+              ? "h-[calc(100vh-165px-var(--banner-height))]"
+              : "h-[calc(100vh-210px-var(--banner-height))]"
           } overflow-auto`}
         >
           <Table>

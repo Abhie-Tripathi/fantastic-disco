@@ -12,6 +12,7 @@ import { GeistSans } from "geist/font/sans";
 import Sidebar from "@/components/layout/sidebar";
 import styles from "./layout.style.module.css";
 import { Toaster } from "@/components/ui/toaster";
+import SubscriptionBanner from "@/components/SubscriptionBanner";
 
 // const sora = Sora({
 //   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
               <Sidebar />
               <div className="flex-1 flex flex-col overflow-hidden lg:ml-16">
                 <Navbar />
+                <SubscriptionBanner />
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background">
                   <Toaster />
                   {children}
