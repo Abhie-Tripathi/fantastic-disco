@@ -45,7 +45,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
-  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag") || trackerEstimatedVisitorRangeTag;
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag").split(",").filter(Boolean).length || trackerEstimatedVisitorRangeTag;
 
   const showHolidayScore =
     (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&

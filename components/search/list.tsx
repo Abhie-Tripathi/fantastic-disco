@@ -205,6 +205,7 @@ export default function EventAccordion({
     .filter(Boolean).length || trackerData?.filterValues?.audienceSpread;
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag").split(",").filter(Boolean).length || trackerData?.filterValues?.estimatedVisitorRangeTag;
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
@@ -682,6 +683,7 @@ export default function EventAccordion({
                 event={event}
                 showValues={showValues}
                 showMaturity={showMaturity || trackerMaturity}
+                estimatedVisitorRangeTag={estimatedVisitorRangeTag}
                 showMatchKeywords={showMatchKeywords}
                 showaudienceSpread={audienceSpread}
                 intelLoading={intelLoading}
@@ -721,6 +723,7 @@ const EventListItem = ({
   setInterest,
   event,
   showValues,
+  estimatedVisitorRangeTag,
   showMatchKeywords,
   showaudienceSpread,
   showCheckBox,
@@ -743,6 +746,7 @@ const EventListItem = ({
   setInterest: any;
   event: Event;
   showValues: Show[];
+  estimatedVisitorRangeTag: boolean;
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
   showMaturity: boolean;
@@ -1405,7 +1409,7 @@ const EventListItem = ({
                               </p>
                             </div>
                           )}
-                        {event.insights?.estimatedAttendance !== undefined && (
+                        {event.insights?.estimatedAttendance !== undefined && estimatedVisitorRangeTag && (
                           <div>
                             <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                               Estimated Visitors
