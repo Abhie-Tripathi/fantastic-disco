@@ -159,7 +159,6 @@ export default function CreateTrackerDialog({
           eventType: isEventeli ? 'social' : 'active'
         });
         
-        if (localFilters.show) {
           const query = {
             maturity: (localFilters.maturity as unknown as string[]),
             audienceSpread: (localFilters.audienceSpread as unknown as string[]),
@@ -170,7 +169,6 @@ export default function CreateTrackerDialog({
           if (showValues) {
             params.set('showValues', showValues);
           }
-        }
         
         setTrackerUrl(`${baseUrl}?${params.toString()}`);
         setIsSuccess(true);
