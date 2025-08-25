@@ -90,6 +90,34 @@ const ZeroState = ({
                 to reset and try again.
               </div>
             )
+          ) : errorStatusCode && (errorStatusCode === 403 || errorStatusCode == 403) ? (
+            (() => {
+              if (text && text.toLowerCase().includes("upgrade")) {
+                const parts = text.split(/(upgrade)/gi);
+                return (
+                  <div className="max-w-[400px]">
+                    {parts.map((part, index) => 
+                      part.toLowerCase() === "upgrade" ? (
+                        <Link
+                          key={index}
+                          target="_blank"
+                          href={`https://whr.ai/pricing?utm_source=${
+                            isEventeli ? "geo" : "gtm"
+                          }&utm_campaign=pricing&utm_medium=web&utm_term=research_upgrade_le`}
+                          className="text-primary cursor-pointer font-medium underline"
+                          onClick={handleUpgradeClick}
+                        >
+                          {part}
+                        </Link>
+                      ) : (
+                        part
+                      )
+                    )}
+                  </div>
+                );
+              }
+              return <div className="max-w-[400px]">{text}</div>;
+            })()
           ) : errorStatusCode && errorStatusCode === 429 ? (
             (() => {
               const tokenMessage = getTokenBasedMessage();
