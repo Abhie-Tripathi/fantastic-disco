@@ -23,6 +23,7 @@ import { myFetch } from "@/utils/myFetch";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, Copy, ExternalLink, Search } from "lucide-react";
 import { isEventeli } from "@/config";
+import { getShowValues } from "@/utils/showValues";
 
 interface CreateTrackerDialog {
   open: boolean;
@@ -151,13 +152,24 @@ export default function CreateTrackerDialog({
         });
       }
       if (data) {
-        setTrackerUrl(
-          `${window.location.origin}/internal/trackers/${
-            data.id
-          }/trackedEvents?type=T_CUSTOM&view=table&${
-            isEventeli ? "eventType=social" : "eventType=active"
-          }`
-        );
+        const baseUrl = `${window.location.origin}/internal/trackers/${data.id}/trackedEvents`;
+        const params = new URLSearchParams({
+          type: 'T_CUSTOM',
+          view: 'table',
+          eventType: isEventeli ? 'social' : 'active'
+        });
+        
+        if (localFilters.show) {
+          const query = {
+            show: (localFilters.show as unknown as string[])
+          };
+          const showValues = getShowValues(query);
+          if (showValues) {
+            params.set('showValues', showValues);
+          }
+        }
+        
+        setTrackerUrl(`${baseUrl}?${params.toString()}`);
         setIsSuccess(true);
       }
     } catch (error) {

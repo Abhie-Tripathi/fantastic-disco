@@ -11,11 +11,14 @@ export const getShowValues = (query: any) => {
     mappedKeys.push('advance');
   }
 
-    if (query.show) {
+  if(query.estimatedVisitorRangeTag){
+    mappedKeys.push('insights');
+  }
+
     // Handle multiple comma-separated values
-    const showValues = (query.show as unknown as string).split(',').map(value => value.trim()).filter(Boolean);
+    const showValues = (query.show as unknown as string)?.split(',').map(value => value.trim()).filter(Boolean);
     
-    showValues.forEach(showValue => {
+    showValues?.forEach(showValue => {
       // Find which key in showValuesConfig contains the show value
       const showKey = Object.keys(showValuesConfig).find(key => 
         showValuesConfig[key as keyof typeof showValuesConfig].includes(showValue)
@@ -34,5 +37,5 @@ export const getShowValues = (query: any) => {
       return mappedKeys.join(',');
     }
     return "";
-  }
+  
 }

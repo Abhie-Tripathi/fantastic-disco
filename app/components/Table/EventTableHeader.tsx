@@ -40,6 +40,8 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag");
+
   const showHolidayScore =
     (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
     (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds?.length == 1);
@@ -79,7 +81,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
-{showValues.insights.some(value => show.includes(Show[value as keyof typeof Show])) &&
+{estimatedVisitorRangeTag &&
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>}

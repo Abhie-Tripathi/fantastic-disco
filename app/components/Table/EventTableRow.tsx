@@ -177,6 +177,8 @@ const { isTentimesUser } = useSafeFilterContext();
       setTotalChecked?.((prev) => prev.filter((item) => item !== id));
     }
   };
+
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag");
   const intelScoreData = [
     {
       name: "Total",
@@ -496,7 +498,7 @@ const { isTentimesUser } = useSafeFilterContext();
       </TableCell>
 
       {/* Event Size Column */}
-      {event.insights?.estimatedAttendance !== undefined && (
+      {estimatedVisitorRangeTag && (
         <TableCell className="text-center">
           {displayValue(event.insights?.estimatedAttendance)}
         </TableCell>
