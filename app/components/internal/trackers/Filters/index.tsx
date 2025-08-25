@@ -1090,7 +1090,10 @@ const jobComposite = {
             return;
           }else{
             const query = {
-              show: (data as any).filterValues?.show?.join(',')
+              show: (data as any).filterValues?.show?.join(','),
+              maturity: (filterValues?.maturity as unknown as string[]),
+              audienceSpread: (filterValues?.audienceSpread as unknown as string[]),
+              estimatedVisitorRangeTag: (filterValues?.estimatedVisitorRangeTag as unknown as string[]),
             }
             const showValues = getShowValues(query);
             const showValuesParam = showValues ? `&showValues=${showValues}` : '';
@@ -1102,7 +1105,7 @@ const jobComposite = {
           // console.log(error);
           setIsCreating(false);
         }
-      }catch(error){
+      }catch(error){        
         // console.log(error);
         setIsCreating(false);
       }
@@ -1190,7 +1193,10 @@ const jobComposite = {
           setIsNewCall(true); 
           setTrackerId(data?.id);
           const query = {
-            show: (data as any).filterValues?.show?.join(',')
+            show: (data as any).filterValues?.show?.join(','),
+            maturity: (filterValues?.maturity as unknown as string[]),
+            audienceSpread: (filterValues?.audienceSpread as unknown as string[]),
+            estimatedVisitorRangeTag: (filterValues?.estimatedVisitorRangeTag as unknown as string[]),
           }
           const showValues = getShowValues(query);
           const showValuesParam = showValues ? `&showValues=${showValues}` : '';

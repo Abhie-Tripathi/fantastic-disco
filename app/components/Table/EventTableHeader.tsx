@@ -13,6 +13,8 @@ interface EventTableHeaderProps {
   locationIds?: string[]
   trackerMaturity?: string[];
   source?:string;
+  trackerAudienceSpread?: string[];
+  trackerEstimatedVisitorRangeTag?: string[];
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
@@ -22,7 +24,9 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   locationIds,
   localFilters,
   trackerMaturity,
-  source
+  source,
+  trackerAudienceSpread,
+  trackerEstimatedVisitorRangeTag
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -36,11 +40,12 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     .filter(Boolean);
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean).length || trackerAudienceSpread
+
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
-  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag");
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag") || trackerEstimatedVisitorRangeTag;
 
   const showHolidayScore =
     (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
@@ -168,7 +173,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                 </div>
               </TableHead>
             )}
-            {audienceSpread.length > 0 && (
+            {audienceSpread && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
                   Audience Country

@@ -191,7 +191,7 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
-  const showMaturity = !!getFilterValue("maturity");
+  const showMaturity = !!getFilterValue("maturity") || trackerData?.filterValues?.maturity;
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -202,7 +202,7 @@ export default function EventAccordion({
     .filter(Boolean);
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean).length || trackerData?.filterValues?.audienceSpread;
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
@@ -650,7 +650,7 @@ export default function EventAccordion({
                   showValues={showValues}
                   showMaturity={showMaturity || trackerMaturity}
                   showMatchKeywords={showMatchKeywords}
-                  showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                  showaudienceSpread={audienceSpread}
                   intelLoading={intelLoading}
                   initialIntelScoreData={
                     intelScoreData?.trackerEventsIntelScore?.find(
@@ -683,7 +683,7 @@ export default function EventAccordion({
                 showValues={showValues}
                 showMaturity={showMaturity || trackerMaturity}
                 showMatchKeywords={showMatchKeywords}
-                showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                showaudienceSpread={audienceSpread}
                 intelLoading={intelLoading}
                 initialIntelScoreData={
                   intelScoreData?.trackerEventsIntelScore?.find(

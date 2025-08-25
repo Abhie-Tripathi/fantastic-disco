@@ -34,8 +34,10 @@ export const getShowValues = (query: any) => {
       if (!mappedKeys.includes('basic')) {
         mappedKeys.push('basic');
       }
+      console.log("mappedKeys", mappedKeys);
       return mappedKeys.join(',');
     }
-    return "";
+    console.log("mappedKeys", mappedKeys);
+    return undefined;
   
 }
