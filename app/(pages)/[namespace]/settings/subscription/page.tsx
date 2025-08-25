@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PaymentSuccessModal from "@/app/components/payment/successModal";
 import { useAuthContext } from "@/context";
 import FeedbackForm from "@/app/components/payment/feedbackForm";
+import { sessionStorage } from "@/services/storageService";
 
 const Subscription = () => {
   const { membershipData, setMembershipData } = useAuthContext();
@@ -22,6 +23,8 @@ const Subscription = () => {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const { membership, planRenewalDate, endDate } = membershipData || {};
   const membershipPlan = MembershipPlan[membership || 0];
+  const platform = isEventeli ? "geo" : "gtm";
+  const CONFIG_CACHE_KEY = `whr.${platform}.config.filter`;
 
   const [isLoading, setIsloading] = useState<boolean>(false);
 
@@ -78,6 +81,8 @@ const Subscription = () => {
         if (data) {
           setPaymentStatus(data);
           updateMembershipData();
+          if (data?.status === "paid" && data?.updatePlan?.data?.id)  // plan update successfully
+            sessionStorage.remove(CONFIG_CACHE_KEY);
         }
       } catch (err) {
         console.error("Error fetching payment status:", err);
