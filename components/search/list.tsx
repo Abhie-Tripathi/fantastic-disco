@@ -713,7 +713,7 @@ export default function EventAccordion({
   );
 }
 
-const EventListItem = ({
+export const EventListItem = ({
   interest,
   toggleSelection,
   isMobile,
@@ -738,8 +738,8 @@ const EventListItem = ({
   intelLoading,
   source
 }: {
-  interest: any;
-  toggleSelection: (id: string, event: Event) => void;
+  interest?: any;
+  toggleSelection?: (id: string, event: Event) => void;
   isMobile: boolean;
   trackerId?: string;
   view?: string;
@@ -755,9 +755,9 @@ const EventListItem = ({
   showCheckBox?: boolean;
   totalChecked: string[];
   setTotalChecked?: React.Dispatch<React.SetStateAction<string[]>>;
-  isChecked: boolean;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  itemsPerPage: number;
+  isChecked?: boolean;
+  setIsChecked?: React.Dispatch<React.SetStateAction<boolean>>;
+  itemsPerPage?: number;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
   source?:string;
@@ -821,15 +821,15 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-  const handleCheckboxChange = (checked: CheckedState, id: string) => {
-    if (checked) {
-      if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
-      setTotalChecked?.((prev) => [...prev, id]);
-    } else {
-      if (isChecked) setIsChecked(!isChecked);
-      setTotalChecked?.((prev) => prev.filter((item) => item !== id));
-    }
-  };
+  // const handleCheckboxChange = (checked: CheckedState, id: string) => {
+  //   if (checked) {
+  //     if (totalChecked.length === itemsPerPage - 1) setIsChecked(!isChecked);
+  //     setTotalChecked?.((prev) => [...prev, id]);
+  //   } else {
+  //     if (isChecked) setIsChecked(!isChecked);
+  //     setTotalChecked?.((prev) => prev.filter((item) => item !== id));
+  //   }
+  // };
   const type = getFilterValue("type");
   const intelScoreData = [
     {
@@ -846,7 +846,7 @@ const EventListItem = ({
 
   return (
     <div className="flex gap-4 items-center w-full">
-      {showCheckBox && (
+      {showCheckBox && toggleSelection && (
         <div className="flex pl-4">
           <Checkbox
             checked={totalChecked.includes(event.basic.id)}
@@ -854,7 +854,7 @@ const EventListItem = ({
           />
         </div>
       )}
-      <div className="bg-background rounded-lg border shadow-sm relative w-full">
+      <div className={`bg-background rounded-lg border shadow-sm relative w-full ${global === "global" && "ml-5"}`}>
         <Link href={`/internal/event/${event.basic.id}`} className="block">
           <div className="absolute left-0 top-4 md:top-6 h-auto w-[100px] md:w-[140px] flex items-start justify-center">
             {event.basic.logoUrl ? (
@@ -907,7 +907,7 @@ const EventListItem = ({
                   <h2 className="text-xl md:text-2xl font-semibold ">
                     {event.basic.name}
                   </h2>
-                  {(isMobile && global !== "global" && source!=="public") && (
+                  {(isMobile && source!=="public") && (
                     <div onClick={(e) => e.preventDefault()}>
                       <ActionPopover
                         eventId={event.basic.id}
@@ -1457,7 +1457,7 @@ const EventListItem = ({
                           )}
                       </div>
 
-                      {(global !== "global" && !isMobile && source!=="public")&& (
+                      {(!isMobile && source!=="public")&& (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}
@@ -1549,7 +1549,7 @@ const EventListItem = ({
                           </>
                         )}
 
-                      {(global !== "global" && !isMobile && source!=="public") && (
+                      {(!isMobile && source!=="public") && (
                         <div
                           className="flex items-start justify-end"
                           onClick={(e) => e.preventDefault()}
