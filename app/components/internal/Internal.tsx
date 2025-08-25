@@ -455,8 +455,8 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
             <div className="block md:hidden">
               <SearchBar selectedData={eventData1[0]} />
             </div>
-            <div className={`flex justify-between items-center md:mx-[80px]`}>
-              <div className="flex items-center gap-2">
+            <div className={`flex flex-wrap gap-3 justify-between items-center md:mx-[80px]`}>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <Tabs
                   value={coordinateView}
                   onValueChange={toggleBookmarkView}
@@ -473,7 +473,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                       </Badge>
                     </TabsTrigger>
                     <TabsTrigger className="px-2 gap-2" value="savedEvents">
-                      My Events
+                      Bookmarked Events
                       <Badge className="bg-primary text-white px-1 py-0">
                         {new Intl.NumberFormat("en", {
                           notation: "compact",
@@ -485,7 +485,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
                 </Tabs>
               </div>
 
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
                 <AddEventModal />
 
                 {/* <ViewSelectDropdown /> */}

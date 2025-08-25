@@ -902,7 +902,7 @@ export const EventListItem = ({
                   <h2 className="text-xl md:text-2xl font-semibold ">
                     {event.basic.name}
                   </h2>
-                  {(isMobile && global !== "global" && source!=="public") && (
+                  {(isMobile && source!=="public") && (
                     <div onClick={(e) => e.preventDefault()}>
                       <ActionPopover
                         eventId={event.basic.id}
