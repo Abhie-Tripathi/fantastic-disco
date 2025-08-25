@@ -91,6 +91,7 @@ export interface Tracker {
     designation?: any;
     showValues?: string;
     show?: string;
+    estimatedVisitorRangeTag?: string;
 }
 export interface ExportContent {
   id: string;

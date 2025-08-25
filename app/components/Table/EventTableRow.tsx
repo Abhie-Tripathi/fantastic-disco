@@ -49,6 +49,8 @@ interface EventTableRowProps {
   intelLoading?: boolean;
   trackerMaturity?:string[];
   source?:string;
+  trackerAudienceSpread?: string[];
+  trackerEstimatedVisitorRangeTag?: string[];
 }
 
 function getForecastedStatus(data: any) {
@@ -148,7 +150,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setTotalChecked,
   initialIntelScoreData,
   intelLoading,
-  trackerMaturity
+  trackerMaturity,
+  trackerAudienceSpread,
+  trackerEstimatedVisitorRangeTag
 }) => {
 const { isTentimesUser } = useSafeFilterContext();
   // console.log("event table called......");
@@ -162,9 +166,10 @@ const { isTentimesUser } = useSafeFilterContext();
     .trim()
     .split(",")
     .filter(Boolean);
-  const audienceSpread = getFilterValue("audienceSpread")
+  const audienceSpread = getFilterValue("audienceSpread")  
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean).length || source == "tracker" && trackerAudienceSpread
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag") || trackerEstimatedVisitorRangeTag;
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
@@ -177,6 +182,7 @@ const { isTentimesUser } = useSafeFilterContext();
       setTotalChecked?.((prev) => prev.filter((item) => item !== id));
     }
   };
+
   const intelScoreData = [
     {
       name: "Total",
@@ -496,7 +502,7 @@ const { isTentimesUser } = useSafeFilterContext();
       </TableCell>
 
       {/* Event Size Column */}
-      {event.insights?.estimatedAttendance !== undefined && (
+      {estimatedVisitorRangeTag && (
         <TableCell className="text-center">
           {displayValue(event.insights?.estimatedAttendance)}
         </TableCell>
@@ -732,7 +738,7 @@ const { isTentimesUser } = useSafeFilterContext();
           </TableCell>
         )}
 
-      {audienceSpread.length > 0 &&
+      {audienceSpread &&
         event.audience?.audienceSpread !== undefined && (
           <TableCell className="text-center">
             <div className="flex gap-2">

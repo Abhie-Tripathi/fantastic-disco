@@ -46,9 +46,6 @@ export const useEvents = {
 
     const eventsService = useEventsService();
 
-    if (finalQuery.offset === 0 || finalQuery.offset === 10) {
-      console.log(`🔄 useEvents called - offset: ${finalQuery.offset}, limit: ${finalQuery.limit}`);
-    }
 
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(finalQuery),
