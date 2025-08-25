@@ -161,6 +161,9 @@ export default function CreateTrackerDialog({
         
         if (localFilters.show) {
           const query = {
+            maturity: (localFilters.maturity as unknown as string[]),
+            audienceSpread: (localFilters.audienceSpread as unknown as string[]),
+            estimatedVisitorRangeTag: (localFilters.estimatedVisitorRangeTag as unknown as string[]),
             show: (localFilters.show as unknown as string[])
           };
           const showValues = getShowValues(query);
