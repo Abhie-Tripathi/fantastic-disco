@@ -151,6 +151,8 @@ const [selectedInterestMap, setSelectedInterestMap] = useState<Map<string, Inter
     }
   });
   const trackerMaturity = data?.filterValues?.maturity
+  const audienceSpread = data?.filterValues?.audienceSpread
+  const estimatedVisitorRangeTag = data?.filterValues?.estimatedVisitorRangeTag
   const locationIds =  Object?.keys(data?.filterValues?.locationIds || {});
 
   // console.log(show.join(","));
@@ -534,6 +536,8 @@ function mapInterestsToInterestIds(
               localFilters={localFilters || {}}
               trackerMaturity={trackerMaturity}
               source={source}
+              trackerAudienceSpread={audienceSpread}
+              trackerEstimatedVisitorRangeTag={estimatedVisitorRangeTag}
             />
             <TableBody className="overflow-auto">
               {updatedEvents &&
@@ -553,6 +557,8 @@ function mapInterestsToInterestIds(
                     setEventId={setEventId}
                     setInterest={setInterest}
                     type={query.type}
+                    trackerAudienceSpread={audienceSpread}
+                    trackerEstimatedVisitorRangeTag={estimatedVisitorRangeTag}
                     key={event.basic.id}
                     event={event}
                     show={showValues}

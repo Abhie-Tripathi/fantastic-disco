@@ -141,7 +141,10 @@ const Index = ({name, isPublic=false}:{name?:string, isPublic?:boolean}) => {
         }else
      {
       const query = {
-        show: (data?.filterValues?.show as unknown as string[])?.join(',')
+        show: (data?.filterValues?.show as unknown as string[])?.join(','),
+        audienceSpread: (data?.filterValues?.audienceSpread as unknown as string[]),
+        estimatedVisitorRangeTag: (data?.filterValues?.estimatedVisitorRangeTag as unknown as string[]),
+        maturity: (data?.filterValues?.maturity as unknown as string[]),
       }
       const showValues = getShowValues(query);
       if(showValues){

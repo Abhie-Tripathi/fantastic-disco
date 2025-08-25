@@ -191,7 +191,7 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData, setIsNewCall } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
-  const showMaturity = !!getFilterValue("maturity");
+  const showMaturity = !!getFilterValue("maturity") || trackerData?.filterValues?.maturity;
   const includeKeywords = getFilterValue("includeKeywords")
     .trim()
     .split(",")
@@ -202,9 +202,10 @@ export default function EventAccordion({
     .filter(Boolean);
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean).length || trackerData?.filterValues?.audienceSpread;
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag").split(",").filter(Boolean).length || trackerData?.filterValues?.estimatedVisitorRangeTag;
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
@@ -650,7 +651,7 @@ export default function EventAccordion({
                   showValues={showValues}
                   showMaturity={showMaturity || trackerMaturity}
                   showMatchKeywords={showMatchKeywords}
-                  showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                  showaudienceSpread={audienceSpread}
                   intelLoading={intelLoading}
                   initialIntelScoreData={
                     intelScoreData?.trackerEventsIntelScore?.find(
@@ -682,8 +683,9 @@ export default function EventAccordion({
                 event={event}
                 showValues={showValues}
                 showMaturity={showMaturity || trackerMaturity}
+                estimatedVisitorRangeTag={estimatedVisitorRangeTag}
                 showMatchKeywords={showMatchKeywords}
-                showaudienceSpread={audienceSpread.length > 0 ? true : false}
+                showaudienceSpread={audienceSpread}
                 intelLoading={intelLoading}
                 initialIntelScoreData={
                   intelScoreData?.trackerEventsIntelScore?.find(
@@ -721,6 +723,7 @@ export const EventListItem = ({
   setInterest,
   event,
   showValues,
+  estimatedVisitorRangeTag,
   showMatchKeywords,
   showaudienceSpread,
   showCheckBox,
@@ -743,6 +746,7 @@ export const EventListItem = ({
   setInterest: any;
   event: Event;
   showValues: Show[];
+  estimatedVisitorRangeTag: boolean;
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
   showMaturity: boolean;
@@ -1405,7 +1409,7 @@ export const EventListItem = ({
                               </p>
                             </div>
                           )}
-                        {event.insights?.estimatedAttendance !== undefined && (
+                        {event.insights?.estimatedAttendance !== undefined && estimatedVisitorRangeTag && (
                           <div>
                             <p className="text-xs md:text-sm [color:var(--secondary-text-color)] font-medium">
                               Estimated Visitors

@@ -148,9 +148,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       eventType: isEventeli ? 'social' : 'active'
     });
     
-    if (item.filterValues?.show) {
+    if (item.filterValues) {
       const query = {
-        show: (item.filterValues.show as unknown as string[]).join(',')
+        show: (item.filterValues?.show as unknown as string[])?.join(','),
+        maturity: (item.filterValues?.maturity as unknown as string[])?.join(','),
+        audienceSpread: (item.filterValues?.audienceSpread as unknown as string[])?.join(','),
+        estimatedVisitorRangeTag: (item.filterValues?.estimatedVisitorRangeTag as unknown as string[])?.join(','),
       }
       const showValues = getShowValues(query);
       if(showValues){
