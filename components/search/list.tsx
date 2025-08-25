@@ -652,6 +652,7 @@ export default function EventAccordion({
                   showMaturity={showMaturity || trackerMaturity}
                   showMatchKeywords={showMatchKeywords}
                   showaudienceSpread={audienceSpread}
+                  estimatedVisitorRangeTag={estimatedVisitorRangeTag}
                   intelLoading={intelLoading}
                   initialIntelScoreData={
                     intelScoreData?.trackerEventsIntelScore?.find(
