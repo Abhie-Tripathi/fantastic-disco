@@ -224,8 +224,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   </Link>
 {!isMobile &&
 <Link
-  href="/internal/trackers/savedevents?view=table"
-  target="_blank"
+  href="/internal/coordinate?view=savedEvents"
   rel="noopener noreferrer"
 >
   <Button className="h-[42px]" variant="outline">Bookmarked</Button>
@@ -238,8 +237,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           </div>
           <div className="flex-col gap-4 px-6 pb-3 flex md:hidden">
                   <Link 
-                  href={`/internal/trackers/savedevents?view=list`}
-                  target="_blank"
+                  href={`/internal/coordinate?view=savedEvents`}
                   rel="noopener noreferrer"
                   >
                     <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
