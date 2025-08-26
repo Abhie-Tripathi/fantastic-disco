@@ -534,9 +534,9 @@ export const AuthContextProvider = ({ children }: any) => {
             setLocalStorage(result.user);
             
             // Check if user needs to request access
-            if (result.user.access === "USER") {
+            // if (result.user.access === "USER") {
               return result;
-            }
+            // }
             
             handleFlowAction(flow, redirectTo);
           }

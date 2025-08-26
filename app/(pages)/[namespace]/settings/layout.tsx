@@ -15,7 +15,7 @@ export default function SettingsLayout({
   const urlName = pathname.split("/").slice(-1)[0];
   const router = useRouter();
   useEffect(() => {
-    if(urlName==="users" || urlName ==="notifications" || urlName==="rolesandpermission"){
+    if(urlName==="users" || urlName ==="notifications"){
       router.push(`/${namespace}/settings/profile`);
     }
   }, [router]);
@@ -73,6 +73,14 @@ export default function SettingsLayout({
           >
             <Link href={`/${namespace}/settings/rolesandpermission`}>Roles & Permissions</Link>
           </TabsTrigger> */}
+
+          <TabsTrigger
+            value="rolesandpermission"
+            className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2  text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            asChild
+          >
+            <Link href={`/${namespace}/settings/rolesandpermission`}>Roles & Permissions</Link>
+          </TabsTrigger>
 
           <TabsTrigger
             value="subscription"

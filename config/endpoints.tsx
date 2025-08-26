@@ -98,6 +98,8 @@ export const endpoints = {
   account: {
     users: `${BASE_URL}/me/account/users`,
     configuration: `${BASE_URL}/me/account/configuration`,
+    accessRequests: `${BASE_URL}/me/account/access-requests`,
+    requestReview: `${BASE_URL}/me/account/request-review`,
   },
   membership: {
     getMembership: `${BASE_URL}/me/account/configuration/membership`,

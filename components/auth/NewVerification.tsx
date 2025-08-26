@@ -165,7 +165,8 @@ export default function NewVerificationForm() {
           settingsInterestData
         );
         
-        if (result?.user?.access === "USER") {
+        console.log("i am here")
+        if (true) {
           setShowAccessRequest(true);
           return;
         }
