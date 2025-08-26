@@ -90,6 +90,7 @@ const MobileEventCard = ({
   showValues,
   showMatchKeywords,
   showaudienceSpread,
+  estimatedVisitorRangeTag,
   showMaturity,
   initialIntelScoreData,
   intelLoading,
@@ -105,6 +106,7 @@ const MobileEventCard = ({
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
   showMaturity: boolean;
+  estimatedVisitorRangeTag: boolean;
   global?: string;
   initialIntelScoreData?: intelScore;
   intelLoading?: boolean;
@@ -497,7 +499,7 @@ const MobileEventCard = ({
       {/* Date & Location */}
       {/* Stats */}
       <div className="flex flex-col gap-1">
-        {stat(
+        {estimatedVisitorRangeTag && stat(
           "Estimated Visitors",
           event.insights?.estimatedAttendance?.toLocaleString() ?? "-"
         )}
