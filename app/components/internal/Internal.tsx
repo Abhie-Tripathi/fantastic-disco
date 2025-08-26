@@ -104,7 +104,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   const [eventCount, setEventCount] = useState<number>(0);
   const [countLoading, setCountLoading] = useState<boolean>(false);
 
-  const [coordinateView, setCoordinateView] = useState("enquiryEvents"); // "enquiryEvents" | "savedEvents"
+  const coordinateView = localFilters?.view === "enquiryEvents" || localFilters?.view === "savedEvents" ? localFilters?.view : "enquiryEvents"; // "enquiryEvents" | "savedEvents"
   const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
 
@@ -312,7 +312,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   };
 
   const toggleBookmarkView = (view: string) => {
-    setCoordinateView(view);
+    setFilter("view", view);
     if (view === "savedEvents")
       setShowFilter(false);
     else if (view === "enquiryEvents" && !isMobile)
@@ -338,10 +338,10 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
-  }, [searchParams]);
+  }, [searchParams.get('type'), searchParams.get('status'), searchParams.get('active_gte'), searchParams.get('active_lte'), searchParams.get('upvotedBy'), searchParams.get('eventId')]);
 
   useEffect(() => {
-    if (page > 0 && coordinateView === "enquiryEvents") {
+    if (page > 0) {
       setNoMoreData(false);
       fetchData();
       GAEvent("Coordinate", "Pagination", "Coordinate", `Coordinate | ${page}`);
@@ -508,7 +508,7 @@ const Internal = ({ coordinateActions, pipelineConfig }: Props) => {
               </div>
             </div>
 
-            {showFilters && (
+            {showFilters && coordinateView === "enquiryEvents" && (
               <>
                 {/* Mobile Filters View */}
                 <div className={`block md:hidden`}>
