@@ -27,6 +27,7 @@ import {
   Menu,
   Bell,
   UserPlus,
+  ArrowUpRight,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -43,8 +44,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
 import VideoModal from "@/components/layout/videoModal";
 import SendInvite from "@/components/ui/SendInvite";
-import { MembershipPlan } from "@/data/membershipPlans";
 import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -204,26 +206,28 @@ export default function Navbar() {
             />
           </div>
           <div className="text-lg font-semibold hidden lg:block">
-            {pathname.split("/")[1] === "internal" ? (
+            {pathname.split("/")[1] === "internal"
+              ? (
               <div className="flex items-center">
-                {getRoute(pathname.split("/")[2])}
-                <div className="ml-2 ">
+                <span className="relative inline-flex items-center">
+                  {getRoute(pathname.split("/")[2])}
+                  {pathname.split("/")[2] === "trends" && (
+                    <Badge
+                      variant="default"
+                      className="text-[10px] font-medium px-2 py-1 ml-1 h-4 align-super leading-none relative -top-2"
+                    >
+                      Beta
+                    </Badge>
+                  )}
+                </span>
+                <div className="ml-2" >
                   <VideoModal source={pathname.split("/")[2]} />
                 </div>
-                {pathname.split("/")[2] === "trends" && (
-                  <Badge
-                    variant="default"
-                    className="text-xs font-medium px-2 py-0.5 ml-2 h-5"
-                  >
-                    Beta
-                  </Badge>
-                )}
               </div>
-            ) : pathname.split("/").slice(-2)[0] === "edit" ? (
-              "Edit Widget"
-            ) : (
-              geniroutes[pathname.split("/").slice(-1)[0]]
-            )}
+              )
+              : pathname.split("/").slice(-2)[0] === "edit"
+              ? "Edit Widget": pathname.split('/')[1] === "collections"? " Collections"
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="hidden max-[570px]:block">
