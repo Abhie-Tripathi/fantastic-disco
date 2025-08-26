@@ -7,8 +7,8 @@ export interface EventTypeData {
   festival: number | null;
   concert: number | null;
   sport: number | null;
-  community: number | null;
-  "performing-arts": number | null;
+  "community-group": number | null;
+  "stage-performance": number | null;
 }
 
 export interface EventGroupData {
@@ -128,6 +128,8 @@ export interface GetFilterValue extends BaseFilterValue {
   eventTypes: EventTypes;
   locationIds?: LocationIds;
   viewBound?: string;
+  compare_to?: string;
+  compare_from?: string;
   categories?: {
     [key: string]: {
       id: string;

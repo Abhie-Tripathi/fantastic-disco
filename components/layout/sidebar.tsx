@@ -28,6 +28,7 @@ import {
   Settings,
   Sun,
   UserSearch,
+  ArrowUpRight,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +38,9 @@ import { Skeleton } from "../ui/skeleton";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
 import { GAEvent } from "@/utils/GAEvent";
+import { useProfileServices } from "@/services/profileService";
+import { MembershipPlan } from "@/data/membershipPlans";
+import { Badge } from "@/components/ui/badge";
 
 function Coordinate() {
   return (
@@ -79,7 +83,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { user, signOut } = useAuthContext();
+  const { user, signOut, membershipData, isTentimesUser } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [storedUser, setStoredUser] = useState<UserResponse | null>(null);
 
@@ -280,19 +284,26 @@ const Sidebar = () => {
         <div className="flex items-center space-x-2">
           <Image src={HeroLogo} alt="logo" width={40} height={40} />
           {isHovered && (
-            <Image
-              className="mb-[6px]"
-              src={HeroText}
-              alt="logotext"
-              height={24}
-              style={theme === "dark" ? { filter: "invert(100%)" } : {}}
-            />
+            <>
+              <Image
+                className="mb-[6px]"
+                src={HeroText}
+                alt="logotext"
+                height={24}
+                style={theme === "dark" ? { filter: "invert(100%)" } : {}}
+              />
+              {membershipData && membershipData.membership !== MembershipPlan.Freemium && <div className="ml-2 flex items-center gap-1 bg-[rgba(120,120,255,0.08)] rounded-full px-2 py-0.5 shadow-sm border border-border max-w-[90px] overflow-hidden">
+                <span className="font-semibold text-xs text-primary" title={MembershipPlan[membershipData?.membership || 0]}>
+                  {MembershipPlan[membershipData?.membership || 0]}
+                </span>
+              </div>}
+            </>
           )}
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal")
+          {(pathname.startsWith("/internal") || pathname.startsWith("/collections"))
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
@@ -447,7 +458,7 @@ const Sidebar = () => {
               )}
             </AccordionItem>
           </Accordion>
-          {!isEventeli && (
+          {((isEventeli && isTentimesUser) || !isEventeli) && (
             <Button
               variant="ghost"
               size="icon"

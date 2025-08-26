@@ -36,6 +36,9 @@ import { useIntelData } from "@/hooks/useIntelData";
 import { Skeleton } from "../ui/skeleton";
 import { useAuthContext } from "@/context";
 import { useFilterContext } from "@/context/filterContext";
+import ZeroState from "@/app/components/zerostate";
+import { ApiError } from "@/types/api";
+
 export default function EventList({
   eventDate,
   onClose,
@@ -109,7 +112,8 @@ export default function EventList({
     } = useIntelData(
       trackerId || "",
       events?.length > 0 ? events : [],
-      searchParams.get("eventType") || ""
+      searchParams.get("eventType") || "",
+      getFilterValue("type")
     );
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
@@ -260,7 +264,6 @@ export default function EventList({
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
                   </div>
-                  {isTentimesUser && (
                     <>
                     {(trackerId && !isEventeli && type !== "T_CUSTOM") &&
                     (intelLoading ? (
@@ -274,7 +277,6 @@ export default function EventList({
                     ))
                   }
                     </>
-                  )}
                   
                   </div>
                 <div>
@@ -372,21 +374,11 @@ export default function EventList({
     if (error) {
       return (
         <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            {error && (
-              <p className="text-sm font-semibold text-destructive px-2">
-                {error.message}
-              </p>
-            )}
-            {/* <p className="text-lg font-semibold text-destructive">
-              Failed to load events
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Please try again later
-            </p> */}
-          </div>
-        </div>
+        <ZeroState
+     issues={(error as ApiError).issues}
+     text={(error as ApiError).message}
+     errorStatusCode={(error as ApiError)?.statusCode}/>
+     </div>
       );
     }
 

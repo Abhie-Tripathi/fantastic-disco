@@ -55,24 +55,26 @@ const geoSortOptions: SortOption[] = [
 interface SortDropdownProps {
   compact?: boolean;
   value?: string;
+  isPubic?: boolean;
   onSort?: (value: string) => void;
 }
 
 const SortDropdown = ({
+  isPubic=false,
   compact = false,
   value,
   onSort,
 }: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-
-  const sortParam = value || getFilterValue("sortBy") || "-score";
+  const type = getFilterValue("type") || "";
+  const sortParam = value || getFilterValue("sortBy") || (type==="T_AUDIENCE_DEPT_PROFILE"?"-visitor":"-score");
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
   );
-
-  const sortOptions = isEventeli ? geoSortOptions : gtmSortOptions;
+  const updatedGtmSortOperations = type==="T_AUDIENCE_DEPT_PROFILE"?[{ value: "visitor", label: "Relevance" }, ...gtmSortOptions]: gtmSortOptions;
+  const sortOptions = isEventeli ? geoSortOptions : updatedGtmSortOperations;
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortField);
@@ -100,11 +102,15 @@ const SortDropdown = ({
     }
   };
 
-  useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "-score";
-    setSortField(newSortParam.replace("-", ""));
-    setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
-  }, [getFilterValue, value]);
+ useEffect(() => {
+  const dynamicDefault =
+    value ||
+    getFilterValue("sortBy") ||
+    (type === "T_AUDIENCE_DEPT_PROFILE" ? "-visitor" : "-score");
+
+  setSortField(dynamicDefault.replace("-", ""));
+  setSortOrder(dynamicDefault.startsWith("-") ? "desc" : "asc");
+}, [getFilterValue, value, type]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -133,7 +139,7 @@ const SortDropdown = ({
         )}
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0" align="end">
-        <div className="bg-white rounded-md shadow-sm">
+        <div className="bg-background rounded-md shadow-sm">
           <div className="flex items-center justify-between p-3 border-b">
             <h3 className="font-medium">Sort by</h3>
             <div className="flex items-center gap-1">
@@ -142,7 +148,7 @@ const SortDropdown = ({
                 size="icon"
                 className={cn(
                   "h-8 w-8 p-0",
-                  sortOrder === "asc" && "bg-gray-100"
+                  sortOrder === "asc" && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortOrderChange("asc")}
               >
@@ -154,7 +160,7 @@ const SortDropdown = ({
                 size="icon"
                 className={cn(
                   "h-8 w-8 p-0",
-                  sortOrder === "desc" && "bg-gray-100"
+                  sortOrder === "desc" && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortOrderChange("desc")}
               >
@@ -168,14 +174,14 @@ const SortDropdown = ({
               <button
                 key={option.value}
                 className={cn(
-                  "w-full flex items-center px-3 py-2 text-left hover:bg-gray-100 transition-colors",
-                  sortField === option.value && "bg-gray-100"
+                  "w-full flex items-center px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-[var(--background-color-hover)] transition-colors",
+                  sortField === option.value && "bg-gray-100 dark:bg-[var(--accent-color)]"
                 )}
                 onClick={() => handleSortFieldChange(option.value)}
               >
                 <div className="w-6 flex-shrink-0">
                   {sortField === option.value && (
-                    <Check className="h-4 w-4 text-blue-600" />
+                    <Check className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   )}
                 </div>
                 <span>{option.label}</span>

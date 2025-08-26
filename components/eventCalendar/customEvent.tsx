@@ -26,10 +26,10 @@ const eventTypeIcons: Record<string, JSX.Element> = {
   tradeshows: <Image src={expo} alt="expo" className="w-8 h-8" />,
   festival: <Image src={festivals} alt="festivals" className="w-8 h-8" />,
   workshops: <Image src={Workshops} alt="Workshops" className="w-8 h-8" />,
-  "performing-arts": (
-    <Image src={performingArts} alt="performing-arts" className="w-8 h-8" />
+  "stage-performance": (
+    <Image src={performingArts} alt="stage-performance" className="w-8 h-8" />
   ),
-  community: <Image src={community} alt="community" className="w-8 h-8" />,
+  "community-group": <Image src={community} alt="community" className="w-8 h-8" />,
   holiday: <Image src={holiday} alt="holiday" className="w-8 h-8" />,
 };
 

@@ -5,6 +5,7 @@ import { Radio } from "lucide-react";
 import { formatLocationParts } from "@/utils/locationFormat";
 import { formattedDateRange } from "@/utils/date";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface CardTaskProps {
   task: enquiryType;
@@ -48,6 +49,9 @@ const CardTask: React.FC<CardTaskProps> = ({
   task,
 }) => {
   const eventData = task.eventData;
+  const isProductEvent = task?.isProductEvent || false;
+  
+  const router = useRouter();
 
   const address = eventData.eventLocation ? (
     eventData.format === "online" ? (
@@ -75,7 +79,9 @@ const CardTask: React.FC<CardTaskProps> = ({
       className="bg-background rounded-lg border shadow-sm relative cursor-move w-full"
       draggable={draggable}
       onDragStart={(event) => onDragStart(event, name)}
-      onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}
+      // onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}
+      onClick={() => !isProductEvent && router.push(`/internal/event/${eventId}?view=outreach`)}
+
     >
       <div className="absolute left-0 top-4 h-auto w-[100px] flex items-start justify-center">
         {eventData.logoUrl ? (

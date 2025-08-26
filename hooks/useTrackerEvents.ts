@@ -1,27 +1,43 @@
 import { useQuery } from "@/hooks/useQuery";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { useTrackerServices } from "@/services/trackerServices";
+import { useMemo } from "react";
+
+const STALE_TIME = 300000;
 
 export const eventsKeys = {
-  all: ["events"] as const,
-  list: (query: EventQuery, trackerId?: string) => [...eventsKeys.all, query, trackerId] as const, 
+  all: ["trackerevents"] as const,
+  list: (query: EventQuery, trackerId?: string) => [...eventsKeys.all, query, trackerId] as const,
 };
 
 export const useTrackerEvents = {
   list: (query: EventQuery, trackerId?: string, view?: string) => {
+    const finalQuery = useMemo(() => {
+      const normalizedQuery = {
+        ...query,
+        offset: Number(query.offset ?? 0),
+        limit: Number(query.limit ?? 10),
+      };
+      
+      if (normalizedQuery.limit && Number(normalizedQuery.limit) > 20) {
+        normalizedQuery.limit = 20;
+      }
+      
+      return normalizedQuery;
+    }, [query]);
+
     const trackerService = useTrackerServices();
+    
+
     const EventQuery = useQuery({
-      queryKey: eventsKeys.list(query, trackerId),
+      queryKey: eventsKeys.list(finalQuery, trackerId),
       queryFn: () =>
         view === "global"
-          ? trackerService.globalSavedEvents(query)
-          : trackerService.getTrackerEvents(query, trackerId || ""),
-          staleTime: 0,
+          ? trackerService.globalSavedEvents(finalQuery)
+          : trackerService.getTrackerEvents(finalQuery, trackerId || ""),
+      staleTime: STALE_TIME,
       refetchOnWindowFocus: false,
-
-          
     });
-
     return {
       events: EventQuery?.data?.events || [],
       totalEvents: EventQuery?.data?.count || 0,

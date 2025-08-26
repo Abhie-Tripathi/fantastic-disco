@@ -92,11 +92,13 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
         <div className={styles.card_container} >
             <div className={styles.card_title} >
                 <div className={styles.total_request}>
-                    <CheckboxInput
-                        id={'abc'}
-                        onChange={handleAllSelect}
-                        checked={allSelected}
-                    />
+                    {shortlistedUsers && setShortlistedUsers && (
+                        <CheckboxInput
+                            id={'abc'}
+                            onChange={handleAllSelect}
+                            checked={allSelected}
+                        />
+                    )}
                     {userList.length} {cardType} Requests
                 </div>
                 <span className={styles.selected_users}>{selectedUserCount} selected</span>
@@ -114,13 +116,15 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
             <div className={styles.users_list} >
                 {userData.map(user => (
                     <div key={user.id} className={styles.userItem} >
-                        <CheckboxInput
-                            id={'abc'}
-                            onChange={() => onUserSelect(user)}
-                            checked={ 
-                                (user.status == 'SHORTLISTED')? true : false
-                            }
-                        />
+                        {shortlistedUsers && setShortlistedUsers && (
+                            <CheckboxInput
+                                id={'abc'}
+                                onChange={() => onUserSelect(user)}
+                                checked={ 
+                                    (user.status == 'SHORTLISTED')? true : false
+                                }
+                            />
+                        )}
                         <span className={styles.imgContainer}>
                         {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}} className='w-[45px] h-[45px]' />:
                          <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>

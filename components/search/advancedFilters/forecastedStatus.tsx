@@ -41,6 +41,7 @@ export default function ForecastedStatusSelector() {
       <Switch
         disabled={!enabled}
         id="forecasted-status"
+        className="mr-6"
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />

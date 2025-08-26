@@ -21,21 +21,21 @@ export const eventTypeIcons: Record<string, JSX.Element> = {
   concert: <Image src={concerts} alt="concerts" className="w-4 h-4" />,
   sport: <Image src={sport} alt="sport" className="w-4 h-4" />,
   workshops: <Image src={workshop} alt="workshop" className="w-4 h-4" />,
-  community: <Image src={community} alt="community" className="w-4 h-4" />,
-  "performing-arts": <Image src={arts} alt="arts" className="w-4 h-4" />,
+  "community-group": <Image src={community} alt="community" className="w-4 h-4" />,
+  "stage-performance": <Image src={arts} alt="arts" className="w-4 h-4" />,
   festival: <Image src={festivals} alt="fests" className="w-4 h-4" />,
   tradeshows: <Image src={expo} alt="tradeshows" className="w-4 h-4" />,
   holiday: <Image src={holiday} alt="holiday" className="w-4 h-4" />,
-};  
+};
 
 export const eventTypeColors: Record<string, string> = {
   conferences: "#5055A3",
   expos: "#5055A3",
   concert: "#9D50A3",
   sport: "#9D50A3",
-  "performing-arts": "#9D50A3",
+  "stage-performance": "#9D50A3",
   workshops: "#5055A3",
-  community: "#9D50A3",
+  "community-group": "#9D50A3",
   arts: "#9D50A3",
   festival: "#9D50A3",
   tradeshows: "#5055A3",
@@ -44,7 +44,7 @@ export const eventTypeColors: Record<string, string> = {
 };
 
 export const groupedEventTypes = {
-  social: ["festival", "concert", "sport", "performing-arts", "community"],
+  social: ["festival", "concert", "sport", "stage-performance", "community-group"],
   business: ["tradeshows", "conferences", "workshops"],
 };
 

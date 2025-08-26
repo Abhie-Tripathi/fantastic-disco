@@ -52,13 +52,19 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
       if (data?.count) {
         // setHideTemplate(false);
         setIsData(true);
+        return true;
       }
+      return false;
     };
-    if(isTentimesUser) {
-    fetchData();
-  
-    fetchIntelScore();
+    // if(isTentimesUser) {
+     const fetchAllData = async () => {
+    const res = await fetchData();
+    if (res) {
+      await fetchIntelScore();
     }
+  };
+  fetchAllData();
+    // }
     // setInterval(() => {
     //   setIntelData(data);
     //   setIsLoading(false);
@@ -67,19 +73,19 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   
   return (
     <>
-    {isTentimesUser?
       <div className={"gap-8 flex flex-col h-full justify-between"}>
       <div className={"flex justify-between items-center"}>
         <span className="text-[1rem] mb-2 font-medium">
           Relevance Score
         </span>
         {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        <Badge
+        {/* <Badge
           variant={"outline"}
           className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
         >
           Demo
-        </Badge>
+        </Badge> */}
+        <VideoModal source="intelScore" />
       </div>
      <>
   {isLoading ? (
@@ -107,8 +113,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
 
       <div style={{ display: "flex", gap: "6px" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.people_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.people_score ? intelData.people_score : "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
@@ -121,8 +127,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         </div>
 
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.purpose_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.purpose_score ? intelData?.purpose_score: "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
@@ -135,8 +141,8 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
         </div>
 
         <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>
-            {intelData?.prospect_score ?? "--"}
+          <div style={{ fontSize: "var(--font-size-large)", color:"var(--secondary-text-color)" }}>
+            {intelData?.prospect_score? intelData?.prospect_score : "-"}
           </div>
           <div style={{
             fontSize: "var(--font-size-default)",
@@ -152,84 +158,6 @@ const TrackerRelevanceScore = ({ eventId }: TrackerRelevanceScoreProps) => {
   )}
 </>
     </div>
-      : <div className={"gap-8 flex flex-col"}>
-      <div className={"flex justify-between items-center"}>
-        <div className="text-sm flex gap-2 items-center">
-          Tracker Relevance Score
-          <Badge
-            variant={"outline"}
-            className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-          >
-            Demo
-          </Badge>
-        </div>
-        {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-        <VideoModal source="intelScore" />
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <CircularProgress percentages={[80, 50, 70]} relevanceScore={"89"} />
-      </div>
-
-      <div style={{ display: "flex", gap: "6px" }}>
-        <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>80</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#646BDC",
-            }}
-          >
-            People
-          </div>
-          <div
-            style={{
-              height: "13px",
-              background: "#646BDC",
-              borderRadius: "4px",
-            }}
-          ></div>
-        </div>
-        <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>50</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#E99CD4",
-            }}
-          >
-            Purpose
-          </div>
-          <div
-            style={{
-              height: "13px",
-              background: "#E99CD4",
-              borderRadius: "4px",
-            }}
-          ></div>
-        </div>
-        <div style={{ width: "100%" }}>
-          <div style={{ fontSize: "var(--font-size-large)" }}>70</div>
-          <div
-            style={{
-              fontSize: "var(--font-size-default)",
-              padding: "4px 0",
-              color: "#9B86D4",
-            }}
-          >
-            Prospect
-          </div>
-          <div
-            style={{
-              height: "13px",
-              background: "#9B86D4",
-              borderRadius: "4px",
-            }}
-          ></div>
-        </div>
-      </div>
-    </div>} 
   </>
   );
 };

@@ -36,6 +36,7 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { isEventeli } from "@/config";
 import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 import CustomTrackerNullState from "@/app/components/internal/trackers/Filters/customTrackerNullState";
+import { ApiError } from "@/types/api";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -302,7 +303,7 @@ export default function EventCalendar({
       console.log(start.toDate(), end.toDate());
       switch (view) {
         case Views.WEEK:
-          start.startOf("week").add(1, "day");
+          start.startOf("week");
           end.endOf("week");
           break;
         case Views.MONTH:
@@ -364,7 +365,7 @@ export default function EventCalendar({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }
@@ -437,7 +438,7 @@ export default function EventCalendar({
   ) {
     return (
       <div className="p-6">
-        <CustomTrackerNullState />;
+        <CustomTrackerNullState />
       </div>
     );
   }
@@ -452,10 +453,18 @@ export default function EventCalendar({
         <>
           {source === "tracker" ? (
             <div className="px-10 py-5">
-              <NullState image={TrackerNullState} title={error?.message} />
+              <ZeroState
+          issues={(error as ApiError).issues}
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
             </div>
           ) : (
-            <ZeroState text={error?.message} />
+            <ZeroState
+          issues={(error as ApiError).issues}
+          text={(error as ApiError).message}
+          errorStatusCode={(error as ApiError)?.statusCode}
+        />
           )}
         </>
       ) : source === "tracker" && activeVal === 0 ? (

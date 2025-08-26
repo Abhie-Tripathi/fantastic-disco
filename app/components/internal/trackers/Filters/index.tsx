@@ -1,11 +1,12 @@
 "use client";
 import styles from "./filters.style.module.css";
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Filter, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Filter, LayoutGrid, Search } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Event } from "@/types/events";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
@@ -83,16 +84,20 @@ import LocationTemplate from '@/components/search/locationTemplate'
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
-import Presets from "./Presets";
+import PrivatePresets from "./privatePreset";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
 import Filters from "@/components/search/Filters";
 import FilterContent from "@/components/search/FilterContent";
 import ZeroState from "@/components/zerostate";
 import CustomTrackerNullState from "./customTrackerNullState";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { getShowValues } from "@/utils/showValues";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
+  required?: boolean;
   placeholder: string;
 }
 export interface LocationItem {
@@ -102,6 +107,11 @@ export interface LocationItem {
 interface Filters {
   shows: string;
   [key: string]: any; 
+}
+interface UpdatedProfileData{
+  designationIds?: string[];
+  departmentIds?: string[];
+  seniorityIds?: string[];
 }
 export type Location =  LocationItem[];
 // interface Toggle{
@@ -246,10 +256,12 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: false,
         placeholder: "Designation",
       },
       {
         type: "text",
+        required: false,
         placeholder: "Department"
       }
     ],
@@ -273,18 +285,25 @@ const templates = [
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
-    type: "disabled",
-    templateName: "Audience Dept. & Profiles",
-    description: "Track events for the specific organizational departments or audience profiles",
+    type: "enabled",
+    templateName: "Ideal Audience Designation",
+    description: "Find relevant events based on your target audience profile",
     inputAreas: [
       {
         type: "text",
-        placeholder: "Department",
+        required:true,
+        placeholder: "Designation",
       },
-      // {
-      //   type: "text",
-      //   placeholder: "Profile",
-      // }
+      {
+        type: "text",
+        required:false,
+        placeholder: "Seniority",
+      },
+      {
+        type: "text",
+        required:false,
+        placeholder: "Department",
+      }
     ],
     isUploadEnable: false,
   },
@@ -321,6 +340,7 @@ const templates = [
     inputAreas: [
       {
         type: "text",
+        required: true,
         placeholder: "Designation",
       },
       // {
@@ -377,6 +397,22 @@ const templates = [
     isUploadEnable: true,
   },
   {
+    name: "T_EVENT_PARTICIPATION",
+    templateName: "Event Participation",
+    type: "enabled",
+    description: "Effortlessly track & Identify events similar to ones you already attend",
+    inputAreas: [
+      {
+        img: <Search className="w-4 h-4 text-muted-foreground" />,
+        type: "text",
+        placeholder: "Search By Event Name",
+        required: true,
+        example: "MAGIC LAS VEGAS",
+      }
+    ],
+    isUploadEnable: false,
+  },
+  {
     name: "T_SOCIAL_CAUSE",
     templateName: "Social Cause",
     type: "disabled",
@@ -429,12 +465,13 @@ const Pages = () => {
   const { toast } = useToast();
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall, setTrackerId} = useTrackerContext();
   const isMobile = useIsMobile();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion} = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters, suggestion, setSuggestion, isBrief, setIsBrief} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
+  const [allEntries, setAllEntries] = useState<string[][]>([[]]);
   const [showTemplate,setShowTemplate] = useState(false);
-
-  const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
+  const [profileIds,setProfileIds] = useState<UpdatedProfileData[]>([]);
+  const {getTrackerDetail,createTracker,editTracker, error, delTracker, presetData}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const [showFilters, setShowFilters]=useState(false);
@@ -446,11 +483,12 @@ const Pages = () => {
   const router = useRouter()
   const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-      enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
+      enabledFilters?.filter?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [customData, setCustomData] = useState<any[]>([]);
   const [activeTab,setActiveTab]=useState("include");
+  const [eventSuggestion, setEventSuggestion] = useState<string[]>([]);
   const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
   const handleTabChange = (value: string) => {
     setSelectedAdvancedView(value);
@@ -467,13 +505,43 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
-
+  const [isNew, setIsNew] = useState(false);
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
-  const filterCount = Object.keys(localFilters).length;
+  const [filterCount, setFilterCount] = useState(0);
+  const [inputFocus, setInputFocus] = useState<boolean[]>([]);
+  const [collectionId,setCollectionId] = useState("");
+  useEffect(()=>{
+    setCollectionId(searchParams.get("collectionId") || "")
+  },[searchParams])
+ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+useEffect(() => {
+  const keysToIgnore = ['type', 'show', 'trust_score_lte', 'eventType', 'view'];
+  const mutuallyExclusiveGroups = [
+    ['includeKeywords', 'excludeKeywords'],
+    ['onlyBranded', 'onlySeries'],
+    ['active_gte', 'active_lte']
+  ];
+  
+  const filtersApplied = Object.keys(localFilters);
+
+  const filteredKeys = filtersApplied.filter((key) => !keysToIgnore.includes(key));
+  let count = filteredKeys.length;
+
+  mutuallyExclusiveGroups.forEach(group => {
+    if (group.every(key => filteredKeys.includes(key))) {
+      count -= 1;
+    }
+  });
+
+  setFilterCount(count);
+}, [localFilters]);
+
+
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const refs = {
     additionalFilterRef: useRef<HTMLDivElement>(null),
@@ -485,7 +553,7 @@ const Pages = () => {
 const stepsConfig =[
     {"key":"templateRef", "content":(type==="T_LOCATION" || type==="T_VENUE" || type==="T_GEOTIME")?"Select a location to explore events, view insights, and receive location-based alerts.":type === "T_COMPETITOR"
       ? "Enter one or more company domains to generate a tracker of competitors, partners, and industry events."
-      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
+      : type==="T_PRODUCT_KEYWORDS"?"Specify one or more products or services to build a tracker of relevant offerings, market gaps, and leading events.":type==="T_EVENT_PARTICIPATION"?"Select events and effortlessly track & Identify similar events to ones you already attend":"Define one or more people profiles to create a tracker of influencers, decision-makers, and key networking events.",},
     {"key":"additionalFilterRef","content":"Unlock advanced filters, intel, and insights scores for deeper analytics and personalized recommendations."},
     {"key":"presetRef","content":"Choose a preset to quickly track a curated set of companies, services, or people by country and category."},
     {"key":"basicFilterRef","content":"Explore the basic filters to quickly refine your results by category, date, and location."},
@@ -500,7 +568,7 @@ const stepsConfig =[
     conditionalKeys: (type) =>
       type === "T_CUSTOM"
         ? ["basicFilterRef", "advanceFilterRef"]
-        : (isEventeli || type==="T_CUSTOMER_ICP")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
+        : (isEventeli || type==="T_CUSTOMER_ICP" || type==="T_EVENT_PARTICIPATION")?["additionalFilterRef", "templateRef"]:["additionalFilterRef", "templateRef", "presetRef"],
   });
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -538,7 +606,7 @@ const stepsConfig =[
       const orgNames = customData
       .map((item: {}) => Object.values(item)[0] as string)
       .filter(value => !regex.test(value))
-      .map(value => value.replace(/,/g, ''))
+      .map(value => value?.replace(/,/g, ''))
       .join(',');
   
     setWebsites(urls);
@@ -635,6 +703,7 @@ const stepsConfig =[
         setLocalFilter("excludeKeywords", excludeKeywords)
       }
     }
+
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
     // console.log(val);
@@ -661,10 +730,14 @@ const stepsConfig =[
 
     return result;
   }
-  const handlePresetClick = (presetItem: PresetData, id: number, trackerType: string, trackerName: string) => {
+   const handlePresetClick = (presetItem: PresetData, id: number | string, trackerType: string, trackerName: string) => {
     let finalResult;
+    const foundTemplate = templates.find(t => t.name === searchParams.get("type"));
+    // console.log("foundedTemplate", foundTemplate);
+    
+    // setTemplate(foundTemplate);
+    
     setHideSuggestion(false);
-    setShowTemplate(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);   
 
     // presetItem[]
@@ -678,10 +751,9 @@ const stepsConfig =[
       const presetData: any = [];
       finalResult?.map((item: any) => {
         const temp: any = {};
-        template?.inputAreas?.map((field: InputArea, index: number) => (
+        (template || foundTemplate)?.inputAreas?.map((field: InputArea, index: number) => (
           temp[field.placeholder] = item[index]
         ))
-      
 
         presetData.push(temp);
       })
@@ -698,7 +770,44 @@ const stepsConfig =[
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-  
+ useEffect(() => {
+  if (isNew && allEntries?.length > 0) {
+    // Get the last group from allEntries (current entries)
+    const lastGroup = allEntries[allEntries.length - 1];
+     console.log(lastGroup, "");
+    // Initialize empty arrays for each type
+    const newDepartmentIds: string[] = [];
+    const newSeniorityIds: string[] = [];
+    const newDesignationIds: string[] = [];
+    
+    // Process each entry in the last group
+    lastGroup.forEach(entry => {
+     
+      
+      const [value, id, type] = entry.split('_');
+      
+      if (type === 'Department') {
+        newDepartmentIds.push(id);
+      } else if (type === 'Seniority') {
+        newSeniorityIds.push(id);
+      } else if (type === 'Designation') {
+        newDesignationIds.push(id);
+      }
+    });
+    
+    // Create the new profile entry
+    const res = {
+      departmentIds: newDepartmentIds,
+      seniorityIds: newSeniorityIds,
+      designationIds: newDesignationIds
+    };
+    
+    setProfileIds(prev => [...(prev || []), res]);
+    setDepartmentIds([]);
+    setSeniorityIds([]);
+    setDesignationIds([]);
+  }
+}, [isNew, allEntries]);
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -738,9 +847,13 @@ const stepsConfig =[
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings"
+    rankings: "rankings",
+    economicImpact: "economicImpact"
   };
+  const [shouldCallApi, setShouldCallApi] = useState(false);
+  
   const saveTrackerHandler = async () => {
+    // setIsNew(true);
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -763,9 +876,17 @@ const stepsConfig =[
     const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
       (acc, [key, mappedKey]) => {
         const value = getLocalFilterValue(key as any);
-       
-        
-        if (Array.isArray(value) && value.length > 0) {
+        if (["includeKeywords", "excludeKeywords"].includes(mappedKey)) {
+  const structuredVal = value
+    .split(",")
+    .map((item) => item.trim().replaceAll(" ", "_"))
+    .filter(Boolean); 
+
+  if (structuredVal.length > 0) {
+    acc[mappedKey] = structuredVal.join(",");
+  }
+}
+        else if (Array.isArray(value) && value.length > 0) {
           acc[mappedKey] = value;
         } else if (typeof value === "string" && value === "true") {
           acc[mappedKey] = value;
@@ -778,7 +899,65 @@ const stepsConfig =[
       {} as Record<string, any>
     );
     
-    
+  // For Designation IDs
+// Get the last group from allEntries (current entries)
+const currentEntries = allEntries?.[allEntries.length - 1] || [];
+
+// Extract IDs from current entries
+const currentDesignationIds = currentEntries
+  .filter(item => item.endsWith('_Designation'))
+  .map(item => item.split('_')[1]);
+
+const currentDepartmentIds = currentEntries
+  .filter(item => item.endsWith('_Department'))
+  .map(item => item.split('_')[1]);
+
+const currentSeniorityIds = currentEntries
+  .filter(item => item.endsWith('_Seniority'))
+  .map(item => item.split('_')[1]);
+
+// Combine with profileIds
+const flattendDesignationIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.designationIds || []).filter(Boolean) || []),
+    ...currentDesignationIds
+  ])
+);
+
+const flattendDepartmentIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.departmentIds || []).filter(Boolean) || []),
+    ...currentDepartmentIds
+  ])
+);
+
+const flattendSeniorityIds = Array.from(
+  new Set([
+    ...(profileIds?.flatMap(item => item.seniorityIds || []).filter(Boolean) || []),
+    ...currentSeniorityIds
+  ])
+);
+    // const updatedEntries = allEntries.map((entry)=>) 
+const shouldIncludeLogic = 
+  flattendDesignationIds?.length && 
+  (flattendDepartmentIds?.length || flattendSeniorityIds?.length);
+const jobComposite = {
+   ...(flattendDesignationIds?.length && { designationIds: flattendDesignationIds }),
+  ...(shouldIncludeLogic && { logic: "OR" }),
+  conditions: {
+    logic: "AND",
+    ...(flattendDepartmentIds?.length && { departmentIds: flattendDepartmentIds }),
+    ...(flattendSeniorityIds?.length && { seniorityIds: flattendSeniorityIds }),
+  },
+  "properties":{
+      "allEntries":allEntries[allEntries.length-1]?.length===0?allEntries.slice(0, allEntries.length-1):allEntries,
+  }
+}
+
+    // if(departmentIds?.length > 0 || seniorityIds?.length > 0){
+    if(type==="T_AUDIENCE_DEPT_PROFILE")
+      filterValues.jobComposite = JSON.stringify(jobComposite);
+    // }
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -800,12 +979,16 @@ const stepsConfig =[
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
+    if(eventSuggestion.length > 0) {
+      filterValues.eventIds = eventSuggestion.join(",");
+    }
     console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
+      ...(last==="create" && {source:isBrief?"brandBrief":collectionId?.length>0?"preset":"tracker"}),
       accessLevel: editData?.tracker?.accessLevel,
       filterValues
     };
@@ -813,8 +996,21 @@ const stepsConfig =[
     
 
       const secondLast = pathName[pathName.length - 2];
-     
+     if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || (allEntries && allEntries[0]?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -857,6 +1053,7 @@ const stepsConfig =[
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_AUDIENCE_DEPT_PROFILE" &&
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
@@ -873,9 +1070,12 @@ const stepsConfig =[
       }
       if (last === "editTracker") {
       try{
+        setIsCreating(true);
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
+        
         if (data) {
           if(data?.error){
+            
             // toast.error((data.error as ApiError).message, {
             //   position: "bottom-right",
             //   autoClose: 2000,
@@ -889,7 +1089,15 @@ const stepsConfig =[
             setIsCreating(false);
             return;
           }else{
-          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+            const query = {
+              show: (data as any).filterValues?.show?.join(','),
+              maturity: (filterValues?.maturity as unknown as string[]),
+              audienceSpread: (filterValues?.audienceSpread as unknown as string[]),
+              estimatedVisitorRangeTag: (filterValues?.estimatedVisitorRangeTag as unknown as string[]),
+            }
+            const showValues = getShowValues(query);
+            const showValuesParam = showValues ? `&showValues=${showValues}` : '';
+          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
           
          // setIsNewCall(true);
           }
@@ -897,14 +1105,27 @@ const stepsConfig =[
           // console.log(error);
           setIsCreating(false);
         }
-      }catch(error){
+      }catch(error){        
         // console.log(error);
         setIsCreating(false);
       }
     } else {
       // console.log(formData);
-      
+      if(trackerName.trim().length===0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }else if(type==="T_EVENT_PARTICIPATION" && (trackerName.length === 0 || eventSuggestion.length === 0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if(type==="T_AUDIENCE_DEPT_PROFILE" && (trackerName.length === 0 || (allEntries && allEntries[0]?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -942,7 +1163,8 @@ const stepsConfig =[
       }
        else if (
         type !== defaultType && 
-        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_PRODUCT_KEYWORDS" &&
+        type !== "T_AUDIENCE_DEPT_PROFILE" && 
         type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
@@ -970,7 +1192,15 @@ const stepsConfig =[
         if (data) { 
           setIsNewCall(true); 
           setTrackerId(data?.id);
-          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+          const query = {
+            show: (data as any).filterValues?.show?.join(','),
+            maturity: (filterValues?.maturity as unknown as string[]),
+            audienceSpread: (filterValues?.audienceSpread as unknown as string[]),
+            estimatedVisitorRangeTag: (filterValues?.estimatedVisitorRangeTag as unknown as string[]),
+          }
+          const showValues = getShowValues(query);
+          const showValuesParam = showValues ? `&showValues=${showValues}` : '';
+          router.replace(`/internal/trackers/${data?.id}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table${showValuesParam}`);
         }
       }catch(error){
         // console.log(error);
@@ -1018,8 +1248,7 @@ const stepsConfig =[
       setSuggestion(0);
     }
   }, [type]);
-  
-  useEffect(()=>{
+    useEffect(()=>{
     if(type === "T_PEOPLE_FINDER" && suggestion ===3){
       setSuggestions([]);
       const localData = localStorage.getItem("companySuggestion");
@@ -1044,7 +1273,8 @@ const stepsConfig =[
   }
 
   }, [type])
-  const [inc,setInc]=useState<String[]>([]);
+  
+   const [inc,setInc]=useState<String[]>([]);
   useEffect(() => {
     if (type === "T_PRODUCT_KEYWORDS" && suggestion===2) {
       const localData = localStorage.getItem("companySuggestion");
@@ -1074,12 +1304,36 @@ const stepsConfig =[
       setSuggestion(0);
     }
   }, [type]);
+ 
   useEffect(() => { 
     if(suggestion===2 && inc.length>0){
       setSuggestions([]);
       setLocalFilter("includeKeywords", inc?.join(","));
     }
   },[inc])
+  const processEntryGroups = (entryGroups: string[][]): UpdatedProfileData[] => {
+  return entryGroups.map(group => {
+    const profile: UpdatedProfileData = {
+      designationIds: [],
+      departmentIds: [],
+      seniorityIds: []
+    };
+
+    group.forEach(entry => {
+      const [value, id, type] = entry.split('_'); // Split each entry
+      
+      if (type === 'Designation') {
+        profile?.designationIds?.push(id);
+      } else if (type === 'Department') {
+        profile?.departmentIds?.push(id);
+      } else if (type === 'Seniority') {
+        profile?.seniorityIds?.push(id);
+      }
+    });
+
+    return profile;
+  });
+};
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
@@ -1118,6 +1372,23 @@ const stepsConfig =[
         }));
         setCustomData(presentCustomData);
       }
+      if(type==="T_AUDIENCE_DEPT_PROFILE"){
+        const updatedProfileData = JSON?.parse(editData?.filterValues?.jobComposite)
+        const updatedProfileIds = updatedProfileData?.designationIds?.map((id: string) => ({ designationIds: [id] })) || [];
+        const updatedProfileEntries=processEntryGroups(updatedProfileData?.properties?.allEntries)
+        const entriesWithEmpty = [
+  ...updatedProfileEntries,
+  { designationIds: [], departmentIds: [], seniorityIds: [] } // Empty entry
+];
+
+
+setProfileIds(entriesWithEmpty);
+const currentEntries = updatedProfileData?.properties?.allEntries || [];
+
+// Add an empty array at the end
+const entriesWithEmpty1 = [...currentEntries, []];
+        setAllEntries(entriesWithEmpty1);
+      }
       if (type === "T_PEOPLE_FINDER") {
         const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
           split(',');
@@ -1128,6 +1399,16 @@ const stepsConfig =[
           "Company Name": speakerOrgs[index]?.trim()
         }));
         setCustomData(presentCustomData);
+      }
+      if (type === "T_EVENT_PARTICIPATION") {
+        let updatedData: { "Search By Event Name": string }[] = [];
+        editData?.filterValues?.eventIdsFilter?.map((item: Record<string, Event>) => {
+          const event = Object.values(item)[0];
+          updatedData.push({ "Search By Event Name": `${event.basic.name}_${event?.basic?.eventLocation?.name}_${event?.basic?.eventLocation?.cityName}_${event?.basic?.eventLocation?.countryName}_${event?.basic?.eventLocation?.locationType}_${event.basic.startDateTime}_${event.basic.endDateTime} ` });
+        });
+        setEventSuggestion(editData?.filterValues?.eventIds);
+
+        setCustomData(updatedData);
       }
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
@@ -1163,7 +1444,6 @@ const stepsConfig =[
         return (eventType as { slug: string })?.slug;
       });
     console.log(eventTypes);
-    
     setLocalFilter("eventTypes",eventTypes.join(","))
     if (editData?.filterValues?.designations && typeof editData.filterValues.designations === 'object') {
       const slugs = Object.values(editData.filterValues.designations as Record<string, { name: string; slug: string }>)
@@ -1193,10 +1473,31 @@ const stepsConfig =[
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
     }
-    
+    if(searchParams.get("collectionId")){
+    fetchPresetJson();
+    }
   }, [editData, searchParams]);
+  // const [presetTemplateData1,setPresetTemplateData1]=useState();
+const fetchPresetJson = async () => {
+  try {
+    const data = {
+      trackerType: type,
+      presetId: searchParams.get("collectionId"),
+    };
 
-  // console.log(selectedLabels);
+    const result = await presetData(data);
+    
+    if (result?.count > 0) {
+      // setPresetTemplateData(result?.trackers);
+      handlePresetClick(result?.trackers?.[0], `${result?.trackers?.[0]?.id}`, type || "", result?.trackers?.[0]?.name)
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
@@ -1222,7 +1523,7 @@ const stepsConfig =[
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && type !== "T_EVENT_PARTICIPATION" && type !== "T_AUDIENCE_DEPT_PROFILE") {
       addNew();
     }
   }
@@ -1245,6 +1546,7 @@ const stepsConfig =[
     }));
   };
   const [valid,setValid]=useState(true);
+  
   const addNew = () => {
     setHideSuggestion(false);
     if (!template) {
@@ -1255,31 +1557,33 @@ const stepsConfig =[
     let isValid = true;
     let isPresent = false;
     if(template.type==="enabled"){
-    if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
+    if (template && template.inputAreas) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
-        const value = inputValues[index];
-        if (inputArea.placeholder === 'Add Competitor Name or Website') {
-          //if (regex.test(value.trim())) {
-            acc[inputArea.placeholder] = value;
-            isPresent=customData.some((item) => {
-              return Object.values(item).includes(value.trim()); 
-            });
-          // } 
-          // else {
-          //   isValid = false;
-          // }
-        } else {
-          if (value !== null && value.trim() !== '') {
-            acc[inputArea.placeholder] = value;
-          } else {   
-            isValid = false;
-            setValid(false);
-          }
-        }
-        return acc;
-      }, {});
+  const value = inputValues[index];
+  
+  if (inputArea.placeholder === 'Add Competitor Name or Website') {
+    acc[inputArea.placeholder] = value;
+    isPresent = customData.some((item) =>
+      Object.values(item).includes(value.trim())
+    );
+  } else {
+    if (inputArea.required) {
+      if (value!==undefined && value !== null && value?.trim() !== '') {
+        acc[inputArea.placeholder] = value;
+      } else {
+        isValid = false;
+        setValid(false);
+      }
+    } else {
+      acc[inputArea.placeholder] = value?.trim() || "";
+    }
+  }
 
-      if (isValid && template?.type === "enabled" && !isPresent) {
+  return acc;
+}, {});
+
+
+ if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
           newEntry,
           ...prevData,
@@ -1304,32 +1608,112 @@ const stepsConfig =[
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
   };
-useEffect(()=>{
-  if(valid===false) setValid(true);
-  if(isMandatory) setIsMandatory(false);
-},[inputValues])
-const [selected,setSelected]=useState(false);
-const addCompany = (id:number,val: any) => {
-  setSelected(true);
-  if(!Array.isArray(val)){
-  setInputValues(prevValues => ({
-    ...prevValues,
-    [0]: val
-  }));  
-  }else{
-    setInputValues(val);
-  }
+  useEffect(() => {
+    if (valid === false) setValid(true);
+    if (isMandatory) setIsMandatory(false);
+  }, [inputValues])
+  const [selected, setSelected] = useState(false);
+  const [designationIds, setDesignationIds] = useState<string[]>([]);
+  const [departmentIds, setDepartmentIds]=useState<string[]>([]);
+   const [seniorityIds, setSeniorityIds]=useState<string[]>([]);
+   const [suggestionIds,setSuggestionIds]=useState<string[]>([]);
+   
+  const addCompany = (id: number, val: any, ind:number) => {
+    if (type === "T_EVENT_PARTICIPATION") {
+      setSuggestionIds((prev: string[]) => {
+        const alreadyExists = prev.find(entry => entry === id.toString())
+
+        if (alreadyExists) {
+          setInputValues({});
+          return prev;
+        } else {
+          setEventSuggestion(prev=>[...prev, id.toString()]);
+          setInputValues(prevValues => ({
+            ...prevValues,
+            [0]: val
+          }));
+          return [...prev, id.toString()];
+        }
+      });
+    }
+    else if (type === "T_AUDIENCE_DEPT_PROFILE") {
+setSuggestionIds((prev: string[]) => {
+  const sanitizedVal = val.split('_')[0]; // Remove ID if already present
+  const newEntry = `${sanitizedVal}_${id}_${ind === 0 ? 'Designation' : ind === 1 ? 'Seniority' : 'Department'}`;
+
+  setAllEntries(prevEntries => {
+    const updated = [...(prevEntries || [])];
+
+    // Initialize if empty
+    if (updated.length === 0) return [[newEntry]];
+
+    const lastGroupIndex = updated.length - 1;
+    const lastGroup = [...updated[lastGroupIndex]];
+    const hasIdInCurrentGroup = lastGroup.some(item => {
+      const parts = item.split('_');
+      return parts[1] === id.toString();
+    });
+
+    if (hasIdInCurrentGroup) {
+      setInputValues({});
+      return updated;
+    }
+    lastGroup.push(newEntry);
+    updated[lastGroupIndex] = lastGroup;
+    return updated;
+  });
+  setInputValues(prev => ({ ...prev, [ind]: sanitizedVal }));
+
+  return [...prev, id.toString()];
+});
+
 }
-useEffect(()=>{
-  if(selected) {
-    addNew();
-    setSelected(false);
+
+    
+    else {
+      if (!Array.isArray(val)) {
+        setInputValues(prevValues => ({
+          ...prevValues,
+          [0]: val
+        }));
+      } else {
+        setInputValues(val);
+      }
+    }
+    setSelected(true);
   }
-},[selected])
-const [isDiv,setIsDiv]=useState(false);
-useEffect(()=>{
-  if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
-}, [type])
+  useEffect(() => {
+  
+    const finalSeniroityIds = seniorityIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setSeniorityIds(finalSeniroityIds);
+const finalDepartmentIds = departmentIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDepartmentIds(finalDepartmentIds);
+const finalDesignationIds = designationIds.filter(
+  (item) => suggestionIds.includes(item)
+);
+setDesignationIds(finalDesignationIds);
+const finalEventSuggestion = eventSuggestion.filter(
+  (item) => suggestionIds.includes(item)
+);
+setEventSuggestion(finalEventSuggestion);
+
+  },[suggestionIds])
+ 
+  
+  useEffect(() => {
+    if (selected) {
+      addNew();
+      setSelected(false);
+    }
+  }, [selected])
+  const [isDiv, setIsDiv] = useState(false);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS") setIsDiv(true);
+  }, [type])
 
   const handleCustomData = (data: any) => {
     setHideSuggestion(true);
@@ -1367,7 +1751,7 @@ useEffect(()=>{
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
-console.log(type);
+
 const [del, setDel] = useState(false);
 const closeShareModal = () => {
   setDel(false);
@@ -1393,10 +1777,27 @@ const handleShowTemplate=()=>{
     scrollablePresetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
+  useEffect(() => {
+    const count = template?.inputAreas?.length || 0;
+    inputRefs.current = new Array(count).fill(null);
+    setInputFocus(new Array(count).fill(false));
+  }, [template?.inputAreas]);
+const handleOptionSelected = (index: number) => {
+    inputRefs.current[index]?.blur();
+    
+    setInputFocus(prev => prev.map((_, i) => i === index ? false : false));
+    setTimeout(() => {
+  const activeElement = document.activeElement as HTMLElement | null;
+  if (activeElement?.blur) {
+    activeElement.blur();
+  }
+}, 10);
+  };
+  
 if(isLoading) return <Loading/>
-console.log(refs);
 
-return (
+
+ return (
   <>
   {steps?.length > 0 && (
             <JoyRideCustom
@@ -1407,7 +1808,6 @@ return (
           />
           )}
   <div className="w-full md:flex md:items-center md:justify-center">
-
   <div className="w-full md:w-[calc(100vw-134px)] min-h-[79vh] md:min-h-full">
   <div className="flex mt-6 justify-between md:hidden px-6">
   {last==="create"?
@@ -1420,7 +1820,7 @@ return (
       }
       style={{ display: "flex" }}
     >
-      <div className="flex gap-0.5 items-center text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">
+      <div className="flex gap-0.5 items-center text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={()=>setIsBrief(false)}>
       <ArrowLeft width={14} height={18}/>
         Back</div>
       </Link>:
@@ -1428,7 +1828,9 @@ return (
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>
+        {!isCreating?"Save":"Saving..."}
+      </Button>
   </div>
   <div className="flex md:hidden flex-col gap-2 px-6 py-6 mt-3 bg-[var(--background-secondary-color)]">
     <div>{template?.templateName}</div>
@@ -1437,7 +1839,7 @@ return (
       className={`p-2 bg-background border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[90%]":"w-full"}`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1473,7 +1875,7 @@ return (
       <div>
         <div className="text-[var(--primary-color)] font-bold text-lg">{last==="editTracker"?"Edit":"Create"} {template && <span>{template.templateName}</span>} Tracker</div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          Select from the available data filters to {last==="editTracker"?"edit":"create"} a tracker
+          {template?.description}
         </div>
       </div>
     </div>
@@ -1504,13 +1906,13 @@ return (
       }
       style={{ display: "flex" }}
     >
-      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={()=>setIsBrief(false)}>Cancel</Button>
       </Link>:
       <div className={styles.containerTopRightTwo} >
       <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
       }
-      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
+      <Button className="text-white w-[100px]" disabled={isCreating} onClick={saveTrackerHandler}>{!isCreating?"Save":"Saving..."}</Button>
     </div>
     </div>
   </div>
@@ -1519,7 +1921,7 @@ return (
     {/* <div> */}
     <div className={`flex relative ${!isCollapsed? "gap-4":""}`}>
     {isCollapsed && (
-        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 overflow-hidden`}>
+        <div className={`${!isCollapsed ? "fixed":"absolute"} left-[0%] top-[4px] z-30 w-[40px]`}>
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
@@ -1543,7 +1945,7 @@ return (
       className={`p-2 border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)] ${isCollapsed?"w-[calc(100vw-175px)]":"w-full"} hidden md:block`}
       style={{
         border:
-          isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+          isMandatory && trackerName.trim().length === 0 ? "1px solid var(--danger-text-color)" : "",
       }}
     >
       <input
@@ -1562,7 +1964,7 @@ return (
     </div>}
     {(isEventeli && type!=="T_CUSTOM")&&
     <TeliTemplates type={type} isMandatory={isMandatory} refs={refs}/>}
-    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
+    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS" || type === "T_EVENT_PARTICIPATIONS") &&
     <div className="flex gap-4 flex-col w-full">
       <div className={`!hidden md:!flex card ${styles.competitor}`} ref={!isMobile ? refs.templateRef : null}>
         {/* <div className={styles.competitorHead}>
@@ -1574,28 +1976,79 @@ return (
         <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)] justify-between w-full" style={{fontSize:"var(--font-size-small)"}}>
           <div className="flex items-center">
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
-          {" "} Please upload or manually enter the information
+          {" "} {`Please ${template?.isUploadEnable ?"upload or":""} manually enter the information`}
           </div>
+          {template?.isUploadEnable && 
           <div className="flex gap-1">
           
-          <Button
-                    variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    onClick={handleShowTemplate}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <LayoutGrid height="15px" width="15px" />
-                    {" "}Pre-sets
-          </Button>
-          <Button
-                  variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
-                    // size="sm"
-                    onClick={handleUploadEnable}
-                      disabled={!template?.isUploadEnable}
-                  >
-                    <Share height="15px" width="15px" />
-                    {" "}Upload
-          </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 h-9"
+                             onClick={handleShowTemplate}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <LayoutGrid height="15px" width="15px" />
+                                     {" "}Collections
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
+                           <Button
+                             variant="outline" className="flex items-center gap-1 text-[var(--primary-color)] hover:text-[var(--primary-color)] h-9"
+                             // size="sm"
+                             onClick={handleUploadEnable}
+                           // disabled={!template?.isUploadEnable}
+                           >
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger>
+                                   <Badge
+                                     variant="outline"
+                                     className="capitalize py-1 rounded-sm border-none px-0 text-[var(--primary-color)] hover:text-[var(--primary-color)] gap-1"
+                                   >
+                                     <Share height="15px" width="15px" />
+                                     {" "}Upload
+                                   </Badge>
+                                 </TooltipTrigger>
+                                 {!template?.isUploadEnable &&
+                                   <TooltipContent
+                                     align="center"
+                                     alignOffset={-50}
+                                     className="tooltip-content-styles"
+                                   >
+                                     <p className="text-[var(--secondary-text-color)] font-medium">
+                                       Coming soon
+                                     </p>
+                                   </TooltipContent>
+                                 }
+
+                               </Tooltip>
+                             </TooltipProvider>
+
+                           </Button>
           </div>
+          }
+          
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
@@ -1616,21 +2069,39 @@ return (
                 {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
-                      <>
+                      
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
+                            onFocus={() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              inputRefs.current[index]?.blur();
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -1647,20 +2118,22 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {((type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && !isMobile) &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
-
-                      </>
                     ))}
-                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
+                    {(type!=="T_EVENT_PARTICIPATION" && type!=="T_AUDIENCE_DEPT_PROFILE") &&
+                    <div onClick={() => (template?.type === "enabled" && type!=="T_EVENT_PARTICIPATION") && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
-
+                    }
+                    {type==="T_AUDIENCE_DEPT_PROFILE"&&
+                    <div className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-sm" onClick={()=>setIsNew(true)}>OR</div>}
                   </div>
+
                 }
                   {/* {customData.map((item:any, index:number) => (
     // <div key={index} className={styles.customDataOuterDiv}>
@@ -1685,7 +2158,7 @@ return (
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -1800,6 +2273,8 @@ return (
           />
           ) : (
             <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             <Image
               src={trackerEmptyTable}
               alt="table"
@@ -1809,8 +2284,6 @@ return (
                 justifyContent: "center",
               }}
             />
-            <div className={styles.emptyTableText}>No data added</div>
-            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             
           </div>
   )}
@@ -1825,6 +2298,12 @@ return (
             presetName={selectedPresetName}
           />:
           <div className={`pt-12 ${styles.emptyTableData}`}>
+            <div className = "flex flex-col">
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+            Please upload or manually enter the information
+            </div>
+          </div>
          <Image
            src={trackerEmptyTable}
            alt="table"
@@ -1834,20 +2313,28 @@ return (
              justifyContent: "center",
            }}
          />
-         <div className={styles.emptyTableText}>No data added</div>
-         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+         
        </div>
         }
         </TabsContent>
       </Tabs>
         }
        {type !== "T_PRODUCT_KEYWORDS" && 
-  (customData && customData.length > 0 ? (
+  (((customData && customData?.length > 0) || (Array.isArray(allEntries?.[0]) && allEntries?.[0]?.length>0)) ? (
     <>
-    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} setEventSuggestion={setSuggestionIds} eventSuggestion={suggestionIds} type={type || ""} isNew={isNew} setIsNew={setIsNew} profileIds={profileIds} setProfileIds={setProfileIds} allEntries={allEntries}
+          setAllEntries={setAllEntries}/>
     </>
   ) : (
     <div className={styles.emptyTableData}>
+      <div className = "flex flex-col">
+      <div className = "flex flex-col">
+      <div className={styles.emptyTableText}>No data added</div>
+      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+        {`Please ${template?.isUploadEnable?"upload or":""} manually enter the information`}
+      </div>
+      </div>
+      </div>
       <Image
         src={trackerEmptyTable}
         alt="table"
@@ -1857,10 +2344,6 @@ return (
           justifyContent: "center",
         }}
       />
-      <div className={styles.emptyTableText}>No data added</div>
-      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
-        Please upload or manually enter the information
-      </div>
     </div>
   ))
 }
@@ -1876,7 +2359,7 @@ return (
   {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY", "T_PEOPLE_FINDER"].includes(type)) &&
     <div className="border-t pt-4 mt-2 hidden md:block" ref={scrollablePresetRef}>
       <div ref={!isMobile?refs.presetRef: null} className="flex items-center justify-between mb-4">
-        <Presets template={template} handlePresetClick={handlePresetClick}/> 
+        <PrivatePresets template={template} handlePresetClick={handlePresetClick}/> 
         </div>
     </div>
       }
@@ -1884,8 +2367,8 @@ return (
   
   </div>
   {type!=="T_CUSTOM"&&
-  <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
- {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80vh]`}>
+  <div className={`${isMobile? "block":"hidden"} w-full sticky bottom-0 bg-background z-10`}>
+ {(!showTemplate && !showFilters) && <div className={`card ${styles.competitor} max-h-[80dvh]`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
           {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -1899,8 +2382,8 @@ return (
           </div>
           <div className="flex gap-1.5">
           {!isEventeli &&
-          <div ref={isMobile?refs.presetRef:null}>
-          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)}>
+          <div ref={(isMobile && template?.isUploadEnable)?refs.presetRef:null}>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] p-2" onClick={()=>setShowTemplate(true)} disabled={!template?.isUploadEnable}>
           <LayoutGrid className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors"/>
           </Button>
           </div>
@@ -1942,19 +2425,35 @@ return (
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
                         <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                          {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                          {type === "T_EVENT_PARTICIPATION" && inputArea.img && inputArea.img}
+                          {(inputArea.img && type!=="T_EVENT_PARTICIPATION") && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                           <input
                             className={styles.textArea}
                             type="text"
-                            placeholder={inputArea.placeholder}
+                            placeholder={inputArea.placeholder==="Designation"?"Profile":inputArea.placeholder}
                             value={inputValues[index] || ''}
                             onChange={(e) => handleInput(index, e.target.value)}
                             onKeyPress={handleKeyDown}
+                            onFocus={() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = true;
+                              setInputFocus(newFocus);
+                            }}
+                            onBlur={() => {
+                              // setTimeout(() => {
+                              const newFocus = [...inputFocus];
+                              newFocus[index] = false;
+                              setInputFocus(newFocus);
+                              // }, 200);
+                            }}
+                            ref={el => {
+                              inputRefs.current[index] = el;
+                            }}
                           />
-                           {(eventSearchLoader && inputValues[0]?.length>0)? (
+                           {(eventSearchLoader && inputValues[index]?.length>0)? (
                     <div className={styles.loader}></div>
                     ) : (
-                      inputValues[0]?.length > 0 ? (
+                      inputValues[index]?.length > 0 ? (
                       <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
                       ...prevValues,
                       [index]: ""
@@ -1971,18 +2470,25 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
+        {((type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING" || type === "T_EVENT_PARTICIPATION" || type==="T_AUDIENCE_DEPT_PROFILE") && isMobile ) &&
+         <SearchBar searchInput={inputValues[index]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type === "T_BRAND_BUILDING" ? 'suggestions/designations' : type === "T_EVENT_PARTICIPATION" ? 'events' : type==="T_COMPETITOR"?'suggestions/companies':''} type={type} index={index} isFocused={inputFocus[index]}  onOptionSelected={() => handleOptionSelected(index)}/>
         }
                         </div>
 
                       </>
                     ))}
+                    {type!=="T_AUDIENCE_DEPT_PROFILE" &&
                     <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
                       style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >Add
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
-                    </div>
+                    </div>}
+                    {type==="T_AUDIENCE_DEPT_PROFILE" &&
+                    <div onClick={() => template?.type === "enabled" && setIsNew(true)} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg justify-center"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    >OR
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
+                    </div>}
                     {/* <div className="flex items-center w-full gap-2">
                     <div className="flex-1 h-px bg-gray-400"></div>
                     <span className="font-semibold">OR</span>
@@ -2014,7 +2520,7 @@ return (
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                     {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item, ind)} >{generateDynamicString(item)}</div>
                     ))} 
                 </div>
               </div>
@@ -2083,7 +2589,7 @@ return (
   </div>} 
     
     {showFilters && 
-    <div className={`card ${styles.competitor} max-h-[80vh] overflow-scroll`}>
+    <div className={`card ${styles.competitor} max-h-[80dvh] overflow-scroll`}>
     <FilterContent
     source="tracker"
     type={"events"}
@@ -2095,8 +2601,8 @@ return (
   </div>
     }
     {showTemplate &&
-    <div className={`card ${styles.competitor} max-h-[80vh]`}>
-      <Presets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
+    <div className={`card ${styles.competitor} max-h-[80dvh]`}>
+      <PrivatePresets template={template} handlePresetClick={handlePresetClick} setShowTemplate={setShowTemplate}/>
     </div>
     }
   </div>
@@ -2129,8 +2635,7 @@ return (
 
             )}
   </div>
-  </>
+ </>
 );
-};
-
-export default Pages;
+ };
+ export default Pages;

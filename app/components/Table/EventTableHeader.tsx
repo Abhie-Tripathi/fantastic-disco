@@ -4,18 +4,29 @@ import { Show } from "@/types/events/dto/event-query.dto";
 import { Filters } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
+import { showValues } from "@/constants/filters";
 interface EventTableHeaderProps {
   show: Show[];
   type?: string;
   view?: string;
-  localFilters: Filters;
+  localFilters?: Filters;
+  locationIds?: string[]
+  trackerMaturity?: string[];
+  source?:string;
+  trackerAudienceSpread?: string[];
+  trackerEstimatedVisitorRangeTag?: string[];
 }
 
 export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   show,
   type,
   view,
+  locationIds,
   localFilters,
+  trackerMaturity,
+  source,
+  trackerAudienceSpread,
+  trackerEstimatedVisitorRangeTag
 }) => {
   const { getFilterValue } = useFilterState();
   const maturity = getFilterValue("maturity");
@@ -29,9 +40,16 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
     .filter(Boolean);
   const audienceSpread = getFilterValue("audienceSpread")
     .split(",")
-    .filter(Boolean);
+    .filter(Boolean).length || trackerAudienceSpread
+
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+
+  const estimatedVisitorRangeTag = getFilterValue("estimatedVisitorRangeTag").split(",").filter(Boolean).length || trackerEstimatedVisitorRangeTag;
+
+  const showHolidayScore =
+    (getFilterValue("eventTypes") === "holiday" || (view == "unattended")) &&
+    (getFilterValue("locationIds").split(",").filter(Boolean).length == 1 || locationIds?.length == 1);
 
   return (
     <TableHeader>
@@ -50,6 +68,12 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Venue</div>
         </TableHead>
+       {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Business Score</div>
+        </TableHead>}
+        {showHolidayScore && <TableHead className="min-w-[150px] h-10">
+          <div className="font-medium text-foreground ">Social Score</div>
+        </TableHead>}
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">City</div>
         </TableHead>
@@ -62,11 +86,11 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
-
+{estimatedVisitorRangeTag &&
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
-        </TableHead>
-        {(
+        </TableHead>}
+        {
           <>
             {show.includes(Show.estimatedExhibitors) && (
               <TableHead className="min-w-[132px] h-10">
@@ -113,7 +137,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
 
-            {maturity && (
+            {(maturity || trackerMaturity) && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Maturity</div>
               </TableHead>
@@ -149,37 +173,48 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                 </div>
               </TableHead>
             )}
-            {audienceSpread.length > 0 && (
+            {audienceSpread && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
-                  Audience Spread
+                  Audience Country
                 </div>
               </TableHead>
             )}
           </>
-        )}
+        }
+        {(type === "T_AUDIENCE_DEPT_PROFILE" && view!=="bookmarked") &&
+             <TableHead
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
+                style={{ zIndex: 0 }}
+              >
+                <div className="font-medium text-foreground text-center">
+                  Matched
+                </div>
+              </TableHead>}
         {!isEventeli &&
           type &&
           type !== "T_CUSTOM" &&
+          type !== "T_EVENT_PARTICIPATION" &&
+          type !== "T_AUDIENCE_DEPT_PROFILE" &&
           view !== "bookmarked" && (
             <>
               <TableHead
-                className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[200px]":"right-[32px]"} z-40 h-12 bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">
                   Matched
                 </div>
               </TableHead>
-
+              {source!=="public" &&
               <TableHead
-                className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]"
+                className={`sticky ${source!=="public"?"right-[68px]":"right-[32px]"} z-40 h-12 w-[150px] bg-[var(--heading-background-color)]`}
                 style={{ zIndex: 0 }}
               >
                 <div className="font-medium text-foreground text-center">
                   Score
                 </div>
-              </TableHead>
+              </TableHead>}
               <TableHead
                 className="sticky right-0 bg-[var(--heading-background-color)]/50 z-40 h-12"
                 style={{ zIndex: 0 }}

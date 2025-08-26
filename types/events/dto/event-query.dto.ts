@@ -525,6 +525,7 @@ export const QueryFilter = z.object({
   groupBy: z.string().optional(),
   limit: z.number().optional(),
   offset: z.number().optional(),
+  showValues: z.string().optional(),
 });
 
 export const FilterNames = Object.keys(QueryFilter.shape);

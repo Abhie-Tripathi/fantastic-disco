@@ -37,8 +37,8 @@ const MapStyle = {
 };
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/arts.png",
-  community: "/eventType/community.png",
+  "stage-performance": "/eventType/arts.png",
+  "community-group": "/eventType/community.png",
   concert: "/eventType/concert.png",
   conferences: "/eventType/conference.png",
   festival: "/eventType/festival.png",

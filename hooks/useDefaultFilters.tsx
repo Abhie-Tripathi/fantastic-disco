@@ -27,7 +27,7 @@ export function useDefaultFilters() {
     ? [...EVENT_TYPE_GROUPS.Social, ...EVENT_TYPE_GROUPS.Business]
     : Object.values(EVENT_TYPE_GROUPS.Business);
   const defaultTrendsParams = {
-    locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
+    // locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
     viewBound: {
       boundType: "point",
       coordinates: {
@@ -50,7 +50,7 @@ export function useDefaultFilters() {
       .toISOString()
       .split("T")[0], // Ending date of current month going on.
     eventTypes: allowedEventTypes, // Event Types according to the platform.
-    categories: "technology,medical-pharma",
+    // categories: "technology,medical-pharma",
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
@@ -211,10 +211,10 @@ export function useDefaultFilters() {
    * 3. **Default Filters:** If parameters are not found in recent search filters, it falls back to default filters.
    */
   const generateTrendsParams = (
-    params: URLSearchParams,
+    params?: URLSearchParams,
     recentFilterParams?: any
   ) => {
-    const trendsParams = new URLSearchParams(params);
+    const trendsParams = new URLSearchParams();
     const eventTypesParams = trendsParams.get("eventTypes");
     const locationIdsParams = trendsParams.get("locationIds");
     const viewBoundParams = trendsParams.get("viewBound");
@@ -271,13 +271,13 @@ export function useDefaultFilters() {
         recentSearchEventTypesArray) ||
       defaultTrendsParams.eventTypes;
     // Determine location IDs based on priority.
-    const locationIds =
-      locationIdsParams ||
-      (recentFilterParams &&
-        recentFilterParams.locationIds &&
-        recentFilterParams.locationIds !== "" &&
-        recentFilterParams.locationIds) ||
-      defaultTrendsParams.locationIds;
+    // const locationIds =
+    //   locationIdsParams ||
+    //   (recentFilterParams &&
+    //     recentFilterParams.locationIds &&
+    //     recentFilterParams.locationIds !== "" &&
+    //     recentFilterParams.locationIds) ||
+    //   defaultTrendsParams.locationIds;
 
     const viewBound =
       viewBoundParams ||
@@ -345,21 +345,21 @@ export function useDefaultFilters() {
       if (viewBoundParams) {
         trendsParams.set("viewBound", viewBound);
       }
-      if (locationIdsParams) {
-        trendsParams.set("locationIds", locationIds);
-      }
+      // if (locationIdsParams) {
+      //   trendsParams.set("locationIds", locationIds);
+      // }
     }
-    if (!viewBoundParams && !locationIdsParams) {
-      trendsParams.set("locationIds", locationIds);
-    }
+    // if (!viewBoundParams && !locationIdsParams) {
+    //   trendsParams.set("locationIds", locationIds);
+    // }
     trendsParams.delete("viewBound");
     trendsParams.delete("show");
     trendsParams.delete("eventIds");
     trendsParams.set("eventTypes", defaultTrendsParams.eventTypes.join(","));
     trendsParams.set("active_gte", defaultTrendsParams.active_gte);
     trendsParams.set("active_lte", defaultTrendsParams.active_lte);
-    trendsParams.set("locationIds", defaultTrendsParams.locationIds);
-    trendsParams.set("categories", defaultTrendsParams.categories);
+    // trendsParams.set("locationIds", defaultTrendsParams.locationIds);
+    // trendsParams.set("categories", defaultTrendsParams.categories);
 
     return trendsParams;
   };
@@ -399,7 +399,7 @@ export function useDefaultFilters() {
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
         });
-        const trendsParams = generateTrendsParams(params);
+        const trendsParams = generateTrendsParams();
 
         if (
           pathName.split("/").includes("search") ||
@@ -658,8 +658,8 @@ export function useDefaultFilters() {
     if (pathName.split("/").includes("trends")) {
       defaultSearchParams.set("active_lte", defaultTrendsParams.active_lte);
       defaultSearchParams.set("active_gte", defaultTrendsParams.active_gte);
-      defaultSearchParams.set("locationIds", defaultTrendsParams.locationIds);
-      defaultSearchParams.set("categories", defaultTrendsParams.categories);
+      // defaultSearchParams.set("locationIds", defaultTrendsParams.locationIds);
+      // defaultSearchParams.set("categories", defaultTrendsParams.categories);
       defaultSearchParams.set("columns", "eventCount");
       const newUrl = `${pathName}?${defaultSearchParams.toString()}`;
       router.replace(newUrl);

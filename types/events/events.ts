@@ -104,6 +104,14 @@ const BasicEventSchema = z.object({
       slug: z.string(),
     })
   ),
+  jobComposite: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      role: z.string(),
+      department: z.string(),
+    })
+  ),
   designations: z.array(
     z.object({
       id: z.string(),
@@ -147,6 +155,7 @@ const BasicEventSchema = z.object({
     .object({
       id: z.string(),
       name: z.string(),
+      prospectId: z.string(),
       website: z.string(),
       logoUrl: z.string().nullable(),
       location: z.object({
@@ -264,7 +273,8 @@ export type Country = z.infer<typeof CountrySchema>;
 export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
-export type TTabs = "overview" | "insights" | "audience";
+export type TTabs = "overview" | "insights" | "audience" | "notes" | "teamRequest";
+export type DetailPageView = "research" | "coordinate" | "outreach";
 export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
 

@@ -59,9 +59,10 @@ export const useEventsService = () => {
     return response;
   };
 
-  const getEventDetailById = async (id: string) => {
+  const getEventDetailById = async (id: string, advancedDetails=false) => {
     return api.request<Event>(`${endpoints.event.eventDetailById}/${id}`, {
       method: "GET",
+      params: advancedDetails ? {showValues: "basic,advance,insights,audience"} : {}
     });
   };
 

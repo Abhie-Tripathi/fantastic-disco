@@ -41,6 +41,7 @@ export default function AudienceZoneSatusSelector() {
       </div>
       <Switch
         id="forecasted-status"
+        className="mr-6"
         checked={isEnabled}
         onCheckedChange={handleToggle}
       />

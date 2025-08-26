@@ -139,6 +139,7 @@ export interface Filters {
   filter?: string;
   compare_from?: string;
   compare_to?: string;
+  upcomingEvents?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -188,21 +189,35 @@ type FilterContextType = {
     newKey: keyof Filters,
     newValue: string
   ) => void;
-  enabledFilters: EventFilterData | null;
+  enabledFilters: {filter: EventFilterData} | null;
   showFetchedData: any;
   setShowFetchedData: (val: boolean) => void;
   isTentimesUser: boolean;
+  filterEmptyValues: (filters: Filters) => Filters;
+  isBrief: boolean;
+  setIsBrief: (val: boolean) => void;
 };
-const isTentimesUser = false;
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+useEffect(() => {
+      const userData = window?.localStorage?.getItem("user");
+      if (userData)
+      setUser(JSON.parse(userData))
+  }, []);
+const showIntel=["8ff71105-9920-4939-954f-d1ffdedc2353","dc406cc7-0798-4765-aa82-d0bfe90b4d1f", "0dfa64aa-20d2-414c-a1cb-c6466516a862","af8d2900-5ab2-47dd-abea-e3046786b47b","e45e37da-1b05-421e-9147-ead4826c4dae","ab1d45c5-061f-495c-bdb2-053ae35aaab7","f534d5da-b12a-452a-bed3-d1279deada1c","1a3302dc-6fe6-47bb-8a98-0e5f479bc7b0","e29e0189-cd80-4461-a1ec-ddaf599d4eea","06e760f7-ebd3-499b-8d32-716ca0e6619d","a6995a90-d54e-4fcf-bad2-1ed910fbcb9e","18ae0837-2661-40b0-853b-58644a497a57","790bd639-0cfc-49b8-bad4-6a3a3185b8f4"];
+const isTentimesUser = useMemo(() => {
+    
+    return showIntel.includes(user?.id);
+  }, [user]);
   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
+  const [isBrief, setIsBrief] = useState<boolean>(false);
   const [showFetchedData, setShowFetchedData] = useState(false);
   const { searchParams } = useFilterState();
   const [suggestion, setSuggestion] = useState<number>(0);
@@ -502,6 +517,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteMultipleLocalFilters,
       replaceLocalFilter,
       isTentimesUser,
+      filterEmptyValues,
+      isBrief,
+      setIsBrief
     }),
     [
       isTentimesUser,
@@ -519,6 +537,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteMultipleLocalFilters,
       replaceLocalFilter,
       searchParams,
+      filterEmptyValues,
+      isBrief,
+      setIsBrief
     ]
   );
 

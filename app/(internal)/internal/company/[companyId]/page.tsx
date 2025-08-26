@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Buildings,
@@ -32,6 +32,8 @@ import { useCompanyService } from "@/services/companyService";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/ui/Loading";
 import { CompanyDetailResponse } from "@/types/prospect";
+import { useToast } from "@/hooks/use-toast";
+import { ApiError } from "@/types/api";
 
 const excludedTags = [
   "Core CRM",
@@ -70,7 +72,9 @@ const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   // const referrer = document.referrer;
   const router = useRouter();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const tabs = [
     { tabName: "Overview", path: "overview" },
     { tabName: "Events", path: "insights" },
@@ -111,14 +115,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         getCompanyEvents(params.companyId, "past"),
         getCompanyPOC(params.companyId),
       ]);
+      
+      // Log any failed requests for debugging
+      if (upcomingEvents.status === "rejected") {
+        console.warn("Failed to fetch upcoming events:", upcomingEvents.reason);
+      }
+      if (pastEvents.status === "rejected") {
+        console.warn("Failed to fetch past events:", pastEvents.reason);
+      }
+      
       const companyResponse =
         companyDataResult.status === "fulfilled"
           ? companyDataResult.value
           : null;
       const upcomingEventRes =
-        upcomingEvents.status === "fulfilled" ? upcomingEvents.value : null;
+        upcomingEvents.status === "fulfilled" ? upcomingEvents.value : { events: [], count: 0 };
       const pastEventRes =
-        pastEvents.status === "fulfilled" ? pastEvents.value : null;
+        pastEvents.status === "fulfilled" ? pastEvents.value : { events: [], count: 0 };
       const eventPOCData =
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
@@ -143,13 +156,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       }
       return {
         companyDetails: companyResponse?.companyData,
-        upcomingEventsCount: upcomingEventRes.count,
-        upcomingEventsData: upcomingEventRes.events || [],
-        pastEventsCount: pastEventRes.count,
-        pastEventsData: pastEventRes.events || [],
+        upcomingEventsCount: upcomingEventRes?.count || 0,
+        upcomingEventsData: upcomingEventRes?.events || [],
+        pastEventsCount: pastEventRes?.count || 0,
+        pastEventsData: pastEventRes?.events || [],
       };
     },
   });
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (window.history.length > 1) {
+        setShowBackToSearch(true);
+      } else {
+        setShowBackToSearch(false);
+      }
+    }
+  }, []);
 
   if (isFetching) {
     return (
@@ -197,8 +220,25 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           )
         );
       }
+      toast({
+        title: "Success",
+        description: "Contact details unlocked successfully",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+      
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 0 } : poc
+        )
+      );
+
+      toast({
+        title: "Error",
+        description: (error as ApiError).message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -223,15 +263,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button
-          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span className="text-[var(--primary-color)] font-medium">
-            Back to Search
-          </span>
-        </button>
+        {showBackToSearch && (
+          <button
+            className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft width="14px" height="14px" color="#6750A4" />
+            <span className="text-[var(--primary-color)] font-medium">
+              Back to Search
+            </span>
+          </button>
+        )}
 
         {compLogo !== null && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
@@ -410,15 +452,14 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                   return (
                     <div key={id} className="flex flex-row gap-3 p-2">
                       <img
-                        src={
-                          profilePicture
-                            ? profilePicture
-                            : `https://img.10times.com/userimages/${name
-                                .charAt(0)
-                                .toLowerCase()}.jpg`
-                        }
-                        alt="POC Logo"
-                        className="rounded-lg shadow-md h-10 w-10"
+                        src={profilePicture || (name && `https://img.10times.com/userimages/${name?.charAt(0).toLowerCase()}.jpg`) || "/defaultProfilePic.png"}
+                        alt="poc image"
+                        className="rounded-full shadow-md h-10 w-10"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = "/defaultProfilePic.png";
+                        }}
                       />
                       <div className="flex flex-col gap-2 flex-1 flex-wrap">
                         {name && (

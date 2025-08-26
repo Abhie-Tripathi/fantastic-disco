@@ -1,14 +1,16 @@
 
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
-import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData } from '@/types/trackers';
+import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes,TrackerTypeProp, PresetData, ExportContent, PublicEvents } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { BASE_URL, isEventeli } from '@/config';
+import { getShowValues } from '@/utils/showValues';
+import { useQueryClient } from '@tanstack/react-query';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -34,6 +36,9 @@ interface PresetDataResponse {
   count: number;
   trackers: PresetData[];
 }
+interface ExportDataResponse {
+  trackerExports: ExportContent[];
+}
 
 type GetSavedEventsResponse =
 
@@ -45,9 +50,14 @@ type GetSavedEventsResponse =
 
 export const useTrackerServices = () => {
     const api = useApi();
+    const url = useSearchParams();
     const {getFilterValue} =useFilterState();
+    const queryClient = useQueryClient();
     const createTracker = (formData: Tracker) => {
-        
+      
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+      }
       return api.request(
         `${endpoints.tracker.create}`,
         {
@@ -56,14 +66,24 @@ export const useTrackerServices = () => {
         }
       );
     };
-    const editTracker=(trackerId:string, formData: Tracker)=>{
-      return api.request(
+    const editTracker = async (trackerId:string, formData: Tracker) => {
+      if(formData.filterValues){
+        formData.filterValues.showValues = getShowValues(formData.filterValues);
+      }
+      
+      const response = await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}`,
         {
             method: "PATCH",
             data: formData,
         }
-      ); 
+      );
+      
+      if (response && !(response as any)?.error) {
+        queryClient.invalidateQueries({ queryKey: ["trackerevents"] });
+      }
+      
+      return response;
     }
   const getTrackerCount =():Promise<{ count: TrackerTypeProp[] } | undefined>=>{
     return api.request(
@@ -139,6 +159,7 @@ export const useTrackerServices = () => {
       });
     }
     const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
+      
       return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
         method: "DELETE",
       });
@@ -209,7 +230,8 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
+      const showValuesParam = query.showValues ? `&showValues=${query.showValues}` : '';
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || (query.type==="T_AUDIENCE_DEPT_PROFILE"?"visitor":"score")}${showValuesParam}`)
       return response;
     };
     const getTrackerMapEvents = async(
@@ -227,7 +249,7 @@ export const useTrackerServices = () => {
     // console.log(adaptedParams);
       const activeTab= !params?isEventeli?"business":"active":params;
       const response:any= await api.request(
-        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${activeTab}`,
+        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION" ? '/similar':""}?type=${activeTab}`,
         {
           method: "GET",
           signal: abortSignal,
@@ -291,25 +313,26 @@ export const useTrackerServices = () => {
           }
         )
     }
-    
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
+   const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any, trackerType?:string)=>{
+      
       const eventType = type;
-      const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
+      
+      const eventTypeParam = eventType !== null ? eventType : "";
         const response = await api.request<EventCount[]>(
-          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
+          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION" ? '/similar':""}/count?view=map${eventTypeParam===""?"":`&type=${eventTypeParam}`}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
         );
         return response;
     }
-    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
+    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any, trackerType?:string) => {
       const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
-      const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
-    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${eventTypeParam}&view=map`, {
+    const eventTypeParam = eventType !== null ? eventType :"";
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events${trackerType==="T_EVENT_PARTICIPATION"?"/similar":""}?${eventTypeParam===""?"":`type=${eventTypeParam}&`}view=map`, {
       method: "GET",
       params: params
     },true);
@@ -327,7 +350,7 @@ export const useTrackerServices = () => {
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
       // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
-      const response: OriginalResponse | undefined = await api.request(type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+      const response: OriginalResponse | undefined = await api.request(type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events${url.get("type")==="T_EVENT_PARTICIPATION"?"/similar":""}?${searchParams}`, {
         method: "GET",
       });
       
@@ -369,7 +392,33 @@ export const useTrackerServices = () => {
     
       return response;
     };
-    
+    const getExportData = async (trackerId: string): Promise<ExportDataResponse | undefined> => {
+  const response = await api.request<ExportDataResponse>(
+    `${endpoints.tracker.commonUrl}/${trackerId}/exports`,
+    {
+      method: "GET",
+    }
+  );
+  return response;
+};
+
+    const postExportReq = async(trackerId: string, eventType: string, redirectUrl: string) => {
+      
+      return api.request(`${endpoints.tracker.commonUrl}/${trackerId}/exports`, {
+        method: "POST",
+        data: { 
+          type:eventType, 
+          redirectUrl 
+        }
+      });
+    }
+    const publicEvents = async (formData:PublicEvents)=>{
+      const response = await api.request<EventResponse>(`${endpoints.public.events}`,{
+        method:"POST",
+        data: formData
+      })
+      return response;
+    }
     return {
       getTrackerCount,
       removeBookmark,
@@ -398,6 +447,9 @@ export const useTrackerServices = () => {
       presetData,
       getIntelData,
       fetchCompanyData,
+      getExportData,
+      postExportReq,
+      publicEvents,
       isLoading: api.isLoading,
       error: api.error,
     };

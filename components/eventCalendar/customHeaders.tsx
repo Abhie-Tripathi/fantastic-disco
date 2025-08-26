@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import NestedCircularProgress from "./circularProgress";
-import { heatmapColors } from "./constants";
+import { heatmapColors, darkModeHeatmapColors } from "./constants";
 import { Alert, Event } from "@/types/events";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
@@ -132,6 +132,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   const [open, setOpen] = useState(false);
   const currentDate = moment(date);
   const { theme } = useTheme();
+  const currentHeatmapColor = theme == "dark" ? darkModeHeatmapColors : heatmapColors
   const formattedDate = currentDate.format("YYYY-MM-DD");
   const eventsForDay = monthEvents.filter(
     (event) => moment(event.start).format("YYYY-MM-DD") === formattedDate
@@ -160,7 +161,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
 
   const heatmapCategory = hasEvents ? eventsForDay[0]?.heatmapCategory : null;
   const backgroundColor = hasEvents
-    ? heatmapColors.find((color) => color.name === heatmapCategory)?.color
+    ? currentHeatmapColor.find((color) => color.name === heatmapCategory)?.color
     : theme === "dark" ? "#171717" : "#fff";
 
   const handleMouseEnter = () => {

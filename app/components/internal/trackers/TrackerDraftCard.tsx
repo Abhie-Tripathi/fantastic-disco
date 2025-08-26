@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useFilterContext } from "@/context/filterContext";
 import { Bell, NotebookPen, Settings } from "lucide-react";
 import Image from 'next/image';
 import Link from "next/link";
@@ -11,8 +12,8 @@ interface TrackerDraftCardProps {
     entries?:any;
 }
 const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDraftCardProps) => {   
+    const {setIsBrief} = useFilterContext();
    if(entries.length===0) return null;
-   
     return(
         <div className="flex gap-5 p-3 shadow-[1.5px_3px_9px_0px_#EDEBEB66] justify-between bg-background border-2 border-[var(--border-color)] rounded-[var(--border-radius-md)] shadow-[var(--shadow-large)]" style={{boxShadow:"var(--shadow-small)"}}>
             <div className="flex gap-5 w-[100%]">
@@ -45,7 +46,7 @@ const TrackerDraftCard = ({data, heading, imgUrl, view, type, entries}:TrackerDr
                
                 </div>
                     {/* </div> */}
-                    <Link href={`/internal/trackers/create?type=${type}`}>
+                    <Link href={`/internal/trackers/create?type=${type}`} onClick={()=>setIsBrief(true)}>
                     <Button className="h-7">Edit</Button>
                     </Link>
                 </div>

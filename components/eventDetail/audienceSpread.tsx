@@ -29,7 +29,7 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <p className="cursor-pointer font-medium text-[var(--primary-text-color)]">
-                  Audience Spread
+                  Audience Country
                 </p>
               </TooltipTrigger>
               <TooltipContent

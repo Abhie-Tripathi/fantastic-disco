@@ -70,6 +70,12 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --color-1: oklch(66.2% 0.225 25.9);
+    --color-2: oklch(60.4% 0.26 302);
+    --color-3: oklch(69.6% 0.165 251);
+    --color-4: oklch(80.2% 0.134 225);
+    --color-5: oklch(90.7% 0.231 133);
+    --banner-height: 0px;
   }
 
   body[data-theme="dark"] {
@@ -98,6 +104,17 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --banner-height: 0px;
+  }
+  .theme {
+    --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
+  }
+  .dark {
+    --color-1: oklch(66.2% 0.225 25.9);
+    --color-2: oklch(60.4% 0.26 302);
+    --color-3: oklch(69.6% 0.165 251);
+    --color-4: oklch(80.2% 0.134 225);
+    --color-5: oklch(90.7% 0.231 133);
   }
 }
 
@@ -784,7 +801,6 @@ button {
   color: #398e4a;
 }
 
-
 .sticky {
   position: sticky;
   top: 0;
@@ -794,4 +810,15 @@ button {
 .table-container {
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+}
+
+@theme inline {
+  @keyframes rainbow {
+  0% {
+    background-position: 0%;
+    }
+  100% {
+    background-position: 200%;
+    }
+  }
 }

@@ -3,6 +3,7 @@ export interface ApiError {
     status: number;
     message: string;
     name: string;
+    issues?: any;
     statusCode?: number;
   }
   

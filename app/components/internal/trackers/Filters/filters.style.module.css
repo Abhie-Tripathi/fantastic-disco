@@ -537,6 +537,7 @@ width: calc(100vw - 134px);
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(auto-fill, 280px);
+  padding-bottom: 20px;
   /* display: flex;
   overflow-x: auto; */
   flex-direction: column;
@@ -592,6 +593,7 @@ width: calc(100vw - 134px);
 .emptyTableData {
   height: 100%;
   display: flex;
+  gap:20px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -601,7 +603,6 @@ width: calc(100vw - 134px);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
   color: var(--secondary-text-color);
-  padding: 20px;
 }
 
 .suggestion_items {

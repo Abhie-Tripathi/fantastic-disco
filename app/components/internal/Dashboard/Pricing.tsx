@@ -10,9 +10,10 @@ import Link from "next/link";
 import { isEventeli } from "@/config";
 import { GAEvent } from "@/utils/GAEvent";
 import { ArrowRight } from "geist-icons";
+import { Badge } from "@/components/ui/badge";
 
 interface Props {
-  membershipData: MembershipData | undefined;
+  membershipData: MembershipData | null;
 }
 
 const Pricing = ({ membershipData }: Props) => {
@@ -73,8 +74,16 @@ const Pricing = ({ membershipData }: Props) => {
       {/* <div className="border-t-[1px] border-[var(--border-color)] mt-2"></div> */}
       <div className="mt-2 bg-[var(--info-background-color)] rounded-xl p-4 flex flex-col h-[215px] items-center justify-center">
         <Image width={55} height={55} src={PricingImage} alt="img" />
-        <div className="text-lg font-medium text-[#0072F5] mt-3 text-center">
+        <div className="flex gap-2 mt-3  items-center">
+        <div className="text-lg font-medium text-[#0072F5] text-center">
           {membershipPlan || "Our subscription functionality is coming soon!"}
+        </div>
+        {membershipData?.isTrial && <Badge
+                    className="text-[var(--info-text-color)] bg-[var(--info-background-color)] border-[var(--info-text-color)]"
+                    variant="outline"
+                  >
+                    Trial
+                  </Badge>}
         </div>
         {membershipPlan && (
           <div
@@ -103,7 +112,7 @@ const Pricing = ({ membershipData }: Props) => {
             ) : (
               <div className="flex justify-between w-full">
                 <p className="text-sm text-[var(--secondary-text-color)] font-semibold">
-                  Next Renewal
+                 {membershipData?.isTrial ? "Trial Ends"  : "Next Renewal"}
                 </p>
                 <p className="text-sm text-[var( --primary-text-color)] font-semibold">
                 {formattedMembershipEndDate ? formattedMembershipEndDate : "-"}

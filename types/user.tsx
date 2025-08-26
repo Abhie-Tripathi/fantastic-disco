@@ -38,4 +38,7 @@ export type UserLocation = Location | NominatimSearchResult;
 export interface MembershipData {
   membership: number | null;
   endDate: string | null;
+  planRenewalDate: string | null;
+  planStartDate: string | null;
+  isTrial: boolean;
 }

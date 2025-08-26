@@ -33,7 +33,6 @@ export default function EstimatedExhibitorsSelector({
     useFilterContext();
   const exhibitorOptions = morphedData.estimatedExhibitor.options;
   const enabled = morphedData.estimatedExhibitor.isEnabled;
-  const showToogle = morphedData.estimatedExhibitor.isToogleEnabled;
 
   const selectedRanges = useMemo(
     () => getLocalFilterValue("estimatedExhibitors").split(",").filter(Boolean),
@@ -73,7 +72,6 @@ export default function EstimatedExhibitorsSelector({
       </span>
       <Switch
         checked={showInFilter}
-        disabled={!showToogle}
         onCheckedChange={handleShowToggle}
         aria-label="Show Estimated Exhibitors in filter"
         onClick={(e) => e.stopPropagation()}

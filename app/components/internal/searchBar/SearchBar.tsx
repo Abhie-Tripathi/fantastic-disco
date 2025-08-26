@@ -4,41 +4,102 @@ import React,{useState, useEffect, useRef} from 'react'
 import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
+import { formatEventDates } from "@/utils/dateFormat";
 import DropdownRef from '../../employee/listView/DropdownRef';
 import { Item } from '@radix-ui/react-select';
+import { Event } from '@/types/events';
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import DesDep from "@/public/data/desDep.json";
+import { formattedDateRange } from "@/utils/date";
+import { formatLocationParts } from "@/utils/locationFormat";
 interface EventSuggestionItem {
   key: string | number;
   id?:any;
   name: string;
-  location?: {
-    cityName?: string;
-    countryName?: string;
-  };
+  location?: Event["basic"]["eventLocation"];
+  eventStartDate?: string;
+  eventEndDate?: string;
   city?: string;
   country?: string;
   host?:string;
   website?:string;
   tableEntry?: string;
+  eventLocation?: string | null;
+  eventCountry?: string | null;
 }
 
   interface SearchBarProps {
     searchInput: string;
     setEventSearchLoader: (loading: boolean) => void;
-    handleSelect: (id: number, name: string) => void;
+    handleSelect: (id: number, name: string, index: number) => void;
     endpoint: string; 
     type?: string;
+     index?: number;
+     isFocused?: boolean;
+      onOptionSelected?: () => void;
   }
-const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type}:SearchBarProps) => {
+const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type, index, isFocused, onOptionSelected}:SearchBarProps) => {
+  const [focusedIndex,setFocusedIndex] = useState<number | null>(null);
+  const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
+  const [selectionMade, setSelectionMade] = useState(false);
+  useEffect(() => {
+    if (isFocused && !selectionMade) {
+      setIsOpen(true);
+    } else if (!isFocused) {
+      const timer = setTimeout(() => setIsOpen(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocused, selectionMade]);
+    
     const { theme } = useTheme();
-    const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
+    
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
-    const [eventSuggestion,setEventSuggestion]=useState([]);
+    const [eventSuggestion,setEventSuggestion]=useState<any>([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-      
-      if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+      // if(searchInput!==previousInput){
+        if (type === "T_AUDIENCE_DEPT_PROFILE") {
+  let filterDesValue;
+  
+  if (index === 0) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.designation.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.designation;
+  }
+  else if (index === 1) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.role.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.role;
+  }
+  else if (index === 2) {
+    filterDesValue = searchInput?.length > 0
+      ? DesDep.data.department.filter((item: any) =>
+          item.name?.toLowerCase()?.includes(searchInput?.toLowerCase())
+        )
+      : DesDep.data.department;
+  }
+          const sortedData = filterDesValue
+            ? [...filterDesValue].sort((a, b) => a.name.localeCompare(b.name))
+            : []; 
+          setEventSuggestion(sortedData);
+  setEventSearchLoader(false);
+  return;
+}
+if(searchInput?.trim()?.length===0){
+  setEventSearchLoader(false);
+  return;
+}
+if (searchInput?.length > 0) {
+        let url; 
+        // if(type==="T_EVENT_PARTICIPATIONS"){
+        //   url=`${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
+        // }else 
+        url=`${baseUrl}/${endpoint}?query=${searchInput}&${type==="T_EVENT_PARTICIPATION"?"limit=10":"limit=5"}&offset=0${type==="T_EVENT_PARTICIPATION"?"&view=suggestion":""}`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -60,7 +121,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               else if(type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"){
                 
                 setEventSuggestion(data.companies);
-              }else
+              }else if(type === "T_EVENT_PARTICIPATION"){
+                setEventSuggestion(data.events)
+              }
+              else
               setEventSuggestion(data.events); 
             } else {
               console.error('Fetch error:', error); 
@@ -73,19 +137,29 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
         }finally {
             setEventSearchLoader(false);
           }
-      }
+        }
+      // }
       };
       
       useEffect(() => {
-       if(searchInput.length>0){
-        if(searchInput!==previousInput)
-        setEventSearchLoader(true);
-        const debounceTimeout = setTimeout(() => {
-          fetchSearchSuggestion();
-        }, 500);
-        return () => clearTimeout(debounceTimeout);
-          }else setEventSuggestion([]);
-      }, [searchInput]);
+
+  if (searchInput === previousInput){
+     return;
+     
+  }
+  setEventSearchLoader(true);
+
+  const debounceTimeout = setTimeout(() => {
+    setPreviousInput(searchInput);
+    fetchSearchSuggestion();
+  }, 500);
+
+  return () => {
+    clearTimeout(debounceTimeout);
+    abortControllerRef.current?.abort();
+  };
+}, [searchInput, index]);
+
       const getDomain = (url?: string) => {
         if (!url || url === "undefined") return "";
         try {
@@ -99,8 +173,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             if(eventSuggestion?.length>0){  
                 setIsOpen(true);
                 let updatedData;
-                console.log(type);
-                
                 if(type==="T_BRAND_BUILDING"){
                   
                   updatedData = eventSuggestion.map((item:EventSuggestionItem)=>({
@@ -110,6 +182,16 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.location?.countryName || '',
                     tableEntry: item?.name || ''
                   }))
+                }
+                else if(type==="T_AUDIENCE_DEPT_PROFILE"){
+                  updatedData = eventSuggestion.map((item: any, index: number) => ({
+                    key: item.id || index,
+                    name: item.name || '',
+                    // city: item?.location?.cityName || '',
+                    // country: item?.location?.countryName || '',
+                    tableEntry: `${item.name}_${item.id}` || ''
+                  }));
+                  setRestructureData(updatedData);
                 }
                 else if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {
                   
@@ -122,10 +204,27 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                       ? item.host 
                       : item.website && item.website !== "undefined" 
                       ? getDomain(item.website) 
-                      : item.name
+                      : item.name,
+                    location:{
+                        cityName:item?.location?.cityName,
+                        countryName:item?.location?.countryName
+                    }
                 }));
-                  
-                } else {
+                } else if (type === "T_EVENT_PARTICIPATION") {
+                  updatedData = eventSuggestion.map((item:Event) => {
+                    return {
+                      key: item.basic.id,
+                      eventLocation:item?.basic?.eventLocation?.cityName,
+                      eventCountry:item?.basic?.eventLocation?.countryName,
+                      name: item.basic.name || '',
+                      tableEntry: `${item.basic.name}_${item?.basic?.eventLocation?.name}_${item?.basic?.eventLocation?.cityName}_${item?.basic?.eventLocation?.countryName}_${item?.basic?.eventLocation?.locationType}_${item.basic.startDateTime}_${item.basic.endDateTime} `,
+                      eventStartDate: item.basic.startDateTime || "",
+                      eventEndDate: item.basic.endDateTime || "",
+                      location: item.basic.eventLocation
+                    };
+                  });
+                }
+                else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
@@ -137,40 +236,65 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
-      const selectedEventId=(id:any, name:string)=>{
-        handleSelect(id,name);
-        setIsOpen(false);
-        setPreviousInput(name); 
-        setEventSearchLoader(false);
-      }
-      console.log(restructureData);
+const selectedEventId = (id: any, name: string) => {
+  setSelectionMade(true);
+  setIsOpen(false);
+  
+  handleSelect(id, name, index || 0);
+  setPreviousInput(name);
+  setEventSearchLoader(false);
+  
+  onOptionSelected?.();
+  
+  setTimeout(() => {
+    setSelectionMade(false);
+  }, 100);
+};
       
   return (
         <>
-         {searchInput.length > 0 && isOpen && (
-  <div ref={dropdownRef} className={`${styles.eventName_container2} top-[-154px] md:top-[40px]`}
+         {/* {(searchInput?.length > 0 && type!=="T_AUDIENCE_DEPT_PROFILE") && (isOpen || isFocused) && ( */}
+  {(isOpen && 
+  (type === "T_AUDIENCE_DEPT_PROFILE" ? isFocused : (searchInput?.length > 0 && isFocused)) && 
+  !selectionMade && restructureData?.length>0) &&(
+
+
+  <div ref={dropdownRef} className={`${styles.eventName_container2} top-auto bottom-[55px] md:bottom-auto md:top-[45px]`}
 >
-    {restructureData && restructureData.length > 0  ? (
-      restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.tableEntry??"")}>
-          <div className={styles.event} >
-  {item.name}
-  {item.city || item.country ? ", " : null} 
-  <span className={styles.subHeading}>
-    {item.city === item.country
-      ? item.country
-      : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
-  </span>
-</div>
-        </div>
-      ))
-    ) : (
-      <div className={styles.resultData_list}>
-        No results
-      </div>
-    )}
-  </div>
-)}
+  <Command>
+  <CommandGroup>
+                  <CommandList>
+  {restructureData.map((item, index) => (
+    <CommandItem
+      key={item.key ?? index}
+      onSelect={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      onClick={() => selectedEventId(item.key, item.tableEntry ?? item.name)}
+      onMouseDown={(e) => e.preventDefault()} 
+      className="flex flex-col items-start cursor-pointer"
+    >
+      <div className="font-medium">
+                              <span>{item.name}</span>
+                              <span className="sr-only">{item.key}</span>
+                              {type==="T_EVENT_PARTICIPATION" &&
+                              <span className="text-xs text-muted-foreground ml-2">
+                                {formattedDateRange(
+                                  item.eventStartDate || "", item.eventEndDate || "",
+                                  false
+                                )}
+                              </span>
+                              }
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {item.location && formatLocationParts(item.location, true)}
+                            </div>
+    </CommandItem>
+  ))}
+</CommandList>
+
+                </CommandGroup>
+    </Command>
+  </div>)}
+{/* )} */}
          </> 
          
   )

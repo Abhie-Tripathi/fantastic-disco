@@ -5,20 +5,30 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from "@/public/trackerNullState.svg";
+import { Suspense, lazy } from "react";
+const Map = lazy(() => import("@/components/map"));
 import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
 import { AllTrackerTypes } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
 import { PaginationComponent } from "@/components/pagination";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
-import { Search } from "lucide-react";
+import { LibraryBig, MoveUpRight, Route, Search } from "lucide-react";
 import {
   MagnifyingGlass,
  
 } from "geist-icons";
 import SortDropdown from "@/components/search/sortDropdown";
+import Link from "next/link";
+import { isEventeli } from "@/config";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import { getShowValues } from "@/utils/showValues";
+
 interface MyTrackersProps {
   searchValue:string;
   dataPresent: boolean;
@@ -29,16 +39,21 @@ interface MyTrackersProps {
   trackerId: string;
   setSearchValue:any;
   hideTemplates: any;
+  eventType?: string;
+  locations?: string[];
+  trackerLoc: string;
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId, hideTemplates, setSearchValue}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId, hideTemplates, setSearchValue, eventType, locations}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const {setFilter, getFilterValue, setMultipleFilters}=useFilterState();
-  const {setSkip, skip:w, searchValue} = useTrackerContext();
+  const {setSkip, skip:w, searchValue, setIsNewCall, setTrackerId} = useTrackerContext();
   const skip = w || 0;
+  const isMobile=useIsMobile();
   const take =Number(getFilterValue("take")) || 4;
-  
+  const [share,setShare]=useState(false);
+   const router= useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
@@ -55,7 +70,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setSkip(((page-1) * trackerPerPage));
     setMultipleFilters({
       skip:((page-1) * trackerPerPage).toString(),
-      id:allTracker[0].id,
+      // id:allTracker[0].id,
       q: searchValue
     })
    
@@ -102,7 +117,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       setMultipleFilters({ 
           skip: skip,
           q: searchValue,
-          id: result?.trackers[0]?.id,
+          // id: result?.trackers[0]?.id,
         })
     setTotalPage(Math.ceil(result.count / trackerPerPage));
     setTotalCount(result.count)
@@ -122,8 +137,32 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   }
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
-  console.log(allTracker);
-  
+  const clickHandler=(item:AllTrackerTypes, e:any)=>{
+    // e.stopPropagation();
+    setSingleTrackerData(item)
+    setIsNewCall(true); 
+    setTrackerId(item.id);
+    const params = new URLSearchParams({
+      type: item.type,
+      view: 'table',
+      eventType: isEventeli ? 'social' : 'active'
+    });
+    
+    if (item.filterValues) {
+      const query = {
+        show: (item.filterValues?.show as unknown as string[])?.join(','),
+        maturity: (item.filterValues?.maturity as unknown as string[])?.join(','),
+        audienceSpread: (item.filterValues?.audienceSpread as unknown as string[])?.join(','),
+        estimatedVisitorRangeTag: (item.filterValues?.estimatedVisitorRangeTag as unknown as string[])?.join(','),
+      }
+      const showValues = getShowValues(query);
+      if(showValues){
+        params.set('showValues', showValues);
+      }
+    }
+    
+    router.push(`/internal/trackers/${item.id}/trackedEvents?${params.toString()}`);
+  }
   return (
     <div className={styles.container} ref={endOfListRef}>
       <div className={styles.containerLeft}>
@@ -151,19 +190,63 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       </div>
           
         <div>
-        <div className="flex items-center justify-between pr-6">
-            <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
+        <div className="flex items-center p-6 pb-3 md:pb-6">
+            {/* <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
               <div className="font-medium">Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
               </span>
+            </div> */}
+          <div className="flex items-center gap-2 w-full">
+            <div
+              className={`transition-all duration-300 ease-in-out overflow-hidden max-h-20 opacity-100 scale-y-100 w-full bg-background
+                `}
+            >
+              <div className="border px-3 py-2 flex items-center gap-2 bg-background rounded-md shadow-sm p-2">
+                <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+                <input
+                  className="outline-none w-full bg-transparent"
+                  placeholder="Enter tracker name"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
-            <Button variant="default" onClick={()=>hideTemplates(false)}>Create</Button>
-            <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
+            <Button className="h-[42px]" variant="default" onClick={(e) => {
+    e.stopPropagation();
+    hideTemplates(false);
+  }}>Create</Button>
+  <Link
+  href="/collections"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">{isMobile?<LibraryBig className="text-[]"/>:"Collections"}</Button>
+  </Link>
+{!isMobile &&
+<Link
+  href="/internal/trackers/savedevents?view=table"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <Button className="h-[42px]" variant="outline">Bookmarked</Button>
+</Link>}
+            {/* <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
-            </Button>
+            </Button> */}
             </div>
+             
+          </div>
+          <div className="flex-col gap-4 px-6 pb-3 flex md:hidden">
+                  <Link 
+                  href={`/internal/trackers/savedevents?view=list`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >
+                    <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
+                      Bookmarked Events
+                      <MoveUpRight width={16} height={16} />
+                    </div>
+                  </Link>
           </div>
           <div
   className={`transition-all duration-300 ease-in-out overflow-hidden ${
@@ -183,7 +266,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   </div>
 </div>
         <div className={`${
-    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100dvh-253px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
+    isMobile?"h-[calc(100vh-206px)]": "h-[calc(100dvh-158px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
@@ -191,10 +274,62 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
-            allTracker.map((item, id) => <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>)}
-          {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
-          <div className={styles.loadingBar}></div>
-        </div>}
+            allTracker.map((item:AllTrackerTypes, id:any) => (
+            <div className="flex gap-6" key={item.id}>
+            {/* <Link href={`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}className="w-[100%] md:w-[70%]"> */}
+            <div onClick={(e)=>clickHandler(item,e)} className="w-[100%] md:w-[70%]">
+             <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} share={share} setShare={setShare}/>
+             </div>
+            {/* </Link> */}
+            {!isMobile  &&
+            <Suspense
+                        fallback={
+                          <div className="hidden md:flex h-[160px] w-[30%] items-center justify-center">
+                            <Skeleton/>
+                          </div>
+                        }
+                      >
+            <div className="h-[180px] w-0 hidden md:flex md:w-[30%]">
+                          {!singleTrackerData && searchValue.length < 3 ? (
+                            <Skeleton/>
+                          ) : !singleTrackerData ? (
+                            <NullState
+                              image={TrackerNullState}
+                              title="No tracker selected."
+                            />
+                          ) : (
+                            // <NullState image={TrackerNullState}  title="Some issue with map view."/>
+                            
+                            <Map
+                              isGlobal={true}
+                              source="tracker"
+                              eventType=""
+                              searchParams="active"
+                              trackerId={item?.id || ""}
+                            trackerLoc={
+                              (Object.keys(item?.filterValues?.locationIds || {}).length > 0 &&
+                                Object.keys(item?.filterValues?.locationIds || {}).join(",")) ||
+                              ""
+                            }
+
+                              trackerType={item?.type || ""}
+                            />
+                          )}
+                        </div>
+            </Suspense>}
+            </div>
+            
+            ))}
+          {loadOne &&  
+          <div className="hidden md:flex h-[160px] w-full items-center justify-center gap-6">
+                            <Skeleton className="h-full w-[70%]"/>
+                            <Skeleton className="h-full w-[30%]"/>
+                          </div>}
+          {(loadOne && isMobile) &&(
+            <div className="flex md:hidden h-[160px] w-full items-center justify-center gap-6">
+              <Skeleton className="h-full w-[100%]"/>
+            </div>
+          )}
             <div
               className="flex item-center justify-center"
             >
@@ -206,34 +341,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             </div>
           {/* )} */}
           </div>
-          <div className="block sm:hidden w-full sticky bottom-0 bg-background z-10">
-          <div className="p-4 border-t bg-background/80 backdrop-blur-sm space-y-3">
-            <div className="flex items-center justify-between">
-            <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 w-full">
-    <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
-    <input
-      className="outline-none w-full bg-transparent"
-      placeholder="Enter tracker name"
-      value={searchValue}
-      onChange={(e) => setSearchValue(e.target.value)}
-    />
-  </div>
-              {/* <Button
-                variant="ghost"
-                className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
-              > */}
-                {/* <FilterX className="w-3.5 h-3.5 mr-1" />
-                Reset all filters
-              </Button>
-              <span className="text-xs text-[#6E6F89]">
-                {filterCount} filters applied
-              </span> */}
-            </div>
-            <Button className="w-full h-10" onClick={()=>hideTemplates(false)}>
-              Create
-            </Button>
-          </div>
-        </div>
+          
           </div>
     </div>
   );

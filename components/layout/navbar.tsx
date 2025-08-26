@@ -43,6 +43,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import path from "path";
 import VideoModal from "@/components/layout/videoModal";
 import SendInvite from "@/components/ui/SendInvite";
+import { MembershipPlan } from "@/data/membershipPlans";
+import { GAEvent } from "@/utils/GAEvent";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -69,7 +71,7 @@ const geniroutes: Record<string, string> = {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuthContext();
+  const { membershipData } = useAuthContext();
   const { theme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const { theme, toggleTheme } = useTheme();
@@ -162,6 +164,20 @@ export default function Navbar() {
       router.push("/widget/settings/profile");
     }
   };
+
+  const handleUpgradeClick = () => {
+    window.open(
+      `https://whr.ai/pricing?utm_source=${isEventeli ? "geo" : "gtm"}&utm_campaign=pricing&utm_medium=web&utm_term=navbar_upgrade_plan`,
+      "_blank"
+    );
+    GAEvent(
+      "",
+      "Plan Upgrade",
+      "Navbar",
+      `${isEventeli ? "geo" : "gtm"} | pricing | web | navbar_upgrade_plan`
+    );
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -223,6 +239,19 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-1">
+        {membershipData &&
+          membershipData.membership === MembershipPlan.Freemium && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex"
+                onClick={handleUpgradeClick}
+              >
+                <span className="hidden sm:inline">Upgrade</span>
+              </Button>
+            </>
+          )}
           {!isEventeli && (
             <>
               <div className="flex items-center gap-1 max-[570px]:hidden">
