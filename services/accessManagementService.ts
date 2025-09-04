@@ -34,6 +34,12 @@ export interface ReviewRequestPayload {
   redirectDomain: string;
 }
 
+export interface InviteUserPayload {
+  email: string;
+  accessType: AccessType;
+  redirectDomain: string;
+}
+
 export const useAccessManagementService = () => {
   const api = useApi();
 
@@ -51,9 +57,17 @@ export const useAccessManagementService = () => {
     });
   };
 
+  const inviteUser = async (payload: InviteUserPayload) => {
+    return api.request<{ message: string }>(endpoints.account.invite, {
+      method: "POST",
+      data: payload,
+    });
+  };
+
   return {
     getAccessRequests,
     reviewAccessRequest,
+    inviteUser,
     isLoading: api.isLoading,
     error: api.error,
   };

@@ -11,9 +11,9 @@ import {
 } from "../ui/select";
 import { UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { BASE_URL } from "@/config";
+import { useAccessManagementService, AccessType } from "@/services/accessManagementService";
 
-type AccessType = "SUPER_ADMIN" | "ADMIN" | "USER";
+
 
 interface SendInviteProps {
   customTrigger?: React.ReactNode;
@@ -23,8 +23,8 @@ interface SendInviteProps {
 const SendInvite = ({ customTrigger, redirectDomain }: SendInviteProps) => {
   const [email, setEmail] = useState("");
   const [selectedInvitationRole, setSelectedInvitationRole] = useState<AccessType>("USER");
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { inviteUser, isLoading } = useAccessManagementService();
 
   const actualRedirectDomain = redirectDomain ?? (typeof window !== "undefined" ? window.location.origin : "");
 
@@ -38,28 +38,16 @@ const SendInvite = ({ customTrigger, redirectDomain }: SendInviteProps) => {
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/me/account/users/invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          accessType: selectedInvitationRole,
-          redirectDomain: actualRedirectDomain,
-        }),
+      const response = await inviteUser({
+        email,
+        accessType: selectedInvitationRole,
+        redirectDomain: actualRedirectDomain,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send invitation");
-      }
-
-      const data = await response.json();
       toast({
         title: "Success",
-        description: data.data.message,
+        description: response?.message || "Invitation sent successfully!",
       });
       
       // Reset form
@@ -71,8 +59,6 @@ const SendInvite = ({ customTrigger, redirectDomain }: SendInviteProps) => {
         description: "Failed to send invitation. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 

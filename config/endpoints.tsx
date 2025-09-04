@@ -100,6 +100,7 @@ export const endpoints = {
     configuration: `${BASE_URL}/me/account/configuration`,
     accessRequests: `${BASE_URL}/me/account/access-requests`,
     requestReview: `${BASE_URL}/me/account/request-review`,
+    invite: `${BASE_URL}/me/account/users/invite`,
   },
   membership: {
     getMembership: `${BASE_URL}/me/account/configuration/membership`,

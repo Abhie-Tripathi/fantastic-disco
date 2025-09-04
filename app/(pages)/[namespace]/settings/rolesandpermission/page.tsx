@@ -5,98 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import SendInvite from "@/components/ui/SendInvite";
-import { useSearchParams } from "next/navigation";
+
 import { UserPlus, Clock, CheckCircle, XCircle, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const RolesAndPermissionPage = () => {
   const { getAccessRequests, reviewAccessRequest, isLoading } = useAccessManagementService();
   const [requests, setRequests] = useState<AccessRequestItem[] | undefined>(undefined);
-  const [usingMock, setUsingMock] = useState<boolean>(false);
   const { toast } = useToast();
-  const searchParams = useSearchParams();
-  const mockMode = (searchParams?.get("mock") === "1") || (process.env.NEXT_PUBLIC_MOCK_ACCESS_REQUESTS === "true");
 
-  const mockRequests: AccessRequestItem[] = [
-    {
-      id: "e07935b6-c5d5-4482-9aa8-0c8daa034edc",
-      requestedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
-      accountId: "078cebde-7e8d-44ae-9c26-c60b632388c8",
-      accessType: "USER",
-      requestStatus: "PENDING",
-      expiry: null,
-      requestedByUser: {
-        id: "d714169b-11b8-4d27-bee1-65ee00a4776a",
-        name: "Abhinav",
-        email: "abhinav@10times.com",
-        imageUrl: null,
-      },
-      handledByUser: null,
-    },
-    {
-      id: "b17935b6-c5d5-4482-9aa8-0c8daa034e11",
-      requestedAt: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 25).toISOString(),
-      accountId: "178cebde-7e8d-44ae-9c26-c60b632388c8",
-      accessType: "ADMIN",
-      requestStatus: "ACCEPTED",
-      expiry: null,
-      requestedByUser: {
-        id: "f714169b-11b8-4d27-bee1-65ee00a4776a",
-        name: "Riya",
-        email: "riya@example.com",
-        imageUrl: null,
-      },
-      handledByUser: {
-        id: "a0000000-0000-0000-0000-000000000001",
-        name: "Owner",
-        email: "owner@example.com",
-        imageUrl: null,
-      },
-    },
-    {
-      id: "c27935b6-c5d5-4482-9aa8-0c8daa034e22",
-      requestedAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 45).toISOString(),
-      accountId: "278cebde-7e8d-44ae-9c26-c60b632388c8",
-      accessType: "USER",
-      requestStatus: "REJECTED",
-      expiry: null,
-      requestedByUser: {
-        id: "g714169b-11b8-4d27-bee1-65ee00a4776a",
-        name: "Rahul",
-        email: "rahul@example.com",
-        imageUrl: null,
-      },
-      handledByUser: {
-        id: "a0000000-0000-0000-0000-000000000001",
-        name: "Owner",
-        email: "owner@example.com",
-        imageUrl: null,
-      },
-    },
-  ];
+
 
   const loadRequests = async (controller?: AbortController) => {
     try {
-      if (mockMode) {
-        setRequests(mockRequests);
-        setUsingMock(true);
-        return;
-      }
       const data = await getAccessRequests(controller?.signal);
-      if (!data || (Array.isArray(data) && data.length === 0)) {
-        setRequests(mockRequests);
-        setUsingMock(true);
-        return;
-      }
-      setRequests(data);
-      setUsingMock(false);
+      setRequests(data || []);
     } catch (error: any) {
-      // Fallback to mock on error for UI preview
-      setRequests(mockRequests);
-      setUsingMock(true);
+      toast({ title: "Error", description: "Failed to load access requests", variant: "destructive" });
+      setRequests([]);
     }
   };
 
@@ -139,21 +65,6 @@ const RolesAndPermissionPage = () => {
 
   const handleAction = async (item: AccessRequestItem, action: AccessAction) => {
     try {
-      if (mockMode || usingMock) {
-        setRequests(prev => (prev || []).map(r => r.id === item.id ? {
-          ...r,
-          requestStatus: action === "ACCEPT" ? "ACCEPTED" : "REJECTED",
-          updatedAt: new Date().toISOString(),
-          handledByUser: r.handledByUser || {
-            id: "a0000000-0000-0000-0000-000000000001",
-            name: "Owner",
-            email: "owner@example.com",
-            imageUrl: null,
-          }
-        } : r));
-        toast({ title: "Success", description: action === "ACCEPT" ? "Request accepted" : "Request rejected" });
-        return;
-      }
       await reviewAccessRequest({
         accessType: item.accessType,
         accessRequestId: item.id,
